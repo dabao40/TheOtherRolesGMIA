@@ -1,15 +1,16 @@
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
 
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
+We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
 
 # Roles Added
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
 |[Flashlight](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
-|[KillerCreator](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)|
-|[MadmateKiller](#MadmateKiller)||||
+|[KillerCreator](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
 
 ## Flashlight  
+Idea by [eDonners](https://github.com/eDonnes124)
 The Flashlight is An Impostor with a special bomb ability.  
 This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
 The cooldown of the Flashlight will be added after using this skill.  
@@ -20,289 +21,199 @@ The Impostors can all see the blinded players since their names would be black.(
 | Flash Duration ||  
 | Name Is Black | Impostors see those players who are affected by the bomb |  
 | Cooldown after Bomb | The Cooldown added after the bomb |
-| Flashlight Kill Cooldown ||
+| Flashlight Kill Cooldown ||  
 
-# 役職一覧
+## KillerCreator  
+Idea by [miru-y](https://github.com/miru-y)  
+This is an Impostor roles that allows for a one-time nomination of "Madmate Killer" from among the Crewmates.
+"Madmate Killer" is promoted to Impostor upon the death of "Killer Creator".
+*If the "Madmate Killer" becomes a "Madmate Killer", all tasks are treated as completed.
+*If the Impostor team wins with the "Killer Creator" still alive, the "Madmate Killer" will not win.  
+*If the Killer Creator has created a Madmate Killer, the Killer Creator cannot kill.  
+| Options | Notes |  
+|-----------------------------|----------------------------------------|  
+| Madmate Killer Can Die to Sheriff ||  
+| Madmate Killer Can Vent ||  
+| Madmate Killer Knows Impostors when Tasks Finished | The Madmate Killer Knows who the Impostors are when the tasks are completed |  
+|Madmate Killer Can Fix Comms ||  
+|Madmate Killer Can Fix Lights ||  
+|Madmate Killer Has Impostor Vision ||  
 
-## イビルハッカー
-[tomarai氏のTORフォークから移植](https://github.com/tomarai/TheOtherRoles)  
-※移植作業: 鳴海氏実施  
-いつでもアドミンを見ることができる  
-オプション設定でONにすると任意のプレイヤーをマッドメイトにすることができる  
-オプションで妖狐・ジャッカルをマッドメイトにできない設定になっている場合はボタンが消費されるが対象のプレイヤーは妖狐・ジャッカルのままになる  
-サイドキックを持つ妖狐をマッドメイトにした場合、背徳者は死亡する
-| オプション名                                   | 説明                                                                           |
-| ---------------------------------------------- | ------------------------------------------------------------------------------ |
-| マッドメイトを指名できる                       | ONにするとマッドメイトを指名できる                                             |
-| 妖狐をマッドメイトにすることができる           | ONにすると妖狐をマッドメイトにできる                                           |
-| ジャッカルをマッドメイトにすることができる     | ONにするとジャッカルをマッドメイトにできる                                     |
-| シェリフがマッドメイトを殺せる                 | ONにするとシェリフが作成したマッドメイトを殺すことができる                     |
-| マッドメイトがベントに入れる                   | ONにすると作成したマッドメイトがベントに入ることができる                       |
-| マッドメイトがインポスターと同じ視野           | ONにすると作成したマッドメイトがインポスターと同じ視野を持つ                   |
-| マッドメイトがサボタージュできる               | ONにすると作成したマッドメイトがサボタージュを行うことができる                 |
-| マッドメイトがコミュサボを直せる               | ONにすると作成したマッドメイトがコミュサボを直すことができる                   |
-| マッドメイトがタスク完了でインポスターがわかる | ONにするとタスク完了時にインポスターの名前が赤文字で表示されるようになる       |
-| マッドメイトが追放時クルーを追放する           | ONにするとマッドメイトが追放された際にランダムでクルーメイトを一人道連れにする |
+## Cupid  
+Idea by [haoming37](https://github.com/haoming37)  
+The Cupid is a Neutral role that can make two player Lovers. 
+If one of the Lovers dies, all of them dies. 
+The Cupid can use his life to protect one of the Lovers. 
+This means that if a player tries to kill the protected Lovers, the victim himself will not notice, but the Cupid will suicide.
 
+# The Other Roles: GM Edition Customized by Haoming
+This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
+Im adding experimental ideas here.  
+It means my repository contais lots of bugs.  (feel free to make issue)
 
-## シリアルキラー
+This Repository contains original roles and features as below
 
-※GMに内定済み  
-インポスター陣営  
-独自のキルクールダウン設定を持つ（15秒~20秒程度に設定推奨）  
-1キル後にタイマーのカウントダウンが始まりカウントダウンが0になると自殺する  
-タイマーはキルを行うか会議を跨ぐとリセットされる  
-タイマーは40～50秒程度を推奨  
-会議後にキルクールダウンがあるためタイマー40秒、キルクールダウン15秒設定だと実質キル可能な時間は25秒のみとなる  
+## Map modification features(Polus)
+- Random Respawn
+- Additional Vents
+- Move Vital to Specimen
 
-## ラストインポスター
+![images/](Images/polus_mod.png)
 
-※現在調整中  
-今後は能力のバリエーションを増やしていく予定です  
-現状はほぼ妖狐村専用  
-  
-インポスター陣営  
-最後の一人になったインポスターに付与される役職  
-役職付与後に一定キル数を行うことで占いを行うことができる  
-占いは占い師2ndと同様に狐を呪殺することができるため、  
-背徳者の自爆と合わせてダブルキルを狙うことが可能
-(通常キルと合わせてトリプルキルが狙える)  
-5人盤面から一気に勝利を目指そう
+## Map modification features(AirShip)
+- Add Wall Check on Certain Tasks(AirShip)  # original idea from [AuShipMod](https://github.com/tomarai/AUShipMod)
 
-| オプション名                         | 説明                                                                              |
-| ------------------------------------ | --------------------------------------------------------------------------------- |
-| ラストインポスター有効化             | ONにするとラストインポスターが有効になる                                          |
-| ラストインポスター時に有効になる能力 | ゲッサー/占いのどちらかを選ぶことができる                                         |
-| 能力発動に必要なキル数               | 設定したキル数を行うと画面右下に一度だけ使える占いボタンが出現する                |
-| 占い結果がクルーとクルー以外になる   | ONにすると占い結果がクルーとクルー以外の二択になる、OFFにすると役職名が表示される |
-| ゲッサー弾丸数                       | ゲッサー選択時に能力を発動できる回数                                              |
+## Original Roles
+Description of Roles I created.(some of them are exported to The Other Roles GM)
 
-## トラッパー
-※オプションが多いので後日精査します  
-トラップを設置してキルを行うことができるインポスター  
-罠は一つのみ置くことができ二個目を置くと一個目が消滅する  
-トラップキル、通常キルはどちらかを行うと連動してクールダウンに入る  
-トラップは設置時、発動中、キル時に設定した距離まで聞こえる効果音がなる。（設置時のみ効果音有効距離が2/3）
-  
-- トラップの猶予時間中に会議ボタンが押された場合は直後に死亡する
-- トラップは設置後一定時間が経過すると有効になる(有効になるまでは全員から視認可能で有効化後はインポスターと妖狐のみ視認可能)
-- トラップの一定範囲に入ったプレイヤーは動けなくなり一定時間が経過すると死亡する
-- 死亡前に他のプレイヤーは罠を解除することができる（プレイヤーと重なると解除）
-- 解除されるとトラップ設置、通常キル共にクールダウンに入る（ペナルティあり）
-- トラップキルまたは通常のキルを行うとペナルティ分クールダウンが延長される(累積なし)
-- トラップ発動中のプレイヤーを殺した場合のみボーナス分クールダウンが短縮される(累積なし)
+| Impostors | Crewmates | Neutral | Other | 
+|----------|-------------|-----------------|----------------|
+|[SerialKiller(exported)](#SerialKiller)| [FortuneTeller(exported)](#FortuneTeller) |[Fox(exported)](#Fox) ||
+|[EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles)|[Incompetent](#Incompetent)|[Immoralist(exported)](#Immoralist)|
+|[LastImpostor](#LastImpostor)||[Schrodinger's Cat](#Schrodinger'sCat)|
+|[Trapper(experimental)](#Trapper)||[Puppeteer(experimental)](#Puppeteer)|
+|[Bomber(experimental)](#Bomber)||||
+|[EvilTracker](#EvilTracker)||||
+|[Mimic](#Mimic)||||
 
-| オプション名                     | 説明                                                                         |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| 設置後有効になるまでの時間       | トラップが有効になるまでの時間、その間クルーからトラップが視認できる         |
-| トラップクールダウン             | トラップの設置に必要なクールダウン                                           |
-| トラップ発動後キルまでの猶予時間 | 発動からキルまでにかかる時間、この時間の間はトラップを解除することができる   |
-| トラップの有効範囲               | トラップが発動する範囲(それなりに吸い込むので1程度推奨)                      |
-| 効果音の減衰開始距離             | 効果音が減衰を始める距離                                                     |
-| 効果音の減衰終了距離             | 効果音が完全に聞こえなくなる距離(5~8程度推奨)                                |
-| 通常キル時のペナルティタイム     | トラップキル、解除、通常キル時にクールダウンに加算される時間                 |
-| 罠キル時のボーナスタイム         | トラップにかかったプレイヤーを通常キルした場合にクールダウンが短縮される時間 |
+### SerialKiller
+SerialKiller is an impostor who has shorter kill cooldown.  
+After first kill, suicide timer starts and if it becomes 0 he kills yourself.  
+If you make a kill, The time is reset.  
+The timer is reset afteremergency meeting(option)  
 
+### EvilHacker
+Evil Hacker is an impostor who has two ability.
+1. He can see admin anywhere.
+2. He can creates Madmate from chosen player.
 
-## 爆弾魔
-※エフェクトON時に会議後暗転することがあるようです、発生する場合はOFFにしてください  
-二人組のインポスター  
-アーソニストと同じ方式で爆弾を設置する  
-二人が爆弾設置後に一定距離以内にいると起爆してプレイヤーを一人キルをすることができる  
-（キルできるのは先に爆破ボタンを押した対象の相手のみ）  
-お互いに爆弾を設置すると矢印が表示されてお互いの位置が分かるようになる  
-片方が死亡すると残った一人は通常のインポスターになる  
+### LastImpostor
+Last impostor is an impostor role that the last living impostor acquires.  
+last impostor gets additional ability if he kills number of players is set in settings.  
+last impostor can  use guesser or divination ability.  (otpion)
 
-| オプション名                     | 説明                                                        |
-| -------------------------------- | ----------------------------------------------------------- |
-| 爆弾クールダウン                 | 爆弾設置のクールダウン時間                                  |
-| 爆弾設置時間                     | 爆弾設置に必要な時間                                        |
-| １インポスターとしてカウントする | 2人で１人分のインポスターとしてカウントされる               |
-| キル時にエフェクトを表示する     | バグあるかも機能 キル時に死体の横に爆破エフェクトを表示する |
-| 一人が死んだら両方死ぬ           | 片方が死んだらもう片方も死亡する                            |
-| 投票が1票になる                  | 爆弾魔の片方の投票がカウントされなくなる                    |
+### Trapper
+Trapper is an impostor role who has ability to set a trap.  
+Trapper can also make normal kill but it makes penalty time to cooldown.  
+When Trapper set trap, it makes sounds and trap becomes visible for few secs.  
+If player get caught by trap, trap will starts countdown to kill.  
+After certain time, player will be killed with sound.  
+If other player contact to trapped player, trap will be disabled.  
+If trapper kills trapped player directly, trapper get bonus cooldown time.  
 
-## イビルトラッカー
-※テスト中、バグがあったら報告をお願いします  
-味方インポスターの行動を把握することができる役職
-- 味方インポスターの位置に矢印が表示される
-- 味方インポスターのキル時にキルフラッシュが表示される(オプション)
-- 任意のプレイヤーを指定して矢印を表示することができる
+Note
+1. If Trapper makes normal kill, trap will be disabled
+2. If next trap is set, first one will be disabled
 
-| オプション名                                       | 説明                             |
-| -------------------------------------------------- | -------------------------------- |
-| トラッカークールダウン                             | トラッカー対象指定のクールダウン |
-| 会議後に再度ターゲットを設定できる                 | ターゲットを再指定できるON/OFF   |
-| インポスターキルのデスフラッシュを見ることができる | キルフラッシュ機能のON/OFF       |
+### Bomber
+Bomber is 2 pair of impostor role who has bomb ability.  
+Both Bomber can plant bomb to player.  
+If both bomber plant bomb, they will have arrows to each other.  
+After that if both bomber stay together, explosive button will be available.  
+One of bomber use explosive button, the target get killed by bomb.  
+If one bomb is explode, other one will be disabled.  
 
-## ミミック
-ミミックは二人組のインポスター役職  
-キラーはキル時に死体を消し、殺した対象に変身する能力を持つ  
-（キラーは変身を次のミーティングまで解除することができない）  
-キラーはアシスタントに向かってアローが表示される。  
-アローの色が白の場合はアシスタントがキラーに変身している。  
+If one of bomber is dead, remain one becomes normal impostor.  
+(both dies if option is on)
 
-アシスタントはキル能力を持たないがキラーのアリバイを作る能力を持つ  
-- キラーがキルするとフラッシュを見ることができる
-- ポータブルアドミンを持つ
-- キラーに向かってアローが表示される
-- キラーに変身できる
+### EvilTracker
+Evil tracker is an impostor role who has ability to track players.  
+Evil tracker can see arrows that point to other impostors and he can select one  player to track.  
 
-| オプション名                    | 説明                                                        |
-| ------------------------------- | ----------------------------------------------------------- |
-| 1インポスターとしてカウントする | 2人で1インポスターとしてカウントする                        |
-| 片方が死んだら両方死ぬ          | どちらかが死ぬと両方死亡する                                |
-| 2人で1票扱い                    | 2人生存時にミミックアシスタントの投票がカウントされなくなる |
+Evil tracker can see kill flash if other impostor kills.  (option)
 
-## 占い師
-クルーメイト陣営  
-- 占いは１回しかできない
-- タスク数を一定以上満たすまで占い師と認識できない
-- 認識するとミーティングボタンを押せなくなる
-- タスク中に占えて結果も即時わかる
-- 占いを行うとインポスターから占い師に対して矢印が表示される
-- 占える対象は一定時間一定距離以内にいた相手 or 既に死亡しているプレイヤーのみ
-- 背徳者を占うと背徳者に通知がいく
-- 狐を占うと呪殺できる
-- 占い結果は役職名そのもの or クルーかクルー以外をオプションで変更可能
+### Mimic
+Mimic is a 2 pair of impostor role.  
+The Killer has ability to erase dead body and morph to killed player.  
+If Killer kills player, dead body is erased and Killer morph to killed player.  
+(Killer cant cancel morph until meeting is called)  
+Killer can see arrow to Assistant. if color is white, assistant is morphing to you  
 
-| オプション名         | 説明                                                                           |
-| -------------------- | ------------------------------------------------------------------------------ |
-| 占いに必要なタスク数 | 占い師を自認、占いを行えるようになるのに必要なタスク数                         |
-| 占い結果が白黒のみ   | ONにすると占いの結果がクルー orクルー以外となる、OFFの場合は役職名が表示される |
-| 接触時間             | 生存しているプレイヤーを占うのに必要な接触時間(累積)                           |
-| 接触判定距離         | 接触時間が更新される距離                                                       |
+The Assistant  does not have ability to kill crewmate, but has ability to fake partner's alibi.  
+1. The Assistant can see Flash if Killer kills.
+2. The Assistant has portable admin.
+3. The Assistant can see arrow to killer.
+4. The Assistant can morph to killer.
+
+### FortuneTeller
+Fortune teller is crewmate role who has ability to divine  
+Fortune teller is shown as crewmate, until he completes number of tasks is set in settings.  
+After completed tasks, Fortuneteller can divine single player but cant start emergency meeting  
+Divination is only available for once  
+
+Fortune teller can divine players if player is dead or he has contacted player for certain duration  
+Fox, Puppeteer and Schrodinger’s Cat are killed if they get divined
+
+### Incompetent
+Incompetent is a crewmate role who has disadvantage effect.
+Incompetent is shown as crewmate, he cant realize he is incompetent
+After first emergency meeting, incompetent has chance to get strange vision
+Strange vision only effects in Incompetent’s vision.
+The appearance of the players will be shuffled if strange vision is ON
+(Chance and number of players to be shulffled are set in settings)
+
+### Fox
+Fox is a neutral role has unique win condition.  
+His win condition is to complete tasks and survive until the end.  
+He has strong win condition but he can't fix sabotage.  
+He can create Immoralist from unkillable players, Immoralist can help fox to pretend  to fix sabotage. (Option)  
+
+If he fills his win condition, he overwrites other player’s win except neutral role's solo win.  
+ (Exceptions:  Jester, Arsonist, Vulture,  Plague doctor Puppeteer etc...)   
+In other words，Fox cant win until other player fills win condition    
+
+Fox has two ability to survive
+1. Fox can stealth, no one can target fox if he is invisible. 
+2. Fox can see arrows that point to player who can kill Fox.
+
+Note.
+- Fox is not countted as single player  
+If 1 fox, 1 impostor, 1 crewmate are remain it will trigger impostor win  
+(If fox completes tasks, fox win)
 
 
-立ち回り
-- 占い師になってからCOする占い師は次のタスクフェイズが始まったら即占う  
-(他のクルーがボタンを押してくれることを祈りながら逃げる)
 
-## 無能
-クルー陣営のハズレ枠  
+### Immoralist
+Immoralist is a familiar of Fox.  
+He wins when Fox wins but he dies when Fox dies.  
+He can help Fox to survive by fixing sabotage instead of Fox.  
 
-- 自身の表示はクルーメイトとなる
-- ランダムで味方に対する視認がおかしくなる(初日は100%正常)
+Immoralist has 3 ability to help fox.
+1. Immoralist can see flash when other players dead.
+2. Immoralist can suicide
+3. Immoralist can see arrow that point to Fox(Option)
 
-| オプション名           | 説明                                       |
-| ---------------------- | ------------------------------------------ |
-| 見た目が入れ替わる確率 | 会議終了後に見た目入れ替わりが発生する確率 |
-| 見た目が入れ替わる人数 | 会議終了後に見た目が入れ替わる人数         |
+### Schrodinger'sCat
+Schrodinger's Cat is a neutral role has no win condition in the beginning  
+He can get win condition when he get killed.  
+He will join the team that killer is belonging and get revive.  
 
-## シャーロック
-シャーロックは、調査能力を持つクルーメイトのロール。
-いくつかのタスクをこなすと、調査能力を使えるようになる。
-調査スキル使用時に過去に範囲内で事件が発生していた場合、どの陣営が犯罪を犯したのか、その証拠を見つけることができる。
+He become Crewmate when exiled  
+(becom random team if option is on)  
 
-| オプション名         | 説明                                 |
-| -------------------- | ------------------------------------ |
-| 調査クールダウン     | 調査ボタンのクールダウン             |
-| 調査に必要なタスク数 | 調査ボタンを押すために必要なタスク数 |
-| 調査範囲             | 調査できる範囲                       |
+He gets ability, according to joining team
 
-## 妖狐
-第3陣営  
-タスクを全て完了させた後、最後まで生存していたらゲーム終了時に単独勝利となる  
-※他の第3陣営のソロ勝利の場合は除く  
-妖狐はクルー側の生存人数にはカウントされない  
+- Jackal: ability to kill  
+- Impostor: ability to kill and sabotage/ no ability (depends by option)  
+- Crewmate: no ability, no tasks  
 
-- 妖狐にはオリジナルタスクが割り当てられる
-- 自身をキルすることができるプレイヤーの位置を矢印で把握できる ※シェリフ、インポスター、ジャッカル  
-- 透明化ボタンを押すことで一定時間透明になりターゲット不可になるが透明中はタスクができない  
-- 妖狐はリアクターを直すことができない  
-- 自身をキルすることができるプレイヤー以外を背徳者にすることができる  ※オプションでON/OFF可能  
-- 妖狐のタスク数はクルー側のタスク数にはカウントされない(妖狐がタスクを終えていなくてもクルーが勝利できる)  
-- 妖狐がタスク完了かつ生存している時に生存中のクルーのタスクが全て終了すると妖狐の勝利となる（幽霊が意図的にタスクを止めるのを防止するため）  
-- ジャッカルが妖狐をサイドキックにできかはオプションで設定可能、妖狐がサイドキックになった場合は背徳者は死亡する  
-- スニッチのタスク完了時に妖狐と背徳者に矢印が表示される
+### Puppeteer
+Puppeteer is neutral role has unique win condition.  
+He gets enough points that set in settings to win.  
 
-| オプション名                         | 説明                                                                                             |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| タスク数                             | 妖狐に割り当てられるタスクの数                                                                   |
-| 滞在時間                             | 妖狐の専用タスク完了までにかかる時間                                                             |
-| タスクタイプ                         | 連続にすると配線タスクの様に一つずつ順番に実施、並列にすると任意の順番でタスクを行うことができる |  |
-| クルーのタスク勝利が優先される       | ONにするとクルーがタスク勝利が可能になる                                                         |
-| インポスターはサボタージュ勝利が可能 | ONにするとインポスターがサボタージュで勝利可能になる                                             |
-| 透明クールダウン                     | 透明能力の発動に必要なクールダウン                                                               |
-| 透明時間                             | 透明になることができる時間                                                                       |
-| 透明中にサボタージュを直せる         | ONにすると透明中二サボタージュを直すことができる                                                 |
-| 背徳者を作れる                       | ONにすると背徳者を作ることができる                                                               |
+He can get point by two way.(2. is only allowed if puppeteer is alive)  
+1. Get killed his dummy doll(sampled player becomes dead if puppeteer is alive)
+2. Get exiled player who are sampled(except jackal and impostor)
 
-立ち回り
-- キル陣営を把握して逃げることで死を回避する（必要に応じて透明能力を使う）
-- 背徳者を利用してサボタージュを直したことにすることでクルーからの疑いを回避する
-- 上記を意識しながら可能な限り早くタスクを行う
+Puppeteer can take sample from player and create dummy doll from sample.  
+Puppeteer can control dummy doll with far sight.  
+While controlling dummy doll, Puppeteer becomes invisible.  
+Dummy doll can be controlled by WASD and E/SPACE(lift up/down,open doors).
 
-## 背徳者
-妖狐のサイドキック  
-妖狐が死亡すると背徳者も死亡する  
-下記の3つの能力を持つ  
-- 妖狐の方向に矢印が表示される  
-- 自殺ボタンで自殺することができる  
-- キルフラッシュを見ることができる  
+Laughing sound will be played on meeting start if sampled player is killed and Puppeteer is alive.
+Puppeteer can see arrows that point to killable players.  
 
-立ち回り
-- 妖狐の代わりにサボタージュを直して妖狐が直したことにしてあげる   
-- サボタージュを直さないことで妖狐のフリをして代わりに吊られる  
-- キルフラッシュタイミングで自殺することで妖狐が死んだと偽装する  
-
-## シュレディンガーの猫
-第３陣営  
-デフォルトでは勝利条件を持たない  
-条件を満たすことで始めて勝利条件を持つ  
-1. インポスターにキルされるとインポスター陣営として復活する
-2. ジャッカルにキルされるとジャッカル陣営として復活する
-3. クルーに追放されるとクルー陣営として死亡する
-4. シェリフ/占い師にキルされるとクルー陣営として復活する
-  
-占い師は占いでシュレディンガーの猫を呪殺することができる  
-どこの陣営にも属していない場合はクルー陣営として復活し、どこかの陣営に属している場合はそのまま死亡する  
-
-| オプション名                             | 説明                                                                       |
-| ---------------------------------------- | -------------------------------------------------------------------------- |
-| キルクールダウン                         | ジャッカル、インポスターとして復活した際のキルクルールダウン               |
-| マッドメイトの代わりにインポスターになる | ONにするとインポスター陣営として復活した際にインポスターになる             |
-| キラーが死亡する                         | シュレディンガーの猫をキルしたプレイヤーは死亡する（クルー陣営は除く）     |
-| 最後の一人になるまでキルできない         | インポスター、ジャッカル陣営になった場合に最後の一人になるまでキルできない |
-| 追放時にランダムな陣営になる             | 追放時にインポスター・ジャッカル・クルー陣営のどれかに所属させられる       |
-
-## 人形遣い
-※テスト中、バグがあったら報告をお願いします  
-接触したプレイヤーからサンプルを取得して同じ見た目のダミー人形を作成、操作することができる  
-作成したダミー人形がキルされるまたはサンプル元のプレイヤーが追放されると1ポイント取得する  
-ポイントが設定数に達すると人形遣いの勝利となる。 
-
-人形遣い死亡時は能力が一部変化する  
-1. サンプル対象が吊られた場合に1ポイント取得することができなくなる
-2. ダミーが切られた場合にサンプル対象が死亡しなくなる
-
-その他説明
-- 会議後のサンプリング可能になるまでの時間は10秒固定
-- アーソニストと同じ方式でサンプルを取得でき、取得後にボタンが人形のアイコン変化する。
-- 人形のボタンを使用するとサンプルした対象と同じ見た目の操作可能なダミーを生成することができる
-- ダミー生成後に人形ボタンを押すと自身とダミーの操作を切り替えることができる
-- ダミー操作切替時にダミーは常にプレイヤーの位置から開始される
-- ダミー操作中は自身が透明になり、自身を操作中はダミーが透明になる
-- ダミーはWASDで移動、E/SPACEで梯子の上り下り、扉の開放を行うことができる
-- ダミー操作時の視点は千里眼（範囲は少しせまい）になる
-- ダミーが切られた後は再度サンプル取得が可能になりサンプルからダミーを生成することができる
-- ダミーキル時にサンプル元が死亡する
-- シェリフキルの場合のみサンプル元の代わりに人形遣いが死亡する
-- キル可能なプレイヤーに矢印が表示される（妖狐と同じ）
-- ダミーのコピー元に矢印が表示される（紫色矢印）
-- サンプルを取得したインポスター、ジャッカルの追放時はカウント対象とならない
-- ダミーキルがあった場合は会議開始時に笑い声の音声が流れる
-- 人形遣いが死亡すると会議時に人形遣いの進捗状況がメッセージとして届くようになる(キル陣営のみ)
-
-| オプション名                 | 説明                                                                                           |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- |
-| 勝利に必要なポイント数       | 勝利に必要なポイント数 人形がキルされる or サンプル元が追放されると1増加する                   |
-| サンプル取得に必要な時間     | サンプル取得に必要な接触時間                                                                   |
-| 死亡後にもダミーを操作できる | ONにすると死亡後にもダミーを操作することができる、サンプル元追放時のポイントは加算されなくなる |
-| 死亡時のペナルティ           | 死亡した際に失うポイント数                                                                     |
-| 死亡時に千里眼能力を失う     | 死亡すると人形操作時に千里眼能力が使えなくなる                                                 |
-
-## ジキルとハイド
+## Jekyll-and-Hyde
 ジキルとハイドは特殊な勝利条件を持つ第3陣営  
 ジキルとハイドは設定された数のプレイヤーをキルすることで勝利することができる  
 
@@ -330,7 +241,7 @@ The Impostors can all see the blinded players since their names would be black.(
 | ショートタスク                     | ショートタスク                               |
 | 薬を得るのに必要なタスク数         | 薬を1個取得するのに必要なタスク数            |
 
-## モリアーティ
+## Moriarty
 モリアーティはジャッカルのような特殊な勝利条件を持つ第3陣営です。
 彼は一人のプレイヤーを洗脳し、洗脳されたプレイヤーに他のプレイヤーを殺させることができる。
 
@@ -351,7 +262,7 @@ The Impostors can all see the blinded players since their names would be black.(
 | キル距離           | 洗脳者のキル可能距離         |
 
 
-## キューピッド
+## Cupid
 任意の二人をLoversにすることができる(タスクフェイズで選択、会議後に有効化）
 自身が選んだLoversが最後まで生存すると勝利
 
