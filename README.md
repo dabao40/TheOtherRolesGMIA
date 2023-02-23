@@ -1,154 +1,21 @@
-# 製作者SNS  
-[![Twitter](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fhaoming_dev)](https://twitter.com/haoming_dev)  [![](https://img.shields.io/discord/955423281316499517?label=Discord)](https://discord.gg/sTt8EzEpHP)  
-質問要望等は基本的にDiscordにて受け付けています
-
-# 導入用スクリプト紹介
-下記スクリプトで導入するとお手軽みたいです(作者 Maximilianさん)  
-[AmongUs-Mod-Auto-Deploy-Script](https://github.com/Maximilian2022/AmongUs-Mod-Auto-Deploy-Script)
-  
-# とりあえず最初に書いておくやつ
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
 
-# The Other Roles: GM Edition 改造版
-バグ多めなのでお試しする方は覚悟の上でお願いします
-不具合を見つけた方は上記のDiscordチャンネルで報告お願いします
+This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 
+# Roles Added
+| Impostors | Crewmates | Neutral | Other | 
+|----------|-------------|-----------------|----------------|
+|[Flashlight](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
+|[KillerCreator](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)|
+|[MadmateKiller](#MadmateKiller)||||
 
-# 追加機能
-- 追放、会議開始とキルが同時に起きた場合の不具合対策（オプション)
-- アクション時にキルクールダウン減少を止めない（オプション）
-- 配線タスクの順番のランダム化(オプション)
-- 配線タスクの数を任意に変更可能(オプション)
-- エアシップの追加リスポン位置(オプション)
-- エアシップのランダムリスポン(オプション)
-- エアシップの配線タスク位置の追加(オプション)
-- エアシップのリアクター時間変更(オプション)
-- エアシップの一部のタスクに壁判定を追加（現像、シャワー、ゴミ箱）
-- エアシップのアドミンを旧設定に戻す機能(オプション)
-- エアシップのアドミンの表示領域の制限機能(オプション)
-- エアシップのミーティングルーム右側に下りのみの梯子を追加(オプション)
-- エアシップのミーティング左側の梯子を上りのみにする設定(オプション)
-- エアシップのギャップルームダウンロードの位置変更機能(マップ最適化オプション)
-- エアシップのギャップルーム右側から下側方向に影を追加(マップ最適化オプション) 
-- エアシップのぬーん削除機能
-- エアシップの昇降機右配電盤の削除機能
-- ポーラスのランダムリスポン（オプション）
-- ポーラスの追加ベント（オプション）
-- ポーラスのバイタル移動（スペシメン）
-- 死亡時の千里眼(死亡後にFキーでON/OFF)
+### Flashlight  
+The Flashlight is An Impostor with a special ability.  
+This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
+The cooldown of the Flashlight will be added after using this skill.  
+The Impostors can all see the blinded players since their names would be black.
+| Options                                       | Notes                          |
 
-ポーラスの改造は下記の画像の様になっている
-![](Images/polus_mod.png)  
-
-エアシップの追加リスポン位置は下記の画像のようになっている
-![](Images/airship_mod.png)
-
-エアシップのアドミン制限は下記の画像のようになっている
-![](Images/admin_mod.png)
-
-エアシップの追加梯子は下記の画像のようになっている
-![](Images/ladder_mod.png)
-
-エアシップのぬーん削除、配電盤削除、マップ最適化有効後は下記の画像のようになっている
-![](Images/gap_mod.png)
-# 追加役職
-
-| Impostors                                        | Crewmates                     | Neutral                                       | Other |
-| ------------------------------------------------ | ----------------------------- | --------------------------------------------- | ----- |
-| [シリアルキラー](#シリアルキラー)                | [占い師](#占い師)             | [妖狐](#妖狐)                                 |       |
-| [イビルハッカー(tomarai氏制作)](#イビルハッカー) | [無能](#無能)                 | [背徳者](#背徳者)                             |
-| [ラストインポスター](#ラストインポスター)        | [シャーロック](#シャーロック) | [シュレディンガーの猫](#シュレディンガーの猫) |
-| [トラッパー](#トラッパー)                        |                               | [人形遣い(テスト中)](#人形遣い)               |
-| [爆弾魔](#爆弾魔)                                |                               | [ジキルとハイド(テスト中)](#ジキルとハイド)   |       |
-| [イビルトラッカー](#イビルトラッカー)            |                               | [モリアーティ](#モリアーティ)                 |       |
-| [ミミック](#ミミック)                            |                               | [キューピッド](#キューピッド)                 |       |
-
-
-# GM本家とのバージョン対応表
-きゅーきゅー
-リリースの簡易化のため一部表を省略しています。
-| Among Us Version              | GM本家 | Haoming Edition | Download                                                                                                                               |
-| ----------------------------- | ------ | --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 2022.10.18s                   |        | 最新版          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/latest/)                                                 |
-| -                             | -      | -               | -                                                                                                                                      |
-| 2022.3.29s                    | v3.5.4 | v2.0.12         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.12/TheOtherRoles-GM-Haoming.v2.0.12.zip)   |
-| 2022.3.29s                    | v3.5.4 | v2.0.11         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.11/TheOtherRoles-GM-Haoming.v2.0.11.zip)   |
-| 2022.3.29s                    | v3.5.4 | v2.0.10         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.10/TheOtherRoles-GM-Haoming.v2.0.10.zip)   |
-| 2022.3.29s                    | v3.5.4 | v2.0.9          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.9/TheOtherRoles-GM-Haoming.v2.0.9.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.8          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.8/TheOtherRoles-GM-Haoming.v2.0.8.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.7          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.7/TheOtherRoles-GM-Haoming.v2.0.7.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.6          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.6/TheOtherRoles-GM-Haoming.v2.0.6.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.5          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.5/TheOtherRoles-GM-Haoming.v2.0.5.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.4          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.4/TheOtherRoles-GM-Haoming.v2.0.4.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.3          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.3/TheOtherRoles-GM-Haoming.v2.0.3.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.2/TheOtherRoles-GM-Haoming.v2.0.2.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.1/TheOtherRoles-GM-Haoming.v2.0.1.zip)     |
-| 2022.3.29s                    | v3.5.4 | v2.0.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v2.0.0/TheOtherRoles-GM-Haoming.v2.0.0.zip)     |
-| 2022.2.24s                    | v3.5.4 | v1.12.16        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.16/TheOtherRoles-GM-Haoming.v1.12.16.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.14        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.14/TheOtherRoles-GM-Haoming.v1.12.14.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.13        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.13/TheOtherRoles-GM-Haoming.v1.12.13.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.12        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.12/TheOtherRoles-GM-Haoming.v1.12.12.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.11        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.11/TheOtherRoles-GM-Haoming.v1.12.11.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.10        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.10/TheOtherRoles-GM-Haoming.v1.12.10.zip) |
-| 2022.2.24s                    | v3.5.4 | v1.12.9         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.9/TheOtherRoles-GM-Haoming.v1.12.9.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.8         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.8/TheOtherRoles-GM-Haoming.v1.12.8.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.7         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.7/TheOtherRoles-GM-Haoming.v1.12.7.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.6         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.6/TheOtherRoles-GM-Haoming.v1.12.6.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.5         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.5/TheOtherRoles-GM-Haoming.v1.12.5.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.4         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.4/TheOtherRoles-GM-Haoming.v1.12.4.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.3         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.3/TheOtherRoles-GM-Haoming.v1.12.3.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.2         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.2/TheOtherRoles-GM-Haoming.v1.12.2.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.1         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.1/TheOtherRoles-GM-Haoming.v1.12.1.zip)   |
-| 2022.2.24s                    | v3.5.4 | v1.12.0         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.12.0/TheOtherRoles-GM-Haoming.v1.12.0.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.17        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.17/TheOtherRoles-GM-Haoming.v1.11.17.zip) |
-| 2022.2.24s                    | v3.5.3 | v1.11.16        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.16/TheOtherRoles-GM-Haoming.v1.11.16.zip) |
-| 2022.2.24s                    | v3.5.3 | v1.11.10        | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.10/TheOtherRoles-GM-Haoming.v1.11.10.zip) |
-| 2022.2.24s                    | v3.5.3 | v1.11.9         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.9/TheOtherRoles-GM-Haoming.v1.11.9.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.8         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.8/TheOtherRoles-GM-Haoming.v1.11.8.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.7         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.7/TheOtherRoles-GM-Haoming.v1.11.7.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.6         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.6/TheOtherRoles-GM-Haoming.v1.11.6.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.5         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.5/TheOtherRoles-GM-Haoming.v1.11.5.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.4         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.4/TheOtherRoles-GM-Haoming.v1.11.4.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.3         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.3/TheOtherRoles-GM-Haoming.v1.11.3.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.2         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.2/TheOtherRoles-GM-Haoming.v1.11.2.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.1         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.1/TheOtherRoles-GM-Haoming.v1.11.1.zip)   |
-| 2022.2.24s                    | v3.5.3 | v1.11.0         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.11.0/TheOtherRoles-GM-Haoming.v1.11.0.zip)   |
-| 2022.2.8s                     | v3.5.2 | v1.10.3         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.10.3/TheOtherRoles-GM-Haoming.v1.10.3.zip)   |
-| 2022.2.8s                     | v3.5.2 | v1.10.2         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.10.2/TheOtherRoles-GM-Haoming.v1.10.2.zip)   |
-| 2022.2.8s                     | v3.5.2 | v1.10.1         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.10.1/TheOtherRoles-GM-Haoming.v1.10.1.zip)   |
-| 2022.2.8s                     | v3.5.2 | v1.10.0         | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.10.0/TheOtherRoles-GM-Haoming.v1.10.0.zip)   |
-| 2022.2.8s                     | v3.5.2 | v1.9.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.9.2/TheOtherRoles-GM-Haoming.v1.9.2.zip)     |
-| 2022.2.8s                     | v3.5.2 | v1.9.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.9.1/TheOtherRoles-GM-Haoming.v1.9.1.zip)     |
-| 2022.2.8s                     | v3.5.2 | v1.9.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.9.0/TheOtherRoles-GM-Haoming.v1.9.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.5.1 | v1.8.3          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.8.3/TheOtherRoles-GM-Haoming.v1.8.3.zip)     |
-| 2021.12.15s (build num: 1421) | v3.5.1 | v1.8.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.8.2/TheOtherRoles-GM-Haoming.v1.8.2.zip)     |
-| 2021.12.15s (build num: 1421) | v3.5.0 | v1.8.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.8.1/TheOtherRoles-GM-Haoming.v1.8.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.5.0 | v1.8.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.8.0/TheOtherRoles-GM-Haoming.v1.8.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.5.0 | v1.8.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.8.0/TheOtherRoles-GM-Haoming.v1.8.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.6          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.6/TheOtherRoles-GM-Haoming.v1.7.6.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.5          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.5/TheOtherRoles-GM-Haoming.v1.7.5.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.4          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.4/TheOtherRoles-GM-Haoming.v1.7.4.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.3          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.3/TheOtherRoles-GM-Haoming.v1.7.3.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.2/TheOtherRoles-GM-Haoming.v1.7.2.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.1/TheOtherRoles-GM-Haoming.v1.7.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.7.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.7.0/TheOtherRoles-GM-Haoming.v1.7.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.6.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.6.2/TheOtherRoles-GM-Haoming.v1.6.2.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.6.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.6.1/TheOtherRoles-GM-Haoming.v1.6.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.6.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.6.0/TheOtherRoles-GM-Haoming.v1.6.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.8          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.8/TheOtherRoles-GM-Haoming.v1.5.8.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.7          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.7/TheOtherRoles-GM-Haoming.v1.5.7.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.4          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.4/TheOtherRoles-GM-Haoming.v1.5.4.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.3          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.3/TheOtherRoles-GM-Haoming.v1.5.3.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.2          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.2/TheOtherRoles-GM-Haoming.v1.5.2.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.1/TheOtherRoles-GM-Haoming.v1.5.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.5.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.5.0/TheOtherRoles-GM-Haoming.v1.5.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.4.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.4.0/TheOtherRoles-GM-Haoming.v1.4.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.3.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.3.0/TheOtherRoles-GM-Haoming.v1.3.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.2.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.2.1/TheOtherRoles-GM-Haoming.v1.2.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.2.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.2.0/TheOtherRoles-GM-Haoming.v1.2.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.1.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.1.0/TheOtherRoles-GM-Haoming.v1.1.0.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.0.1          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.0.1/TheOtherRoles-GM-Haoming.v1.0.1.zip)     |
-| 2021.12.15s (build num: 1421) | v3.4.2 | v1.0.0          | [ダウンロード](https://github.com/haoming37/TheOtherRoles-GM-Haoming/releases/download/v1.0.0/TheOtherRoles-GM-Haoming.v1.0.0.zip)     |
 
 # 役職一覧
 
