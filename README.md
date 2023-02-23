@@ -13,7 +13,7 @@ This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/h
 The Flashlight is An Impostor with a special ability.  
 This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
 The cooldown of the Flashlight will be added after using this skill.  
-The Impostors can all see the blinded players since their names would be black.
+The Impostors can all see the blinded players since their names would be black.  
 | Options                                       | Notes                          |
 
 
