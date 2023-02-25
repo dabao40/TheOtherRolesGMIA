@@ -1,0 +1,7 @@
+version: "3.0"
+services:
+  build:
+    image: haoming37/alpine_curl_zip_git_jq_file:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
