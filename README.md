@@ -6,11 +6,11 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Roles Added
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
-|[Flashlight](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
-|[KillerCreator](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
+|[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
+|[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
 
-## Flashlight  
-Idea by [eDonners](https://github.com/eDonnes124)  
+## Flashlight(Recently Not Available)  
+Original Idea by [eDonners](https://github.com/eDonnes124)  
 The Flashlight is An Impostor with a special bomb ability.  
 This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
 The cooldown of the Flashlight will be added after using this skill.  
@@ -24,7 +24,7 @@ The Impostors can all see the blinded players since their names would be black.(
 | Flashlight Kill Cooldown ||  
 
 ## KillerCreator  
-Idea by [miru-y](https://github.com/miru-y)  
+Original Idea by [miru-y](https://github.com/miru-y)  
 This is an Impostor roles that allows for a one-time nomination of "Madmate Killer" from among the Crewmates.
 "Madmate Killer" is promoted to Impostor upon the death of "Killer Creator".
 *If the "Madmate Killer" becomes a "Madmate Killer", all tasks are treated as completed.
@@ -40,7 +40,7 @@ This is an Impostor roles that allows for a one-time nomination of "Madmate Kill
 |Madmate Killer Has Impostor Vision ||  
 
 ## Cupid  
-Idea by [haoming37](https://github.com/haoming37)  
+Original Idea by [haoming37](https://github.com/haoming37)  
 The Cupid is a Neutral role that can make two player Lovers. 
 If one of the Lovers dies, all of them dies. 
 The Cupid can use his life to protect one of the Lovers. 
@@ -48,7 +48,7 @@ This means that if a player tries to kill the protected Lovers, the victim himse
 
 # The Other Roles: GM Edition Customized by Haoming
 This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
-Im adding experimental ideas here.  
+I'm adding experimental ideas here.  
 It means my repository contais lots of bugs.  (feel free to make issue)
 
 This Repository contains original roles and features as below
@@ -70,10 +70,10 @@ Description of Roles I created.(some of them are exported to The Other Roles GM)
 |----------|-------------|-----------------|----------------|
 |[SerialKiller(exported)](#SerialKiller)| [FortuneTeller(exported)](#FortuneTeller) |[Fox(exported)](#Fox) ||
 |[EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles)|[Incompetent](#Incompetent)|[Immoralist(exported)](#Immoralist)|
-|[LastImpostor](#LastImpostor)||[Schrodinger's Cat](#Schrodinger'sCat)|
+|[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](#Schrodinger'sCat)|
 |[Trapper(experimental)](#Trapper)||[Puppeteer(experimental)](#Puppeteer)|
-|[Bomber(experimental)](#Bomber)||||
-|[EvilTracker](#EvilTracker)||||
+|[Bomber(experimental)](#Bomber)||[Moriarty](#Moriarty)||
+|[EvilTracker](#EvilTracker)||[Jekyll and Hyde](#JekyllandHyde)||
 |[Mimic](#Mimic)||||
 
 ### SerialKiller
