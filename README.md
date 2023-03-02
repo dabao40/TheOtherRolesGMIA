@@ -7,7 +7,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
-|[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
+|[KillerCreator&MadmateKiller](#KillerCreator&MadmateKiller) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonners](https://github.com/eDonnes124)  
@@ -23,7 +23,7 @@ The Impostors can all see the blinded players since their names would be black.(
 | Cooldown after Bomb | The Cooldown added after the bomb |
 | Flashlight Kill Cooldown ||  
 
-## KillerCreator  
+## KillerCreator&MadmateKiller  
 Original Idea by [miru-y](https://github.com/miru-y)  
 This is an Impostor roles that allows for a one-time nomination of "Madmate Killer" from among the Crewmates.
 "Madmate Killer" is promoted to Impostor upon the death of "Killer Creator".
@@ -44,7 +44,14 @@ Original Idea by [haoming37](https://github.com/haoming37)
 The Cupid is a Neutral role that can make two player Lovers. 
 If one of the Lovers dies, all of them dies. 
 The Cupid can use his life to protect one of the Lovers. 
-This means that if a player tries to kill the protected Lovers, the victim himself will not notice, but the Cupid will suicide.
+This means that if a player tries to kill the protected Lovers, the victim himself will not notice, but the Cupid will suicide.  
+
+## Akujo  
+Original Idea by [haoming37](https://github.com/haoming37)  
+The Akujo is a Neutral role that can create a Backup and a True Love.  
+He will become lovers with the True Love, and it works like a normal Lovers.  
+If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
+The Akujo knows the roles of the True Love and the Backup (Optional).  
 
 # The Other Roles: GM Edition Customized by Haoming
 This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
@@ -73,7 +80,7 @@ Description of Roles I created.(some of them are exported to The Other Roles GM)
 |[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](#Schrodinger'sCat)|
 |[Trapper(experimental)](#Trapper)||[Puppeteer(experimental)](#Puppeteer)|
 |[Bomber(experimental)](#Bomber)||[Moriarty](#Moriarty)||
-|[EvilTracker](#EvilTracker)||[Jekyll and Hyde](#JekyllandHyde)||
+|[EvilTracker](#EvilTracker)||[Jekyll and Hyde](#Jekyll-and-Hyde)||
 |[Mimic](#Mimic)||||
 
 ### SerialKiller
