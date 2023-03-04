@@ -39,6 +39,13 @@ This is an Impostor roles that allows for a one-time nomination of "Madmate Kill
 |Madmate Killer Can Fix Lights ||  
 |Madmate Killer Has Impostor Vision ||  
 
+## TaskMaster  
+Original Idea by [miru-y](https://github.com/miru-y)  
+Task Master is a Crewmate that has special tasks.  
+When all the tasks are completed, this player turns into a Task Master.  
+When all the extra tasks are finished, the Crewmates will win.  
+Note: The victory won't be triggered if the Task Master is dead.  
+
 ## Cupid  
 Original Idea by [haoming37](https://github.com/haoming37)  
 The Cupid is a Neutral role that can make two player Lovers. 
