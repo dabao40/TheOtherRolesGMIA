@@ -7,7 +7,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
-|[KillerCreator&MadmateKiller](#KillerCreator&MadmateKiller) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
+|[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonners](https://github.com/eDonnes124)  
@@ -23,7 +23,7 @@ The Impostors can all see the blinded players since their names would be black.(
 | Cooldown after Bomb | The Cooldown added after the bomb |
 | Flashlight Kill Cooldown ||  
 
-## KillerCreator&MadmateKiller  
+## KillerCreator  
 Original Idea by [miru-y](https://github.com/miru-y)  
 This is an Impostor roles that allows for a one-time nomination of "Madmate Killer" from among the Crewmates.
 "Madmate Killer" is promoted to Impostor upon the death of "Killer Creator".
@@ -83,7 +83,7 @@ The Akujo knows the roles of the True Love and the Backup (Optional).
 | [Neko-Kabocha](#neko-kabocha)                                    | [Bait](#bait)                     |                                        |           |
 | [Evil Watcher](#Watcher)                                         | [Madmate](#madmate)               |                                        |           |
 | [Flashlight](#Flashlight)                                        | [Medium](#medium)                 |                                        |           |
-| [KillerCreator&MadmateKiller](#KillerCreator&MadmateKiller)      | [Fortune Teller](#fortune-teller) |                                        |           |
+| [KillerCreator & MadmateKiller](#KillerCreator)                  | [Fortune Teller](#fortune-teller) |                                        |           |
 | [Evil Hacker](#EvilHacker)                                       | [Nice Watcher](#Watcher)          |                                        |           |
 | [Evil Tracker](#EvilTracker)                                     | [Task Master](#TaskMaster)        |                                        |           |
 | [Bomber](#Bomber)                                                | [Sherlock](#Sherlock)             |                                        |           |
