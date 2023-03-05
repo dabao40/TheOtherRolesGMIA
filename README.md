@@ -60,6 +60,35 @@ He will become lovers with the True Love, and it works like a normal Lovers.
 If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
 The Akujo knows the roles of the True Love and the Backup (Optional).  
 
+| Impostors                                       | Crewmates                         | Neutral                                | Other     |
+| ----------------------------------------------- | --------------------------------- | -------------------------------------- | --------- |
+| [Evil Mini](#mini)                              | [Nice Mini](#mini)                | [Arsonist](#arsonist)                  | [GM](#gm) |
+| [Evil Guesser](#guesser)                        | [Nice Guesser](#guesser)          | [Jester](#jester)                      |           |
+| [Bounty Hunter](#bounty-hunter)                 | [Detective](#detective)           | [Jackal](#jackal)                      |           |
+| [Camouflager](#camouflager)                     | [Engineer](#engineer)             | [Sidekick](#sidekick)                  |           |
+| [Cleaner](#cleaner)                             | [Hacker](#hacker)                 | [Lover](#lovers)                       |           |
+| [Eraser](#eraser)                               | [Lighter](#lighter)               | [Opportunist](#opportunist)            |           |
+| [Godfather (Mafia)](#mafia)                     | [Mayor](#mayor)                   | [Vulture](#vulture)                    |           |
+| [Mafioso (Mafia)](#mafia)                       | [Medic](#medic)                   | [Lawyer](#lawyer)                      |           |
+| [Janitor (Mafia)](#mafia)                       | [Security Guard](#security-guard) | [Chain-Shifter](#shifter)              |           |
+| [Morphling](#morphling)                         | [Seer](#seer)                     | [Plague Doctor](#plague-doctor)        |           |
+| [Trickster](#trickster)                         | [Sheriff](#sheriff)               | [Fox & Immoralist](#fox)               |           |
+| [Vampire](#vampire)                             | [Shifter](#shifter)               | [Cupid](#Cupid)                        |           |
+| [Warlock](#warlock)                             | [Snitch](#snitch)                 | [Akujo](#Akujo)                        |           |
+| [Witch](#witch)                                 | [Spy](#spy)                       | [Jekyll-and-Hyde](#Jekyll-and-Hyde)    |           |
+| [Ninja](#ninja)                                 | [Nice Swapper](#swapper)          | [Puppeteer](#Puppeteer)                |           |
+| [Evil Swapper](#swapper)                        | [Time Master](#time-master)       | [Moriarty](#Moriarty)                  |           |
+| [Serial Killer](#serial-killer)                 | [Tracker](#tracker)               | [Schrodinger's Cat](#Schrodinger'sCat) |           |
+| [Neko-Kabocha](#neko-kabocha)                   | [Bait](#bait)                     |                                        |           |
+| [Evil Watcher](#Watcher)                        | [Madmate](#madmate)               |                                        |           |
+| [Flashlight](#Flashlight)                       | [Medium](#medium)                 |                                        |           |
+| [Killer Creator](#KillerCreator&MadmateKiller)  | [Fortune Teller](#fortune-teller) |                                        |           |
+| [Evil Hacker](#EvilHacker)                      | [Nice Watcher](#Watcher)          |                                        |           |
+| [Evil Tracker)(#EvilTracker)                    | [Task Master](#TaskMaster)        |                                        |           |
+| [Bomber](#Bomber)                               | [Sherlock](#Sherlock)             |                                        |           |
+| [Trappper](#Trapper)                            |                                   |                                        |           |
+| [Mimic)(#Mimic)                                 |                                   |                                        |           |
+
 # The Other Roles: GM Edition Customized by Haoming
 This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
 I'm adding experimental ideas here.  
