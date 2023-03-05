@@ -60,6 +60,7 @@ He will become lovers with the True Love, and it works like a normal Lovers.
 If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
 The Akujo knows the roles of the True Love and the Backup (Optional).  
 
+# Roles List  
 | Impostors                                       | Crewmates                         | Neutral                                | Other     |
 | ----------------------------------------------- | --------------------------------- | -------------------------------------- | --------- |
 | [Evil Mini](#mini)                              | [Nice Mini](#mini)                | [Arsonist](#arsonist)                  | [GM](#gm) |
@@ -84,10 +85,10 @@ The Akujo knows the roles of the True Love and the Backup (Optional).
 | [Flashlight](#Flashlight)                       | [Medium](#medium)                 |                                        |           |
 | [Killer Creator](#KillerCreator&MadmateKiller)  | [Fortune Teller](#fortune-teller) |                                        |           |
 | [Evil Hacker](#EvilHacker)                      | [Nice Watcher](#Watcher)          |                                        |           |
-| [Evil Tracker)(#EvilTracker)                    | [Task Master](#TaskMaster)        |                                        |           |
+| [Evil Tracker](#EvilTracker)                    | [Task Master](#TaskMaster)        |                                        |           |
 | [Bomber](#Bomber)                               | [Sherlock](#Sherlock)             |                                        |           |
 | [Trappper](#Trapper)                            |                                   |                                        |           |
-| [Mimic)(#Mimic)                                 |                                   |                                        |           |
+| [Mimic](#Mimic)                                 |                                   |                                        |           |
 
 # The Other Roles: GM Edition Customized by Haoming
 This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
