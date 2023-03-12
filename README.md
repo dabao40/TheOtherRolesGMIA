@@ -84,7 +84,7 @@ Description of Roles I created.(some of them are exported to The Other Roles GM)
 |----------|-------------|-----------------|----------------|
 |[SerialKiller(exported)](#SerialKiller)| [FortuneTeller(exported)](#FortuneTeller) |[Fox(exported)](#Fox) ||
 |[EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles)|[Incompetent](#Incompetent)|[Immoralist(exported)](#Immoralist)|
-|[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](#Schrodingers-Cat)|
+|[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](##schrodingerscat)|
 |[Trapper(experimental)](#Trapper)||[Puppeteer(experimental)](#Puppeteer)|
 |[Bomber(experimental)](#Bomber)||[Moriarty](#Moriarty)||
 |[EvilTracker](#EvilTracker)||[Jekyll and Hyde](#Jekyll-and-Hyde)||
