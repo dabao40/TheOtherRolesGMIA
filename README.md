@@ -84,7 +84,7 @@ Description of Roles I created.(some of them are exported to The Other Roles GM)
 |----------|-------------|-----------------|----------------|
 |[SerialKiller(exported)](#SerialKiller)| [FortuneTeller(exported)](#FortuneTeller) |[Fox(exported)](#Fox) ||
 |[EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles)|[Incompetent](#Incompetent)|[Immoralist(exported)](#Immoralist)|
-|[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](##schrodingerscat)|
+|[LastImpostor](#LastImpostor)|[Sherlock](#Sherlock)|[Schrodinger's Cat](#schrodingerscat)|
 |[Trapper(experimental)](#Trapper)||[Puppeteer(experimental)](#Puppeteer)|
 |[Bomber(experimental)](#Bomber)||[Moriarty](#Moriarty)||
 |[EvilTracker](#EvilTracker)||[Jekyll and Hyde](#Jekyll-and-Hyde)||
@@ -226,6 +226,10 @@ Dummy doll can be controlled by WASD and E/SPACE(lift up/down,open doors).
 
 Laughing sound will be played on meeting start if sampled player is killed and Puppeteer is alive.
 Puppeteer can see arrows that point to killable players.  
+
+## Sherlock
+The Sherlock is a Crewmate that can investigate a specific kill during a limited amount of time.  
+It needs to recharge by doing tasks.
 
 ## Jekyll-and-Hyde
 ジキルとハイドは特殊な勝利条件を持つ第3陣営  
