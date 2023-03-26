@@ -7,7 +7,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
-|[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)||[Akujo](#Akujo)||
+|[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)| [Jailor](#Jailor) |[Akujo](#Akujo)||
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonners](https://github.com/eDonnes124)  
@@ -45,6 +45,17 @@ Task Master is a Crewmate that has special tasks.
 When all the tasks are completed, this player turns into a Task Master.  
 When all the extra tasks are finished, the Crewmates will win.  
 Note: The victory won't be triggered if the Task Master is dead.  
+
+## Jailor
+Created by [dabao40](https://github.com/dabao40)  
+The Jailor is a Crewmate that can put people into the jail. (Only available in Skeld)  
+The Jail is a special container beside the Cafeteria.  
+Anyone can revive people from the jail by using the "Jail" button on the left bottom corner.  
+Once all the Impostors, Neutrals that can kill are put into jail, the Crewmates will win immediately.  
+The Jailor can put x+1 (x means the amount of evil roles in the game) players in the jail.  
+Once the Jailor is killed, everyone in the jail commits suicide.  
+NOTE: Players that are in the Jail cannot speak during meetings or vote or use any of the buttons besides the vent button. They can escape the Jail by venting.  
+Lovers can still talk in the chat and hosts can still kick players even if they're in the Jail.  
 
 ## Cupid  
 Original Idea by [haoming37](https://github.com/haoming37)  
