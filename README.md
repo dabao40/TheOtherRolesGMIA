@@ -71,12 +71,7 @@ He will become lovers with the True Love, and it works like a normal Lovers.
 If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
 The Akujo knows the roles of the True Love and the Backup (Optional).  
 
-# The Other Roles: GM Edition Customized by Haoming
-This repository is forked from [The Other Roles GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)  
-I'm adding experimental ideas here.  
-It means my repository contais lots of bugs.  (feel free to make issue)
-
-This Repository contains original roles and features as below
+# Features Of The Other Roles GM H Edition are Shown Below
 
 ## Map modification features(Polus)
 - Random Respawn
