@@ -1846,8 +1846,14 @@ Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 The Watcher is a player capable of seeing everyone's votes during meetings.
 
 # Source code
-It's bad I know, this is a side project and my second week of modding. So there are no best practices around here.
-You can use parts of the code but don't copy paste the whole thing. Make sure you give credits to the other developers, because some parts of the code are based on theirs.
+I know, it's bad that I cannot publish all the source code available for building. Besides, I've discovered that
+some people are attempting to copy Among Us as well as some of its mods designed by players.
+Therefore, I've decided not to publish the main file in this project, the folder called "The Other Roles".
+If anyone ever wants to rebuild this mod or to contribute in this mod, please pull a request and I'll give you the
+file privately, so no one would be able to see it except for the contributors and me.
+
+# Contributors
+[Imp11](https://github.com/dabao40), [zxfimp8](https://github.com/zxfimp8)
 
 # Translation
 As of v2.9.0, The Other Roles GM now supports translation into other languages. To add a new language, add translations to [Strings.xlsx](/Strings.xlsx) and submit a pull request.
