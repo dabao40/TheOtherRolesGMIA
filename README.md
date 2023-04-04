@@ -1853,7 +1853,7 @@ If anyone ever wants to rebuild this mod or to contribute in this mod, please pu
 file privately, so no one would be able to see it except for the contributors and me.
 
 # Contributors
-[Imp11](https://github.com/dabao40), [zxfimp8](https://github.com/zxfimp8)
+[Imp11](https://github.com/dabao40), [zxfimp8](https://github.com/zxfimp8), [IACaptain](https://github.com/IAcaptain1252)
 
 # Translation
 As of v2.9.0, The Other Roles GM now supports translation into other languages. To add a new language, add translations to [Strings.xlsx](/Strings.xlsx) and submit a pull request.
