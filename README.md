@@ -8,6 +8,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
 |[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)| [Jailor](#Jailor) |[Akujo](#Akujo)||
+|||[Isolator](#isolator)||
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonners](https://github.com/eDonnes124)  
@@ -70,6 +71,15 @@ The Akujo is a Neutral role that can create a Backup and a True Love.
 He will become lovers with the True Love, and it works like a normal Lovers.  
 If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
 The Akujo knows the roles of the True Love and the Backup (Optional).  
+
+## Isolator
+This role is created by a member of my group, zcy.  
+The Isolator can be either an Impostor or a Crewmate depending on the options.  
+When the Isolator activates its skill, he will turn into a soul but won't leave a body behind.  
+He cannot move during this time and cannot do its tasks.  
+However, he will not be affected by the lights and can even use the chat.  
+NOTE: If the Isolator is a Lovers, the lover won't die if the Isolator uses its skill.  
+The Isolator will actually die and its body will be shown during the intro part of the meeting shown below "Dead" if it uses its skill and the meeting has started.  
 
 # Features Of The Other Roles GM H Edition are Shown Below
 
