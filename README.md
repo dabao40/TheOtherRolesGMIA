@@ -8,7 +8,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
 |[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)| [Jailor](#Jailor) |[Akujo](#Akujo)||
-|||[Isolator](#isolator)||
+|[EvilLighter](#EvilLighter)||[Isolator](#isolator)||
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonners](https://github.com/eDonnes124)  
@@ -23,6 +23,14 @@ The Impostors can all see the blinded players since their names would be black.(
 | Name Is Black | Impostors see those players who are affected by the bomb |  
 | Cooldown after Bomb | The Cooldown added after the bomb |
 | Flashlight Kill Cooldown ||  
+
+## EvilLighter
+This role is developed by our team and is quite similar to the original role in TheOtherRolesGM H, which was the [Trickster](#Trickster)  
+The Evil Lighter will be affected by the lights and can use its lighter to increase its vision.  
+Once the Evil Lighter uses its lighter, the lights will still go out even if the lights are fixed.  
+This is quite similar to the Trickster, for the lights cannot be fixed as well. Everyone except for the Impostors will be forced to decrease their visions.  
+Every Impostor will know that the Evil Lighter has used its skill by receiving a message called "EvilLighterlightouttext".  
+However, in order to make the Evil Lighter not so invincible, its cooldown will increase by 5 every time it uses its skill.
 
 ## KillerCreator  
 Original Idea by [miru-y](https://github.com/miru-y)  
