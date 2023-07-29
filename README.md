@@ -1,4 +1,6 @@
-This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
+This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
+
+![LOGO](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/12d1b24d-62c9-421b-9298-592a3a031225)
 
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
@@ -11,7 +13,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 |[EvilLighter](#EvilLighter)||[Isolator](#isolator)||
 
 ## Flashlight(Recently Not Available)  
-Original Idea by [eDonners](https://github.com/eDonnes124)  
+Original Idea by [eDonnes](https://github.com/eDonnes124)  
 The Flashlight is An Impostor with a special bomb ability.  
 This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
 The cooldown of the Flashlight will be added after using this skill.  
