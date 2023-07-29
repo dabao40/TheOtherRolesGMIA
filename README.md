@@ -1,7 +1,7 @@
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
 
 ![LOGO](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/12d1b24d-62c9-421b-9298-592a3a031225)  
-[![Discord](./Images/TOR_server.png)](https://discord.gg/Ydq75kAy)  
+[![Discord](./Images/TOR_server.png)](https://discord.gg/w7msq53dq7)  
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
 
