@@ -1,7 +1,7 @@
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
 
 ![LOGO](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/12d1b24d-62c9-421b-9298-592a3a031225)  
-![3a420ba5b6e7354e4bc181a6f32a54f](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/598c1a31-30b0-4800-a92a-8e9a3177dc89)(https://discord.gg/Ydq75kAy)
+[![3a420ba5b6e7354e4bc181a6f32a54f](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/598c1a31-30b0-4800-a92a-8e9a3177dc89)](https://discord.gg/Ydq75kAy)
 
 
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
