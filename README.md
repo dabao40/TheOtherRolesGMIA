@@ -1873,7 +1873,13 @@ If anyone ever wants to rebuild this mod or to contribute in this mod, please pu
 file privately, so no one would be able to see it except for the contributors and me.
 
 # Contributors
-[Imp11](https://github.com/dabao40), [Ryuk](https://github.com/ryuk201198)
+[Imp11](https://github.com/dabao40), [Ryuk](https://github.com/ryuk201198), [K](https://github.com/vdpcool)  
+
+# Translators
+| Language | Translator |
+|-------------|---------------------|  
+| English | [Imp11](https://github.com/dabao40)|  
+| Japanese | [yuunozikkyou](https://github.com/yuunozikkyou)|
 
 # Translation
 As of v2.9.0, The Other Roles GM now supports translation into other languages. To add a new language, add translations to [Strings.xlsx](/Strings.xlsx) and submit a pull request.
