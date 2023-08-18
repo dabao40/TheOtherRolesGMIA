@@ -1,0 +1,4 @@
+﻿LINK : warning LNK4098: 默认库“MSVCRTD”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+TheOtherUpdater.obj : error LNK2019: 无法解析的外部符号 __imp___invalid_parameter，函数 "void * __cdecl std::_Allocate_manually_vector_aligned<struct std::_Default_allocate_traits>(unsigned int)" (??$_Allocate_manually_vector_aligned@U_Default_allocate_traits@std@@@std@@YAPAXI@Z) 中引用了该符号
+TheOtherUpdater.obj : error LNK2019: 无法解析的外部符号 __imp___CrtDbgReport，函数 "void * __cdecl std::_Allocate_manually_vector_aligned<struct std::_Default_allocate_traits>(unsigned int)" (??$_Allocate_manually_vector_aligned@U_Default_allocate_traits@std@@@std@@YAPAXI@Z) 中引用了该符号
+E:\GMIA\TheOtherRoles-GM-IA-1.0.4\Debug\TheOtherUpdater.exe : fatal error LNK1120: 2 个无法解析的外部命令
