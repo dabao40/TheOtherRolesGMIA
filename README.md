@@ -10,7 +10,15 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
 |[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)| [Jailor](#Jailor) |[Akujo](#Akujo)||
-|[EvilLighter](#EvilLighter)||[Isolator](#isolator)||
+|[EvilLighter](#EvilLighter)||[Isolator](#isolator)||  
+
+# Releases
+| Among Us - Version | Mod Version | Link                                                                       |
+| ------------------ | ----------- | -------------------------------------------------------------------------- |
+| 2023.7.12s         | v1.0.5      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5)|
+| 2023.7.12s         | v1.0.4      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.4)|
+| 2023.7.12s         | v1.0.3      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.3)|
+| 2023.7.12s         | v1.0.2      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2)|
 
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonnes](https://github.com/eDonnes124)  
