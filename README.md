@@ -10,7 +10,8 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 |----------|-------------|-----------------|----------------|
 |[Flashlight(Recently Not Available)](#Flashlight)| [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) |[Cupid](#Cupid) ||
 |[KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR)| [Jailor](#Jailor) |[Akujo](#Akujo)||
-|[EvilLighter](#EvilLighter)||[Isolator](#isolator)||  
+|[EvilLighter](#EvilLighter)|[Isolator](#isolator)|||
+||[Sprinter](#sprinter)|||
 
 # Releases
 | Among Us - Version | Mod Version | Link                                                                       |
@@ -75,6 +76,12 @@ The Jailor can put x+1 (x means the amount of evil roles in the game) players in
 Once the Jailor is killed, everyone in the jail commits suicide.  
 NOTE: Players that are in the Jail cannot speak during meetings or vote or use any of the buttons besides the vent button. They can escape the Jail by venting.  
 Lovers can still talk in the chat and hosts can still kick players even if they're in the Jail.  
+
+## Sprinter
+The Sprinter is a Crewmate role with the ability to sprint for a short while.  
+While the Sprinter activates its skill, the Sprinter will turn invisible and that no one except for the dead players and itself will be able to see the Sprinter.  
+The Sprinter, unlike the Ninja, won't get a speed bonus and cannot be targeted while sprinting.  
+The Sprinter and deactivate its skill by pressing the button again.  
 
 ## Cupid  
 Original Idea by [haoming37](https://github.com/haoming37)  
