@@ -51,6 +51,7 @@ namespace TheOtherRoles
         public static RoleInfo timeMaster = new RoleInfo("Time Master", TimeMaster.color, "Save yourself with your time shield", "Use your time shield", RoleId.TimeMaster);
         public static RoleInfo medic = new RoleInfo("Medic", Medic.color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
         public static RoleInfo swapper = new RoleInfo("Swapper", Swapper.color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
+        public static RoleInfo undertaker = new RoleInfo("Undertaker", Undertaker.Color, "Drag bodies to hide them", "Drag bodies to hide them", RoleId.Undertaker);
         public static RoleInfo amnisiac = new RoleInfo("Amnisiac", Amnisiac.color, "Steal roles from the dead", "You forgot", RoleId.Amnisiac);
         public static RoleInfo seer = new RoleInfo("Seer", Seer.color, "You will see players die", "You will see players die", RoleId.Seer);
         public static RoleInfo hacker = new RoleInfo("Hacker", Hacker.color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
@@ -238,6 +239,7 @@ namespace TheOtherRoles
             if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
             if (p == Bait.bait) infos.Add(bait);
             if (p == Sprinter.sprinter) infos.Add(sprinter);
+            if (p == Undertaker.Player) infos.Add(undertaker);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)

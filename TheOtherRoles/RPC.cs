@@ -35,6 +35,7 @@ namespace TheOtherRoles
         Godfather,
         Mafioso,
         Janitor,
+        Undertaker,
         Detective,
         TimeMaster,
         Medic,
@@ -126,6 +127,8 @@ namespace TheOtherRoles
         TimeMasterRewindTime,
         ShifterShift,
         SwapperSwap,
+        UndertakerDragBody,
+        UndertakerDropBody,
         MorphlingMorph,
         CamouflagerCamouflage,
         TrackerUsedTracker,
@@ -415,11 +418,14 @@ namespace TheOtherRoles
                         SerialKiller.serialKiller = player;
                         break;
                     case RoleId.Thief:
-                        Thief.thief = player;
+                        Thief.thie  f = player;
                         break;
                         //case RoleId.Bomber:
                         //Bomber.bomber = player;
                         //break;
+                        case RoleId.Undertaker:
+                            Undertaker.Player = player;
+                            break;
                     }
         }
         }
@@ -849,7 +855,7 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
-            // •§•Û•›•π•ø©`§Œàˆ∫œ§œ’º§§éü§ŒŒª÷√§À ∏”°§Ú±Ì æ
+            // „Ç§„É≥„Éù„Çπ„Çø„Éº„ÅÆÂ†¥Âêà„ÅØÂç†„ÅÑÂ∏´„ÅÆ‰ΩçÁΩÆ„Å´Áü¢Âç∞„ÇíË°®Á§∫
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage("Someone Was Just Divined", 7f, Color.white);
@@ -1355,6 +1361,7 @@ namespace TheOtherRoles
             if (target == Trickster.trickster) Trickster.trickster = thief;
             if (target == Cleaner.cleaner) Cleaner.cleaner = thief;
             if (target == Warlock.warlock) Warlock.warlock = thief;
+            if (target == Undertaker.Player) Undertaker.Player = thief; 
             if (target == BountyHunter.bountyHunter) BountyHunter.bountyHunter = thief;
             if (target == Ninja.ninja) Ninja.ninja = thief;
             if (target == NekoKabocha.nekoKabocha && !NekoKabocha.revengeNeutral) NekoKabocha.nekoKabocha = thief;
@@ -1806,6 +1813,16 @@ namespace TheOtherRoles
                     byte roomPlayer = reader.ReadByte();
                     byte roomId = reader.ReadByte();
                     RPCProcedure.shareRoom(roomPlayer, roomId);
+                    break;
+                case (byte)CustomRPC.UndertakerDragBody:
+                    var bodyId = reader.ReadByte();
+                    Undertaker.DragBody(bodyId);
+                    break;
+                case (byte)CustomRPC.UndertakerDropBody:
+                    var x = reader.ReadSingle();
+                    var y = reader.ReadSingle();
+                    var z = reader.ReadSingle();
+                    Undertaker.DropBody(new Vector3(x, y, z));
                     break;
             }
         }

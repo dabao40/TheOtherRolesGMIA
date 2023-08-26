@@ -32,6 +32,7 @@ namespace TheOtherRoles
             Janitor.clearAndReload();
             Detective.clearAndReload();
             TimeMaster.clearAndReload();
+            Undertaker.ClearAndReload();
             Medic.clearAndReload();
             Shifter.clearAndReload();
             Swapper.clearAndReload();
@@ -105,7 +106,62 @@ namespace TheOtherRoles
                 hasImpostorVision = CustomOptionHolder.jesterHasImpostorVision.getBool();
             }
         }
-        
+        public static class Undertaker
+        {
+            public static PlayerControl Player;
+            public static readonly Color Color = Palette.ImpostorRed;
+            public static DeadBody DraggedBody;
+            public static DeadBody TargetBody;
+            public static bool CanDropBody;
+
+            public static Sprite DragButtonSprite =>
+                Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.DragButton.png", 115f);
+            public static Sprite DropButtonSprite => Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.DropButton.png", 115f);
+
+            public static void ClearAndReload()
+            {
+                Player = null;
+                DraggedBody = null;
+                TargetBody = null;
+            }
+
+            public static void RpcDropBody(Vector3 position)
+            {
+                if (Player == null) return;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDropBody, Hazel.SendOption.Reliable, -1);
+                writer.Write(position.x);
+                writer.Write(position.y);
+                writer.Write(position.z);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                DropBody(position);
+            }
+
+            public static void DropBody(Vector3 position)
+            {
+                if (!DraggedBody) return;
+                DraggedBody.transform.position = position;
+                DraggedBody = null;
+                TargetBody = null;
+            }
+
+            public static void RpcDragBody(byte playerId)
+            {
+                if (Player == null) return;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDragBody, Hazel.SendOption.Reliable, -1);
+                writer.Write(playerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                DragBody(playerId);
+            }
+
+            public static void DragBody(byte playerId)
+            {
+                if (Player == null) return;
+                var body = UnityEngine.Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == playerId);
+                if (body == null) return;
+                DraggedBody = body;
+            }
+        }
+
         public static class Portalmaker {
             public static PlayerControl portalmaker;
             public static Color color = new Color32(69, 69, 169, byte.MaxValue);
@@ -1809,7 +1865,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // 占いを実行したことで発火される処理を他クライアントに通知
+            // 鍗犮亜銈掑疅琛屻仐銇熴亾銇ㄣ仹鐧虹伀銇曘倢銈嬪嚘鐞嗐倰浠栥偗銉┿偆銈€兂銉堛伀閫氱煡
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
