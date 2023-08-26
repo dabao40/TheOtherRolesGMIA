@@ -253,15 +253,16 @@ namespace TheOtherRoles.Patches {
             Hacker.hackerTimer -= dt;
             Trickster.lightsOutTimer -= dt;
             Tracker.corpsesTrackingTimer -= dt;
-            Assassin.invisibleTimer -= dt;
+            //Assassin.invisibleTimer -= dt;
             Ninja.invisibleTimer -= dt;
+            Sprinter.invisibleTimer -= dt;
             HideNSeek.timer -= dt;
             foreach (byte key in Deputy.handcuffedKnows.Keys)
                 Deputy.handcuffedKnows[key] -= dt;
         }
 
         public static void miniUpdate() {
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Assassin.assassin && Assassin.isInvisble || Mini.mini == Ninja.ninja && Ninja.stealthed ||SurveillanceMinigamePatch.nightVisionIsActive) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;

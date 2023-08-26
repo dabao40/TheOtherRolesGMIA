@@ -20,6 +20,7 @@ using Cpp2IL.Core.Extensions;
 using MonoMod.Cil;
 using MS.Internal.Xml.XPath;
 using static UnityEngine.GraphicsBuffer;
+using Rewired;
 
 namespace TheOtherRoles
 {
@@ -39,6 +40,7 @@ namespace TheOtherRoles
         Medic,
         Swapper,
         Seer,
+        Sprinter,
         Morphling,
         Camouflager,
         Hacker,
@@ -63,7 +65,8 @@ namespace TheOtherRoles
         BountyHunter,
         Vulture,
         Medium,
-        Shifter, 
+        Shifter,
+        Amnisiac,
         //Trapper,
         Lawyer,
         //Prosecutor,
@@ -73,6 +76,8 @@ namespace TheOtherRoles
         Ninja, 
         NekoKabocha,
         Thief,
+        SerialKiller,
+        Opportunist,
         //Bomber,
         Crewmate,
         Impostor,
@@ -137,6 +142,7 @@ namespace TheOtherRoles
         SetFutureSpelled,
         PlaceAssassinTrace,
         PlacePortal,
+        AmnisiasTakeRole,
         UsePortal,
         PlaceJackInTheBox,
         LightsOut,
@@ -172,7 +178,9 @@ namespace TheOtherRoles
         // GMIA Special functionality
         NinjaStealth,
         FortuneTellerUsedDivine, 
-        NekoKabochaExile
+        NekoKabochaExile,
+        SprinterSprint,
+        SerialKillerSuicide
     }
 
     public static class RPCProcedure {
@@ -285,7 +293,10 @@ namespace TheOtherRoles
                     case RoleId.TimeMaster:
                         TimeMaster.timeMaster = player;
                         break;
-                    case RoleId.Medic:
+                    case RoleId.Amnisiac:
+                         Amnisiac.amnisiac = player;
+                         break;
+                        case RoleId.Medic:
                         Medic.medic = player;
                         break;
                     case RoleId.Shifter:
@@ -323,6 +334,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.FortuneTeller:
                         FortuneTeller.fortuneTeller = player;
+                        break;
+                    case RoleId.Sprinter:
+                        Sprinter.sprinter = player;
                         break;
                     case RoleId.Jackal:
                         Jackal.jackal = player;
@@ -391,8 +405,14 @@ namespace TheOtherRoles
                     case RoleId.Ninja:
                         Ninja.ninja = player;
                         break;
+                    case RoleId.Opportunist:
+                        Opportunist.opportunist = player;
+                        break;
                     case RoleId.NekoKabocha:
                         NekoKabocha.nekoKabocha = player;
+                        break;
+                    case RoleId.SerialKiller:
+                        SerialKiller.serialKiller = player;
                         break;
                     case RoleId.Thief:
                         Thief.thief = player;
@@ -477,6 +497,30 @@ namespace TheOtherRoles
                 source.MurderPlayer(target);
             }
         }
+
+        public static void amnisiacTakeRole(byte targetId)
+        {
+            PlayerControl target = Helpers.playerById(targetId);
+            PlayerControl amnisiac = Amnisiac.amnisiac;
+            if (PlayerControl.LocalPlayer == null) return;
+            List<RoleInfo> targetInfo = RoleInfo.getRoleInfoForPlayer(target);
+            RoleInfo roleInfo = targetInfo.Where(info => !info.isModifier).FirstOrDefault();
+            switch ((RoleId)roleInfo.roleId)
+            {
+                case RoleId.Jester:
+                    if (Amnisiac.resetRole) Jester.clearAndReload();
+                    Jester.jester = amnisiac;
+                    Amnisiac.clearAndReload();
+                    break;
+                case RoleId.Medic:
+                    if (Amnisiac.resetRole) Medic.clearAndReload();
+                    Medic.medic = amnisiac;
+                    Amnisiac.clearAndReload();
+                    break;
+            }
+        }
+
+
 
         public static void uncheckedCmdReportDeadBody(byte sourceId, byte targetId) {
             PlayerControl source = Helpers.playerById(sourceId);
@@ -678,6 +722,10 @@ namespace TheOtherRoles
                 Detective.detective = oldShifter;
             if (TimeMaster.timeMaster != null && TimeMaster.timeMaster == player)
                 TimeMaster.timeMaster = oldShifter;
+            if (Amnisiac.amnisiac != null && Amnisiac.amnisiac == player)
+                Amnisiac.amnisiac = oldShifter;
+            if (Amnisiac.amnisiac != null && Amnisiac.amnisiac == player)
+                Amnisiac.amnisiac = oldShifter;
             if (Medic.medic != null && Medic.medic == player)
                 Medic.medic = oldShifter;
             if (Swapper.swapper != null && Swapper.swapper == player)
@@ -804,8 +852,14 @@ namespace TheOtherRoles
             // インポスターの場合は占い師の位置に矢印を表示
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
-                FortuneTeller.fortuneTellerMessage("Someone Was Just Divined", 5f, Color.white);
+                FortuneTeller.fortuneTellerMessage("Someone Was Just Divined", 7f, Color.white);
                 FortuneTeller.setDivinedFlag(fortuneTeller, true);
+            }
+
+            // The ghosts will also receive a message
+            if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                FortuneTeller.fortuneTellerMessage($"{target.Data.PlayerName} Was Just Divined", 7f, Color.white);
             }
         }
 
@@ -889,6 +943,7 @@ namespace TheOtherRoles
             if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
             if (player == Medium.medium) Medium.clearAndReload();
             if (player == FortuneTeller.fortuneTeller) FortuneTeller.clearAndReload();
+            if (player == Sprinter.sprinter) Sprinter.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -906,6 +961,7 @@ namespace TheOtherRoles
             if (player == Assassin.assassin) Assassin.clearAndReload();
             if (player == Ninja.ninja) Ninja.clearAndReload();
             if (player == NekoKabocha.nekoKabocha) NekoKabocha.clearAndReload();
+            if (player == SerialKiller.serialKiller) SerialKiller.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -926,6 +982,7 @@ namespace TheOtherRoles
             if (player == Lawyer.lawyer) Lawyer.clearAndReload();
             if (player == Pursuer.pursuer) Pursuer.clearAndReload();
             if (player == Thief.thief) Thief.clearAndReload();
+            if (player == Opportunist.opportunist) Opportunist.clearAndReload();
 
             // Modifier
             if (!ignoreModifier)
@@ -990,7 +1047,7 @@ namespace TheOtherRoles
                 target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
 
                 if (Camouflager.camouflageTimer <= 0) target.setDefaultLook();
-                Assassin.isInvisble = false;
+                //Assassin.isInvisble = false;
                 return;
             }
 
@@ -1001,8 +1058,8 @@ namespace TheOtherRoles
             target.cosmetics.currentBodySprite.BodySprite.color = color;
             target.cosmetics.colorBlindText.gameObject.SetActive(false);
             target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
-            Assassin.invisibleTimer = Assassin.invisibleDuration;
-            Assassin.isInvisble = true;
+            //Assassin.invisibleTimer = Assassin.invisibleDuration;
+            //Assassin.isInvisble = true;
         }
 
         public static void placePortal(byte[] buff) {
@@ -1044,6 +1101,21 @@ namespace TheOtherRoles
             {                
                 uncheckedExilePlayer(targetId);                
             }
+        }
+
+        public static void serialKillerSuicide(byte serialKillerId)
+        {
+            PlayerControl serialKiller = Helpers.playerById(serialKillerId);
+            if (serialKiller == null) return;
+            serialKiller.MurderPlayer(serialKiller);
+            GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(serialKillerId), DeadPlayer.CustomDeathReason.Suicide);
+        }
+
+        public static void sprinterSprint(byte playerId, bool sprinting)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            Sprinter.setSprinting(player, sprinting);
+            Sprinter.invisibleTimer = Sprinter.sprintDuration;
         }
 
         public static void placeCamera(byte[] buff) {
@@ -1286,6 +1358,7 @@ namespace TheOtherRoles
             if (target == BountyHunter.bountyHunter) BountyHunter.bountyHunter = thief;
             if (target == Ninja.ninja) Ninja.ninja = thief;
             if (target == NekoKabocha.nekoKabocha && !NekoKabocha.revengeNeutral) NekoKabocha.nekoKabocha = thief;
+            if (target == SerialKiller.serialKiller) SerialKiller.serialKiller = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -1623,8 +1696,14 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.NinjaStealth:
                     RPCProcedure.ninjaStealth(reader.ReadByte(), reader.ReadBoolean());
                     break;
+                case (byte)CustomRPC.SprinterSprint:
+                    RPCProcedure.sprinterSprint(reader.ReadByte(), reader.ReadBoolean());
+                    break;
                 case (byte)CustomRPC.NekoKabochaExile:
                     RPCProcedure.nekoKabochaExile(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.SerialKillerSuicide:
+                    RPCProcedure.serialKillerSuicide(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.FortuneTellerUsedDivine:
                     byte fId = reader.ReadByte();

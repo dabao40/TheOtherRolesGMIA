@@ -25,6 +25,13 @@ namespace TheOtherRoles {
         public static CustomOption enableCodenameHorsemode;
         public static CustomOption enableCodenameDisableHorses;
 
+
+        public static CustomOption amnisiacSpawnRate;
+        public static CustomOption amnisiacShowArrows;
+        public static CustomOption amnisiacResetRole;
+
+
+
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
 
@@ -77,6 +84,8 @@ namespace TheOtherRoles {
         public static CustomOption jackalCanCreateSidekickFromImpostor;
         public static CustomOption jackalAndSidekickHaveImpostorVision;
 
+        public static CustomOption opportunistSpawnRate;
+
         public static CustomOption bountyHunterSpawnRate;
         public static CustomOption bountyHunterBountyDuration;
         public static CustomOption bountyHunterReducedCooldown;
@@ -97,7 +106,7 @@ namespace TheOtherRoles {
         public static CustomOption assassinKnowsTargetLocation;
         public static CustomOption assassinTraceTime;
         public static CustomOption assassinTraceColorTime;
-        public static CustomOption assassinInvisibleDuration;
+        //public static CustomOption assassinInvisibleDuration;
 
         public static CustomOption ninjaSpawnRate;
         public static CustomOption ninjaStealthCooldown;
@@ -107,6 +116,11 @@ namespace TheOtherRoles {
         public static CustomOption ninjaFadeTime;
         public static CustomOption ninjaCanVent;
         public static CustomOption ninjaCanBeTargeted;
+
+        public static CustomOption serialKillerSpawnRate;
+        public static CustomOption serialKillerKillCooldown;
+        public static CustomOption serialKillerSuicideTimer;
+        public static CustomOption serialKillerResetTimer;
 
         public static CustomOption mayorSpawnRate;
         public static CustomOption mayorCanSeeVoteColors;
@@ -143,6 +157,12 @@ namespace TheOtherRoles {
         public static CustomOption lighterModeLightsOnVision;
         public static CustomOption lighterModeLightsOffVision;
         public static CustomOption lighterFlashlightWidth;
+        public static CustomOption lighterCanSeeInvisible;
+
+        public static CustomOption sprinterSpawnRate;
+        public static CustomOption sprinterCooldown;
+        public static CustomOption sprinterDuration;
+        public static CustomOption sprinterFadeTime;
 
         public static CustomOption fortuneTellerSpawnRate;
         public static CustomOption fortuneTellerNumTasks;
@@ -483,7 +503,7 @@ namespace TheOtherRoles {
             assassinKnowsTargetLocation = CustomOption.Create(382, Types.Impostor, "Assassin Knows Location Of Target", true, assassinSpawnRate);
             assassinTraceTime = CustomOption.Create(383, Types.Impostor, "Trace Duration", 5f, 1f, 20f, 0.5f, assassinSpawnRate);
             assassinTraceColorTime = CustomOption.Create(384, Types.Impostor, "Time Till Trace Color Has Faded", 2f, 0f, 20f, 0.5f, assassinSpawnRate);
-            assassinInvisibleDuration = CustomOption.Create(385, Types.Impostor, "Time The Assassin Is Invisible", 3f, 0f, 20f, 1f, assassinSpawnRate);
+            //assassinInvisibleDuration = CustomOption.Create(385, Types.Impostor, "Time The Assassin Is Invisible", 3f, 0f, 20f, 1f, assassinSpawnRate);
 
             ninjaSpawnRate = CustomOption.Create(1000, Types.Impostor, cs(Ninja.color, "Ninja"), rates, null, true);
             ninjaStealthCooldown = CustomOption.Create(1002, Types.Impostor, "Stealth Cooldown", 30f, 2.5f, 60f, 2.5f, ninjaSpawnRate);
@@ -493,6 +513,11 @@ namespace TheOtherRoles {
             ninjaSpeedBonus = CustomOption.Create(1006, Types.Impostor, "Stealth Speed Bonus", 1.25f, 0.5f, 2f, 0.25f, ninjaSpawnRate);
             ninjaCanBeTargeted = CustomOption.Create(1007, Types.Impostor, "Can Be Targeted While Stealthed", true, ninjaSpawnRate);
             ninjaCanVent = CustomOption.Create(1008, Types.Impostor, "Can Use Vents", false, ninjaSpawnRate);
+
+            serialKillerSpawnRate = CustomOption.Create(4010, Types.Impostor, cs(SerialKiller.color, "Serial Killer"), rates, null, true);
+            serialKillerKillCooldown = CustomOption.Create(4011, Types.Impostor, "Serial Killer Kill Cooldown", 15f, 2.5f, 60f, 2.5f, serialKillerSpawnRate);
+            serialKillerSuicideTimer = CustomOption.Create(4012, Types.Impostor, "Suicide Timer", 40f, 2.5f, 60f, 2.5f, serialKillerSpawnRate);
+            serialKillerResetTimer = CustomOption.Create(4013, Types.Impostor, "Reset Timer After Meetings", true, serialKillerSpawnRate);
 
             /*bomberSpawnRate = CustomOption.Create(460, Types.Impostor, cs(Bomber.color, "Bomber"), rates, null, true);
             bomberBombDestructionTime = CustomOption.Create(461, Types.Impostor, "Bomb Destruction Time", 20f, 2.5f, 120f, 2.5f, bomberSpawnRate);
@@ -551,6 +576,8 @@ namespace TheOtherRoles {
             pursuerCooldown = CustomOption.Create(356, Types.Neutral, "Pursuer Blank Cooldown", 30f, 5f, 60f, 2.5f, lawyerSpawnRate);
             pursuerBlanksNumber = CustomOption.Create(357, Types.Neutral, "Pursuer Number Of Blanks", 5f, 1f, 20f, 1f, lawyerSpawnRate);
 
+            opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, "Opportunist"), rates, null, true);
+
             nekoKabochaSpawnRate = CustomOption.Create(880, Types.Impostor, cs(NekoKabocha.color, "Neko-Kabocha"), rates, null, true);
             nekoKabochaRevengeCrew = CustomOption.Create(881, Types.Impostor, "Take Revenge On Crew Killer", true, nekoKabochaSpawnRate);
             nekoKabochaRevengeImpostor = CustomOption.Create(882, Types.Impostor, "Take Revenge On Impostor Killer", true, nekoKabochaSpawnRate);
@@ -584,6 +611,12 @@ namespace TheOtherRoles {
             lighterModeLightsOnVision = CustomOption.Create(111, Types.Crewmate, "Vision On Lights On", 1.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
             lighterModeLightsOffVision = CustomOption.Create(112, Types.Crewmate, "Vision On Lights Off", 0.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
             lighterFlashlightWidth = CustomOption.Create(113, Types.Crewmate, "Flashlight Width", 0.3f, 0.1f, 1f, 0.1f, lighterSpawnRate);
+            lighterCanSeeInvisible = CustomOption.Create(114, Types.Crewmate, "Can See Invisible Players", true, lighterSpawnRate);
+
+            sprinterSpawnRate = CustomOption.Create(4005, Types.Crewmate, cs(Sprinter.color, "Sprinter"), rates, null, true);
+            sprinterCooldown = CustomOption.Create(4006, Types.Crewmate, "Sprint Cooldown", 30f, 20f, 60f, 2.5f, sprinterSpawnRate);
+            sprinterDuration = CustomOption.Create(4007, Types.Crewmate, "Sprint Duration", 15f, 10f, 60f, 2.5f, sprinterSpawnRate);
+            sprinterFadeTime = CustomOption.Create(4008, Types.Crewmate, "Fade Time", 0.5f, 0.0f, 2.5f, 0.5f, sprinterSpawnRate);
 
             detectiveSpawnRate = CustomOption.Create(120, Types.Crewmate, cs(Detective.color, "Detective"), rates, null, true);
             detectiveAnonymousFootprints = CustomOption.Create(121, Types.Crewmate, "Anonymous Footprints", false, detectiveSpawnRate); 
@@ -685,6 +718,10 @@ namespace TheOtherRoles {
             thiefHasImpVision = CustomOption.Create(403, Types.Neutral, "Thief Has Impostor Vision", true, thiefSpawnRate);
             thiefCanUseVents = CustomOption.Create(404, Types.Neutral, "Thief Can Use Vents", true, thiefSpawnRate);
             thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, "Thief Can Guess To Steal A Role (If Guesser)", false, thiefSpawnRate);
+
+            amnisiacSpawnRate = CustomOption.Create(616, Types.Neutral, cs(Amnisiac.color, "Amnesiac"), rates, null, true);
+            amnisiacShowArrows = CustomOption.Create(617, Types.Neutral, "Show arrows to dead bodies", true, amnisiacSpawnRate);
+            amnisiacResetRole = CustomOption.Create(618, Types.Neutral, "Reset role when taken", true, amnisiacSpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);

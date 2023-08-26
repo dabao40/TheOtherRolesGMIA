@@ -41,6 +41,11 @@ namespace TheOtherRoles.Patches {
                         untargetablePlayers.Add(Ninja.ninja);
                     }
 
+                    if (Sprinter.sprinter != null && Sprinter.sprinting)
+                    {
+                        untargetablePlayers.Add(Sprinter.sprinter);
+                    }
+
                     if (@object && (!@object.inVent || targetPlayersInVents)) {
                         Vector2 vector = @object.GetTruePosition() - truePosition;
                         float magnitude = vector.magnitude;
@@ -159,7 +164,10 @@ namespace TheOtherRoles.Patches {
 
         static void sheriffSetTarget() {
             if (Sheriff.sheriff == null || Sheriff.sheriff != CachedPlayer.LocalPlayer.PlayerControl) return;
-            Sheriff.currentTarget = setTarget();
+            var untargetablePlayers = new List<PlayerControl>();
+            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
+            Sheriff.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             setPlayerOutline(Sheriff.currentTarget, Sheriff.color);
         }
 
@@ -185,7 +193,7 @@ namespace TheOtherRoles.Patches {
 
         static void trackerSetTarget() {
             if (Tracker.tracker == null || Tracker.tracker != CachedPlayer.LocalPlayer.PlayerControl) return;
-            Tracker.currentTarget = setTarget();
+            Tracker.currentTarget = setTarget(Tracker.currentTarget = setTarget(untargetablePlayers: new List<PlayerControl>() { Sprinter.sprinting ? Sprinter.sprinter : null }));
             if (!Tracker.usedTracker) setPlayerOutline(Tracker.currentTarget, Tracker.color);
         }
 
@@ -196,7 +204,7 @@ namespace TheOtherRoles.Patches {
             if (Detective.timer <= 0f) {
                 Detective.timer = Detective.footprintIntervall;
                 foreach (PlayerControl player in CachedPlayer.AllPlayers) {
-                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent) 
+                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent && !((player == Ninja.ninja && Ninja.stealthed && !Ninja.canBeTargeted) || (player == Sprinter.sprinter && Sprinter.sprinting))) 
                     {
                         FootprintHolder.Instance.MakeFootprint(player);
                     }
@@ -213,11 +221,11 @@ namespace TheOtherRoles.Patches {
                     target = setTarget(false, true);
                 }
                 else {
-                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null });
+                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
                 }
             }
             else {
-                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null });
+                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
             }
 
             bool targetNearGarlic = false;
@@ -240,6 +248,7 @@ namespace TheOtherRoles.Patches {
                 // Only exclude sidekick from beeing targeted if the jackal can create sidekicks from impostors
                 if (Sidekick.sidekick != null) untargetablePlayers.Add(Sidekick.sidekick);
                 if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+                if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             }
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
             Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
@@ -251,6 +260,8 @@ namespace TheOtherRoles.Patches {
             var untargetablePlayers = new List<PlayerControl>();
             if (Jackal.jackal != null) untargetablePlayers.Add(Jackal.jackal);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Sidekick from targeting the Mini unless it has grown up
+            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             if (Sidekick.canKill) setPlayerOutline(Sidekick.currentTarget, Palette.ImpostorRed);
         }
@@ -273,6 +284,8 @@ namespace TheOtherRoles.Patches {
             if (Spy.spy != null) untargetables.Add(Spy.spy);
             if (Sidekick.wasTeamRed) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
+            if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
+            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
             Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? new List<PlayerControl>() : untargetables);
             setPlayerOutline(Eraser.currentTarget, Eraser.color);
         }
@@ -323,17 +336,20 @@ namespace TheOtherRoles.Patches {
                 return;
             }
 
+            var untargetablePlayers = new List<PlayerControl>();
+            if (Sprinter.sprinter != null && !Sprinter.sprinter.Data.IsDead && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
+
             PlayerControl target = null;
             if (Spy.spy != null || Sidekick.wasSpy || Jackal.wasSpy) {
                 if (Spy.impostorsCanKillAnyone) {
-                    target = setTarget(false, true);
+                    target = setTarget(false, true, untargetablePlayers);
                 }
                 else {
-                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null});
+                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
                 }
             }
             else {
-                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null});
+                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
             }
 
             FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(target); // Includes setPlayerOutline(target, Palette.ImpstorRed);
@@ -412,14 +428,14 @@ namespace TheOtherRoles.Patches {
 
         static void assassinUpdate()
         {
-            if (Assassin.isInvisble && Assassin.invisibleTimer <= 0 && Assassin.assassin == CachedPlayer.LocalPlayer.PlayerControl)
+            /*if (Assassin.isInvisble && Assassin.invisibleTimer <= 0 && Assassin.assassin == CachedPlayer.LocalPlayer.PlayerControl)
             {
                 MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetInvisible, Hazel.SendOption.Reliable, -1);
                 invisibleWriter.Write(Assassin.assassin.PlayerId);
                 invisibleWriter.Write(byte.MaxValue);
                 AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
                 RPCProcedure.setInvisible(Assassin.assassin.PlayerId, byte.MaxValue);
-            }
+            }*/
             if (Assassin.arrow?.arrow != null)
             {
                 if (Assassin.assassin == null || Assassin.assassin != CachedPlayer.LocalPlayer.PlayerControl || !Assassin.knowsTargetLocation) {
@@ -780,6 +796,38 @@ namespace TheOtherRoles.Patches {
                 index++;
             }
         }
+        static void amnisiacUpdate()
+        {
+            if (Amnisiac.amnisiac == null || PlayerControl.LocalPlayer != Amnisiac.amnisiac || Amnisiac.localArrows == null || !Amnisiac.showArrows) return;
+            if (Amnisiac.amnisiac.Data.IsDead)
+            {
+                
+                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
+                Amnisiac.localArrows = new List<Arrow>();
+                return;
+            }
+
+            DeadBody[] deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            bool arrowUpdate = Amnisiac.localArrows.Count != deadBodies.Count();
+            int index = 0;
+
+            if (arrowUpdate)
+            {
+                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
+                Amnisiac.localArrows = new List<Arrow>();
+            }
+
+            foreach (DeadBody db in deadBodies)
+            {
+                if (arrowUpdate)
+                {
+                    Amnisiac.localArrows.Add(new Arrow(Color.blue));
+                    Amnisiac.localArrows[index].arrow.SetActive(true);
+                }
+                if (Amnisiac.localArrows[index] != null) Amnisiac.localArrows[index].Update(db.transform.position);
+                index++;
+            }
+        }
 
         public static void mediumSetTarget() {
             if (Medium.medium == null || Medium.medium != CachedPlayer.LocalPlayer.PlayerControl || Medium.medium.Data.IsDead || Medium.deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
@@ -843,6 +891,18 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void sprinterUpdate()
+        {
+            if (Sprinter.sprinting && Sprinter.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Sprinter.sprinter == CachedPlayer.LocalPlayer.PlayerControl)
+            {
+                MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
+                invisibleWriter.Write(Sprinter.sprinter.PlayerId);
+                invisibleWriter.Write(byte.MaxValue);
+                AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
+                RPCProcedure.sprinterSprint(Sprinter.sprinter.PlayerId, false);
+            }
+        }
+
         public static void fortuneTellerUpdate()
         {
             if (FortuneTeller.fortuneTeller == PlayerControl.LocalPlayer && !FortuneTeller.meetingFlag)
@@ -865,6 +925,10 @@ namespace TheOtherRoles.Patches {
 
         public static void impostorArrowUpdate()
         {
+            if (FortuneTeller.fortuneTeller.Data.IsDead) return;
+            if (!FortuneTeller.divinedFlag) return;
+            if (!FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller)) return;
+
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
 
@@ -875,28 +939,22 @@ namespace TheOtherRoles.Patches {
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
                     // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
-                    foreach (Arrow arrow in FortuneTeller.arrows)
+                    foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
-                        if (arrow?.arrow != null)
+                        if (arrow1?.arrow != null)
                         {
-                            arrow.arrow.SetActive(false);
-                            UnityEngine.Object.Destroy(arrow.arrow);
+                            arrow1.arrow.SetActive(false);
+                            UnityEngine.Object.Destroy(arrow1.arrow);
                         }
                     }
 
                     // ArrowÒ»ÓE
                     FortuneTeller.arrows = new List<Arrow>();
 
-                    foreach (var p in PlayerControl.AllPlayerControls)
-                    {
-                        if (p.Data.IsDead) continue;
-                        if (!FortuneTeller.divinedFlag) continue;
-
-                        Arrow arrow = new Arrow(FortuneTeller.color);
-                        arrow.arrow.SetActive(true);
-                        arrow.Update(p.transform.position);
-                        FortuneTeller.arrows.Add(arrow);
-                    }
+                    Arrow arrow = new Arrow(FortuneTeller.color);
+                    arrow.arrow.SetActive(true);
+                    arrow.Update(FortuneTeller.fortuneTeller.transform.position);
+                    FortuneTeller.arrows.Add(arrow);
 
                     // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                     FortuneTeller.updateTimer = 1f;
@@ -944,6 +1002,8 @@ namespace TheOtherRoles.Patches {
                 if (Spy.spy != null && !Witch.canSpellAnyone) untargetables.Add(Spy.spy);
                 if (Sidekick.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Sidekick.sidekick);
                 if (Jackal.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Jackal.jackal);
+                if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+                if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             }
             Witch.currentTarget = setTarget(onlyCrewmates: !Witch.canSpellAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(Witch.currentTarget, Witch.color);
@@ -957,6 +1017,8 @@ namespace TheOtherRoles.Patches {
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
             if (Sidekick.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Jackal.jackal);
+            if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+            if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             Assassin.currentTarget = setTarget(onlyCrewmates: Spy.spy == null || !Spy.impostorsCanKillAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(Assassin.currentTarget, Assassin.color);
         }
@@ -966,6 +1028,7 @@ namespace TheOtherRoles.Patches {
             List<PlayerControl> untargetables = new List<PlayerControl>();
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
             if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             Thief.currentTarget = setTarget(onlyCrewmates: false, untargetablePlayers: untargetables);
             setPlayerOutline(Thief.currentTarget, Thief.color);
         }
@@ -1182,7 +1245,9 @@ namespace TheOtherRoles.Patches {
                 baitUpdate();
                 // Ninja
                 ninjaUpdate();
-                // Witch
+                // Sprinter
+                sprinterUpdate();
+                // Witch                
                 witchSetTarget();
                 // Assassin
                 assassinSetTarget();
@@ -1370,19 +1435,23 @@ namespace TheOtherRoles.Patches {
                 Ninja.OnKill(target);
             }
 
+            // Serial Killer set suicide timer
+            if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller)
+            {
+                SerialKiller.OnKill(target);
+            }
+
             // Neko-Kabocha kill murderer
             if (NekoKabocha.nekoKabocha != null && target == NekoKabocha.nekoKabocha && __instance != NekoKabocha.nekoKabocha)
             {
-                //NekoKabocha.OnDeath(__instance);
                 if (!__instance.Data.IsDead)
                 {
                     if ((__instance.Data.Role.IsImpostor && NekoKabocha.revengeImpostor)
                         || (Helpers.isNeutral(__instance) && NekoKabocha.revengeNeutral)
-                        || ((NekoKabocha.revengeCrew && (!Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor)))){
+                        || ((NekoKabocha.revengeCrew && (!Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor))))
+                    {
                         NekoKabocha.nekoKabocha.MurderPlayer(__instance);
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                        //writer.Write(NekoKabocha.nekoKabocha.PlayerId);
-                        //writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
                         writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
                         writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1538,6 +1607,22 @@ namespace TheOtherRoles.Patches {
             // Remove fake tasks when player dies
             if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief)
                 __instance.clearAllTasks();
+
+            // Neko-Kabocha revenge on exile
+            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha)
+            {
+                if (NekoKabocha.revengeExile)
+                {
+                    var candidates = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(x => x != NekoKabocha.nekoKabocha && !x.Data.IsDead).ToList();
+                    int targetID = rnd.Next(0, candidates.Count);
+                    var target = candidates[targetID];
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NekoKabochaExile, Hazel.SendOption.Reliable, -1);
+                    writer.Write(target.PlayerId);
+                    writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.nekoKabochaExile(target.PlayerId);
+                }
+            }
 
             // Lover suicide trigger on exile
             if ((Lovers.lover1 != null && __instance == Lovers.lover1) || (Lovers.lover2 != null && __instance == Lovers.lover2)) {
