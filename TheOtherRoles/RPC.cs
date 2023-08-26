@@ -418,7 +418,7 @@ namespace TheOtherRoles
                         SerialKiller.serialKiller = player;
                         break;
                     case RoleId.Thief:
-                        Thief.thie  f = player;
+                        Thief.thief = player;
                         break;
                         //case RoleId.Bomber:
                         //Bomber.bomber = player;
