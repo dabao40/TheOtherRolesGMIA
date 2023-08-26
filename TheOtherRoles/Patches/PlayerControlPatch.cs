@@ -1774,7 +1774,7 @@ namespace TheOtherRoles.Patches {
         private static void UpdateUndertakerPhysics(PlayerPhysics playerPhysics)
         {
             if (Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl || Undertaker.DraggedBody == null) return;
-            playerPhysics.body.velocity *= 1f + CustomOptionHolder.UndertakerSpeedModifier.getFloat() / 100f;
+            playerPhysics.body.velocity *= 1f + CustomOptionHolder.UndertakerSpeedDecrease.getFloat() / 100f;
         }
 
         private static void UpdateInvert(PlayerPhysics playerPhysics)
