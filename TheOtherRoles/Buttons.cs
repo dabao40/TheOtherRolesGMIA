@@ -27,6 +27,7 @@ namespace TheOtherRoles
         private static CustomButton timeMasterShieldButton;
         private static CustomButton medicShieldButton;
         private static CustomButton shifterShiftButton;
+        private static CustomButton undertakerDragButton;
         private static CustomButton morphlingButton;
         private static CustomButton camouflagerButton;
         private static CustomButton portalmakerPlacePortalButton;
@@ -104,6 +105,7 @@ namespace TheOtherRoles
             shifterShiftButton.MaxTimer = 0f;
             morphlingButton.MaxTimer = Morphling.cooldown;
             camouflagerButton.MaxTimer = Camouflager.cooldown;
+            undertakerDragButton.MaxTimer = 0f;
             portalmakerPlacePortalButton.MaxTimer = Portalmaker.cooldown;
             usePortalButton.MaxTimer = Portalmaker.usePortalCooldown;
             portalmakerMoveToPortalButton.MaxTimer = Portalmaker.usePortalCooldown;
@@ -1674,7 +1676,7 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
-                    //¡¡Õ¼¤¤ŽŸÒÔÍâ¤ÎˆöºÏ¡¢¥ê¥½©`¥¹¤¬¤Ê¤¤ˆöºÏ¤Ï¥Ü¥¿¥ó¤ò±íÊ¾¤·¤Ê¤¤
+                    //ã€€å ã„å¸«ä»¥å¤–ã®å ´åˆã€ãƒªã‚½ãƒ¼ã‚¹ãŒãªã„å ´åˆã¯ãƒœã‚¿ãƒ³ã‚’è¡¨ç¤ºã—ãªã„
                     if (!TORMapOptions.playerIcons.ContainsKey(index) ||
                         !CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
@@ -1687,10 +1689,10 @@ namespace TheOtherRoles
                         return false;
                     }
 
-                    // ¥Ü¥¿¥ó¤ÎÎ»ÖÃ¤ò‰ä¸ü
+                    // ãƒœã‚¿ãƒ³ã®ä½ç½®ã‚’å¤‰æ›´
                     setButtonPos(index);
 
-                    // ¥Ü¥¿¥ó¤Ë¥Æ¥­¥¹¥È¤òÔO¶¨
+                    // ãƒœã‚¿ãƒ³ã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®š
                     bool status = true;
                     if (FortuneTeller.playerStatus.ContainsKey(index))
                     {
@@ -1708,7 +1710,7 @@ namespace TheOtherRoles
                         fortuneTellerButtons[index].buttonText = "Dead";
                     }
 
-                    // ¥¢¥¤¥³¥ó¤ÎÎ»ÖÃ¤ÈÍ¸Ã÷¶È¤ò‰ä¸ü
+                    // ã‚¢ã‚¤ã‚³ãƒ³ã®ä½ç½®ã¨é€æ˜Žåº¦ã‚’å¤‰æ›´
                     setIconPos(index, !FortuneTeller.canDivine(index));
 
                     TORMapOptions.playerIcons[index].gameObject.SetActive(!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
@@ -2306,6 +2308,52 @@ namespace TheOtherRoles
             huntedShieldCountText.enableWordWrapping = false;
             huntedShieldCountText.transform.localScale = Vector3.one * 0.5f;
             huntedShieldCountText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            undertakerDragButton = new CustomButton(
+                () =>
+                {
+                    var bodyComponent = Undertaker.TargetBody;
+                    if (Undertaker.DraggedBody == null && bodyComponent != null)
+                    {
+                        Undertaker.RpcDragBody(bodyComponent.ParentId);
+                    }
+                    else if (Undertaker.DraggedBody != null)
+                    {
+                        var position = Undertaker.DraggedBody.transform.position;
+                        Undertaker.RpcDropBody(position);
+                    }
+                }, // Action OnClick
+                () =>
+                {
+                    return Undertaker.Player != null &&
+                           Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
+                           !CachedPlayer.LocalPlayer.Data.IsDead;
+                }, // Bool HasButton
+                () =>
+                {
+                    if (Undertaker.DraggedBody != null)
+                    {
+                        undertakerDragButton.Sprite = Undertaker.DropButtonSprite;
+                    }
+                    else
+                    {
+                        undertakerDragButton.Sprite = Undertaker.DragButtonSprite;
+                    }
+                    return ((Undertaker.TargetBody != null && Undertaker.DraggedBody == null)
+                            || (Undertaker.DraggedBody != null && Undertaker.CanDropBody))
+                           && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                }, // Bool CouldUse
+                () => { }, // Action OnMeetingEnds
+                Undertaker.DragButtonSprite, // Sprite sprite,
+                CustomButton.ButtonPositions.upperRowLeft, // Vector3 PositionOffset
+                __instance, // HudManager hudManager
+                null, // String actionName,
+                false, // bool HasEffect
+                0f, // Float EffectDuration
+                () => { }, // Action OnEffectEnds
+                false, // Bool mirror = false
+                "" // String buttonText = ""
+            );
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons
             initialized = true;

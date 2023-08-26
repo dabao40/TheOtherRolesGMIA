@@ -30,6 +30,10 @@ namespace TheOtherRoles {
         public static CustomOption amnisiacShowArrows;
         public static CustomOption amnisiacResetRole;
 
+        public static CustomOption UndertakerSpawnRate;
+        public static CustomOption UndertakerSpeedDecrease;
+        public static CustomOption UndertakerDisableVent;
+
 
 
         public static CustomOption mafiaSpawnRate;
@@ -453,6 +457,10 @@ namespace TheOtherRoles {
 
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "Mafia"), rates, null, true);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate);
+
+            UndertakerSpawnRate = CustomOption.Create(5009, Types.Impostor, cs(Undertaker.Color, "Undertaker"), rates, null, true);
+            UndertakerSpeedDecrease = CustomOption.Create(5010, Types.Impostor, "Speed Decrease", 0f, -100f, 100f, 10f, UndertakerSpawnRate);
+            UndertakerDisableVent = CustomOption.Create(5011, Types.Impostor, "Disable vent while dragging", true, UndertakerSpawnRate);
 
             morphlingSpawnRate = CustomOption.Create(20, Types.Impostor, cs(Morphling.color, "Morphling"), rates, null, true);
             morphlingCooldown = CustomOption.Create(21, Types.Impostor, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
