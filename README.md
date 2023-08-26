@@ -5,6 +5,11 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
 
+# New Roles
+Amnesiac by [XiezibanWrite](https://github.com/XiezibanWrite)  
+Sprinter by [Imp11](https://github.com/dabao40)  
+Isolator by zcy  
+
 # Roles Added
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
