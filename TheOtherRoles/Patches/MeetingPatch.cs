@@ -458,7 +458,7 @@ namespace TheOtherRoles.Patches {
                             return;
                         }
 
-                        var mainRoleInfo = RoleInfo.getRoleInfoForPlayer(focusedTarget, false).FirstOrDefault();
+                        var mainRoleInfo = RoleInfo.getRoleInfoForPlayer(focusedTarget, false, includeHidden: true).FirstOrDefault();
                         if (mainRoleInfo == null) return;
 
                         PlayerControl dyingTarget = (mainRoleInfo == roleInfo) ? focusedTarget : CachedPlayer.LocalPlayer.PlayerControl;

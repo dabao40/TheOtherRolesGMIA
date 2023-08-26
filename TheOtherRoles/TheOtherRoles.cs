@@ -61,12 +61,17 @@ namespace TheOtherRoles
             Witch.clearAndReload();
             Assassin.clearAndReload();
             Thief.clearAndReload();
+            Amnisiac.clearAndReload();
             //Trapper.clearAndReload();
             //Bomber.clearAndReload();
 
             // GMIA
             Ninja.clearAndReload();
             NekoKabocha.clearAndReload();
+            SerialKiller.clearAndReload();
+            FortuneTeller.clearAndReload();
+            Sprinter.clearAndReload();
+            Opportunist.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -157,6 +162,38 @@ namespace TheOtherRoles
             }
 
 
+        }
+        public static class Amnisiac
+        {
+            public static PlayerControl amnisiac;
+            public static List<Arrow> localArrows = new List<Arrow>();
+            public static Color color = new Color(0.5f, 0.7f, 1f, 1f);
+            public static List<PoolablePlayer> poolIcons = new List<PoolablePlayer>();
+
+            public static bool showArrows = true;
+            public static bool resetRole = false;
+
+            private static Sprite buttonSprite;
+            public static Sprite getButtonSprite()
+            {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Remember.png", 115f);
+                return buttonSprite;
+            }
+
+            public static void clearAndReload()
+            {
+                amnisiac = null;
+                showArrows = CustomOptionHolder.amnisiacShowArrows.getBool();
+                resetRole = CustomOptionHolder.amnisiacResetRole.getBool();
+                if (localArrows != null)
+                {
+                    foreach (Arrow arrow in localArrows)
+                        if (arrow?.arrow != null)
+                            UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                localArrows = new List<Arrow>();
+            }
         }
 
         public static class Mayor {
@@ -366,12 +403,14 @@ namespace TheOtherRoles
             public static float lighterModeLightsOnVision = 2f;
             public static float lighterModeLightsOffVision = 0.75f;
             public static float flashlightWidth = 0.75f;
+            public static bool canSeeInvisible = true;
 
             public static void clearAndReload() {
                 lighter = null;
                 flashlightWidth = CustomOptionHolder.lighterFlashlightWidth.getFloat();
                 lighterModeLightsOnVision = CustomOptionHolder.lighterModeLightsOnVision.getFloat();
                 lighterModeLightsOffVision = CustomOptionHolder.lighterModeLightsOffVision.getFloat();
+                canSeeInvisible = CustomOptionHolder.lighterCanSeeInvisible.getBool();
             }
         }
 
@@ -642,7 +681,7 @@ namespace TheOtherRoles
         public static void resetCamouflage() {
             camouflageTimer = 0f;
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                if ((p == Assassin.assassin && Assassin.isInvisble) || (p == Ninja.ninja && Ninja.stealthed))
+                if ((p == Ninja.ninja && Ninja.stealthed) || (p == Sprinter.sprinter && Sprinter.sprinting))
                     continue;
                 p.setDefaultLook();
             }
@@ -1458,10 +1497,10 @@ namespace TheOtherRoles
                 string typeOfColor = Helpers.isLighterColor(Medium.target.killerIfExisting.Data.DefaultOutfit.ColorId) ? "lighter" : "darker";
                 float timeSinceDeath = ((float)(Medium.meetingStartTime - Medium.target.timeOfDeath).TotalMilliseconds);
                 
-                if (randomNumber == 0) msg = "If my role hasn't been saved, there's no " + RoleInfo.GetRolesString(Medium.target.player, false) + " in the game anymore.";
+                if (randomNumber == 0) msg = "If my role hasn't been saved, there's no " + RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true) + " in the game anymore.";
                 else if (randomNumber == 1) msg = "I'm not sure, but I guess a " + typeOfColor + " color killed me.";
                 else if (randomNumber == 2) msg = "If I counted correctly, I died " + Math.Round(timeSinceDeath / 1000) + "s before the next meeting started.";
-                else msg = "It seems like my killer was the " + RoleInfo.GetRolesString(Medium.target.killerIfExisting, false, false, true) + ".";
+                else msg = "It seems like my killer was the " + RoleInfo.GetRolesString(Medium.target.killerIfExisting, false, false, true, includeHidden: true) + ".";
             }
 
             if (rnd.NextDouble() < chanceAdditionalInfo) {
@@ -1722,8 +1761,6 @@ namespace TheOtherRoles
         public static void divine(PlayerControl p)
         {
             string msg = "";
-            string msg1 = "";
-            string msg2 = "";
             Color color = Color.white;
 
             if (FortuneTeller.divineResult == DivineResults.BlackWhite)
@@ -1761,14 +1798,12 @@ namespace TheOtherRoles
 
             else if (divineResult == DivineResults.Role)
             {
-                msg1 = $"{p.name} was The";
-                msg2 = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
-                msg = string.Format(msg1, msg2);
+                msg = $"{p.Data.PlayerName} was The {String.Join(" ", RoleInfo.getRoleInfoForPlayer(p, false).Select(x => Helpers.cs(x.color, x.name)))}";
             }
 
             if (!string.IsNullOrWhiteSpace(msg))
             {
-                fortuneTellerMessage(msg, 5f, color);
+                fortuneTellerMessage(msg, 7f, color);
             }
 
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
@@ -1786,8 +1821,10 @@ namespace TheOtherRoles
         {
             meetingFlag = true;
             duration = CustomOptionHolder.fortuneTellerDuration.getFloat();
+            List<Arrow> arrows = new List<Arrow>();
             numTasks = (int)CustomOptionHolder.fortuneTellerNumTasks.getFloat();
             distance = CustomOptionHolder.fortuneTellerDistance.getFloat();
+            divineResult = (DivineResults)CustomOptionHolder.fortuneTellerResults.getSelection();
             fortuneTeller = null;
         }
 
@@ -1804,6 +1841,54 @@ namespace TheOtherRoles
                     }
                 })));
             }
+        }
+    }
+
+    public static class SerialKiller
+    {
+        public static PlayerControl serialKiller;
+        public static Color color = Palette.ImpostorRed;
+
+        public static float killCooldown = 15f;
+        public static float suicideTimer = 40f;
+        public static bool resetTimer = true;
+
+        public static bool isCountDown = false;
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SuicideButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static void suicide()
+        {
+            byte targetId = PlayerControl.LocalPlayer.PlayerId;
+            MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SerialKillerSuicide, Hazel.SendOption.Reliable, -1);
+            killWriter.Write(targetId);
+            AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+            RPCProcedure.serialKillerSuicide(targetId);
+        }
+
+        public static void OnKill(PlayerControl target)
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller)
+                SerialKiller.serialKiller.SetKillTimer(killCooldown);
+
+            //serialKillerButton.Timer = suicideTimer;
+            HudManagerStartPatch.serialKillerButton.Timer = suicideTimer;
+            isCountDown = true;
+        }
+
+        public static void clearAndReload()
+        {
+            serialKiller = null;
+            killCooldown = CustomOptionHolder.serialKillerKillCooldown.getFloat();
+            suicideTimer = Mathf.Max(CustomOptionHolder.serialKillerSuicideTimer.getFloat(), killCooldown + 2.5f);
+            resetTimer = CustomOptionHolder.serialKillerResetTimer.getBool();
+            isCountDown = false;
         }
     }
 
@@ -1926,10 +2011,10 @@ namespace TheOtherRoles
         public static float cooldown = 30f;
         public static float traceTime = 1f;
         public static bool knowsTargetLocation = false;
-        public static float invisibleDuration = 5f;
+        //public static float invisibleDuration = 5f;
 
-        public static float invisibleTimer = 0f;
-        public static bool isInvisble = false;
+        //public static float invisibleTimer = 0f;
+        //public static bool isInvisble = false;
         private static Sprite markButtonSprite;
         private static Sprite killButtonSprite;
         public static Arrow arrow = new Arrow(Color.black);
@@ -1951,12 +2036,23 @@ namespace TheOtherRoles
             cooldown = CustomOptionHolder.assassinCooldown.getFloat();
             knowsTargetLocation = CustomOptionHolder.assassinKnowsTargetLocation.getBool();
             traceTime = CustomOptionHolder.assassinTraceTime.getFloat();
-            invisibleDuration = CustomOptionHolder.assassinInvisibleDuration.getFloat();
-            invisibleTimer = 0f;
-            isInvisble = false;
+            //invisibleDuration = CustomOptionHolder.assassinInvisibleDuration.getFloat();
+            //invisibleTimer = 0f;
+            //isInvisble = false;
             if (arrow?.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             arrow = new Arrow(Color.black);
             if (arrow.arrow != null) arrow.arrow.SetActive(false);
+        }
+    }
+
+    public static class Opportunist
+    {
+        public static PlayerControl opportunist;
+        public static Color color = new Color32(0, 255, 00, byte.MaxValue);
+
+        public static void clearAndReload()
+        {
+            opportunist = null;
         }
     }
 
@@ -2103,7 +2199,8 @@ namespace TheOtherRoles
 
                     bool canSee =
                         PlayerControl.LocalPlayer.Data.IsDead ||
-                        PlayerControl.LocalPlayer.Data.Role.IsImpostor;
+                        PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
+                        (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
 
                     var opacity = canSee ? 0.1f : 0.0f;
 
@@ -2118,6 +2215,128 @@ namespace TheOtherRoles
                     }
 
                     setOpacity(ninja, opacity);
+                }
+            }
+        }
+    }
+
+    public static class Sprinter
+    {
+        public static PlayerControl sprinter;
+        public static Color color = new Color32(128, 128, 255, byte.MaxValue);
+
+        public static float sprintCooldown = 30f;
+        public static float sprintDuration = 15f;
+        public static float fadeTime = 0.5f;
+        public static float invisibleTimer = 0f;
+
+        public static bool sprinting = false;
+
+        public static DateTime sprintAt = DateTime.UtcNow;
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SprintButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static float sprintFade(PlayerControl player)
+        {
+            if (Sprinter.sprinter == player && fadeTime > 0 && !Sprinter.sprinter.Data.IsDead)
+            {
+                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - Sprinter.sprintAt).TotalSeconds / fadeTime);
+            }
+            return 1.0f;
+        }
+
+        public static bool isSprinting()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter && !Sprinter.sprinter.Data.IsDead)
+            {
+                return Sprinter.sprinting;
+            }
+            return false;
+        }
+
+        public static void setSprinting(PlayerControl player, bool sprinting = true)
+        {
+            if (player == Sprinter.sprinter && !Sprinter.sprinter.Data.IsDead)
+            {
+                Sprinter.sprinting = sprinting;
+                Sprinter.sprintAt = DateTime.UtcNow;
+            }
+        }
+
+        public static void setOpacity(PlayerControl player, float opacity)
+        {
+            var color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
+            try
+            {
+                if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
+                {
+                    player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
+                }
+
+                if (player.MyPhysics?.myPlayer.cosmetics.skin?.layer != null)
+                    player.MyPhysics.myPlayer.cosmetics.skin.layer.color = color;
+
+                if (player.cosmetics.hat != null)
+                    player.cosmetics.hat.SpriteColor = color;
+
+                if (player.cosmetics.currentPet?.rend != null)
+                    player.cosmetics.currentPet.rend.color = color;
+
+                if (player.cosmetics.currentPet?.shadowRend != null)
+                    player.cosmetics.currentPet.shadowRend.color = color;
+
+                if (player.cosmetics.visor != null)
+                    player.cosmetics.visor.Image.color = color;
+
+                if (player.cosmetics.colorBlindText != null)
+                    player.cosmetics.colorBlindText.color = color;
+            }
+            catch { }
+        }
+
+        public static void clearAndReload()
+        {
+            sprinter = null;
+            sprinting = false;
+            sprintCooldown = CustomOptionHolder.sprinterCooldown.getFloat();
+            sprintDuration = CustomOptionHolder.sprinterDuration.getFloat();
+            fadeTime = CustomOptionHolder.sprinterFadeTime.getFloat();
+        }
+
+        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+        public static class PlayerPhysicsSprinterPatch
+        {
+            public static void Postfix(PlayerPhysics __instance)
+            {
+                if (__instance.myPlayer == Sprinter.sprinter)
+                {
+                    var sprinter = __instance.myPlayer;
+                    if (sprinter == null || sprinter.Data.IsDead) return;
+
+                    bool canSee =
+                        PlayerControl.LocalPlayer.Data.IsDead ||
+                        CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter ||
+                        (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
+
+                    var opacity = canSee ? 0.1f : 0.0f;
+
+                    if (Sprinter.sprinting)
+                    {
+                        opacity = Math.Max(opacity, 1.0f - sprintFade(sprinter));
+                        sprinter.cosmetics.currentBodySprite.BodySprite.material.SetFloat("_Outline", 0f);
+                    }
+                    else
+                    {
+                        opacity = Math.Max(opacity, sprintFade(sprinter));
+                    }
+
+                    setOpacity(sprinter, opacity);
                 }
             }
         }
@@ -2400,7 +2619,7 @@ namespace TheOtherRoles
 
         public static void update() {
             foreach (var chameleonPlayer in chameleon) {
-                if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
+                //if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
                 // check movement by animation
                 PlayerPhysics playerPhysics = chameleonPlayer.MyPhysics;
                 var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();

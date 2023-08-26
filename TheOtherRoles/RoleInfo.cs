@@ -51,6 +51,7 @@ namespace TheOtherRoles
         public static RoleInfo timeMaster = new RoleInfo("Time Master", TimeMaster.color, "Save yourself with your time shield", "Use your time shield", RoleId.TimeMaster);
         public static RoleInfo medic = new RoleInfo("Medic", Medic.color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
         public static RoleInfo swapper = new RoleInfo("Swapper", Swapper.color, "Swap votes to exile the <color=#FF1919FF>Impostors</color>", "Swap votes", RoleId.Swapper);
+        public static RoleInfo amnisiac = new RoleInfo("Amnisiac", Amnisiac.color, "Steal roles from the dead", "You forgot", RoleId.Amnisiac);
         public static RoleInfo seer = new RoleInfo("Seer", Seer.color, "You will see players die", "You will see players die", RoleId.Seer);
         public static RoleInfo hacker = new RoleInfo("Hacker", Hacker.color, "Hack systems to find the <color=#FF1919FF>Impostors</color>", "Hack to find the Impostors", RoleId.Hacker);
         public static RoleInfo shifter = new RoleInfo("Shifter", Shifter.color, "Shift your role", "Shift your role", RoleId.Shifter);
@@ -81,7 +82,10 @@ namespace TheOtherRoles
         // GMIA functional
         public static RoleInfo ninja = new RoleInfo("Ninja", Ninja.color, "Use your stealth to confuse the crew", "Use your stealth to confuse the crew", RoleId.Ninja);
         public static RoleInfo nekoKabocha = new RoleInfo("Neko-Kabocha", NekoKabocha.color, "You will never die alone", "You will never die alone", RoleId.NekoKabocha);
+        public static RoleInfo serialKiller = new RoleInfo("Serial Killer", SerialKiller.color, "You crave blood", "You crave blood", RoleId.SerialKiller);
         public static RoleInfo fortuneTeller = new RoleInfo("Fortune Teller", FortuneTeller.color, "May your divination reveal your enemies", "May your divination reveal your enemies", RoleId.FortuneTeller);
+        public static RoleInfo sprinter = new RoleInfo("Sprinter", Sprinter.color, "Run from the <color=#FF1919FF>Impostors</color>", "Run from the Impostors", RoleId.Sprinter);
+        public static RoleInfo opportunist = new RoleInfo("Opportunist", Opportunist.color, "Do whatever it takes to survive", "Do whatever it takes to survive", RoleId.Opportunist, true);
 
         public static RoleInfo hunter = new RoleInfo("Hunter", Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, "Seek and kill everyone"), "Seek and kill everyone", RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo("Hunted", Color.white, "Hide", "Hide", RoleId.Crewmate);
@@ -153,6 +157,7 @@ namespace TheOtherRoles
             spy,
             securityGuard,
             medium,
+            amnisiac,
             //trapper,
             bloody,
             antiTeleport,
@@ -166,7 +171,10 @@ namespace TheOtherRoles
 
             // GMIA
             ninja, 
-            nekoKabocha
+            nekoKabocha,
+            serialKiller,
+            sprinter,
+            opportunist
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false) {
@@ -216,6 +224,7 @@ namespace TheOtherRoles
             if (p == Assassin.assassin) infos.Add(assassin);
             //if (p == Bomber.bomber) infos.Add(bomber);
             if (p == Detective.detective) infos.Add(detective);
+            if (p == Amnisiac.amnisiac) infos.Add(amnisiac);
             if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
             if (p == Medic.medic) infos.Add(medic);
             if (p == Swapper.swapper) infos.Add(swapper);
@@ -228,6 +237,7 @@ namespace TheOtherRoles
             if (p == Spy.spy) infos.Add(spy);
             if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
             if (p == Bait.bait) infos.Add(bait);
+            if (p == Sprinter.sprinter) infos.Add(sprinter);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -240,6 +250,7 @@ namespace TheOtherRoles
                     infos.Add(info);
                 }
             }
+            if (p == Opportunist.opportunist) infos.Add(opportunist);
             if (p == Shifter.shifter) infos.Add(shifter);
             if (p == Arsonist.arsonist) infos.Add(arsonist);
             if (p == Guesser.niceGuesser) infos.Add(goodGuesser);
@@ -249,6 +260,7 @@ namespace TheOtherRoles
             if (p == BountyHunter.bountyHunter) infos.Add(bountyHunter);
             if (p == Ninja.ninja) infos.Add(ninja);
             if (p == NekoKabocha.nekoKabocha) infos.Add(nekoKabocha);
+            if (p == SerialKiller.serialKiller) infos.Add(serialKiller);
             if (p == Vulture.vulture) infos.Add(vulture);
             if (p == Medium.medium) infos.Add(medium);
             if (p == Lawyer.lawyer) infos.Add(lawyer); // && !Lawyer.isProsecutor
@@ -268,9 +280,9 @@ namespace TheOtherRoles
             return infos;
         }
 
-        public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false) {
+        public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false, bool includeHidden = false) {
             string roleName;
-            roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
+            roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier, includeHidden: includeHidden).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
             if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target) 
                 roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
             if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += " (Guesser)";
@@ -344,6 +356,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Revenge:
                                     deathReasonString = $" - {Helpers.cs(NekoKabocha.color, "revenged")} by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Suicide:
+                                    deathReasonString = $" - suicide";
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                     //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

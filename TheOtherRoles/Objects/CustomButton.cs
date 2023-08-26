@@ -204,6 +204,12 @@ namespace TheOtherRoles.Objects {
                     pos = new Vector3(xpos, pos.y, pos.z);
                 }
                 actionButton.transform.localPosition = pos + PositionOffset;
+
+                // Here we're going to set up the Fortune Teller scale
+                if (localPlayer.PlayerControl == FortuneTeller.fortuneTeller && Sprite == null)  // The Fortune Teller's button sprite is null
+                {
+                    actionButton.transform.localScale = LocalScale;
+                }
             }
             if (CouldUse()) {
                 actionButtonRenderer.color = actionButtonLabelText.color = Palette.EnabledColor;

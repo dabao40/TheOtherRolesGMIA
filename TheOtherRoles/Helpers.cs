@@ -200,7 +200,7 @@ namespace TheOtherRoles {
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player));
+            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player));
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -269,8 +269,9 @@ namespace TheOtherRoles {
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f) return true; // No names are visible
             if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide ninja nametags from non-impostors
+            if (Sprinter.sprinting && Sprinter.sprinter == target) return true; // Hide Sprinter nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
-            else if (Assassin.isInvisble && Assassin.assassin == target) return true;
+            //else if (Assassin.isInvisble && Assassin.assassin == target) return true;
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
             else if (source == null || target == null) return true;
             else if (source == target) return false; // Player sees his own name
@@ -497,7 +498,8 @@ namespace TheOtherRoles {
                 player != Arsonist.arsonist && 
                 player != Vulture.vulture && 
                 player != Lawyer.lawyer && 
-                player != Pursuer.pursuer);
+                player != Pursuer.pursuer &&
+                player != Opportunist.opportunist);
 
         }
 

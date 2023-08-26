@@ -55,24 +55,6 @@ namespace TheOtherRoles.Patches {
             // Activate portals.
             Portal.meetingEndsUpdate();
 
-            /*PlayerControl killer = null;
-            killer ??= NekoKabocha.meetingKiller;
-            // Neko-Kabocha revenge exile
-            if (NekoKabocha.nekoKabocha != null && NekoKabocha.revengeExile && killer == null)
-            {
-                var candidates = PlayerControl.AllPlayerControls.ToArray().Where(x => x != NekoKabocha.nekoKabocha && !x.Data.IsDead).ToList();
-                int targetID = rnd.Next(0, candidates.Count);
-                var target = candidates[targetID];
-
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NekoKabochaExile, Hazel.SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.nekoKabochaExile(target.PlayerId);
-
-                GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
-            }*/
-
             // Witch execute casted spells
             if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost) {
                 bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
@@ -313,7 +295,7 @@ namespace TheOtherRoles.Patches {
                     if (player == null) return;
                     // Exile role text
                     if (id == StringNames.ExileTextPN || id == StringNames.ExileTextSN || id == StringNames.ExileTextPP || id == StringNames.ExileTextSP) {
-                        __result = player.Data.PlayerName + " was The " + String.Join(" ", RoleInfo.getRoleInfoForPlayer(player, false).Select(x => x.name).ToArray());
+                        __result = player.Data.PlayerName + " was The " + String.Join(" ", RoleInfo.getRoleInfoForPlayer(player, false, includeHidden: true).Select(x => x.name).ToArray());
                     }
                     // Hide number of remaining impostors on Jester win
                     if (id == StringNames.ImpostorsRemainP || id == StringNames.ImpostorsRemainS) {

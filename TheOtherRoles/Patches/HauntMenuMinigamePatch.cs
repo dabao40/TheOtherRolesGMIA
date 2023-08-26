@@ -15,7 +15,7 @@ namespace TheOtherRoles.Patches {
         public static void Postfix(HauntMenuMinigame __instance) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
             var target = __instance.HauntTarget;
-            var roleInfo = RoleInfo.getRoleInfoForPlayer(target, false);
+            var roleInfo = RoleInfo.getRoleInfoForPlayer(target, false, includeHidden: true);
             string roleString = (roleInfo.Count > 0 && TORMapOptions.ghostsSeeRoles) ? roleInfo[0].name : "";
             if (__instance.HauntTarget.Data.IsDead) {
                 __instance.FilterText.text = roleString + " Ghost";

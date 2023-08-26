@@ -117,6 +117,7 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.Warlock, CustomOptionHolder.warlockSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.BountyHunter, CustomOptionHolder.bountyHunterSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Witch, CustomOptionHolder.witchSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.SerialKiller, CustomOptionHolder.serialKillerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Assassin, CustomOptionHolder.assassinSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Ninja, CustomOptionHolder.ninjaSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.NekoKabocha, CustomOptionHolder.nekoKabochaSpawnRate.getSelection());
@@ -125,8 +126,10 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Jackal, CustomOptionHolder.jackalSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Opportunist, CustomOptionHolder.opportunistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Vulture, CustomOptionHolder.vultureSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Thief, CustomOptionHolder.thiefSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Amnisiac, CustomOptionHolder.amnisiacSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -147,6 +150,7 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Tracker, CustomOptionHolder.trackerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Snitch, CustomOptionHolder.snitchSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Medium, CustomOptionHolder.mediumSpawnRate.getSelection());
+            crewSettings.Add((byte)RoleId.Sprinter, CustomOptionHolder.sprinterSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.FortuneTeller, CustomOptionHolder.fortuneTellerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Bait, CustomOptionHolder.baitSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.getSelection());
@@ -506,7 +510,7 @@ namespace TheOtherRoles.Patches {
                 List<PlayerControl> impPlayer = new List<PlayerControl>(players);
                 List<PlayerControl> crewPlayer = new List<PlayerControl>(players);
                 impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor);
-                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer);
+                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller);
 
                 if (isEvilLover) firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, impPlayer);
                 else firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer);

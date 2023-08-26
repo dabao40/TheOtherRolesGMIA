@@ -265,7 +265,7 @@ namespace TheOtherRoles.Patches {
                 statusText = "The Lawyer can't start an emergency meeting";
                 //if (Lawyer.isProsecutor) statusText = "The Prosecutor can't start an emergency meeting";
             }
-            if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl)
+            if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl && FortuneTeller.isCompletedNumTasks(CachedPlayer.LocalPlayer.PlayerControl))
             {
                 roleCanCallEmergency = false;
                 statusText = "The Fortune Teller can't start an emergency meeting";
@@ -659,7 +659,7 @@ namespace TheOtherRoles.Patches {
 
             if (isLightsOut && !nightVisionIsActive && nightVisionEnabled && !ignoreNightVision) {  // only update when something changed!
                 foreach (PlayerControl pc in CachedPlayer.AllPlayers) {
-                    if (pc == Assassin.assassin && Assassin.invisibleTimer > 0f || pc == Ninja.ninja && Ninja.invisibleTimer > 0f) {
+                    if (pc == Ninja.ninja && Ninja.invisibleTimer > 0f || pc == Sprinter.sprinter && Sprinter.invisibleTimer > 0f) {
                         continue;
                     }
                     pc.setLook("", 11, "", "", "", "", false);
@@ -693,7 +693,7 @@ namespace TheOtherRoles.Patches {
                     } else if (pc == Morphling.morphling && Morphling.morphTimer > 0) {
                         PlayerControl target = Morphling.morphTarget;
                         Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
-                    } else if (pc == Assassin.assassin && Assassin.invisibleTimer > 0f || pc == Ninja.ninja && Ninja.invisibleTimer > 0f) {
+                    } else if (pc == Ninja.ninja && Ninja.invisibleTimer > 0f || pc == Sprinter.sprinter && Sprinter.invisibleTimer > 0f) {
                         continue;
                     } else {
                         Helpers.setDefaultLook(pc, false);
