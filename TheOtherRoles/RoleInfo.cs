@@ -153,6 +153,7 @@ namespace TheOtherRoles
             swapper,
             seer,
             hacker,
+            undertaker,
             tracker,
             snitch,
             spy,
