@@ -158,6 +158,12 @@ namespace TheOtherRoles.Patches {
             else if (exiled != null && Jester.jester != null && Jester.jester.PlayerId == exiled.PlayerId) {
                 Jester.triggerJesterWin = true;
             }
+            // Overlord win condition
+            if (Overlord.overlord != null && !Overlord.overlord.Data.IsDead && Overlord.meetingsAlive == (Overlord.meetingNumber - 1))
+            {
+                Overlord.triggerWin = true;
+            }
+
 
 
             // Reset custom button timers where necessary
@@ -268,6 +274,8 @@ namespace TheOtherRoles.Patches {
 
             // Invert add meeting
             if (Invert.meetings > 0) Invert.meetings--;
+
+            if (Overlord.overlord != null && !Overlord.overlord.Data.IsDead) Overlord.meetingsAlive++;
 
             Chameleon.lastMoved.Clear();
 

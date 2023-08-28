@@ -145,6 +145,10 @@ namespace TheOtherRoles {
         public static CustomOption portalmakerLogHasTime;
         public static CustomOption portalmakerCanPortalFromAnywhere;
 
+
+        public static CustomOption overlordSpawnRate;
+        public static CustomOption overlordMeetingNumber;
+
         public static CustomOption engineerSpawnRate;
         public static CustomOption engineerNumberOfFixes;
         public static CustomOption engineerHighlightForImpostors;
@@ -637,6 +641,11 @@ namespace TheOtherRoles {
             sprinterCooldown = CustomOption.Create(4006, Types.Crewmate, "Sprint Cooldown", 30f, 20f, 60f, 2.5f, sprinterSpawnRate);
             sprinterDuration = CustomOption.Create(4007, Types.Crewmate, "Sprint Duration", 15f, 10f, 60f, 2.5f, sprinterSpawnRate);
             sprinterFadeTime = CustomOption.Create(4008, Types.Crewmate, "Fade Time", 0.5f, 0.0f, 2.5f, 0.5f, sprinterSpawnRate);
+
+            overlordSpawnRate = CustomOption.Create(1074, Types.Neutral, cs(Overlord.color, "Overlord"), rates, null, true);
+            overlordMeetingNumber = CustomOption.Create(1075, Types.Neutral, "Meeting Number To Win", 3f, 3f, 15f, 1f, overlordSpawnRate);
+
+
 
             detectiveSpawnRate = CustomOption.Create(120, Types.Crewmate, cs(Detective.color, "Detective"), rates, null, true);
             detectiveAnonymousFootprints = CustomOption.Create(121, Types.Crewmate, "Anonymous Footprints", false, detectiveSpawnRate); 

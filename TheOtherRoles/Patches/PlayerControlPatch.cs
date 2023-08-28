@@ -685,6 +685,7 @@ namespace TheOtherRoles.Patches {
                         if (p.Data.IsDead) roleNames = roleText;
                         playerInfoText = $"{roleNames}";
                         if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs(Swapper.color, $" ({Swapper.charges})");
+                        if (p == Overlord.overlord) playerInfoText = $"{roleNames}" + Helpers.cs(Overlord.color, $" ({Overlord.meetingsAlive}/{Overlord.meetingNumber})");
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
                             tabText.SetText($"Tasks {taskInfo}");
