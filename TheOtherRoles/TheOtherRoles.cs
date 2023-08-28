@@ -64,6 +64,7 @@ namespace TheOtherRoles
             Thief.clearAndReload();
             Amnisiac.clearAndReload();
             Madmate.clearAndReload();
+            Overlord.clearAndReload();
             //Trapper.clearAndReload();
             //Bomber.clearAndReload();
 
