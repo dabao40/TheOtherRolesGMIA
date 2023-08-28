@@ -18,6 +18,7 @@ namespace TheOtherRoles.Patches {
         JesterWin = 13,
         ArsonistWin = 14,
         VultureWin = 15,
+        OverlordWin = 17,
         //ProsecutorWin = 16
     }
 
@@ -30,6 +31,7 @@ namespace TheOtherRoles.Patches {
         MiniLose,
         ArsonistWin,
         VultureWin,
+        OverlordWin,
         AdditionalLawyerBonusWin,
         AdditionalAlivePursuerWin,
         AdditionalLawyerStolenWin,
@@ -105,6 +107,7 @@ namespace TheOtherRoles.Patches {
             if (Pursuer.pursuer != null) notWinners.Add(Pursuer.pursuer);
             if (Thief.thief != null) notWinners.Add(Thief.thief);
             if (Madmate.madmate != null) notWinners.Add(Madmate.madmate);
+            if (Overlord.overlord != null) notWinners.Add(Overlord.overlord);
 
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -130,6 +133,7 @@ namespace TheOtherRoles.Patches {
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
+            bool overlordWin = Overlord.overlord != null && gameOverReason == (GameOverReason)CustomGameOverReason.OverlordWin;
             bool everyoneDead = AdditionalTempData.playerRoles.All(x => !x.IsAlive);
             //bool prosecutorWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.ProsecutorWin;
 
@@ -205,6 +209,14 @@ namespace TheOtherRoles.Patches {
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                     }
                 }
+                // Overlord win condition
+                else if (overlordWin)
+                {
+                    TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                    WinningPlayerData wpd = new WinningPlayerData(Overlord.overlord.Data);
+                    TempData.winners.Add(wpd);
+                    AdditionalTempData.winCondition = WinCondition.OverlordWin;
+                }
                 // Lovers solo win
                 else {
                     AdditionalTempData.winCondition = WinCondition.LoversSoloWin;
@@ -246,7 +258,10 @@ namespace TheOtherRoles.Patches {
                         break;
                     }
                 }
+
             }
+
+
             // Possible Additional winner: Lawyer
             // && !Lawyer.isProsecutor
             if (Lawyer.lawyer != null && Lawyer.target != null && (!Lawyer.target.Data.IsDead || Lawyer.target == Jester.jester) && !Pursuer.notAckedExiled) {
@@ -435,6 +450,11 @@ namespace TheOtherRoles.Patches {
                 textRenderer.text = "Mini died";
                 textRenderer.color = Mini.color;
             }
+            else if (AdditionalTempData.winCondition == WinCondition.MiniLose)
+            {
+                textRenderer.text = "Overlord Wins";
+                textRenderer.color = Overlord.color;
+            }
             else if (AdditionalTempData.winCondition == WinCondition.CrewmateWin)
             {
                 textRenderer.text = "Crewmates Win";
@@ -520,6 +540,7 @@ namespace TheOtherRoles.Patches {
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
             if (CheckAndEndGameForVultureWin(__instance)) return false;
             if (CheckAndEndGameForSabotageWin(__instance)) return false;
+            if (CheckAndEndGameForOverlordWin(__instance)) return false;
             if (CheckAndEndGameForTaskWin(__instance)) return false;
             //if (CheckAndEndGameForProsecutorWin(__instance)) return false;
             if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
@@ -564,6 +585,18 @@ namespace TheOtherRoles.Patches {
             }
             return false;
         }
+        private static bool CheckAndEndGameForOverlordWin(ShipStatus __instance)
+        {
+            if (Overlord.triggerWin)
+            {
+                //__instance.enabled = false;
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.OverlordWin, false);
+                return true;
+            }
+            return false;
+        }
+
+
 
         private static bool CheckAndEndGameForSabotageWin(ShipStatus __instance) {
             if (MapUtilities.Systems == null) return false;

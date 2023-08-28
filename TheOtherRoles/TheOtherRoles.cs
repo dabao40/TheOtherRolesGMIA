@@ -125,6 +125,24 @@ namespace TheOtherRoles
                 hasImpostorVision = CustomOptionHolder.madmateHasImpostorVision.getBool();
             }
         }
+
+        public static class Overlord
+        {
+            public static PlayerControl overlord;
+            public static Color color = new Color32(0, 128, 128, 255);
+
+            public static int meetingsAlive = 0;
+            public static int meetingNumber = 2;
+            public static bool triggerWin = false;
+
+            public static void clearAndReload()
+            {
+                overlord = null;
+                meetingsAlive = 0;
+                triggerWin = false;
+                meetingNumber = Mathf.RoundToInt(CustomOptionHolder.overlordMeetingNumber.getFloat());
+            }
+        }
         public static class Undertaker
         {
             public static PlayerControl Player;

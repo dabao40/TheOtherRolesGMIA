@@ -70,6 +70,7 @@ namespace TheOtherRoles
         public static RoleInfo vulture = new RoleInfo("Vulture", Vulture.color, "Eat corpses to win", "Eat dead bodies", RoleId.Vulture, true);
         public static RoleInfo medium = new RoleInfo("Medium", Medium.color, "Question the souls of the dead to gain information", "Question the souls", RoleId.Medium);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help the <color=#FF1919FF>Impostors</color>", "Help the Impostors", RoleId.Madmate);
+        public static RoleInfo overlord = new RoleInfo("Overlord", Overlord.color, "Reveal the intentions of everyone on the ship", "Reveal the intentions of everyone on the ship", RoleId.Overlord, true);
         //public static RoleInfo trapper = new RoleInfo("Trapper", Trapper.color, "Place traps to find the Impostors", "Place traps", RoleId.Trapper);
         public static RoleInfo lawyer = new RoleInfo("Lawyer", Lawyer.color, "Defend your client", "Defend your client", RoleId.Lawyer, true);
         //public static RoleInfo prosecutor = new RoleInfo("Prosecutor", Lawyer.color, "Vote out your target", "Vote out your target", RoleId.Prosecutor, true);
@@ -138,6 +139,7 @@ namespace TheOtherRoles
             pursuer,
             lawyer,
             thief,
+            overlord,
             //prosecutor,
             crewmate,
             mayor,
@@ -230,6 +232,7 @@ namespace TheOtherRoles
             //if (p == Bomber.bomber) infos.Add(bomber);
             if (p == Detective.detective) infos.Add(detective);
             if (p == Amnisiac.amnisiac) infos.Add(amnisiac);
+            if (p == Overlord.overlord) infos.Add(overlord);
             if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
             if (p == Medic.medic) infos.Add(medic);
             if (p == Swapper.swapper) infos.Add(swapper);

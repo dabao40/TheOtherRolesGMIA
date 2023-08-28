@@ -81,6 +81,7 @@ namespace TheOtherRoles
         SerialKiller,
         Opportunist,
         //Bomber,
+        Overlord,   
         Crewmate,
         Impostor,
         // Modifier ---
@@ -279,7 +280,10 @@ namespace TheOtherRoles
                     case RoleId.Deputy:
                         Deputy.deputy = player;
                         break;
-                    case RoleId.Lighter:
+                    case RoleId.Overlord:
+                        Overlord.overlord = player;
+                            break;
+                        case RoleId.Lighter:
                         Lighter.lighter = player;
                         break;
                     case RoleId.Godfather:
@@ -992,6 +996,7 @@ namespace TheOtherRoles
             if (player == Lawyer.lawyer) Lawyer.clearAndReload();
             if (player == Pursuer.pursuer) Pursuer.clearAndReload();
             if (player == Thief.thief) Thief.clearAndReload();
+            if (player == Overlord.overlord) Overlord.clearAndReload();
             if (player == Opportunist.opportunist) Opportunist.clearAndReload();
 
             // Modifier

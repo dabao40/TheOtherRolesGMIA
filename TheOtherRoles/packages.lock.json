@@ -31,6 +31,12 @@
           "Samboy063.Cpp2IL.Core": "2022.1.0-development.866"
         }
       },
+      "Disarm": {
+        "type": "Direct",
+        "requested": "[2022.1.0-master.26, )",
+        "resolved": "2022.1.0-master.26",
+        "contentHash": "YnZEbRGr0nG+N3G8WbRQ4Lkg8dTD3oso9iJlCVBmyhEyhLyqs+drBs1kWQbQqFPnb9mi/RJ++R9bPb+L3HF03Q=="
+      },
       "Reactor": {
         "type": "Direct",
         "requested": "[2.2.0, )",
@@ -93,11 +99,6 @@
           "AssetRipper.VersionUtilities": "1.2.1",
           "MonoMod.Utils": "22.5.1.1"
         }
-      },
-      "Disarm": {
-        "type": "Transitive",
-        "resolved": "2022.1.0-master.26",
-        "contentHash": "YnZEbRGr0nG+N3G8WbRQ4Lkg8dTD3oso9iJlCVBmyhEyhLyqs+drBs1kWQbQqFPnb9mi/RJ++R9bPb+L3HF03Q=="
       },
       "HarmonyX": {
         "type": "Transitive",
