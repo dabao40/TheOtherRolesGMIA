@@ -410,7 +410,7 @@ namespace TheOtherRoles {
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.setBlanked(killer.PlayerId, 0);
 
-              //这里写职业变内鬼（原版内鬼）
+                RoleManager.Instance.SetRole(Cursed.cursed, RoleTypes.Impostor);
 
                 return MurderAttemptResult.BlankKill;
             }
