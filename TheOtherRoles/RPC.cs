@@ -89,6 +89,7 @@ namespace TheOtherRoles
         //Bait, Bait is no longer a modifier
         Bloody,
         AntiTeleport,
+        Cursed,
         Tiebreaker,
         Sunglasses,
         Mini,
@@ -316,7 +317,10 @@ namespace TheOtherRoles
                         case RoleId.EvilWatcher:
                         Watcher.evilwatcher = player;
                         break;
-                    case RoleId.NiceWatcher:
+                    case RoleId.Cursed:
+                         Cursed.cursed = player;
+                         break;
+                        case RoleId.NiceWatcher:
                         Watcher.nicewatcher = player;
                         break;
                     case RoleId.Swapper:
@@ -1009,6 +1013,7 @@ namespace TheOtherRoles
                 if (Sunglasses.sunglasses.Any(x => x.PlayerId == player.PlayerId)) Sunglasses.sunglasses.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (player == Tiebreaker.tiebreaker) Tiebreaker.clearAndReload();
                 if (player == Mini.mini) Mini.clearAndReload();
+                if (player == Cursed.cursed) Cursed.clearAndReload();
                 if (Vip.vip.Any(x => x.PlayerId == player.PlayerId)) Vip.vip.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Invert.invert.Any(x => x.PlayerId == player.PlayerId)) Invert.invert.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId)) Chameleon.chameleon.RemoveAll(x => x.PlayerId == player.PlayerId);
