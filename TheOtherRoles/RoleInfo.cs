@@ -175,7 +175,7 @@ namespace TheOtherRoles
             vip,
             invert,
             chameleon,
-            Cursed,
+            cursed,
             //shifter, 
 
             // GMIA
