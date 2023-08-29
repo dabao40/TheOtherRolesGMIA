@@ -402,6 +402,18 @@ namespace TheOtherRoles {
 
                 return MurderAttemptResult.BlankKill;
             }
+            else if (Cursed.cursed != null && Cursed.cursed == target && killer.Data.Role.IsImpostor)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetBlanked, Hazel.SendOption.Reliable, -1);
+                writer.Write(killer.PlayerId);
+                writer.Write((byte)0);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.setBlanked(killer.PlayerId, 0);
+
+                RoleManager.Instance.SetRole(Cursed.cursed, RoleTypes.Impostor);
+
+                return MurderAttemptResult.BlankKill;
+            }
 
             // Block impostor shielded kill
             if (Medic.shielded != null && Medic.shielded == target) {

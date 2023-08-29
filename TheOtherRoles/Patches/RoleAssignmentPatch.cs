@@ -503,6 +503,7 @@ namespace TheOtherRoles.Patches {
                 RoleId.Sunglasses,
                 RoleId.Vip,
                 RoleId.Invert,
+                RoleId.Cursed,
                 RoleId.Chameleon,
                 //RoleId.Shifter
             });
@@ -645,6 +646,15 @@ namespace TheOtherRoles.Patches {
                 }
                 modifiers.RemoveAll(x => x == RoleId.Sunglasses);
             }
+            if (modifiers.Contains(RoleId.Cursed))
+            {
+                List<PlayerControl> crewPlayerC = new List<PlayerControl>(playerList);
+                crewPlayerC.RemoveAll(x => x.Data.Role.IsImpostor || RoleInfo.getRoleInfoForPlayer(x).Any(r => r.isNeutral));
+                playerId = setModifierToRandomPlayer((byte)RoleId.Cursed, crewPlayerC);
+                playerList.RemoveAll(x => x.PlayerId == playerId);
+                modifiers.RemoveAll(x => x == RoleId.Cursed);
+            }
+
 
             foreach (RoleId modifier in modifiers) {
                 if (playerList.Count == 0) break;
@@ -663,9 +673,11 @@ namespace TheOtherRoles.Patches {
                 case RoleId.Mini:
                     selection = CustomOptionHolder.modifierMini.getSelection(); break;
                 //case RoleId.Bait:
-                    //selection = CustomOptionHolder.modifierBait.getSelection();
-                    //if (multiplyQuantity) selection *= CustomOptionHolder.modifierBaitQuantity.getQuantity();
-                    //break;
+                //selection = CustomOptionHolder.modifierBait.getSelection();
+                //if (multiplyQuantity) selection *= CustomOptionHolder.modifierBaitQuantity.getQuantity();
+                //break;
+                case RoleId.Cursed:
+                    selection = CustomOptionHolder.modifierCursed.getSelection(); break;
                 case RoleId.Bloody:
                     selection = CustomOptionHolder.modifierBloody.getSelection();
                     if (multiplyQuantity) selection *= CustomOptionHolder.modifierBloodyQuantity.getQuantity();
