@@ -16,11 +16,27 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Releases
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | -------------------------------------------------------------------------- |
+| 2023.7.12s         | v1.0.7      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.7)|
+| 2023.7.12s         | v1.0.6      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.6)|
 | 2023.7.12s         | v1.0.5      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5)|
 | 2023.7.12s         | v1.0.4      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.4)|
 | 2023.7.12s         | v1.0.3      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.3)|
 | 2023.7.12s         | v1.0.2      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2)|
 
+# Changelog
+<details>
+  <summary>Click to show the Changelog</summary>
+ 
+ **Version 1.0.7**  
+   
+- Added role Evil Tracker
+- Added role Serial Killer
+- Fixed a bug where the camouflage, morph etc. will not end even if the timer is up  
+- Added game option: Deputy Stops Game End  
+- Updated BepInEx to 671, thanks to [K](https://github.com/vdpcool)
+
+</details>
+  
 ## Flashlight(Recently Not Available)  
 Original Idea by [eDonnes](https://github.com/eDonnes124)  
 The Flashlight is An Impostor with a special bomb ability.  
@@ -219,10 +235,10 @@ In other words，Fox cant win until other player fills win condition
 
 Fox has two ability to survive
 1. Fox can stealth, no one can target fox if he is invisible. 
-2. Fox can see arrows that point to player who can kill Fox.
+2. Fox can see arrows that point to players who can kill Fox.
 
 Note.
-- Fox is not countted as single player  
+- Fox is not counted as a single player  
 If 1 fox, 1 impostor, 1 crewmate are remain it will trigger impostor win  
 (If fox completes tasks, fox win)
 
@@ -232,6 +248,7 @@ If 1 fox, 1 impostor, 1 crewmate are remain it will trigger impostor win
 Immoralist is a familiar of Fox.  
 He wins when Fox wins but he dies when Fox dies.  
 He can help Fox to survive by fixing sabotage instead of Fox.  
+The Immoralist will commit suicide after the next meeting and won't leave a body behind if the Fox is erased or sidekicked.  
 
 Immoralist has 3 ability to help fox.
 1. Immoralist can see flash when other players dead.
