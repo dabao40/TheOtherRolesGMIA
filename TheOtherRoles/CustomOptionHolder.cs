@@ -25,17 +25,6 @@ namespace TheOtherRoles {
         public static CustomOption enableCodenameHorsemode;
         public static CustomOption enableCodenameDisableHorses;
 
-
-        public static CustomOption amnisiacSpawnRate;
-        public static CustomOption amnisiacShowArrows;
-        public static CustomOption amnisiacResetRole;
-
-        public static CustomOption UndertakerSpawnRate;
-        public static CustomOption UndertakerSpeedDecrease;
-        public static CustomOption UndertakerDisableVent;
-
-
-
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
 
@@ -156,6 +145,7 @@ namespace TheOtherRoles {
         public static CustomOption deputyKeepsHandcuffs;
         public static CustomOption deputyHandcuffDuration;
         public static CustomOption deputyKnowsSheriff;
+        public static CustomOption deputyStopsGameEnd;
 
         public static CustomOption lighterSpawnRate;
         public static CustomOption lighterModeLightsOnVision;
@@ -249,6 +239,13 @@ namespace TheOtherRoles {
         public static CustomOption nekoKabochaRevengeImpostor;
         public static CustomOption nekoKabochaRevengeExile;
 
+        public static CustomOption evilTrackerSpawnRate;
+        public static CustomOption evilTrackerCooldown;
+        public static CustomOption evilTrackerResetTargetAfterMeeting;
+        public static CustomOption evilTrackerCanSeeDeathFlash;
+        public static CustomOption evilTrackerCanSeeTargetPosition;
+        public static CustomOption evilTrackerCanSetTargetOnMeeting;
+
         public static CustomOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
         
@@ -294,7 +291,6 @@ namespace TheOtherRoles {
         public static CustomOption thiefCanUseVents;
         public static CustomOption thiefCanKillSheriff;
         public static CustomOption thiefCanStealWithGuess;
-
 
         /*public static CustomOption trapperSpawnRate;
         public static CustomOption trapperCooldown;
@@ -458,10 +454,6 @@ namespace TheOtherRoles {
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "Mafia"), rates, null, true);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate);
 
-            UndertakerSpawnRate = CustomOption.Create(5009, Types.Impostor, cs(Undertaker.Color, "Undertaker"), rates, null, true);
-            UndertakerSpeedDecrease = CustomOption.Create(5010, Types.Impostor, "Speed Decrease", 0f, -100f, 100f, 10f, UndertakerSpawnRate);
-            UndertakerDisableVent = CustomOption.Create(5011, Types.Impostor, "Disable vent while dragging", true, UndertakerSpawnRate);
-
             morphlingSpawnRate = CustomOption.Create(20, Types.Impostor, cs(Morphling.color, "Morphling"), rates, null, true);
             morphlingCooldown = CustomOption.Create(21, Types.Impostor, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
             morphlingDuration = CustomOption.Create(22, Types.Impostor, "Morph Duration", 10f, 1f, 20f, 0.5f, morphlingSpawnRate);
@@ -592,6 +584,13 @@ namespace TheOtherRoles {
             nekoKabochaRevengeNeutral = CustomOption.Create(883, Types.Impostor, "Take Revenge On Neutral Killer", true, nekoKabochaSpawnRate);
             nekoKabochaRevengeExile = CustomOption.Create(884, Types.Impostor, "Take Revenge When Exiled", false, nekoKabochaSpawnRate);
 
+            evilTrackerSpawnRate = CustomOption.Create(4026, Types.Impostor, cs(EvilTracker.color, "Evil Tracker"), rates, null, true);
+            evilTrackerCooldown = CustomOption.Create(4027, Types.Impostor, "Track Cooldown", 10f, 0f, 60f, 5f, evilTrackerSpawnRate);
+            evilTrackerResetTargetAfterMeeting = CustomOption.Create(4028, Types.Impostor, "Reset Target After Meetings", true, evilTrackerSpawnRate);
+            evilTrackerCanSeeDeathFlash = CustomOption.Create(4029, Types.Impostor, "Can See Impostor Kill Flash", true, evilTrackerSpawnRate);
+            evilTrackerCanSeeTargetPosition = CustomOption.Create(4031, Types.Impostor, "Can See Target Position", true, evilTrackerSpawnRate);
+            evilTrackerCanSetTargetOnMeeting = CustomOption.Create(4032, Types.Impostor, "Can Set Target On Meetings", true, evilTrackerSpawnRate);
+
             mayorSpawnRate = CustomOption.Create(80, Types.Crewmate, cs(Mayor.color, "Mayor"), rates, null, true);
             mayorCanSeeVoteColors = CustomOption.Create(81, Types.Crewmate, "Mayor Can See Vote Colors", false, mayorSpawnRate);
             mayorTasksNeededToSeeVoteColors = CustomOption.Create(82, Types.Crewmate, "Completed Tasks Needed To See Vote Colors", 5f, 0f, 20f, 1f, mayorCanSeeVoteColors);
@@ -614,6 +613,7 @@ namespace TheOtherRoles {
             deputyKnowsSheriff = CustomOption.Create(107, Types.Crewmate, "Sheriff And Deputy Know Each Other ", true, deputySpawnRate);
             deputyGetsPromoted = CustomOption.Create(108, Types.Crewmate, "Deputy Gets Promoted To Sheriff", new string[] { "Off", "On (Immediately)", "On (After Meeting)" }, deputySpawnRate);
             deputyKeepsHandcuffs = CustomOption.Create(109, Types.Crewmate, "Deputy Keeps Handcuffs When Promoted", true, deputyGetsPromoted);
+            deputyStopsGameEnd = CustomOption.Create(4016, Types.Crewmate, "Deputy Stops Game End", false, deputySpawnRate);
 
             lighterSpawnRate = CustomOption.Create(110, Types.Crewmate, cs(Lighter.color, "Lighter"), rates, null, true);
             lighterModeLightsOnVision = CustomOption.Create(111, Types.Crewmate, "Vision On Lights On", 1.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
@@ -726,10 +726,6 @@ namespace TheOtherRoles {
             thiefHasImpVision = CustomOption.Create(403, Types.Neutral, "Thief Has Impostor Vision", true, thiefSpawnRate);
             thiefCanUseVents = CustomOption.Create(404, Types.Neutral, "Thief Can Use Vents", true, thiefSpawnRate);
             thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, "Thief Can Guess To Steal A Role (If Guesser)", false, thiefSpawnRate);
-
-            amnisiacSpawnRate = CustomOption.Create(616, Types.Neutral, cs(Amnisiac.color, "Amnesiac"), rates, null, true);
-            amnisiacShowArrows = CustomOption.Create(617, Types.Neutral, "Show arrows to dead bodies", true, amnisiacSpawnRate);
-            amnisiacResetRole = CustomOption.Create(618, Types.Neutral, "Reset role when taken", true, amnisiacSpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);

@@ -348,6 +348,34 @@ namespace TheOtherRoles {
             })));
         }
 
+        public static PlainShipRoom getPlainShipRoom(PlayerControl p)
+        {
+            PlainShipRoom[] array = null;
+            Il2CppReferenceArray<Collider2D> buffer = new Collider2D[10];
+            ContactFilter2D filter = default(ContactFilter2D);
+            filter.layerMask = Constants.PlayersOnlyMask;
+            filter.useLayerMask = true;
+            filter.useTriggers = false;
+            array = MapUtilities.CachedShipStatus?.AllRooms;
+            if (array == null) return null;
+            foreach (PlainShipRoom plainShipRoom in array)
+            {
+                if (plainShipRoom.roomArea)
+                {
+                    int hitCount = plainShipRoom.roomArea.OverlapCollider(filter, buffer);
+                    if (hitCount == 0) continue;
+                    for (int i = 0; i < hitCount; i++)
+                    {
+                        if (buffer[i]?.gameObject == p.gameObject)
+                        {
+                            return plainShipRoom;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public static bool roleCanUseVents(this PlayerControl player) {
             bool roleCouldUse = false;
             if (Engineer.engineer != null && Engineer.engineer == player)
@@ -564,76 +592,5 @@ namespace TheOtherRoles {
         {
             return AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self, Array.Empty<object>());
         }
-
-        public static void SetDeadBodyOutline(DeadBody target, Color? color)
-        {
-            if (target == null || target.bodyRenderers[0] == null) return;
-            target.bodyRenderers[0].material.SetFloat("_Outline", color == null ? 0f : 1f);
-            if (color != null) target.bodyRenderers[0].material.SetColor("_OutlineColor", color.Value);
-        }
-
-        public static DeadBody setDeadTarget(float maxDistance = 0f, PlayerControl targetingPlayer = null)
-        {
-            DeadBody result = null;
-            float closestDistance = float.MaxValue;
-
-            if (!MapUtilities.CachedShipStatus) return null;
-
-            if (targetingPlayer == null) targetingPlayer = CachedPlayer.LocalPlayer.PlayerControl;
-            if (targetingPlayer.Data.IsDead) return null;
-
-            maxDistance = maxDistance == 0f ? 1f : maxDistance + 0.1f;
-
-            Vector2 truePosition = targetingPlayer.GetTruePosition() - new Vector2(-0.2f, -0.22f);
-
-            bool flag = GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks
-                        && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver);
-
-            Collider2D[] allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance,
-                LayerMask.GetMask("Players", "Ghost"));
-
-
-            foreach (Collider2D collider2D in allocs)
-            {
-                if (!flag || collider2D.tag != "DeadBody") continue;
-                DeadBody component = collider2D.GetComponent<DeadBody>();
-
-                if (!(Vector2.Distance(truePosition, component.TruePosition) <=
-                      maxDistance)) continue;
-
-                float distance = Vector2.Distance(truePosition, component.TruePosition);
-
-                if (!(distance < closestDistance)) continue;
-
-                result = component;
-                closestDistance = distance;
-            }
-
-            if (result && Undertaker.Player == targetingPlayer)
-                SetDeadBodyOutline(result, Undertaker.Color);
-
-            return result;
-        }
-
-        public static void HandleUndertakerDropOnBodyReport()
-        {
-            if (Undertaker.Player == null) return;
-            var position = Undertaker.DraggedBody != null
-                ? Undertaker.DraggedBody.transform.position
-                : Vector3.zero;
-            Undertaker.DropBody(position);
-        }
-    }
-
-    public static class Direction
-    {
-        public static Vector2 up = Vector2.up;
-        public static Vector2 down = Vector2.down;
-        public static Vector2 left = Vector2.left;
-        public static Vector2 right = Vector2.right;
-        public static Vector2 upleft = new Vector2(-0.70710677f, 0.70710677f);
-        public static Vector2 upright = new Vector2(0.70710677f, 0.70710677f);
-        public static Vector2 downleft = new Vector2(-0.70710677f, -0.70710677f);
-        public static Vector2 downright = new Vector2(0.70710677f, -0.70710677f);
     }
 }

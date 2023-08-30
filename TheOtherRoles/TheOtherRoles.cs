@@ -32,7 +32,6 @@ namespace TheOtherRoles
             Janitor.clearAndReload();
             Detective.clearAndReload();
             TimeMaster.clearAndReload();
-            Undertaker.ClearAndReload();
             Medic.clearAndReload();
             Shifter.clearAndReload();
             Swapper.clearAndReload();
@@ -62,7 +61,6 @@ namespace TheOtherRoles
             Witch.clearAndReload();
             Assassin.clearAndReload();
             Thief.clearAndReload();
-            Amnisiac.clearAndReload();
             //Trapper.clearAndReload();
             //Bomber.clearAndReload();
 
@@ -70,6 +68,7 @@ namespace TheOtherRoles
             Ninja.clearAndReload();
             NekoKabocha.clearAndReload();
             SerialKiller.clearAndReload();
+            EvilTracker.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
             Opportunist.clearAndReload();
@@ -106,62 +105,7 @@ namespace TheOtherRoles
                 hasImpostorVision = CustomOptionHolder.jesterHasImpostorVision.getBool();
             }
         }
-        public static class Undertaker
-        {
-            public static PlayerControl Player;
-            public static readonly Color Color = Palette.ImpostorRed;
-            public static DeadBody DraggedBody;
-            public static DeadBody TargetBody;
-            public static bool CanDropBody;
-
-            public static Sprite DragButtonSprite =>
-                Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.DragButton.png", 115f);
-            public static Sprite DropButtonSprite => Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.DropButton.png", 115f);
-
-            public static void ClearAndReload()
-            {
-                Player = null;
-                DraggedBody = null;
-                TargetBody = null;
-            }
-
-            public static void RpcDropBody(Vector3 position)
-            {
-                if (Player == null) return;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDropBody, Hazel.SendOption.Reliable, -1);
-                writer.Write(position.x);
-                writer.Write(position.y);
-                writer.Write(position.z);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                DropBody(position);
-            }
-
-            public static void DropBody(Vector3 position)
-            {
-                if (!DraggedBody) return;
-                DraggedBody.transform.position = position;
-                DraggedBody = null;
-                TargetBody = null;
-            }
-
-            public static void RpcDragBody(byte playerId)
-            {
-                if (Player == null) return;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDragBody, Hazel.SendOption.Reliable, -1);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                DragBody(playerId);
-            }
-
-            public static void DragBody(byte playerId)
-            {
-                if (Player == null) return;
-                var body = UnityEngine.Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == playerId);
-                if (body == null) return;
-                DraggedBody = body;
-            }
-        }
-
+        
         public static class Portalmaker {
             public static PlayerControl portalmaker;
             public static Color color = new Color32(69, 69, 169, byte.MaxValue);
@@ -218,38 +162,6 @@ namespace TheOtherRoles
             }
 
 
-        }
-        public static class Amnisiac
-        {
-            public static PlayerControl amnisiac;
-            public static List<Arrow> localArrows = new List<Arrow>();
-            public static Color color = new Color(0.5f, 0.7f, 1f, 1f);
-            public static List<PoolablePlayer> poolIcons = new List<PoolablePlayer>();
-
-            public static bool showArrows = true;
-            public static bool resetRole = false;
-
-            private static Sprite buttonSprite;
-            public static Sprite getButtonSprite()
-            {
-                if (buttonSprite) return buttonSprite;
-                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Remember.png", 115f);
-                return buttonSprite;
-            }
-
-            public static void clearAndReload()
-            {
-                amnisiac = null;
-                showArrows = CustomOptionHolder.amnisiacShowArrows.getBool();
-                resetRole = CustomOptionHolder.amnisiacResetRole.getBool();
-                if (localArrows != null)
-                {
-                    foreach (Arrow arrow in localArrows)
-                        if (arrow?.arrow != null)
-                            UnityEngine.Object.Destroy(arrow.arrow);
-                }
-                localArrows = new List<Arrow>();
-            }
         }
 
         public static class Mayor {
@@ -392,6 +304,7 @@ namespace TheOtherRoles
             public static float remainingHandcuffs;
             public static float handcuffCooldown;
             public static bool knowsSheriff;
+            public static bool stopsGameEnd;
             public static Dictionary<byte, float> handcuffedKnows = new Dictionary<byte, float>();
 
             private static Sprite buttonSprite;
@@ -449,6 +362,7 @@ namespace TheOtherRoles
                 keepsHandcuffsOnPromotion = CustomOptionHolder.deputyKeepsHandcuffs.getBool();
                 handcuffDuration = CustomOptionHolder.deputyHandcuffDuration.getFloat();
                 knowsSheriff = CustomOptionHolder.deputyKnowsSheriff.getBool();
+                stopsGameEnd = CustomOptionHolder.deputyStopsGameEnd.getBool();
             }
         }
 
@@ -1865,7 +1779,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // 鍗犮亜銈掑疅琛屻仐銇熴亾銇ㄣ仹鐧虹伀銇曘倢銈嬪嚘鐞嗐倰浠栥偗銉┿偆銈€兂銉堛伀閫氱煡
+            // 占いを実行したことで発火される処理を他クライアントに通知
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
@@ -1930,12 +1844,11 @@ namespace TheOtherRoles
 
         public static void OnKill(PlayerControl target)
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller)
-                SerialKiller.serialKiller.SetKillTimer(killCooldown);
+            if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller) SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
 
-            //serialKillerButton.Timer = suicideTimer;
-            HudManagerStartPatch.serialKillerButton.Timer = suicideTimer;
-            isCountDown = true;
+            //serialKillerButton.Timer = suicideTimer;            
+            HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;            
+            SerialKiller.isCountDown = true;
         }
 
         public static void clearAndReload()
@@ -1945,6 +1858,170 @@ namespace TheOtherRoles
             suicideTimer = Mathf.Max(CustomOptionHolder.serialKillerSuicideTimer.getFloat(), killCooldown + 2.5f);
             resetTimer = CustomOptionHolder.serialKillerResetTimer.getBool();
             isCountDown = false;
+        }
+    }
+
+    public static class EvilTracker
+    {
+        public static PlayerControl evilTracker;
+        public static Color color = Palette.ImpostorRed;
+
+        public static float cooldown = 10f;
+        public static bool resetTargetAfterMeeting = true;
+        public static bool canSeeDeathFlash = true;
+        public static bool canSeeTargetPosition = true;
+        public static bool canSetTargetOnMeeting = true;
+
+        public static float updateTimer = 0f;
+        public static float arrowUpdateInterval = 0.5f;
+
+        public static PlayerControl target;
+        public static PlayerControl currentTarget;
+        public static Sprite trackerButtonSprite;
+        public static Sprite arrowSprite;
+        public static List<Arrow> arrows = new();
+        public static Dictionary<string, TMPro.TMP_Text> impostorPositionText;
+        public static TMPro.TMP_Text targetPositionText;
+
+        public static Sprite getEvilTrackerButtonSprite()
+        {
+            if (trackerButtonSprite) return trackerButtonSprite;
+            trackerButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrackerButton.png", 115f);
+            return trackerButtonSprite;
+        }
+
+        public static Sprite getArrowSprite()
+        {
+            if (!arrowSprite)
+                arrowSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Arrow.png", 300f);
+            return arrowSprite;
+        }
+
+        public static void arrowUpdate()
+        {
+
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null && arrow.arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrows一覧
+                arrows = new List<Arrow>();
+
+                // インポスターの位置を示すArrowsを描画
+                int count = 0;
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead)
+                    {
+                        if (p.Data.Role.IsImpostor && impostorPositionText.ContainsKey(p.name))
+                        {
+                            impostorPositionText[p.name].text = "";
+                        }
+                        continue;
+                    }
+                    Arrow arrow;
+                    if (p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl)
+                    {
+                        arrow = new Arrow(Palette.ImpostorRed);
+                        arrow.arrow.SetActive(true);
+                        arrow.Update(p.transform.position);
+                        arrows.Add(arrow);
+                        count += 1;
+                        if (!impostorPositionText.ContainsKey(p.name))
+                        {
+                            RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
+                            if (roomTracker == null) return;
+                            GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                            UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                            gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                            gameObject.transform.localPosition = new Vector3(0, -2.0f + 0.25f * count, gameObject.transform.localPosition.z);
+                            gameObject.transform.localScale = Vector3.one * 1.0f;
+                            TMPro.TMP_Text positionText = gameObject.GetComponent<TMPro.TMP_Text>();
+                            positionText.alpha = 1.0f;
+                            impostorPositionText.Add(p.name, positionText);
+                        }
+                        PlainShipRoom room = Helpers.getPlainShipRoom(p);
+                        impostorPositionText[p.name].gameObject.SetActive(true);
+                        if (room != null)
+                        {
+                            impostorPositionText[p.name].text = "<color=#FF1919FF>" + $"{p.name}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                        }
+                        else
+                        {
+                            impostorPositionText[p.name].text = "";
+                        }
+                    }
+                }
+
+                // ターゲットの位置を示すArrowを描画
+                if (target != null && !target.Data.IsDead)
+                {
+                    Arrow arrow = new(Palette.CrewmateBlue);
+                    arrow.arrow.SetActive(true);
+                    arrow.Update(target.transform.position);
+                    arrows.Add(arrow);
+                    if (targetPositionText == null)
+                    {
+                        RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
+                        if (roomTracker == null) return;
+                        GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                        UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                        gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                        gameObject.transform.localPosition = new Vector3(0, -2.0f, gameObject.transform.localPosition.z);
+                        gameObject.transform.localScale = Vector3.one * 1.0f;
+                        targetPositionText = gameObject.GetComponent<TMPro.TMP_Text>();
+                        targetPositionText.alpha = 1.0f;
+                    }
+                    PlainShipRoom room = Helpers.getPlainShipRoom(target);
+                    targetPositionText.gameObject.SetActive(true);
+                    if (room != null)
+                    {
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                    }
+                    else
+                    {
+                        targetPositionText.text = "";
+                    }
+                }
+                else
+                {
+                    if (targetPositionText != null)
+                    {
+                        targetPositionText.text = "";
+                    }
+                }
+
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            evilTracker = null;
+            target = null;
+            currentTarget = null;
+            arrows = new List<Arrow>();
+            impostorPositionText = new();
+
+            cooldown = CustomOptionHolder.evilTrackerCooldown.getFloat();
+            resetTargetAfterMeeting = CustomOptionHolder.evilTrackerResetTargetAfterMeeting.getBool();
+            canSeeDeathFlash = CustomOptionHolder.evilTrackerCanSeeDeathFlash.getBool();
+            canSeeTargetPosition = CustomOptionHolder.evilTrackerCanSeeTargetPosition.getBool();
+            canSetTargetOnMeeting = CustomOptionHolder.evilTrackerCanSetTargetOnMeeting.getBool();
         }
     }
 

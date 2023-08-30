@@ -27,7 +27,6 @@ namespace TheOtherRoles
         private static CustomButton timeMasterShieldButton;
         private static CustomButton medicShieldButton;
         private static CustomButton shifterShiftButton;
-        private static CustomButton undertakerDragButton;
         private static CustomButton morphlingButton;
         private static CustomButton camouflagerButton;
         private static CustomButton portalmakerPlacePortalButton;
@@ -40,7 +39,6 @@ namespace TheOtherRoles
         private static CustomButton trackerTrackCorpsesButton;
         public static CustomButton vampireKillButton;
         public static CustomButton garlicButton;
-        private static CustomButton amnisiasRememberButton;
         public static CustomButton jackalKillButton;
         public static CustomButton sidekickKillButton;
         private static CustomButton jackalSidekickButton;
@@ -61,6 +59,7 @@ namespace TheOtherRoles
         public static CustomButton mayorMeetingButton;
         public static CustomButton thiefKillButton;
         public static CustomButton ninjaButton;
+        public static CustomButton evilTrackerButton;
         public static CustomButton sprintButton;
         public static List<CustomButton> fortuneTellerButtons;
         //public static CustomButton trapperButton;
@@ -105,14 +104,12 @@ namespace TheOtherRoles
             shifterShiftButton.MaxTimer = 0f;
             morphlingButton.MaxTimer = Morphling.cooldown;
             camouflagerButton.MaxTimer = Camouflager.cooldown;
-            undertakerDragButton.MaxTimer = 0f;
             portalmakerPlacePortalButton.MaxTimer = Portalmaker.cooldown;
             usePortalButton.MaxTimer = Portalmaker.usePortalCooldown;
             portalmakerMoveToPortalButton.MaxTimer = Portalmaker.usePortalCooldown;
             hackerButton.MaxTimer = Hacker.cooldown;
             hackerVitalsButton.MaxTimer = Hacker.cooldown;
             hackerAdminTableButton.MaxTimer = Hacker.cooldown;
-            amnisiasRememberButton.MaxTimer = 0f;
             vampireKillButton.MaxTimer = Vampire.cooldown;
             trackerTrackPlayerButton.MaxTimer = 0f;
             garlicButton.MaxTimer = 0f;
@@ -137,6 +134,7 @@ namespace TheOtherRoles
             mayorMeetingButton.MaxTimer = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
             ninjaButton.MaxTimer = Ninja.stealthCooldown;
             serialKillerButton.MaxTimer = SerialKiller.suicideTimer;
+            evilTrackerButton.MaxTimer = EvilTracker.cooldown;
             sprintButton.MaxTimer = Sprinter.sprintCooldown;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
@@ -161,6 +159,7 @@ namespace TheOtherRoles
             witchSpellButton.EffectDuration = Witch.spellCastingDuration;
             securityGuardCamButton.EffectDuration = SecurityGuard.duration;
             ninjaButton.EffectDuration = Ninja.stealthDuration;
+            serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
             hunterArrowButton.EffectDuration = Hunter.ArrowDuration;
             huntedShieldButton.EffectDuration = Hunted.shieldDuration;
@@ -336,42 +335,6 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F
             );
-
-
-            amnisiasRememberButton = new CustomButton(
-                () => {
-                    foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask))
-                    {
-                        if (collider2D.tag == "DeadBody")
-                        {
-                            DeadBody component = collider2D.GetComponent<DeadBody>();
-                            if (component && !component.Reported)
-                            {
-                                Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                                Vector2 truePosition2 = component.TruePosition;
-                                if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
-                                {
-                                    GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AmnisiasTakeRole, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(playerInfo.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                    RPCProcedure.amnisiacTakeRole(playerInfo.PlayerId);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                },
-                () => { return Amnisiac.amnisiac != null && Amnisiac.amnisiac == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
-                () => { amnisiasRememberButton.Timer = 0f; },
-                Amnisiac.getButtonSprite(),
-                new Vector3(-1.8f, -0.06f, 0),
-                __instance,
-                KeyCode.F
-            );
-
-
 
             // Janitor Clean
             janitorCleanButton = new CustomButton(
@@ -1480,14 +1443,15 @@ namespace TheOtherRoles
                     //CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(Math.Max(CachedPlayer.LocalPlayer.PlayerControl.killTimer, Ninja.killPenalty));
                 }
             );
-            ninjaButton.effectCancellable = true;
+            ninjaButton.effectCancellable = true;            
 
-            // SerialKiller Suicide Countdown
+            // Serial Killer Suicide Countdown
             serialKillerButton = new CustomButton(
                 () => { },
                 () => { return CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && SerialKiller.isCountDown; },
                 () => { return true; },
-                () => {
+                () =>
+                {
                     if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller)
                     {
                         SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
@@ -1505,11 +1469,23 @@ namespace TheOtherRoles
                 SerialKiller.suicideTimer,
                 () => { SerialKiller.suicide(); }
             );
+            //UnityEngine.Object.Destroy(serialKillerButton.actionButton.buttonLabelText);
+            //serialKillerButton.actionButton.buttonLabelText = UnityEngine.Object.Instantiate(__instance.AbilityButton.buttonLabelText, serialKillerButton.actionButton.transform);
             serialKillerButton.showButtonText = true;
-            serialKillerButton.isEffectActive = true;
-            UnityEngine.Object.Destroy(serialKillerButton.actionButton.buttonLabelText);
-            serialKillerButton.actionButton.buttonLabelText = UnityEngine.Object.Instantiate(__instance.AbilityButton.buttonLabelText, serialKillerButton.actionButton.transform);
+            if (HudManagerStartPatch.serialKillerButton.Timer <= 0f) HudManagerStartPatch.serialKillerButton.isEffectActive = true;
             serialKillerButton.buttonText = "Until Suicide";
+
+            // Evil Tracker track
+            evilTrackerButton = new CustomButton(
+                () => { EvilTracker.target = EvilTracker.currentTarget; },
+                () => { return EvilTracker.target == null && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => { return EvilTracker.currentTarget != null && EvilTracker.target == null && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { evilTrackerButton.Timer = evilTrackerButton.MaxTimer; },
+                EvilTracker.getEvilTrackerButtonSprite(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.F
+            );
 
             // Vulture Eat
             vultureEatButton = new CustomButton(
@@ -1661,7 +1637,8 @@ namespace TheOtherRoles
                 Vector3 iconBase = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
 
                 fortuneTellerButtons[index].PositionOffset = pos;
-                fortuneTellerButtons[index].LocalScale = scale;
+                //fortuneTellerButtons[index].LocalScale = scale;
+                fortuneTellerButtons[index].actionButton.transform.localScale = scale;
                 TORMapOptions.playerIcons[index].transform.localPosition = pos + iconBase;
             }
 
@@ -1676,7 +1653,7 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
-                    //ã€€å ã„å¸«ä»¥å¤–ã®å ´åˆã€ãƒªã‚½ãƒ¼ã‚¹ãŒãªã„å ´åˆã¯ãƒœã‚¿ãƒ³ã‚’è¡¨ç¤ºã—ãªã„
+                    //¡¡Õ¼¤¤ŽŸÒÔÍâ¤ÎˆöºÏ¡¢¥ê¥½©`¥¹¤¬¤Ê¤¤ˆöºÏ¤Ï¥Ü¥¿¥ó¤ò±íÊ¾¤·¤Ê¤¤
                     if (!TORMapOptions.playerIcons.ContainsKey(index) ||
                         !CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
@@ -1689,10 +1666,10 @@ namespace TheOtherRoles
                         return false;
                     }
 
-                    // ãƒœã‚¿ãƒ³ã®ä½ç½®ã‚’å¤‰æ›´
+                    // ¥Ü¥¿¥ó¤ÎÎ»ÖÃ¤ò‰ä¸ü
                     setButtonPos(index);
 
-                    // ãƒœã‚¿ãƒ³ã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®š
+                    // ¥Ü¥¿¥ó¤Ë¥Æ¥­¥¹¥È¤òÔO¶¨
                     bool status = true;
                     if (FortuneTeller.playerStatus.ContainsKey(index))
                     {
@@ -1710,7 +1687,7 @@ namespace TheOtherRoles
                         fortuneTellerButtons[index].buttonText = "Dead";
                     }
 
-                    // ã‚¢ã‚¤ã‚³ãƒ³ã®ä½ç½®ã¨é€æ˜Žåº¦ã‚’å¤‰æ›´
+                    // ¥¢¥¤¥³¥ó¤ÎÎ»ÖÃ¤ÈÍ¸Ã÷¶È¤ò‰ä¸ü
                     setIconPos(index, !FortuneTeller.canDivine(index));
 
                     TORMapOptions.playerIcons[index].gameObject.SetActive(!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
@@ -2308,52 +2285,6 @@ namespace TheOtherRoles
             huntedShieldCountText.enableWordWrapping = false;
             huntedShieldCountText.transform.localScale = Vector3.one * 0.5f;
             huntedShieldCountText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
-
-            undertakerDragButton = new CustomButton(
-                () =>
-                {
-                    var bodyComponent = Undertaker.TargetBody;
-                    if (Undertaker.DraggedBody == null && bodyComponent != null)
-                    {
-                        Undertaker.RpcDragBody(bodyComponent.ParentId);
-                    }
-                    else if (Undertaker.DraggedBody != null)
-                    {
-                        var position = Undertaker.DraggedBody.transform.position;
-                        Undertaker.RpcDropBody(position);
-                    }
-                }, // Action OnClick
-                () =>
-                {
-                    return Undertaker.Player != null &&
-                           Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
-                           !CachedPlayer.LocalPlayer.Data.IsDead;
-                }, // Bool HasButton
-                () =>
-                {
-                    if (Undertaker.DraggedBody != null)
-                    {
-                        undertakerDragButton.Sprite = Undertaker.DropButtonSprite;
-                    }
-                    else
-                    {
-                        undertakerDragButton.Sprite = Undertaker.DragButtonSprite;
-                    }
-                    return ((Undertaker.TargetBody != null && Undertaker.DraggedBody == null)
-                            || (Undertaker.DraggedBody != null && Undertaker.CanDropBody))
-                           && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
-                }, // Bool CouldUse
-                () => { }, // Action OnMeetingEnds
-                Undertaker.DragButtonSprite, // Sprite sprite,
-                CustomButton.ButtonPositions.upperRowLeft, // Vector3 PositionOffset
-                __instance, // HudManager hudManager
-                null, // String actionName,
-                false, // bool HasEffect
-                0f, // Float EffectDuration
-                () => { }, // Action OnEffectEnds
-                false, // Bool mirror = false
-                "" // String buttonText = ""
-            );
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons
             initialized = true;
