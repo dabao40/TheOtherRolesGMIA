@@ -1907,6 +1907,28 @@ file privately, so no one would be able to see it except for the contributors an
 # Contributors
 [Imp11](https://github.com/dabao40), [Ryuk](https://github.com/ryuk201198), [K](https://github.com/vdpcool)  
 
+# Credits & Resources
+Firstly, credits to The Other Roles, since this mod is based on their developement.  
+Also credits to The Other Roles GM and The Other Roles GM H, for some of the roles are based on their ideas.  
+OxygenFilter - For the versions v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation
+Reactor - The framework used for all versions before v2.0.0, and again since 4.2.0
+BepInEx - Used to hook game functions
+Essentials - Custom game options by DorCoMaNdO:
+Before v1.6: We used the default Essentials release
+v1.6-v1.8: We slightly changed the default Essentials.
+Four Han sinicization group - Some of the pictures are made by them
+Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard
+Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev
+Jester - Idea for the Jester role came from Maartii
+ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.
+Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev
+TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.
+TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose
+Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottomated
+Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team
+Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose
+TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";
+
 # Translators
 | Language | Translator |
 |-------------|---------------------|  
