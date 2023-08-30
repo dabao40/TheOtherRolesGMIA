@@ -13,7 +13,6 @@ using TheOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
-using InnerNet;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -289,90 +288,6 @@ namespace TheOtherRoles.Patches {
             if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
             Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? new List<PlayerControl>() : untargetables);
             setPlayerOutline(Eraser.currentTarget, Eraser.color);
-
-        }
-        private static void UndertakerSetTarget()
-        {
-            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
-            if (Undertaker.TargetBody != null)
-            {
-                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, null);
-            }
-
-            if (Undertaker.DraggedBody == null)
-            {
-                Undertaker.TargetBody = Helpers.setDeadTarget(2f / 3f);
-                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, Undertaker.Color);
-            }
-        }
-
-        private static void UndertakerCanDropTarget()
-        {
-            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
-            var component = Undertaker.DraggedBody;
-
-            Undertaker.CanDropBody = false;
-
-            if (component == null) return;
-
-            if (component.enabled && Vector2.Distance(Undertaker.Player.GetTruePosition(), component.TruePosition) <= Undertaker.Player.MaxReportDistance && !PhysicsHelpers.AnythingBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), component.TruePosition, Constants.ShipAndObjectsMask, false))
-            {
-                Undertaker.CanDropBody = true;
-            }
-        }
-
-        private static void UndertakerUpdate()
-        {
-            var undertakerPlayer = Undertaker.Player;
-            var bodyComponent = Undertaker.DraggedBody;
-
-            if (undertakerPlayer == null || bodyComponent == null) return;
-
-            var undertakerPos = undertakerPlayer.transform.position;
-            var bodyLastPos = bodyComponent.transform.position;
-
-            var direction = undertakerPlayer.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
-
-            var newBodyPos = direction == Vector2.zero
-                ? bodyLastPos
-                : undertakerPos - (Vector3)(direction * (2f / 3f)) + (Vector3)bodyComponent.myCollider.offset;
-            newBodyPos.z = undertakerPos.z + 0.005f;
-
-            bodyComponent.transform.position.Set(newBodyPos.x, newBodyPos.y, newBodyPos.z);
-
-            if (direction == Direction.right) newBodyPos += new Vector3(0.3f, 0, 0);
-            if (direction == Direction.up) newBodyPos += new Vector3(0.15f, 0.2f, 0);
-            if (direction == Direction.down) newBodyPos += new Vector3(0.15f, -0.2f, 0);
-            if (direction == Direction.upleft) newBodyPos += new Vector3(0, 0.1f, 0);
-            if (direction == Direction.upright) newBodyPos += new Vector3(0.3f, 0.1f, 0);
-            if (direction == Direction.downright) newBodyPos += new Vector3(0.3f, -0.2f, 0);
-            if (direction == Direction.downleft) newBodyPos += new Vector3(0f, -0.2f, 0);
-
-            if (PhysicsHelpers.AnythingBetween(
-                    undertakerPlayer.GetTruePosition(),
-                    newBodyPos,
-                    Constants.ShipAndObjectsMask,
-                    false
-                ))
-            {
-                newBodyPos = new Vector3(undertakerPos.x, undertakerPos.y, bodyLastPos.z);
-            }
-
-            if (undertakerPlayer.Data.IsDead)
-            {
-                if (undertakerPlayer.AmOwner)
-                {
-                    Undertaker.RpcDropBody(newBodyPos);
-                }
-
-                return;
-            }
-
-            bodyComponent.transform.position = newBodyPos;
-
-            if (!undertakerPlayer.AmOwner) return;
-
-            Helpers.SetDeadBodyOutline(bodyComponent, Color.green);
         }
 
         static void deputyUpdate()
@@ -452,7 +367,6 @@ namespace TheOtherRoles.Patches {
                 if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f)
                 {
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
-                    Helpers.HandleUndertakerDropOnBodyReport();
 
                     byte reporter = deadPlayer.killerIfExisting.PlayerId;
 
@@ -882,38 +796,6 @@ namespace TheOtherRoles.Patches {
                 index++;
             }
         }
-        static void amnisiacUpdate()
-        {
-            if (Amnisiac.amnisiac == null || PlayerControl.LocalPlayer != Amnisiac.amnisiac || Amnisiac.localArrows == null || !Amnisiac.showArrows) return;
-            if (Amnisiac.amnisiac.Data.IsDead)
-            {
-                
-                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-                Amnisiac.localArrows = new List<Arrow>();
-                return;
-            }
-
-            DeadBody[] deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
-            bool arrowUpdate = Amnisiac.localArrows.Count != deadBodies.Count();
-            int index = 0;
-
-            if (arrowUpdate)
-            {
-                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-                Amnisiac.localArrows = new List<Arrow>();
-            }
-
-            foreach (DeadBody db in deadBodies)
-            {
-                if (arrowUpdate)
-                {
-                    Amnisiac.localArrows.Add(new Arrow(Color.blue));
-                    Amnisiac.localArrows[index].arrow.SetActive(true);
-                }
-                if (Amnisiac.localArrows[index] != null) Amnisiac.localArrows[index].Update(db.transform.position);
-                index++;
-            }
-        }
 
         public static void mediumSetTarget() {
             if (Medium.medium == null || Medium.medium != CachedPlayer.LocalPlayer.PlayerControl || Medium.medium.Data.IsDead || Medium.deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
@@ -999,7 +881,7 @@ namespace TheOtherRoles.Patches {
                     if (p.Data.IsDead) continue;
                     var fortuneTeller = PlayerControl.LocalPlayer;
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
-                    // éšœå®³ç‰©åˆ¤å®š
+                    // ÕÏº¦ÎïÅÐ¶¨
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
                     if (!anythingBetween && distance <= FortuneTeller.distance && FortuneTeller.progress[p.PlayerId] < FortuneTeller.duration)
                     {
@@ -1009,22 +891,39 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void serialKillerUpdate()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && SerialKiller.isCountDown)
+            {
+                if (HudManagerStartPatch.serialKillerButton.Timer <= 0f)
+                {
+                    HudManagerStartPatch.serialKillerButton.isEffectActive = true;
+                    SerialKiller.suicide();
+                }
+            }
+        }
+
+        public static void evilTrackerUpdate()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker) EvilTracker.arrowUpdate();
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker)
+            {
+                EvilTracker.currentTarget = setTarget();
+                setPlayerOutline(EvilTracker.currentTarget, Palette.ImpostorRed);
+            }
+        }
+
         public static void impostorArrowUpdate()
         {
-            if (FortuneTeller.fortuneTeller.Data.IsDead) return;
-            if (!FortuneTeller.divinedFlag) return;
-            if (!FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller)) return;
-
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
-
-                // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéŽæ™‚é–“ã‚’ãƒžã‚¤ãƒŠã‚¹ã™ã‚‹
+                // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
                 FortuneTeller.updateTimer -= Time.fixedDeltaTime;
 
-                // 1ç§’çµŒéŽã—ãŸã‚‰Arrowã‚’æ›´æ–°
+                // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
-                    // å‰å›žã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
+                    // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                     foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
                         if (arrow1?.arrow != null)
@@ -1034,15 +933,20 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-                    // Arrowä¸€è¦§
+                    // ArrowÒ»ÓE
                     FortuneTeller.arrows = new List<Arrow>();
+
+                    if (!FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
+                    {
+                        return;
+                    }
 
                     Arrow arrow = new Arrow(FortuneTeller.color);
                     arrow.arrow.SetActive(true);
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
 
-                    // ã‚¿ã‚¤ãƒžãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
+                    // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                     FortuneTeller.updateTimer = 1f;
                 }
                 else
@@ -1287,22 +1191,21 @@ namespace TheOtherRoles.Patches {
                 vampireSetTarget();
                 Garlic.UpdateAll();
                 //Trap.Update();
-                // Undertaker
-                UndertakerSetTarget();
-                UndertakerCanDropTarget();
-                UndertakerUpdate();
                 // Eraser
                 eraserSetTarget();
                 // Engineer
                 engineerUpdate();
                 // Tracker
                 trackerUpdate();
+                // Fortune Teller
+                fortuneTellerUpdate();
                 // Jackal
                 jackalSetTarget();
                 // Sidekick
                 sidekickSetTarget();
                 // Impostor
                 impostorSetTarget();
+                impostorArrowUpdate();  // If the Camouflager/Thief is having problem, please delete this line
                 // Warlock
                 warlockSetTarget();
                 // Check for deputy promotion on Sheriff disconnect
@@ -1315,10 +1218,7 @@ namespace TheOtherRoles.Patches {
                 // Arsonist
                 arsonistSetTarget();
                 // Snitch
-                snitchUpdate();
-                // Fortune Teller
-                fortuneTellerUpdate();
-                impostorArrowUpdate();
+                snitchUpdate();                
                 // BountyHunter
                 bountyHunterUpdate();
                 // Vulture
@@ -1337,6 +1237,10 @@ namespace TheOtherRoles.Patches {
                 ninjaUpdate();
                 // Sprinter
                 sprinterUpdate();
+                // Serial Killer
+                serialKillerUpdate();
+                // Evil Tracker
+                evilTrackerUpdate();
                 // Witch                
                 witchSetTarget();
                 // Assassin
@@ -1351,7 +1255,7 @@ namespace TheOtherRoles.Patches {
                 // Hacker
                 hackerUpdate();
                 // Trapper
-                //trapperUpdate();
+                //trapperUpdate();                                
 
                 // -- MODIFIER--
                 // Bait
@@ -1366,7 +1270,7 @@ namespace TheOtherRoles.Patches {
 
                 // -- GAME MODE --
                 hunterUpdate();
-            } 
+            }            
         }
     }
 
@@ -1388,7 +1292,6 @@ namespace TheOtherRoles.Patches {
         public static bool Prefix(PlayerControl __instance) {
             if (HideNSeek.isHideNSeekGM) return false;
             Helpers.handleVampireBiteOnBodyReport();
-            Helpers.HandleUndertakerDropOnBodyReport();
             return true;
         }
     }
@@ -1550,6 +1453,12 @@ namespace TheOtherRoles.Patches {
                         GameHistory.overrideDeathReasonAndKiller(__instance, DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
                     }
                 }
+            }
+
+            // Evil Tracker see flash
+            if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
+            {
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
             }
 
             // Set bountyHunter cooldown
@@ -1763,36 +1672,15 @@ namespace TheOtherRoles.Patches {
     public static class PlayerPhysicsFixedUpdate {
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!__instance.AmOwner || !AmongUsClient.Instance ||
-               AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started ||
-               CachedPlayer.LocalPlayer.Data.IsDead || !GameData.Instance || !__instance.myPlayer.CanMove) return;
-
-            UpdateInvert(__instance);
-            UpdateUndertakerPhysics(__instance);
-        }
-
-        private static void UpdateUndertakerPhysics(PlayerPhysics playerPhysics)
-        {
-            if (Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl || Undertaker.DraggedBody == null) return;
-            playerPhysics.body.velocity *= 1f + CustomOptionHolder.UndertakerSpeedDecrease.getFloat() / 100f;
-        }
-
-        private static void UpdateInvert(PlayerPhysics playerPhysics)
-        {
-            var shouldInvert =
-                (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 &&
-                 Invert.meetings > 0) ^
-                EventUtility.eventInvert; // xor. if already invert, eventInvert will turn it off for 10s
-            if (playerPhysics.AmOwner &&
+            bool shouldInvert = (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 && Invert.meetings > 0) ^ EventUtility.eventInvert;  // xor. if already invert, eventInvert will turn it off for 10s
+            if (__instance.AmOwner &&
                 AmongUsClient.Instance &&
                 AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started &&
-                !CachedPlayer.LocalPlayer.Data.IsDead &&
-                shouldInvert &&
-                GameData.Instance &&
-                playerPhysics.myPlayer.CanMove)
-            {
-                playerPhysics.body.velocity *= -1;
-            }
+                !CachedPlayer.LocalPlayer.Data.IsDead && 
+                shouldInvert && 
+                GameData.Instance && 
+                __instance.myPlayer.CanMove)  
+                __instance.body.velocity *= -1;
         }
     }
 

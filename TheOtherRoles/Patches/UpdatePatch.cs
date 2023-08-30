@@ -168,7 +168,6 @@ namespace TheOtherRoles.Patches {
             if (Jackal.jackal != null && Jackal.wasTeamRed && localPlayer.Data.Role.IsImpostor) {
                 setPlayerNameColor(Jackal.jackal, Spy.color);
             }
-
             // Crewmate roles with no changes: Mini
             // Impostor roles with no changes: Morphling, Camouflager, Vampire, Godfather, Eraser, Janitor, Cleaner, Warlock, BountyHunter,  Witch and Mafioso
         }
@@ -287,14 +286,6 @@ namespace TheOtherRoles.Patches {
             if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor) return;
             if (MeetingHud.Instance) {
                 __instance.KillButton.Hide();
-                return;
-            }
-            if (Undertaker.Player && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.Player && Undertaker.DraggedBody != null)
-            {
-                __instance.KillButton.graphic.color = Palette.DisabledClear;
-                __instance.KillButton.buttonLabelText.color = Palette.DisabledClear;
-                __instance.KillButton.cooldownTimerText.color = Palette.DisabledClear;
-                __instance.KillButton.graphic.material.SetFloat(Shader.PropertyToID("_Desat"), 1f);
                 return;
             }
             bool enabled = true;

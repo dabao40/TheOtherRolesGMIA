@@ -83,7 +83,7 @@ Alex2911    amsyarasyiq    MaximeGillot
 Psynomit    probablyadnf    JustASysAdmin
 
 [https://discord.gg/w7msq53dq7]Discord[] Moderators:
-Ryuk    K
+Ryuk    K    XiezibanWrite
 Thanks to all our discord helpers!
 
 Thanks to miniduikboot & GD for hosting modded servers

@@ -186,9 +186,11 @@ namespace TheOtherRoles.Patches {
                     for (int j = 0; j < states.Length; j++) {
                         MeetingHud.VoterState voterState = states[j];
                         GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
-                        if (playerById == null) {
+                        if (playerById == null) 
+                        {
                             Debug.LogError(string.Format("Couldn't find player info for voter: {0}", voterState.VoterId));
-                        } else if (i == 0 && voterState.SkippedVote && !playerById.IsDead) {
+                        }
+                        else if (i == 0 && voterState.SkippedVote && !playerById.IsDead) {
                             __instance.BloopAVoteIcon(playerById, num, __instance.SkippedVoting.transform);
                             num++;
                         }
@@ -604,6 +606,43 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Add Track Button for Evil Tracker
+            bool isTrackerButton = EvilTracker.canSetTargetOnMeeting && (EvilTracker.target == null || EvilTracker.resetTargetAfterMeeting) && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+            if (isTrackerButton)
+            {
+                for (int i = 0; i < __instance.playerStates.Length; i++)
+                {
+                    PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                    if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId) continue;
+                    GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
+                    GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
+                    targetBox.name = "EvilTrackerButton";
+                    targetBox.transform.localPosition = new Vector3(-0.95f, 0.03f, -1.3f);
+                    if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(CachedPlayer.LocalPlayer.PlayerId)) targetBox.transform.localPosition = new Vector3(-0.5f, 0.03f, -1.3f);
+                    SpriteRenderer renderer = targetBox.GetComponent<SpriteRenderer>();
+                    renderer.sprite = EvilTracker.getArrowSprite();
+                    renderer.color = Palette.CrewmateBlue;
+                    PassiveButton button = targetBox.GetComponent<PassiveButton>();
+                    button.OnClick.RemoveAllListeners();
+                    int copiedIndex = i;
+                    button.OnClick.AddListener((System.Action)(() =>
+                    {
+                        PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[copiedIndex].TargetPlayerId);
+                        EvilTracker.target = focusedTarget;
+                        // Reset the GUI
+                        __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("EvilTrackerButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("EvilTrackerButton").gameObject); });
+                        GameObject targetMark = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
+                        targetMark.name = "EvilTrackerMark";
+                        PassiveButton button = targetMark.GetComponent<PassiveButton>();
+                        targetMark.transform.localPosition = new Vector3(1.1f, 0.03f, -20f);                        
+                        GameObject.Destroy(button);
+                        SpriteRenderer renderer = targetMark.GetComponent<SpriteRenderer>();
+                        renderer.sprite = EvilTracker.getArrowSprite();
+                        renderer.color = Palette.CrewmateBlue;
+                    }));
+                }
+            }
+
             // Add Guesser Buttons
             int remainingShots = HandleGuesser.remainingShots(CachedPlayer.LocalPlayer.PlayerId);
 
@@ -684,6 +723,8 @@ namespace TheOtherRoles.Patches {
 
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
+                // Evil Tracker reset target
+                if (EvilTracker.resetTargetAfterMeeting) EvilTracker.target = null;
 
                 // Add Portal info into Portalmaker Chat:
                 if (Portalmaker.portalmaker != null && (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker || Helpers.shouldShowGhostInfo()) && !Portalmaker.portalmaker.Data.IsDead) {

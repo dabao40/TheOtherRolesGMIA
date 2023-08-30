@@ -713,6 +713,10 @@ namespace TheOtherRoles.Patches {
                         {
                             numSheriffAlive++;
                         }
+                        if (Deputy.deputy != null && Deputy.deputy.PlayerId == playerInfo.PlayerId && Deputy.stopsGameEnd)
+                        {
+                            numSheriffAlive++;
+                        }
                     }
                 }
             }

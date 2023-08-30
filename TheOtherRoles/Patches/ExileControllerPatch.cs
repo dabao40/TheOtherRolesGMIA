@@ -211,9 +211,6 @@ namespace TheOtherRoles.Patches {
             // Tracker reset deadBodyPositions
             Tracker.deadBodyPositions = new List<Vector3>();
 
-            // Neko-Kabocha reset meetingkillers
-            NekoKabocha.meetingKiller = null;
-
             // Arsonist deactivate dead poolable players
             if (Arsonist.arsonist != null && Arsonist.arsonist == CachedPlayer.LocalPlayer.PlayerControl) {
                 int visibleCounter = 0;

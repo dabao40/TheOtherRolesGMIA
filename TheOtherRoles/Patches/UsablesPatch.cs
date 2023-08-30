@@ -106,13 +106,9 @@ namespace TheOtherRoles.Patches {
             }
             //if (Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)) return false;
 
-            if (Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
-               CustomOptionHolder.UndertakerDisableVent.getBool() && Undertaker.DraggedBody != null)
-            {
-                return false;
-            }
-
-            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out var canUse, out _);
+            bool canUse;
+            bool couldUse;
+            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
             bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
@@ -269,6 +265,7 @@ namespace TheOtherRoles.Patches {
                 statusText = "The Lawyer can't start an emergency meeting";
                 //if (Lawyer.isProsecutor) statusText = "The Prosecutor can't start an emergency meeting";
             }
+            // Potentially deactivate emergency button for Fortune Teller
             if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl && FortuneTeller.isCompletedNumTasks(CachedPlayer.LocalPlayer.PlayerControl))
             {
                 roleCanCallEmergency = false;

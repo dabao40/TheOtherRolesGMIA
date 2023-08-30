@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,7 +112,6 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.Camouflager, CustomOptionHolder.camouflagerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Vampire, CustomOptionHolder.vampireSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Eraser, CustomOptionHolder.eraserSpawnRate.getSelection());
-            impSettings.Add((byte)RoleId.Undertaker, CustomOptionHolder.UndertakerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Trickster, CustomOptionHolder.tricksterSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Cleaner, CustomOptionHolder.cleanerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Warlock, CustomOptionHolder.warlockSpawnRate.getSelection());
@@ -122,6 +121,7 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.Assassin, CustomOptionHolder.assassinSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Ninja, CustomOptionHolder.ninjaSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.NekoKabocha, CustomOptionHolder.nekoKabochaSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.EvilTracker, CustomOptionHolder.evilTrackerSpawnRate.getSelection());
             //impSettings.Add((byte)RoleId.Bomber, CustomOptionHolder.bomberSpawnRate.getSelection());
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
@@ -130,7 +130,6 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Opportunist, CustomOptionHolder.opportunistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Vulture, CustomOptionHolder.vultureSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Thief, CustomOptionHolder.thiefSpawnRate.getSelection());
-            neutralSettings.Add((byte)RoleId.Amnisiac, CustomOptionHolder.amnisiacSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());

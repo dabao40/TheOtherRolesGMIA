@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Hazel;
 using Reactor.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,10 @@ namespace TheOtherRoles.Patches {
 	class MapBehaviourPatch {
 		public static Dictionary<PlayerControl, SpriteRenderer> herePoints = new Dictionary<PlayerControl, SpriteRenderer>();
 
-		[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
+        public static SpriteRenderer targetHerePoint;
+        public static Dictionary<byte, SpriteRenderer> impostorHerePoint;
+
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 		static void Postfix(MapBehaviour __instance) {
 			/*if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
 				foreach (PlayerControl player in Trapper.playersOnMap) {
@@ -38,6 +42,48 @@ namespace TheOtherRoles.Patches {
 					herePoints.Remove(s.Key);
 				}
 			}*/
+			if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && EvilTracker.canSeeTargetPosition)
+			{
+                if (EvilTracker.target != null && MeetingHud.Instance == null)
+                {
+                    if (targetHerePoint == null)
+                    {
+                        targetHerePoint = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                    }
+                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead);
+                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
+                    PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
+                    Vector3 pos = new Vector3(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
+                    pos /= MapUtilities.CachedShipStatus.MapScale;
+                    pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                    pos.z = -10;
+                    targetHerePoint.transform.localPosition = pos;
+                }
+                else UnityEngine.Object.Destroy(targetHerePoint);
+
+                // Use the red icons to indicate the Impostors' positions
+                if (impostorHerePoint == null) impostorHerePoint = new();
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl)
+                    {
+                        if (!impostorHerePoint.ContainsKey(p.PlayerId))
+                        {
+                            impostorHerePoint[p.PlayerId] = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                        }
+                        impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null);
+                        GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
+                        PlayerMaterial.SetColors(0, impostorHerePoint[p.PlayerId]);
+                        Vector3 pos = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
+                        pos /= MapUtilities.CachedShipStatus.MapScale;
+                        pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                        pos.z = -10;
+                        impostorHerePoint[p.PlayerId].transform.localPosition = pos;
+                    }
+                }
+            }
+
+
 			if (Snitch.snitch != null && CachedPlayer.LocalPlayer.PlayerId == Snitch.snitch.PlayerId && !Snitch.snitch.Data.IsDead && Snitch.mode != Snitch.Mode.Chat) {
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
                 int numberOfTasks = playerTotal - playerCompleted;
@@ -75,5 +121,5 @@ namespace TheOtherRoles.Patches {
 			}
             HudManagerUpdate.CloseSettings();
         }
-	}
+    }
 }
