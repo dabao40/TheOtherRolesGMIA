@@ -2,14 +2,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using BepInEx;
-using BepInEx.Unity.IL2CPP;
 using BepInEx.Unity.IL2CPP.Utils;
 using HarmonyLib;
 using UnityEngine;
@@ -19,8 +16,8 @@ namespace TheOtherRoles.Modules;
 
 public class BepInExUpdater : MonoBehaviour
 {
-    public const string RequiredBepInExVersion = "6.0.0-be.670+42a6727370c2b9356fc043ea601410540a8b4042";
-    public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/670/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.670%2B42a6727.zip";
+    public const string RequiredBepInExVersion = "6.0.0-be.672+472e950179f4a5ab2e4a89f26dba793795fb6811";
+    public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/672/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.672%2B472e950.zip";
     public static bool UpdateRequired => Paths.BepInExVersion.ToString() != RequiredBepInExVersion;
 
     public void Awake()
@@ -36,7 +33,7 @@ public class BepInExUpdater : MonoBehaviour
     {
         Task.Run(() => MessageBox(GetForegroundWindow(), "Required BepInEx update is downloading, please wait...","The Other Roles", 0));
         UnityWebRequest www = UnityWebRequest.Get(BepInExDownloadURL);
-        yield return www.Send();        
+        yield return www.Send();
         if (www.isNetworkError || www.isHttpError)
         {
             TheOtherRolesPlugin.Logger.LogError(www.error);
@@ -46,19 +43,19 @@ public class BepInExUpdater : MonoBehaviour
         var zipPath = Path.Combine(Paths.GameRootPath, ".bepinex_update");
         File.WriteAllBytes(zipPath, www.downloadHandler.data);
 
-        
+
         var tempPath = Path.Combine(Path.GetTempPath(), "TheOtherUpdater.exe");
         var asm = Assembly.GetExecutingAssembly();
         var exeName = asm.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith("TheOtherUpdater.exe"));
-        
+
         using(var resource = asm.GetManifestResourceStream(exeName))
         {
             using(var file = new FileStream(tempPath, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 resource!.CopyTo(file);
-            } 
+            }
         }
-        
+
         var startInfo = new ProcessStartInfo(tempPath, $"--game-path \"{Paths.GameRootPath}\" --zip \"{zipPath}\"");
         startInfo.UseShellExecute = false;
         Process.Start(startInfo);
