@@ -16,6 +16,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Releases
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | -------------------------------------------------------------------------- |
+| 2023.7.12s         | v1.0.8      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.8)|
 | 2023.7.12s         | v1.0.7      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.7)|
 | 2023.7.12s         | v1.0.6      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.6)|
 | 2023.7.12s         | v1.0.5      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5)|
@@ -26,7 +27,17 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Changelog
 <details>
   <summary>Click to show the Changelog</summary>
- 
+  
+ **Version 1.0.8**
+ - Added role Veteran
+ - Added role Sherlock
+ - Added role Undertaker
+ - Added role Mimic
+ - Re-added Shifter and Chain-Shifter
+ - Fixed a bug where the Ninja and the Bloody are not assigned properly
+ - Fixed a bug where the Fortune Teller's progress will not grow after a meeting
+ - Fixed a bug where the Serial Killer can vent to prevent the suicide timer from going  
+
  **Version 1.0.7**  
    
 - Added role Evil Tracker
