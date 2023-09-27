@@ -85,7 +85,7 @@ namespace TheOtherRoles.Objects {
 
         public void onClickEvent()
         {
-            if (this.Timer < 0f && HasButton() && CouldUse() || this.effectCancellable)
+            if ((this.Timer < 0f && HasButton() && CouldUse()) || ((this.HasEffect && this.isEffectActive && this.effectCancellable)))
             {
                 actionButtonRenderer.color = new Color(1f, 1f, 1f, 0.3f);
                 this.OnClick();
@@ -179,7 +179,7 @@ namespace TheOtherRoles.Objects {
                     DeputyTimer -= Time.deltaTime;
             }
 
-            if (DeputyTimer <= 0 && HasEffect && isEffectActive) {
+            if (DeputyTimer <= 0 && HasEffect && isEffectActive && buttonText != "Until Suicide") { // Here we have to specify that the Serial Killer button will not be affected
                 isEffectActive = false;
                 actionButton.cooldownTimerText.color = Palette.EnabledColor;
                 OnEffectEnds();
@@ -204,12 +204,6 @@ namespace TheOtherRoles.Objects {
                     pos = new Vector3(xpos, pos.y, pos.z);
                 }
                 actionButton.transform.localPosition = pos + PositionOffset;
-
-                // Here we're going to set up the Fortune Teller scale
-                if (localPlayer.PlayerControl == FortuneTeller.fortuneTeller && Sprite == null)  // The Fortune Teller's button sprite is null
-                {
-                    actionButton.transform.localScale = LocalScale;
-                }
             }
             if (CouldUse()) {
                 actionButtonRenderer.color = actionButtonLabelText.color = Palette.EnabledColor;
