@@ -24,6 +24,7 @@ namespace TheOtherRoles {
         PerformKill,
         SuppressKill,
         BlankKill,
+        ReverseKill
     }
 
     public enum CustomGamemodes {
@@ -31,6 +32,19 @@ namespace TheOtherRoles {
         Guesser,
         HideNSeek
     }
+
+    public static class Direction
+    {
+        public static Vector2 up = Vector2.up;
+        public static Vector2 down = Vector2.down;
+        public static Vector2 left = Vector2.left;
+        public static Vector2 right = Vector2.right;
+        public static Vector2 upleft = new Vector2(-0.70710677f, 0.70710677f);
+        public static Vector2 upright = new Vector2(0.70710677f, 0.70710677f);
+        public static Vector2 downleft = new Vector2(-0.70710677f, -0.70710677f);
+        public static Vector2 downright = new Vector2(0.70710677f, -0.70710677f);
+    }
+
     public static class Helpers
     {
 
@@ -348,6 +362,34 @@ namespace TheOtherRoles {
             })));
         }
 
+        public static PlainShipRoom getPlainShipRoom(PlayerControl p)
+        {
+            PlainShipRoom[] array = null;
+            Il2CppReferenceArray<Collider2D> buffer = new Collider2D[10];
+            ContactFilter2D filter = default(ContactFilter2D);
+            filter.layerMask = Constants.PlayersOnlyMask;
+            filter.useLayerMask = true;
+            filter.useTriggers = false;
+            array = MapUtilities.CachedShipStatus?.AllRooms;
+            if (array == null) return null;
+            foreach (PlainShipRoom plainShipRoom in array)
+            {
+                if (plainShipRoom.roomArea)
+                {
+                    int hitCount = plainShipRoom.roomArea.OverlapCollider(filter, buffer);
+                    if (hitCount == 0) continue;
+                    for (int i = 0; i < hitCount; i++)
+                    {
+                        if (buffer[i]?.gameObject == p.gameObject)
+                        {
+                            return plainShipRoom;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public static bool roleCanUseVents(this PlayerControl player) {
             bool roleCouldUse = false;
             if (Engineer.engineer != null && Engineer.engineer == player)
@@ -368,6 +410,10 @@ namespace TheOtherRoles {
                 else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
                     roleCouldUse = false;
                 else if (Ninja.ninja != null && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl && Ninja.canUseVents == false)
+                {
+                    roleCouldUse = false;
+                }
+                else if (Undertaker.undertaker != null && Undertaker.undertaker == CachedPlayer.LocalPlayer.PlayerControl && Undertaker.DraggedBody != null && Undertaker.disableVent)
                 {
                     roleCouldUse = false;
                 }
@@ -425,6 +471,15 @@ namespace TheOtherRoles {
                 return MurderAttemptResult.SuppressKill;
             }
 
+            // Kill the killer if Veteran is on alert
+            else if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == target)
+            {
+                //MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.VeteranKill, Hazel.SendOption.Reliable, -1);
+                //AmongUsClient.Instance.FinishRpcImmediately(writer);
+                //RPCProcedure.veteranKill(killer.PlayerId);
+                return MurderAttemptResult.ReverseKill;
+            }
+
             // Thief if hit crew only kill if setting says so, but also kill the thief.
             else if (Thief.isFailedThiefKill(target, killer, targetRole)) {
                 Thief.suicideFlag = true;
@@ -456,6 +511,11 @@ namespace TheOtherRoles {
                 writer.Write(showAnimation ? Byte.MaxValue : 0);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.uncheckedMurderPlayer(killer.PlayerId, target.PlayerId, showAnimation ? Byte.MaxValue : (byte)0);
+            }
+
+            if (murder == MurderAttemptResult.ReverseKill)
+            {
+                checkMurderAttemptAndKill(target, killer, isMeetingStart);
             }
             return murder;            
         }
@@ -609,31 +669,19 @@ namespace TheOtherRoles {
                 closestDistance = distance;
             }
 
-            if (result && Undertaker.Player == targetingPlayer)
-                SetDeadBodyOutline(result, Undertaker.Color);
+            if (result && Undertaker.undertaker == targetingPlayer)
+                SetDeadBodyOutline(result, Undertaker.color);
 
             return result;
         }
 
         public static void HandleUndertakerDropOnBodyReport()
         {
-            if (Undertaker.Player == null) return;
+            if (Undertaker.undertaker == null) return;
             var position = Undertaker.DraggedBody != null
                 ? Undertaker.DraggedBody.transform.position
                 : Vector3.zero;
             Undertaker.DropBody(position);
         }
-    }
-
-    public static class Direction
-    {
-        public static Vector2 up = Vector2.up;
-        public static Vector2 down = Vector2.down;
-        public static Vector2 left = Vector2.left;
-        public static Vector2 right = Vector2.right;
-        public static Vector2 upleft = new Vector2(-0.70710677f, 0.70710677f);
-        public static Vector2 upright = new Vector2(0.70710677f, 0.70710677f);
-        public static Vector2 downleft = new Vector2(-0.70710677f, -0.70710677f);
-        public static Vector2 downright = new Vector2(0.70710677f, -0.70710677f);
     }
 }

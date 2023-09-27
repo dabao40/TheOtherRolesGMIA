@@ -25,16 +25,8 @@ namespace TheOtherRoles {
         public static CustomOption enableCodenameHorsemode;
         public static CustomOption enableCodenameDisableHorses;
 
-
-        public static CustomOption amnisiacSpawnRate;
-        public static CustomOption amnisiacShowArrows;
-        public static CustomOption amnisiacResetRole;
-
-        public static CustomOption UndertakerSpawnRate;
-        public static CustomOption UndertakerSpeedDecrease;
-        public static CustomOption UndertakerDisableVent;
-
-
+        public static CustomOption additionalVents;
+        public static CustomOption specimenVital;
 
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
@@ -66,6 +58,7 @@ namespace TheOtherRoles {
 
         public static CustomOption watcherSpawnRate;
         public static CustomOption watcherisImpWatcherRate;
+        public static CustomOption watcherSeeGuesses;
         public static CustomOption watcherSpawnBothRate;
 
         public static CustomOption jesterSpawnRate;
@@ -156,6 +149,7 @@ namespace TheOtherRoles {
         public static CustomOption deputyKeepsHandcuffs;
         public static CustomOption deputyHandcuffDuration;
         public static CustomOption deputyKnowsSheriff;
+        public static CustomOption deputyStopsGameEnd;
 
         public static CustomOption lighterSpawnRate;
         public static CustomOption lighterModeLightsOnVision;
@@ -193,7 +187,18 @@ namespace TheOtherRoles {
         public static CustomOption medicShowAttemptToMedic;
         public static CustomOption medicSetShieldAfterMeeting;
 
+        public static CustomOption veteranSpawnRate;
+        public static CustomOption veteranCooldown;
+        public static CustomOption veteranAlertDuration;
+        public static CustomOption veteranAlertNumber;
+
+        public static CustomOption sherlockSpawnRate;
+        public static CustomOption sherlockCooldown;
+        public static CustomOption sherlockRechargeTasksNumber;
+        public static CustomOption sherlockInvestigateDistance;
+
         public static CustomOption swapperSpawnRate;
+        public static CustomOption swapperIsImpRate;
         public static CustomOption swapperCanCallEmergency;
         public static CustomOption swapperCanOnlySwapOthers;
         public static CustomOption swapperSwapsNumber;
@@ -230,7 +235,9 @@ namespace TheOtherRoles {
         public static CustomOption snitchTargets;
 
         public static CustomOption shifterSpawnRate;
+        public static CustomOption shifterIsNeutralRate;
         public static CustomOption shifterShiftsModifiers;
+        public static CustomOption shifterPastShifters;
 
         public static CustomOption spySpawnRate;
         public static CustomOption spyCanDieToSheriff;
@@ -248,6 +255,17 @@ namespace TheOtherRoles {
         public static CustomOption nekoKabochaRevengeNeutral;
         public static CustomOption nekoKabochaRevengeImpostor;
         public static CustomOption nekoKabochaRevengeExile;
+
+        public static CustomOption evilTrackerSpawnRate;
+        public static CustomOption evilTrackerCooldown;
+        public static CustomOption evilTrackerResetTargetAfterMeeting;
+        public static CustomOption evilTrackerCanSeeDeathFlash;
+        public static CustomOption evilTrackerCanSeeTargetPosition;
+        public static CustomOption evilTrackerCanSetTargetOnMeeting;
+
+        public static CustomOption undertakerSpawnRate;
+        public static CustomOption undertakerSpeedDecrease;
+        public static CustomOption undertakerDisableVent;
 
         public static CustomOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
@@ -295,6 +313,10 @@ namespace TheOtherRoles {
         public static CustomOption thiefCanKillSheriff;
         public static CustomOption thiefCanStealWithGuess;
 
+        public static CustomOption mimicSpawnRate;
+        public static CustomOption mimicCountAsOne;
+        public static CustomOption mimicIfOneDiesBothDie;
+        public static CustomOption mimicHasOneVote;
 
         /*public static CustomOption trapperSpawnRate;
         public static CustomOption trapperCooldown;
@@ -453,14 +475,10 @@ namespace TheOtherRoles {
             impostorRolesCountMin = CustomOption.Create(304, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Impostor Roles"), 15f, 0f, 15f, 1f);
             impostorRolesCountMax = CustomOption.Create(305, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Impostor Roles"), 15f, 0f, 15f, 1f);
             modifiersCountMin = CustomOption.Create(306, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Modifiers"), 15f, 0f, 15f, 1f);
-            modifiersCountMax = CustomOption.Create(307, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Modifiers"), 15f, 0f, 15f, 1f);
+            modifiersCountMax = CustomOption.Create(307, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Modifiers"), 15f, 0f, 15f, 1f);            
 
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "Mafia"), rates, null, true);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate);
-
-            UndertakerSpawnRate = CustomOption.Create(5009, Types.Impostor, cs(Undertaker.Color, "Undertaker"), rates, null, true);
-            UndertakerSpeedDecrease = CustomOption.Create(5010, Types.Impostor, "Speed Decrease", 0f, -100f, 100f, 10f, UndertakerSpawnRate);
-            UndertakerDisableVent = CustomOption.Create(5011, Types.Impostor, "Disable vent while dragging", true, UndertakerSpawnRate);
 
             morphlingSpawnRate = CustomOption.Create(20, Types.Impostor, cs(Morphling.color, "Morphling"), rates, null, true);
             morphlingCooldown = CustomOption.Create(21, Types.Impostor, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
@@ -513,14 +531,14 @@ namespace TheOtherRoles {
             assassinTraceColorTime = CustomOption.Create(384, Types.Impostor, "Time Till Trace Color Has Faded", 2f, 0f, 20f, 0.5f, assassinSpawnRate);
             //assassinInvisibleDuration = CustomOption.Create(385, Types.Impostor, "Time The Assassin Is Invisible", 3f, 0f, 20f, 1f, assassinSpawnRate);
 
-            ninjaSpawnRate = CustomOption.Create(1000, Types.Impostor, cs(Ninja.color, "Ninja"), rates, null, true);
-            ninjaStealthCooldown = CustomOption.Create(1002, Types.Impostor, "Stealth Cooldown", 30f, 2.5f, 60f, 2.5f, ninjaSpawnRate);
-            ninjaStealthDuration = CustomOption.Create(1003, Types.Impostor, "Stealth Duration", 15f, 2.5f, 60f, 2.5f, ninjaSpawnRate);
-            ninjaFadeTime = CustomOption.Create(1004, Types.Impostor, "Fade Time", 0.5f, 0.0f, 2.5f, 0.5f, ninjaSpawnRate);
-            ninjaKillPenalty = CustomOption.Create(1005, Types.Impostor, "Kill Cooldown Penalty For Stealth Kills", 10f, 0f, 60f, 2.5f, ninjaSpawnRate);
-            ninjaSpeedBonus = CustomOption.Create(1006, Types.Impostor, "Stealth Speed Bonus", 1.25f, 0.5f, 2f, 0.25f, ninjaSpawnRate);
-            ninjaCanBeTargeted = CustomOption.Create(1007, Types.Impostor, "Can Be Targeted While Stealthed", true, ninjaSpawnRate);
-            ninjaCanVent = CustomOption.Create(1008, Types.Impostor, "Can Use Vents", false, ninjaSpawnRate);
+            ninjaSpawnRate = CustomOption.Create(5050, Types.Impostor, cs(Ninja.color, "Ninja"), rates, null, true);
+            ninjaStealthCooldown = CustomOption.Create(5051, Types.Impostor, "Stealth Cooldown", 30f, 2.5f, 60f, 2.5f, ninjaSpawnRate);
+            ninjaStealthDuration = CustomOption.Create(5052, Types.Impostor, "Stealth Duration", 15f, 2.5f, 60f, 2.5f, ninjaSpawnRate);
+            ninjaFadeTime = CustomOption.Create(5053, Types.Impostor, "Fade Time", 0.5f, 0.0f, 2.5f, 0.5f, ninjaSpawnRate);
+            ninjaKillPenalty = CustomOption.Create(5054, Types.Impostor, "Kill Cooldown Penalty For Stealth Kills", 10f, 0f, 60f, 2.5f, ninjaSpawnRate);
+            ninjaSpeedBonus = CustomOption.Create(5055, Types.Impostor, "Stealth Speed Bonus", 1.25f, 0.5f, 2f, 0.25f, ninjaSpawnRate);
+            ninjaCanBeTargeted = CustomOption.Create(5056, Types.Impostor, "Can Be Targeted While Stealthed", true, ninjaSpawnRate);
+            ninjaCanVent = CustomOption.Create(5057, Types.Impostor, "Can Use Vents", false, ninjaSpawnRate);
 
             serialKillerSpawnRate = CustomOption.Create(4010, Types.Impostor, cs(SerialKiller.color, "Serial Killer"), rates, null, true);
             serialKillerKillCooldown = CustomOption.Create(4011, Types.Impostor, "Serial Killer Kill Cooldown", 15f, 2.5f, 60f, 2.5f, serialKillerSpawnRate);
@@ -544,8 +562,17 @@ namespace TheOtherRoles {
             guesserSpawnBothRate = CustomOption.Create(317, Types.Neutral, "Both Guesser Spawn Rate", rates, guesserSpawnRate);
             guesserCantGuessSnitchIfTaksDone = CustomOption.Create(318, Types.Neutral, "Guesser Can't Guess Snitch When Tasks Completed", true, guesserSpawnRate);
 
+            swapperSpawnRate = CustomOption.Create(150, Types.Neutral, cs(Swapper.color, "Swapper"), rates, null, true);
+            swapperIsImpRate = CustomOption.Create(4036, Types.Neutral, "Chance The Swapper Is An Impostor", rates, swapperSpawnRate);
+            swapperCanCallEmergency = CustomOption.Create(151, Types.Neutral, "Swapper Can Call Emergency Meeting", false, swapperSpawnRate);
+            swapperCanOnlySwapOthers = CustomOption.Create(152, Types.Neutral, "Swapper Can Only Swap Others", false, swapperSpawnRate);
+
+            swapperSwapsNumber = CustomOption.Create(153, Types.Neutral, "Initial Swap Charges", 1f, 0f, 15f, 1f, swapperSpawnRate);
+            swapperRechargeTasksNumber = CustomOption.Create(154, Types.Neutral, "Number Of Tasks Needed For Recharging", 2f, 1f, 10f, 1f, swapperSpawnRate);
+
             watcherSpawnRate = CustomOption.Create(1035, Types.Neutral, cs(Watcher.color, "Watcher"), rates, null, true);
             watcherisImpWatcherRate = CustomOption.Create(1036, Types.Neutral, "Chance That The Watcher Is An Impostor", rates, watcherSpawnRate);
+            watcherSeeGuesses = CustomOption.Create(5080, Types.Neutral, "Watcher Can See Guesses", true, watcherSpawnRate);
             watcherSpawnBothRate = CustomOption.Create(1037, Types.Neutral, "Both Watcher Spawn Rate", rates, watcherSpawnRate);
 
             jesterSpawnRate = CustomOption.Create(60, Types.Neutral, cs(Jester.color, "Jester"), rates, null, true);
@@ -584,6 +611,11 @@ namespace TheOtherRoles {
             pursuerCooldown = CustomOption.Create(356, Types.Neutral, "Pursuer Blank Cooldown", 30f, 5f, 60f, 2.5f, lawyerSpawnRate);
             pursuerBlanksNumber = CustomOption.Create(357, Types.Neutral, "Pursuer Number Of Blanks", 5f, 1f, 20f, 1f, lawyerSpawnRate);
 
+            shifterSpawnRate = CustomOption.Create(1100, Types.Neutral, cs(Shifter.color, "Shifter"), rates, null, true);
+            shifterIsNeutralRate = CustomOption.Create(6007, Types.Neutral, "Chance The Shifter Is A Chain-Shifter", rates, shifterSpawnRate);
+            shifterShiftsModifiers = CustomOption.Create(1101, Types.Neutral, "Shifter Shifts Modifiers", false, shifterSpawnRate);
+            shifterPastShifters = CustomOption.Create(6008, Types.Neutral, "Can Shift Former Shifters", false, shifterSpawnRate);
+
             opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, "Opportunist"), rates, null, true);
 
             nekoKabochaSpawnRate = CustomOption.Create(880, Types.Impostor, cs(NekoKabocha.color, "Neko-Kabocha"), rates, null, true);
@@ -591,6 +623,22 @@ namespace TheOtherRoles {
             nekoKabochaRevengeImpostor = CustomOption.Create(882, Types.Impostor, "Take Revenge On Impostor Killer", true, nekoKabochaSpawnRate);
             nekoKabochaRevengeNeutral = CustomOption.Create(883, Types.Impostor, "Take Revenge On Neutral Killer", true, nekoKabochaSpawnRate);
             nekoKabochaRevengeExile = CustomOption.Create(884, Types.Impostor, "Take Revenge When Exiled", false, nekoKabochaSpawnRate);
+
+            evilTrackerSpawnRate = CustomOption.Create(4026, Types.Impostor, cs(EvilTracker.color, "Evil Tracker"), rates, null, true);
+            evilTrackerCooldown = CustomOption.Create(4027, Types.Impostor, "Track Cooldown", 10f, 0f, 60f, 5f, evilTrackerSpawnRate);
+            evilTrackerResetTargetAfterMeeting = CustomOption.Create(4028, Types.Impostor, "Reset Target After Meetings", true, evilTrackerSpawnRate);
+            evilTrackerCanSeeDeathFlash = CustomOption.Create(4029, Types.Impostor, "Can See Impostor Kill Flash", true, evilTrackerSpawnRate);
+            evilTrackerCanSeeTargetPosition = CustomOption.Create(4031, Types.Impostor, "Can See Target Position", true, evilTrackerSpawnRate);
+            evilTrackerCanSetTargetOnMeeting = CustomOption.Create(4032, Types.Impostor, "Can Set Target On Meetings", true, evilTrackerSpawnRate);
+
+            undertakerSpawnRate = CustomOption.Create(4056, Types.Impostor, cs(Undertaker.color, "Undertaker"), rates, null, true);
+            undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, "Speed Decrease", -50f, -80f, 0f, 10f, undertakerSpawnRate);
+            undertakerDisableVent = CustomOption.Create(4058, Types.Impostor, "Disable Vents While Dragging", true, undertakerSpawnRate);
+
+            mimicSpawnRate = CustomOption.Create(5000, Types.Impostor, cs(MimicK.color, "Mimic"), rates, null, true);
+            mimicCountAsOne = CustomOption.Create(5001, Types.Impostor, "Count As One Impostor", true, mimicSpawnRate);
+            mimicIfOneDiesBothDie = CustomOption.Create(5002, Types.Impostor, "If One Dies Both Dies", true, mimicSpawnRate);
+            mimicHasOneVote = CustomOption.Create(5003, Types.Impostor, "Two Impostors Only Has One Vote", true, mimicSpawnRate);
 
             mayorSpawnRate = CustomOption.Create(80, Types.Crewmate, cs(Mayor.color, "Mayor"), rates, null, true);
             mayorCanSeeVoteColors = CustomOption.Create(81, Types.Crewmate, "Mayor Can See Vote Colors", false, mayorSpawnRate);
@@ -614,6 +662,7 @@ namespace TheOtherRoles {
             deputyKnowsSheriff = CustomOption.Create(107, Types.Crewmate, "Sheriff And Deputy Know Each Other ", true, deputySpawnRate);
             deputyGetsPromoted = CustomOption.Create(108, Types.Crewmate, "Deputy Gets Promoted To Sheriff", new string[] { "Off", "On (Immediately)", "On (After Meeting)" }, deputySpawnRate);
             deputyKeepsHandcuffs = CustomOption.Create(109, Types.Crewmate, "Deputy Keeps Handcuffs When Promoted", true, deputyGetsPromoted);
+            deputyStopsGameEnd = CustomOption.Create(4016, Types.Crewmate, "Deputy Stops Game End", false, deputySpawnRate);
 
             lighterSpawnRate = CustomOption.Create(110, Types.Crewmate, cs(Lighter.color, "Lighter"), rates, null, true);
             lighterModeLightsOnVision = CustomOption.Create(111, Types.Crewmate, "Vision On Lights On", 1.5f, 0.25f, 5f, 0.25f, lighterSpawnRate);
@@ -636,24 +685,14 @@ namespace TheOtherRoles {
             timeMasterSpawnRate = CustomOption.Create(130, Types.Crewmate, cs(TimeMaster.color, "Time Master"), rates, null, true);
             timeMasterCooldown = CustomOption.Create(131, Types.Crewmate, "Time Master Cooldown", 30f, 10f, 120f, 2.5f, timeMasterSpawnRate);
             timeMasterRewindTime = CustomOption.Create(132, Types.Crewmate, "Rewind Time", 3f, 1f, 10f, 1f, timeMasterSpawnRate);
-            timeMasterShieldDuration = CustomOption.Create(133, Types.Crewmate, "Time Master Shield Duration", 3f, 1f, 20f, 1f, timeMasterSpawnRate);
-
-            shifterSpawnRate = CustomOption.Create(1100, Types.Crewmate, cs(Shifter.color, "Shifter"), rates, null, true);
-            shifterShiftsModifiers = CustomOption.Create(1101, Types.Crewmate, "Shifter Shifts Modifiers", false, shifterSpawnRate);
+            timeMasterShieldDuration = CustomOption.Create(133, Types.Crewmate, "Time Master Shield Duration", 3f, 1f, 20f, 1f, timeMasterSpawnRate);            
 
             medicSpawnRate = CustomOption.Create(140, Types.Crewmate, cs(Medic.color, "Medic"), rates, null, true);
             medicShowShielded = CustomOption.Create(143, Types.Crewmate, "Show Shielded Player", new string[] {"Everyone", "Shielded + Medic", "Medic"}, medicSpawnRate);
             medicShowAttemptToShielded = CustomOption.Create(144, Types.Crewmate, "Shielded Player Sees Murder Attempt", false, medicSpawnRate);
             medicSetOrShowShieldAfterMeeting = CustomOption.Create(145, Types.Crewmate, "Shield Will Be Activated", new string[] { "Instantly", "Instantly, Visible\nAfter Meeting", "After Meeting" }, medicSpawnRate);
 
-            medicShowAttemptToMedic = CustomOption.Create(146, Types.Crewmate, "Medic Sees Murder Attempt On Shielded Player", false, medicSpawnRate);
-
-            swapperSpawnRate = CustomOption.Create(150, Types.Crewmate, cs(Swapper.color, "Swapper"), rates, null, true);
-            swapperCanCallEmergency = CustomOption.Create(151, Types.Crewmate, "Swapper Can Call Emergency Meeting", false, swapperSpawnRate);
-            swapperCanOnlySwapOthers = CustomOption.Create(152, Types.Crewmate, "Swapper Can Only Swap Others", false, swapperSpawnRate);
-
-            swapperSwapsNumber = CustomOption.Create(153, Types.Crewmate, "Initial Swap Charges", 1f, 0f, 5f, 1f, swapperSpawnRate);
-            swapperRechargeTasksNumber = CustomOption.Create(154, Types.Crewmate, "Number Of Tasks Needed For Recharging", 2f, 1f, 10f, 1f, swapperSpawnRate);
+            medicShowAttemptToMedic = CustomOption.Create(146, Types.Crewmate, "Medic Sees Murder Attempt On Shielded Player", false, medicSpawnRate);            
 
             fortuneTellerSpawnRate = CustomOption.Create(940, Types.Crewmate, cs(FortuneTeller.color, "Fortune Teller"), rates, null, true);
             fortuneTellerResults = CustomOption.Create(941, Types.Crewmate, "Divination Results", new string[] { "Crew Or Not", "Team", "Role" }, fortuneTellerSpawnRate);
@@ -679,13 +718,23 @@ namespace TheOtherRoles {
             baitReportDelay = CustomOption.Create(1032, Types.Crewmate, "Bait Report Delay", 0f, 0f, 10f, 1f, baitSpawnRate);
             baitShowKillFlash = CustomOption.Create(1033, Types.Crewmate, "Warn The Killer With A Flash", true, baitSpawnRate);
 
+            veteranSpawnRate = CustomOption.Create(4050, Types.Crewmate, cs(Veteran.color, "Veteran"), rates, null, true);
+            veteranCooldown = CustomOption.Create(4051, Types.Crewmate, "Veteran Alert Cooldown", 30f, 10f, 60f, 2.5f, veteranSpawnRate);
+            veteranAlertDuration = CustomOption.Create(4052, Types.Crewmate, "Veteran Alert Duration", 3f, 1f, 20f, 1f, veteranSpawnRate);
+            veteranAlertNumber = CustomOption.Create(4053, Types.Crewmate, "Veteran Number Of Alerts", 5f, 1f, 15f, 1f, veteranSpawnRate);
+
             trackerSpawnRate = CustomOption.Create(200, Types.Crewmate, cs(Tracker.color, "Tracker"), rates, null, true);
             trackerUpdateIntervall = CustomOption.Create(201, Types.Crewmate, "Tracker Update Intervall", 5f, 1f, 30f, 1f, trackerSpawnRate);
             trackerResetTargetAfterMeeting = CustomOption.Create(202, Types.Crewmate, "Tracker Reset Target After Meeting", false, trackerSpawnRate);
             trackerCanTrackCorpses = CustomOption.Create(203, Types.Crewmate, "Tracker Can Track Corpses", true, trackerSpawnRate);
             trackerCorpsesTrackingCooldown = CustomOption.Create(204, Types.Crewmate, "Corpses Tracking Cooldown", 30f, 5f, 120f, 5f, trackerCanTrackCorpses);
             trackerCorpsesTrackingDuration = CustomOption.Create(205, Types.Crewmate, "Corpses Tracking Duration", 5f, 2.5f, 30f, 2.5f, trackerCanTrackCorpses);
-                           
+
+            sherlockSpawnRate = CustomOption.Create(5070, Types.Crewmate, cs(Sherlock.color, "Sherlock"), rates, null, true);
+            sherlockCooldown = CustomOption.Create(5071, Types.Crewmate, "Sherlock Investigate Cooldown", 10f, 0f, 40f, 2.5f, sherlockSpawnRate);
+            sherlockInvestigateDistance = CustomOption.Create(5072, Types.Crewmate, "Sherlock Investigate Range", 5f, 1f, 15f, 1f, sherlockSpawnRate);
+            sherlockRechargeTasksNumber = CustomOption.Create(5073, Types.Crewmate, "Sherlock Investigate Recharge Number", 2f, 1f, 5f, 1f, sherlockSpawnRate);
+
             snitchSpawnRate = CustomOption.Create(210, Types.Crewmate, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForReveal = CustomOption.Create(219, Types.Crewmate, "Task Count Where The Snitch Will Be Revealed", 5f, 0f, 25f, 1f, snitchSpawnRate);
             snitchMode = CustomOption.Create(211, Types.Crewmate, "Information Mode", new string[] { "Chat", "Map", "Chat & Map" }, snitchSpawnRate);
@@ -726,10 +775,6 @@ namespace TheOtherRoles {
             thiefHasImpVision = CustomOption.Create(403, Types.Neutral, "Thief Has Impostor Vision", true, thiefSpawnRate);
             thiefCanUseVents = CustomOption.Create(404, Types.Neutral, "Thief Can Use Vents", true, thiefSpawnRate);
             thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, "Thief Can Guess To Steal A Role (If Guesser)", false, thiefSpawnRate);
-
-            amnisiacSpawnRate = CustomOption.Create(616, Types.Neutral, cs(Amnisiac.color, "Amnesiac"), rates, null, true);
-            amnisiacShowArrows = CustomOption.Create(617, Types.Neutral, "Show arrows to dead bodies", true, amnisiacSpawnRate);
-            amnisiacResetRole = CustomOption.Create(618, Types.Neutral, "Reset role when taken", true, amnisiacSpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);
@@ -841,6 +886,8 @@ namespace TheOtherRoles {
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "Finish Tasks Before Haunting Or Zooming Out", true);
             camsNightVision = CustomOption.Create(11, Types.General, "Cams Switch To Night Vision If Lights Are Off", false, null, true);
             camsNoNightVisionIfImpVision = CustomOption.Create(12, Types.General, "Impostor Vision Ignores Night Vision Cams", false, camsNightVision, false);
+            additionalVents = CustomOption.Create(5060, Types.General, "Additional Vents (Polus)", false);
+            specimenVital = CustomOption.Create(5061, Types.General, "Move Vitals To Specimen Room (Polus)", false);
 
 
             dynamicMap = CustomOption.Create(500, Types.General, "Play On A Random Map", false, null, true);
