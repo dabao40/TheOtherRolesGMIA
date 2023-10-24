@@ -47,7 +47,7 @@ def stringToJson(in_files):
 if __name__ == "__main__":
   in_files = [
     os.path.join(WORKING_DIR, "Strings.xlsx"),
-    os.path.join(WORKING_DIR, "Strings-Dev.xlsx")
+    #os.path.join(WORKING_DIR, "Strings-Dev.xlsx")
   ]
   
   stringToJson(in_files)
