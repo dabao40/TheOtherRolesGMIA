@@ -22,6 +22,8 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Releases
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | -------------------------------------------------------------------------- |
+| 2023.7.12s         | v1.1.0      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0)|
+| 2023.7.12s         | v1.0.9      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.9)|
 | 2023.7.12s         | v1.0.8      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.8)|
 | 2023.7.12s         | v1.0.7      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.7)|
 | 2023.7.12s         | v1.0.6      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.6)|
@@ -33,6 +35,12 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 # Changelog
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version 1.1.0**
+  - Added new role Bomber
+  - Added new role Task Master
+  - Fixed some bugs that have existed for more than 3 versions
+  - Supported translation into Japanese and Chines, thanks to our translators
   
  **Version 1.0.8**
  - Added role Veteran
