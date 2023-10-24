@@ -68,6 +68,10 @@ namespace TheOtherRoles
         public static CustomButton mimicAMorphButton;
         public static CustomButton sherlockInvestigateButton;
         public static CustomButton sherlockWatchButton;
+        public static CustomButton bomberAPlantBombButton;
+        public static CustomButton bomberAReleaseBombButton;
+        public static CustomButton bomberBPlantBombButton;
+        public static CustomButton bomberBReleaseBombButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -152,6 +156,10 @@ namespace TheOtherRoles
             mimicAMorphButton.MaxTimer = 0f;
             sherlockInvestigateButton.MaxTimer = Sherlock.cooldown;
             sherlockWatchButton.MaxTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+            bomberAPlantBombButton.MaxTimer = BomberA.cooldown;
+            bomberBPlantBombButton.MaxTimer = BomberA.cooldown;
+            bomberAReleaseBombButton.MaxTimer = 0f;
+            bomberBReleaseBombButton.MaxTimer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -175,6 +183,8 @@ namespace TheOtherRoles
             witchSpellButton.EffectDuration = Witch.spellCastingDuration;
             securityGuardCamButton.EffectDuration = SecurityGuard.duration;
             ninjaButton.EffectDuration = Ninja.stealthDuration;
+            bomberAPlantBombButton.EffectDuration = BomberA.duration;
+            bomberBPlantBombButton.EffectDuration = BomberA.duration;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
@@ -1491,6 +1501,251 @@ namespace TheOtherRoles
             veteranButtonAlertText.transform.localScale = Vector3.one * 0.5f;
             veteranButtonAlertText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
+            bomberAPlantBombButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == BomberA.currentTarget)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberA.bomberA);
+                        return;
+                    }
+
+                    if (BomberA.currentTarget != null)
+                    {
+                        BomberA.tmpTarget = BomberA.currentTarget;
+                        bomberAPlantBombButton.HasEffect = true;
+                    }
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    if (bomberAPlantBombButton.isEffectActive && BomberA.tmpTarget != BomberA.currentTarget)
+                    {
+                        BomberA.tmpTarget = null;
+                        bomberAPlantBombButton.Timer = 0f;
+                        bomberAPlantBombButton.isEffectActive = false;
+                    }
+
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberA.currentTarget != null;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
+                    bomberAPlantBombButton.isEffectActive = false;
+                    BomberA.tmpTarget = null;
+                    BomberA.bombTarget = null;
+                    //BombEffect.clearBombEffects();
+                },
+                BomberA.getBomberButtonSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.F,
+                true,
+                BomberA.duration,
+                // OnEffectsEnd
+                () =>
+                {
+                    if (BomberA.tmpTarget == Mini.mini || (BomberB.bombTarget != null && BomberA.tmpTarget == BomberB.bombTarget))
+                    {
+                        bomberAPlantBombButton.Timer = 0f;
+                    }
+                    else
+                    {
+                        if (BomberA.tmpTarget != null)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
+                            writer.Write(BomberA.tmpTarget.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            BomberA.bombTarget = BomberA.tmpTarget;
+                        }
+
+                        BomberA.tmpTarget = null;
+                        bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
+                    }
+                }
+            );
+
+            bomberBPlantBombButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == BomberB.currentTarget)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberB.bomberB);
+                        return;
+                    }
+
+                    if (BomberB.currentTarget != null)
+                    {
+                        BomberB.tmpTarget = BomberB.currentTarget;
+                        bomberBPlantBombButton.HasEffect = true;
+                    }
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == BomberB.bomberB && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && BomberA.bomberA != null && !BomberA.bomberA.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    if (bomberBPlantBombButton.isEffectActive && BomberB.tmpTarget != BomberB.currentTarget)
+                    {
+                        BomberB.tmpTarget = null;
+                        bomberBPlantBombButton.Timer = 0f;
+                        bomberBPlantBombButton.isEffectActive = false;
+                    }
+
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberB.currentTarget != null;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
+                    bomberBPlantBombButton.isEffectActive = false;
+                    BomberB.tmpTarget = null;
+                    BomberB.bombTarget = null;
+                },
+                BomberB.getBomberButtonSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.F,
+                true,
+                BomberA.duration,
+                // OnEffectsEnd
+                () =>
+                {
+                    if (BomberB.tmpTarget == Mini.mini || (BomberA.bombTarget != null && BomberB.tmpTarget == BomberA.bombTarget)) bomberBPlantBombButton.Timer = 0f;
+                    else
+                    {
+                        if (BomberB.tmpTarget != null)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
+                            writer.Write(BomberB.tmpTarget.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            BomberB.bombTarget = BomberB.tmpTarget;
+                        }
+
+                        BomberB.tmpTarget = null;
+                        bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
+                    }
+                }
+            );
+
+            bomberAReleaseBombButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    if (BomberA.bombTarget == Veteran.veteran && Veteran.veteran != null && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberA.bomberA);
+                        return;
+                    }
+
+                    // Use MurderAttempt to exclude eg.Medic shielded
+                    MurderAttemptResult attempt = Helpers.checkMuderAttempt(BomberA.bomberA, BomberA.bombTarget);
+
+                    var bomberB = BomberB.bomberB;
+                    float distance = Vector2.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.localPosition, bomberB.transform.localPosition);
+
+                    if (attempt == MurderAttemptResult.PerformKill)
+                    {
+                        if (CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberB != null && !bomberB.Data.IsDead && distance < 1)
+                        {
+                            var target = BomberA.bombTarget;
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
+                            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                            writer.Write(target.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
+                        }
+                    }
+                    else if (attempt == MurderAttemptResult.BlankKill)
+                    {
+                        bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
+                        return;
+                    }
+                    else if (attempt == MurderAttemptResult.SuppressKill) return;
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    var bomberB = BomberB.bomberB;
+                    float distance = Vector2.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.localPosition, bomberB.transform.localPosition);
+
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberB != null && !bomberB.Data.IsDead && distance < 1;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    bomberAReleaseBombButton.Timer = bomberAReleaseBombButton.MaxTimer;
+                },
+                BomberA.getReleaseButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowCenter,
+                __instance,
+                KeyCode.Q,
+                false
+            );
+
+            bomberBReleaseBombButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    if (BomberB.bombTarget == Veteran.veteran && Veteran.veteran != null && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberB.bomberB);
+                        return;
+                    }
+
+                    var bomberA = BomberA.bomberA;
+                    float distance = Vector2.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.localPosition, bomberA.transform.localPosition);
+
+                    MurderAttemptResult attempt = Helpers.checkMuderAttempt(BomberB.bomberB, BomberB.bombTarget);
+
+                    if (attempt == MurderAttemptResult.PerformKill)
+                    {
+                        if (CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberA != null && !bomberA.Data.IsDead && distance < 1)
+                        {
+                            var target = BomberB.bombTarget;
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
+                            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                            writer.Write(target.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
+                        }
+                    }
+                    else if (attempt == MurderAttemptResult.BlankKill)
+                    {
+                        bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
+                        return;
+                    }
+                    else if (attempt == MurderAttemptResult.SuppressKill) return;
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == BomberB.bomberB && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && BomberA.bomberA != null && !BomberA.bomberA.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    var bomberA = BomberA.bomberA;
+                    float distance = Vector2.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.localPosition, bomberA.transform.localPosition);
+
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && !bomberA.Data.IsDead && bomberA != null && distance < 1;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    bomberBReleaseBombButton.Timer = bomberBReleaseBombButton.MaxTimer;
+                },
+                BomberB.getReleaseButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowCenter,
+                __instance,
+                KeyCode.Q,
+                false
+            );
+
             undertakerDragButton = new CustomButton(
                 () =>
                 {
@@ -1577,8 +1832,6 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F
             );
-            sherlockInvestigateButton.showButtonText = true;
-            sherlockInvestigateButton.buttonText = "Investigate";
             sherlockNumInvestigateText = GameObject.Instantiate(sherlockInvestigateButton.actionButton.cooldownTimerText, sherlockInvestigateButton.actionButton.cooldownTimerText.transform.parent);
             sherlockNumInvestigateText.text = "";
             sherlockNumInvestigateText.enableWordWrapping = false;
@@ -1718,7 +1971,7 @@ namespace TheOtherRoles
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.ninjaStealth(CachedPlayer.LocalPlayer.PlayerId, false);
 
-                    //CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(Math.Max(CachedPlayer.LocalPlayer.PlayerControl.killTimer, Ninja.killPenalty));
+                    CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(Math.Max(CachedPlayer.LocalPlayer.PlayerControl.killTimer, Ninja.killPenalty));
                 }
             );
             ninjaButton.effectCancellable = true;            

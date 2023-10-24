@@ -17,7 +17,7 @@ namespace TheOtherRoles {
             WitchExile,
             Revenge, 
             Suicide,
-            //Bomb,
+            Bomb,
             Arson,
         };
 

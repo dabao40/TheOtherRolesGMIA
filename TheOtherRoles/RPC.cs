@@ -68,6 +68,9 @@ namespace TheOtherRoles
         Vulture,
         Medium,
         Shifter, 
+        Yasuna,
+        TaskMaster,
+        EvilYasuna,
         //Trapper,
         Lawyer, 
         //Prosecutor,
@@ -81,6 +84,8 @@ namespace TheOtherRoles
         EvilTracker,
         MimicK,
         MimicA,
+        BomberA,
+        BomberB,
         Undertaker,
         Opportunist,
         //Bomber,
@@ -191,7 +196,14 @@ namespace TheOtherRoles
         UndertakerDropBody,
         MimicMorph,
         MimicResetMorph,
-        SetShifterType
+        SetShifterType,
+        YasunaSpecialVote,
+        YasunaSpecialVote_DoCastVote,
+        TaskMasterSetExTasks,
+        TaskMasterUpdateExTasks,
+        PlantBomb,
+        ReleaseBomb,
+        BomberKill
     }
 
     public static class RPCProcedure {
@@ -206,6 +218,7 @@ namespace TheOtherRoles
             Bloodytrail.resetSprites();
             SpecimenVital.clearAndReload();
             AdditionalVents.clearAndReload();
+            BombEffect.clearBombEffects();
             //Trap.clearTraps();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
@@ -345,6 +358,15 @@ namespace TheOtherRoles
                     case RoleId.FortuneTeller:
                         FortuneTeller.fortuneTeller = player;
                         break;
+                    case RoleId.TaskMaster:
+                        TaskMaster.taskMaster = player;
+                        break;
+                    case RoleId.Yasuna:
+                        Yasuna.yasuna = player;
+                        break;
+                    case RoleId.EvilYasuna:
+                        Yasuna.yasuna = player;
+                        break;
                     case RoleId.Sprinter:
                         Sprinter.sprinter = player;
                         break;
@@ -441,6 +463,12 @@ namespace TheOtherRoles
                         break;
                     case RoleId.MimicA:
                         MimicA.mimicA = player;
+                        break;
+                    case RoleId.BomberA:
+                        BomberA.bomberA = player;
+                        break;
+                    case RoleId.BomberB:
+                        BomberB.bomberB = player;
                         break;
                     case RoleId.Thief:
                         Thief.thief = player;
@@ -734,7 +762,7 @@ namespace TheOtherRoles
                 TimeMaster.timeMaster = oldShifter;
             if (Medic.medic != null && Medic.medic == player)
                 Medic.medic = oldShifter;
-            if (Swapper.swapper != null && Swapper.swapper == player && !Swapper.swapper.Data.Role.IsImpostor)
+            if (Swapper.swapper != null && Swapper.swapper == player)
                 Swapper.swapper = oldShifter;
             if (Seer.seer != null && Seer.seer == player)
                 Seer.seer = oldShifter;
@@ -764,6 +792,9 @@ namespace TheOtherRoles
                 Sprinter.sprinter = oldShifter;
             if (Veteran.veteran != null && Veteran.veteran == player)
                 Veteran.veteran = oldShifter;
+            if (Yasuna.yasuna != null && Yasuna.yasuna == player)
+                Yasuna.yasuna = oldShifter;
+            if (player == TaskMaster.taskMaster) TaskMaster.taskMaster = oldShifter;
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
@@ -789,6 +820,8 @@ namespace TheOtherRoles
                 MimicK.name = oldShifter.Data.PlayerName;
             }
             if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
+            if (player == BomberA.bomberA) BomberA.bomberA = oldShifter;
+            if (player == BomberB.bomberB) BomberB.bomberB = oldShifter;
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
@@ -968,6 +1001,17 @@ namespace TheOtherRoles
                     MimicA.mimicA.setDefaultLook();
                 }
 
+                if (player == BomberA.bomberA && CachedPlayer.LocalPlayer.PlayerControl == player)
+                {
+                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    BomberA.arrows.FirstOrDefault()?.arrow.SetActive(false);
+                }
+                if (player == BomberB.bomberB && CachedPlayer.LocalPlayer.PlayerControl == player)
+                {
+                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    BomberB.arrows.FirstOrDefault()?.arrow.SetActive(false);
+                }
+
                 erasePlayerRoles(player.PlayerId, true);
                 Sidekick.sidekick = player;
                 if (player.PlayerId == CachedPlayer.LocalPlayer.PlayerId) CachedPlayer.LocalPlayer.PlayerControl.moveable = true;
@@ -1018,6 +1062,7 @@ namespace TheOtherRoles
             if (player == Sprinter.sprinter) Sprinter.clearAndReload();
             if (player == Veteran.veteran) Veteran.clearAndReload();
             if (player == Sherlock.sherlock) Sherlock.clearAndReload();
+            if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -1040,6 +1085,8 @@ namespace TheOtherRoles
             if (player == Undertaker.undertaker) Undertaker.clearAndReload();
             if (player == MimicK.mimicK) MimicK.clearAndReload();
             if (player == MimicA.mimicA) MimicA.clearAndReload();
+            if (player == BomberA.bomberA) BomberA.clearAndReload();
+            if (player == BomberB.bomberB) BomberB.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -1047,6 +1094,7 @@ namespace TheOtherRoles
             if (player == Arsonist.arsonist) Arsonist.clearAndReload();
             if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
             if (player == Watcher.nicewatcher || player == Watcher.evilwatcher) Watcher.clear(player.PlayerId);
+            if (player == Yasuna.yasuna) Yasuna.clearAndReload();
             if (player == Jackal.jackal) { // Promote Sidekick and hence override the the Jackal or erase Jackal
                 if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead) {
                     RPCProcedure.sidekickPromotes();
@@ -1235,6 +1283,116 @@ namespace TheOtherRoles
             Shifter.isNeutral = isNeutral;
         }
 
+        public static void yasunaSpecialVote(byte playerid, byte targetid)
+        {
+            if (!MeetingHud.Instance) return;
+            if (!Yasuna.isYasuna(playerid)) return;
+            PlayerControl target = Helpers.playerById(targetid);
+            if (target == null) return;
+            Yasuna.specialVoteTargetPlayerId = targetid;
+            Yasuna.remainingSpecialVotes(true);
+        }
+
+        public static void yasunaSpecialVote_DoCastVote()
+        {
+            if (!MeetingHud.Instance) return;
+            if (!Yasuna.isYasuna(CachedPlayer.LocalPlayer.PlayerControl.PlayerId)) return;
+            PlayerControl target = Helpers.playerById(Yasuna.specialVoteTargetPlayerId);
+            if (target == null) return;
+            MeetingHud.Instance.CmdCastVote(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
+        }
+
+        public static void taskMasterSetExTasks(byte playerId, byte oldTaskMasterPlayerId, byte[] taskTypeIds)
+        {
+            PlayerControl oldTaskMasterPlayer = Helpers.playerById(oldTaskMasterPlayerId);
+            if (oldTaskMasterPlayer != null)
+            {
+                oldTaskMasterPlayer.clearAllTasks();
+                TaskMaster.oldTaskMasterPlayerId = oldTaskMasterPlayerId;
+            }
+
+            if (!TaskMaster.isTaskMaster(playerId))
+                return;
+            GameData.PlayerInfo player = GameData.Instance.GetPlayerById(playerId);
+            if (player == null)
+                return;
+
+            if (taskTypeIds != null && taskTypeIds.Length > 0)
+            {
+                player.Object.clearAllTasks();
+                player.Tasks = new Il2CppSystem.Collections.Generic.List<GameData.TaskInfo>(taskTypeIds.Length);
+                for (int i = 0; i < taskTypeIds.Length; i++)
+                {
+                    player.Tasks.Add(new GameData.TaskInfo(taskTypeIds[i], (uint)i));
+                    player.Tasks[i].Id = (uint)i;
+                }
+                for (int i = 0; i < player.Tasks.Count; i++)
+                {
+                    GameData.TaskInfo taskInfo = player.Tasks[i];
+                    NormalPlayerTask normalPlayerTask = UnityEngine.Object.Instantiate(MapUtilities.CachedShipStatus.GetTaskById(taskInfo.TypeId), player.Object.transform);
+                    normalPlayerTask.Id = taskInfo.Id;
+                    normalPlayerTask.Owner = player.Object;
+                    normalPlayerTask.Initialize();
+                    player.Object.myTasks.Add(normalPlayerTask);
+                }
+                TaskMaster.isTaskComplete = true;
+            }
+            else
+            {
+                TaskMaster.isTaskComplete = false;
+            }
+        }
+
+        public static void taskMasterUpdateExTasks(byte clearExTasks, byte allExTasks)
+        {
+            if (TaskMaster.taskMaster == null) return;
+            TaskMaster.clearExTasks = clearExTasks;
+            TaskMaster.allExTasks = allExTasks;
+        }
+
+        public static void plantBomb(byte playerId)
+        {
+            var p = Helpers.playerById(playerId);
+            if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA) BomberB.bombTarget = p;
+            if (CachedPlayer.LocalPlayer.PlayerControl == BomberB.bomberB) BomberA.bombTarget = p;
+        }
+
+        public static void releaseBomb(byte killer, byte target)
+        {
+            // 同時押しでダブルキルが発生するのを防止するためにBomberAで一度受け取ってから実行する
+            if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
+            {
+                if (BomberA.bombTarget != null && BomberB.bombTarget != null)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BomberKill, Hazel.SendOption.Reliable, -1);
+                    writer.Write(killer);
+                    writer.Write(target);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.bomberKill(killer, target);                    
+                }
+            }
+        }
+
+        public static void bomberKill(byte killer, byte target)
+        {
+            BomberA.bombTarget = null;
+            BomberB.bombTarget = null;
+            var k = Helpers.playerById(killer);
+            var t = Helpers.playerById(target);
+            if (!t.Data.IsDead)
+            {
+                KillAnimationCoPerformKillPatch.hideNextAnimation = true;
+                k.MurderPlayer(t);
+                if (BomberA.showEffects)
+                {
+                    new BombEffect(t);
+                }
+            }
+            GameHistory.overrideDeathReasonAndKiller(t, DeadPlayer.CustomDeathReason.Bomb, k);
+            bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
+            bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
+        }
+
         public static void placeCamera(byte[] buff) {
             var referenceCamera = UnityEngine.Object.FindObjectOfType<SurvCamera>(); 
             if (referenceCamera == null) return; // Mira HQ
@@ -1322,25 +1480,41 @@ namespace TheOtherRoles
             PlayerControl killer = Helpers.playerById(killerId);
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
             PlayerControl dyingMimicPartner;
+            PlayerControl dyingBomberPartner;
+            byte NekoKabochaKillerId = byte.MaxValue;
             if (dyingTarget == null ) return;
             bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
                     (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
                     (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
-            if (dyingTarget == NekoKabocha.nekoKabocha && revengeFlag)
+            if (dyingTarget == NekoKabocha.nekoKabocha)
             {
                 NekoKabocha.meetingKiller = killer;
-                killer.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
+                NekoKabochaKillerId = killer.PlayerId;
+                if (revengeFlag)
+                {
+                    killer.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
+                }
             }
             if ((dyingTarget == MimicK.mimicK || dyingTarget == MimicA.mimicA) && MimicK.ifOneDiesBothDie)
             {
                 dyingMimicPartner = dyingTarget == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
-                dyingMimicPartner.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(dyingMimicPartner, DeadPlayer.CustomDeathReason.Suicide);
+                //dyingMimicPartner.Exiled();
+                //GameHistory.overrideDeathReasonAndKiller(dyingMimicPartner, DeadPlayer.CustomDeathReason.Suicide);
             }
             else dyingMimicPartner = null;
 
+            if ((dyingTarget == BomberA.bomberA || dyingTarget == BomberB.bomberB) && BomberA.ifOneDiesBothDie)
+            {
+                dyingBomberPartner = dyingTarget == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
+                //dyingBomberPartner.Exiled();
+                //GameHistory.overrideDeathReasonAndKiller(dyingBomberPartner, DeadPlayer.CustomDeathReason.Suicide);
+            }
+            else dyingBomberPartner = null;
+
             if (Lawyer.target != null && dyingTarget == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
+            if (Yasuna.yasuna != null && dyingTarget == Yasuna.yasuna) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
+            if (Yasuna.yasuna != null && dyingTarget.PlayerId == Yasuna.specialVoteTargetPlayerId) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
             PlayerControl dyingLoverPartner = Lovers.bothDie ? dyingTarget.getPartner() : null; // Lover check
             if (Lawyer.target != null && dyingLoverPartner == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
 
@@ -1356,13 +1530,16 @@ namespace TheOtherRoles
             GameHistory.overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
 
             byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
+            byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
+            byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
+            //byte nKkillerId = (NekoKabocha.meetingKiller != null && revengeFlag) ? NekoKabocha.meetingKiller.PlayerId : dyingTargetId;
 
             HandleGuesser.remainingShots(killerId, true);
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(dyingTarget.KillSfx, false, 0.8f);
             if (MeetingHud.Instance) {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, dyingTargetId);
                 foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
-                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId) {
+                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId) {
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
                     }
@@ -1387,17 +1564,17 @@ namespace TheOtherRoles
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
                 
-                if (CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.meetingKiller)
+                else if (CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.meetingKiller && revengeFlag)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(NekoKabocha.nekoKabocha.Data, killer.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
 
-                if (dyingMimicPartner != null && CachedPlayer.LocalPlayer.PlayerControl == dyingMimicPartner)
+                else if (dyingMimicPartner != null && CachedPlayer.LocalPlayer.PlayerControl == dyingMimicPartner)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingMimicPartner.Data, dyingMimicPartner.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-            }
+                }
 
             // remove shoot button from targets for all guessers and close their guesserUI
             if (GuesserGM.isGuesser(PlayerControl.LocalPlayer.PlayerId) && PlayerControl.LocalPlayer != guesser && !PlayerControl.LocalPlayer.Data.IsDead && GuesserGM.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 0 && MeetingHud.Instance) {
@@ -1879,6 +2056,40 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.SetShifterType:
                     RPCProcedure.setShifterType(reader.ReadBoolean());
+                    break;
+                case (byte)CustomRPC.YasunaSpecialVote:
+                    byte id = reader.ReadByte();
+                    byte targetId = reader.ReadByte();
+                    RPCProcedure.yasunaSpecialVote(id, targetId);
+                    if (AmongUsClient.Instance.AmHost && Yasuna.isYasuna(id))
+                    {
+                        int clientId = Helpers.GetClientId(Yasuna.yasuna);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.YasunaSpecialVote_DoCastVote, Hazel.SendOption.Reliable, clientId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                    break;
+                case (byte)CustomRPC.YasunaSpecialVote_DoCastVote:
+                    RPCProcedure.yasunaSpecialVote_DoCastVote();
+                    break;
+                case (byte)CustomRPC.TaskMasterSetExTasks:
+                    playerId = reader.ReadByte();
+                    byte oldTaskMasterPlayerId = reader.ReadByte();
+                    byte[] taskTypeIds = reader.BytesRemaining > 0 ? reader.ReadBytes(reader.BytesRemaining) : null;
+                    RPCProcedure.taskMasterSetExTasks(playerId, oldTaskMasterPlayerId, taskTypeIds);
+                    break;
+                case (byte)CustomRPC.TaskMasterUpdateExTasks:
+                    byte clearExTasks = reader.ReadByte();
+                    byte allExTasks = reader.ReadByte();
+                    RPCProcedure.taskMasterUpdateExTasks(clearExTasks, allExTasks);
+                    break;
+                case (byte)CustomRPC.PlantBomb:
+                    RPCProcedure.plantBomb(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ReleaseBomb:
+                    RPCProcedure.releaseBomb(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.BomberKill:
+                    RPCProcedure.bomberKill(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlaceCamera:
                     RPCProcedure.placeCamera(reader.ReadBytesAndSize());

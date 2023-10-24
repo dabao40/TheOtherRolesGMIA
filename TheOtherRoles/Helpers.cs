@@ -632,6 +632,17 @@ namespace TheOtherRoles {
             if (color != null) target.bodyRenderers[0].material.SetColor("_OutlineColor", color.Value);
         }
 
+        public static int GetClientId(PlayerControl control)
+        {
+            for (int i = 0; i < AmongUsClient.Instance.allClients.Count; i++)
+            {
+                InnerNet.ClientData data = AmongUsClient.Instance.allClients[i];
+                if (data.Character == control)
+                    return data.Id;
+            }
+            return -1;
+        }
+
         public static DeadBody setDeadTarget(float maxDistance = 0f, PlayerControl targetingPlayer = null)
         {
             DeadBody result = null;

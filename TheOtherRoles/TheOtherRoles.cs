@@ -12,6 +12,7 @@ using AmongUs.Data;
 using Hazel;
 using JetBrains.Annotations;
 using Steamworks;
+using TheOtherRoles.Patches;
 
 namespace TheOtherRoles
 {
@@ -73,10 +74,14 @@ namespace TheOtherRoles
             Undertaker.clearAndReload();
             MimicK.clearAndReload();
             MimicA.clearAndReload();
+            BomberA.clearAndReload();
+            BomberB.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
             Veteran.clearAndReload();
             Sherlock.clearAndReload();
+            TaskMaster.clearAndReload();
+            Yasuna.clearAndReload();
             Opportunist.clearAndReload();
 
             // Modifier
@@ -1669,6 +1674,7 @@ namespace TheOtherRoles
         public static float arrowUpdateInterval = 0.5f;
 
         public static PlayerControl victim;
+
         public static void arrowUpdate()
         {
             //if (MimicK.mimicK == null || MimicA.mimicA == null) return;
@@ -1679,9 +1685,13 @@ namespace TheOtherRoles
                     foreach (Arrow arrows in MimicK.arrows) arrows.arrow.SetActive(false);
                     return;
                 }
-            }
+            }            
             if (CachedPlayer.LocalPlayer.PlayerControl != MimicK.mimicK || mimicK == null) return;
-            
+            if (mimicK.Data.IsDead)
+            {
+                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                return;
+            }
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -1783,9 +1793,15 @@ namespace TheOtherRoles
                     foreach (Arrow arrows in MimicA.arrows) arrows.arrow.SetActive(false);
                     return;
                 }
-            }
+            }            
             if (CachedPlayer.LocalPlayer.PlayerControl != MimicA.mimicA) return;
-            
+
+            if (mimicA.Data.IsDead)
+            {
+                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                return;
+            }
+
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -1990,6 +2006,370 @@ namespace TheOtherRoles
                     }
                 })));
             }
+        }
+    }
+
+    public static class TaskMaster
+    {
+        public static PlayerControl taskMaster = null;
+        public static bool becomeATaskMasterWhenCompleteAllTasks = false;
+        public static Color color = new Color32(225, 86, 75, byte.MaxValue);
+        public static bool isTaskComplete = false;
+        public static byte clearExTasks = 0;
+        public static byte allExTasks = 0;
+        public static byte oldTaskMasterPlayerId = byte.MaxValue;
+        public static bool triggerTaskMasterWin = false;
+
+        public static void clearAndReload()
+        {
+            taskMaster = null;
+            becomeATaskMasterWhenCompleteAllTasks = CustomOptionHolder.taskMasterBecomeATaskMasterWhenCompleteAllTasks.getBool();
+            isTaskComplete = false;
+            clearExTasks = 0;
+            allExTasks = 0;
+            oldTaskMasterPlayerId = byte.MaxValue;
+            triggerTaskMasterWin = false;
+        }
+
+        public static bool isTaskMaster(byte playerId)
+        {
+            return taskMaster != null && taskMaster.PlayerId == playerId;
+        }
+    }
+
+    public static class Yasuna
+    {
+        public static PlayerControl yasuna;
+        public static Color color = new Color32(90, 255, 25, byte.MaxValue);
+        public static byte specialVoteTargetPlayerId = byte.MaxValue;
+        private static int _remainingSpecialVotes = 1;
+        private static Sprite targetSprite;
+
+        public static void clearAndReload()
+        {
+            yasuna = null;
+            _remainingSpecialVotes = Mathf.RoundToInt(CustomOptionHolder.yasunaNumberOfSpecialVotes.getFloat());
+            specialVoteTargetPlayerId = byte.MaxValue;
+        }
+
+        public static Sprite getTargetSprite(bool isImpostor)
+        {
+            if (targetSprite) return targetSprite;
+            targetSprite = Helpers.loadSpriteFromResources(isImpostor ? "TheOtherRoles.Resources.EvilYasunaTargetIcon.png" : "TheOtherRoles.Resources.YasunaTargetIcon.png", 150f);
+            return targetSprite;
+        }
+
+        public static int remainingSpecialVotes(bool isVote = false)
+        {
+            if (yasuna == null)
+                return 0;
+
+            if (isVote)
+                _remainingSpecialVotes = Mathf.Max(0, _remainingSpecialVotes - 1);
+            return _remainingSpecialVotes;
+        }
+
+        public static bool isYasuna(byte playerId)
+        {
+            return yasuna != null && yasuna.PlayerId == playerId;
+        }
+    }
+
+    public static class BomberA
+    {
+        public static PlayerControl bomberA;
+        public static Color color = Palette.ImpostorRed;
+
+        public static PlayerControl bombTarget;
+        public static PlayerControl currentTarget;
+        public static PlayerControl tmpTarget;
+
+        public static Sprite bomberButtonSprite;
+        public static Sprite releaseButtonSprite;
+        public static float updateTimer = 0f;
+        public static List<Arrow> arrows = new();
+        public static float arrowUpdateInterval = 0.5f;
+
+        public static float duration;
+        public static float cooldown;
+        public static bool countAsOne;
+        public static bool showEffects;
+        public static bool ifOneDiesBothDie;
+        public static bool hasOneVote;
+        public static bool alwaysShowArrow;
+
+        public static TMPro.TextMeshPro targetText;
+        public static TMPro.TextMeshPro partnerTargetText;
+        public static Dictionary<byte, PoolablePlayer> playerIcons = new();
+
+        public static Sprite getBomberButtonSprite()
+        {
+            if (bomberButtonSprite) return bomberButtonSprite;
+            bomberButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.PlantBombButton.png", 115f);
+            return bomberButtonSprite;
+        }
+        public static Sprite getReleaseButtonSprite()
+        {
+            if (releaseButtonSprite) return releaseButtonSprite;
+            releaseButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ReleaseButton.png", 115f);
+            return releaseButtonSprite;
+        }
+
+        public static void arrowUpdate()
+        {            
+            if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
+            if (bomberA.Data.IsDead)
+            {
+                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                return;
+            }
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrows一覧
+                arrows = new List<Arrow>();
+                /*if (BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
+                // 相方の位置を示すArrowsを描画
+                Arrow arrow = new Arrow(Palette.ImpostorRed);
+                arrow.arrow.SetActive(true);
+                arrow.Update(BomberB.bomberB.transform.position);
+                arrows.Add(arrow);*/
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    if (p == BomberB.bomberB)
+                    {
+                        Arrow arrow;
+                        arrow = new Arrow(Color.red);
+                        arrow.arrow.SetActive(true);
+                        arrow.Update(p.transform.position);
+                        arrows.Add(arrow);
+                    }
+                }
+
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+        }
+
+        public static void playerIconsUpdate()
+        {
+            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+            //foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+            if (BomberA.bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && !MeetingHud.Instance)
+            {
+                if (bombTarget != null && TORMapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && TORMapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
+                {
+                    var icon = TORMapOptions.playerIcons[bombTarget.PlayerId];
+                    Vector3 bottomLeft = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
+                    icon.gameObject.SetActive(true);
+                    icon.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
+                    icon.transform.localScale = Vector3.one * 0.4f;
+                    if (targetText == null)
+                    {
+                        targetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        targetText.enableWordWrapping = false;
+                        targetText.transform.localScale = Vector3.one * 1.5f;
+                        targetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
+                    }
+                    targetText.text = "Your Target";
+                    targetText.gameObject.SetActive(true);
+                    targetText.transform.parent = icon.gameObject.transform;
+                }
+                // 相方の設置したターゲットを表示する
+                if (BomberB.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberB.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId].gameObject != null)
+                {
+                    var icon = TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId];
+                    Vector3 bottomLeft = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
+                    icon.gameObject.SetActive(true);
+                    icon.transform.localPosition = bottomLeft + new Vector3(1.0f, 0f, 0);
+                    icon.transform.localScale = Vector3.one * 0.4f;
+                    if (partnerTargetText == null)
+                    {
+                        partnerTargetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        partnerTargetText.enableWordWrapping = false;
+                        partnerTargetText.transform.localScale = Vector3.one * 1.5f;
+                        partnerTargetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
+                    }
+                    partnerTargetText.text = "Partner's Target";
+                    partnerTargetText.gameObject.SetActive(true);
+                    partnerTargetText.transform.parent = icon.gameObject.transform;
+                }
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            bomberA = null;
+            bombTarget = null;
+            currentTarget = null;
+            tmpTarget = null;
+            playerIcons = new Dictionary<byte, PoolablePlayer>();
+            targetText = null;
+            partnerTargetText = null;
+            arrows = new List<Arrow>();
+
+            duration = CustomOptionHolder.bomberDuration.getFloat();
+            cooldown = CustomOptionHolder.bomberCooldown.getFloat();
+            countAsOne = CustomOptionHolder.bomberCountAsOne.getBool();
+            showEffects = CustomOptionHolder.bomberShowEffects.getBool();
+            hasOneVote = CustomOptionHolder.bomberHasOneVote.getBool();
+            ifOneDiesBothDie = CustomOptionHolder.bomberIfOneDiesBothDie.getBool();
+            alwaysShowArrow = CustomOptionHolder.bomberAlwaysShowArrow.getBool();
+        }
+    }
+
+    public static class BomberB
+    {
+        public static PlayerControl bomberB;
+        public static Color color = Palette.ImpostorRed;
+
+        public static PlayerControl bombTarget;
+        public static PlayerControl tmpTarget;
+        public static PlayerControl currentTarget;
+        public static TMPro.TextMeshPro targetText;
+        public static TMPro.TextMeshPro partnerTargetText;
+        public static Dictionary<byte, PoolablePlayer> playerIcons = new();
+        public static Sprite bomberButtonSprite;
+        public static Sprite releaseButtonSprite;
+        public static float updateTimer = 0f;
+        public static List<Arrow> arrows = new();
+        public static float arrowUpdateInterval = 0.5f;
+
+        public static void playerIconsUpdate()
+        {
+            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+            //foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+            if (BomberA.bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && !MeetingHud.Instance)
+            {
+                if (bombTarget != null && TORMapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && TORMapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
+                {
+                    var icon = TORMapOptions.playerIcons[bombTarget.PlayerId];
+                    Vector3 bottomLeft = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
+                    icon.gameObject.SetActive(true);
+                    icon.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
+                    icon.transform.localScale = Vector3.one * 0.4f;
+                    if (targetText == null)
+                    {
+                        targetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        targetText.enableWordWrapping = false;
+                        targetText.transform.localScale = Vector3.one * 1.5f;
+                        targetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
+                    }
+                    targetText.text = "Your Target";
+                    targetText.gameObject.SetActive(true);
+                    targetText.transform.parent = icon.gameObject.transform;
+                }
+                // 相方の設置したターゲットを表示する
+                if (BomberA.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberA.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId].gameObject != null)
+                {
+                    var icon = TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId];
+                    Vector3 bottomLeft = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
+                    icon.gameObject.SetActive(true);
+                    icon.transform.localPosition = bottomLeft + new Vector3(1.0f, 0f, 0);
+                    icon.transform.localScale = Vector3.one * 0.4f;
+                    if (partnerTargetText == null)
+                    {
+                        partnerTargetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        partnerTargetText.enableWordWrapping = false;
+                        partnerTargetText.transform.localScale = Vector3.one * 1.5f;
+                        partnerTargetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
+                    }
+                    partnerTargetText.text = "Partner's Target";
+                    partnerTargetText.gameObject.SetActive(true);
+                    partnerTargetText.transform.parent = icon.gameObject.transform;
+                }
+            }
+        }
+
+        public static void arrowUpdate()
+        {            
+            if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !BomberA.alwaysShowArrow) return;
+            if (bomberB.Data.IsDead)
+            {
+                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                return;
+            }
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrows一覧
+                arrows = new List<Arrow>();
+                /*if (BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
+                // 相方の位置を示すArrowsを描画
+                Arrow arrow = new Arrow(Palette.ImpostorRed);
+                
+                arrow.arrow.SetActive(true);
+                arrow.Update(BomberA.bomberA.transform.position);
+                arrows.Add(arrow);*/
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    if (p == BomberA.bomberA)
+                    {
+                        Arrow arrow;
+                        arrow = new Arrow(Color.red);
+                        arrow.arrow.SetActive(true);
+                        arrow.Update(p.transform.position);
+                        arrows.Add(arrow);
+                    }
+                }
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+        }
+
+        public static Sprite getBomberButtonSprite()
+        {
+            if (bomberButtonSprite) return bomberButtonSprite;
+            bomberButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.PlantBombButton.png", 115f);
+            return bomberButtonSprite;
+        }
+        public static Sprite getReleaseButtonSprite()
+        {
+            if (releaseButtonSprite) return releaseButtonSprite;
+            releaseButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ReleaseButton.png", 115f);
+            return releaseButtonSprite;
+        }
+
+        public static void clearAndReload()
+        {
+            bomberB = null;
+            bombTarget = null;
+            currentTarget = null;
+            tmpTarget = null;
+            arrows = new List<Arrow>();
+            playerIcons = new Dictionary<byte, PoolablePlayer>();
+            targetText = null;
+            partnerTargetText = null;
         }
     }
 
@@ -2267,7 +2647,6 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -2294,14 +2673,14 @@ namespace TheOtherRoles
                 {
                     if (p.Data.IsDead)
                     {
-                        if (p.Data.Role.IsImpostor && impostorPositionText.ContainsKey(p.name))
+                        if ((p.Data.Role.IsImpostor || p == Spy.spy) && impostorPositionText.ContainsKey(p.name))
                         {
                             impostorPositionText[p.name].text = "";
                         }
                         continue;
                     }
                     Arrow arrow;
-                    if (p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl)
+                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy))
                     {
                         arrow = new Arrow(Palette.ImpostorRed);
                         arrow.arrow.SetActive(true);
