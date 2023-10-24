@@ -13,7 +13,6 @@ using TheOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
-using InnerNet;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -27,6 +26,21 @@ namespace TheOtherRoles.Patches {
             if (targetingPlayer == null) targetingPlayer = CachedPlayer.LocalPlayer.PlayerControl;
             if (targetingPlayer.Data.IsDead) return result;
 
+            if (untargetablePlayers == null)
+            {
+                untargetablePlayers = new List<PlayerControl>();
+            }
+
+            if (!Ninja.canBeTargeted && Ninja.ninja != null && Ninja.stealthed)
+            {
+                untargetablePlayers.Add(Ninja.ninja);
+            }
+
+            if (Sprinter.sprinter != null && Sprinter.sprinting)
+            {
+                untargetablePlayers.Add(Sprinter.sprinter);
+            }
+
             Vector2 truePosition = targetingPlayer.GetTruePosition();
             foreach (var playerInfo in GameData.Instance.AllPlayers.GetFastEnumerator())
             {
@@ -35,17 +49,7 @@ namespace TheOtherRoles.Patches {
                     if (untargetablePlayers != null && untargetablePlayers.Any(x => x == @object)) {
                         // if that player is not targetable: skip check
                         continue;
-                    }
-
-                    if (!Ninja.canBeTargeted && Ninja.ninja != null && Ninja.stealthed)
-                    {
-                        untargetablePlayers.Add(Ninja.ninja);
-                    }
-
-                    if (Sprinter.sprinter != null && Sprinter.sprinting)
-                    {
-                        untargetablePlayers.Add(Sprinter.sprinter);
-                    }
+                    }                    
 
                     if (@object && (!@object.inVent || targetPlayersInVents)) {
                         Vector2 vector = @object.GetTruePosition() - truePosition;
@@ -152,8 +156,18 @@ namespace TheOtherRoles.Patches {
 
         static void shifterSetTarget() {
             if (Shifter.shifter == null || Shifter.shifter != CachedPlayer.LocalPlayer.PlayerControl) return;
-            Shifter.currentTarget = setTarget();
-            if (Shifter.futureShift == null) setPlayerOutline(Shifter.currentTarget, Color.yellow);
+            List<PlayerControl> blockShift = null;
+            if (Shifter.isNeutral && !Shifter.shiftPastShifters)
+            {
+                blockShift = new List<PlayerControl>();
+                foreach (var playerId in Shifter.pastShifters)
+                {
+                    blockShift.Add(Helpers.playerById((byte)playerId));
+                }
+            }
+
+            Shifter.currentTarget = setTarget(untargetablePlayers: blockShift);
+            if (Shifter.futureShift == null) setPlayerOutline(Shifter.currentTarget, Shifter.color);
         }
 
 
@@ -165,10 +179,10 @@ namespace TheOtherRoles.Patches {
 
         static void sheriffSetTarget() {
             if (Sheriff.sheriff == null || Sheriff.sheriff != CachedPlayer.LocalPlayer.PlayerControl) return;
-            var untargetablePlayers = new List<PlayerControl>();
-            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
-            Sheriff.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            //var untargetablePlayers = new List<PlayerControl>();
+            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+            //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
+            Sheriff.currentTarget = setTarget();
             setPlayerOutline(Sheriff.currentTarget, Sheriff.color);
         }
 
@@ -194,7 +208,7 @@ namespace TheOtherRoles.Patches {
 
         static void trackerSetTarget() {
             if (Tracker.tracker == null || Tracker.tracker != CachedPlayer.LocalPlayer.PlayerControl) return;
-            Tracker.currentTarget = setTarget(Tracker.currentTarget = setTarget(untargetablePlayers: new List<PlayerControl>() { Sprinter.sprinting ? Sprinter.sprinter : null }));
+            Tracker.currentTarget = setTarget();
             if (!Tracker.usedTracker) setPlayerOutline(Tracker.currentTarget, Tracker.color);
         }
 
@@ -205,7 +219,7 @@ namespace TheOtherRoles.Patches {
             if (Detective.timer <= 0f) {
                 Detective.timer = Detective.footprintIntervall;
                 foreach (PlayerControl player in CachedPlayer.AllPlayers) {
-                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent && !((player == Ninja.ninja && Ninja.stealthed && !Ninja.canBeTargeted) || (player == Sprinter.sprinter && Sprinter.sprinting))) 
+                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent && !((player == Ninja.ninja && Ninja.stealthed) || (player == Sprinter.sprinter && Sprinter.sprinting))) 
                     {
                         FootprintHolder.Instance.MakeFootprint(player);
                     }
@@ -222,11 +236,11 @@ namespace TheOtherRoles.Patches {
                     target = setTarget(false, true);
                 }
                 else {
-                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
+                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null });
                 }
             }
             else {
-                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
+                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null });
             }
 
             bool targetNearGarlic = false;
@@ -248,8 +262,8 @@ namespace TheOtherRoles.Patches {
             if (Jackal.canCreateSidekickFromImpostor) {
                 // Only exclude sidekick from beeing targeted if the jackal can create sidekicks from impostors
                 if (Sidekick.sidekick != null) untargetablePlayers.Add(Sidekick.sidekick);
-                if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-                if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
+                //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+                //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             }
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
             Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
@@ -261,8 +275,8 @@ namespace TheOtherRoles.Patches {
             var untargetablePlayers = new List<PlayerControl>();
             if (Jackal.jackal != null) untargetablePlayers.Add(Jackal.jackal);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Sidekick from targeting the Mini unless it has grown up
-            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
+            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
+            //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             if (Sidekick.canKill) setPlayerOutline(Sidekick.currentTarget, Palette.ImpostorRed);
         }
@@ -285,15 +299,15 @@ namespace TheOtherRoles.Patches {
             if (Spy.spy != null) untargetables.Add(Spy.spy);
             if (Sidekick.wasTeamRed) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
-            if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
-            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+            //if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
+            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
             Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? new List<PlayerControl>() : untargetables);
             setPlayerOutline(Eraser.currentTarget, Eraser.color);
-
         }
-        private static void UndertakerSetTarget()
+
+        static void UndertakerSetTarget()
         {
-            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
+            if (Undertaker.undertaker == null || Undertaker.undertaker != CachedPlayer.LocalPlayer.PlayerControl) return;
             if (Undertaker.TargetBody != null)
             {
                 Helpers.SetDeadBodyOutline(Undertaker.TargetBody, null);
@@ -302,28 +316,28 @@ namespace TheOtherRoles.Patches {
             if (Undertaker.DraggedBody == null)
             {
                 Undertaker.TargetBody = Helpers.setDeadTarget(2f / 3f);
-                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, Undertaker.Color);
+                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, Undertaker.color);
             }
         }
 
-        private static void UndertakerCanDropTarget()
+        static void UndertakerCanDropTarget()
         {
-            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
+            if (Undertaker.undertaker == null || Undertaker.undertaker != CachedPlayer.LocalPlayer.PlayerControl) return;
             var component = Undertaker.DraggedBody;
 
             Undertaker.CanDropBody = false;
 
             if (component == null) return;
 
-            if (component.enabled && Vector2.Distance(Undertaker.Player.GetTruePosition(), component.TruePosition) <= Undertaker.Player.MaxReportDistance && !PhysicsHelpers.AnythingBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), component.TruePosition, Constants.ShipAndObjectsMask, false))
+            if (component.enabled && Vector2.Distance(Undertaker.undertaker.GetTruePosition(), component.TruePosition) <= Undertaker.undertaker.MaxReportDistance && !PhysicsHelpers.AnythingBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), component.TruePosition, Constants.ShipAndObjectsMask, false))
             {
                 Undertaker.CanDropBody = true;
             }
         }
 
-        private static void UndertakerUpdate()
+        static void UndertakerUpdate()
         {
-            var undertakerPlayer = Undertaker.Player;
+            var undertakerPlayer = Undertaker.undertaker;
             var bodyComponent = Undertaker.DraggedBody;
 
             if (undertakerPlayer == null || bodyComponent == null) return;
@@ -416,25 +430,22 @@ namespace TheOtherRoles.Patches {
         }
 
         static void impostorSetTarget() {
-            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor ||!CachedPlayer.LocalPlayer.PlayerControl.CanMove || CachedPlayer.LocalPlayer.Data.IsDead) { // !isImpostor || !canMove || isDead
+            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor ||!CachedPlayer.LocalPlayer.PlayerControl.CanMove || CachedPlayer.LocalPlayer.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.DraggedBody != null)) { // !isImpostor || !canMove || isDead
                 FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
                 return;
             }
 
-            var untargetablePlayers = new List<PlayerControl>();
-            if (Sprinter.sprinter != null && !Sprinter.sprinter.Data.IsDead && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
-
             PlayerControl target = null;
             if (Spy.spy != null || Sidekick.wasSpy || Jackal.wasSpy) {
                 if (Spy.impostorsCanKillAnyone) {
-                    target = setTarget(false, true, untargetablePlayers);
+                    target = setTarget(false, true);
                 }
                 else {
-                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
+                    target = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null });
                 }
             }
             else {
-                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null, Sprinter.sprinting ? Sprinter.sprinter : null });
+                target = setTarget(true, true, new List<PlayerControl>() { Sidekick.wasImpostor ? Sidekick.sidekick : null, Jackal.wasImpostor ? Jackal.jackal : null });
             }
 
             FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(target); // Includes setPlayerOutline(target, Palette.ImpstorRed);
@@ -452,7 +463,6 @@ namespace TheOtherRoles.Patches {
                 if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f)
                 {
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
-                    Helpers.HandleUndertakerDropOnBodyReport();
 
                     byte reporter = deadPlayer.killerIfExisting.PlayerId;
 
@@ -613,7 +623,7 @@ namespace TheOtherRoles.Patches {
             collider.offset = Mini.defaultColliderOffset * Vector2.down;
 
             // Set adapted player size to Mini and Morphling
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || (Mini.mini == Morphling.morphling && Morphling.morphTimer > 0) || (Mini.mini == MimicA.mimicA && MimicA.isMorph) || (Mini.mini == MimicK.mimicK && MimicK.victim != null)) return;
 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
@@ -623,7 +633,8 @@ namespace TheOtherRoles.Patches {
                 p.transform.localScale = new Vector3(scale, scale, 1f);
                 collider.radius = correctedColliderRadius;
             }
-            if (Morphling.morphling != null && p == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f) {
+            if ((Morphling.morphling != null && p == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f) ||
+                (MimicA.mimicA != null && p == MimicA.mimicA && MimicA.isMorph && MimicK.mimicK != null && MimicK.mimicK == Mini.mini)) {
                 p.transform.localScale = new Vector3(scale, scale, 1f);
                 collider.radius = correctedColliderRadius;
             }
@@ -674,25 +685,37 @@ namespace TheOtherRoles.Patches {
                         playerName.transform.localPosition = new Vector3(0.3384f, 0.0311f, -0.1f);
                     }
 
+                    bool isTaskMasterExTask = TaskMaster.isTaskMaster(p.PlayerId) && TaskMaster.isTaskComplete;
                     var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
+                    var (exTasksCompleted, exTasksTotal) = TasksHandler.taskInfo(p.Data, true);
                     string roleNames = RoleInfo.GetRolesString(p, true, false);
                     string roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeModifier);
                     string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
+                    string exTaskInfo = exTasksTotal > 0 ? $"<color=#E1564BFF>({exTasksCompleted}/{exTasksTotal})</color>" : "";
 
                     string playerInfoText = "";
                     string meetingInfoText = "";                    
                     if (p == CachedPlayer.LocalPlayer.PlayerControl) {
                         if (p.Data.IsDead) roleNames = roleText;
                         playerInfoText = $"{roleNames}";
-                        if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs(Swapper.color, $" ({Swapper.charges})");
+                        if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs(p.Data.Role.IsImpostor ? Palette.ImpostorRed : Swapper.color, $" ({Swapper.charges})");
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
-                            tabText.SetText($"Tasks {taskInfo}");
+                            //tabText.SetText($"Tasks {taskInfo}");
+                            tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? "Ex Tasks" : "Tasks", isTaskMasterExTask ? exTaskInfo : taskInfo));
                         }
-                        meetingInfoText = $"{roleNames} {taskInfo}".Trim();
+                        //meetingInfoText = $"{roleNames} {taskInfo}".Trim();
+                        if (!isTaskMasterExTask)
+                            meetingInfoText = $"{roleNames} {taskInfo}".Trim();
+                        else
+                            meetingInfoText = $"{roleNames} {exTaskInfo}".Trim();
                     }
                     else if (TORMapOptions.ghostsSeeRoles && TORMapOptions.ghostsSeeInformation) {
-                        playerInfoText = $"{roleText} {taskInfo}".Trim();
+                        if (!isTaskMasterExTask)
+                            playerInfoText = $"{roleText} {taskInfo}".Trim();
+                        else
+                            playerInfoText = $"{roleText} {exTaskInfo}".Trim();
+                        //playerInfoText = $"{roleText} {taskInfo}".Trim();
                         meetingInfoText = playerInfoText;
                     }
                     else if (TORMapOptions.ghostsSeeInformation) {
@@ -882,38 +905,6 @@ namespace TheOtherRoles.Patches {
                 index++;
             }
         }
-        static void amnisiacUpdate()
-        {
-            if (Amnisiac.amnisiac == null || PlayerControl.LocalPlayer != Amnisiac.amnisiac || Amnisiac.localArrows == null || !Amnisiac.showArrows) return;
-            if (Amnisiac.amnisiac.Data.IsDead)
-            {
-                
-                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-                Amnisiac.localArrows = new List<Arrow>();
-                return;
-            }
-
-            DeadBody[] deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
-            bool arrowUpdate = Amnisiac.localArrows.Count != deadBodies.Count();
-            int index = 0;
-
-            if (arrowUpdate)
-            {
-                foreach (Arrow arrow in Amnisiac.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
-                Amnisiac.localArrows = new List<Arrow>();
-            }
-
-            foreach (DeadBody db in deadBodies)
-            {
-                if (arrowUpdate)
-                {
-                    Amnisiac.localArrows.Add(new Arrow(Color.blue));
-                    Amnisiac.localArrows[index].arrow.SetActive(true);
-                }
-                if (Amnisiac.localArrows[index] != null) Amnisiac.localArrows[index].Update(db.transform.position);
-                index++;
-            }
-        }
 
         public static void mediumSetTarget() {
             if (Medium.medium == null || Medium.medium != CachedPlayer.LocalPlayer.PlayerControl || Medium.medium.Data.IsDead || Medium.deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
@@ -953,6 +944,20 @@ namespace TheOtherRoles.Patches {
                 Morphling.resetMorph();
         }
 
+        /*public static void mimicAUpdate()
+        {
+            if (MimicA.mimicA == null) return;
+            if (MimicA.mimicA.Data.IsDead) return;
+            if (MimicK.mimicK == null || MimicK.mimicK.Data.IsDead)
+            {
+                MimicA.isMorph = false;
+                MimicA.mimicA.setDefaultLook();
+                return;
+            }
+            if (MimicA.isMorph && !MimicK.mimicK.Data.IsDead && MimicK.mimicK != null) MimicA.mimicA.setLook(MimicK.name, MimicK.mimicK.Data.DefaultOutfit.ColorId, MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.VisorId, MimicK.mimicK.Data.DefaultOutfit.SkinId, MimicK.mimicK.Data.DefaultOutfit.PetId);
+            else MimicA.mimicA.setDefaultLook();
+        }*/
+
         public static void lawyerUpdate() {
             if (Lawyer.lawyer == null || Lawyer.lawyer != CachedPlayer.LocalPlayer.PlayerControl) return;
 
@@ -965,8 +970,47 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void bomberASetTarget()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl != BomberA.bomberA || BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
+            var untargetablePlayers = new List<PlayerControl>();
+            //if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini);
+            if (BomberA.bombTarget != null) untargetablePlayers.Add(BomberA.bombTarget);
+            BomberA.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            setPlayerOutline(BomberA.currentTarget, Palette.ImpostorRed);
+        }
+
+        public static void bomberBSetTarget()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl != BomberB.bomberB || BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
+            var untargetablePlayers = new List<PlayerControl>();
+            //if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini);
+            if (BomberB.bombTarget != null) untargetablePlayers.Add(BomberB.bombTarget);
+            BomberB.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            setPlayerOutline(BomberB.currentTarget, Palette.ImpostorRed);
+        }
+
+        public static void bomberAUpdate()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
+            {
+                BomberA.arrowUpdate();
+                BomberA.playerIconsUpdate();
+            }
+        }
+
+        public static void bomberBUpdate()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == BomberB.bomberB)
+            {
+                BomberB.arrowUpdate();
+                BomberB.playerIconsUpdate();
+            }
+        }
+
         public static void ninjaUpdate()
         {
+            if (Ninja.ninja == null) return;
             if (Ninja.stealthed && Ninja.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl)
             {
                 MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
@@ -979,6 +1023,7 @@ namespace TheOtherRoles.Patches {
 
         public static void sprinterUpdate()
         {
+            if (Sprinter.sprinter == null) return;
             if (Sprinter.sprinting && Sprinter.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Sprinter.sprinter == CachedPlayer.LocalPlayer.PlayerControl)
             {
                 MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
@@ -991,15 +1036,16 @@ namespace TheOtherRoles.Patches {
 
         public static void fortuneTellerUpdate()
         {
-            if (FortuneTeller.fortuneTeller == PlayerControl.LocalPlayer && !FortuneTeller.meetingFlag)
+            if (FortuneTeller.fortuneTeller == null) return;
+            if (FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl && !FortuneTeller.meetingFlag)
             {
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (!FortuneTeller.progress.ContainsKey(p.PlayerId)) FortuneTeller.progress[p.PlayerId] = 0f;
                     if (p.Data.IsDead) continue;
-                    var fortuneTeller = PlayerControl.LocalPlayer;
+                    var fortuneTeller = CachedPlayer.LocalPlayer.PlayerControl;
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
-                    // ÈöúÂÆ≥Áâ©Âà§ÂÆö
+                    // ’œ∫¶ŒÔ≈–∂®
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
                     if (!anythingBetween && distance <= FortuneTeller.distance && FortuneTeller.progress[p.PlayerId] < FortuneTeller.duration)
                     {
@@ -1009,22 +1055,42 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        /*public static void serialKillerUpdate()
+        {
+            if (SerialKiller.serialKiller == null || CachedPlayer.LocalPlayer.PlayerControl != SerialKiller.serialKiller) return;
+            if (SerialKiller.isCountDown) HudManagerStartPatch.serialKillerButton.isEffectActive = true;
+        }*/
+
+        public static void evilTrackerUpdate()
+        {
+            if (EvilTracker.evilTracker == null) return;
+            if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker) EvilTracker.arrowUpdate();
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker)
+            {
+                EvilTracker.currentTarget = setTarget();
+                setPlayerOutline(EvilTracker.currentTarget, Palette.ImpostorRed);
+            }
+        }
+
         public static void impostorArrowUpdate()
         {
-            if (FortuneTeller.fortuneTeller.Data.IsDead) return;
-            if (!FortuneTeller.divinedFlag) return;
-            if (!FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller)) return;
-
+            if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
+            {
+                if (FortuneTeller.fortuneTeller == null)
+                {
+                    foreach (Arrow arrows in FortuneTeller.arrows) arrows.arrow.SetActive(false);
+                    return;
+                }
+            }
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
-
-                // Ââç„Éï„É¨„Éº„É†„Åã„Çâ„ÅÆÁµåÈÅéÊôÇÈñì„Çí„Éû„Ç§„Éä„Çπ„Åô„Çã
+                // «∞•’•Ï©`•‡§´§È§ŒΩUﬂ^ïrÈg§Ú•ﬁ•§• •π§π§Î
                 FortuneTeller.updateTimer -= Time.fixedDeltaTime;
 
-                // 1ÁßíÁµåÈÅé„Åó„Åü„ÇâArrow„ÇíÊõ¥Êñ∞
+                // 1√ÎΩUﬂ^§∑§ø§ÈArrow§Ú∏¸–¬
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
-                    // ÂâçÂõû„ÅÆArrow„Çí„Åô„Åπ„Å¶Á†¥Ê£Ñ„Åô„Çã
+                    // «∞ªÿ§ŒArrow§Ú§π§Ÿ§∆∆∆óâ§π§Î
                     foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
                         if (arrow1?.arrow != null)
@@ -1034,15 +1100,20 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-                    // Arrow‰∏ÄË¶ß
+                    // Arrow“ª”E
                     FortuneTeller.arrows = new List<Arrow>();
+
+                    if (!FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
+                    {
+                        return;
+                    }
 
                     Arrow arrow = new Arrow(FortuneTeller.color);
                     arrow.arrow.SetActive(true);
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
 
-                    // „Çø„Ç§„Éû„Éº„Å´ÊôÇÈñì„Çí„Çª„ÉÉ„Éà
+                    // •ø•§•ﬁ©`§ÀïrÈg§Ú•ª•√•»
                     FortuneTeller.updateTimer = 1f;
                 }
                 else
@@ -1088,8 +1159,8 @@ namespace TheOtherRoles.Patches {
                 if (Spy.spy != null && !Witch.canSpellAnyone) untargetables.Add(Spy.spy);
                 if (Sidekick.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Sidekick.sidekick);
                 if (Jackal.wasTeamRed && !Witch.canSpellAnyone) untargetables.Add(Jackal.jackal);
-                if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
-                if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
+                //if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+                //if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             }
             Witch.currentTarget = setTarget(onlyCrewmates: !Witch.canSpellAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(Witch.currentTarget, Witch.color);
@@ -1103,8 +1174,8 @@ namespace TheOtherRoles.Patches {
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
             if (Sidekick.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Jackal.jackal);
-            if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
-            if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
+            //if (Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+            //if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             Assassin.currentTarget = setTarget(onlyCrewmates: Spy.spy == null || !Spy.impostorsCanKillAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(Assassin.currentTarget, Assassin.color);
         }
@@ -1113,8 +1184,8 @@ namespace TheOtherRoles.Patches {
             if (Thief.thief == null || Thief.thief != CachedPlayer.LocalPlayer.PlayerControl) return;
             List<PlayerControl> untargetables = new List<PlayerControl>();
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
-            if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
-            if (Sprinter.sprinter != null && Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
+            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
+            //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
             Thief.currentTarget = setTarget(onlyCrewmates: false, untargetablePlayers: untargetables);
             setPlayerOutline(Thief.currentTarget, Thief.color);
         }
@@ -1287,22 +1358,21 @@ namespace TheOtherRoles.Patches {
                 vampireSetTarget();
                 Garlic.UpdateAll();
                 //Trap.Update();
-                // Undertaker
-                UndertakerSetTarget();
-                UndertakerCanDropTarget();
-                UndertakerUpdate();
                 // Eraser
                 eraserSetTarget();
                 // Engineer
                 engineerUpdate();
                 // Tracker
                 trackerUpdate();
+                // Fortune Teller
+                fortuneTellerUpdate();
                 // Jackal
                 jackalSetTarget();
                 // Sidekick
                 sidekickSetTarget();
                 // Impostor
                 impostorSetTarget();
+                impostorArrowUpdate();  // If the Camouflager/Thief is having problem, please delete this line
                 // Warlock
                 warlockSetTarget();
                 // Check for deputy promotion on Sheriff disconnect
@@ -1315,10 +1385,7 @@ namespace TheOtherRoles.Patches {
                 // Arsonist
                 arsonistSetTarget();
                 // Snitch
-                snitchUpdate();
-                // Fortune Teller
-                fortuneTellerUpdate();
-                impostorArrowUpdate();
+                snitchUpdate();                
                 // BountyHunter
                 bountyHunterUpdate();
                 // Vulture
@@ -1331,12 +1398,30 @@ namespace TheOtherRoles.Patches {
                 lawyerUpdate();
                 // Pursuer
                 pursuerSetTarget();
+                // Bomber
+                bomberASetTarget();
+                bomberBSetTarget();
+                bomberAUpdate();
+                bomberBUpdate();
                 // Bait
                 baitUpdate();
                 // Ninja
                 ninjaUpdate();
                 // Sprinter
                 sprinterUpdate();
+                // Serial Killer
+                //serialKillerUpdate();
+                // Evil Tracker
+                evilTrackerUpdate();
+                // Undertaker
+                UndertakerSetTarget();
+                UndertakerCanDropTarget();
+                UndertakerUpdate();
+                // Mimic(Killer)
+                MimicK.arrowUpdate();
+                // Mimic(Assistant)
+                MimicA.arrowUpdate();
+                //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
                 // Assassin
@@ -1351,7 +1436,7 @@ namespace TheOtherRoles.Patches {
                 // Hacker
                 hackerUpdate();
                 // Trapper
-                //trapperUpdate();
+                //trapperUpdate();                                
 
                 // -- MODIFIER--
                 // Bait
@@ -1363,10 +1448,12 @@ namespace TheOtherRoles.Patches {
                 // Chameleon (invis stuff, timers)
                 Chameleon.update();
                 //Bomb.update();
+                // Bomber
+                BombEffect.UpdateAll();
 
                 // -- GAME MODE --
                 hunterUpdate();
-            } 
+            }            
         }
     }
 
@@ -1374,8 +1461,9 @@ namespace TheOtherRoles.Patches {
     class PlayerPhysicsWalkPlayerToPatch {
         private static Vector2 offset = Vector2.zero;
         public static void Prefix(PlayerPhysics __instance) {
-            bool correctOffset = Camouflager.camouflageTimer <= 0f && (__instance.myPlayer == Mini.mini ||  (Morphling.morphling != null && __instance.myPlayer == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f));
-            correctOffset = correctOffset && !(Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f);
+            bool correctOffset = Camouflager.camouflageTimer <= 0f && (__instance.myPlayer == Mini.mini ||  (Morphling.morphling != null && __instance.myPlayer == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
+                 || (MimicA.mimicA != null && __instance.myPlayer == MimicA.mimicA && MimicA.isMorph && MimicK.mimicK != null && MimicK.mimicK == Mini.mini));
+            correctOffset = correctOffset && !(Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f) && !(Mini.mini == MimicA.mimicA && MimicA.isMorph) && !(Mini.mini == MimicK.mimicK && MimicK.victim != null);
             if (correctOffset) {
                 float currentScaling = (Mini.growingProgress() + 1) * 0.5f;
                 __instance.myPlayer.Collider.offset = currentScaling * Mini.defaultColliderOffset * Vector2.down;
@@ -1471,7 +1559,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief)
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral))
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1527,9 +1615,13 @@ namespace TheOtherRoles.Patches {
             }
 
             // Serial Killer set suicide timer
-            if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller)
+            if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller && target != SerialKiller.serialKiller)
             {
-                SerialKiller.OnKill(target);
+                //HudManagerStartPatch.serialKillerButton.isEffectActive = false;
+                SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
+                HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
+                SerialKiller.isCountDown = true;
+                //HudManagerStartPatch.serialKillerButton.isEffectActive = true;
             }
 
             // Neko-Kabocha kill murderer
@@ -1551,6 +1643,77 @@ namespace TheOtherRoles.Patches {
                     }
                 }
             }
+
+            // Other Bomber trigger suicide
+            if ((BomberA.bomberA != null && target == BomberA.bomberA) || (BomberB.bomberB != null && target == BomberB.bomberB))
+            {
+                var bomberPartner = target == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
+                if (bomberPartner != null && BomberA.ifOneDiesBothDie && !bomberPartner.Data.IsDead)
+                {
+                    bomberPartner.MurderPlayer(bomberPartner);
+                    GameHistory.overrideDeathReasonAndKiller(bomberPartner, DeadPlayer.CustomDeathReason.Suicide);
+                }
+            }
+
+            // Other Mimic trigger suicide
+            if ((MimicK.mimicK != null && target == MimicK.mimicK) || (MimicA.mimicA != null && target == MimicA.mimicA))
+            {
+                var mimicPartner = target == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
+                if (mimicPartner != null && MimicK.ifOneDiesBothDie && !mimicPartner.Data.IsDead)
+                {
+                    mimicPartner.MurderPlayer(mimicPartner);
+                    GameHistory.overrideDeathReasonAndKiller(mimicPartner, DeadPlayer.CustomDeathReason.Suicide);
+                }
+            }
+
+            // Evil Tracker see flash
+            if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
+            {
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+            }
+
+            // Mimic(Killer) morph into victim
+            if (MimicK.mimicK != null && __instance == MimicK.mimicK)
+            {
+                // Delete the dead body
+                DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == target.PlayerId)
+                    {
+                        array[i].gameObject.active = false;
+                    }
+                }
+                MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                MimicK.victim = target;
+            }
+
+            // Mimic morph and arrows
+            if (MimicK.mimicK != null && target == MimicK.mimicK)
+            {
+                MimicK.mimicK.setDefaultLook();
+                MimicK.victim = null;
+                if (MimicA.mimicA != null)
+                {
+                    MimicA.mimicA.setDefaultLook();
+                    MimicA.isMorph = false;
+                }
+            }
+
+            if (MimicA.mimicA != null && target == MimicA.mimicA)
+            {
+                MimicA.mimicA.setDefaultLook();
+                MimicA.isMorph = false;
+            }
+
+            // Mimic(Assistant) show flash
+            if (MimicK.mimicK != null && MimicA.mimicA != null && __instance == MimicK.mimicK && CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+            }
+
+            // Sherlock record log
+            Sherlock.killLog.Add(Tuple.Create(__instance.PlayerId, Tuple.Create(target.PlayerId, target.transform.position + Vector3.zero)));
 
             // Set bountyHunter cooldown
             if (BountyHunter.bountyHunter != null && CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter) {
@@ -1685,6 +1848,16 @@ namespace TheOtherRoles.Patches {
         }
     }
 
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
+    public static class PlayerControlDiePatch
+    {
+        public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] DeathReason reason)
+        {
+            if (TaskMaster.isTaskMaster(__instance.PlayerId) && __instance.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId && TaskMaster.isTaskComplete)
+                __instance.clearAllTasks();
+        }
+    }
+
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Exiled))]
     public static class ExilePlayerPatch
     {
@@ -1696,11 +1869,11 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief)
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral))
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile
-            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha)
+            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller == null && CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.nekoKabocha)
             {
                 if (NekoKabocha.revengeExile)
                 {
@@ -1709,9 +1882,33 @@ namespace TheOtherRoles.Patches {
                     var target = candidates[targetID];
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NekoKabochaExile, Hazel.SendOption.Reliable, -1);
                     writer.Write(target.PlayerId);
-                    writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
+                    //writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.nekoKabochaExile(target.PlayerId);
+                }
+            }
+
+            // Neko-Kabocha set dead to meeting killer
+            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller != null)
+            {
+                PlayerControl killer = NekoKabocha.meetingKiller;
+                bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
+                (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
+                    (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
+
+                if (MeetingHud.Instance && revengeFlag)
+                {
+                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                    {
+                        if (pva.VotedFor != killer.PlayerId) continue;
+                        pva.UnsetVote();
+                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                        if (!voteAreaPlayer.AmOwner) continue;
+                        MeetingHud.Instance.ClearVote();
+                    }
+
+                    if (AmongUsClient.Instance.AmHost)
+                        MeetingHud.Instance.CheckForEndVoting();
                 }
             }
 
@@ -1723,7 +1920,61 @@ namespace TheOtherRoles.Patches {
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
 
-            }            
+            }
+
+            // Other Mimic suicide
+            if (MimicK.mimicK != null && MimicA.mimicA != null && (__instance == MimicA.mimicA || __instance == MimicK.mimicK))
+            {
+                PlayerControl otherMimic = __instance == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
+                if (MimicK.ifOneDiesBothDie && !otherMimic.Data.IsDead)
+                {
+                    otherMimic.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(otherMimic, DeadPlayer.CustomDeathReason.Suicide);
+                }
+
+                // Going to reset the votes here
+                if (MeetingHud.Instance && MimicK.ifOneDiesBothDie && otherMimic != null)
+                {
+                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                    {
+                        if (pva.VotedFor != otherMimic.PlayerId) continue;
+                        pva.UnsetVote();
+                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                        if (!voteAreaPlayer.AmOwner) continue;
+                        MeetingHud.Instance.ClearVote();
+                    }
+
+                    if (AmongUsClient.Instance.AmHost)
+                        MeetingHud.Instance.CheckForEndVoting();
+                }
+            }
+
+            // Other Bomber trigger suicide
+            if ((BomberA.bomberA != null && __instance == BomberA.bomberA) || (BomberB.bomberB != null && __instance == BomberB.bomberB))
+            {
+                var otherBomber = __instance == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
+                if (otherBomber != null && BomberA.ifOneDiesBothDie && !otherBomber.Data.IsDead)
+                {
+                    otherBomber.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(otherBomber, DeadPlayer.CustomDeathReason.Suicide);
+                }
+
+                if (MeetingHud.Instance && BomberA.ifOneDiesBothDie && otherBomber != null)
+                {
+                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                    {
+                        if (pva.VotedFor != otherBomber.PlayerId) continue;
+                        pva.UnsetVote();
+                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                        if (!voteAreaPlayer.AmOwner) continue;
+                        MeetingHud.Instance.ClearVote();
+                    }
+
+                    if (AmongUsClient.Instance.AmHost)
+                        MeetingHud.Instance.CheckForEndVoting();
+                }
+            }
+
             // Sidekick promotion trigger on exile
             if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && __instance == Jackal.jackal && Jackal.jackal == CachedPlayer.LocalPlayer.PlayerControl) {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SidekickPromotes, Hazel.SendOption.Reliable, -1);
@@ -1763,35 +2014,26 @@ namespace TheOtherRoles.Patches {
     public static class PlayerPhysicsFixedUpdate {
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!__instance.AmOwner || !AmongUsClient.Instance ||
-               AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started ||
-               CachedPlayer.LocalPlayer.Data.IsDead || !GameData.Instance || !__instance.myPlayer.CanMove) return;
+            bool shouldInvert = (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 && Invert.meetings > 0) ^ EventUtility.eventInvert;  // xor. if already invert, eventInvert will turn it off for 10s
+            if (__instance.AmOwner &&
+                AmongUsClient.Instance &&
+                AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started &&
+                !CachedPlayer.LocalPlayer.Data.IsDead && 
+                shouldInvert && 
+                GameData.Instance && 
+                __instance.myPlayer.CanMove)  
+                __instance.body.velocity *= -1;
 
-            UpdateInvert(__instance);
-            UpdateUndertakerPhysics(__instance);
-        }
-
-        private static void UpdateUndertakerPhysics(PlayerPhysics playerPhysics)
-        {
-            if (Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl || Undertaker.DraggedBody == null) return;
-            playerPhysics.body.velocity *= 1f + CustomOptionHolder.UndertakerSpeedDecrease.getFloat() / 100f;
-        }
-
-        private static void UpdateInvert(PlayerPhysics playerPhysics)
-        {
-            var shouldInvert =
-                (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 &&
-                 Invert.meetings > 0) ^
-                EventUtility.eventInvert; // xor. if already invert, eventInvert will turn it off for 10s
-            if (playerPhysics.AmOwner &&
+            if (__instance.AmOwner &&
                 AmongUsClient.Instance &&
                 AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started &&
                 !CachedPlayer.LocalPlayer.Data.IsDead &&
-                shouldInvert &&
                 GameData.Instance &&
-                playerPhysics.myPlayer.CanMove)
+                __instance.myPlayer.CanMove &&
+                CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker &&
+                Undertaker.DraggedBody != null)
             {
-                playerPhysics.body.velocity *= -1;
+                __instance.body.velocity *= 1f + Undertaker.speedDecrease / 100f;
             }
         }
     }

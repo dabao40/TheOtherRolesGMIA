@@ -34,6 +34,8 @@ namespace TheOtherRoles.Patches {
                 {
                     var playerName = text;
                     if (morphTimerNotUp && morphTargetNotNull && Morphling.morphling == player) playerName = Morphling.morphTarget.Data.PlayerName;
+                    if (MimicA.isMorph && MimicA.mimicA == player && MimicA.mimicA != null && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead) playerName = MimicK.name;
+                    if (MimicK.mimicK != null && MimicK.victim != null && MimicK.mimicK == player) playerName = MimicK.victim.Data.PlayerName;
                     var nameText = player.cosmetics.nameText;
                 
                     nameText.text = Helpers.hidePlayerName(localPlayer, player) ? "" : playerName;
@@ -127,6 +129,18 @@ namespace TheOtherRoles.Patches {
             {
                 setPlayerNameColor(FortuneTeller.fortuneTeller, FortuneTeller.color);
             }
+            else if (TaskMaster.taskMaster != null && TaskMaster.taskMaster == localPlayer)
+            {
+                setPlayerNameColor(TaskMaster.taskMaster, !TaskMaster.becomeATaskMasterWhenCompleteAllTasks || TaskMaster.isTaskComplete ? TaskMaster.color : RoleInfo.crewmate.color);
+            }
+            else if (Swapper.swapper != null && Swapper.swapper == localPlayer)
+            {
+                setPlayerNameColor(Swapper.swapper, Swapper.swapper.Data.Role.IsImpostor ? Palette.ImpostorRed : Swapper.color);
+            }
+            else if (Yasuna.yasuna != null && Yasuna.yasuna == localPlayer)
+            {
+                setPlayerNameColor(Yasuna.yasuna, localPlayer.Data.Role.IsImpostor ? Palette.ImpostorRed : Yasuna.color);
+            }
             /*else if (Spy.spy != null && Spy.spy == localPlayer) {
                 setPlayerNameColor(Spy.spy, Spy.color);
             } else if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == localPlayer) {
@@ -168,7 +182,6 @@ namespace TheOtherRoles.Patches {
             if (Jackal.jackal != null && Jackal.wasTeamRed && localPlayer.Data.Role.IsImpostor) {
                 setPlayerNameColor(Jackal.jackal, Spy.color);
             }
-
             // Crewmate roles with no changes: Mini
             // Impostor roles with no changes: Morphling, Camouflager, Vampire, Godfather, Eraser, Janitor, Cleaner, Warlock, BountyHunter,  Witch and Mafioso
         }
@@ -262,7 +275,7 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void miniUpdate() {
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == MimicK.mimicK && MimicK.victim != null || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
@@ -281,6 +294,8 @@ namespace TheOtherRoles.Patches {
 
             if (Morphling.morphling != null && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
                 Morphling.morphling.cosmetics.nameText.text += suffix;
+            if (MimicK.mimicK != null && MimicA.mimicA != null && MimicA.isMorph && MimicK.mimicK == Mini.mini)
+                MimicA.mimicA.cosmetics.nameText.text += suffix;
         }
 
         static void updateImpostorKillButton(HudManager __instance) {
@@ -289,14 +304,16 @@ namespace TheOtherRoles.Patches {
                 __instance.KillButton.Hide();
                 return;
             }
-            if (Undertaker.Player && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.Player && Undertaker.DraggedBody != null)
+
+            /*if (Undertaker.undertaker != null && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.DraggedBody != null)
             {
                 __instance.KillButton.graphic.color = Palette.DisabledClear;
                 __instance.KillButton.buttonLabelText.color = Palette.DisabledClear;
                 __instance.KillButton.cooldownTimerText.color = Palette.DisabledClear;
                 __instance.KillButton.graphic.material.SetFloat(Shader.PropertyToID("_Desat"), 1f);
                 return;
-            }
+            }*/
+
             bool enabled = true;
             if (Vampire.vampire != null && Vampire.vampire == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;
@@ -304,7 +321,13 @@ namespace TheOtherRoles.Patches {
                 enabled = false;
             else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;
-            
+            else if (MimicA.mimicA != null && MimicA.mimicA == CachedPlayer.LocalPlayer.PlayerControl && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead)
+                enabled = false;
+            else if (BomberA.bomberA != null && BomberA.bomberA == CachedPlayer.LocalPlayer.PlayerControl && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead)
+                enabled = false;
+            else if (BomberB.bomberB != null && BomberB.bomberB == CachedPlayer.LocalPlayer.PlayerControl && BomberA.bomberA != null && !BomberA.bomberA.Data.IsDead)
+                enabled = false;
+
             if (enabled) __instance.KillButton.Show();
             else __instance.KillButton.Hide();
 
@@ -324,6 +347,7 @@ namespace TheOtherRoles.Patches {
             else if (CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
 
             if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && Ninja.canUseVents == false) __instance.ImpostorVentButton.Hide();
+            if (Undertaker.undertaker != null && Undertaker.undertaker == CachedPlayer.LocalPlayer.PlayerControl && Undertaker.DraggedBody != null && Undertaker.disableVent) __instance.ImpostorVentButton.Hide();
         }
 
         static void updateUseButton(HudManager __instance) {

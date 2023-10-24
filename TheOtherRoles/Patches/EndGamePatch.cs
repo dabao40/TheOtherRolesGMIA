@@ -60,6 +60,8 @@ namespace TheOtherRoles.Patches {
             public string RoleNames { get; set; }
             public int TasksCompleted  {get;set;}
             public int TasksTotal  {get;set;}
+            public int ExTasksCompleted { get; set; }
+            public int ExTasksTotal { get; set; }
             public bool IsGuesser {get; set;}
             public int? Kills {get; set;}
             public bool IsAlive { get; set; }
@@ -89,8 +91,13 @@ namespace TheOtherRoles.Patches {
                 if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
                     killCount = null;
                     }
+                bool isTaskMaster = TaskMaster.isTaskMaster(playerControl.PlayerId);
+                bool isTaskMasterExTasks = isTaskMaster && TaskMaster.isTaskComplete;
                 string roleString = RoleInfo.GetRolesString(playerControl, true, true, false, includeHidden: true);
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted, IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
+                    ExTasksTotal = isTaskMasterExTasks ? TaskMaster.allExTasks : isTaskMaster ? TaskMasterTaskHelper.GetTaskMasterTasks() : 0,
+                    ExTasksCompleted = isTaskMasterExTasks ? TaskMaster.clearExTasks : 0,
+                    IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
             }
 
             // Remove Jester, Opportunist, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
@@ -104,6 +111,7 @@ namespace TheOtherRoles.Patches {
             if (Opportunist.opportunist != null) notWinners.Add(Opportunist.opportunist);
             if (Pursuer.pursuer != null) notWinners.Add(Pursuer.pursuer);
             if (Thief.thief != null) notWinners.Add(Thief.thief);
+            if (Shifter.shifter != null && Shifter.isNeutral) notWinners.Add(Shifter.shifter);
 
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -260,7 +268,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Possible Additional winner: Pursuer
-            if (Pursuer.pursuer != null && !Pursuer.pursuer.Data.IsDead && !Pursuer.notAckedExiled && !saboWin)
+            if (Pursuer.pursuer != null && !Pursuer.pursuer.Data.IsDead && !Pursuer.notAckedExiled && !saboWin && !arsonistWin && !miniLose)
             {
                 if (!TempData.winners.ToArray().Any(x => x.PlayerName == Pursuer.pursuer.Data.PlayerName))
                     TempData.winners.Add(new WinningPlayerData(Pursuer.pursuer.Data));
@@ -476,8 +484,9 @@ namespace TheOtherRoles.Patches {
                     string roles = data.RoleNames;
                     //if (data.IsGuesser) roles += " (Guesser)";
                     var taskInfo = data.TasksTotal > 0 ? $" - <color=#FAD934FF>({data.TasksCompleted}/{data.TasksTotal})</color>" : "";
+                    var exTaskInfo = data.ExTasksTotal > 0 ? $" - Ex <color=#E1564BFF>({data.ExTasksCompleted}/{data.ExTasksTotal})</color>" : "";
                     if (data.Kills != null) taskInfo += $" - <color=#FF0000FF>(Kills: {data.Kills})</color>";
-                    roleSummaryText.AppendLine($"{Helpers.cs(data.IsAlive ? Color.white : new Color(.7f,.7f,.7f), data.PlayerName)} - {roles}{taskInfo}"); 
+                    roleSummaryText.AppendLine($"{Helpers.cs(data.IsAlive ? Color.white : new Color(.7f,.7f,.7f), data.PlayerName)} - {roles}{taskInfo}{exTaskInfo}"); 
                 }
                 TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();
                 roleSummaryTextMesh.alignment = TMPro.TextAlignmentOptions.TopLeft;
@@ -579,7 +588,7 @@ namespace TheOtherRoles.Patches {
 
         private static bool CheckAndEndGameForTaskWin(ShipStatus __instance) {
             if (HideNSeek.isHideNSeekGM && !HideNSeek.taskWinPossible) return false;
-            if (GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) {
+            if ((GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) || (TaskMaster.triggerTaskMasterWin && TaskMaster.taskMaster != null)) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, false);
                 return true;
@@ -713,8 +722,25 @@ namespace TheOtherRoles.Patches {
                         {
                             numSheriffAlive++;
                         }
+                        if (Deputy.deputy != null && Deputy.deputy.PlayerId == playerInfo.PlayerId && Deputy.stopsGameEnd)
+                        {
+                            numSheriffAlive++;
+                        }
                     }
                 }
+            }
+
+            // Count the Mimic as one if enabled
+            if (MimicK.mimicK != null && MimicA.mimicA != null && !MimicK.mimicK.Data.IsDead && !MimicA.mimicA.Data.IsDead && MimicK.countAsOne)
+            {
+                numImpostorsAlive--;
+                numTotalAlive--;
+            }
+
+            if (BomberA.bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && BomberA.countAsOne)
+            {
+                numImpostorsAlive--;
+                numTotalAlive--;
             }
 
             TeamJackalAlive = numJackalAlive;

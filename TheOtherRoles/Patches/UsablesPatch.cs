@@ -105,14 +105,14 @@ namespace TheOtherRoles.Patches {
                 return false;
             }
             //if (Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)) return false;
-
-            if (Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
-               CustomOptionHolder.UndertakerDisableVent.getBool() && Undertaker.DraggedBody != null)
+            if (CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.disableVent && Undertaker.DraggedBody != null)
             {
                 return false;
             }
 
-            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out var canUse, out _);
+            bool canUse;
+            bool couldUse;
+            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
             bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
@@ -269,6 +269,7 @@ namespace TheOtherRoles.Patches {
                 statusText = "The Lawyer can't start an emergency meeting";
                 //if (Lawyer.isProsecutor) statusText = "The Prosecutor can't start an emergency meeting";
             }
+            // Potentially deactivate emergency button for Fortune Teller
             if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl && FortuneTeller.isCompletedNumTasks(CachedPlayer.LocalPlayer.PlayerControl))
             {
                 roleCanCallEmergency = false;
@@ -495,6 +496,25 @@ namespace TheOtherRoles.Patches {
                 bool showHackerInfo = Hacker.hacker != null && Hacker.hacker == CachedPlayer.LocalPlayer.PlayerControl && Hacker.hackerTimer > 0;
                 if (players.ContainsKey(__instance.RoomType)) {
                     List<Color> colors = players[__instance.RoomType];
+
+                    // Save colors for the Mimic(Assistant)
+                    List<Color> impostorColors = new();
+                    List<Color> mimicKColors = new();
+                    List<Color> deadBodyColors = new();
+                    foreach (PlayerControl p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                    {
+                        var color = Palette.PlayerColors[p.Data.DefaultOutfit.ColorId];
+                        if (p.Data.Role.IsImpostor || p == Spy.spy)
+                        {
+                            impostorColors.Add(color);
+                            if (p == MimicK.mimicK)
+                            {
+                                mimicKColors.Add(color);
+                            }
+                        }
+                        else if (p.Data.IsDead) deadBodyColors.Add(color);
+                    }
+
                     int i = -1;
                     foreach (var icon in __instance.myIcons.GetFastEnumerator())
                     {
@@ -515,7 +535,51 @@ namespace TheOtherRoles.Patches {
                                     renderer.material.SetColor("_BackColor", Palette.ShadowColors[id]);
                                 }
                                 renderer.material.SetColor("_VisorColor", Palette.VisorColor);
-                            } else {
+                            }
+
+                            // Set up the Mimic(Assistant)
+                            else if (CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead)
+                            {
+                                renderer.material = newMat;
+                                var color = colors[i];
+                                if (impostorColors.Contains(color))
+                                {
+                                    if (mimicKColors.Contains(color)) color = Palette.PlayerColors[3];
+                                    else color = Palette.ImpostorRed;
+                                    renderer.material.SetColor("_BodyColor", color);
+                                    var id = Palette.PlayerColors.IndexOf(color);
+                                    if (id < 0)
+                                    {
+                                        renderer.material.SetColor("_BackColor", color);
+                                    }
+                                    else
+                                    {
+                                        renderer.material.SetColor("_BackColor", Palette.ShadowColors[id]);
+                                    }
+                                    renderer.material.SetColor("_VisorColor", Palette.VisorColor);
+                                }
+                                else if (deadBodyColors.Contains(color))
+                                {
+                                    color = Palette.Black;
+                                    renderer.material.SetColor("_BodyColor", color);
+                                    var id = Palette.PlayerColors.IndexOf(color);
+                                    if (id < 0)
+                                    {
+                                        renderer.material.SetColor("_BackColor", color);
+                                    }
+                                    else
+                                    {
+                                        renderer.material.SetColor("_BackColor", Palette.ShadowColors[id]);
+                                    }
+                                    renderer.material.SetColor("_VisorColor", Palette.VisorColor);
+                                }
+                                else
+                                {
+                                    renderer.material = defaultMat;
+                                }
+                            }
+
+                            else {
                                 renderer.material = defaultMat;
                             }
                         }
