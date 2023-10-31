@@ -181,23 +181,6 @@ namespace TheOtherRoles.Patches {
                 {
                     showAnimation = false;
                 }
-
-                // Neko-Kabocha's killer won't get teleported to the body
-                if (CachedPlayer.LocalPlayer.PlayerControl != NekoKabocha.nekoKabocha && __instance.currentTarget == NekoKabocha.nekoKabocha)
-                {
-                    if (CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor && NekoKabocha.revengeImpostor)
-                    {
-                        showAnimation = false;
-                    }
-                    else if (Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl) && NekoKabocha.revengeNeutral)
-                    {
-                        showAnimation = false;
-                    }
-                    else if (!Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl) && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor && NekoKabocha.revengeCrew)
-                    {
-                        showAnimation = false;
-                    }
-                }
                 
                 // Deputy handcuff update.
                 if (Deputy.handcuffedPlayers.Contains(CachedPlayer.LocalPlayer.PlayerId)) {
@@ -256,24 +239,24 @@ namespace TheOtherRoles.Patches {
             // Deactivate emergency button for Swapper
             if (Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl && !Swapper.canCallEmergency) {
                 roleCanCallEmergency = false;
-                statusText = "The Swapper can't start an emergency meeting";
+                statusText = ModTranslation.getString("swapperMeetingButton");
             }
             // Potentially deactivate emergency button for Jester
             if (Jester.jester != null && Jester.jester == CachedPlayer.LocalPlayer.PlayerControl && !Jester.canCallEmergency) {
                 roleCanCallEmergency = false;
-                statusText = "The Jester can't start an emergency meeting";
+                statusText = ModTranslation.getString("jesterMeetingButton");
             }
             // Potentially deactivate emergency button for Lawyer/Prosecutor
             if (Lawyer.lawyer != null && Lawyer.lawyer == CachedPlayer.LocalPlayer.PlayerControl && !Lawyer.canCallEmergency) {
                 roleCanCallEmergency = false;
-                statusText = "The Lawyer can't start an emergency meeting";
+                statusText = ModTranslation.getString("lawyerMeetingButton");
                 //if (Lawyer.isProsecutor) statusText = "The Prosecutor can't start an emergency meeting";
             }
             // Potentially deactivate emergency button for Fortune Teller
             if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == CachedPlayer.LocalPlayer.PlayerControl && FortuneTeller.isCompletedNumTasks(CachedPlayer.LocalPlayer.PlayerControl))
             {
                 roleCanCallEmergency = false;
-                statusText = "The Fortune Teller can't start an emergency meeting";
+                statusText = ModTranslation.getString("fortuneTellerMeetingButton");
             }
 
             if (!roleCanCallEmergency) {
@@ -290,7 +273,7 @@ namespace TheOtherRoles.Patches {
                 int localRemaining = CachedPlayer.LocalPlayer.PlayerControl.RemainingEmergencies;
                 int teamRemaining = Mathf.Max(0, maxNumberOfMeetings - meetingsCount);
                 int remaining = Mathf.Min(localRemaining, (Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl) ? 1 : teamRemaining);
-                __instance.NumberText.text = $"{localRemaining.ToString()} and the ship has {teamRemaining.ToString()}";
+                __instance.NumberText.text = String.Format(ModTranslation.getString("meetingCount"), localRemaining.ToString(), teamRemaining.ToString());
                 __instance.ButtonActive = remaining > 0;
                 __instance.ClosedLid.gameObject.SetActive(!__instance.ButtonActive);
                 __instance.OpenLid.gameObject.SetActive(__instance.ButtonActive);

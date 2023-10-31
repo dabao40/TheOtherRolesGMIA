@@ -276,7 +276,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Possible Additional winner: Opportunist
-            if (Opportunist.opportunist != null && !Opportunist.opportunist.Data.IsDead && !saboWin && !arsonistWin)
+            if (Opportunist.opportunist != null && !Opportunist.opportunist.Data.IsDead && !saboWin && !arsonistWin && !miniLose)
             {
                 if (!TempData.winners.ToArray().Any(x => x.PlayerName == Opportunist.opportunist.Data.PlayerName))
                     TempData.winners.Add(new WinningPlayerData(Opportunist.opportunist.Data));
@@ -320,13 +320,16 @@ namespace TheOtherRoles.Patches {
                 float num7 = Mathf.Lerp(1f, 0.65f, num4) * 0.9f;
                 Vector3 vector = new Vector3(num7, num7, 1f);
                 poolablePlayer.transform.localScale = vector;
-                poolablePlayer.UpdateFromPlayerOutfit((GameData.PlayerOutfit) winningPlayerData2, PlayerMaterial.MaskType.ComplexUI, winningPlayerData2.IsDead, true);
-                if (winningPlayerData2.IsDead) {
-                    poolablePlayer.cosmetics.currentBodySprite.BodySprite.sprite = poolablePlayer.cosmetics.currentBodySprite.GhostSprite;
+                if (winningPlayerData2.IsDead)
+                {
+                    poolablePlayer.SetBodyAsGhost();
                     poolablePlayer.SetDeadFlipX(i % 2 == 0);
-                } else {
+                }
+                else {
                     poolablePlayer.SetFlipX(i % 2 == 0);
                 }
+
+                poolablePlayer.UpdateFromPlayerOutfit(winningPlayerData2, PlayerMaterial.MaskType.None, winningPlayerData2.IsDead, true);
 
                 poolablePlayer.cosmetics.nameText.color = Color.white;
                 poolablePlayer.cosmetics.nameText.transform.localScale = new Vector3(1f / vector.x, 1f / vector.y, 1f / vector.z);
@@ -346,111 +349,75 @@ namespace TheOtherRoles.Patches {
             bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
             TMPro.TMP_Text textRenderer = bonusText.GetComponent<TMPro.TMP_Text>();
             textRenderer.text = "";
+            string nonModTranslationText = "";
 
             if (AdditionalTempData.winCondition == WinCondition.JesterWin)
             {
-                textRenderer.text = "Jester Wins";
+                nonModTranslationText = "jesterWin";
+                textRenderer.text = ModTranslation.getString("jesterWin");
                 textRenderer.color = Jester.color;
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Jester.color, "Jester")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Jester.color, "Win")}";
-                    }
-                }
             }
             else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin)
             {
-                textRenderer.text = "Arsonist Wins";
+                nonModTranslationText = "arsonistWin";
+                textRenderer.text = ModTranslation.getString("arsonistWin");
                 textRenderer.color = Arsonist.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.VultureWin)
             {
-                textRenderer.text = "Vulture Wins";
+                nonModTranslationText = "vultureWin";
+                textRenderer.text = ModTranslation.getString("vultureWin");
                 textRenderer.color = Vulture.color;
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Vulture.color, "Vulture")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Vulture.color, "Win")}";
-                    }
-                }
             }
-            /*else if (AdditionalTempData.winCondition == WinCondition.ProsecutorWin) {
-                textRenderer.text = "Prosecutor Wins";
-                textRenderer.color = Lawyer.color;
-            }*/
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin)
             {
-                textRenderer.text = "Lovers And Crewmates Win";
+                nonModTranslationText = "crewLoverWin";
+                textRenderer.text = ModTranslation.getString("crewLoverWin");
                 textRenderer.color = Lovers.color;
-                __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Lovers.color, "Lovers And Crwemates")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Lovers.color, "Win")}";
-                    }
-                }
+                __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);                
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversSoloWin)
             {
-                textRenderer.text = "Lovers Win";
+                nonModTranslationText = "loversWin";
+                textRenderer.text = ModTranslation.getString("loversWin");
                 textRenderer.color = Lovers.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Lovers.color, "Lovers")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Lovers.color, "Win")}";
-                    }
-                }
             }
             else if (AdditionalTempData.winCondition == WinCondition.JackalWin)
             {
-                textRenderer.text = "Team Jackal Wins";
+                nonModTranslationText = "jackalWin";
+                textRenderer.text = ModTranslation.getString("jackalWin");
                 textRenderer.color = Jackal.color;
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Jackal.color, "Team Jackal")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Jackal.color, "Win")}";
-                    }
-                }
             }
             else if (AdditionalTempData.winCondition == WinCondition.EveryoneDied)
             {
-                textRenderer.text = "Everyone Died";
+                textRenderer.text = ModTranslation.getString("everyoneDied");
                 textRenderer.color = Palette.DisabledGrey;
                 __instance.BackgroundBar.material.SetColor("_Color", Palette.DisabledGrey);
             }
             else if (AdditionalTempData.winCondition == WinCondition.MiniLose)
             {
-                textRenderer.text = "Mini died";
+                nonModTranslationText = "miniDied";
+                textRenderer.text = ModTranslation.getString("miniDied");
                 textRenderer.color = Mini.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.CrewmateWin)
             {
-                textRenderer.text = "Crewmates Win";
+                nonModTranslationText = "crewWin";
+                textRenderer.text = ModTranslation.getString("crewWin");
                 textRenderer.color = Palette.White;
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
-                {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Palette.White, "Crewmates")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Palette.White, "Win")}";
-                    }
-                }
             }
             else if (AdditionalTempData.winCondition == WinCondition.ImpostorWin)
             {
-                textRenderer.text = "Impostors Win";
+                nonModTranslationText = "impostorWin";
+                textRenderer.text = ModTranslation.getString("impostorWin");
                 textRenderer.color = Palette.ImpostorRed;
-                foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
+            }
+            foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
+            {
+                if (cond == WinCondition.OpportunistWin)
                 {
-                    if (cond == WinCondition.OpportunistWin)
-                    {
-                        textRenderer.text = $"{Helpers.cs(Palette.ImpostorRed, "Impostors")} {Helpers.cs(Opportunist.color, "& Opportunist")} {Helpers.cs(Palette.ImpostorRed, "Win")}";
-                    }
+                    textRenderer.text = string.Format(ModTranslation.getString(nonModTranslationText + "Extra"), ModTranslation.getString("opportunistExtra"));
                 }
             }
 
@@ -464,7 +431,7 @@ namespace TheOtherRoles.Patches {
                 {
                     textRenderer.text += $"\n{Helpers.cs(Lawyer.color, "The Lawyer stole the win from the client")}";
                 }
-            }
+            }            
 
             if (TORMapOptions.showRoleSummary || HideNSeek.isHideNSeekGM) {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
@@ -478,14 +445,14 @@ namespace TheOtherRoles.Patches {
                     int seconds = (int)AdditionalTempData.timer % 60;
                     roleSummaryText.AppendLine($"<color=#FAD934FF>Time: {minutes:00}:{seconds:00}</color> \n");
                 }
-                roleSummaryText.AppendLine("Players and roles at the end of the game:");
+                roleSummaryText.AppendLine(ModTranslation.getString("roleSummaryText"));
                 foreach(var data in AdditionalTempData.playerRoles) {
                     //var roles = string.Join(" ", data.Roles.Select(x => Helpers.cs(x.color, x.name)));
                     string roles = data.RoleNames;
                     //if (data.IsGuesser) roles += " (Guesser)";
                     var taskInfo = data.TasksTotal > 0 ? $" - <color=#FAD934FF>({data.TasksCompleted}/{data.TasksTotal})</color>" : "";
                     var exTaskInfo = data.ExTasksTotal > 0 ? $" - Ex <color=#E1564BFF>({data.ExTasksCompleted}/{data.ExTasksTotal})</color>" : "";
-                    if (data.Kills != null) taskInfo += $" - <color=#FF0000FF>(Kills: {data.Kills})</color>";
+                    if (data.Kills != null) taskInfo += String.Format(ModTranslation.getString("roleSummaryKillsInfo"), data.Kills);
                     roleSummaryText.AppendLine($"{Helpers.cs(data.IsAlive ? Color.white : new Color(.7f,.7f,.7f), data.PlayerName)} - {roles}{taskInfo}{exTaskInfo}"); 
                 }
                 TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();

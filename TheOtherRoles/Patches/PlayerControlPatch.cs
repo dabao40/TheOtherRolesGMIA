@@ -702,7 +702,7 @@ namespace TheOtherRoles.Patches {
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
                             //tabText.SetText($"Tasks {taskInfo}");
-                            tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? "Ex Tasks" : "Tasks", isTaskMasterExTask ? exTaskInfo : taskInfo));
+                            tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? "Ex Tasks" : TranslationController.Instance.GetString(StringNames.Tasks), isTaskMasterExTask ? exTaskInfo : taskInfo));
                         }
                         //meetingInfoText = $"{roleNames} {taskInfo}".Trim();
                         if (!isTaskMasterExTask)
@@ -1523,10 +1523,10 @@ namespace TheOtherRoles.Patches {
                             writer.Write(msg);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
-                        if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+                        /*if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
-                        }
+                        }*/
                     }
                 }
             }  
@@ -1569,7 +1569,7 @@ namespace TheOtherRoles.Patches {
             if ((Lovers.lover1 != null && target == Lovers.lover1) || (Lovers.lover2 != null && target == Lovers.lover2)) {
                 PlayerControl otherLover = target == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
-                    otherLover.MurderPlayer(otherLover);
+                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
             }
@@ -1611,7 +1611,8 @@ namespace TheOtherRoles.Patches {
             // Ninja penalize
             if (Ninja.ninja != null && CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && __instance == Ninja.ninja)
             {
-                Ninja.OnKill(target);
+                if (Ninja.stealthed) Ninja.addition += Ninja.killPenalty;
+                CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Ninja.addition);
             }
 
             // Serial Killer set suicide timer
@@ -1633,12 +1634,7 @@ namespace TheOtherRoles.Patches {
                         || (Helpers.isNeutral(__instance) && NekoKabocha.revengeNeutral)
                         || ((NekoKabocha.revengeCrew && (!Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor))))
                     {
-                        NekoKabocha.nekoKabocha.MurderPlayer(__instance);
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                        writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
-                        writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-
+                        NekoKabocha.nekoKabocha.MurderPlayer(__instance, MurderResultFlags.Succeeded);
                         GameHistory.overrideDeathReasonAndKiller(__instance, DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
                     }
                 }
@@ -1650,7 +1646,7 @@ namespace TheOtherRoles.Patches {
                 var bomberPartner = target == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
                 if (bomberPartner != null && BomberA.ifOneDiesBothDie && !bomberPartner.Data.IsDead)
                 {
-                    bomberPartner.MurderPlayer(bomberPartner);
+                    bomberPartner.MurderPlayer(bomberPartner, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(bomberPartner, DeadPlayer.CustomDeathReason.Suicide);
                 }
             }
@@ -1661,7 +1657,7 @@ namespace TheOtherRoles.Patches {
                 var mimicPartner = target == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
                 if (mimicPartner != null && MimicK.ifOneDiesBothDie && !mimicPartner.Data.IsDead)
                 {
-                    mimicPartner.MurderPlayer(mimicPartner);
+                    mimicPartner.MurderPlayer(mimicPartner, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(mimicPartner, DeadPlayer.CustomDeathReason.Suicide);
                 }
             }

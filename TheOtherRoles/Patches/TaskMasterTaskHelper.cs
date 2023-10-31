@@ -36,7 +36,7 @@ namespace TheOtherRoles.Patches {
                 Mathf.RoundToInt(CustomOptionHolder.taskMasterExtraLongTasks.getFloat()));
             taskMasterAddShortTasks = SetTasksToList(
                 ref list,
-                MapUtilities.CachedShipStatus.NormalTasks.ToList(),
+                MapUtilities.CachedShipStatus.ShortTasks.ToList(),
                 Mathf.RoundToInt(CustomOptionHolder.taskMasterExtraShortTasks.getFloat()));
 
             return list.ToArray();

@@ -26,47 +26,47 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         class MeetingCalculateVotesPatch {
-            private static Dictionary<byte, int> CalculateVotes(MeetingHud __instance) {
-                Dictionary<byte, int> dictionary = new Dictionary<byte, int>();
-                for (int i = 0; i < __instance.playerStates.Length; i++) {
-                    PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-                    if (playerVoteArea.VotedFor != 252 && playerVoteArea.VotedFor != 255 && playerVoteArea.VotedFor != 254) {
-                        PlayerControl player = Helpers.playerById((byte)playerVoteArea.TargetPlayerId);
-                        if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected) continue;
-
-                        // Mimic (Assistant)'s vote doesn't count
-                        if (player == MimicA.mimicA && MimicK.mimicK != null && MimicK.hasOneVote && !MimicK.mimicK.Data.IsDead) continue;
-                        if (player == BomberB.bomberB && BomberA.bomberA != null && BomberA.hasOneVote && !BomberA.bomberA.Data.IsDead) continue;
-
-                        int currentVotes;
-                        int additionalVotes = (Mayor.mayor != null && Mayor.mayor.PlayerId == playerVoteArea.TargetPlayerId && Mayor.voteTwice) ? 2 : 1; // Mayor vote
-                        if (dictionary.TryGetValue(playerVoteArea.VotedFor, out currentVotes))
-                            dictionary[playerVoteArea.VotedFor] = currentVotes + additionalVotes;
-                        else
-                            dictionary[playerVoteArea.VotedFor] = additionalVotes;
-                    }
-                }
-                // Swapper swap votes
-                if (Swapper.swapper != null && !Swapper.swapper.Data.IsDead) {
+            private static readonly List<byte> NonPlayerVotes = new() { 252, 254, byte.MaxValue };
+            private static Dictionary<byte, int> CalculateVotes(MeetingHud __instance) 
+            {
+                var votes = new Dictionary<byte, int>();
+                var hasSwapper = Swapper.swapper != null && !Swapper.swapper.Data.IsDead;
+                if (hasSwapper)
+                {
                     swapped1 = null;
                     swapped2 = null;
-                    foreach (PlayerVoteArea playerVoteArea in __instance.playerStates) {
-                        if (playerVoteArea.TargetPlayerId == Swapper.playerId1) swapped1 = playerVoteArea;
-                        if (playerVoteArea.TargetPlayerId == Swapper.playerId2) swapped2 = playerVoteArea;
-                    }
-
-                    if (swapped1 != null && swapped2 != null) {
-                        if (!dictionary.ContainsKey(swapped1.TargetPlayerId)) dictionary[swapped1.TargetPlayerId] = 0;
-                        if (!dictionary.ContainsKey(swapped2.TargetPlayerId)) dictionary[swapped2.TargetPlayerId] = 0;
-                        int tmp = dictionary[swapped1.TargetPlayerId];
-                        dictionary[swapped1.TargetPlayerId] = dictionary[swapped2.TargetPlayerId];
-                        dictionary[swapped2.TargetPlayerId] = tmp;
+                }
+                foreach (var playerState in __instance.playerStates)
+                {
+                    if (NonPlayerVotes.Contains(playerState.VotedFor)) continue;
+                    if (Helpers.playerById((byte)playerState.TargetPlayerId) == MimicA.mimicA && MimicK.mimicK != null && MimicK.hasOneVote && !MimicK.mimicK.Data.IsDead) continue;
+                    if (Helpers.playerById((byte)playerState.TargetPlayerId) == BomberB.bomberB && BomberA.bomberA != null && BomberA.hasOneVote && !BomberA.bomberA.Data.IsDead) continue;
+                    var amMayorEnabled = Mayor.mayor != null && Mayor.mayor.PlayerId == playerState.TargetPlayerId &&
+                                         Mayor.voteTwice;
+                    var voteCount = amMayorEnabled ? 2 : 1;
+                    votes[playerState.VotedFor] =
+                        !votes.TryGetValue(playerState.VotedFor, out var num) ? voteCount : num + voteCount;
+                    if (hasSwapper)
+                    {
+                        if (playerState.TargetPlayerId == Swapper.playerId1)
+                        {
+                            swapped1 = playerState;
+                        }
+                        if (playerState.TargetPlayerId == Swapper.playerId2)
+                        {
+                            swapped2 = playerState;
+                        }
                     }
                 }
+                if (swapped1 != null && swapped2 != null)
+                {
+                    var swapped1VotesCount = votes.TryGetValue(swapped1.TargetPlayerId, out var voteCount1) ? voteCount1 : 0;
+                    var swapped2ValueVotesCount = votes.TryGetValue(swapped2.TargetPlayerId, out var voteCount2) ? voteCount2 : 0;
+                    votes[swapped1.TargetPlayerId] = swapped2ValueVotesCount;
+                    votes[swapped2.TargetPlayerId] = swapped1VotesCount;
+                }
 
-
-
-                return dictionary;
+                return votes;
             }
 
 
@@ -152,16 +152,32 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
         class MeetingHudBloopAVoteIconPatch {
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)]GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)]int index, [HarmonyArgument(2)]Transform parent) {
-                SpriteRenderer spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
-                int cId = voterPlayer.DefaultOutfit.ColorId;
-                if (!(!GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes || (CachedPlayer.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) || CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher  || CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher || Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors))
-                    voterPlayer.Object.SetColor(6);                    
-                voterPlayer.Object.SetPlayerMaterialColors(spriteRenderer);
-                spriteRenderer.transform.SetParent(parent);
-                spriteRenderer.transform.localScale = Vector3.zero;
-                __instance.StartCoroutine(Effects.Bloop((float)index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
+                var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+                var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
+                                     (CachedPlayer.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) ||
+                                     (Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors ||
+                                     CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher ||
+                                     CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher);
+                if (showVoteColors)
+                {
+                    PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
+                }
+                else
+                {
+                    PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
+                }
+
+                var transform = spriteRenderer.transform;
+                transform.SetParent(parent);
+                transform.localScale = Vector3.zero;
+                var component = parent.GetComponent<PlayerVoteArea>();
+                if (component != null)
+                {
+                    spriteRenderer.material.SetInt(PlayerMaterial.MaskLayer, component.MaskLayer);
+                }
+
+                __instance.StartCoroutine(Effects.Bloop(index * 0.3f, transform));
                 parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
-                voterPlayer.Object.SetColor(cId);
                 return false;
             }
         } 
@@ -284,13 +300,13 @@ namespace TheOtherRoles.Patches {
                 } else {
                     selections[i] = true;
                     renderer.color = Color.yellow;
-                    meetingExtraButtonLabel.text = Helpers.cs(Color.yellow, "Confirm Swap");
+                    meetingExtraButtonLabel.text = Helpers.cs(Color.yellow, ModTranslation.getString("swapperConfirmSwap"));
                 }
             } else if (selectedCount == 2) {
                 if (selections[i]) {
                     renderer.color = Color.red;
                     selections[i] = false;
-                    meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
+                    meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
                 }
             }
         }
@@ -323,9 +339,9 @@ namespace TheOtherRoles.Patches {
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
-                meetingExtraButtonLabel.text = Helpers.cs(Color.green, "Swapping!");
+                meetingExtraButtonLabel.text = Helpers.cs(Color.green, ModTranslation.getString("swapperSwapping"));
                 Swapper.charges--;
-                meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
+                meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
             }
         }
 
@@ -364,8 +380,8 @@ namespace TheOtherRoles.Patches {
                 swapperButtonList[i].OnClick.RemoveAllListeners();
                 swapperButtonList[i].OnClick.AddListener((System.Action)(() => swapperOnClick(copyI, __instance)));
             }
-            meetingExtraButtonText.text = $"Swaps: {Swapper.charges}";
-            meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
+            meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
+            meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
 
         }
 
@@ -615,7 +631,7 @@ namespace TheOtherRoles.Patches {
                 Transform infoTransform = __instance.playerStates[0].NameText.transform.parent.FindChild("Info");
                 TMPro.TextMeshPro meetingInfo = infoTransform != null ? infoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                 meetingExtraButtonText = UnityEngine.Object.Instantiate(__instance.playerStates[0].NameText, meetingExtraButtonParent);
-                meetingExtraButtonText.text = addSwapperButtons ? $"Swaps: {Swapper.charges}" : "";
+                meetingExtraButtonText.text = addSwapperButtons ? string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges) : "";
                 meetingExtraButtonText.enableWordWrapping = false;
                 meetingExtraButtonText.transform.localScale = Vector3.one * 1.7f;
                 meetingExtraButtonText.transform.localPosition = new Vector3(-2.5f, 0f, 0f);
@@ -630,7 +646,7 @@ namespace TheOtherRoles.Patches {
                 meetingExtraButtonLabel.transform.localPosition = new Vector3(0, 0, meetingExtraButtonLabel.transform.localPosition.z);
                 if (addSwapperButtons) {
                     meetingExtraButtonLabel.transform.localScale *= 1.7f;
-                    meetingExtraButtonLabel.text = Helpers.cs(Color.red, "Confirm Swap");
+                    meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
                 } else if (addMayorButton) {
                     meetingExtraButtonLabel.transform.localScale = new Vector3(meetingExtraButtonLabel.transform.localScale.x * 1.5f, meetingExtraButtonLabel.transform.localScale.x * 1.7f, meetingExtraButtonLabel.transform.localScale.x * 1.7f);
                     meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
@@ -753,13 +769,6 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => yasunaOnClick(copiedIndex, __instance)));
-
-                    /*TMPro.TextMeshPro targetBoxRemainText = UnityEngine.Object.Instantiate(__instance.playerStates[0].NameText, targetBox.transform);
-                    targetBoxRemainText.text = Yasuna.remainingSpecialVotes().ToString();
-                    targetBoxRemainText.color = CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor ? Palette.ImpostorRed : Yasuna.color;
-                    targetBoxRemainText.alignment = TMPro.TextAlignmentOptions.Center;
-                    targetBoxRemainText.transform.localPosition = new Vector3(0.2f, -0.3f, targetBoxRemainText.transform.localPosition.z);
-                    targetBoxRemainText.transform.localScale *= 1.7f;*/
                 }
             }
         }
@@ -818,6 +827,9 @@ namespace TheOtherRoles.Patches {
                 if (meetingTarget == null) meetingsCount++;
                 // Save the meeting target
                 target = meetingTarget;
+
+                BomberA.bombTarget = null;
+                BomberB.bombTarget = null;
 
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
