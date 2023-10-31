@@ -1543,7 +1543,7 @@ namespace TheOtherRoles
                 {
                     if (meetingKiller == null)
                     {
-                        NekoKabocha.nekoKabocha.MurderPlayer(killer);
+                        NekoKabocha.nekoKabocha.MurderPlayer(killer, MurderResultFlags.Succeeded);
                     }
                     else
                     {
@@ -3061,7 +3061,7 @@ namespace TheOtherRoles
             fadeTime = CustomOptionHolder.ninjaFadeTime.getFloat();
             canUseVents = CustomOptionHolder.ninjaCanVent.getBool();
             canBeTargeted = CustomOptionHolder.ninjaCanBeTargeted.getBool();
-
+            addition = 0f;
             setOpacity(Ninja.ninja, 1.0f);
 
             penalized = false;

@@ -181,7 +181,7 @@ namespace TheOtherRoles
         public static void RepairOxygen() {
             if (!Loaded) return;
             try {
-                ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
+                ShipStatus.Instance.RpcUpdateSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.Invoke(null, Array.Empty<object>()), new object[] { CachedPlayer.LocalPlayer.PlayerControl, 64 });
             }
             catch (System.NullReferenceException) {

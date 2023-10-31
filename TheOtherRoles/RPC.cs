@@ -254,7 +254,7 @@ namespace TheOtherRoles
                     GameData.Instance.GetPlayerById(player.PlayerId); // player.RemoveInfected(); (was removed in 2022.12.08, no idea if we ever need that part again, replaced by these 2 lines.) 
                     player.SetRole(RoleTypes.Crewmate);
 
-                    player.MurderPlayer(player);
+                    player.MurderPlayer(player, MurderResultFlags.Succeeded);
                     player.Data.IsDead = true;
                 }
             }
@@ -550,7 +550,7 @@ namespace TheOtherRoles
             PlayerControl target = Helpers.playerById(targetId);
             if (source != null && target != null) {
                 if (showAnimation == 0) KillAnimationCoPerformKillPatch.hideNextAnimation = true;
-                source.MurderPlayer(target);
+                source.MurderPlayer(target, MurderResultFlags.Succeeded);
             }
         }
 
@@ -1233,7 +1233,7 @@ namespace TheOtherRoles
         {
             PlayerControl serialKiller = Helpers.playerById(serialKillerId);
             if (serialKiller == null) return;
-            serialKiller.MurderPlayer(serialKiller);
+            serialKiller.MurderPlayer(serialKiller, MurderResultFlags.Succeeded);
             GameHistory.overrideDeathReasonAndKiller(serialKiller, DeadPlayer.CustomDeathReason.Suicide);
         }
 
@@ -1382,7 +1382,7 @@ namespace TheOtherRoles
             if (!t.Data.IsDead)
             {
                 KillAnimationCoPerformKillPatch.hideNextAnimation = true;
-                k.MurderPlayer(t);
+                k.MurderPlayer(t, MurderResultFlags.Succeeded);
                 if (BomberA.showEffects)
                 {
                     new BombEffect(t);
@@ -1597,8 +1597,8 @@ namespace TheOtherRoles
                 string msg = $"{guesser.Data.PlayerName} guessed the role {roleInfo?.name ?? ""} for {guessedTarget.Data.PlayerName}!";
                 if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(guesser, msg);
-                if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
-                    FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
+                //if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+                    //FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
             }
             if (!CachedPlayer.LocalPlayer.Data.IsDead && (CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher || CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher) && guessedTarget != null && guesser != null && CustomOptionHolder.watcherSeeGuesses.getBool())
             {
@@ -1615,8 +1615,8 @@ namespace TheOtherRoles
                         FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Watcher.evilwatcher, msg);
                     }
                 }
-                if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
-                    FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
+                //if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+                    //FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
             }
         }
 

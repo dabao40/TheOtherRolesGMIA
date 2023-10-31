@@ -789,12 +789,12 @@ namespace TheOtherRoles {
             taskMasterExtraShortTasks = CustomOption.Create(7023, Types.Crewmate, "Task Master Extra Short Tasks", 2f, 1f, 23f, 1f, taskMasterSpawnRate);
             taskMasterExtraLongTasks = CustomOption.Create(7024, Types.Crewmate, "Task Master Extra Long Tasks", 2f, 0f, 15f, 1f, taskMasterSpawnRate);
 
-            portalmakerSpawnRate = CustomOption.Create(390, Types.Crewmate, cs(Portalmaker.color, "Portalmaker"), rates, null, true);
-            portalmakerCooldown = CustomOption.Create(391, Types.Crewmate, "Portalmaker Cooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate);
-            portalmakerUsePortalCooldown = CustomOption.Create(392, Types.Crewmate, "Use Portal Cooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate);
-            portalmakerLogOnlyColorType = CustomOption.Create(393, Types.Crewmate, "Portalmaker Log Only Shows Color Type", true, portalmakerSpawnRate);
-            portalmakerLogHasTime = CustomOption.Create(394, Types.Crewmate, "Log Shows Time", true, portalmakerSpawnRate);
-            portalmakerCanPortalFromAnywhere = CustomOption.Create(395, Types.Crewmate, "Can Port To Portal From Everywhere", true, portalmakerSpawnRate);
+            portalmakerSpawnRate = CustomOption.Create(390, Types.Crewmate, cs(Portalmaker.color, ModTranslation.getString("portalmaker")), rates, null, true);
+            portalmakerCooldown = CustomOption.Create(391, Types.Crewmate, ModTranslation.getString("portalmakerCooldown"), 30f, 10f, 60f, 2.5f, portalmakerSpawnRate);
+            portalmakerUsePortalCooldown = CustomOption.Create(392, Types.Crewmate, ModTranslation.getString("portalmakerUsePortalCooldown"), 30f, 10f, 60f, 2.5f, portalmakerSpawnRate);
+            portalmakerLogOnlyColorType = CustomOption.Create(393, Types.Crewmate, ModTranslation.getString("portalmakerLogOnlyColorType"), true, portalmakerSpawnRate);
+            portalmakerLogHasTime = CustomOption.Create(394, Types.Crewmate, ModTranslation.getString("portalmakerLogHasTime"), true, portalmakerSpawnRate);
+            portalmakerCanPortalFromAnywhere = CustomOption.Create(395, Types.Crewmate, ModTranslation.getString("portalmakerCanPortalFromAnywhere"), true, portalmakerSpawnRate);
 
             securityGuardSpawnRate = CustomOption.Create(280, Types.Crewmate, cs(SecurityGuard.color, ModTranslation.getString("securityGuard")), rates, null, true);
             securityGuardCooldown = CustomOption.Create(281, Types.Crewmate, ModTranslation.getString("securityGuardCooldown"), 30f, 10f, 60f, 2.5f, securityGuardSpawnRate);
@@ -812,12 +812,12 @@ namespace TheOtherRoles {
             mediumOneTimeUse = CustomOption.Create(363, Types.Crewmate, ModTranslation.getString("mediumOneTimeUse"), false, mediumSpawnRate);
             mediumChanceAdditionalInfo = CustomOption.Create(364, Types.Crewmate, "Chance That The Answer Contains \n    Additional Information", rates, mediumSpawnRate);
 
-            thiefSpawnRate = CustomOption.Create(400, Types.Neutral, cs(Thief.color, "Thief"), rates, null, true);
-            thiefCooldown = CustomOption.Create(401, Types.Neutral, "Thief Cooldown", 30f, 5f, 120f, 5f, thiefSpawnRate);
-            thiefCanKillSheriff = CustomOption.Create(402, Types.Neutral, "Thief Can Kill Sheriff", true, thiefSpawnRate);
-            thiefHasImpVision = CustomOption.Create(403, Types.Neutral, "Thief Has Impostor Vision", true, thiefSpawnRate);
-            thiefCanUseVents = CustomOption.Create(404, Types.Neutral, "Thief Can Use Vents", true, thiefSpawnRate);
-            thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, "Thief Can Guess To Steal A Role (If Guesser)", false, thiefSpawnRate);
+            thiefSpawnRate = CustomOption.Create(400, Types.Neutral, cs(Thief.color, ModTranslation.getString("thief")), rates, null, true);
+            thiefCooldown = CustomOption.Create(401, Types.Neutral, ModTranslation.getString("thiefCooldown"), 30f, 5f, 120f, 5f, thiefSpawnRate);
+            thiefCanKillSheriff = CustomOption.Create(402, Types.Neutral, ModTranslation.getString("thiefCanKillSheriff"), true, thiefSpawnRate);
+            thiefHasImpVision = CustomOption.Create(403, Types.Neutral, ModTranslation.getString("thiefHasImpVision"), true, thiefSpawnRate);
+            thiefCanUseVents = CustomOption.Create(404, Types.Neutral, ModTranslation.getString("thiefCanUseVents"), true, thiefSpawnRate);
+            thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, ModTranslation.getString("thiefCanStealWithGuess"), false, thiefSpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);

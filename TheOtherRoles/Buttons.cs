@@ -327,18 +327,18 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.engineerFixLights();
                         } else if (task.TaskType == TaskTypes.RestoreOxy) {
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.LifeSupp, 0 | 64);
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.LifeSupp, 1 | 64);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 0 | 64);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 1 | 64);
                         } else if (task.TaskType == TaskTypes.ResetReactor) {
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Reactor, 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 16);
                         } else if (task.TaskType == TaskTypes.ResetSeismic) {
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Laboratory, 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Laboratory, 16);
                         } else if (task.TaskType == TaskTypes.FixComms) {
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 0);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 1);
                         } else if (task.TaskType == TaskTypes.StopCharles) {
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Reactor, 0 | 16);
-                            MapUtilities.CachedShipStatus.RpcRepairSystem(SystemTypes.Reactor, 1 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 0 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 1 | 16);
                         } else if (SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask) {
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EngineerFixSubmergedOxygen, Hazel.SendOption.Reliable, -1);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1536,9 +1536,7 @@ namespace TheOtherRoles
                 {
                     bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
                     bomberAPlantBombButton.isEffectActive = false;
-                    BomberA.tmpTarget = null;
-                    BomberA.bombTarget = null;
-                    //BombEffect.clearBombEffects();
+                    BomberA.tmpTarget = null;                    
                 },
                 BomberA.getBomberButtonSprite(),
                 CustomButton.ButtonPositions.upperRowCenter,
@@ -1604,8 +1602,7 @@ namespace TheOtherRoles
                 {
                     bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
                     bomberBPlantBombButton.isEffectActive = false;
-                    BomberB.tmpTarget = null;
-                    BomberB.bombTarget = null;
+                    BomberB.tmpTarget = null;                    
                 },
                 BomberB.getBomberButtonSprite(),
                 CustomButton.ButtonPositions.upperRowCenter,

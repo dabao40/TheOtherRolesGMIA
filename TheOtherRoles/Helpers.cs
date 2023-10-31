@@ -189,13 +189,13 @@ namespace TheOtherRoles {
 
         internal static string getRoleString(RoleInfo roleInfo)
         {
-            if (roleInfo.name == "Jackal") 
+            if (roleInfo.roleId == RoleId.Jackal) 
             {
-                var getSidekickText = Jackal.canCreateSidekick ? " and recruit a Sidekick" : "";
-                return cs(roleInfo.color, $"{roleInfo.name}: Kill everyone{getSidekickText}");  
+                var getSidekickText = Jackal.canCreateSidekick ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
+                return cs(roleInfo.color, $"{roleInfo.name}: {getSidekickText}");  
             }
 
-            if (roleInfo.name == "Invert") 
+            if (roleInfo.roleId == RoleId.Invert) 
             {
                 return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription} ({Invert.meetings})");
             }
