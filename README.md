@@ -11,6 +11,14 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
 
+# Before You Play
+Before play the game, you might need to complete a few steps.  
+1. *make sure that the date of the .dll file remains the same as the .zip file in the releases page*
+2. *run the game, and go to `\BepInEx\config`, and open up the `BepInEx.cfg` file*
+3. *scroll down a bit until you find the header `[Logging.Console]`*
+4. *change the `Enabled = true` to `Enabled = false`*
+5. *Run the game as you are well prepared*
+
 # Roles Added
 | Impostors | Crewmates | Neutral | Other | 
 |----------|-------------|-----------------|----------------|
