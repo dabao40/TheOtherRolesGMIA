@@ -134,7 +134,7 @@ namespace TheOtherRoles.Patches {
             TORMapOptions.ventsToSeal = new List<Vent>();
 
             EventUtility.meetingEndsUpdate();
-        }
+        }        
     }
 
     [HarmonyPatch]

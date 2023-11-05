@@ -556,6 +556,7 @@ namespace TheOtherRoles.Patches {
                 RoleId.Vip,
                 RoleId.Invert,
                 RoleId.Chameleon,
+                RoleId.Madmate
                 //RoleId.Shifter
             });
 
@@ -689,6 +690,22 @@ namespace TheOtherRoles.Patches {
                 playerList.RemoveAll(x => x.PlayerId == playerId);
                 modifiers.RemoveAll(x => x == RoleId.Shifter);
             }*/
+            if (modifiers.Contains(RoleId.Madmate))
+            {
+                var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
+                crewPlayerMadmate.RemoveAll(x => x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
+                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch);
+                int madmateCount = 0;
+                while (madmateCount < modifiers.FindAll(x => x == RoleId.Madmate).Count)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
+                    crewPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    playerList.RemoveAll(x => x.PlayerId == playerId);
+                    crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
+                    madmateCount++;
+                }
+                modifiers.RemoveAll(x => x == RoleId.Madmate);
+            }
             if (modifiers.Contains(RoleId.Sunglasses)) {
                 int sunglassesCount = 0;
                 while (sunglassesCount < modifiers.FindAll(x => x == RoleId.Sunglasses).Count) {
@@ -731,6 +748,10 @@ namespace TheOtherRoles.Patches {
                 case RoleId.Sunglasses:
                     selection = CustomOptionHolder.modifierSunglasses.getSelection();
                     if (multiplyQuantity) selection *= CustomOptionHolder.modifierSunglassesQuantity.getQuantity();
+                    break;
+                case RoleId.Madmate:
+                    selection = CustomOptionHolder.madmateSpawnRate.getSelection();
+                    if (multiplyQuantity) selection *= CustomOptionHolder.madmateQuantity.getQuantity();
                     break;
                 case RoleId.Vip:
                     selection = CustomOptionHolder.modifierVip.getSelection();

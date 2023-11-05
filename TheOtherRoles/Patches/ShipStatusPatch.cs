@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 using UnityEngine;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
+using TheOtherRoles.Players;
 
 namespace TheOtherRoles.Patches {
 

@@ -65,6 +65,7 @@ namespace TheOtherRoles.Patches {
             public bool IsGuesser {get; set;}
             public int? Kills {get; set;}
             public bool IsAlive { get; set; }
+            public bool IsMadmate { get; set;}
         }
     }
 
@@ -84,20 +85,21 @@ namespace TheOtherRoles.Patches {
             AdditionalTempData.clear();
 
             foreach(var playerControl in CachedPlayer.AllPlayers) {
-                var roles = RoleInfo.getRoleInfoForPlayer(playerControl, includeHidden: true);
+                var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
+                bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId);
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
                 if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
                     killCount = null;
                     }
                 bool isTaskMaster = TaskMaster.isTaskMaster(playerControl.PlayerId);
                 bool isTaskMasterExTasks = isTaskMaster && TaskMaster.isTaskComplete;
-                string roleString = RoleInfo.GetRolesString(playerControl, true, true, false, includeHidden: true);
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
+                string roleString = RoleInfo.GetRolesString(playerControl, true, true, false, true);
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString ,TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
                     ExTasksTotal = isTaskMasterExTasks ? TaskMaster.allExTasks : isTaskMaster ? TaskMasterTaskHelper.GetTaskMasterTasks() : 0,
                     ExTasksCompleted = isTaskMasterExTasks ? TaskMaster.clearExTasks : 0,
-                    IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead });
+                    IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead, IsMadmate = isMadmate });
             }
 
             // Remove Jester, Opportunist, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
@@ -143,9 +145,35 @@ namespace TheOtherRoles.Patches {
             // Here we changed this to: The Pursuer wins no matter who wins except for sabotage
             //bool isPursurerLose = jesterWin || arsonistWin || miniLose || vultureWin || teamJackalWin;
 
-            // Crewmate Win
-            if (crewmateWin) AdditionalTempData.winCondition = WinCondition.CrewmateWin;
-            if (impostorWin) AdditionalTempData.winCondition = WinCondition.ImpostorWin;
+            // Crewmates Win
+            if (crewmateWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                foreach (var p in CachedPlayer.AllPlayers)
+                {
+                    if (!p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && !Madmate.madmate.Contains(p))
+                    {
+                        WinningPlayerData wpd = new(p.Data);
+                        TempData.winners.Add(wpd);
+                    }
+                }
+                AdditionalTempData.winCondition = WinCondition.CrewmateWin;
+            }
+
+            // Impostors Win
+            if (impostorWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.Role.IsImpostor || Madmate.madmate.Contains(p))
+                    {
+                        WinningPlayerData wpd = new(p.Data);
+                        TempData.winners.Add(wpd);
+                    }
+                }
+                AdditionalTempData.winCondition = WinCondition.ImpostorWin;
+            }
 
             // Mini lose
             if (miniLose) {
@@ -338,8 +366,10 @@ namespace TheOtherRoles.Patches {
 
                 foreach(var data in AdditionalTempData.playerRoles) {
                     if (data.PlayerName != winningPlayerData2.PlayerName) continue;
-                    var roles = 
-                    poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs(x.color, x.name)))}";
+                    var roles =
+                    //poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs(x.color, x.name)))}";
+                    poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs((data.IsMadmate && !x.isModifier) ? Madmate.color : x.color, 
+                    (data.IsMadmate && !x.isModifier) ? (x == RoleInfo.crewmate ? Madmate.fullName : (Madmate.prefix + x.name)) : x.name)))}";
                 }
             }
 
@@ -685,7 +715,7 @@ namespace TheOtherRoles.Patches {
                             numJackalAlive++;
                             if (lover) jackalLover = true;
                         }
-                        if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId)
+                        if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId && !Madmate.madmate.Contains(Sheriff.sheriff))
                         {
                             numSheriffAlive++;
                         }

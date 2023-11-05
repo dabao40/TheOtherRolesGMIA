@@ -397,6 +397,18 @@ namespace TheOtherRoles.Patches {
                     __instance.RoleBlurbText.text = roleInfo.introDescription;
                     __instance.RoleBlurbText.color = roleInfo.color;
                 }
+
+                // Setup Madmate Intro
+                if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
+                {
+                    if (roleInfo == RoleInfo.crewmate) __instance.RoleText.text = ModTranslation.getString("madmate");
+                    else __instance.RoleText.text = ModTranslation.getString("madmatePrefix") + __instance.RoleText.text;
+                    __instance.YouAreText.color = Madmate.color;
+                    __instance.RoleText.color = Madmate.color;
+                    __instance.RoleBlurbText.text = ModTranslation.getString("madmateIntroDesc");
+                    __instance.RoleBlurbText.color = Madmate.color;
+                }
+
                 if (modifierInfo != null) {
                     if (modifierInfo.roleId != RoleId.Lover)
                         __instance.RoleBlurbText.text += Helpers.cs(modifierInfo.color, $"\n{modifierInfo.introDescription}");
@@ -430,6 +442,8 @@ namespace TheOtherRoles.Patches {
 
             public static void Postfix(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> teamToDisplay) {
                 setupIntroTeam(__instance, ref teamToDisplay);
+
+                if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId)) MadmateTasksHelper.SetMadmateTasks();
             }
         }
 

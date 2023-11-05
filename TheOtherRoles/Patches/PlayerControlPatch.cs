@@ -466,6 +466,13 @@ namespace TheOtherRoles.Patches {
 
                     byte reporter = deadPlayer.killerIfExisting.PlayerId;
 
+                    if (Madmate.madmate.Any(x => x.PlayerId == Bait.bait.PlayerId))
+                    {
+                        var candidates = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(x => !x.Data.IsDead && !x.Data.Role.IsImpostor).ToList();
+                        int i = rnd.Next(0, candidates.Count);
+                        reporter = candidates.Count > 0 ? candidates[i].PlayerId : deadPlayer.killerIfExisting.PlayerId;
+                    }
+
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
                     writer.Write(reporter);
                     writer.Write(Bait.bait.PlayerId);
@@ -698,7 +705,7 @@ namespace TheOtherRoles.Patches {
                     if (p == CachedPlayer.LocalPlayer.PlayerControl) {
                         if (p.Data.IsDead) roleNames = roleText;
                         playerInfoText = $"{roleNames}";
-                        if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs(p.Data.Role.IsImpostor ? Palette.ImpostorRed : Swapper.color, $" ({Swapper.charges})");
+                        if (p == Swapper.swapper) playerInfoText = $"{roleNames}" + Helpers.cs((p.Data.Role.IsImpostor || Madmate.madmate.Any(x => x.PlayerId == p.PlayerId)) ? Palette.ImpostorRed : Swapper.color, $" ({Swapper.charges})");
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
                             //tabText.SetText($"Tasks {taskInfo}");
@@ -1166,6 +1173,29 @@ namespace TheOtherRoles.Patches {
             setPlayerOutline(Witch.currentTarget, Witch.color);
         }
 
+        static void madmateUpdate(PlayerControl player)
+        {
+            if (!Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) return;
+            if (player.AmOwner && 
+                !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                !MeetingHud.Instance &&
+                !ExileController.Instance)
+            {
+                FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Hide();
+                if (!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                !MeetingHud.Instance &&
+                !ExileController.Instance)
+                {
+                    if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.canSabotage)
+                    {
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + FastDestroyableSingleton<HudManager>.Instance.UseButton.transform.localPosition;
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Show();
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
+
         static void assassinSetTarget()
         {
             if (Assassin.assassin == null || Assassin.assassin != CachedPlayer.LocalPlayer.PlayerControl) return;
@@ -1421,6 +1451,8 @@ namespace TheOtherRoles.Patches {
                 MimicK.arrowUpdate();
                 // Mimic(Assistant)
                 MimicA.arrowUpdate();
+                // Madmate
+                madmateUpdate(__instance);
                 //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
@@ -1559,7 +1591,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral))
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId))
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1611,8 +1643,7 @@ namespace TheOtherRoles.Patches {
             // Ninja penalize
             if (Ninja.ninja != null && CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && __instance == Ninja.ninja)
             {
-                if (Ninja.stealthed) Ninja.addition += Ninja.killPenalty;
-                CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Ninja.addition);
+                Ninja.OnKill(target);
             }
 
             // Serial Killer set suicide timer
@@ -1865,7 +1896,7 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral))
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId))
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile
