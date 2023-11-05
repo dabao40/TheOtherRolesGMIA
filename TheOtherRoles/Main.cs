@@ -21,6 +21,7 @@ using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
 using Reactor.Networking.Attributes;
 using AmongUs.Data;
+using TheOtherRoles.Modules.CustomHats;
 
 namespace TheOtherRoles
 {
@@ -31,7 +32,7 @@ namespace TheOtherRoles
     public class TheOtherRolesPlugin : BasePlugin
     {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "1.1.1";
+        public const string VersionString = "1.1.26";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -117,6 +118,7 @@ namespace TheOtherRoles
             
             CustomOptionHolder.Load();
             CustomColors.Load();
+            CustomHatManager.LoadHats();
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();

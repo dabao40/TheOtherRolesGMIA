@@ -88,6 +88,7 @@ namespace TheOtherRoles
         BomberB,
         Undertaker,
         Opportunist,
+        Madmate,
         //Bomber,
         Crewmate,
         Impostor,
@@ -514,6 +515,9 @@ namespace TheOtherRoles
                 case RoleId.Chameleon:
                     Chameleon.chameleon.Add(player);
                     break;
+                case RoleId.Madmate:
+                    Madmate.madmate.Add(player);
+                    break;
                 //case RoleId.Shifter:
                     //Shifter.shifter = player;
                     //break;
@@ -668,7 +672,7 @@ namespace TheOtherRoles
             if (!Shifter.isNeutral) Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player)))
+            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)))
             {
                 oldShifter.Exiled();
                 GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
@@ -689,6 +693,12 @@ namespace TheOtherRoles
             else if (Medic.shielded != null && Medic.shielded == oldShifter)
             {
                 Medic.shielded = player;
+            }
+
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
+            {
+                Madmate.madmate.Add(oldShifter);
+                Madmate.madmate.Remove(player);
             }
 
             if (Shifter.shiftModifiers)
@@ -1123,6 +1133,7 @@ namespace TheOtherRoles
                 if (Vip.vip.Any(x => x.PlayerId == player.PlayerId)) Vip.vip.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Invert.invert.Any(x => x.PlayerId == player.PlayerId)) Invert.invert.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId)) Chameleon.chameleon.RemoveAll(x => x.PlayerId == player.PlayerId);
+                if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId== player.PlayerId);
             }
         }
 

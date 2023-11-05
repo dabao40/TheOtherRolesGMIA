@@ -403,6 +403,18 @@ namespace TheOtherRoles {
         public static CustomOption modifierChameleonFadeDuration;
         public static CustomOption modifierChameleonMinVisibility;
 
+        public static CustomOption madmateSpawnRate;
+        public static CustomOption madmateQuantity;
+        public static CustomOption madmateCanDieToSheriff;
+        public static CustomOption madmateCanEnterVents;
+        public static CustomOption madmateCanSabotage;
+        public static CustomOption madmateHasImpostorVision;
+        public static CustomOption madmateCanFixComm;
+        public static CustomOption madmateAbility;
+        public static CustomOption madmateCommonTasks;
+        public static CustomOption madmateShortTasks;
+        public static CustomOption madmateLongTasks;
+
         //public static CustomOption modifierShifter;
 
         public static CustomOption maxNumberOfMeetings;
@@ -831,9 +843,9 @@ namespace TheOtherRoles {
             // Modifier (1000 - 1999)
             modifiersAreHidden = CustomOption.Create(1009, Types.Modifier, cs(Color.yellow, "Hide After Death Modifiers"), true, null, true);
 
-            modifierBloody = CustomOption.Create(1000, Types.Modifier, cs(Color.yellow, "Bloody"), rates, null, true);
-            modifierBloodyQuantity = CustomOption.Create(1001, Types.Modifier, cs(Color.yellow, "Bloody Quantity"), ratesModifier, modifierBloody);
-            modifierBloodyDuration = CustomOption.Create(1002, Types.Modifier, "Trail Duration", 10f, 3f, 60f, 1f, modifierBloody);
+            modifierBloody = CustomOption.Create(1000, Types.Modifier, cs(Color.yellow, ModTranslation.getString("bloody")), rates, null, true);
+            modifierBloodyQuantity = CustomOption.Create(1001, Types.Modifier, cs(Color.yellow, ModTranslation.getString("bloodyQuantity")), ratesModifier, modifierBloody);
+            modifierBloodyDuration = CustomOption.Create(1002, Types.Modifier, ModTranslation.getString("bloodDuration"), 10f, 3f, 60f, 1f, modifierBloody);
 
             modifierAntiTeleport = CustomOption.Create(1010, Types.Modifier, cs(Color.yellow, "Anti Teleport"), rates, null, true);
             modifierAntiTeleportQuantity = CustomOption.Create(1011, Types.Modifier, cs(Color.yellow, "Anti Teleport Quantity"), ratesModifier, modifierAntiTeleport);
@@ -872,6 +884,18 @@ namespace TheOtherRoles {
             modifierChameleonHoldDuration = CustomOption.Create(1092, Types.Modifier, "Time Until Fading Starts", 3f, 1f, 10f, 0.5f, modifierChameleon);
             modifierChameleonFadeDuration = CustomOption.Create(1093, Types.Modifier, "Fade Duration", 1f, 0.25f, 10f, 0.25f, modifierChameleon);
             modifierChameleonMinVisibility = CustomOption.Create(1094, Types.Modifier, "Minimum Visibility", new string[] { "0%", "10%", "20%", "30%", "40%", "50%" }, modifierChameleon);
+
+            madmateSpawnRate = CustomOption.Create(4041, Types.Modifier, cs(Color.yellow, "Madmate"), rates, null, true);
+            madmateQuantity = CustomOption.Create(7005, Types.Modifier, cs(Color.yellow, "Madmate Quantity"), ratesModifier, madmateSpawnRate);
+            madmateAbility = CustomOption.Create(4047, Types.Modifier, "Madmate Notice Impostors When Tasks Completed", true, madmateSpawnRate);
+            madmateCommonTasks = CustomOption.Create(4049, Types.Modifier, "Common Tasks", 1f, 0f, 3f, 1f, madmateAbility);
+            madmateShortTasks = CustomOption.Create(4048, Types.Modifier, "Short Tasks", 3f, 0f, 4f, 1f, madmateAbility);
+            madmateLongTasks = CustomOption.Create(7000, Types.Modifier, "Long Tasks", 1f, 0f, 4f, 1f, madmateAbility);
+            madmateCanDieToSheriff = CustomOption.Create(4042, Types.Modifier, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
+            madmateCanEnterVents = CustomOption.Create(4043, Types.Modifier, "Madmate Can Vent", false, madmateSpawnRate);
+            madmateCanSabotage = CustomOption.Create(7010, Types.Modifier, "Madmate Can Sabotage", false, madmateSpawnRate);
+            madmateHasImpostorVision = CustomOption.Create(4044, Types.Modifier, "Madmate Has Impoostor Vision", false, madmateSpawnRate);
+            madmateCanFixComm = CustomOption.Create(7001, Types.Modifier, "Madmate Can Fix Comms", true, madmateSpawnRate);
 
             //modifierShifter = CustomOption.Create(1100, Types.Modifier, cs(Color.yellow, "Shifter"), rates, null, true);
 

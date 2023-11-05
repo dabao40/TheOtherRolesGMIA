@@ -82,6 +82,7 @@ namespace TheOtherRoles
             Sherlock.clearAndReload();
             TaskMaster.clearAndReload();
             Yasuna.clearAndReload();
+            Madmate.clearAndReload();
             Opportunist.clearAndReload();
 
             // Modifier
@@ -3061,7 +3062,6 @@ namespace TheOtherRoles
             fadeTime = CustomOptionHolder.ninjaFadeTime.getFloat();
             canUseVents = CustomOptionHolder.ninjaCanVent.getBool();
             canBeTargeted = CustomOptionHolder.ninjaCanBeTargeted.getBool();
-            addition = 0f;
             setOpacity(Ninja.ninja, 1.0f);
 
             penalized = false;
@@ -3471,6 +3471,55 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             invert = new List<PlayerControl>();
             meetings = (int) CustomOptionHolder.modifierInvertDuration.getFloat();
+        }
+    }
+
+    public static class Madmate
+    {
+        public static Color color = Palette.ImpostorRed;
+        public static List<PlayerControl> madmate = new List<PlayerControl>();
+        public static bool hasTasks;
+        public static bool canDieToSheriff;
+        public static bool canVent;
+        public static bool hasImpostorVision;
+        public static bool canFixComm;
+        public static bool canSabotage;
+        public static int commonTasks;
+        public static int shortTasks;
+        public static int longTasks;
+        
+        public static string fullName { get { return ModTranslation.getString("madmate"); } }
+        public static string prefix { get { return ModTranslation.getString("madmatePrefix"); } }
+
+        public static bool tasksComplete(PlayerControl player)
+        {
+            if (!hasTasks) return false;
+
+            int counter = 0;
+            int totalTasks = commonTasks + longTasks + shortTasks;
+            if (totalTasks == 0) return true;
+            foreach (var task in player.Data.Tasks)
+            {
+                if (task.Complete)
+                {
+                    counter++;
+                }
+            }
+            return counter == totalTasks;
+        }
+
+        public static void clearAndReload()
+        {
+            hasTasks = CustomOptionHolder.madmateAbility.getBool();
+            madmate = new List<PlayerControl>();
+            canDieToSheriff = CustomOptionHolder.madmateCanDieToSheriff.getBool();
+            canVent = CustomOptionHolder.madmateCanEnterVents.getBool();
+            hasImpostorVision = CustomOptionHolder.madmateHasImpostorVision.getBool();
+            canFixComm = CustomOptionHolder.madmateCanFixComm.getBool();
+            canSabotage = CustomOptionHolder.madmateCanSabotage.getBool();
+            shortTasks = (int)CustomOptionHolder.madmateShortTasks.getFloat();
+            commonTasks = (int)CustomOptionHolder.madmateCommonTasks.getFloat();
+            longTasks = (int)CustomOptionHolder.madmateLongTasks.getFloat();
         }
     }
 

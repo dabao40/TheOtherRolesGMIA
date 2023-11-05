@@ -17,6 +17,7 @@ using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
 using Innersloth.Assets;
 using MonoMod.Cil;
+using static HarmonyLib.InlineSignature;
 
 namespace TheOtherRoles {
 
@@ -185,6 +186,14 @@ namespace TheOtherRoles {
                 task.Text = title;
                 player.myTasks.Insert(0, task);
             }
+
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
+            {
+                var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
+                task.transform.SetParent(player.transform, false);
+                task.Text = cs(Madmate.color, $"{Madmate.fullName}: " + ModTranslation.getString("madmateShortDesc"));
+                player.myTasks.Insert(0, task);
+            }
         }
 
         internal static string getRoleString(RoleInfo roleInfo)
@@ -214,7 +223,8 @@ namespace TheOtherRoles {
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player));
+            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player)
+                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks));
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -391,7 +401,7 @@ namespace TheOtherRoles {
         }
 
         public static bool roleCanUseVents(this PlayerControl player) {
-            bool roleCouldUse = false;
+            bool roleCouldUse = false;            
             if (Engineer.engineer != null && Engineer.engineer == player)
                 roleCouldUse = true;
             else if (Jackal.canUseVents && Jackal.jackal != null && Jackal.jackal == player)
@@ -399,8 +409,10 @@ namespace TheOtherRoles {
             else if (Sidekick.canUseVents && Sidekick.sidekick != null && Sidekick.sidekick == player)
                 roleCouldUse = true;
             else if (Spy.canEnterVents && Spy.spy != null && Spy.spy == player)
-                roleCouldUse = true;
+                roleCouldUse = true;            
             else if (Vulture.canUseVents && Vulture.vulture != null && Vulture.vulture == player)
+                roleCouldUse = true;
+            else if (Madmate.canVent && Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
                 roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
@@ -617,7 +629,8 @@ namespace TheOtherRoles {
                 || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
                 || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
                 || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)
-                || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision);
+                || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision)
+                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)

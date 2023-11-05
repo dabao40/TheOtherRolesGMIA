@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using System;
+using System.Linq;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
@@ -53,7 +54,8 @@ namespace TheOtherRoles {
                         || (playerInfo.PlayerId == Pursuer.pursuer?.PlayerId && Pursuer.pursuer.Data.IsDead) // Tasks of the Pursuer only count, if he's alive
                         || (playerInfo.PlayerId == Shifter.shifter?.PlayerId && Shifter.isNeutral) // Chain-Shifter has tasks, but they don't count
                         || playerInfo.PlayerId == Thief.thief?.PlayerId // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
-                       )
+                        || (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == playerInfo.PlayerId))
+                        )
                         continue;
                     var (playerCompleted, playerTotal) = taskInfo(playerInfo);
                     totalTasks += playerTotal;
