@@ -1,4 +1,4 @@
-﻿global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -119,15 +119,15 @@ namespace TheOtherRoles
             CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();
-            if (BepInExUpdater.UpdateRequired)
-            {
-                AddComponent<BepInExUpdater>();
-                return;
-            }
+            //if (BepInExUpdater.UpdateRequired)
+            //{
+            //    AddComponent<BepInExUpdater>();
+            //    return;
+            //}
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            AddComponent<ModUpdateBehaviour>();
+      
             Modules.MainMenuPatch.addSceneChangeCallbacks();
         }
         public static Sprite GetModStamp() {
