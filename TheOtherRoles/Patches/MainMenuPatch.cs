@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -9,8 +9,10 @@ using TheOtherRoles.Patches;
 using UnityEngine.SceneManagement;
 using TheOtherRoles.Utilities;
 using AmongUs.Data;
+using TheOtherRoles.Modules.CustomHats;
 using Assets.InnerNet;
 using System.Linq;
+
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]

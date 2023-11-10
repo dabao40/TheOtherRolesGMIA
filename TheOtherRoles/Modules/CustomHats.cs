@@ -15,15 +15,17 @@ using AmongUs.Data;
 using AmongUs.Data.Legacy;
 using System.Reflection;
 using static Rewired.Controller;
-using static TheOtherRoles.Modules.CustomHatLoader;
+
 using Innersloth.Assets;
 using UnityEngine.AddressableAssets;
 using PowerTools;
 using System.Drawing;
 
-namespace TheOtherRoles.Modules {
+namespace TheOtherRoles.Modules.CustomHats
+{
     [HarmonyPatch]
-    public class CustomHats { 
+    public class CustomHats
+    {
         private static bool LOADED = false;
         private static bool RUNNING = false;
         public static Material hatShader;
@@ -32,66 +34,72 @@ namespace TheOtherRoles.Modules {
         public static Dictionary<string, HatViewData> CustomHatViewDatas = new Dictionary<string, HatViewData>();
         public static HatExtension TestExt = null;
 
-        public class HatExtension {
-            public string author { get; set;}
-            public string package { get; set;}
-            public string condition { get; set;}
-            public Sprite FlipImage { get; set;}
-            public Sprite BackFlipImage { get; set;}
+        public class HatExtension
+        {
+            public string author { get; set; }
+            public string package { get; set; }
+            public string condition { get; set; }
+            public Sprite FlipImage { get; set; }
+            public Sprite BackFlipImage { get; set; }
         }
 
-        public class CustomHat { 
-            public string author { get; set;}
-            public string package { get; set;}
-            public string condition { get; set;}
-            public string name { get; set;}
-            public string resource { get; set;}
-            public string flipresource { get; set;}
-            public string backflipresource { get; set;}
-            public string backresource { get; set;}
-            public string climbresource { get; set;}
-            public bool bounce { get; set;}
-            public bool adaptive { get; set;}
-            public bool behind { get; set;}
+        public class CustomHat
+        {
+            public string author { get; set; }
+            public string package { get; set; }
+            public string condition { get; set; }
+            public string name { get; set; }
+            public string resource { get; set; }
+            public string flipresource { get; set; }
+            public string backflipresource { get; set; }
+            public string backresource { get; set; }
+            public string climbresource { get; set; }
+            public bool bounce { get; set; }
+            public bool adaptive { get; set; }
+            public bool behind { get; set; }
         }
 
-        private static List<CustomHat> createCustomHatDetails(string[] hats, bool fromDisk = false) {
+        private static List<CustomHat> createCustomHatDetails(string[] hats, bool fromDisk = false)
+        {
             Dictionary<string, CustomHat> fronts = new Dictionary<string, CustomHat>();
             Dictionary<string, string> backs = new Dictionary<string, string>();
             Dictionary<string, string> flips = new Dictionary<string, string>();
             Dictionary<string, string> backflips = new Dictionary<string, string>();
             Dictionary<string, string> climbs = new Dictionary<string, string>();
 
-            for (int i = 0; i < hats.Length; i++) {
+            for (int i = 0; i < hats.Length; i++)
+            {
                 string s = fromDisk ? hats[i].Substring(hats[i].LastIndexOf("\\") + 1).Split('.')[0] : hats[i].Split('.')[3];
                 string[] p = s.Split('_');
 
                 HashSet<string> options = new HashSet<string>();
-                for (int j = 1; j < p.Length; j++) 
+                for (int j = 1; j < p.Length; j++)
                     options.Add(p[j]);
 
                 if (options.Contains("back") && options.Contains("flip"))
                     backflips.Add(p[0], hats[i]);
-                else if (options.Contains("climb")) 
+                else if (options.Contains("climb"))
                     climbs.Add(p[0], hats[i]);
                 else if (options.Contains("back"))
                     backs.Add(p[0], hats[i]);
                 else if (options.Contains("flip"))
                     flips.Add(p[0], hats[i]);
-                else {
+                else
+                {
                     CustomHat custom = new CustomHat { resource = hats[i] };
                     custom.name = p[0].Replace('-', ' ');
                     custom.bounce = options.Contains("bounce");
                     custom.adaptive = options.Contains("adaptive");
                     custom.behind = options.Contains("behind");
-                    
+
                     fronts.Add(p[0], custom);
                 }
             }
 
             List<CustomHat> customhats = new List<CustomHat>();
 
-            foreach (string k in fronts.Keys) {
+            foreach (string k in fronts.Keys)
+            {
                 CustomHat hat = fronts[k];
                 string br, cr, fr, bfr;
                 backs.TryGetValue(k, out br);
@@ -115,8 +123,9 @@ namespace TheOtherRoles.Modules {
             return customhats;
         }
 
-        private static Sprite CreateHatSprite(string path, bool fromDisk = false) {
-            Texture2D texture = fromDisk ? Helpers.loadTextureFromDisk(path) : Helpers.loadTextureFromResources(path);
+        private static Sprite CreateHatSprite(string path, bool fromDisk = false)
+        {
+            Texture2D texture = fromDisk ? Helpers.LoadTextureFromPath(path) : Helpers.LoadTextureFromPath(path);
             if (texture == null)
                 return null;
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.53f, 0.575f), texture.width * 0.375f);
@@ -129,8 +138,10 @@ namespace TheOtherRoles.Modules {
 
         }
 
-        private static HatData CreateHatBehaviour(CustomHat ch, bool fromDisk = false, bool testOnly = false) {
-            if (hatShader == null) {
+        private static HatData CreateHatBehaviour(CustomHat ch, bool fromDisk = false, bool testOnly = false)
+        {
+            if (hatShader == null)
+            {
                 Material tmpShader = FastDestroyableSingleton<HatManager>.Instance.PlayerMaterial;
                 hatShader = tmpShader;
             }
@@ -139,11 +150,13 @@ namespace TheOtherRoles.Modules {
 
             viewdata.MainImage = CreateHatSprite(ch.resource, fromDisk);
             viewdata.FloorImage = viewdata.MainImage;
-            if (ch.backresource != null) {
+            if (ch.backresource != null)
+            {
                 viewdata.BackImage = CreateHatSprite(ch.backresource, fromDisk);
                 ch.behind = true; // Required to view backresource
             }
-            if (ch.climbresource != null) {
+            if (ch.climbresource != null)
+            {
                 viewdata.ClimbImage = CreateHatSprite(ch.climbresource, fromDisk);
                 viewdata.LeftClimbImage = viewdata.ClimbImage;
             }
@@ -166,12 +179,15 @@ namespace TheOtherRoles.Modules {
             if (ch.flipresource != null)
                 extend.FlipImage = CreateHatSprite(ch.flipresource, fromDisk);
             if (ch.backflipresource != null)
-                 extend.BackFlipImage = CreateHatSprite(ch.backflipresource, fromDisk);
+                extend.BackFlipImage = CreateHatSprite(ch.backflipresource, fromDisk);
 
-            if (testOnly) {
+            if (testOnly)
+            {
                 TestExt = extend;
                 TestExt.condition = hat.name;
-            } else {
+            }
+            else
+            {
                 CustomHatRegistry.Add(hat.name, extend);
             }
             CustomHatViewDatas.Add(hat.name, viewdata);
@@ -182,8 +198,10 @@ namespace TheOtherRoles.Modules {
             return hat;
         }
 
-        private static HatData CreateHatBehaviour(CustomHatLoader.CustomHatOnline chd, bool fromDisk = true) {
-            if (fromDisk) {
+        private static HatData CreateHatBehaviour(CustomHatLoader.CustomHatOnline chd, bool fromDisk = true)
+        {
+            if (fromDisk)
+            {
                 string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\";
                 chd.resource = filePath + chd.resource;
                 if (chd.backresource != null)
@@ -200,34 +218,43 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
-        private static class HatManagerPatch {
+        private static class HatManagerPatch
+        {
             private static List<HatData> allHatsList;
-            static void Prefix(HatManager __instance) {
+            static void Prefix(HatManager __instance)
+            {
                 if (RUNNING || LOADED) return;
                 RUNNING = true; // prevent simultanious execution
                 allHatsList = __instance.allHats.ToList();
 
-                try {
-                    while (CustomHatLoader.hatdetails.Count > 0) {
+                try
+                {
+                    while (CustomHatLoader.hatdetails.Count > 0)
+                    {
                         bool fromDisk = !(CustomHatLoader.hatdetails[0].name.Contains("HorseHat_") && (EventUtility.canBeEnabled || EventUtility.isEnabled));
                         allHatsList.Add(CreateHatBehaviour(CustomHatLoader.hatdetails[0], fromDisk));
                         CustomHatLoader.hatdetails.RemoveAt(0);
                     }
                     __instance.allHats = allHatsList.ToArray();
                     LOADED = true;  // this will only be set to true if loading is succesful.
-                } catch (System.Exception e) {
+                }
+                catch (System.Exception e)
+                {
                     if (!LOADED)
                         TheOtherRolesPlugin.Logger.LogMessage("Unable to add Custom Hats\n" + e);
                 }
             }
-            static void Postfix(HatManager __instance) {
+            static void Postfix(HatManager __instance)
+            {
                 RUNNING = false;
             }
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-        private static class PlayerPhysicsHandleAnimationPatch {
-            private static void Postfix(PlayerPhysics __instance) {
+        private static class PlayerPhysicsHandleAnimationPatch
+        {
+            private static void Postfix(PlayerPhysics __instance)
+            {
                 if (!CustomHatViewDatas.ContainsKey(__instance.myPlayer.cosmetics.hat.Hat.name)) return;
                 HatViewData viewData = CustomHatViewDatas[__instance.myPlayer.cosmetics.hat.Hat.name];
                 AnimationClip currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
@@ -236,17 +263,25 @@ namespace TheOtherRoles.Modules {
                 if (hp == null || hp.Hat == null) return;
                 HatExtension extend = hp.Hat.getHatExtension();
                 if (extend == null) return;
-                if (extend.FlipImage != null) {
-                    if (__instance.FlipX) {
+                if (extend.FlipImage != null)
+                {
+                    if (__instance.FlipX)
+                    {
                         hp.FrontLayer.sprite = extend.FlipImage;
-                    } else {
+                    }
+                    else
+                    {
                         hp.FrontLayer.sprite = viewData.MainImage;
                     }
                 }
-                if (extend.BackFlipImage != null) {
-                    if (__instance.FlipX) {
+                if (extend.BackFlipImage != null)
+                {
+                    if (__instance.FlipX)
+                    {
                         hp.BackLayer.sprite = extend.BackFlipImage;
-                    } else {
+                    }
+                    else
+                    {
                         hp.BackLayer.sprite = viewData.BackImage;
                     }
                 }
@@ -257,32 +292,40 @@ namespace TheOtherRoles.Modules {
         private static class FreeplayHatTestingPatches
         {
             [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
-            private static class HatParentSetHatPatchColor {
-                static void Prefix(HatParent __instance) {
-                    if (DestroyableSingleton<TutorialManager>.InstanceExists) {
-                        try {
+            private static class HatParentSetHatPatchColor
+            {
+                static void Prefix(HatParent __instance)
+                {
+                    if (DestroyableSingleton<TutorialManager>.InstanceExists)
+                    {
+                        try
+                        {
                             string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\Test";
                             if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
                             DirectoryInfo d = new DirectoryInfo(filePath);
                             string[] filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray(); // Getting Text files
                             List<CustomHat> hats = createCustomHatDetails(filePaths, true);
-                            if (hats.Count > 0) {
+                            if (hats.Count > 0)
+                            {
                                 __instance.Hat = CreateHatBehaviour(hats[0], true, true);
                             }
-                        } catch (System.Exception e) {
+                        }
+                        catch (System.Exception e)
+                        {
                             System.Console.WriteLine("Unable to create test hat\n" + e);
                         }
                     }
-                }     
+                }
             }
-            
+
             [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(int))]
-            private static class HatParentSetHatPatchExtra {
+            private static class HatParentSetHatPatchExtra
+            {
                 static bool Prefix(HatParent __instance, HatData hat, int color)
                 {
                     if (!DestroyableSingleton<TutorialManager>.InstanceExists) return true;
-                    
-                    try 
+
+                    try
                     {
                         __instance.Hat = hat;
                         __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
@@ -292,28 +335,30 @@ namespace TheOtherRoles.Modules {
                         DirectoryInfo d = new DirectoryInfo(filePath);
                         string[] filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray(); // Getting Test files
                         List<CustomHat> hats = createCustomHatDetails(filePaths, true);
-                        if (hats.Count > 0) 
+                        if (hats.Count > 0)
                         {
                             __instance.Hat = CreateHatBehaviour(hats[0], true, true);
                             __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
                         }
-                    } 
-                    catch (System.Exception e) 
+                    }
+                    catch (System.Exception e)
                     {
                         System.Console.WriteLine("Unable to create test hat\n" + e);
                         return true;
                     }
-                    
+
                     __instance.PopulateFromHatViewData();
                     __instance.SetMaterialColor(color);
                     return false;
-                }     
+                }
             }
         }
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
-        public class SetHatPatch {
-            public static bool Prefix(HatParent __instance, int color) {
+        public class SetHatPatch
+        {
+            public static bool Prefix(HatParent __instance, int color)
+            {
                 if (!CustomHatRegistry.ContainsKey(__instance.Hat.name)) return true;
                 __instance.hatDataAsset = null;
                 __instance.PopulateFromHatViewData();
@@ -323,61 +368,87 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.UpdateMaterial))]
-        public class UpdateMaterialPatch {
-            public static bool Prefix(HatParent __instance) {
+        public class UpdateMaterialPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
                 HatViewData asset;
-                try {
+                try
+                {
                     HatViewData vanillaAsset = __instance.hatDataAsset.GetAsset();
                     return true;
-                } catch { 
-                    try {
-                       asset = CustomHatViewDatas[__instance.Hat.name];
-                    } catch {
+                }
+                catch
+                {
+                    try
+                    {
+                        asset = CustomHatViewDatas[__instance.Hat.name];
+                    }
+                    catch
+                    {
                         return false;
                     }
                 }
-                if (asset.AltShader) {
+                if (asset.AltShader)
+                {
                     __instance.FrontLayer.sharedMaterial = asset.AltShader;
-                    if (__instance.BackLayer) {
+                    if (__instance.BackLayer)
+                    {
                         __instance.BackLayer.sharedMaterial = asset.AltShader;
                     }
-                } else {
+                }
+                else
+                {
                     __instance.FrontLayer.sharedMaterial = DestroyableSingleton<HatManager>.Instance.DefaultShader;
-                    if (__instance.BackLayer) {
+                    if (__instance.BackLayer)
+                    {
                         __instance.BackLayer.sharedMaterial = DestroyableSingleton<HatManager>.Instance.DefaultShader;
                     }
                 }
                 int colorId = __instance.matProperties.ColorId;
                 PlayerMaterial.SetColors(colorId, __instance.FrontLayer);
-                if (__instance.BackLayer) {
+                if (__instance.BackLayer)
+                {
                     PlayerMaterial.SetColors(colorId, __instance.BackLayer);
                 }
                 __instance.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
-                if (__instance.BackLayer) {
+                if (__instance.BackLayer)
+                {
                     __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
                 }
                 PlayerMaterial.MaskType maskType = __instance.matProperties.MaskType;
-                if (maskType == PlayerMaterial.MaskType.ScrollingUI) {
-                    if (__instance.FrontLayer) {
+                if (maskType == PlayerMaterial.MaskType.ScrollingUI)
+                {
+                    if (__instance.FrontLayer)
+                    {
                         __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
                     }
-                    if (__instance.BackLayer) {
+                    if (__instance.BackLayer)
+                    {
                         __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
                         return false;
                     }
-                } else if (maskType == PlayerMaterial.MaskType.Exile) {
-                    if (__instance.FrontLayer) {
+                }
+                else if (maskType == PlayerMaterial.MaskType.Exile)
+                {
+                    if (__instance.FrontLayer)
+                    {
                         __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
                     }
-                    if (__instance.BackLayer) {
+                    if (__instance.BackLayer)
+                    {
                         __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
                         return false;
                     }
-                } else {
-                    if (__instance.FrontLayer) {
+                }
+                else
+                {
+                    if (__instance.FrontLayer)
+                    {
                         __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
                     }
-                    if (__instance.BackLayer) {
+                    if (__instance.BackLayer)
+                    {
                         __instance.BackLayer.maskInteraction = SpriteMaskInteraction.None;
                     }
                 }
@@ -386,12 +457,16 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetFloorAnim))]
-        public class HatParentSetFloorAnimPatch {
-            public static bool Prefix(HatParent __instance) {
-                try {
+        public class HatParentSetFloorAnimPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
                     HatViewData vanillaAsset = __instance.hatDataAsset.GetAsset();
                     return true;
-                } catch { }
+                }
+                catch { }
                 HatViewData hatViewData = CustomHatViewDatas[__instance.Hat.name];
                 __instance.BackLayer.enabled = false;
                 __instance.FrontLayer.enabled = true;
@@ -401,11 +476,13 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetIdleAnim))]
-        public class HatParentSetIdleAnimPatch {
-            public static bool Prefix(HatParent __instance, int colorId) {
+        public class HatParentSetIdleAnimPatch
+        {
+            public static bool Prefix(HatParent __instance, int colorId)
+            {
                 if (!__instance.Hat) return false;
                 if (!CustomHatRegistry.ContainsKey(__instance.Hat.name))
-                    return true; 
+                    return true;
                 HatViewData hatViewData = CustomHatViewDatas[__instance.Hat.name];
                 __instance.hatDataAsset = null;
                 __instance.PopulateFromHatViewData();
@@ -415,15 +492,20 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetClimbAnim))]
-        public class HatParentSetClimbAnimPatch {
-            public static bool Prefix(HatParent __instance) {
-                try {
+        public class HatParentSetClimbAnimPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
                     HatViewData vanillaAsset = __instance.hatDataAsset.GetAsset();
                     return true;
-                } catch { }
+                }
+                catch { }
 
                 HatViewData hatViewData = CustomHatViewDatas[__instance.Hat.name];
-                if (!__instance.options.ShowForClimb) {
+                if (!__instance.options.ShowForClimb)
+                {
                     return false;
                 }
                 __instance.BackLayer.enabled = false;
@@ -435,44 +517,57 @@ namespace TheOtherRoles.Modules {
 
 
         [HarmonyPatch(typeof(HatParent), nameof(HatParent.PopulateFromHatViewData))]
-        public class PopulateFromHatViewDataPatch {
-            public static bool Prefix(HatParent __instance) {
-                try {
+        public class PopulateFromHatViewDataPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
                     HatViewData vanillaAsset = __instance.hatDataAsset.GetAsset();
                     return true;
-                } catch { 
+                }
+                catch
+                {
                     if (__instance.Hat && !CustomHatViewDatas.ContainsKey(__instance.Hat.name))
                         return true;
-                    }
-                
+                }
+
 
                 HatViewData asset = CustomHatViewDatas[__instance.Hat.name];
 
-                if (!asset) {
+                if (!asset)
+                {
                     return true;
                 }
                 __instance.UpdateMaterial();
 
                 SpriteAnimNodeSync spriteAnimNodeSync = __instance.SpriteSyncNode ?? __instance.GetComponent<SpriteAnimNodeSync>();
-                if (spriteAnimNodeSync) {
+                if (spriteAnimNodeSync)
+                {
                     spriteAnimNodeSync.NodeId = (__instance.Hat.NoBounce ? 1 : 0);
                 }
-                if (__instance.Hat.InFront) {
+                if (__instance.Hat.InFront)
+                {
                     __instance.BackLayer.enabled = false;
                     __instance.FrontLayer.enabled = true;
                     __instance.FrontLayer.sprite = asset.MainImage;
-                } else if (asset.BackImage) {
+                }
+                else if (asset.BackImage)
+                {
                     __instance.BackLayer.enabled = true;
                     __instance.FrontLayer.enabled = true;
                     __instance.BackLayer.sprite = asset.BackImage;
                     __instance.FrontLayer.sprite = asset.MainImage;
-                } else {
+                }
+                else
+                {
                     __instance.BackLayer.enabled = true;
                     __instance.FrontLayer.enabled = false;
                     __instance.FrontLayer.sprite = null;
                     __instance.BackLayer.sprite = asset.MainImage;
                 }
-                if (__instance.options.Initialized && __instance.HideHat()) {
+                if (__instance.options.Initialized && __instance.HideHat())
+                {
                     __instance.FrontLayer.enabled = false;
                     __instance.BackLayer.enabled = false;
                 }
@@ -481,17 +576,20 @@ namespace TheOtherRoles.Modules {
         }
 
         [HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
-        public class HatsTabOnEnablePatch {
+        public class HatsTabOnEnablePatch
+        {
             public static string innerslothPackageName = "Innersloth Hats";
             private static TMPro.TMP_Text textTemplate;
 
-            public static float createHatPackage(List<System.Tuple<HatData, HatExtension>> hats, string packageName, float YStart, HatsTab __instance) {
+            public static float createHatPackage(List<System.Tuple<HatData, HatExtension>> hats, string packageName, float YStart, HatsTab __instance)
+            {
                 bool isDefaultPackage = innerslothPackageName == packageName;
                 if (!isDefaultPackage)
                     hats = hats.OrderBy(x => x.Item1.name).ToList();
                 float offset = YStart;
 
-                if (textTemplate != null) {
+                if (textTemplate != null)
+                {
                     TMPro.TMP_Text title = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(textTemplate, __instance.scroller.Inner);
                     title.transform.localPosition = new Vector3(2.25f, YStart, -1f);
                     title.transform.localScale = Vector3.one * 1.5f;
@@ -500,34 +598,42 @@ namespace TheOtherRoles.Modules {
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => { title.SetText(packageName); })));
                     offset -= 0.8f * __instance.YOffset;
                 }
-                for (int i = 0; i < hats.Count; i++) {
+                for (int i = 0; i < hats.Count; i++)
+                {
                     HatData hat = hats[i].Item1;
                     HatExtension ext = hats[i].Item2;
 
                     float xpos = __instance.XRange.Lerp((i % __instance.NumPerRow) / (__instance.NumPerRow - 1f));
                     float ypos = offset - (i / __instance.NumPerRow) * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset;
                     ColorChip colorChip = UnityEngine.Object.Instantiate<ColorChip>(__instance.ColorTabPrefab, __instance.scroller.Inner);
-                    if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard) {
+                    if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
+                    {
                         colorChip.Button.OnMouseOver.AddListener((System.Action)(() => __instance.SelectHat(hat)));
                         colorChip.Button.OnMouseOut.AddListener((System.Action)(() => __instance.SelectHat(FastDestroyableSingleton<HatManager>.Instance.GetHatById(DataManager.Player.Customization.Hat))));
                         colorChip.Button.OnClick.AddListener((System.Action)(() => __instance.ClickEquip()));
-                    } else {
+                    }
+                    else
+                    {
                         colorChip.Button.OnClick.AddListener((System.Action)(() => __instance.SelectHat(hat)));
                     }
                     colorChip.Button.ClickMask = __instance.scroller.Hitbox;
                     Transform background = colorChip.transform.FindChild("Background");
                     Transform foreground = colorChip.transform.FindChild("ForeGround");
 
-                    if (ext != null) {
-                        if (background != null) {
+                    if (ext != null)
+                    {
+                        if (background != null)
+                        {
                             background.localPosition = Vector3.down * 0.243f;
                             background.localScale = new Vector3(background.localScale.x, 0.8f, background.localScale.y);
                         }
-                        if (foreground != null) {
+                        if (foreground != null)
+                        {
                             foreground.localPosition = Vector3.down * 0.243f;
                         }
-                
-                        if (textTemplate != null) {
+
+                        if (textTemplate != null)
+                        {
                             TMPro.TMP_Text description = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(textTemplate, colorChip.transform);
                             description.transform.localPosition = new Vector3(0f, -0.65f, -1f);
                             description.alignment = TMPro.TextAlignmentOptions.Center;
@@ -535,7 +641,7 @@ namespace TheOtherRoles.Modules {
                             __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => { description.SetText($"{hat.name}\nby {ext.author}"); })));
                         }
                     }
-                    
+
                     colorChip.transform.localPosition = new Vector3(xpos, ypos, -1f);
                     colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CachedPlayer.LocalPlayer.Data.DefaultOutfit.ColorId : ((int)DataManager.Player.Customization.Color));
                     colorChip.Inner.transform.localPosition = hat.ChipOffset;
@@ -546,7 +652,8 @@ namespace TheOtherRoles.Modules {
                 return offset - ((hats.Count - 1) / __instance.NumPerRow) * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset - 1.75f;
             }
 
-            public static void Postfix(HatsTab __instance) {
+            public static void Postfix(HatsTab __instance)
+            {
                 for (int i = 0; i < __instance.scroller.Inner.childCount; i++)
                     UnityEngine.Object.Destroy(__instance.scroller.Inner.GetChild(i).gameObject);
                 __instance.ColorChips = new Il2CppSystem.Collections.Generic.List<ColorChip>();
@@ -554,15 +661,19 @@ namespace TheOtherRoles.Modules {
                 HatData[] unlockedHats = FastDestroyableSingleton<HatManager>.Instance.GetUnlockedHats();
                 Dictionary<string, List<System.Tuple<HatData, HatExtension>>> packages = new Dictionary<string, List<System.Tuple<HatData, HatExtension>>>();
 
-                foreach (HatData hatBehaviour in unlockedHats) {
+                foreach (HatData hatBehaviour in unlockedHats)
+                {
                     HatExtension ext = hatBehaviour.getHatExtension();
 
-                    if (ext != null) {
-                        if (!packages.ContainsKey(ext.package)) 
+                    if (ext != null)
+                    {
+                        if (!packages.ContainsKey(ext.package))
                             packages[ext.package] = new List<System.Tuple<HatData, HatExtension>>();
                         packages[ext.package].Add(new System.Tuple<HatData, HatExtension>(hatBehaviour, ext));
-                    } else {
-                        if (!packages.ContainsKey(innerslothPackageName)) 
+                    }
+                    else
+                    {
+                        if (!packages.ContainsKey(innerslothPackageName))
                             packages[innerslothPackageName] = new List<System.Tuple<HatData, HatExtension>>();
                         packages[innerslothPackageName].Add(new System.Tuple<HatData, HatExtension>(hatBehaviour, null));
                     }
@@ -573,12 +684,14 @@ namespace TheOtherRoles.Modules {
                 float YOffset = __instance.YStart;
                 textTemplate = GameObject.Find("HatsGroup").transform.FindChild("Text").GetComponent<TMPro.TMP_Text>();
 
-                var orderedKeys = packages.Keys.OrderBy((string x) => {
+                var orderedKeys = packages.Keys.OrderBy((string x) =>
+                {
                     if (x == innerslothPackageName) return 1000;
                     if (x == "Developer Hats") return 0;
                     return 500;
                 });
-                foreach (string key in orderedKeys) {
+                foreach (string key in orderedKeys)
+                {
                     List<System.Tuple<HatData, HatExtension>> value = packages[key];
                     YOffset = createHatPackage(value, key, YOffset, __instance);
                 }
@@ -589,48 +702,58 @@ namespace TheOtherRoles.Modules {
 
     }
 
-    public class CustomHatLoader {
+    public class CustomHatLoader
+    {
         public static bool running = false;
         private const string REPO = "https://raw.githubusercontent.com/Eisbison/TheOtherHats/master";
 
         public static List<CustomHatOnline> hatdetails = new List<CustomHatOnline>();
         private static Task hatFetchTask = null;
-        public static void LaunchHatFetcher() {
+        public static void LaunchHatFetcher()
+        {
             if (running)
                 return;
             running = true;
             hatFetchTask = LaunchHatFetcherAsync();
         }
 
-        private static async Task LaunchHatFetcherAsync() {
-            try {
+        private static async Task LaunchHatFetcherAsync()
+        {
+            try
+            {
                 HttpStatusCode status = await FetchHats();
                 if (status != HttpStatusCode.OK)
                     System.Console.WriteLine("Custom Hats could not be loaded\n");
-            } catch (System.Exception e) {
+            }
+            catch (System.Exception e)
+            {
                 System.Console.WriteLine("Unable to fetch hats\n" + e.Message);
             }
-           running = false;
+            running = false;
         }
 
-        private static string sanitizeResourcePath(string res) {
-            if (res == null || !res.EndsWith(".png")) 
+        private static string sanitizeResourcePath(string res)
+        {
+            if (res == null || !res.EndsWith(".png"))
                 return null;
 
             res = res.Replace("\\", "")
                      .Replace("/", "")
                      .Replace("*", "")
-                     .Replace("..", "");   
+                     .Replace("..", "");
             return res;
         }
 
-        public static async Task<HttpStatusCode> FetchHats() {
+        public static async Task<HttpStatusCode> FetchHats()
+        {
             HttpClient http = new HttpClient();
-            http.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue{ NoCache = true };
-			var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
-            try {
+            http.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
+            try
+            {
                 if (response.StatusCode != HttpStatusCode.OK) return response.StatusCode;
-                if (response.Content == null) {
+                if (response.Content == null)
+                {
                     System.Console.WriteLine("Server returned no data: " + response.StatusCode.ToString());
                     return HttpStatusCode.ExpectationFailed;
                 }
@@ -640,8 +763,10 @@ namespace TheOtherRoles.Modules {
 
                 List<CustomHatOnline> hatdatas = new List<CustomHatOnline>();
 
-                for (JToken current = jobj.First; current != null; current = current.Next) {
-                    if (current.HasValues) {
+                for (JToken current = jobj.First; current != null; current = current.Next)
+                {
+                    if (current.HasValues)
+                    {
                         CustomHatOnline info = new CustomHatOnline();
 
                         info.name = current["name"]?.ToString();
@@ -673,46 +798,54 @@ namespace TheOtherRoles.Modules {
                 string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\";
                 if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
                 MD5 md5 = MD5.Create();
-                foreach (CustomHatOnline data in hatdatas) {
-    	            if (doesResourceRequireDownload(filePath + data.resource, data.reshasha, md5))
+                foreach (CustomHatOnline data in hatdatas)
+                {
+                    if (doesResourceRequireDownload(filePath + data.resource, data.reshasha, md5))
                         markedfordownload.Add(data.resource);
-    	            if (data.backresource != null && doesResourceRequireDownload(filePath + data.backresource, data.reshashb, md5))
+                    if (data.backresource != null && doesResourceRequireDownload(filePath + data.backresource, data.reshashb, md5))
                         markedfordownload.Add(data.backresource);
-    	            if (data.climbresource != null && doesResourceRequireDownload(filePath + data.climbresource, data.reshashc, md5))
+                    if (data.climbresource != null && doesResourceRequireDownload(filePath + data.climbresource, data.reshashc, md5))
                         markedfordownload.Add(data.climbresource);
-    	            if (data.flipresource != null && doesResourceRequireDownload(filePath + data.flipresource, data.reshashf, md5))
+                    if (data.flipresource != null && doesResourceRequireDownload(filePath + data.flipresource, data.reshashf, md5))
                         markedfordownload.Add(data.flipresource);
-    	            if (data.backflipresource != null && doesResourceRequireDownload(filePath + data.backflipresource, data.reshashbf, md5))
+                    if (data.backflipresource != null && doesResourceRequireDownload(filePath + data.backflipresource, data.reshashbf, md5))
                         markedfordownload.Add(data.backflipresource);
                 }
-                
-                foreach(var file in markedfordownload) {
-                    
+
+                foreach (var file in markedfordownload)
+                {
+
                     var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}", HttpCompletionOption.ResponseContentRead);
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK) continue;
-                    using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync()) {
-                        using (var fileStream = File.Create($"{filePath}\\{file}")) {
+                    using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                    {
+                        using (var fileStream = File.Create($"{filePath}\\{file}"))
+                        {
                             responseStream.CopyTo(fileStream);
                         }
                     }
                 }
 
                 if (EventUtility.canBeEnabled || EventUtility.isEnabled) addHorseHats(ref hatdatas);
-                
+
 
                 hatdetails = hatdatas;
-            } catch (System.Exception ex) {
+            }
+            catch (System.Exception ex)
+            {
                 TheOtherRolesPlugin.Instance.Log.LogError(ex.ToString());
                 System.Console.WriteLine(ex);
             }
             return HttpStatusCode.OK;
         }
 
-        private static bool doesResourceRequireDownload(string respath, string reshash, MD5 md5) {
-            if (reshash == null || !File.Exists(respath)) 
+        private static bool doesResourceRequireDownload(string respath, string reshash, MD5 md5)
+        {
+            if (reshash == null || !File.Exists(respath))
                 return true;
 
-            using (var stream = File.OpenRead(respath)) {
+            using (var stream = File.OpenRead(respath))
+            {
                 var hash = System.BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
                 return !reshash.Equals(hash);
             }
@@ -720,27 +853,32 @@ namespace TheOtherRoles.Modules {
 
 
         public static List<string> horseHatProductIds = null;
-        private static void addHorseHats(ref List<CustomHatOnline> hatdatas) {
+        private static void addHorseHats(ref List<CustomHatOnline> hatdatas)
+        {
 
             horseHatProductIds = new();
             Assembly assembly = Assembly.GetExecutingAssembly();
             string[] resourceNames = assembly.GetManifestResourceNames();
             List<string> hatFiles = new();
             Dictionary<string, List<string>> hatFilesSorted = new Dictionary<string, List<string>>();
-            foreach (string resourceName in resourceNames) {
-                if (resourceName.Contains("TheOtherRoles.Resources.HorseHats.") && resourceName.Contains(".png")) {
+            foreach (string resourceName in resourceNames)
+            {
+                if (resourceName.Contains("TheOtherRoles.Resources.HorseHats.") && resourceName.Contains(".png"))
+                {
                     hatFiles.Add(resourceName);
                 }
             }
 
-            foreach (string s in hatFiles) {
+            foreach (string s in hatFiles)
+            {
                 string value = s.Substring(0, s.LastIndexOf("HorseSpecialHat") + 17);
                 if (value.Contains(".")) value.Remove(value.LastIndexOf("."));
                 if (!hatFilesSorted.ContainsKey(value)) hatFilesSorted.Add(value, new List<string>());
                 hatFilesSorted[value].Add(s);
             }
 
-            foreach (var item in hatFilesSorted) {
+            foreach (var item in hatFilesSorted)
+            {
                 CustomHatOnline info = new CustomHatOnline();
                 info.name = "HorseHat_" + item.Key;
                 info.resource = item.Value.FirstOrDefault(x => !x.Contains("back"));
@@ -756,18 +894,22 @@ namespace TheOtherRoles.Modules {
             }
         }
 
-        public class CustomHatOnline : CustomHats.CustomHat { 
-            public string reshasha { get; set;}
-            public string reshashb { get; set;}
-            public string reshashc { get; set;}
-            public string reshashf { get; set;}
-            public string reshashbf { get; set;}
-        }   
+        public class CustomHatOnline : CustomHats.CustomHat
+        {
+            public string reshasha { get; set; }
+            public string reshashb { get; set; }
+            public string reshashc { get; set; }
+            public string reshashf { get; set; }
+            public string reshashbf { get; set; }
+        }
     }
-    public static class CustomHatExtensions {
-        public static CustomHats.HatExtension getHatExtension(this HatData hat) {
+    public static class CustomHatExtensions
+    {
+        public static CustomHats.HatExtension getHatExtension(this HatData hat)
+        {
             CustomHats.HatExtension ret = null;
-            if (CustomHats.TestExt != null && CustomHats.TestExt.condition.Equals(hat.name)) {
+            if (CustomHats.TestExt != null && CustomHats.TestExt.condition.Equals(hat.name))
+            {
                 return CustomHats.TestExt;
             }
             CustomHats.CustomHatRegistry.TryGetValue(hat.name, out ret);
