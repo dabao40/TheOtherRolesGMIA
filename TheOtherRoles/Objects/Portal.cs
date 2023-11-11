@@ -48,12 +48,12 @@ namespace TheOtherRoles.Objects {
             firstPortal.animationFgRenderer.flipX = flip;
             secondPortal.animationFgRenderer.flipX = flip;
             if (Morphling.morphling != null && Morphling.morphTimer > 0) playerControl = Morphling.morphTarget;  // Will output info of morph-target instead
-            string playerNameDisplay = Portalmaker.logOnlyHasColors ? "A player (" + (Helpers.isLighterColor(playerControl.Data.DefaultOutfit.ColorId) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
+            string playerNameDisplay = Portalmaker.logOnlyHasColors ? ModTranslation.getString("portalmakerLogPlayer") + " (" + (Helpers.isLighterColor(playerControl.Data.DefaultOutfit.ColorId) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
 
             int colorId = playerControl.Data.DefaultOutfit.ColorId;
 
             if (Camouflager.camouflageTimer > 0) {
-                playerNameDisplay = "A camouflaged player";
+                playerNameDisplay = ModTranslation.getString("portalmakerLogCamouflagedPlayer");
                 colorId = 6;
             }
             
@@ -80,7 +80,8 @@ namespace TheOtherRoles.Objects {
         private SpriteRenderer animationFgRenderer;
         private SpriteRenderer portalRenderer;
 
-        public Portal(Vector2 p) {
+        public Portal(Vector2 p) 
+        {
             portalGameObject = new GameObject("Portal"){ layer = 11 };
             //Vector3 position = new Vector3(p.x, p.y, CachedPlayer.LocalPlayer.transform.position.z + 1f);
             Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
@@ -108,8 +109,12 @@ namespace TheOtherRoles.Objects {
             else if (secondPortal == null) {
                 secondPortal = this;
             }
-            var lastRoom = FastDestroyableSingleton<HudManager>.Instance?.roomTracker.LastRoom.RoomId;
-            this.room = lastRoom != null ? DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)lastRoom) : "Open Field";
+
+            var hudManager = HudManager.Instance;
+            var lastRoom = hudManager && hudManager.roomTracker && hudManager.roomTracker.LastRoom
+                ? HudManager.Instance.roomTracker.LastRoom.RoomId
+                : SystemTypes.Outside;
+            this.room = DestroyableSingleton<TranslationController>.Instance.GetString(lastRoom);
         }
 
         public static bool locationNearEntry(Vector2 p) {

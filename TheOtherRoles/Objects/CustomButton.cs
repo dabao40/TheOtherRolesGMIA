@@ -179,7 +179,7 @@ namespace TheOtherRoles.Objects {
                     DeputyTimer -= Time.deltaTime;
             }
 
-            if (DeputyTimer <= 0 && HasEffect && isEffectActive && buttonText != "Until Suicide") { // Here we have to specify that the Serial Killer button will not be affected
+            if (DeputyTimer <= 0 && HasEffect && isEffectActive && buttonText != HudManagerStartPatch.serialKillerButton.buttonText) { // Here we have to specify that the Serial Killer button will not be affected
                 isEffectActive = false;
                 actionButton.cooldownTimerText.color = Palette.EnabledColor;
                 OnEffectEnds();
