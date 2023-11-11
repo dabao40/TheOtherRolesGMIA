@@ -191,7 +191,7 @@ The Isolator will actually die and its body will be shown during the intro part 
 - Additional Vents
 - Move Vital to Specimen
 
-![images/](Images/polus_mod.png)
+![images/](Images/image.png)
 
 ## Map modification features(AirShip)
 
