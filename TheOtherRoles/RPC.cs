@@ -1120,6 +1120,9 @@ namespace TheOtherRoles
             if (player == Thief.thief) Thief.clearAndReload();
             if (player == Opportunist.opportunist) Opportunist.clearAndReload();
 
+            // Always remove the Madmate
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
+
             // Modifier
             if (!ignoreModifier)
             {
@@ -1133,7 +1136,6 @@ namespace TheOtherRoles
                 if (Vip.vip.Any(x => x.PlayerId == player.PlayerId)) Vip.vip.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Invert.invert.Any(x => x.PlayerId == player.PlayerId)) Invert.invert.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId)) Chameleon.chameleon.RemoveAll(x => x.PlayerId == player.PlayerId);
-                if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId== player.PlayerId);
             }
         }
 

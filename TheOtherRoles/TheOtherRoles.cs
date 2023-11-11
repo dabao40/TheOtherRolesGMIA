@@ -1447,42 +1447,42 @@ namespace TheOtherRoles
                 var selectedInfo = infos[rnd.Next(infos.Count)];
                 switch (selectedInfo) {
                     case SpecialMediumInfo.SheriffSuicide:
-                        msg = "Yikes, that Sheriff shot backfired.";
+                        msg = ModTranslation.getString("mediumSheriffSuicide");
                         break;
                     case SpecialMediumInfo.WarlockSuicide:
-                        msg = "MAYBE I cursed the person next to me and killed myself. Oops.";
+                        msg = ModTranslation.getString("mediumWarlockSuicide");
                         break;
                     case SpecialMediumInfo.ThiefSuicide:
-                        msg = "I tried to steal the gun from their pocket, but they were just happy to see me.";
+                        msg = ModTranslation.getString("mediumThiefSuicide");
                         break;
                     case SpecialMediumInfo.ActiveLoverDies:
-                        msg = "I wanted to get out of this toxic relationship anyways.";
+                        msg = ModTranslation.getString("mediumActiveLoverDies");
                         break;
                     case SpecialMediumInfo.PassiveLoverSuicide:
-                        msg = "The love of my life died, thus with a kiss I die.";
+                        msg = ModTranslation.getString("mediumPassiveLoverSuicide");
                         break;
                     case SpecialMediumInfo.LawyerKilledByClient:
-                        msg = "My client killed me. Do I still get paid?";
+                        msg = ModTranslation.getString("mediumLawyerKilledByClient");
                         break;
                     case SpecialMediumInfo.JackalKillsSidekick:
-                        msg = "First they sidekicked me, then they killed me. At least I don't need to do tasks anymore.";
+                        msg = ModTranslation.getString("mediumJackalKillsSidekick");
                         break;
                     case SpecialMediumInfo.ImpostorTeamkill:
-                        msg = "I guess they confused me for the Spy, is there even one?";
+                        msg = ModTranslation.getString("mediumImpostorTeamKill");
                         break;
                     case SpecialMediumInfo.BodyCleaned:
-                        msg = "Is my dead body some kind of art now or... aaand it's gone.";
+                        msg = ModTranslation.getString("mediumBodyCleaned");
                         break;
                 }
             } else {
                 int randomNumber = rnd.Next(4);
-                string typeOfColor = Helpers.isLighterColor(Medium.target.killerIfExisting.Data.DefaultOutfit.ColorId) ? "lighter" : "darker";
+                string typeOfColor = Helpers.isLighterColor(Medium.target.killerIfExisting.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("mediumSoulPlayerLighter") : ModTranslation.getString("mediumSoulPlayerDarker");
                 float timeSinceDeath = ((float)(Medium.meetingStartTime - Medium.target.timeOfDeath).TotalMilliseconds);
-                
-                if (randomNumber == 0) msg = "If my role hasn't been saved, there's no " + RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true) + " in the game anymore.";
-                else if (randomNumber == 1) msg = "I'm not sure, but I guess a " + typeOfColor + " color killed me.";
-                else if (randomNumber == 2) msg = "If I counted correctly, I died " + Math.Round(timeSinceDeath / 1000) + "s before the next meeting started.";
-                else msg = "It seems like my killer was the " + RoleInfo.GetRolesString(Medium.target.killerIfExisting, false, false, true, includeHidden: true) + ".";
+
+                if (randomNumber == 0) msg = string.Format(ModTranslation.getString("mediumQuestion1"), RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true));
+                else if (randomNumber == 1) msg = string.Format(ModTranslation.getString("mediumQuestion2"), typeOfColor);
+                else if (randomNumber == 2) msg = string.Format(ModTranslation.getString("mediumQuestion3"), Math.Round(timeSinceDeath / 1000));
+                else msg = string.Format(ModTranslation.getString("mediumQuestion4"), RoleInfo.GetRolesString(Medium.target.killerIfExisting, false, false, true, includeHidden: true));
             }
 
             if (rnd.NextDouble() < chanceAdditionalInfo) {
@@ -1524,60 +1524,6 @@ namespace TheOtherRoles
         public static bool revengeExile = false;
 
         public static PlayerControl meetingKiller = null;
-
-        public static void meetingKill(PlayerControl player, PlayerControl killer)
-        {
-            if (NekoKabocha.nekoKabocha != null && player == NekoKabocha.nekoKabocha)
-            {
-                NekoKabocha.meetingKiller = killer;
-            }
-        }
-
-        public static void OnDeath(PlayerControl killer = null)
-        {
-            killer ??= meetingKiller;
-            if (killer != null && !killer.Data.IsDead && NekoKabocha.nekoKabocha != killer)
-            {
-                if ((revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
-                    (revengeNeutral && Helpers.isNeutral(killer)) ||
-                    (revengeImpostor && killer.Data.Role.IsImpostor))
-                {
-                    if (meetingKiller == null)
-                    {
-                        NekoKabocha.nekoKabocha.MurderPlayer(killer, MurderResultFlags.Succeeded);
-                    }
-                    else
-                    {
-                        killer.Exiled();
-                        if (CachedPlayer.LocalPlayer.PlayerControl == killer)
-                            FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(NekoKabocha.nekoKabocha.Data, killer.Data);
-                    }
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                    writer.Write(killer.PlayerId);
-                    writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
-                    writer.Write(NekoKabocha.nekoKabocha.PlayerId);
-                    
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    GameHistory.overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
-                }
-            }
-            else if (killer == null && NekoKabocha.revengeExile)
-            {
-                var candidates = PlayerControl.AllPlayerControls.ToArray().Where(x => x != NekoKabocha.nekoKabocha && !x.Data.IsDead).ToList();
-                int targetID = rnd.Next(0, candidates.Count);
-                var target = candidates[targetID];
-
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NekoKabochaExile, Hazel.SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);                
-                //RPCProcedure.nekoKabochaExile(target.PlayerId);
-
-                GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
-            }
-            meetingKiller = null;
-        }
 
         public static void clearAndReload()
         {
@@ -1933,12 +1879,12 @@ namespace TheOtherRoles
             {
                 if (!Helpers.isNeutral(p) && !p.Data.Role.IsImpostor)
                 {
-                    msg = $"{p.name} is a Crewmate";
+                    msg = string.Format(ModTranslation.getString("divineMessageIsCrew"), p.Data.PlayerName);
                     color = Color.white;
                 }
                 else
                 {
-                    msg = $"{p.name} is not a Crewmate";
+                    msg = string.Format(ModTranslation.getString("divineMessageIsntCrew"), p.Data.PlayerName);
                     color = Palette.ImpostorRed;
                 }
             }
@@ -1947,17 +1893,17 @@ namespace TheOtherRoles
             {
                 if (!Helpers.isNeutral(p) && !p.Data.Role.IsImpostor)
                 {
-                    msg = $"{p.name} is a Crewmate";
+                    msg = string.Format(ModTranslation.getString("divineMessageTeamCrew"), p.Data.PlayerName);
                     color = Color.white;
                 }
                 else if (Helpers.isNeutral(p))
                 {
-                    msg = $"{p.name} is a Neutral";
+                    msg = string.Format(ModTranslation.getString("divineMessageTeamNeutral"), p.Data.PlayerName);
                     color = Color.yellow;
                 }
                 else
                 {
-                    msg = $"{p.name} is an Impostor";
+                    msg = string.Format(ModTranslation.getString("divineMessageTeamImp"), p.Data.PlayerName);
                     color = Palette.ImpostorRed;
                 }
             }

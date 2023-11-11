@@ -696,7 +696,7 @@ namespace TheOtherRoles
                    if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
                },
                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
-               "ADMIN"
+               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
            );
 
             // Hacker Admin Table Charges
@@ -737,7 +737,9 @@ namespace TheOtherRoles
                () => {
                    if (hackerVitalsChargesText != null) hackerVitalsChargesText.text = $"{Hacker.chargesVitals} / {Hacker.toolsNumber}";
                    hackerVitalsButton.actionButton.graphic.sprite = GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? Hacker.getLogSprite() : Hacker.getVitalsSprite();
-                   hackerVitalsButton.actionButton.OverrideText(GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? "DOORLOG" : "VITALS");
+                   hackerVitalsButton.actionButton.OverrideText(GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ?
+                       TranslationController.Instance.GetString(StringNames.DoorlogLabel) :
+                       TranslationController.Instance.GetString(StringNames.VitalsLabel));
                    return Hacker.chargesVitals > 0;
                },
                () => {
@@ -760,7 +762,9 @@ namespace TheOtherRoles
                    }
                },
                false,
-              GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? "DOORLOG" : "VITALS"
+              GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ?
+              TranslationController.Instance.GetString(StringNames.DoorlogLabel) :
+              TranslationController.Instance.GetString(StringNames.VitalsLabel)
            );
 
             // Hacker Vitals Charges
@@ -1372,7 +1376,9 @@ namespace TheOtherRoles
                 () => {
                     if (securityGuardChargesText != null) securityGuardChargesText.text = $"{SecurityGuard.charges} / {SecurityGuard.maxCharges}";
                     securityGuardCamButton.actionButton.graphic.sprite = GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? SecurityGuard.getLogSprite() : SecurityGuard.getCamSprite();
-                    securityGuardCamButton.actionButton.OverrideText(GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? "DOORLOG" : "SECURITY");
+                    securityGuardCamButton.actionButton.OverrideText(GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ?
+                        TranslationController.Instance.GetString(StringNames.SecurityLogsSystem) :
+                        TranslationController.Instance.GetString(StringNames.SecurityCamsSystem));
                     return CachedPlayer.LocalPlayer.PlayerControl.CanMove && SecurityGuard.charges > 0;
                 },
                 () => {
@@ -1394,7 +1400,9 @@ namespace TheOtherRoles
                     CachedPlayer.LocalPlayer.PlayerControl.moveable = true;
                 },
                 false,
-                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ? "DOORLOG" : "SECURITY"
+                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1 ?
+                TranslationController.Instance.GetString(StringNames.SecurityLogsSystem) :
+                TranslationController.Instance.GetString(StringNames.SecurityCamsSystem)
             );
 
             // Security Guard cam button charges
@@ -1805,12 +1813,12 @@ namespace TheOtherRoles
                             PlayerControl killer = Helpers.playerById(item.Item1);
                             PlayerControl target = Helpers.playerById(item.Item2.Item1);
                             string killerTeam = RoleInfo.GetRolesString(killer, useColors: true, showModifier: false, includeHidden: true);
-                            message += $"{target.Data.PlayerName} was killed by {killerTeam} ";
+                            message += string.Format(ModTranslation.getString("sherlockMessage2"), target.Data.PlayerName, killerTeam) + "\n";
                         }
                     }
                     if (message == "")
                     {
-                        message = "No accident happened";
+                        message = ModTranslation.getString("sherlockMessage1");
                     }
                     Sherlock.investigateMessage(message, 7f, Color.white);
                     Sherlock.numUsed += 1;
@@ -1926,7 +1934,9 @@ namespace TheOtherRoles
                 MimicA.getAdminSprite(),
                 CustomButton.ButtonPositions.upperRowCenter,
                 __instance,
-                KeyCode.H
+                KeyCode.H,
+                false,
+                FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
             );
 
             // Ninja Stealth
@@ -2010,7 +2020,7 @@ namespace TheOtherRoles
             //UnityEngine.Object.Destroy(serialKillerButton.actionButton.buttonLabelText);
             //serialKillerButton.actionButton.buttonLabelText = UnityEngine.Object.Instantiate(__instance.AbilityButton.buttonLabelText, serialKillerButton.actionButton.transform);
             serialKillerButton.showButtonText = true;            
-            serialKillerButton.buttonText = "Until Suicide";
+            serialKillerButton.buttonText = ModTranslation.getString("serialKillerSuicideText");
             serialKillerButton.isEffectActive = true;
 
             // Evil Tracker track
@@ -2229,7 +2239,7 @@ namespace TheOtherRoles
                     }
                     else
                     {
-                        fortuneTellerButtons[index].buttonText = "Dead";
+                        fortuneTellerButtons[index].buttonText = ModTranslation.getString("fortuneTellerDead");
                     }
 
                     // アイコンの位置と透明度を変更
@@ -2521,7 +2531,7 @@ namespace TheOtherRoles
                },
                () => { return Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && Mayor.meetingButton; },
                () => {
-                   mayorMeetingButton.actionButton.OverrideText("Emergency ("+ Mayor.remoteMeetingsLeft + ")");
+                   mayorMeetingButton.actionButton.OverrideText(ModTranslation.getString("mayorEmergencyLeftText") + " (" + Mayor.remoteMeetingsLeft + ")");
                    bool sabotageActive = false;
                    foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks.GetFastEnumerator())
                        if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles
@@ -2538,7 +2548,7 @@ namespace TheOtherRoles
                0f,
                () => {},
                false,
-               "Meeting"
+               ModTranslation.getString("mayorEmergencyMeetingText")
            );
 
             // Trapper button
@@ -2780,7 +2790,7 @@ namespace TheOtherRoles
                    if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
                },
                false,
-               "ADMIN"
+               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
             );
 
             hunterArrowButton = new CustomButton(
