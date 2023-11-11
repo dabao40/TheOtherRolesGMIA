@@ -402,7 +402,7 @@ namespace TheOtherRoles.Patches {
             writer.Write(Mayor.voteTwice);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-            meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
+            meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, ModTranslation.getString("mayorDoubleVote") + (Mayor.voteTwice ? Helpers.cs(Color.green, ModTranslation.getString("mayorDoubleVoteOn")) : Helpers.cs(Color.red, ModTranslation.getString("mayorDoubleVoteOff"))));
         }
 
         public static GameObject guesserUI;
@@ -649,7 +649,7 @@ namespace TheOtherRoles.Patches {
                     meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
                 } else if (addMayorButton) {
                     meetingExtraButtonLabel.transform.localScale = new Vector3(meetingExtraButtonLabel.transform.localScale.x * 1.5f, meetingExtraButtonLabel.transform.localScale.x * 1.7f, meetingExtraButtonLabel.transform.localScale.x * 1.7f);
-                    meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, "Double Vote: " + (Mayor.voteTwice ? Helpers.cs(Color.green, "On ") : Helpers.cs(Color.red, "Off")));
+                    meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, ModTranslation.getString("mayorDoubleVote") + (Mayor.voteTwice ? Helpers.cs(Color.green, ModTranslation.getString("mayorDoubleVoteOn")) : Helpers.cs(Color.red, ModTranslation.getString("mayorDoubleVoteOff"))));
                 }
                 PassiveButton passiveButton = meetingExtraButton.GetComponent<PassiveButton>();
                 passiveButton.OnClick.RemoveAllListeners();
@@ -842,11 +842,11 @@ namespace TheOtherRoles.Patches {
                 // Add Portal info into Portalmaker Chat:
                 if (Portalmaker.portalmaker != null && (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker || Helpers.shouldShowGhostInfo()) && !Portalmaker.portalmaker.Data.IsDead) {
                     if (Portal.teleportedPlayers.Count > 0) {
-                        string msg = "Portal Log:\n";
+                        string msg = ModTranslation.getString("portalmakerLog");
                         foreach (var entry in Portal.teleportedPlayers) {
                             float timeBeforeMeeting = ((float)(DateTime.UtcNow - entry.time).TotalMilliseconds) / 1000;
-                            msg += Portalmaker.logShowsTime ? $"{(int)timeBeforeMeeting}s ago: " : "";
-                            msg = msg + $"{entry.name} used the teleporter\n";
+                            msg += Portalmaker.logShowsTime ? string.Format(ModTranslation.getString("portalmakerLogTime"), (int)timeBeforeMeeting) : "";
+                            msg = msg + string.Format(ModTranslation.getString("portalmakerLogName"), entry.name);
                         }
                         FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}");
                     }
@@ -881,7 +881,7 @@ namespace TheOtherRoles.Patches {
                     var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
                     int numberOfTasks = playerTotal - playerCompleted;
                     if (numberOfTasks == 0) {
-                        output = $"Bad alive roles in game: \n \n";
+                        output = ModTranslation.getString("snitchOutput");
                         FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(0.4f, new Action<float>((x) => {
                             if (x == 1f) {
                                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
@@ -890,11 +890,11 @@ namespace TheOtherRoles.Patches {
                                     if (!Snitch.playerRoomMap.ContainsKey(p.PlayerId)) continue;
                                     if (p.Data.IsDead) continue;
                                     var room = Snitch.playerRoomMap[p.PlayerId];
-                                    var roomName = "open fields";
+                                    var roomName = DestroyableSingleton<TranslationController>.Instance.GetString(SystemTypes.Outside);
                                     if (room != byte.MinValue) {
                                         roomName = DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)room);
                                     }
-                                    output += "- " + RoleInfo.GetRolesString(p, false, false, true) + ", was last seen " + roomName + "\n";
+                                    output += "- " + RoleInfo.GetRolesString(p, false, false, true) + ModTranslation.getString("snitchLastSeen") + roomName + "\n";
                                 }
                                 FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Snitch.snitch, $"{output}");
                             }

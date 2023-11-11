@@ -350,7 +350,7 @@ namespace TheOtherRoles.Patches {
             if (roleInfo.isNeutral) {
                 var neutralColor = new Color32(76, 84, 78, 255);
                 __instance.BackgroundBar.material.color = neutralColor;
-                __instance.TeamTitle.text = "Neutral";
+                __instance.TeamTitle.text = ModTranslation.getString("roleIntroNeutral");
                 __instance.TeamTitle.color = neutralColor;
             }
         }
@@ -392,6 +392,7 @@ namespace TheOtherRoles.Patches {
 
                 __instance.RoleBlurbText.text = "";
                 if (roleInfo != null && !(roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0)) {
+                    __instance.YouAreText.color = roleInfo.color;
                     __instance.RoleText.text = roleInfo.name;
                     __instance.RoleText.color = roleInfo.color;
                     __instance.RoleBlurbText.text = roleInfo.introDescription;
@@ -414,7 +415,7 @@ namespace TheOtherRoles.Patches {
                         __instance.RoleBlurbText.text += Helpers.cs(modifierInfo.color, $"\n{modifierInfo.introDescription}");
                     else {
                         PlayerControl otherLover = CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-                        __instance.RoleBlurbText.text += Helpers.cs(Lovers.color, $"\n♥ You are in love with {otherLover?.Data?.PlayerName ?? ""} ♥");
+                        __instance.RoleBlurbText.text += "\n" + Helpers.cs(Lovers.color, String.Format(ModTranslation.getString("loversFlavor"), otherLover?.Data?.PlayerName ?? ""));
                     }
                 }
                 if (Deputy.knowsSheriff && Deputy.deputy != null && Sheriff.sheriff != null) {

@@ -14,13 +14,13 @@ namespace TheOtherRoles.Patches
     public static class ClientOptionsPatch
     {
         private static SelectionBehaviour[] AllOptions = {
-            new SelectionBehaviour("Ghosts See Tasks & Other Info", () => TORMapOptions.ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value = !TheOtherRolesPlugin.GhostsSeeInformation.Value, TheOtherRolesPlugin.GhostsSeeInformation.Value),
-            new SelectionBehaviour("Ghosts Can See Votes", () => TORMapOptions.ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value = !TheOtherRolesPlugin.GhostsSeeVotes.Value, TheOtherRolesPlugin.GhostsSeeVotes.Value),
-            new SelectionBehaviour("Ghosts Can See Roles", () => TORMapOptions.ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value = !TheOtherRolesPlugin.GhostsSeeRoles.Value, TheOtherRolesPlugin.GhostsSeeRoles.Value),
-            new SelectionBehaviour("Ghosts Can Additionally See Modifier", () => TORMapOptions.ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value = !TheOtherRolesPlugin.GhostsSeeModifier.Value, TheOtherRolesPlugin.GhostsSeeModifier.Value),
-            new SelectionBehaviour("Show Role Summary", () => TORMapOptions.showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value = !TheOtherRolesPlugin.ShowRoleSummary.Value, TheOtherRolesPlugin.ShowRoleSummary.Value),
-            new SelectionBehaviour("Show Lighter / Darker", () => TORMapOptions.showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value = !TheOtherRolesPlugin.ShowLighterDarker.Value, TheOtherRolesPlugin.ShowLighterDarker.Value),
-            new SelectionBehaviour("Enable Sound Effects", () => TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value = !TheOtherRolesPlugin.EnableSoundEffects.Value, TheOtherRolesPlugin.EnableSoundEffects.Value),
+            new SelectionBehaviour(ModTranslation.getString("ghostsSeeInfoButton"), () => TORMapOptions.ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value = !TheOtherRolesPlugin.GhostsSeeInformation.Value, TheOtherRolesPlugin.GhostsSeeInformation.Value),
+            new SelectionBehaviour(ModTranslation.getString("ghostsSeeVotesButton"), () => TORMapOptions.ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value = !TheOtherRolesPlugin.GhostsSeeVotes.Value, TheOtherRolesPlugin.GhostsSeeVotes.Value),
+            new SelectionBehaviour(ModTranslation.getString("ghostsSeeRolesButton"), () => TORMapOptions.ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value = !TheOtherRolesPlugin.GhostsSeeRoles.Value, TheOtherRolesPlugin.GhostsSeeRoles.Value),
+            new SelectionBehaviour(ModTranslation.getString("ghostsSeeModifiersButton"), () => TORMapOptions.ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value = !TheOtherRolesPlugin.GhostsSeeModifier.Value, TheOtherRolesPlugin.GhostsSeeModifier.Value),
+            new SelectionBehaviour(ModTranslation.getString("showRoleSummaryButton"), () => TORMapOptions.showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value = !TheOtherRolesPlugin.ShowRoleSummary.Value, TheOtherRolesPlugin.ShowRoleSummary.Value),
+            new SelectionBehaviour(ModTranslation.getString("showLighterDarker"), () => TORMapOptions.showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value = !TheOtherRolesPlugin.ShowLighterDarker.Value, TheOtherRolesPlugin.ShowLighterDarker.Value),
+            new SelectionBehaviour(ModTranslation.getString("enableSoundEffects"), () => TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value = !TheOtherRolesPlugin.EnableSoundEffects.Value, TheOtherRolesPlugin.EnableSoundEffects.Value),
         };
         
         private static GameObject popUp;
@@ -102,7 +102,7 @@ namespace TheOtherRoles.Patches
             moreOptions.transform.localScale = new Vector3(0.66f, 1, 1);
 
             moreOptions.gameObject.SetActive(true);
-            moreOptions.Text.text = "Mod Options...";
+            moreOptions.Text.text = ModTranslation.getString("modOptionsText");
             moreOptions.Text.transform.localScale = new Vector3(1 / 0.66f, 1, 1);
             var moreOptionsButton = moreOptions.GetComponent<PassiveButton>();
             moreOptionsButton.OnClick = new ButtonClickedEvent();
@@ -140,7 +140,7 @@ namespace TheOtherRoles.Patches
             var title = Object.Instantiate(titleText, popUp.transform);
             title.GetComponent<RectTransform>().localPosition = Vector3.up * 2.3f;
             title.gameObject.SetActive(true);
-            title.text = "More Options...";
+            title.text = ModTranslation.getString("moreOptionsText");
             title.name = "TitleText";
         }
 

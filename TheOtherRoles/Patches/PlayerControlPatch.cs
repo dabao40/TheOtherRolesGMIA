@@ -808,8 +808,8 @@ namespace TheOtherRoles.Patches {
                     Snitch.text.transform.localPosition += new Vector3(0f, 1.8f, -69f);
                     Snitch.text.gameObject.SetActive(true);
                 } else {
-                    Snitch.text.text = $"Snitch is alive: " + playerCompleted + "/" + playerTotal;
-                    if (snitchIsDead) Snitch.text.text = $"Snitch is dead!";
+                    Snitch.text.text = ModTranslation.getString("snitchAlive") + playerCompleted + "/" + playerTotal;
+                    if (snitchIsDead) Snitch.text.text = ModTranslation.getString("snitchDead");
                 }
             }
 
@@ -1530,15 +1530,15 @@ namespace TheOtherRoles.Patches {
                     string msg = "";
 
                     if (isMedicReport) {
-                        msg = $"Body Report: Killed {Math.Round(timeSinceDeath / 1000)}s ago!";
+                        msg = string.Format(ModTranslation.getString("medicReport"), Math.Round(timeSinceDeath / 1000));
                     } else if (isDetectiveReport) {
                         if (timeSinceDeath < Detective.reportNameDuration * 1000) {
-                            msg =  $"Body Report: The killer appears to be {deadPlayer.killerIfExisting.Data.PlayerName}!";
+                            msg = string.Format(ModTranslation.getString("detectiveReportName"), deadPlayer.killerIfExisting.Data.PlayerName);
                         } else if (timeSinceDeath < Detective.reportColorDuration * 1000) {
-                            var typeOfColor = Helpers.isLighterColor(deadPlayer.killerIfExisting.Data.DefaultOutfit.ColorId) ? "lighter" : "darker";
-                            msg =  $"Body Report: The killer appears to be a {typeOfColor} color!";
+                            var typeOfColor = Helpers.isLighterColor(deadPlayer.killerIfExisting.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("detectiveColorLight") : ModTranslation.getString("detectiveColorDark");
+                            msg = string.Format(ModTranslation.getString("detectiveReportColor"), typeOfColor);
                         } else {
-                            msg = $"Body Report: The corpse is too old to gain information from!";
+                            msg = ModTranslation.getString("detectiveReportNone");
                         }
                     }
 
