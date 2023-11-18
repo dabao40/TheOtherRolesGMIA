@@ -204,6 +204,20 @@ namespace TheOtherRoles.Patches {
                     }
                 }
             }
+            if (localPlayer == CreatedMadmate.createdMadmate)
+            {
+                setPlayerNameColor(CachedPlayer.LocalPlayer.PlayerControl, Madmate.color);
+                if (CreatedMadmate.tasksComplete(localPlayer))
+                {
+                    foreach (PlayerControl p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                    {
+                        if (p == Spy.spy || p.Data.Role.IsImpostor || (p == Jackal.jackal && Jackal.wasTeamRed) || (p == Sidekick.sidekick && Sidekick.wasTeamRed))
+                        {
+                            setPlayerNameColor(p, Palette.ImpostorRed);
+                        }
+                    }
+                }
+            }
             // Crewmate roles with no changes: Mini
             // Impostor roles with no changes: Morphling, Camouflager, Vampire, Godfather, Eraser, Janitor, Cleaner, Warlock, BountyHunter,  Witch and Mafioso
         }
@@ -368,8 +382,9 @@ namespace TheOtherRoles.Patches {
             if (Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0 || MeetingHud.Instance || CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() == false) __instance.ImpostorVentButton.Hide();
             else if (CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
 
-            if (Madmate.madmate.Any(x => CachedPlayer.LocalPlayer.PlayerId == x.PlayerId) && Madmate.canVent && CachedPlayer.LocalPlayer.PlayerControl != Engineer.engineer) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.upperRowLeft;
+            if (Madmate.madmate.Any(x => CachedPlayer.LocalPlayer.PlayerId == x.PlayerId) && Madmate.canVent && CachedPlayer.LocalPlayer.PlayerControl != Engineer.engineer) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.upperRowFarLeft;
             else if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId) && Madmate.canVent && CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
+            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
             if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && Ninja.canUseVents == false) __instance.ImpostorVentButton.Hide();
             if (Undertaker.undertaker != null && Undertaker.undertaker == CachedPlayer.LocalPlayer.PlayerControl && Undertaker.DraggedBody != null && Undertaker.disableVent) __instance.ImpostorVentButton.Hide();
         }

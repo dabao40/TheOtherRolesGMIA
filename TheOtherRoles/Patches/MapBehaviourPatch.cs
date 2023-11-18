@@ -18,6 +18,26 @@ namespace TheOtherRoles.Patches {
 
         public static SpriteRenderer targetHerePoint;
         public static Dictionary<byte, SpriteRenderer> impostorHerePoint;
+        public static Sprite doorClosedSprite;
+        public static Dictionary<string, SpriteRenderer> doorMarks;
+        public static Il2CppArrayBase<PlainDoor> plainDoors = null;
+
+        public static void reset()
+        {
+            if (doorMarks != null)
+            {
+                foreach (var mark in doorMarks.Values)
+                {
+                    UnityEngine.Object.Destroy(mark.gameObject);
+                }
+                doorMarks.Clear();
+                doorMarks = null;
+            }
+            if (plainDoors != null)
+            {
+                plainDoors = null;
+            }
+        }
 
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 		static void Postfix(MapBehaviour __instance) {
@@ -83,8 +103,50 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            if (EvilHacker.canSeeDoorStatus && (CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker || EvilHacker.isInherited()))
+            {
+                //if (!EvilHacker.canSeeDoorStatus) return;
+                if (doorClosedSprite == null)
+                {
+                    doorClosedSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Cross.png", 500f);
+                }
+                if (doorMarks == null) doorMarks = new();
+                plainDoors = GameObject.FindObjectsOfType<PlainDoor>();
+                foreach (var door in plainDoors)
+                {
+                    Vector3 pos = door.gameObject.transform.position / MapUtilities.CachedShipStatus.MapScale;
+                    pos.z = -10f;
+                    String key = $"{pos.x},{pos.y}";
+                    SpriteRenderer mark;
+                    if (doorMarks.ContainsKey(key))
+                    {
+                        mark = doorMarks[key];
+                        if (mark == null) mark = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                    }
+                    else
+                    {
+                        mark = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                        doorMarks.Add(key, mark);
+                    }
+                    if (mark != null)
+                    {
+                        if (!door.Open)
+                        {
+                            mark.gameObject.SetActive(true);
+                            mark.sprite = doorClosedSprite;
+                            PlayerMaterial.SetColors(0, mark);
+                            mark.transform.localPosition = pos;
+                            mark.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            mark.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
 
-			if (Snitch.snitch != null && CachedPlayer.LocalPlayer.PlayerId == Snitch.snitch.PlayerId && !Snitch.snitch.Data.IsDead && Snitch.mode != Snitch.Mode.Chat) {
+            if (Snitch.snitch != null && CachedPlayer.LocalPlayer.PlayerId == Snitch.snitch.PlayerId && !Snitch.snitch.Data.IsDead && Snitch.mode != Snitch.Mode.Chat) {
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
                 int numberOfTasks = playerTotal - playerCompleted;
 

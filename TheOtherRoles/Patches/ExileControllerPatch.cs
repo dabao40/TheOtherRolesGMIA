@@ -498,10 +498,10 @@ namespace TheOtherRoles.Patches {
                     }
                     if (id != StringNames.ImpostorsRemainP && id != StringNames.ImpostorsRemainS && Yasuna.specialVoteTargetPlayerId != byte.MaxValue)
                     {
-                        if (CustomOptionHolder.yasunaSpecificMessageMode.getBool()) __result += " (Yasuna)";
+                        if (CustomOptionHolder.yasunaSpecificMessageMode.getBool()) __result += ModTranslation.getString("yasunaSpecialIndicator");
                         Tiebreaker.isTiebreak = false;
                     }
-                    if (Tiebreaker.isTiebreak) __result += " (Tiebreaker)";
+                    if (Tiebreaker.isTiebreak) __result += ModTranslation.getString("tiebreakerSpecialIndicator");
                     Tiebreaker.isTiebreak = false;
                 }
             } catch {

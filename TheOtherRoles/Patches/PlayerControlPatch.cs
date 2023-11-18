@@ -709,7 +709,7 @@ namespace TheOtherRoles.Patches {
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
                             //tabText.SetText($"Tasks {taskInfo}");
-                            tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? "Ex Tasks" : TranslationController.Instance.GetString(StringNames.Tasks), isTaskMasterExTask ? exTaskInfo : taskInfo));
+                            tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? ModTranslation.getString("taskMasterExTasks") : TranslationController.Instance.GetString(StringNames.Tasks), isTaskMasterExTask ? exTaskInfo : taskInfo));
                         }
                         //meetingInfoText = $"{roleNames} {taskInfo}".Trim();
                         if (!isTaskMasterExTask)
@@ -965,6 +965,13 @@ namespace TheOtherRoles.Patches {
             else MimicA.mimicA.setDefaultLook();
         }*/
 
+        static void evilHackerSetTarget()
+        {
+            if (EvilHacker.evilHacker == null || EvilHacker.evilHacker != CachedPlayer.LocalPlayer.PlayerControl) return;
+            EvilHacker.currentTarget = setTarget(true);
+            setPlayerOutline(EvilHacker.currentTarget, EvilHacker.color);
+        }
+
         public static void lawyerUpdate() {
             if (Lawyer.lawyer == null || Lawyer.lawyer != CachedPlayer.LocalPlayer.PlayerControl) return;
 
@@ -1187,6 +1194,29 @@ namespace TheOtherRoles.Patches {
                 !ExileController.Instance)
                 {
                     if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.canSabotage)
+                    {
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + FastDestroyableSingleton<HudManager>.Instance.UseButton.transform.localPosition;
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Show();
+                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
+
+        static void createdMadmateUpdate(PlayerControl player)
+        {
+            if (CreatedMadmate.createdMadmate == null || CachedPlayer.LocalPlayer.PlayerControl != CreatedMadmate.createdMadmate) return;
+            if (player.AmOwner &&
+                !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                !MeetingHud.Instance &&
+                !ExileController.Instance)
+            {
+                FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Hide();
+                if (!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                !MeetingHud.Instance &&
+                !ExileController.Instance)
+                {
+                    if (CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
                     {
                         FastDestroyableSingleton<HudManager>.Instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + FastDestroyableSingleton<HudManager>.Instance.UseButton.transform.localPosition;
                         FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Show();
@@ -1443,6 +1473,8 @@ namespace TheOtherRoles.Patches {
                 //serialKillerUpdate();
                 // Evil Tracker
                 evilTrackerUpdate();
+                // Evil Hacker
+                evilHackerSetTarget();
                 // Undertaker
                 UndertakerSetTarget();
                 UndertakerCanDropTarget();
@@ -1453,6 +1485,7 @@ namespace TheOtherRoles.Patches {
                 MimicA.arrowUpdate();
                 // Madmate
                 madmateUpdate(__instance);
+                createdMadmateUpdate(__instance);
                 //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
@@ -1591,7 +1624,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId))
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate)
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1896,7 +1929,7 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId))
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate)
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile

@@ -12,19 +12,11 @@ namespace TheOtherRoles.Patches {
     public static class CredentialsPatch {
         public static string fullCredentialsVersion = 
 $@"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays>0 ? "-BETA": "")}";
-public static string fullCredentials =
-$@"<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>
-<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mallöris</color> & <color=#FCCE03FF>Gendelo</color>
-Design by <color=#FCCE03FF>Bavari</color>
-Rebuild by <color=#FCCE03FF>Imp11</color></size>";
+public static string fullCredentials = ModTranslation.getString("fullCredentials");
 
-    public static string mainMenuCredentials = 
-$@"Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mallöris</color> & <color=#FCCE03FF>Gendelo</color>
-Design by <color=#FCCE03FF>Bavari</color>
-Rebuild by <color=#FCCE03FF>Imp11</color>";
+    public static string mainMenuCredentials = ModTranslation.getString("mainMenuCredentials");
 
-        public static string contributorsCredentials =
-$@"<size=60%> <color=#FCCE03FF>Special thanks to K3ndo & Smeggy</color></size>";
+        public static string contributorsCredentials = ModTranslation.getString("contributorsCredentials");
 
         [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
         internal static class PingTrackerPatch

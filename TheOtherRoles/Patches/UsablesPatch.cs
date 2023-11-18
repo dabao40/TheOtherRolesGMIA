@@ -113,7 +113,7 @@ namespace TheOtherRoles.Patches {
             bool canUse;
             bool couldUse;
             __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
-            bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
+            bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy && !Madmate.madmate.Contains(CachedPlayer.LocalPlayer.PlayerControl) && CachedPlayer.LocalPlayer.PlayerControl != CreatedMadmate.createdMadmate; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
             bool isEnter = !CachedPlayer.LocalPlayer.PlayerControl.inVent;
@@ -222,6 +222,22 @@ namespace TheOtherRoles.Patches {
         }
     }
 
+    [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
+    public static class SabotageButtonDoClickPatch
+    {
+        public static bool Prefix(SabotageButton __instance)
+        {
+            // The sabotage button behaves just fine if it's a regular impostor
+            if (CachedPlayer.LocalPlayer.PlayerControl.Data.Role.TeamType == RoleTeamTypes.Impostor) return true;
+
+            DestroyableSingleton<HudManager>.Instance.ToggleMapVisible(new MapOptions
+            {
+                Mode = MapOptions.Modes.Sabotage
+            });
+            return false;
+        }
+    }
+
     [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
     class ReportButtonDoClickPatch {
         public static bool Prefix(ReportButton __instance) {
@@ -289,6 +305,10 @@ namespace TheOtherRoles.Patches {
             canUse = couldUse = false;
             if (Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl)
                 return !__instance.TaskTypes.Any(x => x == TaskTypes.FixLights || x == TaskTypes.FixComms);
+            if (Madmate.madmate != null && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId) && __instance.AllowImpostor)
+                return !__instance.TaskTypes.Any(x => (!Madmate.canFixComm && x == TaskTypes.FixComms) || x == TaskTypes.FixLights);
+            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl && __instance.AllowImpostor)
+                return !__instance.TaskTypes.Any(x => (!CreatedMadmate.canFixComm && x == TaskTypes.FixComms) || x == TaskTypes.FixLights);
             if (__instance.AllowImpostor) return true;
             if (!Helpers.hasFakeTasks(pc.Object)) return true;
             __result = float.MaxValue;
@@ -300,7 +320,9 @@ namespace TheOtherRoles.Patches {
     class CommsMinigameBeginPatch {
         static void Postfix(TuneRadioMinigame __instance) {
             // Block Swapper from fixing comms. Still looking for a better way to do this, but deleting the task doesn't seem like a viable option since then the camera, admin table, ... work while comms are out
-            if (Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl) {
+            if ((Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl) ||
+                (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId) && !Madmate.canFixComm) ||
+                (CreatedMadmate.createdMadmate != null && CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && !CreatedMadmate.canFixComm)) {
                 __instance.Close();
             }
         }
@@ -310,7 +332,9 @@ namespace TheOtherRoles.Patches {
     class LightsMinigameBeginPatch {
         static void Postfix(SwitchMinigame __instance) {
             // Block Swapper from fixing lights. One could also just delete the PlayerTask, but I wanted to do it the same way as with coms for now.
-            if (Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl) {
+            if ((Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl) ||
+                Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId) || 
+                (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl)) {
                 __instance.Close();
             }
         }
@@ -521,7 +545,7 @@ namespace TheOtherRoles.Patches {
                             }
 
                             // Set up the Mimic(Assistant)
-                            else if (CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead)
+                            else if ((CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead) || ((CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker || EvilHacker.isInherited()) && EvilHacker.canHasBetterAdmin))
                             {
                                 renderer.material = newMat;
                                 var color = colors[i];

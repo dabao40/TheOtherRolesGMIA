@@ -88,7 +88,7 @@ namespace TheOtherRoles.Patches {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
-                bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId);
+                bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId) || playerControl.PlayerId == CreatedMadmate.createdMadmate?.PlayerId;
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
                 if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
                     killCount = null;
@@ -149,9 +149,9 @@ namespace TheOtherRoles.Patches {
             if (crewmateWin)
             {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
-                foreach (var p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (!p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && !Madmate.madmate.Contains(p))
+                    if (!p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && !Madmate.madmate.Contains(p) && CreatedMadmate.createdMadmate != p)
                     {
                         WinningPlayerData wpd = new(p.Data);
                         TempData.winners.Add(wpd);
@@ -166,7 +166,7 @@ namespace TheOtherRoles.Patches {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (p.Data.Role.IsImpostor || Madmate.madmate.Contains(p))
+                    if (p.Data.Role.IsImpostor || Madmate.madmate.Contains(p) || p == CreatedMadmate.createdMadmate)
                     {
                         WinningPlayerData wpd = new(p.Data);
                         TempData.winners.Add(wpd);
@@ -453,15 +453,15 @@ namespace TheOtherRoles.Patches {
 
             foreach (WinCondition cond in AdditionalTempData.additionalWinConditions) {
                 if (cond == WinCondition.AdditionalLawyerBonusWin) {
-                    textRenderer.text += $"\n{Helpers.cs(Lawyer.color, "The Lawyer wins with the client")}";
+                    textRenderer.text += $"\n{Helpers.cs(Lawyer.color, ModTranslation.getString("lawyerExtraBonus"))}";
                 } else if (cond == WinCondition.AdditionalAlivePursuerWin) {
-                    textRenderer.text += $"\n{Helpers.cs(Pursuer.color, "The Pursuer survived")}";
+                    textRenderer.text += $"\n{Helpers.cs(Pursuer.color, ModTranslation.getString("pursuerExtraBonus"))}";
                 }
                 else if (cond == WinCondition.AdditionalLawyerStolenWin)
                 {
-                    textRenderer.text += $"\n{Helpers.cs(Lawyer.color, "The Lawyer stole the win from the client")}";
+                    textRenderer.text += $"\n{Helpers.cs(Lawyer.color, ModTranslation.getString("lawyerExtraStolen"))}";
                 }
-            }            
+            }
 
             if (TORMapOptions.showRoleSummary || HideNSeek.isHideNSeekGM) {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
