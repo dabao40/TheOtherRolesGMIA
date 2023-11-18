@@ -72,6 +72,8 @@ namespace TheOtherRoles
         public static CustomButton bomberAReleaseBombButton;
         public static CustomButton bomberBPlantBombButton;
         public static CustomButton bomberBReleaseBombButton;
+        public static CustomButton evilHackerButton;
+        public static CustomButton evilHackerCreatesMadmateButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -160,6 +162,8 @@ namespace TheOtherRoles
             bomberBPlantBombButton.MaxTimer = BomberA.cooldown;
             bomberAReleaseBombButton.MaxTimer = 0f;
             bomberBReleaseBombButton.MaxTimer = 0f;
+            evilHackerButton.MaxTimer = 0f;
+            evilHackerCreatesMadmateButton.MaxTimer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -419,6 +423,7 @@ namespace TheOtherRoles
                             (Sheriff.spyCanDieToSheriff && Spy.spy == Sheriff.currentTarget) ||
                             (Sheriff.canKillNeutrals && Helpers.isNeutral(Sheriff.currentTarget)) ||
                             (Jackal.jackal == Sheriff.currentTarget || Sidekick.sidekick == Sheriff.currentTarget) ||
+                            (CreatedMadmate.createdMadmate == Sheriff.currentTarget && CreatedMadmate.canDieToSheriff) ||
                             (Madmate.canDieToSheriff && Madmate.madmate.Any(x => x.PlayerId == Sheriff.currentTarget.PlayerId))) &&
                             !Madmate.madmate.Any(y => y.PlayerId == Sheriff.sheriff.PlayerId)) 
                         {
@@ -1097,7 +1102,34 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.Q
             );
-            
+
+            // EvilHacker creates madmate button
+            evilHackerCreatesMadmateButton = new CustomButton(
+                () =>
+                {
+                    /*
+                     * creates madmate
+                     */
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EvilHackerCreatesMadmate, Hazel.SendOption.Reliable, -1);
+                    writer.Write(EvilHacker.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.evilHackerCreatesMadmate(EvilHacker.currentTarget.PlayerId);
+                },
+                () =>
+                {
+                    return EvilHacker.evilHacker != null &&
+                      EvilHacker.evilHacker == CachedPlayer.LocalPlayer.PlayerControl &&
+                      EvilHacker.canCreateMadmate &&
+                      !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+                },
+                () => { return EvilHacker.currentTarget && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { },
+                EvilHacker.getMadmateButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowCenter,
+                __instance,
+                KeyCode.F
+            );
+
             // Sidekick Kill
             sidekickKillButton = new CustomButton(
                 () => {
@@ -2075,6 +2107,32 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.lowerRowCenter,
                 __instance,
                 KeyCode.F
+            );
+
+            // EvilHacker button
+            evilHackerButton = new CustomButton(
+                () => {
+                    CachedPlayer.LocalPlayer.PlayerControl.NetTransform.Halt();
+                    if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled)
+                    {
+                        HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
+                        __instance.InitMap();
+                        MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: true);
+                    }
+                },
+                () => {
+                    return EvilHacker.evilHacker != null &&
+                      EvilHacker.evilHacker == CachedPlayer.LocalPlayer.PlayerControl &&
+                      !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { },
+                EvilHacker.getButtonSprite(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.H,
+                false,
+                FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
             );
 
             // Medium button

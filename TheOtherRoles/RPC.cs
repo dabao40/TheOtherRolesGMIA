@@ -21,6 +21,7 @@ using MonoMod.Cil;
 using MS.Internal.Xml.XPath;
 using static UnityEngine.GraphicsBuffer;
 using static Rewired.Utils.Classes.Utility.ObjectInstanceTracker;
+using static HarmonyLib.InlineSignature;
 
 namespace TheOtherRoles
 {
@@ -86,6 +87,7 @@ namespace TheOtherRoles
         MimicA,
         BomberA,
         BomberB,
+        EvilHacker,
         Undertaker,
         Opportunist,
         Madmate,
@@ -121,6 +123,7 @@ namespace TheOtherRoles
         UncheckedMurderPlayer,
         UncheckedCmdReportDeadBody,
         UncheckedExilePlayer,
+        UncheckedSetTasks,
         DynamicMapOption,
         SetGameStarting,
         ShareGamemode,
@@ -204,7 +207,8 @@ namespace TheOtherRoles
         TaskMasterUpdateExTasks,
         PlantBomb,
         ReleaseBomb,
-        BomberKill
+        BomberKill,
+        EvilHackerCreatesMadmate
     }
 
     public static class RPCProcedure {
@@ -220,6 +224,7 @@ namespace TheOtherRoles
             SpecimenVital.clearAndReload();
             AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
+            MapBehaviourPatch.reset();
             //Trap.clearTraps();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
@@ -373,6 +378,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.EvilTracker:
                         EvilTracker.evilTracker = player;
+                        break;
+                    case RoleId.EvilHacker:
+                        EvilHacker.evilHacker = player;
                         break;
                     case RoleId.Jackal:
                         Jackal.jackal = player;
@@ -569,6 +577,14 @@ namespace TheOtherRoles
             if (target != null) target.Exiled();
         }
 
+        public static void uncheckedSetTasks(byte playerId, byte[] taskTypeIds)
+        {
+            var player = Helpers.playerById(playerId);
+            player.clearAllTasks();
+
+            GameData.Instance.SetTasks(playerId, taskTypeIds);
+        }
+
         public static void dynamicMapOption(byte mapId) {
            GameOptionsManager.Instance.currentNormalGameOptions.MapId = mapId;
         }
@@ -672,7 +688,7 @@ namespace TheOtherRoles
             if (!Shifter.isNeutral) Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)))
+            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate))
             {
                 oldShifter.Exiled();
                 GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
@@ -817,6 +833,7 @@ namespace TheOtherRoles
             if (player == Assassin.assassin) Assassin.assassin = oldShifter;
             if (player == SerialKiller.serialKiller) SerialKiller.serialKiller = oldShifter;
             if (player == EvilTracker.evilTracker) EvilTracker.evilTracker = oldShifter;
+            if (player == EvilHacker.evilHacker) EvilHacker.evilHacker = oldShifter;
             if (player == Witch.witch) Witch.witch = oldShifter;
             if (player == Camouflager.camouflager) Camouflager.camouflager = oldShifter;
             if (player == Guesser.evilGuesser) Guesser.evilGuesser = oldShifter;
@@ -824,6 +841,7 @@ namespace TheOtherRoles
             if (player == Warlock.warlock) Warlock.warlock = oldShifter;
             if (player == BountyHunter.bountyHunter) BountyHunter.bountyHunter = oldShifter;
             if (player == Vampire.vampire) Vampire.vampire = oldShifter;
+            if (player == CreatedMadmate.createdMadmate) CreatedMadmate.createdMadmate = oldShifter;
             if (player == MimicK.mimicK)
             {
                 MimicK.mimicK = oldShifter;
@@ -943,6 +961,39 @@ namespace TheOtherRoles
                     Tracker.tracked = player;
         }
 
+        public static void evilHackerCreatesMadmate(byte targetId)
+        {
+            PlayerControl player = Helpers.playerById(targetId);
+            if (!EvilHacker.canCreateMadmateFromJackal && player == Jackal.jackal)
+            {
+                EvilHacker.fakeMadmate = player;
+            }
+            else
+            {
+                // Jackalバグ対応
+                List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
+
+                // タスクがないプレイヤーがMadmateになった場合はショートタスクを必要数割り当てる
+                if (Helpers.hasFakeTasks(player))
+                {
+                    if (CreatedMadmate.hasTasks)
+                    {
+                        Helpers.clearAllTasks(player);
+                        player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
+                    }
+                }
+                erasePlayerRoles(player.PlayerId, true, true);
+
+                // Jackalバグ対応
+                Jackal.formerJackals = tmpFormerJackals;
+
+                CreatedMadmate.createdMadmate = player;
+                if (player.PlayerId == CachedPlayer.LocalPlayer.PlayerId) CachedPlayer.LocalPlayer.PlayerControl.moveable = true;
+            }
+            EvilHacker.canCreateMadmate = false;
+            return;
+        }
+
         // Hmm... Lots of bugs huh?
         public static void fortuneTellerUsedDivine(byte fortuneTellerId, byte targetId)
         {
@@ -954,7 +1005,7 @@ namespace TheOtherRoles
             // インポスターの場合は占い師の位置に矢印を表示
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
-                FortuneTeller.fortuneTellerMessage("Someone Was Just Divined", 7f, Color.white);
+                FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
                 FortuneTeller.setDivinedFlag(fortuneTeller, true);
             }
 
@@ -1044,9 +1095,9 @@ namespace TheOtherRoles
             return;
         }
         
-        public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true) {
+        public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false) {
             PlayerControl player = Helpers.playerById(playerId);
-            if (player == null || !player.canBeErased()) return;
+            if (player == null || (!player.canBeErased() && !isCreatedMadmate)) return;
 
             // Crewmate roles
             if (player == Mayor.mayor) Mayor.clearAndReload();
@@ -1073,6 +1124,7 @@ namespace TheOtherRoles
             if (player == Veteran.veteran) Veteran.clearAndReload();
             if (player == Sherlock.sherlock) Sherlock.clearAndReload();
             if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
+            if (player == CreatedMadmate.createdMadmate) CreatedMadmate.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -1097,6 +1149,7 @@ namespace TheOtherRoles
             if (player == MimicA.mimicA) MimicA.clearAndReload();
             if (player == BomberA.bomberA) BomberA.clearAndReload();
             if (player == BomberB.bomberB) BomberB.clearAndReload();
+            if (player == EvilHacker.evilHacker) EvilHacker.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -1225,7 +1278,7 @@ namespace TheOtherRoles
             Trickster.lightsOutTimer = Trickster.lightsOutDuration;
             // If the local player is impostor indicate lights out
             if(Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId))) {
-                new CustomMessage("Lights are out", Trickster.lightsOutDuration);
+                new CustomMessage(ModTranslation.getString("tricksterLightsOutText"), Trickster.lightsOutDuration);
             }
         }
 
@@ -1607,7 +1660,7 @@ namespace TheOtherRoles
             PlayerControl guessedTarget = Helpers.playerById(guessedTargetId);
             if (CachedPlayer.LocalPlayer.Data.IsDead && guessedTarget != null && guesser != null) {
                 RoleInfo roleInfo = RoleInfo.allRoleInfos.FirstOrDefault(x => (byte)x.roleId == guessedRoleId);
-                string msg = $"{guesser.Data.PlayerName} guessed the role {roleInfo?.name ?? ""} for {guessedTarget.Data.PlayerName}!";
+                string msg = string.Format(ModTranslation.getString("guesserGuessChat"), guesser.Data.PlayerName, roleInfo?.name ?? "", guessedTarget.Data.PlayerName);
                 if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(guesser, msg);
                 //if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -1616,7 +1669,7 @@ namespace TheOtherRoles
             if (!CachedPlayer.LocalPlayer.Data.IsDead && (CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher || CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher) && guessedTarget != null && guesser != null && CustomOptionHolder.watcherSeeGuesses.getBool())
             {
                 RoleInfo roleInfo = RoleInfo.allRoleInfos.FirstOrDefault(x => (byte)x.roleId == guessedRoleId);
-                string msg = $"The Guesser guessed the role {roleInfo?.name ?? ""} for {guessedTarget.Data.PlayerName}!";
+                string msg = string.Format(ModTranslation.getString("watcherGuessChat"), roleInfo?.name ?? "", guessedTarget.Data.PlayerName);
                 if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
                 {
                     if (CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher)
@@ -1691,6 +1744,7 @@ namespace TheOtherRoles
             if (target == SerialKiller.serialKiller) SerialKiller.serialKiller = thief;
             if (target == Swapper.swapper && target.Data.Role.IsImpostor) Swapper.swapper = thief;
             if (target == Undertaker.undertaker) Undertaker.undertaker = thief;
+            if (target == EvilHacker.evilHacker) EvilHacker.evilHacker = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -1923,6 +1977,9 @@ namespace TheOtherRoles
                     byte reportTarget = reader.ReadByte();
                     RPCProcedure.uncheckedCmdReportDeadBody(reportSource, reportTarget);
                     break;
+                case (byte)CustomRPC.UncheckedSetTasks:
+                    RPCProcedure.uncheckedSetTasks(reader.ReadByte(), reader.ReadBytesAndSize());
+                    break;
                 case (byte)CustomRPC.DynamicMapOption:
                     byte mapId = reader.ReadByte();
                     RPCProcedure.dynamicMapOption(mapId);
@@ -2042,6 +2099,9 @@ namespace TheOtherRoles
                     byte fId = reader.ReadByte();
                     byte tId = reader.ReadByte();
                     RPCProcedure.fortuneTellerUsedDivine(fId, tId);
+                    break;
+                case (byte)CustomRPC.EvilHackerCreatesMadmate:
+                    RPCProcedure.evilHackerCreatesMadmate(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.VeteranAlert:
                     RPCProcedure.veteranAlert();

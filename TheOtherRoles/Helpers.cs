@@ -187,7 +187,7 @@ namespace TheOtherRoles {
                 player.myTasks.Insert(0, task);
             }
 
-            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate)
             {
                 var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
@@ -224,7 +224,8 @@ namespace TheOtherRoles {
 
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player)
-                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks));
+                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks));
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -288,6 +289,50 @@ namespace TheOtherRoles {
                 }
             }
             return result;
+        }
+
+        public static List<byte> generateTasks(int numCommon, int numShort, int numLong)
+        {
+            if (numCommon + numShort + numLong <= 0)
+            {
+                numShort = 1;
+            }
+
+            var tasks = new Il2CppSystem.Collections.Generic.List<byte>();
+            var hashSet = new Il2CppSystem.Collections.Generic.HashSet<TaskTypes>();
+
+            var commonTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+            foreach (var task in MapUtilities.CachedShipStatus.CommonTasks.OrderBy(x => rnd.Next())) commonTasks.Add(task);
+
+            var shortTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+            foreach (var task in MapUtilities.CachedShipStatus.ShortTasks.OrderBy(x => rnd.Next())) shortTasks.Add(task);
+
+            var longTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+            foreach (var task in MapUtilities.CachedShipStatus.LongTasks.OrderBy(x => rnd.Next())) longTasks.Add(task);
+
+            int start = 0;
+            MapUtilities.CachedShipStatus.AddTasksFromList(ref start, numCommon, tasks, hashSet, commonTasks);
+
+            start = 0;
+            MapUtilities.CachedShipStatus.AddTasksFromList(ref start, numShort, tasks, hashSet, shortTasks);
+
+            start = 0;
+            MapUtilities.CachedShipStatus.AddTasksFromList(ref start, numLong, tasks, hashSet, longTasks);
+
+            return tasks.ToArray().ToList();
+        }
+
+        public static void generateAndAssignTasks(this PlayerControl player, int numCommon, int numShort, int numLong)
+        {
+            if (player == null) return;
+
+            List<byte> taskTypeIds = generateTasks(numCommon, numShort, numLong);
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedSetTasks, Hazel.SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            writer.WriteBytesAndSize(taskTypeIds.ToArray());
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.uncheckedSetTasks(player.PlayerId, taskTypeIds.ToArray());
         }
 
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
@@ -413,6 +458,8 @@ namespace TheOtherRoles {
             else if (Vulture.canUseVents && Vulture.vulture != null && Vulture.vulture == player)
                 roleCouldUse = true;
             else if (Madmate.canVent && Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
+                roleCouldUse = true;
+            else if (CreatedMadmate.canEnterVents && CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == player)
                 roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
@@ -630,7 +677,8 @@ namespace TheOtherRoles {
                 || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
                 || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)
                 || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision)
-                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision);
+                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision
+                || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision));
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)

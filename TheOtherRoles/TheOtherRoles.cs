@@ -76,6 +76,7 @@ namespace TheOtherRoles
             MimicA.clearAndReload();
             BomberA.clearAndReload();
             BomberB.clearAndReload();
+            EvilHacker.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
             Veteran.clearAndReload();
@@ -83,6 +84,7 @@ namespace TheOtherRoles
             TaskMaster.clearAndReload();
             Yasuna.clearAndReload();
             Madmate.clearAndReload();
+            CreatedMadmate.clearAndReload();
             Opportunist.clearAndReload();
 
             // Modifier
@@ -1492,24 +1494,24 @@ namespace TheOtherRoles
                 switch (rnd.Next(3)) {
                     case 0:
                         count = alivePlayersList.Where(pc => pc.Data.Role.IsImpostor || new List<RoleInfo>() { RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.sheriff, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(pc, false).FirstOrDefault())).Count();
-                        condition = "killer" + (count == 1 ? "" : "s");
+                        condition = ModTranslation.getString("mediumKiller") + (count == 1 ? "" : ModTranslation.getString("mediumPlural"));
                         break;
                     case 1:
                         count = alivePlayersList.Where(Helpers.roleCanUseVents).Count();
-                        condition = "player" + (count == 1 ? "" : "s") + " who can use vents";
+                        condition = string.Format(ModTranslation.getString("mediumPlayerUseVents"), (count == 1 ? "" : ModTranslation.getString("mediumPlural")));
                         break;
                     case 2:
                         count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && pc != Jackal.jackal && pc != Sidekick.sidekick && pc != Thief.thief).Count();
-                        condition = "player" + (count == 1 ? "" : "s") + " who " + (count == 1 ? "is" : "are") + " neutral but cannot kill";
+                        condition = string.Format(ModTranslation.getString("mediumPlayerNeutral"), (count == 1 ? "" : ModTranslation.getString("mediumPlural")), (count == 1 ? ModTranslation.getString("mediumIs") : ModTranslation.getString("mediumAre")));
                         break;
                     case 3:
                         //count = alivePlayersList.Where(pc =>
-                        break;               
+                        break;
                 }
-                msg += $"\nWhen you asked, {count} " + condition + (count == 1 ? " was" : " were") + " still alive";
+                msg += $"\n" + ModTranslation.getString("mediumAskPrefix") + $"{count} " + $"{condition} " + string.Format(ModTranslation.getString("mediumStillAlive"), (count == 1 ? ModTranslation.getString("mediumWas") : ModTranslation.getString("mediumWere")));
             }
 
-            return Medium.target.player.Data.PlayerName + "'s Soul:\n" + msg;
+            return string.Format(ModTranslation.getString("mediumSoulPlayerPrefix"), Medium.target.player.Data.PlayerName) + msg;
         }
     }
 
@@ -2317,6 +2319,99 @@ namespace TheOtherRoles
             playerIcons = new Dictionary<byte, PoolablePlayer>();
             targetText = null;
             partnerTargetText = null;
+        }
+    }
+
+    public static class CreatedMadmate
+    {
+        public static PlayerControl createdMadmate;
+
+        public static bool canEnterVents;
+        public static bool hasImpostorVision;
+        public static bool canSabotage;
+        public static bool canFixComm;
+        public static bool canDieToSheriff;
+        public static bool hasTasks;
+        public static int numTasks;
+
+        public static bool tasksComplete(PlayerControl player)
+        {
+            if (!hasTasks) return false;
+
+            int counter = 0;
+            int totalTasks = numTasks;
+            if (totalTasks == 0) return true;
+            foreach (var task in player.Data.Tasks)
+            {
+                if (task.Complete)
+                {
+                    counter++;
+                }
+            }
+            return counter >= totalTasks;
+        }
+
+        public static void clearAndReload()
+        {
+            createdMadmate = null;
+            canEnterVents = CustomOptionHolder.createdMadmateCanEnterVents.getBool();
+            canDieToSheriff = CustomOptionHolder.createdMadmateCanDieToSheriff.getBool();
+            hasTasks = CustomOptionHolder.createdMadmateAbility.getBool();
+            canSabotage = CustomOptionHolder.createdMadmateCanSabotage.getBool();
+            canFixComm = CustomOptionHolder.createdMadmateCanFixComm.getBool();
+            numTasks = (int)CustomOptionHolder.createdMadmateCommonTasks.getFloat();
+        }
+    }
+
+    public static class EvilHacker
+    {
+        public static PlayerControl evilHacker;
+        public static Color color = Palette.ImpostorRed;
+        public static bool canHasBetterAdmin = false;
+        public static bool canCreateMadmate = false;
+        public static bool canCreateMadmateFromJackal;
+        public static bool canInheritAbility;
+        public static bool canSeeDoorStatus;
+        public static PlayerControl fakeMadmate;
+        public static PlayerControl currentTarget;
+
+        private static Sprite buttonSprite;
+        private static Sprite madmateButtonSprite;
+
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            byte mapId = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
+            UseButtonSettings button = FastDestroyableSingleton<HudManager>.Instance.UseButton.fastUseSettings[ImageNames.PolusAdminButton]; // Polus
+            if (mapId is 0 or 3) button = FastDestroyableSingleton<HudManager>.Instance.UseButton.fastUseSettings[ImageNames.AdminMapButton]; // Skeld || Dleks
+            else if (mapId == 1) button = FastDestroyableSingleton<HudManager>.Instance.UseButton.fastUseSettings[ImageNames.MIRAAdminButton]; // Mira HQ
+            else if (mapId == 4) button = FastDestroyableSingleton<HudManager>.Instance.UseButton.fastUseSettings[ImageNames.AirshipAdminButton]; // Airship
+            buttonSprite = button.Image;
+            return buttonSprite;
+        }
+
+        public static Sprite getMadmateButtonSprite()
+        {
+            if (madmateButtonSprite) return madmateButtonSprite;
+            madmateButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SidekickButton.png", 115f);
+            return madmateButtonSprite;
+        }
+
+        public static bool isInherited()
+        {
+            return canInheritAbility && evilHacker != null && evilHacker.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor;
+        }
+
+        public static void clearAndReload()
+        {
+            evilHacker = null;
+            currentTarget = null;
+            fakeMadmate = null;
+            canCreateMadmate = CustomOptionHolder.evilHackerCanCreateMadmate.getBool();
+            canHasBetterAdmin = CustomOptionHolder.evilHackerCanHasBetterAdmin.getBool();
+            canCreateMadmateFromJackal = CustomOptionHolder.evilHackerCanCreateMadmateFromJackal.getBool();
+            canInheritAbility = CustomOptionHolder.evilHackerCanInheritAbility.getBool();
+            canSeeDoorStatus = CustomOptionHolder.evilHackerCanSeeDoorStatus.getBool();
         }
     }
 

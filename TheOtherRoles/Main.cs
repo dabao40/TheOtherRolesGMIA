@@ -1,4 +1,4 @@
-global using Il2CppInterop.Runtime;
+﻿global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -32,7 +32,7 @@ namespace TheOtherRoles
     public class TheOtherRolesPlugin : BasePlugin
     {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "1.1.26";
+        public const string VersionString = "1.1.3";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -119,15 +119,15 @@ namespace TheOtherRoles
             CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();
-            //if (BepInExUpdater.UpdateRequired)
-            //{
-            //    AddComponent<BepInExUpdater>();
-            //    return;
-            //}
+            if (BepInExUpdater.UpdateRequired)
+            {
+                AddComponent<BepInExUpdater>();
+                return;
+            }
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-      
+            AddComponent<ModUpdateBehaviour>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
         }
         public static Sprite GetModStamp() {
