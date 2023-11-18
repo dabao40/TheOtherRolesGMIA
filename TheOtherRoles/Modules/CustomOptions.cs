@@ -75,7 +75,7 @@ namespace TheOtherRoles {
         }
 
         public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false) {
-            return new CustomOption(id, type, name, new string[]{"Off", "On"}, defaultValue ? "On" : "Off", parent, isHeader);
+            return new CustomOption(id, type, name, new string[]{ModTranslation.getString("optionOff"), ModTranslation.getString("optionOn")}, defaultValue ? ModTranslation.getString("optionOn") : ModTranslation.getString("optionOff"), parent, isHeader);
         }
 
         // Static behaviour
@@ -304,11 +304,11 @@ namespace TheOtherRoles {
         private static void createClassicTabs(GameOptionsMenu __instance) {
             bool isReturn = setNames(
                 new Dictionary<string, string>() {
-                    ["TORSettings"] = "The Other Roles Settings",
-                    ["ImpostorSettings"] = "Impostor Roles Settings",
-                    ["NeutralSettings"] = "Neutral Roles Settings",
-                    ["CrewmateSettings"] = "Crewmate Roles Settings",
-                    ["ModifierSettings"] = "Modifier Settings"
+                    ["TORSettings"] = ModTranslation.getString("theOtherRolesSettings"),
+                    ["ImpostorSettings"] = ModTranslation.getString("impostorRolesSettings"),
+                    ["NeutralSettings"] = ModTranslation.getString("neutralRolesSettings"),
+                    ["CrewmateSettings"] = ModTranslation.getString("crewmateRolesSettings"),
+                    ["ModifierSettings"] = ModTranslation.getString("modifierSettings")
                 });
 
             if (isReturn) return;
@@ -427,12 +427,12 @@ namespace TheOtherRoles {
         private static void createGuesserTabs(GameOptionsMenu __instance) {
             bool isReturn = setNames(
                 new Dictionary<string, string>() {
-                    ["TORSettings"] = "The Other Roles Settings",
-                    ["GuesserSettings"] = "Guesser Mode Settings",
-                    ["ImpostorSettings"] = "Impostor Roles Settings",
-                    ["NeutralSettings"] = "Neutral Roles Settings",
-                    ["CrewmateSettings"] = "Crewmate Roles Settings",
-                    ["ModifierSettings"] = "Modifier Settings"
+                    ["TORSettings"] = ModTranslation.getString("theOtherRolesSettings"),
+                    ["GuesserSettings"] = ModTranslation.getString("guesserSettings"),
+                    ["ImpostorSettings"] = ModTranslation.getString("impostorRolesSettings"),
+                    ["NeutralSettings"] = ModTranslation.getString("neutralRolesSettings"),
+                    ["CrewmateSettings"] = ModTranslation.getString("crewmateRolesSettings"),
+                    ["ModifierSettings"] = ModTranslation.getString("modifierSettings")
                 });
 
             if (isReturn) return;
@@ -562,8 +562,8 @@ namespace TheOtherRoles {
         private static void createHideNSeekTabs(GameOptionsMenu __instance) {
             bool isReturn = setNames(
                 new Dictionary<string, string>(){ 
-                    ["TORSettings"] = "The Other Roles Settings", 
-                    ["HideNSeekSettings"] = "Hide 'N Seek Settings" 
+                    ["TORSettings"] = ModTranslation.getString("theOtherRolesSettings"), 
+                    ["HideNSeekSettings"] = ModTranslation.getString("hideNSeekSettings") 
                 });
 
             if (isReturn) return;
@@ -872,11 +872,13 @@ namespace TheOtherRoles {
                 }
                 else if (option.parent.getSelection() > 0) {
                     if (option.id == 103) //Deputy
-                        sb.AppendLine($"- {Helpers.cs(Deputy.color, "Deputy")}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"- {Helpers.cs(Deputy.color, ModTranslation.getString("deputy"))}: {option.selections[option.selection].ToString()}");
                     else if (option.id == 224) //Sidekick
-                        sb.AppendLine($"- {Helpers.cs(Sidekick.color, "Sidekick")}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"- {Helpers.cs(Sidekick.color, ModTranslation.getString("sidekick"))}: {option.selections[option.selection].ToString()}");
+                    else if (option.id == 8000) // Created Madmate
+                        sb.AppendLine($"- {Helpers.cs(Madmate.color, Madmate.fullName)}: {option.selections[option.selection].ToString()}");
                     //else if (option.id == 358) //Prosecutor
-                        //sb.AppendLine($"- {Helpers.cs(Lawyer.color, "Prosecutor")}: {option.selections[option.selection].ToString()}");
+                    //sb.AppendLine($"- {Helpers.cs(Lawyer.color, "Prosecutor")}: {option.selections[option.selection].ToString()}");
                 }
             }
             if (headerOnly) return sb.ToString();
@@ -892,7 +894,7 @@ namespace TheOtherRoles {
                     sb.AppendLine(Helpers.cs(c, $"{option.name}: {option.selections[option.selection].ToString()}"));
                 } else {
                     if (option == CustomOptionHolder.crewmateRolesCountMin) {
-                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Crewmate Roles");
+                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("crewmateRoles"));
                         var min = CustomOptionHolder.crewmateRolesCountMin.getSelection();
                         var max = CustomOptionHolder.crewmateRolesCountMax.getSelection();
                         string optionValue = "";
@@ -911,14 +913,14 @@ namespace TheOtherRoles {
                         optionValue += (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
                     } else if (option == CustomOptionHolder.neutralRolesCountMin) {
-                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Neutral Roles");
+                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("neutralRoles"));
                         var min = CustomOptionHolder.neutralRolesCountMin.getSelection();
                         var max = CustomOptionHolder.neutralRolesCountMax.getSelection();
                         if (min > max) min = max;
                         var optionValue = (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
                     } else if (option == CustomOptionHolder.impostorRolesCountMin) {
-                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Impostor Roles");
+                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("impostorRoles"));
                         var min = CustomOptionHolder.impostorRolesCountMin.getSelection();
                         var max = CustomOptionHolder.impostorRolesCountMax.getSelection();
                         if (max > GameOptionsManager.Instance.currentGameOptions.NumImpostors) max = GameOptionsManager.Instance.currentGameOptions.NumImpostors;
@@ -926,7 +928,7 @@ namespace TheOtherRoles {
                         var optionValue = (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
                     } else if (option == CustomOptionHolder.modifiersCountMin) {
-                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Modifiers");
+                        var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("modifiers"));
                         var min = CustomOptionHolder.modifiersCountMin.getSelection();
                         var max = CustomOptionHolder.modifiersCountMax.getSelection();
                         if (min > max) min = max;
@@ -946,46 +948,46 @@ namespace TheOtherRoles {
             if (vanillaSettings == "")
                 vanillaSettings = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(PlayerControl.AllPlayerControls.Count);
             int counter = TheOtherRolesPlugin.optionsPage;
-            string hudString = counter != 0 && !hideExtras ? Helpers.cs(DateTime.Now.Second % 2 == 0 ? Color.white : Color.red, "(Use scroll wheel if necessary)\n\n") : "";
+            string hudString = counter != 0 && !hideExtras ? Helpers.cs(DateTime.Now.Second % 2 == 0 ? Color.white : Color.red, $"{ModTranslation.getString("useScrollWheel")}\n\n") : "";
             int maxPage = 7;
             if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) {
                 if (TheOtherRolesPlugin.optionsPage > 1) TheOtherRolesPlugin.optionsPage = 0;
                 maxPage = 2;
                 switch (counter) {
                     case 0:
-                        hudString += "Page 1: Hide N Seek Settings \n\n" + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekMain, false);
+                        hudString += ModTranslation.getString("hideNSeekPage1") + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekMain, false);
                         break;
                     case 1:
-                        hudString += "Page 2: Hide N Seek Role Settings \n\n" + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekRoles, false);
+                        hudString += ModTranslation.getString("hideNSeekPage2") + buildOptionsOfType(CustomOption.CustomOptionType.HideNSeekRoles, false);
                         break;
                 }
             } else {
                 switch (counter) {
                     case 0:
-                        hudString += (!hideExtras ? "" :"Page 1: Vanilla Settings \n\n") + vanillaSettings;
+                        hudString += (!hideExtras ? "" : ModTranslation.getString("page1")) + vanillaSettings;
                         break;
                     case 1:
-                        hudString += "Page 2: The Other Roles Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.General, false);
+                        hudString += ModTranslation.getString("page2") + buildOptionsOfType(CustomOption.CustomOptionType.General, false);
                         break;
                     case 2:
-                        hudString += "Page 3: Role and Modifier Rates \n" + buildRoleOptions();
+                        hudString += ModTranslation.getString("page3") + buildRoleOptions();
                         break;
                     case 3:
-                        hudString += "Page 4: Impostor Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Impostor, false);
+                        hudString += ModTranslation.getString("page4") + buildOptionsOfType(CustomOption.CustomOptionType.Impostor, false);
                         break;
                     case 4:
-                        hudString += "Page 5: Neutral Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Neutral, false);
+                        hudString += ModTranslation.getString("page5") + buildOptionsOfType(CustomOption.CustomOptionType.Neutral, false);
                         break;
                     case 5:
-                        hudString += "Page 6: Crewmate Role Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Crewmate, false);
+                        hudString += ModTranslation.getString("page6") + buildOptionsOfType(CustomOption.CustomOptionType.Crewmate, false);
                         break;
                     case 6:
-                        hudString += "Page 7: Modifier Settings \n" + buildOptionsOfType(CustomOption.CustomOptionType.Modifier, false);
+                        hudString += ModTranslation.getString("page7") + buildOptionsOfType(CustomOption.CustomOptionType.Modifier, false);
                         break;
                 }
             }
 
-            if (!hideExtras || counter != 0) hudString += $"\n Press TAB or Page Number for more... ({counter + 1}/{maxPage})";
+            if (!hideExtras || counter != 0) hudString += string.Format(ModTranslation.getString("pressTabForMore"), (counter + 1), maxPage);
             return hudString;
         }
 
