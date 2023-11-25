@@ -286,6 +286,16 @@ namespace TheOtherRoles {
         public static CustomOption createdMadmateAbility;
         public static CustomOption createdMadmateCommonTasks;
 
+        public static CustomOption trapperSpawnRate;
+        public static CustomOption trapperNumTrap;
+        public static CustomOption trapperKillTimer;
+        public static CustomOption trapperCooldown;
+        public static CustomOption trapperMaxDistance;
+        public static CustomOption trapperTrapRange;
+        public static CustomOption trapperExtensionTime;
+        public static CustomOption trapperPenaltyTime;
+        public static CustomOption trapperBonusTime;
+
         public static CustomOption undertakerSpawnRate;
         public static CustomOption undertakerSpeedDecrease;
         public static CustomOption undertakerDisableVent;
@@ -624,6 +634,16 @@ namespace TheOtherRoles {
             createdMadmateAbility = CustomOption.Create(8009, Types.Impostor, ModTranslation.getString("createdMadmateAbility"), true, evilHackerCanCreateMadmate);
             createdMadmateCommonTasks = CustomOption.Create(8010, Types.Impostor, ModTranslation.getString("createdMadmateCommonTasks"), 1f, 1f, 3f, 1f, createdMadmateAbility);
             evilHackerCanInheritAbility = CustomOption.Create(8014, Types.Impostor, ModTranslation.getString("evilHackerCanInheritAbility"), false, evilHackerSpawnRate);
+
+            trapperSpawnRate = CustomOption.Create(8016, Types.Impostor, cs(Trapper.color, ModTranslation.getString("trapper")), rates, null, true);
+            trapperNumTrap = CustomOption.Create(8017, Types.Impostor, ModTranslation.getString("trapperNumTrap"), 2f, 1f, 10f, 1f, trapperSpawnRate);
+            trapperExtensionTime = CustomOption.Create(8018, Types.Impostor, ModTranslation.getString("trapperExtensionTime"), 5f, 2f, 10f, 0.5f, trapperSpawnRate);
+            trapperCooldown = CustomOption.Create(8019, Types.Impostor, ModTranslation.getString("trapperCooldown"), 10f, 2.5f, 60f, 2.5f, trapperSpawnRate);
+            trapperKillTimer = CustomOption.Create(8025, Types.Impostor, ModTranslation.getString("trapperKillTimer"), 5f, 1f, 30f, 1f, trapperSpawnRate);
+            trapperTrapRange = CustomOption.Create(8021, Types.Impostor, ModTranslation.getString("trapperTrapRange"), 1f, 0.5f, 5f, 0.1f, trapperSpawnRate);
+            trapperMaxDistance = CustomOption.Create(8022, Types.Impostor, ModTranslation.getString("trapperMaxDistance"), 10f, 1f, 50f, 1f, trapperSpawnRate);
+            trapperPenaltyTime = CustomOption.Create(8023, Types.Impostor, ModTranslation.getString("trapperPenaltyTime"), 10f, 0f, 50f, 1f, trapperSpawnRate);
+            trapperBonusTime = CustomOption.Create(8024, Types.Impostor, ModTranslation.getString("trapperBonusTime"), 10f, 0f, 50f, 1f, trapperSpawnRate);
 
             mimicSpawnRate = CustomOption.Create(5000, Types.Impostor, cs(MimicK.color, ModTranslation.getString("mimic")), rates, null, true);
             mimicCountAsOne = CustomOption.Create(5001, Types.Impostor, ModTranslation.getString("mimicCountAsOne"), true, mimicSpawnRate);

@@ -74,6 +74,7 @@ namespace TheOtherRoles
         public static CustomButton bomberBReleaseBombButton;
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
+        public static CustomButton trapperSetTrapButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -151,6 +152,7 @@ namespace TheOtherRoles
             serialKillerButton.MaxTimer = SerialKiller.suicideTimer;
             //serialKillerButton.MaxTimer = 0f;
             evilTrackerButton.MaxTimer = EvilTracker.cooldown;
+            trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             sprintButton.MaxTimer = Sprinter.sprintCooldown;
             veteranAlertButton.MaxTimer = Veteran.cooldown;
             undertakerDragButton.MaxTimer = 0f;
@@ -1167,6 +1169,31 @@ namespace TheOtherRoles
                 () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Eraser.currentTarget != null; },
                 () => { eraserButton.Timer = eraserButton.MaxTimer;},
                 Eraser.getButtonSprite(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.F
+            );
+
+            trapperSetTrapButton = new CustomButton(
+                () =>
+                { // ボタンが押された時に実行
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.CanMove || Trap.hasTrappedPlayer()) return;
+                    Trapper.setTrap();
+                    trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                },
+                () =>
+                { /*ボタン有効になる条件*/
+                    return CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+                },
+                () =>
+                { /*ボタンが使える条件*/
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !Trap.hasTrappedPlayer();
+                },
+                () =>
+                { /*ミーティング終了時*/
+                    trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                },
+                Trapper.getTrapButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
                 KeyCode.F

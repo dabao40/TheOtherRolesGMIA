@@ -84,13 +84,14 @@ namespace TheOtherRoles
         public static RoleInfo nekoKabocha = new RoleInfo(ModTranslation.getString("nekoKabocha"), NekoKabocha.color, ModTranslation.getString("nekoKabochaIntroDesc"), ModTranslation.getString("nekoKabochaShortDesc"), RoleId.NekoKabocha);
         public static RoleInfo serialKiller = new RoleInfo(ModTranslation.getString("serialKiller"), SerialKiller.color, ModTranslation.getString("serialKillerIntroDesc"), ModTranslation.getString("serialKillerShortDesc"), RoleId.SerialKiller);
         public static RoleInfo evilTracker = new RoleInfo(ModTranslation.getString("evilTracker"), EvilTracker.color, ModTranslation.getString("evilTrackerIntroDesc"), ModTranslation.getString("evilTrackerShortDesc"), RoleId.EvilTracker);
-        public static RoleInfo undertaker = new RoleInfo(ModTranslation.getString("undertaker"), Undertaker.color, ModTranslation.getString("undertakerIntroDesc"), ModTranslation.getString("undertakerIntroDesc"), RoleId.Undertaker);
+        public static RoleInfo undertaker = new RoleInfo(ModTranslation.getString("undertaker"), Undertaker.color, ModTranslation.getString("undertakerIntroDesc"), ModTranslation.getString("undertakerShortDesc"), RoleId.Undertaker);
         public static RoleInfo mimicK = new RoleInfo(ModTranslation.getString("mimicK"), MimicK.color, ModTranslation.getString("mimicKIntroDesc"), ModTranslation.getString("mimicKShortDesc"), RoleId.MimicK);
         public static RoleInfo mimicA = new RoleInfo(ModTranslation.getString("mimicA"), MimicA.color, ModTranslation.getString("mimicAIntroDesc"), ModTranslation.getString("mimicAShortDesc"), RoleId.MimicA);
         public static RoleInfo bomberA = new RoleInfo(ModTranslation.getString("bomber"), BomberA.color, ModTranslation.getString("bomberIntroDesc"), ModTranslation.getString("bomberShortDesc"), RoleId.BomberA);
         public static RoleInfo bomberB = new RoleInfo(ModTranslation.getString("bomber"), BomberB.color, ModTranslation.getString("bomberIntroDesc"), ModTranslation.getString("bomberShortDesc"), RoleId.BomberB);
         public static RoleInfo evilSwapper = new RoleInfo(ModTranslation.getString("evilSwapper"), Palette.ImpostorRed, ModTranslation.getString("evilSwapperIntroDesc"), ModTranslation.getString("evilSwapperShortDesc"), RoleId.Swapper);
         public static RoleInfo evilHacker = new RoleInfo(ModTranslation.getString("evilHacker"), EvilHacker.color, ModTranslation.getString("evilHackerIntroDesc"), ModTranslation.getString("evilHackerShortDesc"), RoleId.EvilHacker);
+        public static RoleInfo trapper = new RoleInfo(ModTranslation.getString("trapper"), Trapper.color, ModTranslation.getString("trapperIntroDesc"), ModTranslation.getString("trapperShortDesc"), RoleId.Trapper);
         public static RoleInfo fortuneTeller = new RoleInfo(ModTranslation.getString("fortuneTeller"), FortuneTeller.color, ModTranslation.getString("fortuneTellerIntroDesc"), ModTranslation.getString("fortuneTellerShortDesc"), RoleId.FortuneTeller);
         public static RoleInfo veteran = new RoleInfo(ModTranslation.getString("veteran"), Veteran.color, ModTranslation.getString("veteranIntroDesc"), ModTranslation.getString("veteranShortDesc"), RoleId.Veteran);
         public static RoleInfo sprinter = new RoleInfo(ModTranslation.getString("sprinter"), Sprinter.color, ModTranslation.getString("sprinterIntroDesc"), ModTranslation.getString("sprinterShortDesc"), RoleId.Sprinter);
@@ -141,6 +142,7 @@ namespace TheOtherRoles
             evilTracker,
             evilHacker,
             evilSwapper,
+            trapper,
             undertaker,
             mimicK,
             mimicA,
@@ -296,6 +298,7 @@ namespace TheOtherRoles
             if (p == EvilTracker.evilTracker) infos.Add(evilTracker);
             if (p == EvilHacker.evilHacker) infos.Add(evilHacker);
             if (p == Undertaker.undertaker) infos.Add(undertaker);
+            if (p == Trapper.trapper) infos.Add(trapper);
             if (p == MimicK.mimicK) infos.Add(mimicK);
             if (p == MimicA.mimicA) infos.Add(mimicA);
             if (p == BomberA.bomberA) infos.Add(bomberA);
@@ -409,7 +412,7 @@ namespace TheOtherRoles
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummarySpelled"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
                                     break;
                                 case DeadPlayer.CustomDeathReason.LoverSuicide:
-                                    deathReasonString = Helpers.cs(Lovers.color, ModTranslation.getString("roleSummaryLoverDied"));
+                                    deathReasonString = $" - {Helpers.cs(Lovers.color, ModTranslation.getString("roleSummaryLoverDied"))}";
                                     break;
                                 case DeadPlayer.CustomDeathReason.Revenge:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryRevenge"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));

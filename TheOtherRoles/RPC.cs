@@ -89,6 +89,7 @@ namespace TheOtherRoles
         BomberB,
         EvilHacker,
         Undertaker,
+        Trapper,
         Opportunist,
         Madmate,
         //Bomber,
@@ -208,7 +209,13 @@ namespace TheOtherRoles
         PlantBomb,
         ReleaseBomb,
         BomberKill,
-        EvilHackerCreatesMadmate
+        EvilHackerCreatesMadmate,
+        TrapperKill,
+        PlaceTrap,
+        ClearTrap,
+        ActivateTrap,
+        DisableTrap,
+        TrapperMeetingFlag
     }
 
     public static class RPCProcedure {
@@ -381,6 +388,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.EvilHacker:
                         EvilHacker.evilHacker = player;
+                        break;
+                    case RoleId.Trapper:
+                        Trapper.trapper = player;
                         break;
                     case RoleId.Jackal:
                         Jackal.jackal = player;
@@ -850,6 +860,7 @@ namespace TheOtherRoles
             if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
             if (player == BomberA.bomberA) BomberA.bomberA = oldShifter;
             if (player == BomberB.bomberB) BomberB.bomberB = oldShifter;
+            if (player == Trapper.trapper) Trapper.trapper = oldShifter;
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
@@ -1150,6 +1161,7 @@ namespace TheOtherRoles
             if (player == BomberA.bomberA) BomberA.clearAndReload();
             if (player == BomberB.bomberB) BomberB.clearAndReload();
             if (player == EvilHacker.evilHacker) EvilHacker.clearAndReload();
+            if (player == Trapper.trapper) Trapper.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -1414,6 +1426,43 @@ namespace TheOtherRoles
             if (TaskMaster.taskMaster == null) return;
             TaskMaster.clearExTasks = clearExTasks;
             TaskMaster.allExTasks = allExTasks;
+        }
+
+        public static void activateTrap(byte trapId, byte trapperId, byte playerId)
+        {
+            var trapper = Helpers.playerById(trapperId);
+            var player = Helpers.playerById(playerId);
+            Trap.activateTrap(trapId, trapper, player);
+        }
+
+        public static void disableTrap(byte trapId)
+        {
+            Trap.disableTrap(trapId);
+        }
+
+        public static void placeTrap(byte[] buff)
+        {
+            Vector3 pos = Vector3.zero;
+            pos.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
+            pos.y = BitConverter.ToSingle(buff, 1 * sizeof(float)) - 0.2f;
+            Trap trap = new(pos);
+        }
+
+        public static void trapperKill(byte trapId, byte trapperId, byte playerId)
+        {
+            var trapper = Helpers.playerById(trapperId);
+            var target = Helpers.playerById(playerId);
+            Trap.trapKill(trapId, trapper, target);
+        }
+
+        public static void clearTrap()
+        {
+            Trap.clearAllTraps();
+        }
+
+        public static void trapperMeetingFlag()
+        {
+            Trap.onMeeting();
         }
 
         public static void plantBomb(byte playerId)
@@ -1745,6 +1794,7 @@ namespace TheOtherRoles
             if (target == Swapper.swapper && target.Data.Role.IsImpostor) Swapper.swapper = thief;
             if (target == Undertaker.undertaker) Undertaker.undertaker = thief;
             if (target == EvilHacker.evilHacker) EvilHacker.evilHacker = thief;
+            if (target == Trapper.trapper) Trapper.trapper = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -2154,6 +2204,24 @@ namespace TheOtherRoles
                     byte clearExTasks = reader.ReadByte();
                     byte allExTasks = reader.ReadByte();
                     RPCProcedure.taskMasterUpdateExTasks(clearExTasks, allExTasks);
+                    break;
+                case (byte)CustomRPC.PlaceTrap:
+                    RPCProcedure.placeTrap(reader.ReadBytesAndSize());
+                    break;
+                case (byte)CustomRPC.ClearTrap:
+                    RPCProcedure.clearTrap();
+                    break;
+                case (byte)CustomRPC.ActivateTrap:
+                    RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.DisableTrap:
+                    RPCProcedure.disableTrap(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.TrapperMeetingFlag:
+                    RPCProcedure.trapperMeetingFlag();
+                    break;
+                case (byte)CustomRPC.TrapperKill:
+                    RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlantBomb:
                     RPCProcedure.plantBomb(reader.ReadByte());

@@ -119,6 +119,7 @@ namespace TheOtherRoles
             CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();
+            AssetLoader.LoadAudioAssets();
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();

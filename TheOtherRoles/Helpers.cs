@@ -152,6 +152,13 @@ namespace TheOtherRoles {
             RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
         }
 
+        public static void handleTrapperTrapOnBodyReport()
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TrapperMeetingFlag, Hazel.SendOption.Reliable, -1);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.trapperMeetingFlag();
+        }
+
         public static void refreshRoleDescription(PlayerControl player) {
             List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(player); 
             List<string> taskTexts = new(infos.Count); 
