@@ -236,6 +236,10 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Clear all traps
+            Trap.clearAllTraps();
+            Trapper.meetingFlag = false;
+
             // Reset Yasuna settings.
             if (Yasuna.yasuna != null)
                 Yasuna.specialVoteTargetPlayerId = byte.MaxValue;

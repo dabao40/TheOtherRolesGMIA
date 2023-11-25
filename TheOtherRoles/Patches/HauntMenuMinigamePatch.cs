@@ -18,7 +18,7 @@ namespace TheOtherRoles.Patches {
             var roleInfo = RoleInfo.getRoleInfoForPlayer(target, false, includeHidden: true);
             string roleString = (roleInfo.Count > 0 && TORMapOptions.ghostsSeeRoles) ? roleInfo[0].name : "";
             if (__instance.HauntTarget.Data.IsDead) {
-                __instance.FilterText.text = roleString + " Ghost";
+                __instance.FilterText.text = roleString + ModTranslation.getString("hauntMenuGhost");
                 return;
             }
             __instance.FilterText.text = roleString;

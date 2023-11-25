@@ -886,6 +886,82 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void trapperUpdate()
+        {
+            try
+            {
+                if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && Trap.traps.Count != 0 && !Trap.hasTrappedPlayer() && !Trapper.meetingFlag)
+                {
+                    foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                    {
+                        foreach (var trap in Trap.traps)
+                        {
+                            if (DateTime.UtcNow.Subtract(trap.Value.placedTime).TotalSeconds < Trapper.extensionTime) continue;
+                            if (trap.Value.isActive || p.Data.IsDead || p.inVent || Trapper.meetingFlag) continue;
+                            var p1 = p.transform.localPosition;
+                            Dictionary<GameObject, byte> listActivate = new();
+                            var p2 = trap.Value.trap.transform.localPosition;
+                            var distance = Vector3.Distance(p1, p2);
+                            if (distance < Trapper.trapRange)
+                            {
+                                TMPro.TMP_Text text;
+                                RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
+                                GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                                UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                                gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                                gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
+                                gameObject.transform.localScale = Vector3.one * 2f;
+                                text = gameObject.GetComponent<TMPro.TMP_Text>();
+                                text.text = string.Format(ModTranslation.getString("trapperGotTrapText"), p.name);
+                                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(3f, new Action<float>((p) =>
+                                {
+                                    if (p == 1f && text != null && text.gameObject != null)
+                                    {
+                                        UnityEngine.Object.Destroy(text.gameObject);
+                                    }
+                                })));
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ActivateTrap, Hazel.SendOption.Reliable, -1);
+                                writer.Write(trap.Key);
+                                writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                                writer.Write(p.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                RPCProcedure.activateTrap(trap.Key, CachedPlayer.LocalPlayer.PlayerControl.PlayerId, p.PlayerId);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && Trap.hasTrappedPlayer() && !Trapper.meetingFlag)
+                {
+                    // トラップにかかっているプレイヤーを救出する
+                    foreach (var trap in Trap.traps)
+                    {
+                        if (trap.Value.trap == null || !trap.Value.isActive) return;
+                        Vector3 p1 = trap.Value.trap.transform.position;
+                        foreach (var player in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                        {
+                            if (player.PlayerId == trap.Value.target.PlayerId || player.Data.IsDead || player.inVent || player == Trapper.trapper) continue;
+                            Vector3 p2 = player.transform.position;
+                            float distance = Vector3.Distance(p1, p2);
+                            if (distance < 0.5)
+                            {
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
+                                writer.Write(trap.Key);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                RPCProcedure.disableTrap(trap.Key);
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                TheOtherRolesPlugin.Logger.LogWarning(e.Message);
+            }
+        }
+
         static void vultureUpdate() {
             if (Vulture.vulture == null || CachedPlayer.LocalPlayer.PlayerControl != Vulture.vulture || Vulture.localArrows == null || !Vulture.showArrows) return;
             if (Vulture.vulture.Data.IsDead) {
@@ -1483,6 +1559,8 @@ namespace TheOtherRoles.Patches {
                 MimicK.arrowUpdate();
                 // Mimic(Assistant)
                 MimicA.arrowUpdate();
+                // Trapper
+                trapperUpdate();
                 // Madmate
                 madmateUpdate(__instance);
                 createdMadmateUpdate(__instance);
@@ -1542,6 +1620,7 @@ namespace TheOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM) return false;
             Helpers.handleVampireBiteOnBodyReport();
             Helpers.HandleUndertakerDropOnBodyReport();
+            Helpers.handleTrapperTrapOnBodyReport();
             return true;
         }
     }
@@ -1687,6 +1766,34 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
                 SerialKiller.isCountDown = true;
                 //HudManagerStartPatch.serialKillerButton.isEffectActive = true;
+            }
+
+            // Trapper peforms normal kills
+            if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && __instance == Trapper.trapper)
+            {
+                if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // トラップにかかっている対象をキルした場合のボーナス
+                {
+                    Trapper.trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - Trapper.bonusTime;
+                    HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown - Trapper.bonusTime;
+                }
+                else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // トラップキルした場合のペナルティ
+                {
+                    Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                    HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown;
+                }
+                else // トラップにかかっていない対象を通常キルした場合はペナルティーを受ける
+                {
+                    Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
+                    HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
+                }
+                if (!Trapper.isTrapKill)
+                {
+                    MessageWriter writer;
+                    writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ClearTrap, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.clearTrap();
+                }
+                Trapper.isTrapKill = false;
             }
 
             // Neko-Kabocha kill murderer

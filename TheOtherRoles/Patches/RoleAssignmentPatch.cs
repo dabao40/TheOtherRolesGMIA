@@ -124,6 +124,7 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.EvilTracker, CustomOptionHolder.evilTrackerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Undertaker, CustomOptionHolder.undertakerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.EvilHacker, CustomOptionHolder.evilHackerSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
             //impSettings.Add((byte)RoleId.Bomber, CustomOptionHolder.bomberSpawnRate.getSelection());
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
@@ -696,6 +697,10 @@ namespace TheOtherRoles.Patches {
                 var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
                 crewPlayerMadmate.RemoveAll(x => x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
                 || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch);
+
+                // Always remember to remove the Mad Sheriff if Deputy is assigned
+                if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
+
                 int madmateCount = 0;
                 while (madmateCount < modifiers.FindAll(x => x == RoleId.Madmate).Count)
                 {
