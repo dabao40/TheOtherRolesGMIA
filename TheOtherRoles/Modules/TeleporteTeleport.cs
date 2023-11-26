@@ -20,7 +20,11 @@ namespace TheOtherRoles.Modules
             //All players are saved to playerList apart from LocalPlayer
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (!player.AmOwner)
+                if(Teleporter.canteleportitself && player.AmOwner)
+                {
+                    playerList.Add(player);
+                }
+                else if (!player.AmOwner)
                 {
                     playerList.Add(player);
                 }
