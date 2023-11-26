@@ -28,21 +28,24 @@ namespace TheOtherRoles.Modules
             ShapeShifterMenu.openPlayerPickMenu(playerList, (Action)(() =>
             {
                 firsttarget = ShapeShifterMenu.targetPlayer;
+                if (firsttarget = null) return;
+                ShapeShifterMenu.openPlayerPickMenu(playerList, (Action)(() =>
+                {
+                    secondtarget = ShapeShifterMenu.targetPlayer;
+                }));
+                if (secondtarget = null) return;
+                Vector3 firstplayerpo = firsttarget.transform.position;
+                Vector3 secondplayerpo = secondtarget.transform.position;
+                firsttarget.NetTransform.RpcSnapTo(secondplayerpo);
+                secondtarget.NetTransform.RpcSnapTo(firstplayerpo);
+                firsttarget = null;
+                secondtarget = null;
+
             }));
          
-            if (firsttarget = null) return;
-            ShapeShifterMenu.openPlayerPickMenu(playerList, (Action)(() =>
-            {
-                secondtarget = ShapeShifterMenu.targetPlayer;
-            }));
+           
       
-            if (secondtarget = null) return;
-            Vector3 firstplayerpo = firsttarget.transform.position;
-            Vector3 secondplayerpo = secondtarget.transform.position;
-            firsttarget.NetTransform.RpcSnapTo(secondplayerpo);
-            secondtarget.NetTransform.RpcSnapTo(firstplayerpo);
-            firsttarget = null;
-            secondtarget = null;
+     
 
 
 
