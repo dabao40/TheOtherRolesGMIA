@@ -91,6 +91,7 @@ namespace TheOtherRoles
         Undertaker,
         Opportunist,
         Madmate,
+        Teleporter,
         //Bomber,
         Crewmate,
         Impostor,
@@ -412,7 +413,10 @@ namespace TheOtherRoles
                     case RoleId.Sherlock:
                         Sherlock.sherlock = player;
                         break;
-                    case RoleId.SecurityGuard:
+                    case RoleId.Teleporter:
+                        Teleporter.teleporter = player;
+                        break;
+                        case RoleId.SecurityGuard:
                         SecurityGuard.securityGuard = player;
                         break;
                     case RoleId.Arsonist:
@@ -794,6 +798,8 @@ namespace TheOtherRoles
                 Seer.seer = oldShifter;
             if (Hacker.hacker != null && Hacker.hacker == player)
                 Hacker.hacker = oldShifter;
+            if (Teleporter.teleporter != null && Teleporter.teleporter == player)
+                Teleporter.teleporter = oldShifter;
             if (Tracker.tracker != null && Tracker.tracker == player)
                 Tracker.tracker = oldShifter;
             if (Snitch.snitch != null && Snitch.snitch == player)
@@ -970,10 +976,10 @@ namespace TheOtherRoles
             }
             else
             {
-                // Jackal¥Ğ¥°Œê
+                // Jackalãƒã‚°å¯¾å¿œ
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
-                // ¥¿¥¹¥¯¤¬¤Ê¤¤¥×¥ì¥¤¥ä©`¤¬Madmate¤Ë¤Ê¤Ã¤¿ˆöºÏ¤Ï¥·¥ç©`¥È¥¿¥¹¥¯¤ò±ØÒªÊı¸î¤êµ±¤Æ¤ë
+                // ã‚¿ã‚¹ã‚¯ãŒãªã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒMadmateã«ãªã£ãŸå ´åˆã¯ã‚·ãƒ§ãƒ¼ãƒˆã‚¿ã‚¹ã‚¯ã‚’å¿…è¦æ•°å‰²ã‚Šå½“ã¦ã‚‹
                 if (Helpers.hasFakeTasks(player))
                 {
                     if (CreatedMadmate.hasTasks)
@@ -984,7 +990,7 @@ namespace TheOtherRoles
                 }
                 erasePlayerRoles(player.PlayerId, true, true);
 
-                // Jackal¥Ğ¥°Œê
+                // Jackalãƒã‚°å¯¾å¿œ
                 Jackal.formerJackals = tmpFormerJackals;
 
                 CreatedMadmate.createdMadmate = player;
@@ -1002,7 +1008,7 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
-            // ¥¤¥ó¥İ¥¹¥¿©`¤ÎˆöºÏ¤ÏÕ¼¤¤Ÿ¤ÎÎ»ÖÃ¤ËÊ¸Ó¡¤ò±íÊ¾
+            // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®å ´åˆã¯å ã„å¸«ã®ä½ç½®ã«çŸ¢å°ã‚’è¡¨ç¤º
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
@@ -1125,6 +1131,7 @@ namespace TheOtherRoles
             if (player == Sherlock.sherlock) Sherlock.clearAndReload();
             if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.clearAndReload();
+            if (player == Teleporter.teleporter) Teleporter.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -1150,6 +1157,7 @@ namespace TheOtherRoles
             if (player == BomberA.bomberA) BomberA.clearAndReload();
             if (player == BomberB.bomberB) BomberB.clearAndReload();
             if (player == EvilHacker.evilHacker) EvilHacker.clearAndReload();
+            
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -1425,7 +1433,7 @@ namespace TheOtherRoles
 
         public static void releaseBomb(byte killer, byte target)
         {
-            // Í¬•rÑº¤·¤Ç¥À¥Ö¥ë¥­¥ë¤¬°kÉú¤¹¤ë¤Î¤ò·ÀÖ¹¤¹¤ë¤¿¤á¤ËBomberA¤ÇÒ»¶ÈÊÜ¤±È¡¤Ã¤Æ¤«¤éŒgĞĞ¤¹¤ë
+            // åŒæ™‚æŠ¼ã—ã§ãƒ€ãƒ–ãƒ«ã‚­ãƒ«ãŒç™ºç”Ÿã™ã‚‹ã®ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚ã«BomberAã§ä¸€åº¦å—ã‘å–ã£ã¦ã‹ã‚‰å®Ÿè¡Œã™ã‚‹
             if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
             {
                 if (BomberA.bombTarget != null && BomberB.bombTarget != null)

@@ -100,6 +100,7 @@ namespace TheOtherRoles
         public static RoleInfo evilYasuna = new RoleInfo(ModTranslation.getString("evilYasuna"), Palette.ImpostorRed, ModTranslation.getString("evilYasunaIntroDesc"), ModTranslation.getString("evilYasunaShortDesc"), RoleId.EvilYasuna);
         public static RoleInfo opportunist = new RoleInfo(ModTranslation.getString("opportunist"), Opportunist.color, ModTranslation.getString("opportunistIntroDesc"), ModTranslation.getString("opportunistShortDesc"), RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new RoleInfo(ModTranslation.getString("corruptedShifter"), Shifter.color, ModTranslation.getString("corruptedShifterIntroDesc"), ModTranslation.getString("corruptedShifterShortDesc"), RoleId.Shifter, true);
+        public static RoleInfo teleporter = new RoleInfo("Teleporter", Teleporter.color, "Teleport Players", "Teleport Players", RoleId.Teleporter, true);
 
         public static RoleInfo hunter = new RoleInfo(ModTranslation.getString("hunter"), Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, ModTranslation.getString("hunterIntroDesc")), ModTranslation.getString("hunterShortDesc"), RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo(ModTranslation.getString("hunted"), Color.white, ModTranslation.getString("huntedIntroDesc"), ModTranslation.getString("huntedShortDesc"), RoleId.Crewmate);
@@ -162,6 +163,7 @@ namespace TheOtherRoles
             thief,
             opportunist,
             chainshifter,
+            teleporter,
             //prosecutor,
             crewmate,
             mayor,
@@ -261,6 +263,7 @@ namespace TheOtherRoles
             if (p == Spy.spy) infos.Add(spy);
             if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
             if (p == Bait.bait) infos.Add(bait);
+            if (p == Teleporter.teleporter) infos.Add(teleporter);
             if (p == Veteran.veteran) infos.Add(veteran);
             if (p == Sherlock.sherlock) infos.Add(sherlock);
             if (p == Sprinter.sprinter) infos.Add(sprinter);

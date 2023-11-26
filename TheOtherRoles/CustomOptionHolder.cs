@@ -355,6 +355,12 @@ namespace TheOtherRoles {
         public static CustomOption bomberHasOneVote;
         public static CustomOption bomberAlwaysShowArrow;
 
+        public static CustomOption TeleporterSpawnRate;
+        public static CustomOption TeleporterCooldown;
+        public static CustomOption TeleporterCanTeleportItSelf;
+        public static CustomOption TeleporterTeleportNumber;
+
+
         /*public static CustomOption trapperSpawnRate;
         public static CustomOption trapperCooldown;
         public static CustomOption trapperMaxCharges;
@@ -858,6 +864,13 @@ namespace TheOtherRoles {
             thiefHasImpVision = CustomOption.Create(403, Types.Neutral, ModTranslation.getString("thiefHasImpVision"), true, thiefSpawnRate);
             thiefCanUseVents = CustomOption.Create(404, Types.Neutral, ModTranslation.getString("thiefCanUseVents"), true, thiefSpawnRate);
             thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, ModTranslation.getString("thiefCanStealWithGuess"), false, thiefSpawnRate);
+
+
+            TeleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, "Teleporter"), rates, null, true);
+            TeleporterCooldown = CustomOption.Create(9001, Types.Crewmate,"Teleport Cooldown", 30f, 5f, 120f, 5f, TeleporterSpawnRate);
+            TeleporterCanTeleportItSelf = CustomOption.Create(9002, Types.Crewmate, "Teleporter Can Teleport Itself", true, TeleporterSpawnRate);
+            TeleporterTeleportNumber = CustomOption.Create(9003, Types.Crewmate, "Number Of Teleport", 3f, 1f, 10f, 1f, TeleporterSpawnRate);
+
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);

@@ -5,6 +5,7 @@ using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 using TheOtherRoles.Objects;
 using System.Linq;
+using TheOtherRoles.Modules;
 using System.Collections.Generic;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
@@ -74,6 +75,7 @@ namespace TheOtherRoles
         public static CustomButton bomberBReleaseBombButton;
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
+        private static CustomButton TeleportButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -95,6 +97,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text hackerVitalsChargesText;
         public static TMPro.TMP_Text sherlockNumInvestigateText;
         public static TMPro.TMP_Text sherlockNumKillTimerText;
+        public static TMPro.TMP_Text TeleporterButtonText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -170,6 +173,7 @@ namespace TheOtherRoles
             hunterAdminTableButton.MaxTimer = Hunter.AdminCooldown;
             hunterArrowButton.MaxTimer = Hunter.ArrowCooldown;
             huntedShieldButton.MaxTimer = Hunted.shieldCooldown;
+            TeleportButton.MaxTimer = Teleporter.teleportcooldown;
             //defuseButton.MaxTimer = 0f;
             //defuseButton.Timer = 0f;
 
@@ -563,6 +567,23 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F
             );
+
+            // Transporter Transport
+            TeleportButton = new CustomButton(
+                () =>
+                {
+                    TeleporteTeleport.Teleport();
+                },
+                () => { return Teleporter.teleporter != null && Teleporter.teleporter == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
+                () => { return Teleporter.teleporter != null && Teleporter.teleporter == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && Teleporter.teleportnumber >0; },
+                () => { },
+                Teleporter.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.T
+            );
+
+
 
             // Morphling morph
 
@@ -2266,7 +2287,7 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
-                    //¡¡Õ¼¤¤ŸÒÔÍâ¤ÎˆöºÏ¡¢¥ê¥½©`¥¹¤¬¤Ê¤¤ˆöºÏ¤Ï¥Ü¥¿¥ó¤ò±íÊ¾¤·¤Ê¤¤
+                    //ã€€å ã„å¸«ä»¥å¤–ã®å ´åˆã€ãƒªã‚½ãƒ¼ã‚¹ãŒãªã„å ´åˆã¯ãƒœã‚¿ãƒ³ã‚’è¡¨ç¤ºã—ãªã„
                     if (!TORMapOptions.playerIcons.ContainsKey(index) ||
                         !CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
@@ -2279,10 +2300,10 @@ namespace TheOtherRoles
                         return false;
                     }
 
-                    // ¥Ü¥¿¥ó¤ÎÎ»ÖÃ¤ò‰ä¸ü
+                    // ãƒœã‚¿ãƒ³ã®ä½ç½®ã‚’å¤‰æ›´
                     setButtonPos(index);
 
-                    // ¥Ü¥¿¥ó¤Ë¥Æ¥­¥¹¥È¤òÔO¶¨
+                    // ãƒœã‚¿ãƒ³ã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®š
                     bool status = true;
                     if (FortuneTeller.playerStatus.ContainsKey(index))
                     {
@@ -2300,7 +2321,7 @@ namespace TheOtherRoles
                         fortuneTellerButtons[index].buttonText = ModTranslation.getString("fortuneTellerDead");
                     }
 
-                    // ¥¢¥¤¥³¥ó¤ÎÎ»ÖÃ¤ÈÍ¸Ã÷¶È¤ò‰ä¸ü
+                    // ã‚¢ã‚¤ã‚³ãƒ³ã®ä½ç½®ã¨é€æ˜åº¦ã‚’å¤‰æ›´
                     setIconPos(index, !FortuneTeller.canDivine(index));
 
                     TORMapOptions.playerIcons[index].gameObject.SetActive(!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
