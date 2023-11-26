@@ -173,6 +173,7 @@ namespace TheOtherRoles
         SetTiebreak,
         SetInvisible,
         ThiefStealsRole,
+        TransporterTransport,
         //SetTrap,
         //TriggerTrap,
         MayorSetVoteTwice,
@@ -1100,7 +1101,16 @@ namespace TheOtherRoles
             Sidekick.clearAndReload();
             return;
         }
-        
+        public static void transporterTransport(byte targetId1, byte targetId2)
+        {
+            PlayerControl target1 = Helpers.playerById(targetId1);
+            PlayerControl target2 = Helpers.playerById(targetId2);
+            var player1Position = target1.transform.localPosition;
+            var player2Position = target2.transform.localPosition;
+            target1.transform.localPosition = player1Position;
+            target2.transform.localPosition = player2Position;
+        }
+
         public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false) {
             PlayerControl player = Helpers.playerById(playerId);
             if (player == null || (!player.canBeErased() && !isCreatedMadmate)) return;
@@ -2261,6 +2271,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.ShareGhostInfo:
                     RPCProcedure.receiveGhostInfo(reader.ReadByte(), reader);
+                    break;
+                case (byte)CustomRPC.TransporterTransport:
+                    RPCProcedure.transporterTransport(reader.ReadByte(), reader.ReadByte());
                     break;
 
 
