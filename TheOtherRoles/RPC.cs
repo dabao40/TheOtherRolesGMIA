@@ -76,6 +76,7 @@ namespace TheOtherRoles
         Lawyer, 
         //Prosecutor,
         Pursuer,
+        Moriarty,
         Witch,
         Assassin,
         Ninja, 
@@ -215,7 +216,9 @@ namespace TheOtherRoles
         ClearTrap,
         ActivateTrap,
         DisableTrap,
-        TrapperMeetingFlag
+        TrapperMeetingFlag,
+        SetBrainwash,
+        MoriartyKill
     }
 
     public static class RPCProcedure {
@@ -355,6 +358,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Camouflager:
                         Camouflager.camouflager = player;
+                        break;
+                    case RoleId.Moriarty:
+                        Moriarty.moriarty = player;
                         break;
                     case RoleId.Hacker:
                         Hacker.hacker = player;
@@ -864,6 +870,7 @@ namespace TheOtherRoles
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
+            if (player == Moriarty.moriarty) Moriarty.moriarty = oldShifter;
             if (player == Thief.thief) Thief.thief = oldShifter;
             if (player == Pursuer.pursuer) Pursuer.pursuer = oldShifter;
             if (player == Vulture.vulture) Vulture.vulture = oldShifter;
@@ -1184,6 +1191,7 @@ namespace TheOtherRoles
             if (player == Pursuer.pursuer) Pursuer.clearAndReload();
             if (player == Thief.thief) Thief.clearAndReload();
             if (player == Opportunist.opportunist) Opportunist.clearAndReload();
+            if (player == Moriarty.moriarty) Moriarty.clearAndReload();
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -1463,6 +1471,25 @@ namespace TheOtherRoles
         public static void trapperMeetingFlag()
         {
             Trap.onMeeting();
+        }
+
+        public static void setBrainwash(byte playerId)
+        {
+            var p = Helpers.playerById(playerId);
+            Moriarty.target = p;
+            Moriarty.brainwashed.Add(p);
+        }
+
+        public static void moriartyKill(byte targetId)
+        {
+            PlayerControl target = Helpers.playerById(targetId);
+            GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.BrainwashedKilled, Moriarty.moriarty);
+            if (PlayerControl.LocalPlayer == Moriarty.target)
+            {
+                if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
+            }
+            Moriarty.counter += 1;
+            if (Moriarty.numberToWin == Moriarty.counter) Moriarty.triggerMoriartyWin = true;
         }
 
         public static void plantBomb(byte playerId)
@@ -1774,6 +1801,11 @@ namespace TheOtherRoles
                 Sidekick.sidekick = thief;
                 Jackal.formerJackals.Add(target);
             }
+            if (target == Moriarty.moriarty)
+            {
+                Moriarty.moriarty = thief;
+                Moriarty.formerMoriarty = target;
+            }
             if (target == Guesser.evilGuesser) Guesser.evilGuesser = thief;
             if (target == Watcher.evilwatcher) Watcher.evilwatcher = thief;
             if (target == Godfather.godfather) Godfather.godfather = thief;
@@ -1876,7 +1908,6 @@ namespace TheOtherRoles
             ArsonistDouse,
             BountyTarget,
             AssassinMarked,
-            FortuneTellerDivined,
             WarlockTarget,
             MediumInfo,
             BlankUsed,
@@ -2222,6 +2253,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.TrapperKill:
                     RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.SetBrainwash:
+                    RPCProcedure.setBrainwash(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MoriartyKill:
+                    RPCProcedure.moriartyKill(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlantBomb:
                     RPCProcedure.plantBomb(reader.ReadByte());

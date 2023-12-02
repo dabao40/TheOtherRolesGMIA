@@ -12,6 +12,8 @@ using TheOtherRoles.CustomGameModes;
 using JetBrains.Annotations;
 using AsmResolver.PE.DotNet.StrongName;
 using TheOtherRoles.Patches;
+using static UnityEngine.GraphicsBuffer;
+using System.Diagnostics.Metrics;
 
 namespace TheOtherRoles
 {
@@ -75,6 +77,8 @@ namespace TheOtherRoles
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
         public static CustomButton trapperSetTrapButton;
+        public static CustomButton moriartyBrainwashButton;
+        public static CustomButton moriartyKillButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -96,6 +100,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text hackerVitalsChargesText;
         public static TMPro.TMP_Text sherlockNumInvestigateText;
         public static TMPro.TMP_Text sherlockNumKillTimerText;
+        public static TMPro.TMP_Text moriartyKillCounterText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -166,6 +171,8 @@ namespace TheOtherRoles
             bomberBReleaseBombButton.MaxTimer = 0f;
             evilHackerButton.MaxTimer = 0f;
             evilHackerCreatesMadmateButton.MaxTimer = 0f;
+            moriartyBrainwashButton.MaxTimer = Moriarty.brainwashCooldown;
+            moriartyKillButton.MaxTimer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -1112,6 +1119,12 @@ namespace TheOtherRoles
                     /*
                      * creates madmate
                      */
+                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == EvilHacker.currentTarget)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, EvilHacker.evilHacker);
+                        return;
+                    }
+
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EvilHackerCreatesMadmate, Hazel.SendOption.Reliable, -1);
                     writer.Write(EvilHacker.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1198,6 +1211,114 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F
             );
+
+            moriartyBrainwashButton = new CustomButton(
+                () =>
+                {
+                    if (Moriarty.currentTarget != null)
+                    {
+                        if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Moriarty.currentTarget)
+                        {
+                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Moriarty.moriarty);
+                            return;
+                        }
+
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBrainwash, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Moriarty.currentTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.setBrainwash(Moriarty.currentTarget.PlayerId);
+
+                        // 炴��皺賸引匹及市它件玄母它件
+                        TMPro.TMP_Text text;
+                        RoomTracker roomTracker = HudManager.Instance?.roomTracker;
+                        GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                        UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                        gameObject.transform.SetParent(HudManager.Instance.transform);
+                        gameObject.transform.localPosition = new Vector3(0, -1.3f, gameObject.transform.localPosition.z);
+                        gameObject.transform.localScale = Vector3.one * 3f;
+                        text = gameObject.GetComponent<TMPro.TMP_Text>();
+                        PlayerControl tmpP = Moriarty.target;
+                        bool done = false;
+                        HudManager.Instance.StartCoroutine(Effects.Lerp(Moriarty.brainwashTime, new Action<float>((p) =>
+                        {
+                            if (done)
+                            {
+                                return;
+                            }
+                            if (Moriarty.target == null || MeetingHud.Instance != null || p == 1f)
+                            {
+                                if (text != null && text.gameObject) UnityEngine.Object.Destroy(text.gameObject);
+                                if (Moriarty.target == tmpP) Moriarty.target = null;
+                                done = true;
+                                return;
+                            }
+                            else
+                            {
+                                string message = (Moriarty.brainwashTime - (p * Moriarty.brainwashTime)).ToString("0");
+                                bool even = ((int)(p * Moriarty.brainwashTime / 0.25f)) % 2 == 0; // Bool flips every 0.25 seconds
+                                // string prefix = even ? "<color=#555555FF>" : "<color=#FFFFFFFF>";
+                                string prefix = "<color=#555555FF>";
+                                text.text = prefix + message + "</color>";
+                                if (text != null) text.color = even ? Color.yellow : Color.red;
+
+                            }
+                        })));
+                    }
+                    Moriarty.tmpTarget = null;
+                    moriartyBrainwashButton.Timer = moriartyBrainwashButton.MaxTimer;
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Moriarty.moriarty && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Moriarty.target == null; },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Moriarty.currentTarget != null; },
+                () => { moriartyBrainwashButton.Timer = moriartyBrainwashButton.MaxTimer; },
+                Moriarty.getBrainwashIcon(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.F
+            );
+
+            moriartyKillButton = new CustomButton(
+                () =>
+                {
+
+                    MurderAttemptResult murder = Helpers.checkMurderAttemptAndKill(CachedPlayer.LocalPlayer.PlayerControl, Moriarty.killTarget, showAnimation: false);
+                    if (murder != MurderAttemptResult.BlankKill)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MoriartyKill, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Moriarty.killTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.moriartyKill(Moriarty.killTarget.PlayerId);
+                        Moriarty.target = null;
+                        moriartyBrainwashButton.Timer = moriartyBrainwashButton.MaxTimer;
+                    }
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Moriarty.moriarty && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    if (moriartyKillCounterText != null)
+                    {
+                        moriartyKillCounterText.text = $"{Moriarty.counter}/{Moriarty.numberToWin}";
+                    }
+                    return Moriarty.killTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    moriartyKillButton.Timer = moriartyKillButton.MaxTimer;
+                    Moriarty.brainwashed.Clear();
+                    Moriarty.target = null;
+                },
+                __instance.KillButton.graphic.sprite,
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.Q
+            );
+            moriartyKillCounterText = GameObject.Instantiate(moriartyKillButton.actionButton.cooldownTimerText, moriartyKillButton.actionButton.cooldownTimerText.transform.parent);
+            moriartyKillCounterText.text = "";
+            moriartyKillCounterText.enableWordWrapping = false;
+            moriartyKillCounterText.transform.localScale = Vector3.one * 0.5f;
+            moriartyKillCounterText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             placeJackInTheBoxButton = new CustomButton(
                 () => {
@@ -1617,7 +1738,7 @@ namespace TheOtherRoles
                 // OnEffectsEnd
                 () =>
                 {
-                    if (BomberA.tmpTarget == Mini.mini || (BomberB.bombTarget != null && BomberA.tmpTarget == BomberB.bombTarget))
+                    if ((BomberA.tmpTarget == Mini.mini && !Mini.isGrownUp()) || (BomberB.bombTarget != null && BomberA.tmpTarget == BomberB.bombTarget))
                     {
                         bomberAPlantBombButton.Timer = 0f;
                     }
@@ -1683,7 +1804,7 @@ namespace TheOtherRoles
                 // OnEffectsEnd
                 () =>
                 {
-                    if (BomberB.tmpTarget == Mini.mini || (BomberA.bombTarget != null && BomberB.tmpTarget == BomberA.bombTarget)) bomberBPlantBombButton.Timer = 0f;
+                    if ((BomberB.tmpTarget == Mini.mini && !Mini.isGrownUp()) || (BomberA.bombTarget != null && BomberB.tmpTarget == BomberA.bombTarget)) bomberBPlantBombButton.Timer = 0f;
                     else
                     {
                         if (BomberB.tmpTarget != null)

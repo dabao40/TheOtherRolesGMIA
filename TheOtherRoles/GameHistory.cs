@@ -17,6 +17,7 @@ namespace TheOtherRoles {
             WitchExile,
             Revenge, 
             Suicide,
+            BrainwashedKilled,
             Bomb,
             Arson,
         };
@@ -48,11 +49,6 @@ namespace TheOtherRoles {
 
         public static void overrideDeathReasonAndKiller(PlayerControl player, DeadPlayer.CustomDeathReason deathReason, PlayerControl killer = null) {
             var target = deadPlayers.FirstOrDefault(x => x.player.PlayerId == player.PlayerId);
-            /*if (player == NekoKabocha.nekoKabocha)
-            {
-                var NekoKabochakiller = new DeadPlayer(killer, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
-                deadPlayers.Add(NekoKabochakiller);
-            }*/
 
             if (target != null) {
                 target.deathReason = deathReason;

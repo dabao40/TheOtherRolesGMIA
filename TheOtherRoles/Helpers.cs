@@ -194,7 +194,7 @@ namespace TheOtherRoles {
                 player.myTasks.Insert(0, task);
             }
 
-            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate)
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate)
             {
                 var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
@@ -230,7 +230,7 @@ namespace TheOtherRoles {
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player)
+            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
                 (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks));
         }
@@ -468,6 +468,8 @@ namespace TheOtherRoles {
                 roleCouldUse = true;
             else if (CreatedMadmate.canEnterVents && CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == player)
                 roleCouldUse = true;
+            else if (Moriarty.moriarty != null && Moriarty.moriarty == player)
+                roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
@@ -684,8 +686,9 @@ namespace TheOtherRoles {
                 || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
                 || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)
                 || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision)
-                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision
-                || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision));
+                || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision)
+                || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision)
+                || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)

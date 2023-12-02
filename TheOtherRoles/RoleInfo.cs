@@ -54,7 +54,7 @@ namespace TheOtherRoles
         public static RoleInfo niceSwapper = new RoleInfo(ModTranslation.getString("niceSwapper"), Swapper.color, ModTranslation.getString("niceSwapperIntroDesc"), ModTranslation.getString("niceSwapperShortDesc"), RoleId.Swapper);
         public static RoleInfo seer = new RoleInfo(ModTranslation.getString("seer"), Seer.color, ModTranslation.getString("seerIntroDesc"), ModTranslation.getString("seerShortDesc"), RoleId.Seer);
         public static RoleInfo hacker = new RoleInfo(ModTranslation.getString("hacker"), Hacker.color, ModTranslation.getString("hackerIntroDesc"), ModTranslation.getString("hackerShortDesc"), RoleId.Hacker);
-        public static RoleInfo niceshifter = new RoleInfo(ModTranslation.getString("shifter"), Shifter.color, ModTranslation.getString("shifterIntroDesc"), ModTranslation.getString("shifterShortDesc"), RoleId.Shifter);
+        public static RoleInfo niceshifter = new RoleInfo(ModTranslation.getString("niceShifter"), Shifter.color, ModTranslation.getString("shifterIntroDesc"), ModTranslation.getString("shifterShortDesc"), RoleId.Shifter);
         public static RoleInfo tracker = new RoleInfo(ModTranslation.getString("tracker"), Tracker.color, ModTranslation.getString("trackerIntroDesc"), ModTranslation.getString("trackerShortDesc"), RoleId.Tracker);
         public static RoleInfo snitch = new RoleInfo(ModTranslation.getString("snitch"), Snitch.color, ModTranslation.getString("snitchIntroDesc"), ModTranslation.getString("snitchShortDesc"), RoleId.Snitch);
         public static RoleInfo jackal = new RoleInfo(ModTranslation.getString("jackal"), Jackal.color, ModTranslation.getString("jackalIntroDesc"), ModTranslation.getString("jackalShortDesc"), RoleId.Jackal, true);
@@ -101,6 +101,7 @@ namespace TheOtherRoles
         public static RoleInfo evilYasuna = new RoleInfo(ModTranslation.getString("evilYasuna"), Palette.ImpostorRed, ModTranslation.getString("evilYasunaIntroDesc"), ModTranslation.getString("evilYasunaShortDesc"), RoleId.EvilYasuna);
         public static RoleInfo opportunist = new RoleInfo(ModTranslation.getString("opportunist"), Opportunist.color, ModTranslation.getString("opportunistIntroDesc"), ModTranslation.getString("opportunistShortDesc"), RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new RoleInfo(ModTranslation.getString("corruptedShifter"), Shifter.color, ModTranslation.getString("corruptedShifterIntroDesc"), ModTranslation.getString("corruptedShifterShortDesc"), RoleId.Shifter, true);
+        public static RoleInfo moriarty = new RoleInfo(ModTranslation.getString("moriarty"), Moriarty.color, ModTranslation.getString("moriartyIntroDesc"), ModTranslation.getString("moriartyShortDesc"), RoleId.Moriarty, true);
 
         public static RoleInfo hunter = new RoleInfo(ModTranslation.getString("hunter"), Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, ModTranslation.getString("hunterIntroDesc")), ModTranslation.getString("hunterShortDesc"), RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo(ModTranslation.getString("hunted"), Color.white, ModTranslation.getString("huntedIntroDesc"), ModTranslation.getString("huntedShortDesc"), RoleId.Crewmate);
@@ -164,6 +165,7 @@ namespace TheOtherRoles
             thief,
             opportunist,
             chainshifter,
+            moriarty,
             //prosecutor,
             crewmate,
             mayor,
@@ -267,6 +269,7 @@ namespace TheOtherRoles
             if (p == Sherlock.sherlock) infos.Add(sherlock);
             if (p == Sprinter.sprinter) infos.Add(sprinter);
             if (p == Yasuna.yasuna) infos.Add(p.Data.Role.IsImpostor ? evilYasuna : yasuna);
+            if (p == Moriarty.moriarty || p == Moriarty.formerMoriarty) infos.Add(moriarty);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -331,14 +334,14 @@ namespace TheOtherRoles
                 if (getRoleInfoForPlayer(p, true, includeHidden).Contains(crewmate))
                 {
                     roleName = useColors ? Helpers.cs(Madmate.color, Madmate.fullName) : Madmate.fullName;
-                    if (showModifier) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
+                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
                 }
                 else
                 {
                     string prefix = useColors ? Helpers.cs(Madmate.color, Madmate.prefix) : Madmate.prefix;
                     roleName = string.Join(" ", getRoleInfoForPlayer(p, false, includeHidden).Select(x => useColors ? Helpers.cs(Madmate.color, x.name) : x.name).ToArray());
                     roleName = prefix + roleName;
-                    if (showModifier) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
+                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
                 }
             }
 
@@ -419,6 +422,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Suicide:
                                     deathReasonString = ModTranslation.getString("roleSummarySuicide");
+                                    break;
+                                case DeadPlayer.CustomDeathReason.BrainwashedKilled:
+                                    deathReasonString = string.Format(ModTranslation.getString("roleSummaryBrainwashedKilled"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                 //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

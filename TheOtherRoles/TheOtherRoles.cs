@@ -87,6 +87,7 @@ namespace TheOtherRoles
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
             Opportunist.clearAndReload();
+            Moriarty.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -3032,6 +3033,131 @@ namespace TheOtherRoles
         }
     }
 
+    public static class Moriarty
+    {
+        public static PlayerControl moriarty;
+        public static PlayerControl formerMoriarty;
+        public static Color color = Color.green;
+
+        public static PlayerControl tmpTarget;
+        public static PlayerControl target;
+        public static PlayerControl currentTarget;
+        public static PlayerControl killTarget;
+        public static List<PlayerControl> brainwashed;
+
+        public static int counter;
+
+        public static float brainwashTime = 2f;
+        public static float brainwashCooldown = 30f;
+        public static int numberToWin = 3;
+
+        public static Sprite brainwashIcon;
+
+        public static List<Arrow> arrows = new();
+        public static float updateTimer = 0f;
+        public static float arrowUpdateInterval = 0.5f;
+        public static TMPro.TMP_Text targetPositionText;
+
+        public static bool triggerMoriartyWin = false;
+
+        public static Sprite getBrainwashIcon()
+        {
+            if (brainwashIcon) return brainwashIcon;
+            brainwashIcon = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BrainwashButton.png", 115f);
+            return brainwashIcon;
+        }
+
+        public static void arrowUpdate()
+        {
+
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null && arrow.arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrows一覧
+                arrows = new List<Arrow>();
+                // ターゲットの位置を示すArrowを描画
+                if (target != null && !target.Data.IsDead)
+                {
+                    Arrow arrow = new(Palette.CrewmateBlue);
+                    arrow.arrow.SetActive(true);
+                    arrow.Update(target.transform.position);
+                    arrows.Add(arrow);
+                    if (targetPositionText == null)
+                    {
+                        RoomTracker roomTracker = HudManager.Instance?.roomTracker;
+                        if (roomTracker == null) return;
+                        GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                        UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                        gameObject.transform.SetParent(HudManager.Instance.transform);
+                        gameObject.transform.localPosition = new Vector3(0, -2.0f, gameObject.transform.localPosition.z);
+                        gameObject.transform.localScale = Vector3.one * 1.0f;
+                        targetPositionText = gameObject.GetComponent<TMPro.TMP_Text>();
+                        targetPositionText.alpha = 1.0f;
+                    }
+                    PlainShipRoom room = Helpers.getPlainShipRoom(target);
+                    targetPositionText.gameObject.SetActive(true);
+                    int nearestPlayer = 0;
+                    foreach (var p in PlayerControl.AllPlayerControls)
+                    {
+                        if (p != target && !p.Data.IsDead)
+                        {
+                            float dist = Vector2.Distance(p.transform.position, target.transform.position);
+                            if (dist < 7f) nearestPlayer += 1;
+                        }
+                    }
+                    if (room != null)
+                    {
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}({nearestPlayer})(" + DestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                    }
+                    else
+                    {
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}({nearestPlayer})</color>";
+                    }
+                }
+                else
+                {
+                    if (targetPositionText != null)
+                    {
+                        targetPositionText.text = "";
+                    }
+                }
+
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            moriarty = null;
+            formerMoriarty = null;
+            tmpTarget = null;
+            target = null;
+            currentTarget = null;
+            killTarget = null;
+            brainwashed = new List<PlayerControl> ();
+            counter = 0;
+            triggerMoriartyWin = false;
+            brainwashCooldown = CustomOptionHolder.moriartyBrainwashCooldown.getFloat();
+            brainwashTime = CustomOptionHolder.moriartyBrainwashTime.getFloat();
+            numberToWin = (int)CustomOptionHolder.moriartyNumberToWin.getFloat();
+        }
+    }
+
     public static class Opportunist
     {
         public static PlayerControl opportunist;
@@ -3136,11 +3262,8 @@ namespace TheOtherRoles
                 if (player.cosmetics.hat != null)
                     player.cosmetics.hat.SpriteColor = color;
 
-                if (player.cosmetics.currentPet?.rend != null)
-                    player.cosmetics.currentPet.rend.color = color;
-
-                if (player.cosmetics.currentPet?.shadowRend != null)
-                    player.cosmetics.currentPet.shadowRend.color = color;
+                player.cosmetics.currentPet.renderers[0].color = color;
+                player.cosmetics.currentPet.shadows[0].color = color;
 
                 if (player.cosmetics.visor != null)
                     player.cosmetics.visor.Image.color = color;
@@ -3271,11 +3394,8 @@ namespace TheOtherRoles
                 if (player.cosmetics.hat != null)
                     player.cosmetics.hat.SpriteColor = color;
 
-                if (player.cosmetics.currentPet?.rend != null)
-                    player.cosmetics.currentPet.rend.color = color;
-
-                if (player.cosmetics.currentPet?.shadowRend != null)
-                    player.cosmetics.currentPet.shadowRend.color = color;
+                player.cosmetics.currentPet.renderers[0].color = color;
+                player.cosmetics.currentPet.shadows[0].color = color;
 
                 if (player.cosmetics.visor != null)
                     player.cosmetics.visor.Image.color = color;
@@ -3356,7 +3476,7 @@ namespace TheOtherRoles
         }
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
-            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick }.Contains(targetRole);
+            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty }.Contains(targetRole);
         }
     }
 
@@ -3675,8 +3795,8 @@ namespace TheOtherRoles
                     chameleonPlayer.SetHatAndVisorAlpha(visibility);
                     chameleonPlayer.cosmetics.skin.layer.color = chameleonPlayer.cosmetics.skin.layer.color.SetAlpha(visibility);
                     chameleonPlayer.cosmetics.nameText.color = chameleonPlayer.cosmetics.nameText.color.SetAlpha(visibility);
-                    chameleonPlayer.cosmetics.currentPet.rend.color = chameleonPlayer.cosmetics.currentPet.rend.color.SetAlpha(petVisibility);
-                    chameleonPlayer.cosmetics.currentPet.shadowRend.color = chameleonPlayer.cosmetics.currentPet.shadowRend.color.SetAlpha(petVisibility);
+                    chameleonPlayer.cosmetics.currentPet.renderers[0].color = chameleonPlayer.cosmetics.currentPet.renderers[0].color.SetAlpha(petVisibility);
+                    chameleonPlayer.cosmetics.currentPet.shadows[0].color = chameleonPlayer.cosmetics.currentPet.shadows[0].color.SetAlpha(petVisibility);
                 } catch { }
             }
                 
