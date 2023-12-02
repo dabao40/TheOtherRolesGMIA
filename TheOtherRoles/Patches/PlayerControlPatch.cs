@@ -513,6 +513,15 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void moriartySetTarget()
+        {
+            if (Moriarty.moriarty == null || Moriarty.moriarty != CachedPlayer.LocalPlayer.PlayerControl) return;
+            Moriarty.currentTarget = setTarget();
+            if (Moriarty.target != null) Moriarty.killTarget = setTarget(targetingPlayer: Moriarty.target);
+            else Moriarty.killTarget = null;
+            setPlayerOutline(Moriarty.currentTarget, Moriarty.color);
+        }
+
         static void warlockSetTarget() {
             if (Warlock.warlock == null || Warlock.warlock != CachedPlayer.LocalPlayer.PlayerControl) return;
             if (Warlock.curseVictim != null && (Warlock.curseVictim.Data.Disconnected || Warlock.curseVictim.Data.IsDead)) {
@@ -1162,6 +1171,12 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void moriartyUpdate()
+        {
+            if (Moriarty.moriarty == null || CachedPlayer.LocalPlayer.PlayerControl != Moriarty.moriarty || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) return;
+            Moriarty.arrowUpdate();
+        }
+
         public static void impostorArrowUpdate()
         {
             if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
@@ -1564,6 +1579,9 @@ namespace TheOtherRoles.Patches {
                 // Madmate
                 madmateUpdate(__instance);
                 createdMadmateUpdate(__instance);
+                // Moriarty
+                moriartySetTarget();
+                moriartyUpdate();
                 //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
@@ -1628,6 +1646,15 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(CachedPlayer.LocalPlayer.PlayerControl.CmdReportDeadBody))]
     class BodyReportPatch
     {
+        static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo target)
+        {
+            if (Moriarty.brainwashed.FindAll(x => x.PlayerId == __instance.PlayerId).Count > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
         static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo target)
         {
             // Medic or Detective report
