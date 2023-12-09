@@ -36,7 +36,9 @@ Before play the game, you might need to complete a few steps.
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 2023.10.24s        | v1.1.26     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/v1.1.26) |
+| 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
+| 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
+| 2023.10.24s        | v1.1.26     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.26) |
 | 2023.7.12s         | v1.1.0      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0) |
 | 2023.7.12s         | v1.0.9      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.9) |
 | 2023.7.12s         | v1.0.8      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.8) |
