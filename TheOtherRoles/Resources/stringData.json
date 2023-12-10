@@ -2613,6 +2613,10 @@
         "0": "Moriarty Wins",
         "13": "\u7834\u706d\u5145\u65a5\u7740\u6574\u4e2a\u4e16\u754c\uff01\u554a\u54c8\u54c8\u54c8\u54c8\u2026\u2026"
     },
+    "akujoWin": {
+        "0": "Akujo Wins",
+        "13": "\u574f\u5973\u4eba\uff01"
+    },
     "everyoneDied": {
         "0": "Everyone Died",
         "11": "\u305d\u3057\u3066\u8ab0\u3082\u3044\u306a\u304f\u306a\u3063\u305f...",
@@ -2657,6 +2661,10 @@
     "moriartyWinExtra": {
         "0": "Moriarty {0} Win",
         "13": "\u83ab\u91cc\u4e9a\u8482 {0} \u80dc\u5229"
+    },
+    "akujoWinExtra": {
+        "0": "Akujo {0} Win",
+        "13": "\u9b45\u9b54 {0} \u80dc\u5229"
     },
     "everyoneDiedExtra": {
         "0": "Everyone Died {0}",
@@ -2725,6 +2733,14 @@
         "0": "left",
         "13": "\u5269\u4f59"
     },
+    "roleInfoHonmei": {
+        "0": "True Love ",
+        "13": "\u771f\u7231 "
+    },
+    "roleInfoBackup": {
+        "0": "Backup ",
+        "13": "\u5907\u80ce "
+    },
     "roleSummaryText": {
         "0": "Players and roles at the end of the game:",
         "11": "\u8a66\u5408\u7d42\u4e86\u6642\u306e\u9078\u624b\u3068\u5f79\u5272",
@@ -2784,6 +2800,14 @@
     "roleSummaryShift": {
         "0": "shifted",
         "13": "\u4ea4\u6362"
+    },
+    "roleSummaryLoveStolen": {
+        "0": "love stolen",
+        "13": "\u7231\u4eba\u88ab\u593a"
+    },
+    "roleSummaryLoneliness": {
+        "0": "too lonely",
+        "13": "\u7cbe\u529b\u8870\u7aed"
     },
     "roleSummaryBrainwashedKilled": {
         "0": " - <color=#00FF00FF>brainwashed killed</color> by {0}",
@@ -3644,6 +3668,30 @@
     "moriartyNumberToWin": {
         "0": "Number Of Kills Required",
         "13": "\u83ab\u91cc\u4e9a\u8482\u9700\u8981\u51fb\u6740\u73a9\u5bb6\u6570\u91cf"
+    },
+    "akujo": {
+        "0": "Akujo",
+        "13": "\u9b45\u9b54"
+    },
+    "akujoIntroDesc": {
+        "0": "Use your wiles to manipulate the crew into protecting you",
+        "13": "\u8ba9\u6211\u4eec\u6765\u505a\u4e00\u4e9b\"\u5feb\u4e50\"\u7684\u4e8b\u5427"
+    },
+    "akujoShortDesc": {
+        "0": "Use your wiles to manipulate the crew into protecting you",
+        "13": "\u52fe\u5f15\u4ed6\u4eba\uff0c\u4e0e\u771f\u7231\u6d3b\u5230\u6700\u540e"
+    },
+    "akujoTimeLimit": {
+        "0": "Akujo Time Limit",
+        "13": "\u9b45\u9b54\u9009\u62e9\u771f\u7231\u5907\u80ce\u65f6\u95f4\u9650\u5236"
+    },
+    "akujoNumKeeps": {
+        "0": "Akujo Number Of Keeps",
+        "13": "\u9b45\u9b54\u53ef\u9009\u62e9\u5907\u80ce\u6570\u91cf"
+    },
+    "akujoKnowsRoles": {
+        "0": "Akujo Knows The Roles Of True Love/Backup",
+        "13": "\u9b45\u9b54\u77e5\u9053\u771f\u7231/\u5907\u80ce\u804c\u4e1a"
     },
     "colorSalmon": {
         "0": "Salmon",
