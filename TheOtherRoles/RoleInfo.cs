@@ -102,6 +102,7 @@ namespace TheOtherRoles
         public static RoleInfo opportunist = new RoleInfo(ModTranslation.getString("opportunist"), Opportunist.color, ModTranslation.getString("opportunistIntroDesc"), ModTranslation.getString("opportunistShortDesc"), RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new RoleInfo(ModTranslation.getString("corruptedShifter"), Shifter.color, ModTranslation.getString("corruptedShifterIntroDesc"), ModTranslation.getString("corruptedShifterShortDesc"), RoleId.Shifter, true);
         public static RoleInfo moriarty = new RoleInfo(ModTranslation.getString("moriarty"), Moriarty.color, ModTranslation.getString("moriartyIntroDesc"), ModTranslation.getString("moriartyShortDesc"), RoleId.Moriarty, true);
+        public static RoleInfo akujo = new RoleInfo(ModTranslation.getString("akujo"), Akujo.color, ModTranslation.getString("akujoIntroDesc"), ModTranslation.getString("akujoShortDesc"), RoleId.Akujo, true);
 
         public static RoleInfo hunter = new RoleInfo(ModTranslation.getString("hunter"), Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, ModTranslation.getString("hunterIntroDesc")), ModTranslation.getString("hunterShortDesc"), RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo(ModTranslation.getString("hunted"), Color.white, ModTranslation.getString("huntedIntroDesc"), ModTranslation.getString("huntedShortDesc"), RoleId.Crewmate);
@@ -165,6 +166,7 @@ namespace TheOtherRoles
             thief,
             opportunist,
             chainshifter,
+            akujo,
             moriarty,
             //prosecutor,
             crewmate,
@@ -270,6 +272,7 @@ namespace TheOtherRoles
             if (p == Sprinter.sprinter) infos.Add(sprinter);
             if (p == Yasuna.yasuna) infos.Add(p.Data.Role.IsImpostor ? evilYasuna : yasuna);
             if (p == Moriarty.moriarty || p == Moriarty.formerMoriarty) infos.Add(moriarty);
+            if (p == Akujo.akujo) infos.Add(akujo);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -379,6 +382,10 @@ namespace TheOtherRoles
                         roleName = roleName + Helpers.cs(Arsonist.color, $" ({CachedPlayer.AllPlayers.Count(x => { return x.PlayerControl != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
                     if (p == Jackal.fakeSidekick)
                         roleName = Helpers.cs(Sidekick.color, ModTranslation.getString("roleInfoFakeSD")) + roleName;
+                    if (Akujo.keeps.Contains(p))
+                        roleName = Helpers.cs(Color.gray, ModTranslation.getString("roleInfoBackup")) + roleName;
+                    if (p == Akujo.honmei)
+                        roleName = Helpers.cs(Akujo.color, ModTranslation.getString("roleInfoHonmei")) + roleName;
 
                     // Death Reason on Ghosts
                     if (p.Data.IsDead) {
@@ -425,6 +432,12 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.BrainwashedKilled:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryBrainwashedKilled"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
+                                    break;
+                                case DeadPlayer.CustomDeathReason.LoveStolen:
+                                    deathReasonString = $" - {Helpers.cs(Lovers.color, ModTranslation.getString("roleSummaryLoveStolen"))}";
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Loneliness:
+                                    deathReasonString = $" - {Helpers.cs(Akujo.color, ModTranslation.getString("roleSummaryLoneliness"))}";
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                 //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

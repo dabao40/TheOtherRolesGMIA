@@ -344,6 +344,11 @@ namespace TheOtherRoles {
         public static CustomOption moriartyBrainwashCooldown;
         public static CustomOption moriartyNumberToWin;
 
+        public static CustomOption akujoSpawnRate;
+        public static CustomOption akujoTimeLimit;
+        public static CustomOption akujoKnowsRoles;
+        public static CustomOption akujoNumKeeps;
+
         public static CustomOption yasunaSpawnRate;
         public static CustomOption yasunaIsImpYasunaRate;
         public static CustomOption yasunaNumberOfSpecialVotes;
@@ -740,7 +745,12 @@ namespace TheOtherRoles {
             shifterShiftsModifiers = CustomOption.Create(1101, Types.Neutral, ModTranslation.getString("shifterShiftsModifiers"), false, shifterSpawnRate);
             shifterPastShifters = CustomOption.Create(6008, Types.Neutral, ModTranslation.getString("shifterPastShifters"), false, shifterSpawnRate);
 
-            opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, ModTranslation.getString("opportunist")), rates, null, true);                        
+            opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, ModTranslation.getString("opportunist")), rates, null, true);
+
+            akujoSpawnRate = CustomOption.Create(8100, Types.Neutral, cs(Akujo.color, ModTranslation.getString("akujo")), rates, null, true);
+            akujoTimeLimit = CustomOption.Create(8101, Types.Neutral, ModTranslation.getString("akujoTimeLimit"), 300f, 30f, 1200f, 30f, akujoSpawnRate);
+            akujoNumKeeps = CustomOption.Create(8102, Types.Neutral, ModTranslation.getString("akujoNumKeeps"), 2f, 1f, 10f, 1f, akujoSpawnRate);
+            akujoKnowsRoles = CustomOption.Create(8103, Types.Neutral, ModTranslation.getString("akujoKnowsRoles"), true, akujoSpawnRate);
 
             mayorSpawnRate = CustomOption.Create(80, Types.Crewmate, cs(Mayor.color, ModTranslation.getString("mayor")), rates, null, true);
             mayorCanSeeVoteColors = CustomOption.Create(81, Types.Crewmate, ModTranslation.getString("mayorCanSeeVoteColor"), false, mayorSpawnRate);

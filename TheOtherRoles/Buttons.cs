@@ -14,6 +14,7 @@ using AsmResolver.PE.DotNet.StrongName;
 using TheOtherRoles.Patches;
 using static UnityEngine.GraphicsBuffer;
 using System.Diagnostics.Metrics;
+using UnityEngine.SocialPlatforms;
 
 namespace TheOtherRoles
 {
@@ -79,6 +80,8 @@ namespace TheOtherRoles
         public static CustomButton trapperSetTrapButton;
         public static CustomButton moriartyBrainwashButton;
         public static CustomButton moriartyKillButton;
+        public static CustomButton akujoHonmeiButton;
+        public static CustomButton akujoBackupButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -101,6 +104,8 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text sherlockNumInvestigateText;
         public static TMPro.TMP_Text sherlockNumKillTimerText;
         public static TMPro.TMP_Text moriartyKillCounterText;
+        public static TMPro.TMP_Text akujoTimeRemainingText;
+        public static TMPro.TMP_Text akujoBackupLeftText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -173,6 +178,8 @@ namespace TheOtherRoles
             evilHackerCreatesMadmateButton.MaxTimer = 0f;
             moriartyBrainwashButton.MaxTimer = Moriarty.brainwashCooldown;
             moriartyKillButton.MaxTimer = 0f;
+            akujoHonmeiButton.MaxTimer = 0f;
+            akujoBackupButton.MaxTimer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -2058,6 +2065,67 @@ namespace TheOtherRoles
             sherlockNumKillTimerText.enableWordWrapping = false;
             sherlockNumKillTimerText.transform.localScale = Vector3.one * 0.5f;
             sherlockNumKillTimerText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            // Akujo Honmei
+            akujoHonmeiButton = new CustomButton(
+                () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetHonmei, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Akujo.akujo.PlayerId);
+                    writer.Write(Akujo.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.akujoSetHonmei(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, Akujo.currentTarget.PlayerId);
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Akujo.honmei == null && Akujo.timeLeft > 0; },
+                () =>
+                {                    
+                    return CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Akujo.currentTarget != null && Akujo.honmei == null && Akujo.timeLeft > 0;
+                },
+                () => { akujoHonmeiButton.Timer = akujoHonmeiButton.MaxTimer; },
+                Akujo.getHonmeiSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.F
+            );
+            akujoTimeRemainingText = GameObject.Instantiate(akujoHonmeiButton.actionButton.cooldownTimerText, __instance.transform);
+            akujoTimeRemainingText.text = "";
+            akujoTimeRemainingText.enableWordWrapping = false;
+            akujoTimeRemainingText.transform.localScale = Vector3.one * 0.45f;
+            akujoTimeRemainingText.transform.localPosition = akujoHonmeiButton.actionButton.cooldownTimerText.transform.parent.localPosition + new Vector3(-0.1f, 0.35f, 0f);
+
+            // Akujo Keep
+            akujoBackupButton = new CustomButton(
+                () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetKeep, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Akujo.akujo.PlayerId);
+                    writer.Write(Akujo.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.akujoSetKeep(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, Akujo.currentTarget.PlayerId);
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Akujo.keepsLeft > 0 && Akujo.timeLeft > 0; },
+                () =>
+                {
+                    if (akujoBackupLeftText != null)
+                    {
+                        if (Akujo.keepsLeft > 0)
+                            akujoBackupLeftText.text = Akujo.keepsLeft.ToString();
+                        else
+                            akujoBackupLeftText.text = "";
+                    }
+                    return CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Akujo.currentTarget != null && Akujo.keepsLeft > 0 && Akujo.timeLeft > 0;
+                },
+                () => { akujoBackupButton.Timer = akujoBackupButton.MaxTimer; },
+                Akujo.getKeepSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.K
+            );
+            akujoBackupLeftText = GameObject.Instantiate(akujoBackupButton.actionButton.cooldownTimerText, akujoBackupButton.actionButton.cooldownTimerText.transform.parent);
+            akujoBackupLeftText.text = "";
+            akujoBackupLeftText.enableWordWrapping = false;
+            akujoBackupLeftText.transform.localScale = Vector3.one * 0.5f;
+            akujoBackupLeftText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             // Mimic(Assistant) Morph
             mimicAMorphButton = new CustomButton(

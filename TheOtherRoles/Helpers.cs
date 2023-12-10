@@ -232,7 +232,7 @@ namespace TheOtherRoles {
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks));
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo);
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -627,7 +627,8 @@ namespace TheOtherRoles {
                 player != Vulture.vulture && 
                 player != Lawyer.lawyer && 
                 player != Pursuer.pursuer &&
-                player != Opportunist.opportunist);
+                player != Opportunist.opportunist &&
+                player != Akujo.akujo);
 
         }
 

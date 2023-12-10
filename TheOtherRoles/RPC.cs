@@ -77,6 +77,7 @@ namespace TheOtherRoles
         //Prosecutor,
         Pursuer,
         Moriarty,
+        Akujo,
         Witch,
         Assassin,
         Ninja, 
@@ -218,7 +219,10 @@ namespace TheOtherRoles
         DisableTrap,
         TrapperMeetingFlag,
         SetBrainwash,
-        MoriartyKill
+        MoriartyKill,
+        AkujoSetHonmei,
+        AkujoSetKeep,
+        AkujoSuicide
     }
 
     public static class RPCProcedure {
@@ -346,6 +350,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.NiceWatcher:
                         Watcher.nicewatcher = player;
+                        break;
+                    case RoleId.Akujo:
+                        Akujo.akujo = player;
                         break;
                     case RoleId.Swapper:
                         Swapper.swapper = player;
@@ -877,6 +884,7 @@ namespace TheOtherRoles
             if (player == Jackal.jackal) Jackal.jackal = oldShifter;
             if (player == Sidekick.sidekick) Sidekick.sidekick = oldShifter;
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
+            if (player == Akujo.akujo) Akujo.akujo = oldShifter;
 
             if (Lawyer.lawyer != null && Lawyer.target == player)
             {
@@ -1192,6 +1200,7 @@ namespace TheOtherRoles
             if (player == Thief.thief) Thief.clearAndReload();
             if (player == Opportunist.opportunist) Opportunist.clearAndReload();
             if (player == Moriarty.moriarty) Moriarty.clearAndReload();
+            if (player == Akujo.akujo) Akujo.clearAndReload();
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -1436,6 +1445,41 @@ namespace TheOtherRoles
             TaskMaster.allExTasks = allExTasks;
         }
 
+        public static void akujoSetHonmei(byte akujoId, byte targetId)
+        {
+            PlayerControl akujo = Helpers.playerById(akujoId);
+            PlayerControl target = Helpers.playerById(targetId);
+
+            if (akujo != null && Akujo.honmei == null)
+            {
+                Akujo.honmei = target;
+                Akujo.breakLovers(target);
+            }
+        }
+
+        public static void akujoSetKeep(byte akujoId, byte targetId)
+        {
+            var akujo = Helpers.playerById(akujoId);
+            PlayerControl target = Helpers.playerById(targetId);
+
+            if (akujo != null && Akujo.keepsLeft > 0)
+            {
+                Akujo.keeps.Add(target);
+                Akujo.breakLovers(target);
+                Akujo.keepsLeft--;
+            }
+        }
+
+        public static void akujoSuicide(byte akujoId)
+        {
+            var akujo = Helpers.playerById(akujoId);
+            if (akujo != null)
+            {
+                akujo.MurderPlayer(akujo, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(akujo, DeadPlayer.CustomDeathReason.Loneliness);
+            }
+        }
+
         public static void activateTrap(byte trapId, byte trapperId, byte playerId)
         {
             var trapper = Helpers.playerById(trapperId);
@@ -1623,6 +1667,7 @@ namespace TheOtherRoles
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
             PlayerControl dyingMimicPartner;
             PlayerControl dyingBomberPartner;
+            PlayerControl dyingAkujoPartner;
             byte NekoKabochaKillerId = byte.MaxValue;
             if (dyingTarget == null ) return;
             bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
@@ -1654,6 +1699,9 @@ namespace TheOtherRoles
             }
             else dyingBomberPartner = null;
 
+            if ((Akujo.akujo != null && dyingTarget == Akujo.akujo) || (Akujo.honmei != null && dyingTarget == Akujo.honmei)) dyingAkujoPartner = dyingTarget == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
+            else dyingAkujoPartner = null;
+
             if (Lawyer.target != null && dyingTarget == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
             if (Yasuna.yasuna != null && dyingTarget == Yasuna.yasuna) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
             if (Yasuna.yasuna != null && dyingTarget.PlayerId == Yasuna.specialVoteTargetPlayerId) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
@@ -1674,6 +1722,7 @@ namespace TheOtherRoles
             byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
             byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
             byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
+            byte akujoPartnerId = dyingAkujoPartner != null ? dyingAkujoPartner.PlayerId : byte.MaxValue;
             //byte nKkillerId = (NekoKabocha.meetingKiller != null && revengeFlag) ? NekoKabocha.meetingKiller.PlayerId : dyingTargetId;
 
             HandleGuesser.remainingShots(killerId, true);
@@ -1681,7 +1730,7 @@ namespace TheOtherRoles
             if (MeetingHud.Instance) {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, dyingTargetId);
                 foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
-                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId) {
+                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId) {
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
                     }
@@ -1715,6 +1764,12 @@ namespace TheOtherRoles
                 else if (dyingMimicPartner != null && CachedPlayer.LocalPlayer.PlayerControl == dyingMimicPartner)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingMimicPartner.Data, dyingMimicPartner.Data);
+                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                }
+
+                else if (dyingAkujoPartner != null && CachedPlayer.LocalPlayer.PlayerControl == dyingAkujoPartner)
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingAkujoPartner.Data, dyingAkujoPartner.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
 
@@ -2189,6 +2244,15 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.VeteranKill:
                     RPCProcedure.veteranKill(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.AkujoSetHonmei:
+                    RPCProcedure.akujoSetHonmei(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.AkujoSetKeep:
+                    RPCProcedure.akujoSetKeep(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.AkujoSuicide:
+                    RPCProcedure.akujoSuicide(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.UndertakerDragBody:
                     var bodyId = reader.ReadByte();

@@ -18,6 +18,8 @@ namespace TheOtherRoles {
             Revenge, 
             Suicide,
             BrainwashedKilled,
+            LoveStolen,
+            Loneliness,
             Bomb,
             Arson,
         };
