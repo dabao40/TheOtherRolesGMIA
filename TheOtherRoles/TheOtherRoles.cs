@@ -14,6 +14,7 @@ using JetBrains.Annotations;
 using Steamworks;
 using TheOtherRoles.Patches;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UIElements;
 
 namespace TheOtherRoles
 {
@@ -3324,8 +3325,11 @@ namespace TheOtherRoles
                 if (player.cosmetics.hat != null)
                     player.cosmetics.hat.SpriteColor = color;
 
-                player.cosmetics.currentPet.renderers[0].color = color;
-                player.cosmetics.currentPet.shadows[0].color = color;
+                //player.cosmetics.currentPet.renderers[0].color = color;
+                //player.cosmetics.currentPet.shadows[0].color = color;
+
+                if (player.GetPet() != null)
+                    player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
 
                 if (player.cosmetics.visor != null)
                     player.cosmetics.visor.Image.color = color;
@@ -3456,8 +3460,11 @@ namespace TheOtherRoles
                 if (player.cosmetics.hat != null)
                     player.cosmetics.hat.SpriteColor = color;
 
-                player.cosmetics.currentPet.renderers[0].color = color;
-                player.cosmetics.currentPet.shadows[0].color = color;
+                //player.cosmetics.currentPet.renderers[0].color = color;
+                //player.cosmetics.currentPet.shadows[0].color = color;
+
+                if (player.GetPet() != null)
+                    player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
 
                 if (player.cosmetics.visor != null)
                     player.cosmetics.visor.Image.color = color;
@@ -3837,6 +3844,7 @@ namespace TheOtherRoles
         public static void update() {
             foreach (var chameleonPlayer in chameleon) {
                 //if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
+                //if ((chameleonPlayer == Ninja.ninja && Ninja.stealthed) || (chameleonPlayer == Sprinter.sprinter && Sprinter.sprinting)) continue;
                 // check movement by animation
                 PlayerPhysics playerPhysics = chameleonPlayer.MyPhysics;
                 var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();
@@ -3857,8 +3865,12 @@ namespace TheOtherRoles
                     chameleonPlayer.SetHatAndVisorAlpha(visibility);
                     chameleonPlayer.cosmetics.skin.layer.color = chameleonPlayer.cosmetics.skin.layer.color.SetAlpha(visibility);
                     chameleonPlayer.cosmetics.nameText.color = chameleonPlayer.cosmetics.nameText.color.SetAlpha(visibility);
-                    chameleonPlayer.cosmetics.currentPet.renderers[0].color = chameleonPlayer.cosmetics.currentPet.renderers[0].color.SetAlpha(petVisibility);
-                    chameleonPlayer.cosmetics.currentPet.shadows[0].color = chameleonPlayer.cosmetics.currentPet.shadows[0].color.SetAlpha(petVisibility);
+                    foreach (var rend in chameleonPlayer.cosmetics.currentPet.renderers) rend.color = rend.color.SetAlpha(petVisibility);
+                    foreach (var shadowRend in chameleonPlayer.cosmetics.currentPet.shadows) shadowRend.color = shadowRend.color.SetAlpha(petVisibility);
+
+                    //if (chameleonPlayer.cosmetics.skin.layer.color == chameleonPlayer.cosmetics.skin.layer.color.SetAlpha(visibility) && visibility == minVisibility) TheOtherRolesPlugin.Logger.LogMessage("Chameleon");
+                    //chameleonPlayer.cosmetics.currentPet.renderers[0].color = chameleonPlayer.cosmetics.currentPet.renderers[0].color.SetAlpha(petVisibility);
+                    //chameleonPlayer.cosmetics.currentPet.shadows[0].color = chameleonPlayer.cosmetics.currentPet.shadows[0].color.SetAlpha(petVisibility);
                 } catch { }
             }
                 
