@@ -134,6 +134,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Vulture, CustomOptionHolder.vultureSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Thief, CustomOptionHolder.thiefSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Moriarty, CustomOptionHolder.moriartySpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Akujo, CustomOptionHolder.akujoSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -571,7 +572,7 @@ namespace TheOtherRoles.Patches {
                 impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor || x == NekoKabocha.nekoKabocha);
                 if (MimicK.ifOneDiesBothDie) impPlayer.RemoveAll(y => y == MimicK.mimicK || y == MimicA.mimicA);
                 if (BomberA.ifOneDiesBothDie) impPlayer.RemoveAll(z => z == BomberA.bomberA || z == BomberB.bomberB);
-                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller);
+                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller || x == Akujo.akujo);
 
                 if (isEvilLover) firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, impPlayer);
                 else firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer);
@@ -693,6 +694,20 @@ namespace TheOtherRoles.Patches {
                 playerList.RemoveAll(x => x.PlayerId == playerId);
                 modifiers.RemoveAll(x => x == RoleId.Shifter);
             }*/
+            if (modifiers.Contains(RoleId.Chameleon))
+            {
+                var chameleonPlayer = new List<PlayerControl>(playerList);
+                chameleonPlayer.RemoveAll(x => x == Sprinter.sprinter || x == Ninja.ninja);
+                int chameleonCount = 0;
+                while (chameleonCount < modifiers.FindAll(x => x == RoleId.Chameleon).Count)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Chameleon, chameleonPlayer);
+                    playerList.RemoveAll(x => x.PlayerId == playerId);
+                    chameleonPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    chameleonCount++;
+                }
+                modifiers.RemoveAll(x => x == RoleId.Chameleon);
+            }
             if (modifiers.Contains(RoleId.Madmate))
             {
                 var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
