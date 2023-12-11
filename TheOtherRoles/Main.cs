@@ -55,6 +55,7 @@ namespace TheOtherRoles
         public static ConfigEntry<string> Ip { get; set; }
         public static ConfigEntry<ushort> Port { get; set; }
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
+        public static ConfigEntry<bool> ToggleCursor { get; set; }
 
         public static Sprite ModStamp;
 
@@ -103,6 +104,7 @@ namespace TheOtherRoles
             GhostsSeeVotes = Config.Bind("Custom", "Ghosts See Votes", true);
             ShowRoleSummary = Config.Bind("Custom", "Show Role Summary", true);
             ShowLighterDarker = Config.Bind("Custom", "Show Lighter / Darker", true);
+            ToggleCursor = Config.Bind("Custom", "Better Cursor", true);
             EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
@@ -120,6 +122,7 @@ namespace TheOtherRoles
             CustomColors.Load();
             CustomHatManager.LoadHats();
             AssetLoader.LoadAudioAssets();
+            if (ToggleCursor.Value) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();

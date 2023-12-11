@@ -3213,7 +3213,7 @@ namespace TheOtherRoles
             keeps = new List<PlayerControl>();
             currentTarget = null;
             startTime = DateTime.UtcNow;
-            timeLimit = CustomOptionHolder.akujoTimeLimit.getFloat() + 1000f;
+            timeLimit = CustomOptionHolder.akujoTimeLimit.getFloat() + 360f;
             knowsRoles = CustomOptionHolder.akujoKnowsRoles.getBool();
             timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
             numKeeps = Math.Min((int)CustomOptionHolder.akujoNumKeeps.getFloat(), PlayerControl.AllPlayerControls.Count - 2);
