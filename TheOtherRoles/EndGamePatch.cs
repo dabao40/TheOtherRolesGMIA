@@ -384,6 +384,7 @@ namespace TheOtherRoles.Patches {
                 {
                     poolablePlayer.SetBodyAsGhost();
                     poolablePlayer.SetDeadFlipX(i % 2 == 0);
+                   
                 }
                 else {
                     poolablePlayer.SetFlipX(i % 2 == 0);

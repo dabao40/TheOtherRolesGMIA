@@ -1646,14 +1646,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1665,10 +1665,10 @@ namespace TheOtherRoles
 
                 //if (MimicK.mimicK == null) return;
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
 
-                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
                 /*foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -1689,7 +1689,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicA.mimicA.transform.position);
                 arrows.Add(arrow);
 
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1756,14 +1756,14 @@ namespace TheOtherRoles
                 return;
             }
 
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1775,7 +1775,7 @@ namespace TheOtherRoles
 
                 //if (MimicA.mimicA == null) return;
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
                 if (MimicK.mimicK.Data.IsDead || MimicK.mimicK == null) return;
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
@@ -1783,7 +1783,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicK.mimicK.transform.position);
                 arrows.Add(arrow);
 
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1928,7 +1928,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // Õ¼¤¤¤òŒgÐÐ¤·¤¿¤³¤È¤Ç°k»ð¤µ¤ì¤ë„IÀí¤òËû¥¯¥é¥¤¥¢¥ó¥È¤ËÍ¨Öª
+            // Õ¼ï¿½ï¿½ï¿½ï¿½gï¿½Ð¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤Ç°kï¿½ð¤µ¤ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¥¤ï¿½ï¿½ï¿½ï¿½È¤ï¿½Í¨Öª
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
@@ -2134,14 +2134,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2151,10 +2151,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
                 /*if (BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberB.bomberB.transform.position);
@@ -2172,7 +2172,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2201,7 +2201,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
+                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
                 if (BomberB.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberB.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId];
@@ -2285,7 +2285,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
+                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
                 if (BomberA.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberA.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId];
@@ -2315,14 +2315,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2332,10 +2332,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
                 /*if (BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 
                 arrow.arrow.SetActive(true);
@@ -2353,7 +2353,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2751,14 +2751,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -2768,10 +2768,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
 
-                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
                 int count = 0;
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
@@ -2817,7 +2817,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
+                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -2855,7 +2855,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3073,14 +3073,14 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
 
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
+            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
+            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -3090,9 +3090,9 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // ArrowsÒ»ï¿½E
                 arrows = new List<Arrow>();
-                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
+                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -3139,7 +3139,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
                 updateTimer = arrowUpdateInterval;
             }
         }
