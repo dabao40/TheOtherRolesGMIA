@@ -468,7 +468,8 @@ namespace TheOtherRoles {
         public static CustomOption dynamicMapEnableAirShip;
         public static CustomOption dynamicMapEnableSubmerged;
         public static CustomOption dynamicMapSeparateSettings;
-
+         // Fungle Settings
+        public static CustomOption invisiblezipline;
         //Guesser Gamemode
         public static CustomOption guesserGamemodeCrewNumber;
         public static CustomOption guesserGamemodeNeutralNumber;
@@ -1035,6 +1036,8 @@ namespace TheOtherRoles {
             dynamicMapEnableAirShip = CustomOption.Create(504, Types.General, "Airship", rates, dynamicMap, false);
             dynamicMapEnableSubmerged = CustomOption.Create(505, Types.General, "Submerged", rates, dynamicMap, false);
             dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, "Use Random Map Setting Presets", false, dynamicMap, false);
+       
+            invisiblezipline = CustomOption.Create(510, Types.General, "Disable Zipline", false, dynamicMap, false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});
