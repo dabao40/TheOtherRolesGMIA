@@ -135,6 +135,8 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Thief, CustomOptionHolder.thiefSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Moriarty, CustomOptionHolder.moriartySpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Akujo, CustomOptionHolder.akujoSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.PlagueDoctor, CustomOptionHolder.plagueDoctorSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.JekyllAndHyde, CustomOptionHolder.jekyllAndHydeSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -694,6 +696,21 @@ namespace TheOtherRoles.Patches {
                 playerList.RemoveAll(x => x.PlayerId == playerId);
                 modifiers.RemoveAll(x => x == RoleId.Shifter);
             }*/
+            if (modifiers.Contains(RoleId.Chameleon))
+            {
+                var chameleonPlayer = new List<PlayerControl>(playerList);
+                chameleonPlayer.RemoveAll(x => x == Sprinter.sprinter || x == Ninja.ninja);
+                int chameleonCount = 0;
+                while (chameleonCount < modifiers.FindAll(x => x == RoleId.Chameleon).Count)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Chameleon, chameleonPlayer);
+                    crewPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    playerList.RemoveAll(x => x.PlayerId == playerId);
+                    //chameleonPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    chameleonCount++;
+                }
+                modifiers.RemoveAll(x => x == RoleId.Chameleon);
+            }
             if (modifiers.Contains(RoleId.Madmate))
             {
                 var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
@@ -709,7 +726,7 @@ namespace TheOtherRoles.Patches {
                     playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
                     crewPlayer.RemoveAll(x => x.PlayerId == playerId);
                     playerList.RemoveAll(x => x.PlayerId == playerId);
-                    crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
+                    //crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
                     madmateCount++;
                 }
                 modifiers.RemoveAll(x => x == RoleId.Madmate);

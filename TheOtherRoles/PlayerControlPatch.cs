@@ -576,6 +576,140 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void plagueDoctorSetTarget()
+        {
+            if (PlagueDoctor.plagueDoctor == null || CachedPlayer.LocalPlayer.PlayerControl != PlagueDoctor.plagueDoctor) return;
+            if (!PlagueDoctor.plagueDoctor.Data.IsDead && PlagueDoctor.numInfections > 0)
+            {
+                PlagueDoctor.currentTarget = setTarget(untargetablePlayers: PlagueDoctor.infected.Values.ToList());
+                setPlayerOutline(PlagueDoctor.currentTarget, PlagueDoctor.color);
+            }
+        }
+
+        public static void plagueDoctorUpdate()
+        {
+            if (MeetingHud.Instance != null)
+            {
+                if (PlagueDoctor.statusText != null)
+                {
+                    PlagueDoctor.statusText.gameObject.SetActive(false);
+                }
+            }
+
+            if (PlagueDoctor.plagueDoctor != null && (CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead))
+            {
+                if (PlagueDoctor.statusText == null)
+                {
+                    GameObject gameObject = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance?.roomTracker.gameObject);
+                    gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                    gameObject.SetActive(true);
+                    UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                    PlagueDoctor.statusText = gameObject.GetComponent<TMPro.TMP_Text>();
+                    gameObject.transform.localPosition = new Vector3(-2.7f, -0.1f, gameObject.transform.localPosition.z);
+
+                    PlagueDoctor.statusText.transform.localScale = new Vector3(1f, 1f, 1f);
+                    PlagueDoctor.statusText.fontSize = 1.5f;
+                    PlagueDoctor.statusText.fontSizeMin = 1.5f;
+                    PlagueDoctor.statusText.fontSizeMax = 1.5f;
+                    PlagueDoctor.statusText.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                    PlagueDoctor.statusText.alpha = byte.MaxValue;
+                }
+
+                PlagueDoctor.statusText.gameObject.SetActive(true);
+                string text = $"[{ModTranslation.getString("plagueDoctorProgress")}]\n";
+
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p == PlagueDoctor.plagueDoctor) continue;
+                    if (PlagueDoctor.dead.ContainsKey(p.PlayerId) && PlagueDoctor.dead[p.PlayerId]) continue;
+                    text += $"{p.name}: ";
+                    if (PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                    {
+                        text += Helpers.cs(Color.red, ModTranslation.getString("plagueDoctorInfectedText"));
+                    }
+                    else
+                    {
+                        // データが無い場合は作成する
+                        if (!PlagueDoctor.progress.ContainsKey(p.PlayerId))
+                        {
+                            PlagueDoctor.progress[p.PlayerId] = 0f;
+                        }
+                        text += PlagueDoctor.getProgressString(PlagueDoctor.progress[p.PlayerId]);
+                    }
+                    text += "\n";
+                }
+
+                PlagueDoctor.statusText.text = text;
+            }
+
+            if (PlagueDoctor.plagueDoctor != null && CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor)
+            {
+                if (!PlagueDoctor.meetingFlag && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead))
+                {
+                    List<PlayerControl> newInfected = new List<PlayerControl>();
+                    foreach (PlayerControl target in CachedPlayer.AllPlayers)
+                    {
+                        if (target == PlagueDoctor.plagueDoctor || target.Data.IsDead || PlagueDoctor.infected.ContainsKey(target.PlayerId) || target.inVent) continue;
+                        if (!PlagueDoctor.progress.ContainsKey(target.PlayerId)) PlagueDoctor.progress[target.PlayerId] = 0f;
+
+                        foreach (PlayerControl source in PlagueDoctor.infected.Values.ToList())
+                        {
+                            if (source.Data.IsDead) continue;
+                            float distance = Vector3.Distance(source.transform.position, target.transform.position);
+                            bool anythingBetween = PhysicsHelpers.AnythingBetween(source.GetTruePosition(), target.GetTruePosition(), Constants.ShipAndObjectsMask, false);
+
+                            if (distance <= PlagueDoctor.infectDistance && !anythingBetween)
+                            {
+                                PlagueDoctor.progress[target.PlayerId] += Time.fixedDeltaTime;
+
+                                // 他のクライアントに進行状況を通知する
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, Hazel.SendOption.Reliable, -1);
+                                writer.Write(target.PlayerId);
+                                writer.Write(PlagueDoctor.progress[target.PlayerId]);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                                // Only update a player's infection once per FixedUpdate
+                                break;
+                            }
+                        }
+
+                        if (PlagueDoctor.progress[target.PlayerId] > PlagueDoctor.infectDuration)
+                        {
+                            newInfected.Add(target);
+                        }
+
+                        foreach (PlayerControl p in newInfected)
+                        {
+                            byte targetId = p.PlayerId;
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
+                            writer.Write(targetId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.plagueDoctorInfected(targetId);
+                        }
+
+                        bool winFlag = true;
+                        foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                        {
+                            if (p.Data.IsDead) continue;
+                            if (p == PlagueDoctor.plagueDoctor) continue;
+                            if (!PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                            {
+                                winFlag = false;
+                                break;
+                            }
+                        }
+
+                        if (winFlag)
+                        {
+                            MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                            RPCProcedure.plagueDoctorWin();
+                        }
+                    }
+                }
+            }
+        }
+
         static void trackerUpdate() {
             // Handle player tracking
             if (Tracker.arrow?.arrow != null) {
@@ -895,6 +1029,13 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void jekyllAndHydeSetTarget()
+        {
+            if (JekyllAndHyde.jekyllAndHyde == null || CachedPlayer.LocalPlayer.PlayerControl != JekyllAndHyde.jekyllAndHyde || JekyllAndHyde.jekyllAndHyde.Data.IsDead || JekyllAndHyde.isJekyll()) return;
+            JekyllAndHyde.currentTarget = setTarget();
+            setPlayerOutline(JekyllAndHyde.currentTarget, JekyllAndHyde.color);
+        }
+
         public static void trapperUpdate()
         {
             try
@@ -1096,7 +1237,7 @@ namespace TheOtherRoles.Patches {
             if (Akujo.honmei != null) untargetables.Add(Akujo.honmei);
             if (Akujo.keeps != null) untargetables.AddRange(Akujo.keeps);
             Akujo.currentTarget = setTarget(untargetablePlayers: untargetables);
-            setPlayerOutline(Akujo.currentTarget, Akujo.color);
+            if (Akujo.honmei == null || Akujo.keepsLeft > 0) setPlayerOutline(Akujo.currentTarget, Akujo.color);
         }
 
         public static void akujoUpdate()
@@ -1622,6 +1763,11 @@ namespace TheOtherRoles.Patches {
                 // Moriarty
                 moriartySetTarget();
                 moriartyUpdate();
+                // Plague Doctor
+                plagueDoctorSetTarget();
+                plagueDoctorUpdate();
+                // Jekyll and Hyde
+                jekyllAndHydeSetTarget();
                 // Akujo
                 akujoSetTarget();
                 akujoUpdate();
@@ -1773,7 +1919,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate)
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate || target == JekyllAndHyde.jekyllAndHyde)
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1836,6 +1982,13 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
                 SerialKiller.isCountDown = true;
                 //HudManagerStartPatch.serialKillerButton.isEffectActive = true;
+            }
+
+            if (JekyllAndHyde.jekyllAndHyde != null && CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && __instance == JekyllAndHyde.jekyllAndHyde && target != JekyllAndHyde.jekyllAndHyde)
+            {
+                JekyllAndHyde.counter++;
+                if (JekyllAndHyde.counter >= JekyllAndHyde.numberToWin) JekyllAndHyde.triggerWin = true;
+                HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
             }
 
             // Trapper peforms normal kills
@@ -1918,6 +2071,36 @@ namespace TheOtherRoles.Patches {
             if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
             {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+            }
+
+            // Plague Doctor infect killer
+            if (PlagueDoctor.plagueDoctor != null && target == PlagueDoctor.plagueDoctor && PlagueDoctor.infectKiller)
+            {
+                byte targetId = __instance.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
+                writer.Write(targetId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.plagueDoctorInfected(targetId);
+
+                // Force Plague Doctor trigger victory condition if the killer is the last one that is not infected
+                bool winFlag = true;
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    if (p == PlagueDoctor.plagueDoctor) continue;
+                    if (!PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                    {
+                        winFlag = false;
+                        break;
+                    }
+                }
+
+                if (winFlag)
+                {
+                    MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                    RPCProcedure.plagueDoctorWin();
+                }
             }
 
             // Mimic(Killer) morph into victim
@@ -2117,7 +2300,7 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate)
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate || __instance == JekyllAndHyde.jekyllAndHyde)
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile

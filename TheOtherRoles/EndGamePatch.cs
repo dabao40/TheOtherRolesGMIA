@@ -19,7 +19,9 @@ namespace TheOtherRoles.Patches {
         ArsonistWin = 14,
         VultureWin = 15,
         MoriartyWin = 16,
-        AkujoWin = 17
+        AkujoWin = 17,
+        PlagueDoctorWin = 18,
+        JekyllAndHydeWin = 19
         //ProsecutorWin = 16
     }
 
@@ -40,6 +42,8 @@ namespace TheOtherRoles.Patches {
         ImpostorWin, 
         MoriartyWin,
         AkujoWin,
+        PlagueDoctorWin,
+        JekyllAndHydeWin,
         EveryoneDied
         //ProsecutorWin
     }
@@ -50,6 +54,8 @@ namespace TheOtherRoles.Patches {
         public static List<WinCondition> additionalWinConditions = new List<WinCondition>();
         public static List<PlayerRoleInfo> playerRoles = new List<PlayerRoleInfo>();
         public static float timer = 0;
+        public static Dictionary<int, PlayerControl> plagueDoctorInfected = new Dictionary<int, PlayerControl>();
+        public static Dictionary<int, float> plagueDoctorProgress = new Dictionary<int, float>();
 
         public static void clear() {
             playerRoles.Clear();
@@ -68,6 +74,7 @@ namespace TheOtherRoles.Patches {
             public int ExTasksTotal { get; set; }
             public bool IsGuesser {get; set;}
             public int? Kills {get; set;}
+            public byte PlayerId { get; set;}
             public bool IsAlive { get; set; }
             public bool IsMadmate { get; set;}
         }
@@ -94,17 +101,20 @@ namespace TheOtherRoles.Patches {
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
                 bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId) || playerControl.PlayerId == CreatedMadmate.createdMadmate?.PlayerId;
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
-                if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief, RoleInfo.moriarty }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
+                if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief, RoleInfo.moriarty, RoleInfo.jekyllAndHyde }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
                     killCount = null;
                     }
+                byte playerId = playerControl.PlayerId;
                 bool isTaskMaster = TaskMaster.isTaskMaster(playerControl.PlayerId);
                 bool isTaskMasterExTasks = isTaskMaster && TaskMaster.isTaskComplete;
                 string roleString = RoleInfo.GetRolesString(playerControl, true, true, false, true);
                 AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString ,TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
                     ExTasksTotal = isTaskMasterExTasks ? TaskMaster.allExTasks : isTaskMaster ? TaskMasterTaskHelper.GetTaskMasterTasks() : 0,
                     ExTasksCompleted = isTaskMasterExTasks ? TaskMaster.clearExTasks : 0,
-                    IsGuesser = isGuesser, Kills = killCount, IsAlive = !playerControl.Data.IsDead, IsMadmate = isMadmate });
+                    IsGuesser = isGuesser, Kills = killCount, PlayerId = playerId, IsAlive = !playerControl.Data.IsDead, IsMadmate = isMadmate });
             }
+            AdditionalTempData.plagueDoctorInfected = PlagueDoctor.infected;
+            AdditionalTempData.plagueDoctorProgress = PlagueDoctor.progress;
 
             // Remove Jester, Opportunist, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
             List<PlayerControl> notWinners = new List<PlayerControl>();
@@ -121,6 +131,9 @@ namespace TheOtherRoles.Patches {
             if (Moriarty.moriarty != null) notWinners.Add(Moriarty.moriarty);
             if (Moriarty.formerMoriarty != null) notWinners.Add(Moriarty.formerMoriarty);
             if (Akujo.akujo != null) notWinners.Add(Akujo.akujo);
+            if (PlagueDoctor.plagueDoctor != null) notWinners.Add(PlagueDoctor.plagueDoctor);
+            if (JekyllAndHyde.jekyllAndHyde != null) notWinners.Add(JekyllAndHyde.jekyllAndHyde);
+            if (JekyllAndHyde.formerJekyllAndHyde != null) notWinners.Add(JekyllAndHyde.formerJekyllAndHyde);
 
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -148,6 +161,8 @@ namespace TheOtherRoles.Patches {
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
             bool moriartyWin = Moriarty.moriarty != null && gameOverReason == (GameOverReason)CustomGameOverReason.MoriartyWin;
             bool akujoWin = Akujo.akujo != null && gameOverReason == (GameOverReason)CustomGameOverReason.AkujoWin && (Akujo.honmei != null && !Akujo.honmei.Data.IsDead && !Akujo.akujo.Data.IsDead);
+            bool plagueDoctorWin = PlagueDoctor.plagueDoctor != null && gameOverReason == (GameOverReason)CustomGameOverReason.PlagueDoctorWin;
+            bool jekyllAndHydeWin = JekyllAndHyde.jekyllAndHyde != null && gameOverReason == (GameOverReason)CustomGameOverReason.JekyllAndHydeWin;
             bool everyoneDead = AdditionalTempData.playerRoles.All(x => !x.IsAlive);
             //bool prosecutorWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.ProsecutorWin;
 
@@ -209,6 +224,42 @@ namespace TheOtherRoles.Patches {
                 AdditionalTempData.winCondition = WinCondition.ArsonistWin;
             }
 
+            else if (plagueDoctorWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(PlagueDoctor.plagueDoctor.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.PlagueDoctorWin;
+            }
+
+            else if (jekyllAndHydeWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(JekyllAndHyde.jekyllAndHyde.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.JekyllAndHydeWin;
+
+                if (JekyllAndHyde.formerJekyllAndHyde != null)
+                {
+                    WinningPlayerData wpdFormerJekyllAndHyde = new WinningPlayerData(JekyllAndHyde.formerJekyllAndHyde.Data);
+                    TempData.winners.Add(wpdFormerJekyllAndHyde);
+                }
+            }
+
+            else if (moriartyWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(Moriarty.moriarty.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.MoriartyWin;
+
+                if (Moriarty.formerMoriarty != null)
+                {
+                    WinningPlayerData wpdFormerMoriarty = new WinningPlayerData(Moriarty.formerMoriarty.Data);
+                    TempData.winners.Add(wpdFormerMoriarty);
+                }
+            }
+
             // Everyone Died
             else if (everyoneDead)
             {
@@ -231,7 +282,7 @@ namespace TheOtherRoles.Patches {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                 TempData.winners.Add(new WinningPlayerData(Akujo.akujo.Data));
                 TempData.winners.Add(new WinningPlayerData(Akujo.honmei.Data));
-            }
+            }            
 
             // Jester win
             /*else if (prosecutorWin) {
@@ -285,21 +336,7 @@ namespace TheOtherRoles.Patches {
                     wpdFormerJackal.IsImpostor = false; 
                     TempData.winners.Add(wpdFormerJackal);
                 }
-            }
-
-            else if (moriartyWin)
-            {
-                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
-                WinningPlayerData wpd = new WinningPlayerData(Moriarty.moriarty.Data);
-                TempData.winners.Add(wpd);
-                AdditionalTempData.winCondition = WinCondition.MoriartyWin;
-
-                if (Moriarty.formerMoriarty != null)
-                {
-                    WinningPlayerData wpdFormerMoriarty = new WinningPlayerData(Moriarty.formerMoriarty.Data);
-                    TempData.winners.Add(wpdFormerMoriarty);
-                }
-            }
+            }            
 
             // Possible Additional winner: Lawyer
             // && !Lawyer.isProsecutor
@@ -384,7 +421,6 @@ namespace TheOtherRoles.Patches {
                 {
                     poolablePlayer.SetBodyAsGhost();
                     poolablePlayer.SetDeadFlipX(i % 2 == 0);
-                   
                 }
                 else {
                     poolablePlayer.SetFlipX(i % 2 == 0);
@@ -434,6 +470,20 @@ namespace TheOtherRoles.Patches {
                 textRenderer.text = ModTranslation.getString("vultureWin");
                 textRenderer.color = Vulture.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Vulture.color);
+            }
+            else if (AdditionalTempData.winCondition == WinCondition.PlagueDoctorWin)
+            {
+                nonModTranslationText = "plagueDoctorWin";
+                textRenderer.text = ModTranslation.getString("plagueDoctorWin");
+                textRenderer.color = PlagueDoctor.color;
+                __instance.BackgroundBar.material.SetColor("_Color", PlagueDoctor.color);
+            }
+            else if (AdditionalTempData.winCondition == WinCondition.JekyllAndHydeWin)
+            {
+                nonModTranslationText = "jekyllAndHydeWin";
+                textRenderer.text = ModTranslation.getString("jekyllAndHydeWin");
+                textRenderer.color = JekyllAndHyde.color;
+                __instance.BackgroundBar.material.SetColor("_Color", JekyllAndHyde.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin)
             {
@@ -527,14 +577,28 @@ namespace TheOtherRoles.Patches {
                     roleSummaryText.AppendLine($"<color=#FAD934FF>Time: {minutes:00}:{seconds:00}</color> \n");
                 }
                 roleSummaryText.AppendLine(ModTranslation.getString("roleSummaryText"));
-                foreach(var data in AdditionalTempData.playerRoles) {
+                bool plagueExists = AdditionalTempData.playerRoles.Any(x => x.Roles.Contains(RoleInfo.plagueDoctor));
+                foreach (var data in AdditionalTempData.playerRoles) {
                     //var roles = string.Join(" ", data.Roles.Select(x => Helpers.cs(x.color, x.name)));
                     string roles = data.RoleNames;
                     //if (data.IsGuesser) roles += " (Guesser)";
                     var taskInfo = data.TasksTotal > 0 ? $" - <color=#FAD934FF>({data.TasksCompleted}/{data.TasksTotal})</color>" : "";
                     var exTaskInfo = data.ExTasksTotal > 0 ? $" - Ex <color=#E1564BFF>({data.ExTasksCompleted}/{data.ExTasksTotal})</color>" : "";
                     if (data.Kills != null) taskInfo += String.Format(ModTranslation.getString("roleSummaryKillsInfo"), data.Kills);
-                    roleSummaryText.AppendLine($"{Helpers.cs(data.IsAlive ? Color.white : new Color(.7f,.7f,.7f), data.PlayerName)} - {roles}{taskInfo}{exTaskInfo}"); 
+                    string infectionInfo = "";
+                    if (plagueExists && !data.Roles.Contains(RoleInfo.plagueDoctor))
+                    {                        
+                        if (AdditionalTempData.plagueDoctorInfected.ContainsKey(data.PlayerId))
+                        {
+                            infectionInfo += " - " + Helpers.cs(Color.red, ModTranslation.getString("plagueDoctorInfectedText"));
+                        }
+                        else
+                        {
+                            float progress = AdditionalTempData.plagueDoctorProgress.ContainsKey(data.PlayerId) ? AdditionalTempData.plagueDoctorProgress[data.PlayerId] : 0f;
+                            infectionInfo += " - " + PlagueDoctor.getProgressString(progress);
+                        }
+                    }
+                    roleSummaryText.AppendLine($"{Helpers.cs(data.IsAlive ? Color.white : new Color(.7f,.7f,.7f), data.PlayerName)} - {roles}{taskInfo}{exTaskInfo}{infectionInfo}"); 
                 }
                 TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();
                 roleSummaryTextMesh.alignment = TMPro.TextAlignmentOptions.TopLeft;
@@ -562,13 +626,15 @@ namespace TheOtherRoles.Patches {
             if (CheckAndEndGameForJesterWin(__instance)) return false;
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
             if (CheckAndEndGameForVultureWin(__instance)) return false;
+            if (CheckAndEndGameForPlagueDoctorWin(__instance)) return false;
+            if (CheckAndEndGameForJekyllAndHydeWin(__instance, statistics)) return false;
+            if (CheckAndEndGameForMoriartyWin(__instance, statistics)) return false;
             if (CheckAndEndGameForSabotageWin(__instance)) return false;
             if (CheckAndEndGameForTaskWin(__instance)) return false;
             //if (CheckAndEndGameForProsecutorWin(__instance)) return false;
             if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
             if (CheckAndEndGameForAkujoWin(__instance, statistics)) return false;
             if (CheckAndEndGameForJackalWin(__instance, statistics)) return false;
-            if (CheckAndEndGameForMoriartyWin(__instance, statistics)) return false;
             if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
             if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
             return false;
@@ -608,7 +674,28 @@ namespace TheOtherRoles.Patches {
                 return true;
             }
             return false;
-        }        
+        }
+
+        private static bool CheckAndEndGameForPlagueDoctorWin(ShipStatus __instance)
+        {
+            if (PlagueDoctor.triggerPlagueDoctorWin)
+            {
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.PlagueDoctorWin, false);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckAndEndGameForJekyllAndHydeWin(ShipStatus __instance, PlayerStatistics statistics)
+        {
+            if (JekyllAndHyde.triggerWin || (statistics.TeamJekyllAndHydeAlive >= statistics.TotalAlive - statistics.TeamJekyllAndHydeAlive &&
+                        statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0))
+            {
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.JekyllAndHydeWin, false);
+                return true;
+            }
+            return false;
+        }
 
         private static bool CheckAndEndGameForSabotageWin(ShipStatus __instance) {
             if (MapUtilities.Systems == null) return false;
@@ -675,7 +762,7 @@ namespace TheOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForJackalWin(ShipStatus __instance, PlayerStatistics statistics) {
-            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && !(statistics.TeamJackalHasAliveLover && statistics.TeamLoversAlive == 2)) {
+            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamJackalHasAliveLover && statistics.TeamLoversAlive == 2)) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.TeamJackalWin, false);
                 return true;
@@ -685,7 +772,7 @@ namespace TheOtherRoles.Patches {
 
         private static bool CheckAndEndGameForMoriartyWin(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if ((statistics.TeamMoriartyAlive >= statistics.TotalAlive - statistics.TeamMoriartyAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamJackalAlive == 0) || Moriarty.triggerMoriartyWin)
+            if ((statistics.TeamMoriartyAlive >= statistics.TotalAlive - statistics.TeamMoriartyAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0) || Moriarty.triggerMoriartyWin)
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.MoriartyWin, false);
                 return true;
@@ -697,7 +784,7 @@ namespace TheOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM) 
                 if ((0 != statistics.TotalAlive - statistics.TeamImpostorsAlive)) return false;
 
-            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && !(statistics.TeamImpostorHasAliveLover && statistics.TeamLoversAlive == 2)) {
+            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamImpostorHasAliveLover && statistics.TeamLoversAlive == 2)) {
                 //__instance.enabled = false;
                 GameOverReason endReason;
                 switch (TempData.LastDeathReason) {
@@ -723,7 +810,7 @@ namespace TheOtherRoles.Patches {
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
                 return true;
             }
-            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0) {
+            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
                 return true;
@@ -744,6 +831,7 @@ namespace TheOtherRoles.Patches {
         public int TeamJackalAlive {get;set;}
         public int TeamSheriffAlive { get; set; }
         public int TeamMoriartyAlive { get; set; }
+        public int TeamJekyllAndHydeAlive { get;set; }
         public int TeamLoversAlive {get;set;}
         public int TeamAkujoAlive { get;set; }
         public int TotalAlive {get;set;}
@@ -763,6 +851,7 @@ namespace TheOtherRoles.Patches {
             int numImpostorsAlive = 0;
             int numSheriffAlive = 0;
             int numMoriartyAlive = 0;
+            int numJekyllAndHydeAlive = 0;
             int numLoversAlive = 0;
             int numAkujoAlive = 0;
             int numTotalAlive = 0;
@@ -804,6 +893,9 @@ namespace TheOtherRoles.Patches {
                         {
                             numMoriartyAlive++;
                         }
+                        if (JekyllAndHyde.jekyllAndHyde != null && JekyllAndHyde.jekyllAndHyde.PlayerId == playerInfo.PlayerId) { 
+                            numJekyllAndHydeAlive++;
+                        }
                         if (Akujo.akujo != null && Akujo.akujo.PlayerId == playerInfo.PlayerId) { 
                             numAkujoAlive++;
                         }
@@ -833,6 +925,7 @@ namespace TheOtherRoles.Patches {
             TeamAkujoAlive = numAkujoAlive;
             TeamSheriffAlive = numSheriffAlive;
             TeamMoriartyAlive = numMoriartyAlive;
+            TeamJekyllAndHydeAlive = numJekyllAndHydeAlive;
             TotalAlive = numTotalAlive;
             TeamImpostorHasAliveLover = impLover;
             TeamJackalHasAliveLover = jackalLover;
