@@ -103,6 +103,8 @@ namespace TheOtherRoles
         public static RoleInfo chainshifter = new RoleInfo(ModTranslation.getString("corruptedShifter"), Shifter.color, ModTranslation.getString("corruptedShifterIntroDesc"), ModTranslation.getString("corruptedShifterShortDesc"), RoleId.Shifter, true);
         public static RoleInfo moriarty = new RoleInfo(ModTranslation.getString("moriarty"), Moriarty.color, ModTranslation.getString("moriartyIntroDesc"), ModTranslation.getString("moriartyShortDesc"), RoleId.Moriarty, true);
         public static RoleInfo akujo = new RoleInfo(ModTranslation.getString("akujo"), Akujo.color, ModTranslation.getString("akujoIntroDesc"), ModTranslation.getString("akujoShortDesc"), RoleId.Akujo, true);
+        public static RoleInfo plagueDoctor = new RoleInfo(ModTranslation.getString("plagueDoctor"), PlagueDoctor.color, ModTranslation.getString("plagueDoctorIntroDesc"), ModTranslation.getString("plagueDoctorShortDesc"), RoleId.PlagueDoctor, true);
+        public static RoleInfo jekyllAndHyde = new RoleInfo(ModTranslation.getString("jekyllAndHyde"), JekyllAndHyde.color, ModTranslation.getString("jekyllAndHydeIntroDesc"), ModTranslation.getString("jekyllAndHydeShortDesc"), RoleId.JekyllAndHyde, true);
 
         public static RoleInfo hunter = new RoleInfo(ModTranslation.getString("hunter"), Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, ModTranslation.getString("hunterIntroDesc")), ModTranslation.getString("hunterShortDesc"), RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo(ModTranslation.getString("hunted"), Color.white, ModTranslation.getString("huntedIntroDesc"), ModTranslation.getString("huntedShortDesc"), RoleId.Crewmate);
@@ -166,7 +168,9 @@ namespace TheOtherRoles
             thief,
             opportunist,
             chainshifter,
+            plagueDoctor,
             akujo,
+            jekyllAndHyde,
             moriarty,
             //prosecutor,
             crewmate,
@@ -272,6 +276,7 @@ namespace TheOtherRoles
             if (p == Sprinter.sprinter) infos.Add(sprinter);
             if (p == Yasuna.yasuna) infos.Add(p.Data.Role.IsImpostor ? evilYasuna : yasuna);
             if (p == Moriarty.moriarty || p == Moriarty.formerMoriarty) infos.Add(moriarty);
+            if (p == JekyllAndHyde.jekyllAndHyde || p == JekyllAndHyde.formerJekyllAndHyde) infos.Add(jekyllAndHyde);
             if (p == Akujo.akujo) infos.Add(akujo);
             if (p == FortuneTeller.fortuneTeller)
             {
@@ -290,6 +295,7 @@ namespace TheOtherRoles
                 if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
                 else infos.Add(TaskMaster.isTaskComplete ? taskMaster : crewmate);
             }
+            if (p == PlagueDoctor.plagueDoctor) infos.Add(plagueDoctor);
             if (p == Opportunist.opportunist) infos.Add(opportunist);
             if (p == Shifter.shifter) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
             if (p == Arsonist.arsonist) infos.Add(arsonist);
@@ -438,6 +444,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Loneliness:
                                     deathReasonString = $" - {Helpers.cs(Akujo.color, ModTranslation.getString("roleSummaryLoneliness"))}";
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Disease:
+                                    deathReasonString = string.Format(ModTranslation.getString("roleInfoDisease"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                 //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

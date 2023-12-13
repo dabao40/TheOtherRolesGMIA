@@ -91,6 +91,8 @@ namespace TheOtherRoles
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
             Akujo.clearAndReload();
+            PlagueDoctor.clearAndReload();
+            JekyllAndHyde.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -1646,14 +1648,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1665,10 +1667,10 @@ namespace TheOtherRoles
 
                 //if (MimicK.mimicK == null) return;
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 /*foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -1689,7 +1691,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicA.mimicA.transform.position);
                 arrows.Add(arrow);
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1756,14 +1758,14 @@ namespace TheOtherRoles
                 return;
             }
 
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1775,7 +1777,7 @@ namespace TheOtherRoles
 
                 //if (MimicA.mimicA == null) return;
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 if (MimicK.mimicK.Data.IsDead || MimicK.mimicK == null) return;
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
@@ -1783,7 +1785,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicK.mimicK.transform.position);
                 arrows.Add(arrow);
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1928,7 +1930,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // Õ¼ï¿½ï¿½ï¿½ï¿½gï¿½Ð¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤Ç°kï¿½ð¤µ¤ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¥¤ï¿½ï¿½ï¿½ï¿½È¤ï¿½Í¨Öª
+            // Õ¼¤¤¤òŒgÐÐ¤·¤¿¤³¤È¤Ç°k»ð¤µ¤ì¤ë„IÀí¤òËû¥¯¥é¥¤¥¢¥ó¥È¤ËÍ¨Öª
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
@@ -2134,14 +2136,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2151,10 +2153,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 /*if (BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberB.bomberB.transform.position);
@@ -2172,7 +2174,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2201,7 +2203,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
                 if (BomberB.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberB.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId];
@@ -2285,7 +2287,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
                 if (BomberA.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberA.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId];
@@ -2315,14 +2317,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2332,10 +2334,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 /*if (BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 
                 arrow.arrow.SetActive(true);
@@ -2353,7 +2355,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2590,6 +2592,80 @@ namespace TheOtherRoles
         }
     }
 
+    public static class JekyllAndHyde
+    {
+        public static Color color = Color.grey;
+        public static PlayerControl jekyllAndHyde;
+        public static PlayerControl formerJekyllAndHyde;
+        public static PlayerControl currentTarget;
+
+        public enum Status
+        {
+            None,
+            Jekyll,
+            Hyde,
+        }
+
+        public static Status status;
+        public static int counter = 0;
+        public static int numberToWin = 3;
+        public static float suicideTimer = 40f;
+        public static bool reset = true;
+        public static float cooldown = 18f;
+        public static int numUsed;
+        public static bool oddIsJekyll;
+        public static bool triggerWin = false;
+        public static int numCommonTasks;
+        public static int numLongTasks;
+        public static int numShortTasks;
+        public static int numTasks;
+
+        public static bool isOdd(int n)
+        {
+            return n % 2 == 1;
+        }
+
+        public static bool isJekyll()
+        {
+            if (status == Status.None)
+            {
+                var alive = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(x =>
+                {
+                    return !x.Data.IsDead;
+                });
+                bool ret = oddIsJekyll ? isOdd(alive.Count()) : !isOdd(alive.Count());
+                return ret;
+            }
+            return status == Status.Jekyll;
+        }
+
+        public static int getNumDrugs()
+        {
+            var p = jekyllAndHyde;
+            int counter = p.Data.Tasks.ToArray().Where(t => t.Complete).Count();
+            return (int)Math.Floor((float)counter / numTasks);
+        }
+
+        public static void clearAndReload()
+        {
+            jekyllAndHyde = null;
+            formerJekyllAndHyde = null;
+            currentTarget = null;
+            status = Status.None;
+            counter = 0;
+            triggerWin = false;
+            numUsed = 0;
+            numTasks = (int)CustomOptionHolder.jekyllAndHydeNumTasks.getFloat();
+            numCommonTasks = (int)CustomOptionHolder.jekyllAndHydeCommonTasks.getFloat();
+            numShortTasks = (int)CustomOptionHolder.jekyllAndHydeShortTasks.getFloat();
+            numLongTasks = (int)CustomOptionHolder.jekyllAndHydeLongTasks.getFloat();
+            reset = CustomOptionHolder.jekyllAndHydeResetAfterMeeting.getBool();
+            numberToWin = (int)CustomOptionHolder.jekyllAndHydeNumberToWin.getFloat();
+            cooldown = CustomOptionHolder.jekyllAndHydeCooldown.getFloat();
+            suicideTimer = CustomOptionHolder.jekyllAndHydeSuicideTimer.getFloat();
+        }
+    }
+
     public static class Undertaker
     {
         public static PlayerControl undertaker;
@@ -2751,14 +2827,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -2768,10 +2844,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 int count = 0;
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
@@ -2817,7 +2893,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
+                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -2855,7 +2931,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3073,14 +3149,14 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
 
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -3090,9 +3166,9 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
-                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
+                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -3139,7 +3215,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3218,6 +3294,155 @@ namespace TheOtherRoles
             timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
             numKeeps = Math.Min((int)CustomOptionHolder.akujoNumKeeps.getFloat(), PlayerControl.AllPlayerControls.Count - 2);
             keepsLeft = numKeeps;
+        }
+    }
+
+    public static class PlagueDoctor
+    {
+        public static PlayerControl plagueDoctor;
+        public static Color color = new Color32(255, 192, 0, byte.MaxValue);
+
+        public static Dictionary<int, PlayerControl> infected;
+        public static Dictionary<int, float> progress;
+        public static Dictionary<int, bool> dead;
+        public static TMPro.TMP_Text statusText = null;
+        public static bool triggerPlagueDoctorWin = false;
+
+        public static PlayerControl currentTarget;
+        public static int numInfections = 0;
+        public static bool meetingFlag = false;
+
+        public static float infectCooldown = 10f;
+        public static int maxInfectable;
+        public static float infectDistance = 1f;
+        public static float infectDuration = 5f;
+        public static float immunityTime = 10f;
+        public static bool infectKiller = true;
+        public static bool canWinDead = true;
+
+        public static Sprite plagueDoctorIcon;
+
+        public static Sprite getSyringeIcon()
+        {
+            if (plagueDoctorIcon) return plagueDoctorIcon;
+            plagueDoctorIcon = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.InfectButton.png", 115f);
+            return plagueDoctorIcon;
+        }
+
+        public static void updateDead()
+        {
+            foreach (var pc in PlayerControl.AllPlayerControls.GetFastEnumerator())
+            {
+                dead[pc.PlayerId] = pc.Data.IsDead;
+            }
+        }
+
+        public static bool hasInfected()
+        {
+            bool flag = false;
+            foreach (var item in progress)
+            {
+                if (item.Value != 0f)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        public static void UpdateStatusText()
+        {
+            //if (PlagueDoctor.plagueDoctor == null) return;
+            // Something will go wrong if the Plague Doctor hasn't infected anyone
+            //if (!hasInfected()) return;
+            if (MeetingHud.Instance != null)
+            {
+                if (statusText != null)
+                {
+                    statusText.gameObject.SetActive(false);
+                }
+                return;
+            }
+
+            if ((PlagueDoctor.plagueDoctor != null && CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor) || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                if (statusText == null)
+                {
+                    GameObject gameObject = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance?.roomTracker.gameObject);
+                    gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                    gameObject.SetActive(true);
+                    UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                    statusText = gameObject.GetComponent<TMPro.TMP_Text>();
+                    gameObject.transform.localPosition = new Vector3(-2.7f, -0.1f, gameObject.transform.localPosition.z);
+
+                    statusText.transform.localScale = new Vector3(1f, 1f, 1f);
+                    statusText.fontSize = 1.5f;
+                    statusText.fontSizeMin = 1.5f;
+                    statusText.fontSizeMax = 1.5f;
+                    statusText.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                }
+
+                statusText.gameObject.SetActive(true);
+                string text = $"[Infection Progress]\n";
+
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p == PlagueDoctor.plagueDoctor) continue;
+                    if (dead.ContainsKey(p.PlayerId) && dead[p.PlayerId]) continue;
+                    text += $"{p.name}: ";
+                    if (infected.ContainsKey(p.PlayerId))
+                    {
+                        text += Helpers.cs(Color.red, "Infected");
+                    }
+                    else
+                    {
+                        // ¥Ç©`¥¿¤¬Ÿo¤¤ˆöºÏ¤Ï×÷³É¤¹¤ë
+                        if (!progress.ContainsKey(p.PlayerId))
+                        {
+                            progress[p.PlayerId] = 0f;
+                        }
+                        text += getProgressString(progress[p.PlayerId]);
+                    }
+                    text += "\n";
+                }
+
+                statusText.text = text;
+            }
+        }
+
+        public static string getProgressString(float progress)
+        {
+            // Go from green -> yellow -> red based on infection progress
+            Color color;
+            var prog = progress / infectDuration;
+            if (prog < 0.5f)
+                color = Color.Lerp(Color.green, Color.yellow, prog * 2);
+            else
+                color = Color.Lerp(Color.yellow, Color.red, prog * 2 - 1);
+
+            float progPercent = prog * 100;
+            return Helpers.cs(color, $"{progPercent.ToString("F1")}%");
+        }
+
+        public static void clearAndReload()
+        {
+            plagueDoctor = null;
+            infectCooldown = CustomOptionHolder.plagueDoctorInfectCooldown.getFloat();
+            maxInfectable = Mathf.RoundToInt(CustomOptionHolder.plagueDoctorNumInfections.getFloat());
+            infectDistance = CustomOptionHolder.plagueDoctorDistance.getFloat();
+            infectDuration = CustomOptionHolder.plagueDoctorDuration.getFloat();
+            immunityTime = CustomOptionHolder.plagueDoctorImmunityTime.getFloat();
+            infectKiller = CustomOptionHolder.plagueDoctorInfectKiller.getBool();
+            canWinDead = CustomOptionHolder.plagueDoctorWinDead.getBool();
+
+            triggerPlagueDoctorWin = false;
+            numInfections = maxInfectable;
+            currentTarget = null;
+            infected = new Dictionary<int, PlayerControl>();
+            progress = new Dictionary<int, float>();
+            dead = new Dictionary<int, bool>();
+            statusText = null;
         }
     }
 
@@ -3545,7 +3770,7 @@ namespace TheOtherRoles
         }
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
-            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty }.Contains(targetRole);
+            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde }.Contains(targetRole);
         }
     }
 

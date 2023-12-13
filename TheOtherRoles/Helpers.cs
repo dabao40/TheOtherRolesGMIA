@@ -251,7 +251,7 @@ namespace TheOtherRoles {
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo);
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde);
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -489,6 +489,8 @@ namespace TheOtherRoles {
                 roleCouldUse = true;
             else if (Moriarty.moriarty != null && Moriarty.moriarty == player)
                 roleCouldUse = true;
+            else if (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde == player)
+                roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
@@ -647,7 +649,8 @@ namespace TheOtherRoles {
                 player != Lawyer.lawyer && 
                 player != Pursuer.pursuer &&
                 player != Opportunist.opportunist &&
-                player != Akujo.akujo);
+                player != Akujo.akujo &&
+                player != PlagueDoctor.plagueDoctor);
 
         }
 
@@ -708,7 +711,8 @@ namespace TheOtherRoles {
                 || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision)
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision)
                 || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision)
-                || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId);
+                || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId)
+                || (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde.PlayerId == player.PlayerId);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)

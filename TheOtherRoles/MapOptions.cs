@@ -1,4 +1,3 @@
-using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace TheOtherRoles{
         public static bool ghostsSeeInformation = true;
         public static bool ghostsSeeVotes = true;
         public static bool showRoleSummary = true;
-        public static bool invisiblezipline;
         public static bool allowParallelMedBayScans = false;
         public static bool showLighterDarker = true;
         public static bool toggleCursor = true;
@@ -43,7 +41,6 @@ namespace TheOtherRoles{
             hidePlayerNames = CustomOptionHolder.hidePlayerNames.getBool();
             allowParallelMedBayScans = CustomOptionHolder.allowParallelMedBayScans.getBool();
             shieldFirstKill = CustomOptionHolder.shieldFirstKill.getBool();
-            invisiblezipline = CustomOptionHolder.invisiblezipline.getBool();
             firstKillPlayer = null;
         }
 
@@ -59,19 +56,5 @@ namespace TheOtherRoles{
             enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
             //Patches.ShouldAlwaysHorseAround.isHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         }
-    
-
-    [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Awake))]
-    public static class InvisibleZipLine
-    {
-       public static void Postfix(ZiplineBehaviour __instance)
-       {
-        if (AmongUsClient.Instance.AmHost) return;
-        if (PlayerControl.LocalPlayer.Data.IsDead) return;
-        
-        __instance.gameObject.SetActive(invisiblezipline);
-        
-       }
     }
-  }
 }

@@ -86,6 +86,25 @@ namespace TheOtherRoles {
 
         public static CustomOption opportunistSpawnRate;
 
+        public static CustomOption plagueDoctorSpawnRate;
+        public static CustomOption plagueDoctorInfectCooldown;
+        public static CustomOption plagueDoctorNumInfections;
+        public static CustomOption plagueDoctorDistance;
+        public static CustomOption plagueDoctorDuration;
+        public static CustomOption plagueDoctorImmunityTime;
+        public static CustomOption plagueDoctorInfectKiller;
+        public static CustomOption plagueDoctorWinDead;
+
+        public static CustomOption jekyllAndHydeSpawnRate;
+        public static CustomOption jekyllAndHydeNumberToWin;
+        public static CustomOption jekyllAndHydeCooldown;
+        public static CustomOption jekyllAndHydeSuicideTimer;
+        public static CustomOption jekyllAndHydeResetAfterMeeting;
+        public static CustomOption jekyllAndHydeCommonTasks;
+        public static CustomOption jekyllAndHydeShortTasks;
+        public static CustomOption jekyllAndHydeLongTasks;
+        public static CustomOption jekyllAndHydeNumTasks;
+
         public static CustomOption bountyHunterSpawnRate;
         public static CustomOption bountyHunterBountyDuration;
         public static CustomOption bountyHunterReducedCooldown;
@@ -468,8 +487,7 @@ namespace TheOtherRoles {
         public static CustomOption dynamicMapEnableAirShip;
         public static CustomOption dynamicMapEnableSubmerged;
         public static CustomOption dynamicMapSeparateSettings;
-         // Fungle Settings
-        public static CustomOption invisiblezipline;
+
         //Guesser Gamemode
         public static CustomOption guesserGamemodeCrewNumber;
         public static CustomOption guesserGamemodeNeutralNumber;
@@ -748,10 +766,29 @@ namespace TheOtherRoles {
 
             opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, ModTranslation.getString("opportunist")), rates, null, true);
 
+            plagueDoctorSpawnRate = CustomOption.Create(6000, Types.Neutral, cs(PlagueDoctor.color, ModTranslation.getString("plagueDoctor")), rates, null, true);
+            plagueDoctorInfectCooldown = CustomOption.Create(6001, Types.Neutral, ModTranslation.getString("plagueDoctorInfectCooldown"), 10f, 2.5f, 60f, 2.5f, plagueDoctorSpawnRate);
+            plagueDoctorNumInfections = CustomOption.Create(6002, Types.Neutral, ModTranslation.getString("plagueDoctorNumInfections"), 1f, 1f, 3f, 1f, plagueDoctorSpawnRate);
+            plagueDoctorDistance = CustomOption.Create(6003, Types.Neutral, ModTranslation.getString("plagueDoctorDistance"), 1f, 0.25f, 5f, 0.25f, plagueDoctorSpawnRate);
+            plagueDoctorDuration = CustomOption.Create(6004, Types.Neutral, ModTranslation.getString("plagueDoctorDuration"), 5f, 1f, 30f, 1f, plagueDoctorSpawnRate);
+            plagueDoctorImmunityTime = CustomOption.Create(6005, Types.Neutral, ModTranslation.getString("plagueDoctorImmunityTime"), 10f, 1f, 30f, 1f, plagueDoctorSpawnRate);
+            plagueDoctorInfectKiller = CustomOption.Create(6006, Types.Neutral, ModTranslation.getString("plagueDoctorInfectKiller"), true, plagueDoctorSpawnRate);
+            plagueDoctorWinDead = CustomOption.Create(5999, Types.Neutral, ModTranslation.getString("plagueDoctorWinDead"), true, plagueDoctorSpawnRate);
+
             akujoSpawnRate = CustomOption.Create(8100, Types.Neutral, cs(Akujo.color, ModTranslation.getString("akujo")), rates, null, true);
             akujoTimeLimit = CustomOption.Create(8101, Types.Neutral, ModTranslation.getString("akujoTimeLimit"), 300f, 30f, 1200f, 30f, akujoSpawnRate);
             akujoNumKeeps = CustomOption.Create(8102, Types.Neutral, ModTranslation.getString("akujoNumKeeps"), 2f, 1f, 10f, 1f, akujoSpawnRate);
             akujoKnowsRoles = CustomOption.Create(8103, Types.Neutral, ModTranslation.getString("akujoKnowsRoles"), true, akujoSpawnRate);
+
+            jekyllAndHydeSpawnRate = CustomOption.Create(8104, Types.Neutral, cs(JekyllAndHyde.color, ModTranslation.getString("jekyllAndHyde")), rates, null, true);
+            jekyllAndHydeNumberToWin = CustomOption.Create(8105, Types.Neutral, ModTranslation.getString("jekyllAndHydeNumberToWin"), 3f, 1f, 10f, 1f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeCooldown = CustomOption.Create(8106, Types.Neutral, ModTranslation.getString("jekyllAndHydeCooldown"), 18f, 2f, 30f, 1f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeSuicideTimer = CustomOption.Create(8107, Types.Neutral, ModTranslation.getString("jekyllAndHydeSuicideTimer"), 40f, 2.5f, 60f, 2.5f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeResetAfterMeeting = CustomOption.Create(8112, Types.Neutral, ModTranslation.getString("jekyllAndHydeResetAfterMeeting"), true, jekyllAndHydeSpawnRate);
+            jekyllAndHydeCommonTasks = CustomOption.Create(8108, Types.Neutral, ModTranslation.getString("jekyllAndHydeCommonTasks"), 1f, 1f, 4f, 1f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeShortTasks = CustomOption.Create(8109, Types.Neutral, ModTranslation.getString("jekyllAndHydeShortTasks"), 3f, 1f, 20f, 1f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeLongTasks = CustomOption.Create(8110, Types.Neutral, ModTranslation.getString("jekyllAndHydeLongTasks"), 2f, 0f, 6f, 1f, jekyllAndHydeSpawnRate);
+            jekyllAndHydeNumTasks = CustomOption.Create(8111, Types.Neutral, ModTranslation.getString("jekyllAndHydeNumTasks"), 3f, 1f, 10f, 1f, jekyllAndHydeSpawnRate);
 
             mayorSpawnRate = CustomOption.Create(80, Types.Crewmate, cs(Mayor.color, ModTranslation.getString("mayor")), rates, null, true);
             mayorCanSeeVoteColors = CustomOption.Create(81, Types.Crewmate, ModTranslation.getString("mayorCanSeeVoteColor"), false, mayorSpawnRate);
@@ -1036,8 +1073,6 @@ namespace TheOtherRoles {
             dynamicMapEnableAirShip = CustomOption.Create(504, Types.General, "Airship", rates, dynamicMap, false);
             dynamicMapEnableSubmerged = CustomOption.Create(505, Types.General, "Submerged", rates, dynamicMap, false);
             dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, "Use Random Map Setting Presets", false, dynamicMap, false);
-       
-            invisiblezipline = CustomOption.Create(510, Types.General, "Disable Zipline", false, dynamicMap, false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});

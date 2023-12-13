@@ -20,6 +20,7 @@ namespace TheOtherRoles {
             BrainwashedKilled,
             LoveStolen,
             Loneliness,
+            Disease,
             Bomb,
             Arson,
         };

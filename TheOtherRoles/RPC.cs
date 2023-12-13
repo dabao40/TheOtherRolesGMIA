@@ -77,7 +77,9 @@ namespace TheOtherRoles
         //Prosecutor,
         Pursuer,
         Moriarty,
+        PlagueDoctor,
         Akujo,
+        JekyllAndHyde,
         Witch,
         Assassin,
         Ninja, 
@@ -222,7 +224,11 @@ namespace TheOtherRoles
         MoriartyKill,
         AkujoSetHonmei,
         AkujoSetKeep,
-        AkujoSuicide
+        AkujoSuicide,
+        PlagueDoctorWin,
+        PlagueDoctorSetInfected,
+        PlagueDoctorUpdateProgress,
+        SetOddIsJekyll
     }
 
     public static class RPCProcedure {
@@ -369,6 +375,9 @@ namespace TheOtherRoles
                     case RoleId.Moriarty:
                         Moriarty.moriarty = player;
                         break;
+                    case RoleId.JekyllAndHyde:
+                        JekyllAndHyde.jekyllAndHyde = player;
+                        break;
                     case RoleId.Hacker:
                         Hacker.hacker = player;
                         break;
@@ -383,6 +392,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.FortuneTeller:
                         FortuneTeller.fortuneTeller = player;
+                        break;
+                    case RoleId.PlagueDoctor:
+                        PlagueDoctor.plagueDoctor = player;
                         break;
                     case RoleId.TaskMaster:
                         TaskMaster.taskMaster = player;
@@ -878,6 +890,7 @@ namespace TheOtherRoles
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
             if (player == Moriarty.moriarty) Moriarty.moriarty = oldShifter;
+            if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.plagueDoctor = oldShifter;
             if (player == Thief.thief) Thief.thief = oldShifter;
             if (player == Pursuer.pursuer) Pursuer.pursuer = oldShifter;
             if (player == Vulture.vulture) Vulture.vulture = oldShifter;
@@ -971,6 +984,31 @@ namespace TheOtherRoles
                         Vampire.bitten = player;
                 }
             }
+        }
+
+        public static void plagueDoctorWin()
+        {
+            PlagueDoctor.triggerPlagueDoctorWin = true;
+            var livingPlayers = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(p => p != PlagueDoctor.plagueDoctor && !p.Data.IsDead);
+            foreach (PlayerControl p in livingPlayers)
+            {
+                if (!p.Data.IsDead) p.Exiled();
+                GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Disease, PlagueDoctor.plagueDoctor);
+            }
+        }
+
+        public static void plagueDoctorInfected(byte targetId)
+        {
+            var p = Helpers.playerById(targetId);
+            if (!PlagueDoctor.infected.ContainsKey(targetId))
+            {
+                PlagueDoctor.infected[targetId] = p;
+            }
+        }
+
+        public static void plagueDoctorProgress(byte targetId, float progress)
+        {
+            PlagueDoctor.progress[targetId] = progress;
         }
 
         public static void placeGarlic(byte[] buff) {
@@ -1200,7 +1238,9 @@ namespace TheOtherRoles
             if (player == Thief.thief) Thief.clearAndReload();
             if (player == Opportunist.opportunist) Opportunist.clearAndReload();
             if (player == Moriarty.moriarty) Moriarty.clearAndReload();
+            if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.clearAndReload();
             if (player == Akujo.akujo) Akujo.clearAndReload();
+            if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -1376,6 +1416,11 @@ namespace TheOtherRoles
         public static void setShifterType(bool isNeutral)
         {
             Shifter.isNeutral = isNeutral;
+        }
+
+        public static void setOddIsJekyll(bool b)
+        {
+            JekyllAndHyde.oddIsJekyll = b;
         }
 
         public static void yasunaSpecialVote(byte playerid, byte targetid)
@@ -1861,6 +1906,11 @@ namespace TheOtherRoles
                 Moriarty.moriarty = thief;
                 Moriarty.formerMoriarty = target;
             }
+            if (target == JekyllAndHyde.jekyllAndHyde)
+            {
+                JekyllAndHyde.jekyllAndHyde = thief;
+                JekyllAndHyde.formerJekyllAndHyde = target;
+            }
             if (target == Guesser.evilGuesser) Guesser.evilGuesser = thief;
             if (target == Watcher.evilwatcher) Watcher.evilwatcher = thief;
             if (target == Godfather.godfather) Godfather.godfather = thief;
@@ -2235,6 +2285,21 @@ namespace TheOtherRoles
                     byte fId = reader.ReadByte();
                     byte tId = reader.ReadByte();
                     RPCProcedure.fortuneTellerUsedDivine(fId, tId);
+                    break;
+                case (byte)CustomRPC.PlagueDoctorWin:
+                    RPCProcedure.plagueDoctorWin();
+                    break;
+                case (byte)CustomRPC.PlagueDoctorSetInfected:
+                    RPCProcedure.plagueDoctorInfected(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.PlagueDoctorUpdateProgress:
+                    byte progressTarget = reader.ReadByte();
+                    byte[] progressByte = reader.ReadBytes(4);
+                    float progress = System.BitConverter.ToSingle(progressByte, 0);
+                    RPCProcedure.plagueDoctorProgress(progressTarget, progress);
+                    break;
+                case (byte)CustomRPC.SetOddIsJekyll:
+                    RPCProcedure.setOddIsJekyll(reader.ReadBoolean());
                     break;
                 case (byte)CustomRPC.EvilHackerCreatesMadmate:
                     RPCProcedure.evilHackerCreatesMadmate(reader.ReadByte());

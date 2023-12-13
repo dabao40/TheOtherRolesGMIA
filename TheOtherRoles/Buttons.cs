@@ -82,6 +82,10 @@ namespace TheOtherRoles
         public static CustomButton moriartyKillButton;
         public static CustomButton akujoHonmeiButton;
         public static CustomButton akujoBackupButton;
+        public static CustomButton plagueDoctorButton;
+        public static CustomButton jekyllAndHydeKillButton;
+        public static CustomButton jekyllAndHydeDrugButton;
+        public static CustomButton jekyllAndHydeSuicideButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -104,8 +108,11 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text sherlockNumInvestigateText;
         public static TMPro.TMP_Text sherlockNumKillTimerText;
         public static TMPro.TMP_Text moriartyKillCounterText;
+        public static TMPro.TMP_Text jekyllAndHydeKillCounterText;
+        public static TMPro.TMP_Text jekyllAndHydeDrugText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoBackupLeftText;
+        public static TMPro.TMP_Text plagueDoctornumInfectionsText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -178,6 +185,9 @@ namespace TheOtherRoles
             evilHackerCreatesMadmateButton.MaxTimer = 0f;
             moriartyBrainwashButton.MaxTimer = Moriarty.brainwashCooldown;
             moriartyKillButton.MaxTimer = 0f;
+            jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
+            jekyllAndHydeSuicideButton.MaxTimer = JekyllAndHyde.suicideTimer;
+            jekyllAndHydeDrugButton.MaxTimer = 0f;
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
@@ -205,6 +215,7 @@ namespace TheOtherRoles
             ninjaButton.EffectDuration = Ninja.stealthDuration;
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
+            plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
@@ -261,11 +272,11 @@ namespace TheOtherRoles
                 {
                     try
                     {
-                        if (CustomButton.buttons[i].HasButton() && CustomButton.buttons[i] != serialKillerButton)  // For each custombutton the player has
+                        if (CustomButton.buttons[i].HasButton() && CustomButton.buttons[i] != serialKillerButton && CustomButton.buttons[i] != jekyllAndHydeSuicideButton)  // For each custombutton the player has
                         {
                             addReplacementHandcuffedButton(CustomButton.buttons[i]);  // The new buttons are the only non-handcuffed buttons now!
                         }
-                        if (CustomButton.buttons[i] != serialKillerButton) CustomButton.buttons[i].isHandcuffed = true;
+                        if (CustomButton.buttons[i] != serialKillerButton && CustomButton.buttons[i] != jekyllAndHydeSuicideButton) CustomButton.buttons[i].isHandcuffed = true;
                     }
                     catch (NullReferenceException)
                     {
@@ -1118,6 +1129,154 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.Q
             );
+
+            jekyllAndHydeKillButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    if (Helpers.checkMurderAttemptAndKill(CachedPlayer.LocalPlayer.PlayerControl, JekyllAndHyde.currentTarget) == MurderAttemptResult.SuppressKill) return;
+
+                    jekyllAndHydeKillButton.Timer = jekyllAndHydeKillButton.MaxTimer;
+                    JekyllAndHyde.currentTarget = null;
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && !JekyllAndHyde.isJekyll() && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                // CouldUse
+                () =>
+                {
+                    if (jekyllAndHydeKillCounterText != null)
+                    {
+                        jekyllAndHydeKillCounterText.text = $"{JekyllAndHyde.counter}/{JekyllAndHyde.numberToWin}";
+                    }
+                    return JekyllAndHyde.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    jekyllAndHydeKillButton.Timer = jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
+                },
+                __instance.KillButton.graphic.sprite,
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.Q,
+                false
+            );
+            jekyllAndHydeKillCounterText = GameObject.Instantiate(jekyllAndHydeKillButton.actionButton.cooldownTimerText, jekyllAndHydeKillButton.actionButton.cooldownTimerText.transform.parent);
+            jekyllAndHydeKillCounterText.text = "";
+            jekyllAndHydeKillCounterText.enableWordWrapping = false;
+            jekyllAndHydeKillCounterText.transform.localScale = Vector3.one * 0.5f;
+            jekyllAndHydeKillCounterText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            jekyllAndHydeSuicideButton = new CustomButton(
+                () => { },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && !JekyllAndHyde.isJekyll() && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => { return true; },
+                () =>
+                {
+                    if (JekyllAndHyde.reset) jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
+                },
+                SerialKiller.getButtonSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.None,
+                true,
+                JekyllAndHyde.suicideTimer,
+                () =>
+                {
+                    byte targetId = CachedPlayer.LocalPlayer.PlayerControl.PlayerId;
+                    MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SerialKillerSuicide, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                    killWriter.Write(targetId);
+                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                    RPCProcedure.serialKillerSuicide(targetId);
+                }
+            );
+            jekyllAndHydeSuicideButton.showButtonText = true;
+            jekyllAndHydeSuicideButton.buttonText = ModTranslation.getString("serialKillerSuicideText");
+            jekyllAndHydeSuicideButton.isEffectActive = true;
+
+            jekyllAndHydeDrugButton = new CustomButton(
+                // OnClick
+                () =>
+                {
+                    JekyllAndHyde.oddIsJekyll = !JekyllAndHyde.oddIsJekyll;
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetOddIsJekyll, Hazel.SendOption.Reliable, -1);
+                    writer.Write(JekyllAndHyde.oddIsJekyll);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    jekyllAndHydeSuicideButton.Timer = jekyllAndHydeSuicideButton.MaxTimer;
+                    jekyllAndHydeKillButton.Timer = jekyllAndHydeKillButton.MaxTimer;
+                    JekyllAndHyde.numUsed += 1;
+                },
+                // HasButton
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && JekyllAndHyde.numUsed < JekyllAndHyde.getNumDrugs(); },
+                // CouldUse
+                () =>
+                {
+                    if (jekyllAndHydeDrugText != null)
+                    {
+                        jekyllAndHydeDrugText.text = $"{JekyllAndHyde.numUsed} / {JekyllAndHyde.getNumDrugs()}";
+                    }
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                // OnMeetingEnds
+                () =>
+                {
+                    jekyllAndHydeDrugButton.Timer = jekyllAndHydeDrugButton.MaxTimer;
+                },
+                PlagueDoctor.getSyringeIcon(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.F,
+                false
+            );
+            jekyllAndHydeDrugText = GameObject.Instantiate(jekyllAndHydeDrugButton.actionButton.cooldownTimerText, jekyllAndHydeDrugButton.actionButton.cooldownTimerText.transform.parent); 
+            jekyllAndHydeDrugText.text = "";
+            jekyllAndHydeDrugText.enableWordWrapping = false;
+            jekyllAndHydeDrugText.transform.localScale = Vector3.one * 0.5f;
+            jekyllAndHydeDrugText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            plagueDoctorButton = new CustomButton(
+                () =>
+                {
+                    if (Veteran.veteran != null && PlagueDoctor.currentTarget == Veteran.veteran && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, PlagueDoctor.plagueDoctor);
+                        return;
+                    }
+
+                    byte targetId = PlagueDoctor.currentTarget.PlayerId;
+
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
+                    writer.Write(targetId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.plagueDoctorInfected(targetId);
+                    PlagueDoctor.numInfections--;
+
+                    plagueDoctorButton.Timer = plagueDoctorButton.MaxTimer;
+                    PlagueDoctor.currentTarget = null;
+                },
+                () => { return PlagueDoctor.plagueDoctor != null && CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor && PlagueDoctor.numInfections > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => {
+                    if (plagueDoctornumInfectionsText != null)
+                    {
+                        if (PlagueDoctor.numInfections > 0)
+                            plagueDoctornumInfectionsText.text = $"{PlagueDoctor.numInfections}";
+                        else
+                            plagueDoctornumInfectionsText.text = "";
+                    }
+                    return PlagueDoctor.currentTarget != null && PlagueDoctor.numInfections > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () => { plagueDoctorButton.Timer = plagueDoctorButton.MaxTimer; },
+                PlagueDoctor.getSyringeIcon(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F
+            );
+
+            plagueDoctornumInfectionsText = GameObject.Instantiate(plagueDoctorButton.actionButton.cooldownTimerText, plagueDoctorButton.actionButton.cooldownTimerText.transform.parent);
+            plagueDoctornumInfectionsText.text = "";
+            plagueDoctornumInfectionsText.enableWordWrapping = false;
+            plagueDoctornumInfectionsText.transform.localScale = Vector3.one * 0.5f;
+            plagueDoctornumInfectionsText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             // EvilHacker creates madmate button
             evilHackerCreatesMadmateButton = new CustomButton(
@@ -2070,6 +2229,12 @@ namespace TheOtherRoles
             akujoHonmeiButton = new CustomButton(
                 () =>
                 {
+                    if (Veteran.veteran != null && Akujo.currentTarget == Veteran.veteran && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Akujo.akujo);
+                        return;
+                    }
+
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetHonmei, Hazel.SendOption.Reliable, -1);
                     writer.Write(Akujo.akujo.PlayerId);
                     writer.Write(Akujo.currentTarget.PlayerId);
@@ -2097,6 +2262,12 @@ namespace TheOtherRoles
             akujoBackupButton = new CustomButton(
                 () =>
                 {
+                    if (Veteran.veteran != null && Akujo.currentTarget == Veteran.veteran && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Akujo.akujo);
+                        return;
+                    }
+
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetKeep, Hazel.SendOption.Reliable, -1);
                     writer.Write(Akujo.akujo.PlayerId);
                     writer.Write(Akujo.currentTarget.PlayerId);
