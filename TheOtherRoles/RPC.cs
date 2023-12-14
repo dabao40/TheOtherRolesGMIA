@@ -1109,6 +1109,7 @@ namespace TheOtherRoles
             var player2Position = target2.transform.localPosition;
             target1.transform.localPosition = player1Position;
             target2.transform.localPosition = player2Position;
+            
         }
 
         public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false) {

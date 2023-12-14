@@ -6,6 +6,7 @@ using System.Reflection;
 using HarmonyLib;
 using InnerNet;
 using UnityEngine;
+using UnityEngine.Playables;
 
 namespace TheOtherRoles.Players;
 
@@ -19,14 +20,20 @@ public class CachedPlayer
     public PlayerControl PlayerControl;
     public PlayerPhysics PlayerPhysics;
     public CustomNetworkTransform NetTransform;
+  
     public GameData.PlayerInfo Data;
     public byte PlayerId;
-    
+
+    internal bool Equals()
+    {
+        throw new NotImplementedException();
+    }
+
     public static implicit operator bool(CachedPlayer player)
     {
         return player != null && player.PlayerControl;
     }
-    
+
     public static implicit operator PlayerControl(CachedPlayer player) => player.PlayerControl;
     public static implicit operator PlayerPhysics(CachedPlayer player) => player.PlayerPhysics;
 

@@ -13,6 +13,7 @@ using TheOtherRoles.CustomGameModes;
 using JetBrains.Annotations;
 using AsmResolver.PE.DotNet.StrongName;
 using TheOtherRoles.Patches;
+using Reactor.Utilities.Extensions;
 
 namespace TheOtherRoles
 {
@@ -572,10 +573,35 @@ namespace TheOtherRoles
             TeleportButton = new CustomButton(
                 () =>
                 {
-                    TeleporteTeleport.Teleport();
+                    if(!Teleporter.target1 == null && !Teleporter.target2 == null )
+                    {
+                        if(Teleporter.target1 == Teleporter.target2)
+                        {
+                            Teleporter.target2 = null;
+                            return;
+                        }
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Teleporter.target1.PlayerId);
+                        writer.Write(Teleporter.target2.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.transporterTransport(Teleporter.target1.PlayerId, Teleporter.target2.PlayerId);
+                        Teleporter.target1 = null;
+                        Teleporter.target2 = null;
+                        Teleporter.middletarget = null;
+                        Teleporter.teleportnumber--;
+                    }
+                    if(Teleporter.target1 == null)
+                    {
+                        Teleporter.target1 = Teleporter.middletarget;
+                    }
+                    else if(Teleporter.target2 == null)
+                    {
+                        Teleporter.target2 = Teleporter.middletarget;
+                    }                  
+
                 },
                 () => { return Teleporter.teleporter != null && Teleporter.teleporter == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
-                () => { return Teleporter.teleporter != null && Teleporter.teleporter == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && Teleporter.teleportnumber >0; },
+                () => { return Teleporter.teleporter != null && Teleporter.teleporter == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && (Teleporter.middletarget || (Teleporter.target1 != null && Teleporter.target2 != null));  },
                 () => { },
                 Teleporter.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
@@ -597,7 +623,8 @@ namespace TheOtherRoles
                         Morphling.sampledTarget = null;
                         morphlingButton.EffectDuration = Morphling.duration;
                         SoundEffectsManager.play("morphlingMorph");
-                    } else if (Morphling.currentTarget != null) {
+                    } else if (Morphling.currentTarget != null)
+                    {
                         if (Morphling.currentTarget == Veteran.veteran && Veteran.alertActive && Veteran.veteran != null)
                         {
                             Helpers.checkMurderAttemptAndKill(Veteran.veteran, Morphling.morphling);

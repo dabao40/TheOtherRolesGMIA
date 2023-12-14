@@ -611,6 +611,10 @@ namespace TheOtherRoles
         public static float teleportcooldown = 15f;
         public static float teleportnumber = 5f;
         public static bool canteleportitself = true;
+        public static PlayerControl target1;
+        public static PlayerControl target2;
+        public static PlayerControl middletarget;
+
         public static Sprite getButtonSprite()
         {
             if (TeleportButtonSprite) return TeleportButtonSprite;
@@ -623,9 +627,12 @@ namespace TheOtherRoles
         public static void clearAndReload()
         {
             teleporter = null;
+            target1 = null;
+            target2 = null;
             teleportcooldown = CustomOptionHolder.TeleporterCooldown.getFloat();
             canteleportitself = CustomOptionHolder.TeleporterCanTeleportItSelf.getBool();
             teleportnumber = CustomOptionHolder.TeleporterTeleportNumber.getFloat();
+            middletarget = null;
 
         }
     }

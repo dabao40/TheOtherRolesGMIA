@@ -176,6 +176,13 @@ namespace TheOtherRoles.Patches {
             Morphling.currentTarget = setTarget();
             setPlayerOutline(Morphling.currentTarget, Morphling.color);
         }
+        static void teleporterSetTarget()
+        {
+            if (Teleporter.teleporter == null || Teleporter.teleporter != CachedPlayer.LocalPlayer.PlayerControl) return;
+            Teleporter.middletarget = setTarget();
+            setPlayerOutline(Teleporter.middletarget, Teleporter.color);
+
+        }
 
         static void sheriffSetTarget() {
             if (Sheriff.sheriff == null || Sheriff.sheriff != CachedPlayer.LocalPlayer.PlayerControl) return;
@@ -1059,7 +1066,7 @@ namespace TheOtherRoles.Patches {
                     if (p.Data.IsDead) continue;
                     var fortuneTeller = CachedPlayer.LocalPlayer.PlayerControl;
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
-                    // ’œ∫¶ŒÔ≈–∂®
+                    // ÈöúÂÆ≥Áâ©Âà§ÂÆö
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
                     if (!anythingBetween && distance <= FortuneTeller.distance && FortuneTeller.progress[p.PlayerId] < FortuneTeller.duration)
                     {
@@ -1098,13 +1105,13 @@ namespace TheOtherRoles.Patches {
             }
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
-                // «∞•’•Ï©`•‡§´§È§ŒΩUﬂ^ïrÈg§Ú•ﬁ•§• •π§π§Î
+                // Ââç„Éï„É¨„Éº„É†„Åã„Çâ„ÅÆÁµåÈÅéÊôÇÈñì„Çí„Éû„Ç§„Éä„Çπ„Åô„Çã
                 FortuneTeller.updateTimer -= Time.fixedDeltaTime;
 
-                // 1√ÎΩUﬂ^§∑§ø§ÈArrow§Ú∏¸–¬
+                // 1ÁßíÁµåÈÅé„Åó„Åü„ÇâArrow„ÇíÊõ¥Êñ∞
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
-                    // «∞ªÿ§ŒArrow§Ú§π§Ÿ§∆∆∆óâ§π§Î
+                    // ÂâçÂõû„ÅÆArrow„Çí„Åô„Åπ„Å¶Á†¥Ê£Ñ„Åô„Çã
                     foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
                         if (arrow1?.arrow != null)
@@ -1114,7 +1121,7 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-                    // Arrow“ª”E
+                    // Arrow‰∏ÄË¶ß
                     FortuneTeller.arrows = new List<Arrow>();
 
                     if (!FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
@@ -1127,7 +1134,7 @@ namespace TheOtherRoles.Patches {
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
 
-                    // •ø•§•ﬁ©`§ÀïrÈg§Ú•ª•√•»
+                    // „Çø„Ç§„Éû„Éº„Å´ÊôÇÈñì„Çí„Çª„ÉÉ„Éà
                     FortuneTeller.updateTimer = 1f;
                 }
                 else
