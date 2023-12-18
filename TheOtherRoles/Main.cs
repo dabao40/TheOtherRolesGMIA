@@ -121,7 +121,7 @@ namespace TheOtherRoles
             CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();
-            AssetLoader.LoadAudioAssets();
+           // AssetLoader.LoadAudioAssets();
             if (ToggleCursor.Value) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
@@ -164,7 +164,7 @@ namespace TheOtherRoles
     {
         private static readonly string passwordHash = "d1f51dfdfd8d38027fd2ca9dfeb299399b5bdee58e6c0b3b5e9a45cd4e502848";
         private static readonly System.Random random = new System.Random((int)DateTime.Now.Ticks);
-        private static List<PlayerControl> bots = new List<PlayerControl>();
+        private static List<PlayerControl> bots = new();
 
         public static void Postfix(KeyboardJoystick __instance)
         {
@@ -182,7 +182,7 @@ namespace TheOtherRoles
             // Spawn dummys
             if (Input.GetKeyDown(KeyCode.F)) {
                 var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
-                var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
+                var i = playerControl.PlayerId = (byte)GameData.Instance.GetAvailableId();
 
                 bots.Add(playerControl);
                 GameData.Instance.AddPlayer(playerControl);
@@ -193,6 +193,7 @@ namespace TheOtherRoles
                 playerControl.NetTransform.enabled = false;
                 playerControl.SetName(RandomString(10));
                 playerControl.SetColor((byte) random.Next(Palette.PlayerColors.Length));
+                playerControl.SetPet("pet_cube");
                 GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
             }
 

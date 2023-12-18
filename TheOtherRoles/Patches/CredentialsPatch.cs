@@ -39,10 +39,12 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
                 __instance.text.alignment = TMPro.TextAlignmentOptions.TopRight;
                 if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started) {
                     string gameModeText = $"";
+                    var host = GameData.Instance.GetHost();
                     if (HideNSeek.isHideNSeekGM) gameModeText = $"Hide 'N Seek";
                     else if (HandleGuesser.isGuesserGm) gameModeText = $"Guesser";
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
-                    __instance.text.text = $"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
+                    __instance.text.text = $"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + 
+                    $"<color=#FFD700> Host : {host.PlayerName}, {host.PlayerLevel}" + __instance.text.text;
                     if (CachedPlayer.LocalPlayer.Data.IsDead || (!(CachedPlayer.LocalPlayer.PlayerControl == null) && (CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 || CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover2))) {
                         __instance.transform.localPosition = new Vector3(3.45f, __instance.transform.localPosition.y, __instance.transform.localPosition.z);
                     } else {
@@ -56,6 +58,7 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
 
                     __instance.text.text = $"{fullCredentialsVersion}\n  {gameModeText + fullCredentials}\n {__instance.text.text}";
                     __instance.transform.localPosition = new Vector3(3.5f, __instance.transform.localPosition.y, __instance.transform.localPosition.z);
+                 
                 }
             }
         }
@@ -73,11 +76,14 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
                 torLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
                 torLogo.transform.localPosition = new Vector3(-0.4f, 1f, 5f);
 
+                
+
                 renderer = torLogo.AddComponent<SpriteRenderer>();
                 loadSprites();
                 renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Banner.png", 300f);
 
                 instance = __instance;
+                
                 loadSprites();
                 // renderer.sprite = TORMapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
                 renderer.sprite = EventUtility.isEnabled ? banner2Sprite : bannerSprite;
@@ -89,6 +95,9 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
 
                 credentials.transform.SetParent(torLogo.transform);
                 credentials.transform.localPosition = Vector3.down * 2;
+
+                
+                
             }
 
             public static void loadSprites() {
