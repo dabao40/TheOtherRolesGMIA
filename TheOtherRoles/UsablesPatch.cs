@@ -96,7 +96,7 @@ namespace TheOtherRoles.Patches {
     }
 
     [HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
-    public static class VentUsePatch {
+    public static class VentUsePatch{
         public static bool Prefix(Vent __instance) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
             // Deputy handcuff disables the vents
