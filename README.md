@@ -13,30 +13,18 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
 We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
 
-# Before You Play
-
-Before play the game, you might need to complete a few steps.  
-
-1. *make sure that the date of the .dll file remains the same as the .zip file in the releases page*
-2. *run the game, and go to `\BepInEx\config`, and open up the `BepInEx.cfg` file*
-3. *scroll down a bit until you find the header `[Logging.Console]`*
-4. *change the `Enabled = true` to `Enabled = false`*
-5. *Run the game as you are well prepared*
-
-# Roles Added
-
-| Impostors                                                    | Crewmates                                                    | Neutral         | Other |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | --------------- | ----- |
-| [Flashlight(Recently Not Available)](#Flashlight)            | [TaskMaster](#TaskMaster) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) | [Cupid](#Cupid) |       |
-| [KillerCreator&MadmateKiller](#KillerCreator) # original idead from [here](https://github.com/miru-y/TheOtherRoles-MR) | [Jailor](#Jailor)                                            | [Akujo](#Akujo) |       |
-| [EvilLighter](#EvilLighter)                                  | [Isolator](#isolator)                                        |                 |       |
-|                                                              | [Sprinter](#sprinter)                                        |                 |       |
-
 # Releases
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/v1.1.7) |
 | 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
+
+<details>
+  <summary>Click to show older versions</summary>
+  
+| Among Us - Version | Mod Version | Link                                                                       |
+| ------------------ | ----------- | ------------------------------------------------------------ |
 | 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
 | 2023.10.24s        | v1.1.26     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.26) |
 | 2023.7.12s         | v1.1.0      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0) |
@@ -47,12 +35,21 @@ Before play the game, you might need to complete a few steps.
 | 2023.7.12s         | v1.0.5      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5) |
 | 2023.7.12s         | v1.0.4      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.4) |
 | 2023.7.12s         | v1.0.3      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.3) |
-| 2023.7.12s         | v1.0.2      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2) |
+| 2023.7.12s         | v1.0.2      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2) | 
+</details>
 
 # Changelog
 
 <details>
   <summary>Click to show the Changelog</summary>
+  
+  **Version v1.1.7**
+ - Added some sound effects to the game. Now most roles have a sound!
+ - Added the compatibility to the new map The Fungle.
+ - Added the button label texts.
+ - Now that the Assassin will no longer be capable of assassinating someone while their target is using a transporation tool.
+ - Fixed a bug where the Sprinter will not turn visible after a meeting.
+ - Fixed some translation errors.
 
   **Version v1.1.26**
 
@@ -88,6 +85,9 @@ Before play the game, you might need to complete a few steps.
 - Updated BepInEx to 671, thanks to [K](https://github.com/vdpcool)
 
 </details>
+
+<details>
+  <summary>Click to show the new roles added</summary>
 
 ## Flashlight(Recently Not Available)  
 
@@ -157,7 +157,7 @@ Lovers can still talk in the chat and hosts can still kick players even if they'
 The Sprinter is a Crewmate role with the ability to sprint for a short while.  
 While the Sprinter activates its skill, the Sprinter will turn invisible and that no one except for the dead players and itself will be able to see the Sprinter.  
 The Sprinter, unlike the Ninja, won't get a speed bonus and cannot be targeted while sprinting.  
-The Sprinter and deactivate its skill by pressing the button again.  
+The Sprinter can deactivate its skill by pressing the button again.  
 
 ## Cupid  
 
@@ -184,9 +184,11 @@ He cannot move during this time and cannot do its tasks.
 However, he will not be affected by the lights and can even use the chat.  
 NOTE: If the Isolator is a Lovers, the lover won't die if the Isolator uses its skill.  
 The Isolator will actually die and its body will be shown during the intro part of the meeting shown below "Dead" if it uses its skill and the meeting has started.  
+</details>
 
-# Features Of The Other Roles GM H Edition are Shown Below
-
+<details>
+  <summary>Click to show the features of TheOtherRoles GM H</summary>
+  
 ## Map modification features(Polus)
 
 - Random Respawn
@@ -466,7 +468,11 @@ EvilHackerのアイデアとコード
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 
 <hr>
-↓ここから本家のREADMEそのもの↓
+</details>
+
+<details>
+  <summary>Click to show the features of TheOtherRoles GM</summary>
+
 # The Other Roles: GM Edition
 
 
@@ -1063,29 +1069,6 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - A bug was removed where the game of the Lovers crashed if they were the last players killed by the host of the lobby.
   </details>
 
-
-
-# Credits & Resources
-
-[OxygenFilter](https://github.com/NuclearPowered/Reactor.OxygenFilter) - For all the version v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation\
-[Reactor](https://github.com/NuclearPowered/Reactor) - The framework used for all version before v2.0.0\
-[BepInEx](https://github.com/BepInEx) - Used to hook game functions\
-[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - Custom game options by **DorCoMaNdO**:
-
-- Before v1.6: We used the default Essentials release
-- v1.6-v1.8: We slightly changed the default Essentials. The changes can be found on this [branch](https://github.com/Eisbison/Reactor-Essentials/tree/feature/TheOtherRoles-Adaption) of our fork.
-- v2.0.0 and later: As we're not using Reactor anymore, we are using our own implementation, inspired by the one from **DorCoMaNdO**
-
-[Jackal and Sidekick](https://www.twitch.tv/dhalucard) - Original idea for the Jackal and Sidekick comes from **Dhalucard**\
-[Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - Idea for the Lovers role comes from **Woodi-dev**\
-[Jester](https://github.com/Maartii/Jester) - Idea for the Jester role comes from **Maartii**\
-[ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - Idea for the Engineer and Medic role comes from **NotHunter101**. Also some code snippets come of the implementation were used.\
-[Among-Us-Sheriff-Mod](https://github.com/Woodi-dev/Among-Us-Sheriff-Mod) - Idea for the Sheriff role comes from **Woodi-dev**\
-[TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - Idea for the Detective and Time Master roles comes from **Hardel-DW**. Also some code snippets of the implementation were used.\
-[TownOfUs](https://github.com/slushiegoose/Town-Of-Us) - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role come from **Slushiegoose**\
-[Ottomated](https://twitter.com/ottomated_) - Idea for the Morphling, Snitch and Camouflager role come from **Ottomated**\
-[Crowded-Mod](https://github.com/CrowdedMods/CrowdedMod) - Our implementation for 10+ player lobbies is inspired by the one from the **Crowded Mod Team**\
-[Goose-Goose-Duck](https://store.steampowered.com/app/1568590/Goose_Goose_Duck) - Idea for the Vulture role come from **Slushygoose**
 
 # Settings
 
@@ -2252,6 +2235,10 @@ The Fortune Teller is a Crewmate with the power to divine a single player's role
 Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
 The Watcher is a player capable of seeing everyone's votes during meetings.
+</details>
+
+# Roles
+For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
 
 # Credits & Resources
 
