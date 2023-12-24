@@ -40,7 +40,7 @@ namespace TheOtherRoles.Patches
                 KillAge = (float)(DateTime.UtcNow - killer.timeOfDeath).TotalMilliseconds;
 
                 string report =  $"Body reported in {LocationBody}, ";
-                string additionInfo = $"Body Time Dead at : {Math.Round(KillAge)}";
+                string additionInfo = $"Body Time Dead at : {Math.Round(KillAge / 1000)}s ago";
                 string allinfo = report + additionInfo;
 
                 if (target == null && CustomOptionHolder.LocationReport.getBool())
