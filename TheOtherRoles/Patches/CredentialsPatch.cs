@@ -88,7 +88,8 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
                 credentials.fontSize *= 0.05f;
 
                 credentials.transform.SetParent(torLogo.transform);
-                credentials.transform.localPosition = Vector3.down * 2;
+                //credentials.transform.localPosition = Vector3.down * 2;
+                credentials.transform.localPosition = Vector3.down + new Vector3(0f, -0.6f, 0f);
             }
 
             public static void loadSprites() {
