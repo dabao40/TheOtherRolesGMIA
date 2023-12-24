@@ -35,7 +35,7 @@ namespace TheOtherRoles.Objects {
         public HudManager hudManager;
         public bool mirror;
         public KeyCode? hotkey;
-        public string buttonText;
+        public string buttonText = "";
         public bool isHandcuffed = false;
         private static readonly int Desat = Shader.PropertyToID("_Desat");
 
@@ -49,7 +49,7 @@ namespace TheOtherRoles.Objects {
             public static readonly Vector3 upperRowFarLeft = new Vector3(-3f, 1f, 0f);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "")
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", bool abilityTexture = false)
         {
             this.hudManager = hudManager;
             this.OnClick = OnClick;
@@ -71,6 +71,11 @@ namespace TheOtherRoles.Objects {
             actionButtonGameObject = actionButton.gameObject;
             actionButtonRenderer = actionButton.graphic;
             actionButtonMat = actionButtonRenderer.material;
+            if (abilityTexture)
+            {
+                UnityEngine.Object.Destroy(actionButton.buttonLabelText);
+                actionButton.buttonLabelText = UnityEngine.Object.Instantiate(hudManager.UseButton.buttonLabelText, actionButton.transform);
+            }
             actionButtonLabelText = actionButton.buttonLabelText;
             PassiveButton button = actionButton.GetComponent<PassiveButton>();
             this.showButtonText = (actionButtonRenderer.sprite == Sprite || buttonText != "");
@@ -80,8 +85,8 @@ namespace TheOtherRoles.Objects {
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "")
-        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText) { }
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", bool abilityTexture = false)
+        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture) { }
 
         public void onClickEvent()
         {
