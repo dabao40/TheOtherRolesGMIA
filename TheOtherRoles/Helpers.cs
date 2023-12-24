@@ -18,6 +18,8 @@ using AmongUs.GameOptions;
 using Innersloth.Assets;
 using MonoMod.Cil;
 using static HarmonyLib.InlineSignature;
+using System.Globalization;
+using TheOtherRoles.Patches;
 
 namespace TheOtherRoles {
 
@@ -25,7 +27,8 @@ namespace TheOtherRoles {
         PerformKill,
         SuppressKill,
         BlankKill,
-        ReverseKill
+        ReverseKill,
+        DelayVampireKill
     }
 
     public enum CustomGamemodes {
@@ -275,6 +278,34 @@ namespace TheOtherRoles {
                 player.Data.Tasks.Clear();
         }
 
+        public static bool isMira()
+        {
+            return GameOptionsManager.Instance.CurrentGameOptions.MapId == 1;
+        }
+
+        public static bool isAirship()
+        {
+            return GameOptionsManager.Instance.CurrentGameOptions.MapId == 4;
+        }
+        public static bool isSkeld()
+        {
+            return GameOptionsManager.Instance.CurrentGameOptions.MapId == 0;
+        }
+        public static bool isPolus()
+        {
+            return GameOptionsManager.Instance.CurrentGameOptions.MapId == 2;
+        }
+
+        public static bool isFungle()
+        {
+            return GameOptionsManager.Instance.CurrentGameOptions.MapId == 5;
+        }
+
+        public static bool MushroomSabotageActive()
+        {
+            return CachedPlayer.LocalPlayer.PlayerControl.myTasks.ToArray().Any((x) => x.TaskType == TaskTypes.MushroomMixupSabotage);
+        }
+
         public static void setSemiTransparent(this PoolablePlayer player, bool value) {
             float alpha = value ? 0.25f : 1f;
             foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())
@@ -362,7 +393,7 @@ namespace TheOtherRoles {
         }
 
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
-            if (Camouflager.camouflageTimer > 0f) return true; // No names are visible
+            if (Camouflager.camouflageTimer > 0f || MushroomSabotageActive()) return true; // No names are visible
             if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide ninja nametags from non-impostors
             if (Sprinter.sprinting && Sprinter.sprinter == target) return true; // Hide Sprinter nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
@@ -378,7 +409,15 @@ namespace TheOtherRoles {
         }
 
         public static void setDefaultLook(this PlayerControl target, bool enforceNightVisionUpdate = true) {
-            target.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, enforceNightVisionUpdate);
+            if (MushroomSabotageActive())
+            {
+                var instance = ShipStatus.Instance.CastFast<FungleShipStatus>().specialSabotage;
+                MushroomMixupSabotageSystem.CondensedOutfit condensedOutfit = instance.currentMixups[target.PlayerId];
+                GameData.PlayerOutfit playerOutfit = instance.ConvertToPlayerOutfit(condensedOutfit);
+                target.MixUpOutfit(playerOutfit);
+            }
+            else
+                target.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, enforceNightVisionUpdate);
         }
 
         public static void setLook(this PlayerControl target, String playerName, int colorId, string hatId, string visorId, string skinId, string petId, bool enforceNightVisionUpdate = true) {
@@ -491,6 +530,8 @@ namespace TheOtherRoles {
                 roleCouldUse = true;
             else if (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde == player)
                 roleCouldUse = true;
+            else if (Jester.jester != null && Jester.canUseVents && Jester.jester == player)
+                roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
@@ -585,7 +626,24 @@ namespace TheOtherRoles {
                 return MurderAttemptResult.SuppressKill;
             }
 
+            if (TransportationToolPatches.isUsingTransportation(target) && !blockRewind && killer == Vampire.vampire)
+            {
+                return MurderAttemptResult.DelayVampireKill;
+            }
+            else if (TransportationToolPatches.isUsingTransportation(target))
+                return MurderAttemptResult.SuppressKill;
+
             return MurderAttemptResult.PerformKill;
+        }
+
+        public static void MurderPlayer(PlayerControl killer, PlayerControl target, bool showAnimation)
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+            writer.Write(killer.PlayerId);
+            writer.Write(target.PlayerId);
+            writer.Write(showAnimation ? Byte.MaxValue : 0);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.uncheckedMurderPlayer(killer.PlayerId, target.PlayerId, showAnimation ? Byte.MaxValue : (byte)0);
         }
 
         public static MurderAttemptResult checkMurderAttemptAndKill(PlayerControl killer, PlayerControl target, bool isMeetingStart = false, bool showAnimation = true, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false)  {
@@ -594,12 +652,21 @@ namespace TheOtherRoles {
 
             MurderAttemptResult murder = checkMuderAttempt(killer, target, isMeetingStart, ignoreBlank, ignoreIfKillerIsDead);
             if (murder == MurderAttemptResult.PerformKill) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
-                writer.Write(killer.PlayerId);
-                writer.Write(target.PlayerId);
-                writer.Write(showAnimation ? Byte.MaxValue : 0);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.uncheckedMurderPlayer(killer.PlayerId, target.PlayerId, showAnimation ? Byte.MaxValue : (byte)0);
+                MurderPlayer(killer, target, showAnimation);
+            }
+            else if (murder == MurderAttemptResult.DelayVampireKill)
+            {
+                HudManager.Instance.StartCoroutine(Effects.Lerp(10f, new Action<float>((p) => {
+                    if (!TransportationToolPatches.isUsingTransportation(target) && Vampire.bitten != null)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                        writer.Write(byte.MaxValue);
+                        writer.Write(byte.MaxValue);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
+                        MurderPlayer(killer, target, showAnimation);
+                    }
+                })));
             }
 
             if (murder == MurderAttemptResult.ReverseKill)
@@ -675,10 +742,24 @@ namespace TheOtherRoles {
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen); // This will move button positions to the correct position.
         }
 
+        private static long GetBuiltInTicks()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var builtin = assembly.GetType("Builtin");
+            if (builtin == null) return 0;
+            var field = builtin.GetField("CompileTime");
+            if (field == null) return 0;
+            var value = field.GetValue(null);
+            if (value == null) return 0;
+            return (long)value;
+        }
+
         public static async Task checkBeta() {
             if (TheOtherRolesPlugin.betaDays > 0) {
                 TheOtherRolesPlugin.Logger.LogMessage($"Beta check");
-                var compileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);  // This may show as an error, but it is not, compilation will work!
+                var ticks = GetBuiltInTicks();
+                var compileTime = new DateTime(ticks, DateTimeKind.Utc);  // This may show as an error, but it is not, compilation will work!
+                TheOtherRolesPlugin.Logger.LogMessage($"Compiled at {compileTime.ToString(CultureInfo.InvariantCulture)}");
                 DateTime? now;
                 // Get time from the internet, so no-one can cheat it (so easily).
                 try {

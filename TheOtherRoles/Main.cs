@@ -32,7 +32,7 @@ namespace TheOtherRoles
     public class TheOtherRolesPlugin : BasePlugin
     {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "1.1.5";
+        public const string VersionString = "1.1.7";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -131,7 +131,7 @@ namespace TheOtherRoles
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            AddComponent<ModUpdateBehaviour>();
+            AddComponent<ModUpdater>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
         }
         public static Sprite GetModStamp() {

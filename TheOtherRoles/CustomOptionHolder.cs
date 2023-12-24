@@ -67,6 +67,7 @@ namespace TheOtherRoles {
         public static CustomOption jesterSpawnRate;
         public static CustomOption jesterCanCallEmergency;
         public static CustomOption jesterHasImpostorVision;
+        public static CustomOption jesterCanVent;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -726,6 +727,7 @@ namespace TheOtherRoles {
             jesterSpawnRate = CustomOption.Create(60, Types.Neutral, cs(Jester.color, ModTranslation.getString("jester")), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, Types.Neutral, ModTranslation.getString("jesterCanCallEmergency"), true, jesterSpawnRate);
             jesterHasImpostorVision = CustomOption.Create(62, Types.Neutral, ModTranslation.getString("jesterHasImpostorVision"), false, jesterSpawnRate);
+            jesterCanVent = CustomOption.Create(6088, Types.Neutral, ModTranslation.getString("jesterCanVent"), false, jesterSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, Types.Neutral, cs(Arsonist.color, ModTranslation.getString("arsonist")), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, Types.Neutral, ModTranslation.getString("arsonistCooldown"), 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
