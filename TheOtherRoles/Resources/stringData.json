@@ -279,7 +279,7 @@
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
-        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#87CEFAFF>LezaiYa</color> & <color=#00FFFFFF>\u65b9\u5757</color>\u7ffb\u8bd1</size>"
+        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color>\u7ffb\u8bd1</size>"
     },
     "contributorsCredentials": {
         "0": "<size=60%> <color=#FCCE03FF>Special thanks to K3ndo & Smeggy</color> & <color=#FFFFE0FF>Among us</color></size>",
@@ -751,6 +751,10 @@
         "0": "Jester Has Impostor Vision",
         "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u30d3\u30b8\u30e7\u30f3\u3092\u6301\u3064",
         "13": "\u62e5\u6709\u5185\u9b3c\u89c6\u91ce"
+    },
+    "jesterCanVent": {
+        "0": "Jester Can Vent",
+        "13": "\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1"
     },
     "arsonist": {
         "0": "Arsonist",
@@ -1670,7 +1674,7 @@
         "13": "\u76d1\u63a7\u6301\u7eed\u65f6\u95f4"
     },
     "securityGuardCamMaxCharges": {
-        "0": "Gadged Max Charges",
+        "0": "Gadget Max Charges",
         "11": "\u5145\u96fb\u306b\u5fc5\u8981\u306a\u30bf\u30b9\u30af\u6570",
         "13": "\u6700\u5927\u4f7f\u7528\u9650\u989d"
     },
@@ -1683,6 +1687,10 @@
         "0": "Cant Move During Cam Duration",
         "11": "\u30ab\u30e1\u30e9\u64ae\u5f71\u4e2d\u306b\u79fb\u52d5\u3067\u304d\u306a\u3044",
         "13": "\u5728\u4f7f\u7528\u6444\u50cf\u5934\u65f6\u4e0d\u80fd\u79fb\u52a8"
+    },
+    "securityGuardCamButton": {
+        "0": "SECURITY",
+        "13": "\u4fdd\u5b89\u5ba4"
     },
     "bait": {
         "0": "Bait",
@@ -2865,6 +2873,26 @@
         "0": "The host has no or a different version of The Other Roles\nYou will be kicked in {0}s",
         "11": "\u30db\u30b9\u30c8\u304cThe Other Roles\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3046\u304b\u3001\u5c0e\u5165\u3055\u308c\u3066\u3044\u307e\u305b\u3093"
     },
+    "updateGMIA": {
+        "0": "Updating GMIA\nPlease wait...",
+        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e"
+    },
+    "updatingGMIA": {
+        "0": "Updating GMIA\nPlease wait...\nDownloading...",
+        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e\n\u6b63\u5728\u4e0b\u8f7d"
+    },
+    "updateNotSuccessful": {
+        "0": "Update wasn't successful\nTry again later,\nor update manually.",
+        "13": "\u5347\u7ea7\u5931\u8d25\n\u8bf7\u7a0d\u540e\u5c1d\u8bd5\n\u6216\u624b\u52a8\u4e0b\u8f7d"
+    },
+    "updateCopyFile": {
+        "0": "Updating GMIA\nPlease wait...\n\nDownload complete\ncopying file...",
+        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e\n\u4e0b\u8f7d\u5b8c\u6210\n\u6b63\u5728\u62f7\u8d1d\u6587\u4ef6"
+    },
+    "updateSuccessful": {
+        "0": "TheOtherRolesGMIA\nupdated successfully\nPlease restart the game.",
+        "13": "\u8d85\u591a\u804c\u4e1aGMIA\n\u5347\u7ea7\u5b8c\u6210\n\u8bf7\u91cd\u542f\u6e38\u620f"
+    },
     "swapperMeetingButton": {
         "0": "The Swapper can't start an emergency meeting",
         "11": "\u30b9\u30ef\u30c3\u30d1\u30fc\u306f\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u3092\u62db\u96c6\u3067\u304d\u306a\u3044",
@@ -3828,5 +3856,213 @@
     "colorIce": {
         "0": "Ice",
         "13": "\u51b0\u84dd\u8272"
+    },
+    "BlankText": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "CamoText": {
+        "0": "[BLANK]",
+        "13": "\u9690\u853d"
+    },
+    "CleanText": {
+        "0": "[BLANK]",
+        "13": "\u6e05\u7406"
+    },
+    "CloseVentText": {
+        "0": "[BLANK]",
+        "13": "\u5c01\u9501"
+    },
+    "CurseText": {
+        "0": "[BLANK]",
+        "13": "\u8bc5\u5492"
+    },
+    "CurseKillText": {
+        "0": "[BLANK]",
+        "13": "\u5492\u6740"
+    },
+    "DouseText": {
+        "0": "[BLANK]",
+        "13": "\u6d47\u6cb9"
+    },
+    "EraserText": {
+        "0": "[BLANK]",
+        "13": "\u62b9\u9664"
+    },
+    "GarlicText": {
+        "0": "[BLANK]",
+        "13": "\u5927\u849c"
+    },
+    "HackerText": {
+        "0": "[BLANK]",
+        "13": "\u9ed1\u5165"
+    },
+    "IgniteText": {
+        "0": "[BLANK]",
+        "13": "\u7eb5\u706b"
+    },
+    "LighterText": {
+        "0": "[BLANK]",
+        "13": "\u70b9\u706f"
+    },
+    "LightsOutText": {
+        "0": "[BLANK]",
+        "13": "\u5173\u706f"
+    },
+    "MorphText": {
+        "0": "[BLANK]",
+        "13": "\u5316\u5f62"
+    },
+    "PlaceCameraText": {
+        "0": "[BLANK]",
+        "13": "\u5b89\u88c5"
+    },
+    "PlaceJackInTheBoxText": {
+        "0": "[BLANK]",
+        "13": "\u653e\u7f6e"
+    },
+    "RepairText": {
+        "0": "[BLANK]",
+        "13": "\u4fee\u7406"
+    },
+    "RewindText": {
+        "0": "[BLANK]",
+        "13": "\u56de\u6eaf"
+    },
+    "SampleText": {
+        "0": "[BLANK]",
+        "13": "\u53d6\u6837"
+    },
+    "SeerText": {
+        "0": "[BLANK]",
+        "13": "\u63ed\u793a"
+    },
+    "ShieldText": {
+        "0": "[BLANK]",
+        "13": "\u62a4\u76fe"
+    },
+    "ShiftText": {
+        "0": "[BLANK]",
+        "13": "\u4ea4\u6362"
+    },
+    "SidekickText": {
+        "0": "[BLANK]",
+        "13": "\u62db\u52df"
+    },
+    "TimeShieldText": {
+        "0": "[BLANK]",
+        "13": "\u65f6\u95f4\u4e4b\u76fe"
+    },
+    "TrackerText": {
+        "0": "[BLANK]",
+        "13": "\u8ffd\u8e2a"
+    },
+    "TricksterVentText": {
+        "0": "[BLANK]",
+        "13": "\u9a97\u672f\u76d2\u5b50"
+    },
+    "VampireText": {
+        "0": "[BLANK]",
+        "13": "\u5438\u8840"
+    },
+    "VultureText": {
+        "0": "[BLANK]",
+        "13": "\u541e\u566c"
+    },
+    "MediumText": {
+        "0": "[BLANK]",
+        "13": "\u901a\u7075"
+    },
+    "PathfindText": {
+        "0": "[BLANK]",
+        "13": "\u5bfb\u627e"
+    },
+    "PursuerText": {
+        "0": "[BLANK]",
+        "13": "\u7a7a\u5305\u5f39"
+    },
+    "WitchText": {
+        "0": "[BLANK]",
+        "13": "\u4e0b\u5492"
+    },
+    "NinjaText": {
+        "0": "[BLANK]",
+        "13": "\u9690\u8eab"
+    },
+    "NinjaUnstealthText": {
+        "0": "[BLANK]",
+        "13": "\u89e3\u9664"
+    },
+    "HandcuffText": {
+        "0": "[BLANK]",
+        "13": "\u6234\u4e0a\u624b\u94d0"
+    },
+    "PlacePortalText": {
+        "0": "[BLANK]",
+        "13": "\u8bbe\u7f6e"
+    },
+    "PortalTeleportText": {
+        "0": "[BLANK]",
+        "13": "\u4f20\u9001"
+    },
+    "DrugText": {
+        "0": "[BLANK]",
+        "13": "\u79d8\u836f"
+    },
+    "InfectText": {
+        "0": "[BLANK]",
+        "13": "\u611f\u67d3"
+    },
+    "MadmateText": {
+        "0": "[BLANK]",
+        "13": "\u53db\u5f92"
+    },
+    "PlaceTrapText": {
+        "0": "[BLANK]",
+        "13": "\u5e03\u4e0b\u9677\u9631"
+    },
+    "BrainwashText": {
+        "0": "[BLANK]",
+        "13": "\u6d17\u8111"
+    },
+    "AlertText": {
+        "0": "[BLANK]",
+        "13": "\u8b66\u6212"
+    },
+    "PlantBombText": {
+        "0": "[BLANK]",
+        "13": "\u653e\u7f6e\u70b8\u5f39"
+    },
+    "ReleaseBombText": {
+        "0": "[BLANK]",
+        "13": "\u5f15\u7206"
+    },
+    "DragBodyText": {
+        "0": "[BLANK]",
+        "13": "\u62d6\u62fd"
+    },
+    "DropBodyText": {
+        "0": "[BLANK]",
+        "13": "\u653e\u4e0b"
+    },
+    "InvestigateText": {
+        "0": "[BLANK]",
+        "13": "\u8c03\u67e5"
+    },
+    "AkujoHonmeiText": {
+        "0": "[BLANK]",
+        "13": "\u9009\u4e3a\u771f\u7231"
+    },
+    "AkujoBackupText": {
+        "0": "[BLANK]",
+        "13": "\u9009\u4e3a\u5907\u80ce"
+    },
+    "SprintText": {
+        "0": "[BLANK]",
+        "13": "\u51b2\u523a"
+    },
+    "SprinterStopText": {
+        "0": "[BLANK]",
+        "13": "\u505c\u4e0b"
     }
 }
