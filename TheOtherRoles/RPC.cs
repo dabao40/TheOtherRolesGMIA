@@ -22,6 +22,7 @@ using MS.Internal.Xml.XPath;
 using static UnityEngine.GraphicsBuffer;
 using static Rewired.Utils.Classes.Utility.ObjectInstanceTracker;
 using static HarmonyLib.InlineSignature;
+using static TheOtherRoles.Patches.ReportBodyLocation.SendLocationBody;
 
 namespace TheOtherRoles
 {
@@ -176,6 +177,7 @@ namespace TheOtherRoles
         Invert,
         SetTiebreak,
         SetInvisible,
+        SendLocationBody,
         ThiefStealsRole,
         //SetTrap,
         //TriggerTrap,
@@ -713,6 +715,15 @@ namespace TheOtherRoles
             if (isShieldedAndShow || isMedicAndShow || Helpers.shouldShowGhostInfo()) Helpers.showFlash(Palette.ImpostorRed, duration: 0.5f, "Failed Murder Attempt on Shielded Player");
         }
 
+        public static void SyncBodyLoaction(MessageReader reader)
+        {
+            string report = reader.ReadString();
+            if (PlayerControl.LocalPlayer.Data.IsDead == false)
+            {
+              DestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer, report);
+            }
+        }
+
         public static void shifterShift(byte targetId)
         {
             PlayerControl oldShifter = Shifter.shifter;
@@ -1034,10 +1045,10 @@ namespace TheOtherRoles
             }
             else
             {
-                // Jackal¥Ğ¥°Œê
+                // Jackalï¿½Ğ¥ï¿½ï¿½ï¿½ï¿½ï¿½
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
-                // ¥¿¥¹¥¯¤¬¤Ê¤¤¥×¥ì¥¤¥ä©`¤¬Madmate¤Ë¤Ê¤Ã¤¿ˆöºÏ¤Ï¥·¥ç©`¥È¥¿¥¹¥¯¤ò±ØÒªÊı¸î¤êµ±¤Æ¤ë
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¤ï¿½ï¿½×¥ì¥¤ï¿½ï¿½`ï¿½ï¿½Madmateï¿½Ë¤Ê¤Ã¤ï¿½ï¿½ï¿½ï¿½Ï¤Ï¥ï¿½ï¿½ï¿½`ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½êµ±ï¿½Æ¤ï¿½
                 if (Helpers.hasFakeTasks(player))
                 {
                     if (CreatedMadmate.hasTasks)
@@ -1048,7 +1059,7 @@ namespace TheOtherRoles
                 }
                 erasePlayerRoles(player.PlayerId, true, true);
 
-                // Jackal¥Ğ¥°Œê
+                // Jackalï¿½Ğ¥ï¿½ï¿½ï¿½ï¿½ï¿½
                 Jackal.formerJackals = tmpFormerJackals;
 
                 CreatedMadmate.createdMadmate = player;
@@ -1066,7 +1077,7 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
-            // ¥¤¥ó¥İ¥¹¥¿©`¤ÎˆöºÏ¤ÏÕ¼¤¤Ÿ¤ÎÎ»ÖÃ¤ËÊ¸Ó¡¤ò±íÊ¾
+            // ï¿½ï¿½ï¿½ï¿½İ¥ï¿½ï¿½ï¿½ï¿½`ï¿½Îˆï¿½ï¿½Ï¤ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¸Ó¡ï¿½ï¿½ï¿½Ê¾
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
@@ -1590,7 +1601,7 @@ namespace TheOtherRoles
 
         public static void releaseBomb(byte killer, byte target)
         {
-            // Í¬•rÑº¤·¤Ç¥À¥Ö¥ë¥­¥ë¤¬°kÉú¤¹¤ë¤Î¤ò·ÀÖ¹¤¹¤ë¤¿¤á¤ËBomberA¤ÇÒ»¶ÈÊÜ¤±È¡¤Ã¤Æ¤«¤éŒgĞĞ¤¹¤ë
+            // Í¬ï¿½rÑºï¿½ï¿½ï¿½Ç¥ï¿½ï¿½Ö¥ë¥­ï¿½ë¤¬ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¤ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ë¤¿ï¿½ï¿½ï¿½BomberAï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ü¤ï¿½È¡ï¿½Ã¤Æ¤ï¿½ï¿½ï¿½gï¿½Ğ¤ï¿½ï¿½ï¿½
             if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
             {
                 if (BomberA.bombTarget != null && BomberB.bombTarget != null)
@@ -2173,6 +2184,11 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SetGameStarting:
                     RPCProcedure.setGameStarting();
                     break;
+                
+                // Body Location
+                case (byte)CustomRPC.SendLocationBody:
+                RPCProcedure.SyncBodyLoaction(reader);
+                break;
 
                 // Role functionality
 

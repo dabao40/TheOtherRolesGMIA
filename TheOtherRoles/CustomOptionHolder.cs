@@ -68,6 +68,9 @@ namespace TheOtherRoles {
         public static CustomOption jesterCanCallEmergency;
         public static CustomOption jesterHasImpostorVision;
 
+        // Body Location      
+        public static CustomOption LocationReport;
+
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
         public static CustomOption arsonistDuration;
@@ -726,6 +729,7 @@ namespace TheOtherRoles {
             jesterSpawnRate = CustomOption.Create(60, Types.Neutral, cs(Jester.color, ModTranslation.getString("jester")), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, Types.Neutral, ModTranslation.getString("jesterCanCallEmergency"), true, jesterSpawnRate);
             jesterHasImpostorVision = CustomOption.Create(62, Types.Neutral, ModTranslation.getString("jesterHasImpostorVision"), false, jesterSpawnRate);
+            LocationReport = CustomOption.Create(63, Types.General, "Locations of body report are displayed in chat with additioninfo", false);
 
             arsonistSpawnRate = CustomOption.Create(290, Types.Neutral, cs(Arsonist.color, ModTranslation.getString("arsonist")), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, Types.Neutral, ModTranslation.getString("arsonistCooldown"), 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
