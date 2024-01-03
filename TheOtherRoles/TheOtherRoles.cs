@@ -88,6 +88,7 @@ namespace TheOtherRoles
             Yasuna.clearAndReload();
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
+            Teleporter.clearAndReload();
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
             Akujo.clearAndReload();
@@ -2436,6 +2437,35 @@ namespace TheOtherRoles
             canSabotage = CustomOptionHolder.createdMadmateCanSabotage.getBool();
             canFixComm = CustomOptionHolder.createdMadmateCanFixComm.getBool();
             numTasks = (int)CustomOptionHolder.createdMadmateCommonTasks.getFloat();
+        }
+    }
+
+    public static class Teleporter
+    {
+        public static PlayerControl teleporter;
+        public static Color color = new Color32(164, 249, 255, byte.MaxValue);
+        private static Sprite teleportButtonSprite;
+        public static float teleportCooldown = 30f;
+        public static int teleportNumber = 5;
+        public static PlayerControl target1;
+        public static PlayerControl target2;
+        public static PlayerControl currentTarget;
+
+        public static Sprite getButtonSprite()
+        {
+            if (teleportButtonSprite) return teleportButtonSprite;
+            teleportButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TeleporterButton.png", 115f);
+            return teleportButtonSprite;
+        }
+
+        public static void clearAndReload()
+        {
+            teleporter = null;
+            target1 = null;
+            target2 = null;
+            currentTarget = null;
+            teleportCooldown = CustomOptionHolder.teleporterCooldown.getFloat();
+            teleportNumber = (int)CustomOptionHolder.teleporterTeleportNumber.getFloat();
         }
     }
 

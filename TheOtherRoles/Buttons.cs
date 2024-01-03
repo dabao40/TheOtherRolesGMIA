@@ -86,6 +86,8 @@ namespace TheOtherRoles
         public static CustomButton jekyllAndHydeKillButton;
         public static CustomButton jekyllAndHydeDrugButton;
         public static CustomButton jekyllAndHydeSuicideButton;
+        public static CustomButton teleporterTeleportButton;
+        public static CustomButton teleporterSampleButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -113,6 +115,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoBackupLeftText;
         public static TMPro.TMP_Text plagueDoctornumInfectionsText;
+        public static TMPro.TMP_Text teleporterNumLeftText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -216,6 +219,8 @@ namespace TheOtherRoles
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
+            teleporterSampleButton.MaxTimer = Teleporter.teleportCooldown;
+            teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
@@ -746,7 +751,8 @@ namespace TheOtherRoles
                    if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
                },
                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
-               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
+               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
+               abilityTexture: true
            );
 
             // Hacker Admin Table Charges
@@ -814,7 +820,8 @@ namespace TheOtherRoles
                false,
               Helpers.isMira() ?
               TranslationController.Instance.GetString(StringNames.DoorlogLabel) :
-              TranslationController.Instance.GetString(StringNames.VitalsLabel)
+              TranslationController.Instance.GetString(StringNames.VitalsLabel),
+              abilityTexture: true
            );
 
             // Hacker Vitals Charges
@@ -941,7 +948,7 @@ namespace TheOtherRoles
                     }
                     else {
                         vampireKillButton.actionButton.graphic.sprite = Vampire.getButtonSprite();
-                        vampireKillButton.showButtonText = true;
+                        vampireKillButton.showButtonText = ModTranslation.getString("VampireText") != "";
                         vampireKillButton.buttonText = ModTranslation.getString("VampireText");
                     }
                     return Vampire.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove && (!Vampire.targetNearGarlic || Vampire.canKillNearGarlics);
@@ -1274,6 +1281,66 @@ namespace TheOtherRoles
             jekyllAndHydeDrugText.enableWordWrapping = false;
             jekyllAndHydeDrugText.transform.localScale = Vector3.one * 0.5f;
             jekyllAndHydeDrugText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            teleporterSampleButton = new CustomButton(
+                () =>
+                {
+                    if (Teleporter.target1 == null) Teleporter.target1 = Teleporter.currentTarget;
+                    else Teleporter.target2 = Teleporter.currentTarget;
+                    Teleporter.currentTarget = null;
+                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
+                },
+                () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => { return Teleporter.currentTarget != null && (Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer; },
+                Morphling.getSampleSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.K,
+                buttonText: ModTranslation.getString("TeleporterSampleText"),
+                abilityTexture: true
+            );
+
+            teleporterTeleportButton = new CustomButton(
+                () =>
+                {
+                    if (Teleporter.target1 != null && Teleporter.target2 != null && !Teleporter.target1.Data.IsDead && !Teleporter.target2.Data.IsDead)
+                    {
+                        var target1Position = Teleporter.target1.transform.position;
+                        var target2Position = Teleporter.target2.transform.position;
+                        Teleporter.target1.NetTransform.RpcSnapTo(target2Position);
+                        Teleporter.target2.NetTransform.RpcSnapTo(target1Position);
+                        Teleporter.target1 = null;
+                        Teleporter.target2 = null;
+                        teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
+                        teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer;
+                        Teleporter.teleportNumber--;
+                    }
+                },
+                () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () =>
+                {
+                    if (teleporterNumLeftText != null)
+                    {
+                        teleporterNumLeftText.text = $"{Teleporter.teleportNumber}";
+                    }
+                    return Teleporter.target1 != null && Teleporter.target2 != null && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove &&
+                    Teleporter.target1.CanMove && Teleporter.target2.CanMove;
+                },
+                () => { teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer; },
+                Teleporter.getButtonSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.F,
+                false,
+                ModTranslation.getString("TeleporterTeleportText"),
+                true
+            );
+            teleporterNumLeftText = GameObject.Instantiate(teleporterTeleportButton.actionButton.cooldownTimerText, teleporterTeleportButton.actionButton.cooldownTimerText.transform.parent);
+            teleporterNumLeftText.text = "";
+            teleporterNumLeftText.enableWordWrapping = false;
+            teleporterNumLeftText.transform.localScale = Vector3.one * 0.5f;
+            teleporterNumLeftText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             plagueDoctorButton = new CustomButton(
                 () =>
@@ -1816,7 +1883,8 @@ namespace TheOtherRoles
                 false,
                 Helpers.isMira() ?
                 TranslationController.Instance.GetString(StringNames.SecurityLogsSystem) :
-                ModTranslation.getString("securityGuardCamButton")
+                ModTranslation.getString("securityGuardCamButton"),
+                abilityTexture: true
             );
 
             // Security Guard cam button charges
@@ -2207,12 +2275,12 @@ namespace TheOtherRoles
                     if (Undertaker.DraggedBody != null)
                     {
                         undertakerDragButton.Sprite = Undertaker.getDropButtonSprite();
-                        undertakerDragButton.buttonText = ModTranslation.getString("DragBodyText");
+                        undertakerDragButton.buttonText = ModTranslation.getString("DropBodyText");
                     }
                     else
                     {
                         undertakerDragButton.Sprite = Undertaker.getDragButtonSprite();
-                        undertakerDragButton.buttonText = ModTranslation.getString("DropBodyText");
+                        undertakerDragButton.buttonText = ModTranslation.getString("DragBodyText");
                     }
                     return ((Undertaker.TargetBody != null && Undertaker.DraggedBody == null)
                             || (Undertaker.DraggedBody != null && Undertaker.CanDropBody))
@@ -2224,7 +2292,7 @@ namespace TheOtherRoles
                 __instance, // HudManager hudManager
                 KeyCode.F
             );
-            undertakerDragButton.showButtonText = true;
+            undertakerDragButton.showButtonText = ModTranslation.getString("DropBodyText") != "";
 
             // Sherlock Investigate
             sherlockInvestigateButton = new CustomButton(

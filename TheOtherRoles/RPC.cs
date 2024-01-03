@@ -71,6 +71,7 @@ namespace TheOtherRoles
         Shifter, 
         Yasuna,
         TaskMaster,
+        Teleporter,
         EvilYasuna,
         //Trapper,
         Lawyer, 
@@ -245,6 +246,7 @@ namespace TheOtherRoles
             AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
             MapBehaviourPatch.reset();
+            MadmateTasksHelper.Reset();
             //Trap.clearTraps();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
@@ -428,6 +430,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Spy:
                         Spy.spy = player;
+                        break;
+                    case RoleId.Teleporter:
+                        Teleporter.teleporter = player;
                         break;
                     case RoleId.Trickster:
                         Trickster.trickster = player;
@@ -855,7 +860,10 @@ namespace TheOtherRoles
                 Veteran.veteran = oldShifter;
             if (Yasuna.yasuna != null && Yasuna.yasuna == player)
                 Yasuna.yasuna = oldShifter;
-            if (player == TaskMaster.taskMaster) TaskMaster.taskMaster = oldShifter;
+            if (player == TaskMaster.taskMaster)
+                TaskMaster.taskMaster = oldShifter;
+            if (Teleporter.teleporter != null && Teleporter.teleporter == player)
+                Teleporter.teleporter = oldShifter;
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
@@ -968,6 +976,7 @@ namespace TheOtherRoles
             if (Camouflager.camouflager == null) return;
 
             Camouflager.camouflageTimer = Camouflager.duration;
+            if (Helpers.MushroomSabotageActive()) return; // Dont overwrite the fungle "camo"
             foreach (PlayerControl player in CachedPlayer.AllPlayers)
                 player.setLook("", 6, "", "", "", "");
         }
@@ -1136,6 +1145,11 @@ namespace TheOtherRoles
                     foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
                     BomberB.arrows.FirstOrDefault()?.arrow.SetActive(false);
                 }
+                if (player == Ninja.ninja)
+                {
+                    Ninja.stealthed = false;
+                    Ninja.setOpacity(player, 1f);
+                }
 
                 erasePlayerRoles(player.PlayerId, true);
                 Sidekick.sidekick = player;
@@ -1189,6 +1203,7 @@ namespace TheOtherRoles
             if (player == Sherlock.sherlock) Sherlock.clearAndReload();
             if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.clearAndReload();
+            if (player == Teleporter.teleporter) Teleporter.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -1354,6 +1369,7 @@ namespace TheOtherRoles
         public static void ninjaStealth(byte playerId, bool stealthed)
         {
             PlayerControl player = Helpers.playerById(playerId);
+            //if (Camouflager.camouflageTimer <= 0) player.setDefaultLook();
             Ninja.setStealthed(player, stealthed);
             Ninja.invisibleTimer = Ninja.stealthDuration;
         }
@@ -1376,6 +1392,7 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             Sprinter.setSprinting(player, sprinting);
+            //if (Camouflager.camouflageTimer <= 0) player.setDefaultLook();
             Sprinter.invisibleTimer = Sprinter.sprintDuration;
         }
 
@@ -1667,12 +1684,20 @@ namespace TheOtherRoles
             SecurityGuard.remainingScrews -= SecurityGuard.ventPrice;
             if (CachedPlayer.LocalPlayer.PlayerControl == SecurityGuard.securityGuard) {
                 PowerTools.SpriteAnim animator = vent.GetComponent<PowerTools.SpriteAnim>(); 
-                animator?.Stop();
                 vent.EnterVentAnim = vent.ExitVentAnim = null;
-                vent.myRend.sprite = animator == null ? SecurityGuard.getStaticVentSealedSprite() : SecurityGuard.getAnimatedVentSealedSprite();
+                Sprite newSprite = animator == null ? SecurityGuard.getStaticVentSealedSprite() : SecurityGuard.getAnimatedVentSealedSprite();
+                SpriteRenderer rend = vent.myRend;
+                if (Helpers.isFungle())
+                {
+                    newSprite = SecurityGuard.getFungleVentSealedSprite();
+                    rend = vent.transform.GetChild(3).GetComponent<SpriteRenderer>();
+                    animator = vent.transform.GetChild(3).GetComponent<PowerTools.SpriteAnim>();
+                }
+                animator?.Stop();
+                rend.sprite = newSprite;
                 if (SubmergedCompatibility.IsSubmerged && vent.Id == 0) vent.myRend.sprite = SecurityGuard.getSubmergedCentralUpperSealedSprite();
                 if (SubmergedCompatibility.IsSubmerged && vent.Id == 14) vent.myRend.sprite = SecurityGuard.getSubmergedCentralLowerSealedSprite();
-                vent.myRend.color = new Color(1f, 1f, 1f, 0.5f);
+                rend.color = new Color(1f, 1f, 1f, 0.5f);
                 vent.name = "FutureSealedVent_" + vent.name;
             }
 

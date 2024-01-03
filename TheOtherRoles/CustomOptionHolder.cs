@@ -274,6 +274,10 @@ namespace TheOtherRoles {
         public static CustomOption taskMasterExtraShortTasks;
         public static CustomOption taskMasterExtraLongTasks;
 
+        public static CustomOption teleporterSpawnRate;
+        public static CustomOption teleporterCooldown;
+        public static CustomOption teleporterTeleportNumber;
+
         public static CustomOption tricksterSpawnRate;
         public static CustomOption tricksterPlaceBoxCooldown;
         public static CustomOption tricksterLightsOutCooldown;
@@ -874,6 +878,10 @@ namespace TheOtherRoles {
             veteranCooldown = CustomOption.Create(4051, Types.Crewmate, ModTranslation.getString("veteranCooldown"), 30f, 10f, 60f, 2.5f, veteranSpawnRate);
             veteranAlertDuration = CustomOption.Create(4052, Types.Crewmate, ModTranslation.getString("veteranAlertDuration"), 3f, 1f, 20f, 1f, veteranSpawnRate);
             veteranAlertNumber = CustomOption.Create(4053, Types.Crewmate, ModTranslation.getString("veteranAlertNumber"), 5f, 1f, 15f, 1f, veteranSpawnRate);
+
+            teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, ModTranslation.getString("teleporter")), rates, null, true);
+            teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, ModTranslation.getString("teleporterCooldown"), 30f, 5f, 120f, 5f, teleporterSpawnRate);
+            teleporterTeleportNumber = CustomOption.Create(9003, Types.Crewmate, ModTranslation.getString("teleporterTeleportNumber"), 3f, 1f, 10f, 1f, teleporterSpawnRate);
 
             trackerSpawnRate = CustomOption.Create(200, Types.Crewmate, cs(Tracker.color, ModTranslation.getString("tracker")), rates, null, true);
             trackerUpdateIntervall = CustomOption.Create(201, Types.Crewmate, ModTranslation.getString("trackerUpdateInterval"), 5f, 1f, 30f, 1f, trackerSpawnRate);

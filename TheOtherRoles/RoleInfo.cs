@@ -98,6 +98,7 @@ namespace TheOtherRoles
         public static RoleInfo sherlock = new RoleInfo(ModTranslation.getString("sherlock"), Sherlock.color, ModTranslation.getString("sherlockIntroDesc"), ModTranslation.getString("sherlockShortDesc"), RoleId.Sherlock);
         public static RoleInfo yasuna = new RoleInfo(ModTranslation.getString("niceYasuna"), Yasuna.color, ModTranslation.getString("niceYasunaIntroDesc"), ModTranslation.getString("niceYasunaShortDesc"), RoleId.Yasuna);
         public static RoleInfo taskMaster = new RoleInfo(ModTranslation.getString("taskMaster"), TaskMaster.color, ModTranslation.getString("taskMasterIntroDesc"), ModTranslation.getString("taskMasterShortDesc"), RoleId.TaskMaster);
+        public static RoleInfo teleporter = new RoleInfo(ModTranslation.getString("teleporter"), Teleporter.color, ModTranslation.getString("teleporterIntroDesc"), ModTranslation.getString("teleporterShortDesc"), RoleId.Teleporter);
         public static RoleInfo evilYasuna = new RoleInfo(ModTranslation.getString("evilYasuna"), Palette.ImpostorRed, ModTranslation.getString("evilYasunaIntroDesc"), ModTranslation.getString("evilYasunaShortDesc"), RoleId.EvilYasuna);
         public static RoleInfo opportunist = new RoleInfo(ModTranslation.getString("opportunist"), Opportunist.color, ModTranslation.getString("opportunistIntroDesc"), ModTranslation.getString("opportunistShortDesc"), RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new RoleInfo(ModTranslation.getString("corruptedShifter"), Shifter.color, ModTranslation.getString("corruptedShifterIntroDesc"), ModTranslation.getString("corruptedShifterShortDesc"), RoleId.Shifter, true);
@@ -200,6 +201,7 @@ namespace TheOtherRoles
             sherlock,
             yasuna,
             taskMaster,
+            teleporter,
             //trapper,
             bloody,
             antiTeleport,
@@ -278,6 +280,7 @@ namespace TheOtherRoles
             if (p == Moriarty.moriarty || p == Moriarty.formerMoriarty) infos.Add(moriarty);
             if (p == JekyllAndHyde.jekyllAndHyde || p == JekyllAndHyde.formerJekyllAndHyde) infos.Add(jekyllAndHyde);
             if (p == Akujo.akujo) infos.Add(akujo);
+            if (p == Teleporter.teleporter) infos.Add(teleporter);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
