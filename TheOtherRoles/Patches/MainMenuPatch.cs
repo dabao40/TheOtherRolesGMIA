@@ -12,6 +12,8 @@ using AmongUs.Data;
 using TheOtherRoles.Modules.CustomHats;
 using Assets.InnerNet;
 using System.Linq;
+using BepInEx;
+using BepInEx.Unity.IL2CPP;
 
 
 namespace TheOtherRoles.Modules {
@@ -52,7 +54,7 @@ namespace TheOtherRoles.Modules {
             passiveButtonDiscord.OnClick = new Button.ButtonClickedEvent();
             passiveButtonDiscord.OnClick.AddListener((System.Action)(() => Application.OpenURL("https://discord.gg/w7msq53dq7")));
 
-
+            CheckAndUnpatch();
             
             // TOR credits button
             if (template == null) return;
@@ -138,7 +140,19 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
             });
             
         }
+        private static void CheckAndUnpatch()
+        {
+            // 获取所有已加载的插件
+            var loadedPlugins = IL2CPPChainloader.Instance.Plugins.Values;
+            // 检查是否有目标插件
+            var targetPlugin = loadedPlugins.FirstOrDefault(plugin => plugin.Metadata.Name == "MalumMenu");
 
+            if (targetPlugin != null)
+            {
+                DisconnectPopup.Instance.ShowCustom("You're Using An Hacker Plugin.\nTheOtherRolesGMIA don't allow to use this plugin.\nWill UnPatchSelf Soon");
+                TheOtherRolesPlugin.Instance.Harmony.UnpatchSelf();//当进入MainMenu时检测加载如果有MM 就自动关闭
+            }
+        }
         public static void addSceneChangeCallbacks() {
             SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)((scene, _) => {
                 if (!scene.name.Equals("MatchMaking", StringComparison.Ordinal)) return;
