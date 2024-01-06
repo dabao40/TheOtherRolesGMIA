@@ -22,6 +22,7 @@ using MS.Internal.Xml.XPath;
 using static UnityEngine.GraphicsBuffer;
 using static Rewired.Utils.Classes.Utility.ObjectInstanceTracker;
 using static HarmonyLib.InlineSignature;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles
 {
@@ -2118,10 +2119,11 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     class RPCHandlerPatch
     {
-        static bool PreFix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
+        static bool PreFix(PlayerControl __instance,[HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
             byte packetId = callId;
             if (packetId == (byte)101) return false;//防AUM的
+            if (GMIAAntiCheat.RpcSafe(__instance, callId, reader)) return false;
             return true;
 
         }
