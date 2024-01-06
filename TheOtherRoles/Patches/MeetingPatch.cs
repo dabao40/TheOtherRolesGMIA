@@ -10,6 +10,7 @@ using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using Innersloth.Assets;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -180,9 +181,18 @@ namespace TheOtherRoles.Patches {
                 parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
                 return false;
             }
-        } 
+        }
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.OnDestroy))]
+        class OnDestroyPatch
+        {
+            public static void Postfix()
+            {
+                GMIAAntiCheat.MeetingTimes = 0;
+            }
+        }
+
+                [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
         class MeetingHudPopulateVotesPatch {
             
             static bool Prefix(MeetingHud __instance, Il2CppStructArray<MeetingHud.VoterState> states) {
