@@ -149,8 +149,8 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
 
             if (targetPlugin != null)
             {
-                DisconnectPopup.Instance.ShowCustom("You're Using An Hacker Plugin.\nTheOtherRolesGMIA don't allow to use this plugin.\nWill UnPatchSelf Soon");
-                TheOtherRolesPlugin.Instance.Harmony.UnpatchSelf();//当进入MainMenu时检测加载如果有MM 就自动关闭
+                DisconnectPopup.Instance.ShowCustom("It seems that You're Using An Hacker Plugin.\nTheOtherRolesGMIA don't allow to use this plugin.\nWill UnPatchAll Soon");
+                Harmony.UnpatchAll();//当进入MainMenu时检测加载如果有MM 就自动关闭
             }
         }
         public static void addSceneChangeCallbacks() {
