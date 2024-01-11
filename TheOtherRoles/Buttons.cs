@@ -116,6 +116,8 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text akujoBackupLeftText;
         public static TMPro.TMP_Text plagueDoctornumInfectionsText;
         public static TMPro.TMP_Text teleporterNumLeftText;
+        public static TMPro.TMP_Text teleporterTarget1Text; 
+        public static TMPro.TMP_Text teleporterTarget2Text;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -219,7 +221,7 @@ namespace TheOtherRoles
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
-            teleporterSampleButton.MaxTimer = Teleporter.teleportCooldown;
+            teleporterSampleButton.MaxTimer = Teleporter.sampleCooldown;
             teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
@@ -1291,8 +1293,18 @@ namespace TheOtherRoles
                     teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
                 },
                 () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
-                () => { return Teleporter.currentTarget != null && (Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
-                () => { teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer; },
+                () =>
+                {
+                    if (teleporterTarget1Text != null) teleporterTarget1Text.text = Teleporter.target1 != null ? $"1. {Teleporter.target1.Data.PlayerName}" : "";
+                    if (teleporterTarget2Text != null) teleporterTarget2Text.text = Teleporter.target2 != null ? $"2. {Teleporter.target2.Data.PlayerName}" : "";
+                    return Teleporter.currentTarget != null && (Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () =>
+                {
+                    Teleporter.target1 = null;
+                    Teleporter.target2 = null;
+                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
+                },
                 Morphling.getSampleSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
@@ -1300,22 +1312,35 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("TeleporterSampleText"),
                 abilityTexture: true
             );
+            teleporterTarget1Text = GameObject.Instantiate(teleporterSampleButton.actionButton.cooldownTimerText, teleporterSampleButton.actionButton.cooldownTimerText.transform.parent);
+            teleporterTarget1Text.text = "";
+            teleporterTarget1Text.enableWordWrapping = false;
+            teleporterTarget1Text.transform.localScale = Vector3.one * 0.5f;
+            teleporterTarget1Text.transform.localPosition += new Vector3(-0.05f, 1.0f, 0);
+
+            teleporterTarget2Text = GameObject.Instantiate(teleporterSampleButton.actionButton.cooldownTimerText, teleporterSampleButton.actionButton.cooldownTimerText.transform.parent);
+            teleporterTarget2Text.text = "";
+            teleporterTarget2Text.enableWordWrapping = false;
+            teleporterTarget2Text.transform.localScale = Vector3.one * 0.5f;
+            teleporterTarget2Text.transform.localPosition += new Vector3(-0.05f, 0.7f, 0) ;
 
             teleporterTeleportButton = new CustomButton(
                 () =>
                 {
-                    if (Teleporter.target1 != null && Teleporter.target2 != null && !Teleporter.target1.Data.IsDead && !Teleporter.target2.Data.IsDead)
+                    if (Teleporter.target1 != null && Teleporter.target2 != null && !Teleporter.target1.Data.IsDead && !Teleporter.target2.Data.IsDead &&
+                    Teleporter.target1.CanMove && Teleporter.target2.CanMove)
                     {
-                        var target1Position = Teleporter.target1.transform.position;
-                        var target2Position = Teleporter.target2.transform.position;
-                        Teleporter.target1.NetTransform.RpcSnapTo(target2Position);
-                        Teleporter.target2.NetTransform.RpcSnapTo(target1Position);
-                        Teleporter.target1 = null;
-                        Teleporter.target2 = null;
-                        teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
-                        teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer;
-                        Teleporter.teleportNumber--;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TeleporterTeleport, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Teleporter.target1.PlayerId);
+                        writer.Write(Teleporter.target2.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.teleporterTeleport(Teleporter.target1.PlayerId, Teleporter.target2.PlayerId);
                     }
+                    Teleporter.target1 = null;
+                    Teleporter.target2 = null;
+                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
+                    teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer;
+                    Teleporter.teleportNumber--;
                 },
                 () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
                 () =>
@@ -1324,8 +1349,8 @@ namespace TheOtherRoles
                     {
                         teleporterNumLeftText.text = $"{Teleporter.teleportNumber}";
                     }
-                    return Teleporter.target1 != null && Teleporter.target2 != null && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove &&
-                    Teleporter.target1.CanMove && Teleporter.target2.CanMove;
+                    return Teleporter.target1 != null && Teleporter.target2 != null && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove && !TransportationToolPatches.isUsingTransportation(Teleporter.target1)
+                    && !TransportationToolPatches.isUsingTransportation(Teleporter.target2);
                 },
                 () => { teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer; },
                 Teleporter.getButtonSprite(),

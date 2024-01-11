@@ -1,4 +1,4 @@
-global using Il2CppInterop.Runtime;
+﻿global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -131,7 +131,7 @@ namespace TheOtherRoles
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            AddComponent<ModUpdater>();
+            AddComponent<ModUpdateBehaviour>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
         }
         public static Sprite GetModStamp() {
@@ -211,22 +211,4 @@ namespace TheOtherRoles
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
-    public static class GameStates //from TONX
-    {
-        public static bool IsLobby => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Joined;
-
-        public static bool IsEnded => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Ended;
-        public static bool IsNotJoined => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.NotJoined;
-        public static bool IsOnlineGame => AmongUsClient.Instance.NetworkMode == NetworkModes.OnlineGame;
-        public static bool IsLocalGame => AmongUsClient.Instance.NetworkMode == NetworkModes.LocalGame;
-        public static bool IsFreePlay => AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay;
-
-        public static bool IsExilling => ExileController.Instance != null;
-        public static bool IsCountDown => GameStartManager.InstanceExists && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
-
-        public static bool IsShip => ShipStatus.Instance != null;
-        public static bool IsCanMove => PlayerControl.LocalPlayer?.CanMove is true;
-        public static bool IsDead => PlayerControl.LocalPlayer?.Data?.IsDead is true;
-    }
-
 }

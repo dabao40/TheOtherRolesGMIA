@@ -68,6 +68,11 @@ namespace TheOtherRoles {
             return null;
         }
 
+        public static Sprite loadSpriteFromResource(Texture2D texture, float pixelsPerUnit, Rect textureRect, Vector2 pivot)
+        {
+            return Sprite.Create(texture, textureRect, pivot, pixelsPerUnit);
+        }
+
         public static unsafe Texture2D loadTextureFromResources(string path) {
             try {
                 Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);

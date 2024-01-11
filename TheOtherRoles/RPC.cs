@@ -22,7 +22,6 @@ using MS.Internal.Xml.XPath;
 using static UnityEngine.GraphicsBuffer;
 using static Rewired.Utils.Classes.Utility.ObjectInstanceTracker;
 using static HarmonyLib.InlineSignature;
-using TheOtherRoles.Modules;
 
 namespace TheOtherRoles
 {
@@ -230,7 +229,8 @@ namespace TheOtherRoles
         PlagueDoctorWin,
         PlagueDoctorSetInfected,
         PlagueDoctorUpdateProgress,
-        SetOddIsJekyll
+        SetOddIsJekyll,
+        TeleporterTeleport
     }
 
     public static class RPCProcedure {
@@ -248,7 +248,9 @@ namespace TheOtherRoles
             BombEffect.clearBombEffects();
             MapBehaviourPatch.reset();
             MadmateTasksHelper.Reset();
+            SpawnInMinigamePatch.reset();
             //Trap.clearTraps();
+            Trap.clearAllTraps();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
             clearGameHistory();
@@ -1044,10 +1046,10 @@ namespace TheOtherRoles
             }
             else
             {
-                // Jackalãƒã‚°å¯¾å¿œ
+                // Jackal¥Ğ¥°Œê
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
-                // ã‚¿ã‚¹ã‚¯ãŒãªã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒMadmateã«ãªã£ãŸå ´åˆã¯ã‚·ãƒ§ãƒ¼ãƒˆã‚¿ã‚¹ã‚¯ã‚’å¿…è¦æ•°å‰²ã‚Šå½“ã¦ã‚‹
+                // ¥¿¥¹¥¯¤¬¤Ê¤¤¥×¥ì¥¤¥ä©`¤¬Madmate¤Ë¤Ê¤Ã¤¿ˆöºÏ¤Ï¥·¥ç©`¥È¥¿¥¹¥¯¤ò±ØÒªÊı¸î¤êµ±¤Æ¤ë
                 if (Helpers.hasFakeTasks(player))
                 {
                     if (CreatedMadmate.hasTasks)
@@ -1058,7 +1060,7 @@ namespace TheOtherRoles
                 }
                 erasePlayerRoles(player.PlayerId, true, true);
 
-                // Jackalãƒã‚°å¯¾å¿œ
+                // Jackal¥Ğ¥°Œê
                 Jackal.formerJackals = tmpFormerJackals;
 
                 CreatedMadmate.createdMadmate = player;
@@ -1076,7 +1078,7 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
-            // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®å ´åˆã¯å ã„å¸«ã®ä½ç½®ã«çŸ¢å°ã‚’è¡¨ç¤º
+            // ¥¤¥ó¥İ¥¹¥¿©`¤ÎˆöºÏ¤ÏÕ¼¤¤Ÿ¤ÎÎ»ÖÃ¤ËÊ¸Ó¡¤ò±íÊ¾
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
@@ -1397,6 +1399,23 @@ namespace TheOtherRoles
             Sprinter.invisibleTimer = Sprinter.sprintDuration;
         }
 
+        public static void teleporterTeleport(byte target1Id, byte target2Id)
+        {
+            PlayerControl target1 = Helpers.playerById(target1Id);
+            PlayerControl target2 = Helpers.playerById(target2Id);
+
+            var targetPosition = target1.GetTruePosition();
+            target1.MyPhysics.ResetMoveState();
+            target2.MyPhysics.ResetMoveState();
+            target1.NetTransform.RpcSnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
+            target2.NetTransform.RpcSnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
+            if (CachedPlayer.LocalPlayer.PlayerControl == target1 || CachedPlayer.LocalPlayer.PlayerControl == target2)
+            {
+                Helpers.showFlash(Teleporter.color);
+                if (Minigame.Instance) Minigame.Instance.Close();
+            }
+        }
+
         public static void veteranAlert()
         {
             Veteran.alertActive = true;
@@ -1608,7 +1627,7 @@ namespace TheOtherRoles
 
         public static void releaseBomb(byte killer, byte target)
         {
-            // åŒæ™‚æŠ¼ã—ã§ãƒ€ãƒ–ãƒ«ã‚­ãƒ«ãŒç™ºç”Ÿã™ã‚‹ã®ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚ã«BomberAã§ä¸€åº¦å—ã‘å–ã£ã¦ã‹ã‚‰å®Ÿè¡Œã™ã‚‹
+            // Í¬•rÑº¤·¤Ç¥À¥Ö¥ë¥­¥ë¤¬°kÉú¤¹¤ë¤Î¤ò·ÀÖ¹¤¹¤ë¤¿¤á¤ËBomberA¤ÇÒ»¶ÈÊÜ¤±È¡¤Ã¤Æ¤«¤éŒgĞĞ¤¹¤ë
             if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
             {
                 if (BomberA.bombTarget != null && BomberB.bombTarget != null)
@@ -2119,14 +2138,6 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     class RPCHandlerPatch
     {
-        static bool PreFix(PlayerControl __instance,[HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
-        {
-            byte packetId = callId;
-            if (packetId == (byte)101) return false;//é˜²AUMçš„
-            if (GMIAAntiCheat.RpcSafe(__instance, callId, reader)) return false;
-            return true;
-
-        }
         static void Postfix([HarmonyArgument(0)]byte callId, [HarmonyArgument(1)]MessageReader reader)
         {
             byte packetId = callId;
@@ -2356,6 +2367,9 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.UndertakerDragBody:
                     var bodyId = reader.ReadByte();
                     Undertaker.DragBody(bodyId);
+                    break;
+                case (byte)CustomRPC.TeleporterTeleport:
+                    RPCProcedure.teleporterTeleport(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.UndertakerDropBody:
                     var x = reader.ReadSingle();

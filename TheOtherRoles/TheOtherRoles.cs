@@ -2446,6 +2446,7 @@ namespace TheOtherRoles
         public static Color color = new Color32(164, 249, 255, byte.MaxValue);
         private static Sprite teleportButtonSprite;
         public static float teleportCooldown = 30f;
+        public static float sampleCooldown = 30f;
         public static int teleportNumber = 5;
         public static PlayerControl target1;
         public static PlayerControl target2;
@@ -2466,6 +2467,7 @@ namespace TheOtherRoles
             currentTarget = null;
             teleportCooldown = CustomOptionHolder.teleporterCooldown.getFloat();
             teleportNumber = (int)CustomOptionHolder.teleporterTeleportNumber.getFloat();
+            sampleCooldown = CustomOptionHolder.teleporterSampleCooldown.getFloat();
         }
     }
 

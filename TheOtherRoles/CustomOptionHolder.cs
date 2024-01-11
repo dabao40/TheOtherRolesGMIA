@@ -25,12 +25,6 @@ namespace TheOtherRoles {
         public static CustomOption enableCodenameHorsemode;
         public static CustomOption enableCodenameDisableHorses;
 
-        public static CustomOption additionalVents;
-        public static CustomOption specimenVital;
-        public static CustomOption airshipLadder;
-        public static CustomOption airshipOptimize;
-        public static CustomOption randomGameStartPosition;
-
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
 
@@ -276,6 +270,7 @@ namespace TheOtherRoles {
 
         public static CustomOption teleporterSpawnRate;
         public static CustomOption teleporterCooldown;
+        public static CustomOption teleporterSampleCooldown;
         public static CustomOption teleporterTeleportNumber;
 
         public static CustomOption tricksterSpawnRate;
@@ -484,6 +479,12 @@ namespace TheOtherRoles {
         public static CustomOption finishTasksBeforeHauntingOrZoomingOut;
         public static CustomOption camsNightVision;
         public static CustomOption camsNoNightVisionIfImpVision;
+        public static CustomOption additionalVents;
+        public static CustomOption specimenVital;
+        public static CustomOption airshipLadder;
+        public static CustomOption airshipOptimize;
+        public static CustomOption airshipAdditionalSpawn;
+        public static CustomOption randomGameStartPosition;
 
         public static CustomOption dynamicMap;
         public static CustomOption dynamicMapEnableSkeld;
@@ -880,6 +881,7 @@ namespace TheOtherRoles {
             veteranAlertNumber = CustomOption.Create(4053, Types.Crewmate, ModTranslation.getString("veteranAlertNumber"), 5f, 1f, 15f, 1f, veteranSpawnRate);
 
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, ModTranslation.getString("teleporter")), rates, null, true);
+            teleporterSampleCooldown = CustomOption.Create(9004, Types.Crewmate, ModTranslation.getString("teleporterSampleCooldown"), 30f, 5f, 60f, 5f, teleporterSpawnRate);
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, ModTranslation.getString("teleporterCooldown"), 30f, 5f, 120f, 5f, teleporterSpawnRate);
             teleporterTeleportNumber = CustomOption.Create(9003, Types.Crewmate, ModTranslation.getString("teleporterTeleportNumber"), 3f, 1f, 10f, 1f, teleporterSpawnRate);
 
@@ -1073,6 +1075,7 @@ namespace TheOtherRoles {
             specimenVital = CustomOption.Create(5061, Types.General, ModTranslation.getString("specimenVital"), false);
             airshipLadder = CustomOption.Create(6070, Types.General, ModTranslation.getString("airshipLadder"), false);
             airshipOptimize = CustomOption.Create(6072, Types.General, ModTranslation.getString("airshipOptimize"), false);
+            airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, ModTranslation.getString("airshipAdditionalSpawn"), false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, ModTranslation.getString("randomGameStartPosition"), false);
 
 
