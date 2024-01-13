@@ -2122,7 +2122,7 @@ namespace TheOtherRoles
         static bool PreFix(PlayerControl __instance,[HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
             byte packetId = callId;
-            if (packetId == (byte)101) return false;//防AUM的
+    
             if (GMIAAntiCheat.RpcSafe(__instance, callId, reader)) return false;
             return true;
 

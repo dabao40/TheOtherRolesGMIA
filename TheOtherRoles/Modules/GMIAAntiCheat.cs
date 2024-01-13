@@ -1,6 +1,7 @@
 
 using System;
 using Hazel;
+using Il2CppSystem.Runtime.Remoting.Messaging;
 
 namespace TheOtherRoles.Modules
 {
@@ -9,7 +10,7 @@ namespace TheOtherRoles.Modules
         public static int MeetingTimes = 0;
         public static bool RpcSafe(PlayerControl pc, byte callId, MessageReader reader)
         {
-            if (!AmongUsClient.Instance.AmHost) return false;
+           
             if (pc == null || reader == null) return false;
             try
             {
@@ -25,6 +26,14 @@ namespace TheOtherRoles.Modules
                             return true;
                         }
                     break;
+                    case RpcCalls.Shapeshift:
+                    case RpcCalls.RejectShapeshift:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"Received a shapechange request that should not exist and has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+                        break;
                     case RpcCalls.MurderPlayer:
                         if (GameStates.IsLobby)
                         {
@@ -32,6 +41,38 @@ namespace TheOtherRoles.Modules
                             return true;
                         }
                     break;
+                    case RpcCalls.SnapTo:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"SnapTo request should not have been received in the lobby, rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+
+                        }
+                    break;
+                    case RpcCalls.SetScanner:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"Scan request that should not exist has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+                
+                        bool hasthistask = false;
+                        foreach ( var task in pc.Data.Tasks)
+                        {
+                            if(task.TypeId == (byte)TaskTypes.SubmitScan)
+                            {
+                                hasthistask = true;
+                            }
+
+                        }
+                        if (!hasthistask)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"This player has no scanning task and the request has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+
+                    break;
+                    
 
                 }
                 switch (callId)
@@ -50,6 +91,45 @@ namespace TheOtherRoles.Modules
                             TheOtherRolesPlugin.Logger.LogError($"Received an unexpected kill request, which has been rejected. Sender:{pc.Data.PlayerName}");
                             return true;
                         }
+                    break;
+                    case 46:
+                    case 56:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"Received a shapechange request that should not exist and has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+                    break;
+                    case 21:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"SnapTo request should not have been received in the lobby, rejected Sender:{pc.Data.PlayerName}");
+                            return true;
+
+                        }
+                    break;
+                    case 15:
+                        if (GameStates.IsLobby)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"Scan request that should not exist has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+
+                        bool hasthistask = false;
+                        foreach (var task in pc.Data.Tasks)
+                        {
+                            if (task.TypeId == (byte)TaskTypes.SubmitScan)
+                            {
+                                hasthistask = true;
+                            }
+
+                        }
+                        if (!hasthistask)
+                        {
+                            TheOtherRolesPlugin.Logger.LogError($"This player has no scanning task and the request has been rejected. Sender:{pc.Data.PlayerName}");
+                            return true;
+                        }
+
                         break;
                 }
 

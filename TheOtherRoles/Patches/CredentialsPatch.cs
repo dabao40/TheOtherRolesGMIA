@@ -1,7 +1,8 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using TheOtherRoles;
 using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TMPro;
@@ -90,6 +91,11 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
                 credentials.transform.SetParent(torLogo.transform);
                 //credentials.transform.localPosition = Vector3.down * 2;
                 credentials.transform.localPosition = Vector3.down + new Vector3(0f, -0.6f, 0f);
+                if (MainMenuPatch.CheckAndUnpatch())
+                {
+                    torLogo.SetActive(false);
+                    credentials.SetText("It seems that You're Using An Hacker Plugin.\nTheOtherRolesGMIA don't allow to use this plugin.\nWill UnPatchAll Soon");
+                }
             }
 
             public static void loadSprites() {
