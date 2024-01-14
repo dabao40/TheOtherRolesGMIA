@@ -10,10 +10,10 @@ using UnityEngine;
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
     public static class CredentialsPatch {
-         public static string fullCredentialsVersion = Helpers.GradientColorText("FFD700", "FF0000", $"<size=100%>TheOhterRoles GM IA</size> v{TheOtherRolesPlugin.Version.ToString()}");
-      /*  public static string fullCredentialsVersion = 
-$@"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays>0 ? "-BETA": "")}"; */
-public static string fullCredentials = ModTranslation.getString("fullCredentials");
+        public static string fullCredentialsVersion = $"<size=130%>{Helpers.GradientColorText("FFD700", "FF0000", $"TheOtherRoles GM IA")}</size>" + $" v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}";
+        /*  public static string fullCredentialsVersion = 
+  $@"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays>0 ? "-BETA": "")}"; */
+        public static string fullCredentials = ModTranslation.getString("fullCredentials");
 
     public static string mainMenuCredentials = ModTranslation.getString("mainMenuCredentials");
 
@@ -43,7 +43,7 @@ public static string fullCredentials = ModTranslation.getString("fullCredentials
                     if (HideNSeek.isHideNSeekGM) gameModeText = $"Hide 'N Seek";
                     else if (HandleGuesser.isGuesserGm) gameModeText = $"Guesser";
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
-                    __instance.text.text = $"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
+                    __instance.text.text = $"<size=130%>{Helpers.GradientColorText("FFD700", "FF0000", $"TheOtherRoles GM IA")}</size>" + $" v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
                     if (CachedPlayer.LocalPlayer.Data.IsDead || (!(CachedPlayer.LocalPlayer.PlayerControl == null) && (CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 || CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover2))) {
                         __instance.transform.localPosition = new Vector3(3.45f, __instance.transform.localPosition.y, __instance.transform.localPosition.z);
                     } else {

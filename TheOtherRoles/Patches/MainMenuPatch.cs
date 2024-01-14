@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -9,12 +9,10 @@ using TheOtherRoles.Patches;
 using UnityEngine.SceneManagement;
 using TheOtherRoles.Utilities;
 using AmongUs.Data;
-using TheOtherRoles.Modules.CustomHats;
 using Assets.InnerNet;
 using System.Linq;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
-
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -25,7 +23,6 @@ namespace TheOtherRoles.Modules {
         private static AnnouncementPopUp popUp;
 
         private static void Prefix(MainMenuManager __instance) {
-            CustomHatLoader.LaunchHatFetcher();
             var template = GameObject.Find("ExitGameButton");
             var template2 = GameObject.Find("CreditsButton");
             if (template == null || template2 == null) return;
@@ -55,7 +52,8 @@ namespace TheOtherRoles.Modules {
             passiveButtonDiscord.OnClick.AddListener((System.Action)(() => Application.OpenURL("https://discord.gg/w7msq53dq7")));
 
             CheckAndUnpatch();
-            
+
+
             // TOR credits button
             if (template == null) return;
             var creditsButton = Object.Instantiate(template, template.transform.parent);
@@ -140,6 +138,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
             });
             
         }
+
         private static void CheckAndUnpatch()
         {
             // 获取所有已加载的插件
@@ -149,10 +148,11 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
 
             if (targetPlugin != null)
             {
-                DisconnectPopup.Instance.ShowCustom("It seems that You're Using An Hacker Plugin.\nTheOtherRolesGMIA don't allow to use this plugin.\nWill UnPatchAll Soon");
+                TheOtherRolesPlugin.Logger.LogMessage("Hacker Plugin Found.\n GMIA Does Not Allow You Using Such Plugins.\nWill Unpatch Soon.");
                 Harmony.UnpatchAll();//当进入MainMenu时检测加载如果有MM 就自动关闭
             }
         }
+
         public static void addSceneChangeCallbacks() {
             SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)((scene, _) => {
                 if (!scene.name.Equals("MatchMaking", StringComparison.Ordinal)) return;
