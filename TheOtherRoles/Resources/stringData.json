@@ -112,6 +112,10 @@
         "0": "Optimize Map (Airship)",
         "13": "\u98de\u8247\uff1a\u4f18\u5316\u5730\u56fe"
     },
+    "airshipAdditionalSpawn": {
+        "0": "Additional Spawn (Airship)",
+        "13": "\u98de\u8247\uff1a\u989d\u5916\u51fa\u751f\u70b9"
+    },
     "randomGameStartPosition": {
         "0": "Random Spawn Location",
         "13": "\u968f\u673a\u51fa\u751f\u70b9"
@@ -279,7 +283,7 @@
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
-        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color>\u7ffb\u8bd1</size>"
+        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color> & <color=#808080FF>\u91ce\u751f\u7684\u7334\u5b50\u54c8\u54c8\u54e5</color>\u7ffb\u8bd1</size>"
     },
     "contributorsCredentials": {
         "0": "<size=60%> <color=#FCCE03FF>Special thanks to K3ndo & Smeggy</color> & <color=#FFFFE0FF>Among us</color></size>",
@@ -2874,24 +2878,32 @@
         "11": "\u30db\u30b9\u30c8\u304cThe Other Roles\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3046\u304b\u3001\u5c0e\u5165\u3055\u308c\u3066\u3044\u307e\u305b\u3093"
     },
     "updateGMIA": {
-        "0": "Updating GMIA\nPlease wait...",
-        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e"
+        "0": "Update GMIA",
+        "13": "\u5347\u7ea7GMIA"
+    },
+    "updateText": {
+        "0": "A new THE OTHER ROLES GMIA update to {0} is available",
+        "13": "\u60a8\u53ef\u4ee5\u66f4\u65b0\u81f3\u8d85\u591a\u804c\u4e1aGMIA {0}"
+    },
+    "updateManual": {
+        "0": "A MANUAL UPDATE IS REQUIRED",
+        "13": "\u9700\u8981\u624b\u52a8\u5347\u7ea7"
+    },
+    "GMIA": {
+        "0": "The Other Roles GMIA",
+        "13": "\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "updatingGMIA": {
-        "0": "Updating GMIA\nPlease wait...\nDownloading...",
-        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e\n\u6b63\u5728\u4e0b\u8f7d"
+        "0": "Updating {0}\nPlease wait...",
+        "13": "\u6b63\u5728\u5347\u7ea7{0}\n\u8bf7\u7a0d\u540e"
+    },
+    "updateSuccessful": {
+        "0": "{0}\nupdated successfully\nPlease restart the game.",
+        "13": "{0}\n\u5347\u7ea7\u5b8c\u6210\n\u8bf7\u91cd\u542f\u6e38\u620f"
     },
     "updateNotSuccessful": {
         "0": "Update wasn't successful\nTry again later,\nor update manually.",
-        "13": "\u5347\u7ea7\u5931\u8d25\n\u8bf7\u7a0d\u540e\u5c1d\u8bd5\n\u6216\u624b\u52a8\u4e0b\u8f7d"
-    },
-    "updateCopyFile": {
-        "0": "Updating GMIA\nPlease wait...\n\nDownload complete\ncopying file...",
-        "13": "\u6b63\u5728\u5347\u7ea7GMIA\n\u8bf7\u7a0d\u540e\n\u4e0b\u8f7d\u5b8c\u6210\n\u6b63\u5728\u62f7\u8d1d\u6587\u4ef6"
-    },
-    "updateSuccessful": {
-        "0": "TheOtherRolesGMIA\nupdated successfully\nPlease restart the game.",
-        "13": "\u8d85\u591a\u804c\u4e1aGMIA\n\u5347\u7ea7\u5b8c\u6210\n\u8bf7\u91cd\u542f\u6e38\u620f"
+        "13": "\u5347\u7ea7\u5931\u8d25\n\u8bf7\u7a0d\u540e\u5c1d\u8bd5\n\u6216\u624b\u52a8\u66f4\u65b0"
     },
     "swapperMeetingButton": {
         "0": "The Swapper can't start an emergency meeting",
@@ -3789,6 +3801,30 @@
         "0": "Tasks Required To Get Drug",
         "13": "\u5f97\u5230\u4e00\u5242\u79d8\u836f\u9700\u8981\u5b8c\u6210\u7684\u4efb\u52a1\u6570"
     },
+    "teleporter": {
+        "0": "Teleporter",
+        "13": "\u4f20\u9001\u5e08"
+    },
+    "teleporterIntroDesc": {
+        "0": "Teleport other players",
+        "13": "\u65f6 \u7a7a \u9519 \u4e71"
+    },
+    "teleporterShortDesc": {
+        "0": "Teleport other players",
+        "13": "\u79fb\u5f62\u6362\u4f4d\uff0c\u626d\u8f6c\u4e7e\u5764"
+    },
+    "teleporterCooldown": {
+        "0": "Teleport Cooldown",
+        "13": "\u4f20\u9001\u51b7\u5374\u65f6\u95f4"
+    },
+    "teleporterSampleCooldown": {
+        "0": "Teleporter Sample Cooldown",
+        "13": "\u9009\u62e9\u5bf9\u8c61\u51b7\u5374\u65f6\u95f4"
+    },
+    "teleporterTeleportNumber": {
+        "0": "Number Of Teleports",
+        "13": "\u4f20\u9001\u5e08\u53ef\u4f20\u9001\u6b21\u6570"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "13": "\u9c91\u9c7c\u7ea2"
@@ -3856,10 +3892,6 @@
     "colorIce": {
         "0": "Ice",
         "13": "\u51b0\u84dd\u8272"
-    },
-    "BlankText": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
     },
     "CamoText": {
         "0": "[BLANK]",
@@ -4064,5 +4096,13 @@
     "SprinterStopText": {
         "0": "[BLANK]",
         "13": "\u505c\u4e0b"
+    },
+    "TeleporterSampleText": {
+        "0": "[BLANK]",
+        "13": "\u9009\u62e9\u5bf9\u8c61"
+    },
+    "TeleporterTeleportText": {
+        "0": "[BLANK]",
+        "13": "\u4f20\u9001"
     }
 }
