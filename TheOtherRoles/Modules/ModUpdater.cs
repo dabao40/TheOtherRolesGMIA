@@ -1,179 +1,86 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using BepInEx;
-using BepInEx.Unity.IL2CPP.Utils;
-using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
 using AmongUs.Data;
 using Assets.InnerNet;
+using BepInEx;
+using BepInEx.Bootstrap;
+using BepInEx.Unity.IL2CPP;
+using BepInEx.Unity.IL2CPP.Utils;
+using Mono.Cecil;
+using Newtonsoft.Json.Linq;
+using TMPro;
 using Twitch;
-using static StarGen;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Action = System.Action;
+using IntPtr = System.IntPtr;
+using Version = SemanticVersioning.Version;
 
 namespace TheOtherRoles.Modules
 {
-    public class ModUpdater : MonoBehaviour
+    public class ModUpdateBehaviour : MonoBehaviour
     {
-        public const string RepositoryOwner = "dabao40";
-        public const string RepositoryName = "TheOtherRolesGMIA";
-        public static ModUpdater Instance { get; private set; }
+        public static bool showPopUp = true;
+        public static bool updateInProgress = false;
 
-        public ModUpdater(IntPtr ptr) : base(ptr) { }
+        public static ModUpdateBehaviour Instance { get; private set; }
+        public ModUpdateBehaviour(IntPtr ptr) : base(ptr) { }
+        public class UpdateData
+        {
+            public string Content;
+            public string Tag;
+            public string TimeString;
+            public JObject Request;
+            public Version Version => Version.Parse(Tag);
 
-        private bool _busy;
-        private bool showPopUp = true;
-        public List<GithubRelease> Releases;
+            public UpdateData(JObject data)
+            {
+                Tag = data["tag_name"]?.ToString().TrimStart('v');
+                Content = data["body"]?.ToString();
+                TimeString = DateTime.FromBinary(((Il2CppSystem.DateTime)data["published_at"]).ToBinaryRaw()).ToString();
+                Request = data;
+            }
+
+            public bool IsNewer(Version version)
+            {
+                if (!Version.TryParse(Tag, out var myVersion)) return false;
+                return myVersion.BaseVersion() > version.BaseVersion();
+            }
+        }
+
+        public UpdateData TORUpdate;
+
+        [HideFromIl2Cpp]
+        public UpdateData RequiredUpdateData => TORUpdate;
 
         public void Awake()
         {
-            if (Instance) Destroy(Instance);
+            if (Instance) Destroy(this);
             Instance = this;
+
+            SceneManager.add_sceneLoaded((System.Action<Scene, LoadSceneMode>)(OnSceneLoaded));
+            this.StartCoroutine(CoCheckUpdates());
+
             foreach (var file in Directory.GetFiles(Paths.PluginPath, "*.old"))
             {
                 File.Delete(file);
             }
         }
 
-        private void Start()
-        {
-            if (_busy) return;
-            this.StartCoroutine(CoCheckForUpdate());
-            SceneManager.add_sceneLoaded((System.Action<Scene, LoadSceneMode>)(OnSceneLoaded));
-        }
-
-
-        [HideFromIl2Cpp]
-        public void StartDownloadRelease(GithubRelease release)
-        {
-            if (_busy) return;
-            this.StartCoroutine(CoDownloadRelease(release));
-        }
-
-        [HideFromIl2Cpp]
-        private IEnumerator CoCheckForUpdate()
-        {
-            _busy = true;
-            var www = new UnityWebRequest();
-            www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-            www.SetUrl($"https://api.github.com/repos/{RepositoryOwner}/{RepositoryName}/releases");
-            www.downloadHandler = new DownloadHandlerBuffer();
-            var operation = www.SendWebRequest();
-
-            while (!operation.isDone)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                yield break;
-            }
-
-            Releases = JsonSerializer.Deserialize<List<GithubRelease>>(www.downloadHandler.text);
-            www.downloadHandler.Dispose();
-            www.Dispose();
-            Releases.Sort(SortReleases);
-            _busy = false;
-        }
-
-        [HideFromIl2Cpp]
-        private IEnumerator CoDownloadRelease(GithubRelease release)
-        {
-            _busy = true;
-
-            var popup = Instantiate(TwitchManager.Instance.TwitchPopup);
-            popup.TextAreaTMP.fontSize *= 0.7f;
-            popup.TextAreaTMP.enableAutoSizing = false;
-
-            popup.Show();
-
-            var button = popup.transform.GetChild(2).gameObject;
-            button.SetActive(false);
-            popup.TextAreaTMP.text = ModTranslation.getString("updateGMIA");
-
-            var asset = release.Assets.Find(FilterPluginAsset);
-            var www = new UnityWebRequest();
-            www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-            www.SetUrl(asset.DownloadUrl);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            var operation = www.SendWebRequest();
-
-            while (!operation.isDone)
-            {
-                int stars = Mathf.CeilToInt(www.downloadProgress * 10);
-                string progress = $"{ModTranslation.getString("updatingGMIA")}\n{new String((char)0x25A0, stars) + new String((char)0x25A1, 10 - stars)}";
-                popup.TextAreaTMP.text = progress;
-                yield return new WaitForEndOfFrame();
-            }
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                popup.TextAreaTMP.text = ModTranslation.getString("updateNotSuccessful");
-                yield break;
-            }
-            popup.TextAreaTMP.text = ModTranslation.getString("updateCopyFile");
-
-            var filePath = Path.Combine(Paths.PluginPath, asset.Name);
-
-            if (File.Exists(filePath + ".old")) File.Delete(filePath + "old");
-            if (File.Exists(filePath)) File.Move(filePath, filePath + ".old");
-
-            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
-            var hasError = false;
-            while (!persistTask.IsCompleted)
-            {
-                if (persistTask.Exception != null)
-                {
-                    hasError = true;
-                    break;
-                }
-
-                yield return new WaitForEndOfFrame();
-            }
-
-            www.downloadHandler.Dispose();
-            www.Dispose();
-
-            if (!hasError)
-            {
-                popup.TextAreaTMP.text = ModTranslation.getString("updateSuccessful");
-            }
-            button.SetActive(true);
-            _busy = false;
-        }
-
-        [HideFromIl2Cpp]
-        private static bool FilterLatestRelease(GithubRelease release)
-        {
-            return release.IsNewer(TheOtherRolesPlugin.Version) && release.Assets.Any(FilterPluginAsset);
-        }
-
-        [HideFromIl2Cpp]
-        private static bool FilterPluginAsset(GithubAsset asset)
-        {
-            return asset.Name == "TheOtherRoles.dll";
-        }
-
-        [HideFromIl2Cpp]
-        private static int SortReleases(GithubRelease a, GithubRelease b)
-        {
-            if (a.IsNewer(b.Version)) return -1;
-            if (b.IsNewer(a.Version)) return 1;
-            return 0;
-        }
-
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (_busy || scene.name != "MainMenu") return;
-            var latestRelease = Releases.FirstOrDefault();
-            if (latestRelease == null || latestRelease.Version <= TheOtherRolesPlugin.Version)
+            if (updateInProgress || scene.name != "MainMenu") return;
+            if (RequiredUpdateData is null)
+            {
+                showPopUp = false;
                 return;
+            }
 
             var template = GameObject.Find("ExitGameButton");
             if (!template) return;
@@ -187,24 +94,67 @@ namespace TheOtherRoles.Modules
             passiveButton.OnClick = new Button.ButtonClickedEvent();
             passiveButton.OnClick.AddListener((Action)(() =>
             {
-                StartDownloadRelease(latestRelease);
+                this.StartCoroutine(CoUpdate());
                 button.SetActive(false);
             }));
 
             var text = button.transform.GetComponentInChildren<TMPro.TMP_Text>();
-            string t = "Update GMIA";
+            string t = ModTranslation.getString("updateGMIA");
+
             StartCoroutine(Effects.Lerp(0.1f, (System.Action<float>)(p => text.SetText(t))));
             passiveButton.OnMouseOut.AddListener((Action)(() => text.color = Color.red));
             passiveButton.OnMouseOver.AddListener((Action)(() => text.color = Color.white));
-            var announcement = $"<size=150%>A new THE OTHER ROLES GMIA update to {latestRelease.Tag} is available</size>\n{latestRelease.Description}";
-            var mgr = FindObjectOfType<MainMenuManager>(true);
-            if (showPopUp) mgr.StartCoroutine(CoShowAnnouncement(announcement, shortTitle: "GMIA Update", date: latestRelease.PublishedAt));
-            showPopUp = false;
 
+            var announcement = $"<size=150%>{string.Format(ModTranslation.getString("updateText"), TORUpdate.Tag)}</size>\n{TORUpdate.Content}";
+            var mgr = FindObjectOfType<MainMenuManager>(true);
+
+            try
+            {
+                string updateVersion = TORUpdate.Content[^5..];
+                if (Version.Parse(TheOtherRolesPlugin.VersionString).BaseVersion() < Version.Parse(updateVersion).BaseVersion())
+                {
+                    passiveButton.OnClick.RemoveAllListeners();
+                    passiveButton.OnClick = new Button.ButtonClickedEvent();
+                    passiveButton.OnClick.AddListener((Action)(() => {
+                        mgr.StartCoroutine(CoShowAnnouncement($"<size=150%>{ModTranslation.getString("updateManual")}</size>"));
+                    }));
+                }
+            }
+            catch
+            {
+                TheOtherRolesPlugin.Logger.LogError("parsing version for auto updater failed :(");
+            }
+            if (showPopUp) mgr.StartCoroutine(CoShowAnnouncement(announcement, shortTitle: "GMIA Update", date: TORUpdate.TimeString));
+            showPopUp = false;
         }
 
         [HideFromIl2Cpp]
-        public IEnumerator CoShowAnnouncement(string announcement, bool show = true, string shortTitle = "TOR Update", string title = "", string date = "")
+        public IEnumerator CoUpdate()
+        {
+            updateInProgress = true;
+            var updateName = ModTranslation.getString("GMIA");
+
+            var popup = Instantiate(TwitchManager.Instance.TwitchPopup);
+            popup.TextAreaTMP.fontSize *= 0.7f;
+            popup.TextAreaTMP.enableAutoSizing = false;
+
+            popup.Show();
+
+            var button = popup.transform.GetChild(2).gameObject;
+            button.SetActive(false);
+            popup.TextAreaTMP.text = string.Format(ModTranslation.getString("updatingGMIA"), updateName);
+
+            var download = Task.Run(DownloadUpdate);
+            while (!download.IsCompleted) yield return null;
+
+            button.SetActive(true);
+            popup.TextAreaTMP.text = download.Result ? string.Format(ModTranslation.getString("updateSuccessful"), updateName) : ModTranslation.getString("updateNotSuccessful");
+        }
+
+
+        private static int announcementNumber = 501;
+        [HideFromIl2Cpp]
+        public IEnumerator CoShowAnnouncement(string announcement, bool show = true, string shortTitle = "GMIA Update", string title = "", string date = "")
         {
             var mgr = FindObjectOfType<MainMenuManager>(true);
             var popUpTemplate = UnityEngine.Object.FindObjectOfType<AnnouncementPopUp>(true);
@@ -221,7 +171,7 @@ namespace TheOtherRoles.Modules
             {
                 Id = "torAnnouncement",
                 Language = 0,
-                Number = 6969,
+                Number = announcementNumber++,
                 Title = title == "" ? "The Other Roles Announcement" : title,
                 ShortTitle = shortTitle,
                 SubTitle = "",
@@ -243,60 +193,77 @@ namespace TheOtherRoles.Modules
                 }
             })));
         }
-    }
 
-    public class GithubRelease
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
-
-        [JsonPropertyName("tag_name")]
-        public string Tag { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("draft")]
-        public bool Draft { get; set; }
-
-        [JsonPropertyName("prerelease")]
-        public bool Prerelease { get; set; }
-
-        [JsonPropertyName("created_at")]
-        public string CreatedAt { get; set; }
-
-        [JsonPropertyName("published_at")]
-        public string PublishedAt { get; set; }
-
-        [JsonPropertyName("body")]
-        public string Description { get; set; }
-
-        [JsonPropertyName("assets")]
-        public List<GithubAsset> Assets { get; set; }
-
-        public Version Version => Version.Parse(Tag.Replace("v", string.Empty));
-
-        public bool IsNewer(Version version)
+        [HideFromIl2Cpp]
+        public static IEnumerator CoCheckUpdates()
         {
-            return Version > version;
+            var torUpdateCheck = Task.Run(() => Instance.GetGithubUpdate("dabao40", "TheOtherRolesGMIA"));
+            while (!torUpdateCheck.IsCompleted) yield return null;
+            if (torUpdateCheck.Result != null && torUpdateCheck.Result.IsNewer(Version.Parse(TheOtherRolesPlugin.VersionString)))
+            {
+                Instance.TORUpdate = torUpdateCheck.Result;
+            }
+            Instance.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
-    }
 
-    public class GithubAsset
-    {
-        [JsonPropertyName("url")]
-        public string Url { get; set; }
+        [HideFromIl2Cpp]
+        public async Task<UpdateData> GetGithubUpdate(string owner, string repo)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
 
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
+            try
+            {
+                var req = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+                if (!req.IsSuccessStatusCode) return null;
 
-        [JsonPropertyName("size")]
-        public int Size { get; set; }
+                var dataString = await req.Content.ReadAsStringAsync();
+                JObject data = JObject.Parse(dataString);
+                return new UpdateData(data);
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
 
-        [JsonPropertyName("browser_download_url")]
-        public string DownloadUrl { get; set; }
+        [HideFromIl2Cpp]
+        public async Task<bool> DownloadUpdate()
+        {
+            var data = TORUpdate;
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
+
+            JToken assets = data.Request["assets"];
+            string downloadURI = "";
+            for (JToken current = assets.First; current != null; current = current.Next)
+            {
+                string browser_download_url = current["browser_download_url"]?.ToString();
+                if (browser_download_url != null && current["content_type"] != null)
+                {
+                    if (current["content_type"].ToString().Equals("application/x-msdownload") &&
+                        browser_download_url.EndsWith(".dll"))
+                    {
+                        downloadURI = browser_download_url;
+                        break;
+                    }
+                }
+            }
+
+            if (downloadURI.Length == 0) return false;
+
+            var res = await client.GetAsync(downloadURI, HttpCompletionOption.ResponseContentRead);
+            string filePath = Path.Combine(Paths.PluginPath, "TheOtherRoles.dll");
+            if (File.Exists(filePath + ".old")) File.Delete(filePath + ".old");
+            if (File.Exists(filePath)) File.Move(filePath, filePath + ".old");
+
+            await using var responseStream = await res.Content.ReadAsStreamAsync();
+            await using var fileStream = File.Create(filePath);
+            await responseStream.CopyToAsync(fileStream);
+
+            return true;
+        }
     }
 }
