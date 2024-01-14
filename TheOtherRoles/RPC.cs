@@ -1404,11 +1404,15 @@ namespace TheOtherRoles
             PlayerControl target1 = Helpers.playerById(target1Id);
             PlayerControl target2 = Helpers.playerById(target2Id);
 
-            var targetPosition = target1.GetTruePosition();
             target1.MyPhysics.ResetMoveState();
             target2.MyPhysics.ResetMoveState();
+            var targetPosition = target1.GetTruePosition();
+            var TempFacing = target1.cosmetics.currentBodySprite.BodySprite.flipX;
             target1.NetTransform.RpcSnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
+            target1.cosmetics.currentBodySprite.BodySprite.flipX = target2.cosmetics.currentBodySprite.BodySprite.flipX;
             target2.NetTransform.RpcSnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
+            target2.cosmetics.currentBodySprite.BodySprite.flipX = TempFacing;
+
             if (CachedPlayer.LocalPlayer.PlayerControl == target1 || CachedPlayer.LocalPlayer.PlayerControl == target2)
             {
                 Helpers.showFlash(Teleporter.color);

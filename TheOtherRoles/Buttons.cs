@@ -1291,6 +1291,7 @@ namespace TheOtherRoles
                     else Teleporter.target2 = Teleporter.currentTarget;
                     Teleporter.currentTarget = null;
                     teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
+                    SoundEffectsManager.play("teleporterSample");
                 },
                 () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
                 () =>
@@ -1341,6 +1342,7 @@ namespace TheOtherRoles
                     teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
                     teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer;
                     Teleporter.teleportNumber--;
+                    SoundEffectsManager.play("teleporterTeleport");
                 },
                 () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
                 () =>
