@@ -10,8 +10,9 @@ using UnityEngine;
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
     public static class CredentialsPatch {
-        public static string fullCredentialsVersion = 
-$@"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays>0 ? "-BETA": "")}";
+         public static string fullCredentialsVersion = Helpers.GradientColorText("FFD700", "FF0000", $"<size=100%>TheOhterRoles GM IA</size> v{TheOtherRolesPlugin.Version.ToString()}");
+      /*  public static string fullCredentialsVersion = 
+$@"<size=130%><color=#ff351f>TheOtherRoles GM IA</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays>0 ? "-BETA": "")}"; */
 public static string fullCredentials = ModTranslation.getString("fullCredentials");
 
     public static string mainMenuCredentials = ModTranslation.getString("mainMenuCredentials");
