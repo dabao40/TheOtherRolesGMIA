@@ -2237,6 +2237,15 @@ Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 The Watcher is a player capable of seeing everyone's votes during meetings.
 </details>
 
+# Installation
+For steam users, you have to follow the following steps.  
+**1.** Download the latest release [here](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)  
+**2.** Open up your Steam, right click on Libraries and find your Among Us folder  
+**3.** *REALLY IMPORTANT* Go to the ```common``` directory and copy the whole Among Us folder  
+**4.** Place the folder in whatever place you want and put the zip file you have just downloaded into it  
+**5.** Unzip the files and double click on ```Among Us.exe```  
+**6.** The first launch will take a while. When the game has been fully launched, you will be able to enjoy the mod!
+
 # Roles
 For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
 
