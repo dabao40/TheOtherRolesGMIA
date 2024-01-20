@@ -2845,9 +2845,13 @@
         "0": " - <color=#00FF00FF>brainwashed killed</color> by {0}",
         "13": " - <color=#00FF00FF>\u88ab\u6d17\u8111\u51fb\u6740\u4e8e</color> {0}"
     },
-    "roleInfoDisease": {
+    "roleSummaryDisease": {
         "0": " - <color=#FFC000FF>diseased</color> by {0}",
         "13": " - <color=#FFC000FF>\u88ab\u62b9\u6740\u4e8e</color> {0}"
+    },
+    "roleSummaryScapegoat": {
+        "0": "cupid scapegoat",
+        "13": "\u4e18\u6bd4\u7279\u66ff\u6b7b"
     },
     "roleSummaryKillsInfo": {
         "0": " - <color=#FF0000FF>(Kills: {0})</color>",
@@ -3825,6 +3829,26 @@
         "0": "Number Of Teleports",
         "13": "\u4f20\u9001\u5e08\u53ef\u4f20\u9001\u6b21\u6570"
     },
+    "cupid": {
+        "0": "Cupid",
+        "13": "\u4e18\u6bd4\u7279"
+    },
+    "cupidIntroDesc": {
+        "0": "Keep the couple alive",
+        "13": "\u6784\u9020\u604b\u4eba\u4ee5\u7ef4\u6301\u751f\u8ba1"
+    },
+    "cupidShortDesc": {
+        "0": "Keep the couple alive",
+        "13": "\u6784\u9020\u604b\u4eba\u4ee5\u7ef4\u6301\u751f\u8ba1"
+    },
+    "cupidTimeLimit": {
+        "0": "Cupid Time Limit",
+        "13": "\u4e18\u6bd4\u7279\u6784\u9020\u604b\u4eba\u65f6\u95f4\u9650\u5236"
+    },
+    "cupidShield": {
+        "0": "Cupid Activate Shield",
+        "13": "\u5f00\u542f\u4e18\u6bd4\u7279\u66ff\u6b7b\u62a4\u76fe"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "13": "\u9c91\u9c7c\u7ea2"
@@ -4104,5 +4128,9 @@
     "TeleporterTeleportText": {
         "0": "[BLANK]",
         "13": "\u4f20\u9001"
+    },
+    "CupidArrowText": {
+        "0": "[BLANK]",
+        "13": "\u7231\u4e4b\u7bad"
     }
 }
