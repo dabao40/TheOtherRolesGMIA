@@ -106,6 +106,8 @@ namespace TheOtherRoles
         public static RoleInfo akujo = new RoleInfo(ModTranslation.getString("akujo"), Akujo.color, ModTranslation.getString("akujoIntroDesc"), ModTranslation.getString("akujoShortDesc"), RoleId.Akujo, true);
         public static RoleInfo plagueDoctor = new RoleInfo(ModTranslation.getString("plagueDoctor"), PlagueDoctor.color, ModTranslation.getString("plagueDoctorIntroDesc"), ModTranslation.getString("plagueDoctorShortDesc"), RoleId.PlagueDoctor, true);
         public static RoleInfo jekyllAndHyde = new RoleInfo(ModTranslation.getString("jekyllAndHyde"), JekyllAndHyde.color, ModTranslation.getString("jekyllAndHydeIntroDesc"), ModTranslation.getString("jekyllAndHydeShortDesc"), RoleId.JekyllAndHyde, true);
+        public static RoleInfo cupid = new RoleInfo(ModTranslation.getString("cupid"), Cupid.color, ModTranslation.getString("cupidIntroDesc"), ModTranslation.getString("cupidShortDesc"), RoleId.Cupid, true);
+        public static RoleInfo cupidLover = new RoleInfo(ModTranslation.getString("lover"), Cupid.color, ModTranslation.getString("loversIntroDesc"), ModTranslation.getString("loversShortDesc"), RoleId.Lover, false, true);
 
         public static RoleInfo hunter = new RoleInfo(ModTranslation.getString("hunter"), Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, ModTranslation.getString("hunterIntroDesc")), ModTranslation.getString("hunterShortDesc"), RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo(ModTranslation.getString("hunted"), Color.white, ModTranslation.getString("huntedIntroDesc"), ModTranslation.getString("huntedShortDesc"), RoleId.Crewmate);
@@ -173,6 +175,7 @@ namespace TheOtherRoles
             akujo,
             jekyllAndHyde,
             moriarty,
+            cupid,
             //prosecutor,
             crewmate,
             mayor,
@@ -210,7 +213,8 @@ namespace TheOtherRoles
             mini,
             vip,
             invert,
-            chameleon
+            chameleon,
+            cupidLover,
             //shifter, 
         };
 
@@ -228,6 +232,7 @@ namespace TheOtherRoles
                     if (Vip.vip.Any(x => x.PlayerId == p.PlayerId)) infos.Add(vip);
                 }
                 if (p == Lovers.lover1 || p == Lovers.lover2) infos.Add(lover);
+                if (Cupid.lovers1 != null && Cupid.lovers2 != null && (p == Cupid.lovers2 || p == Cupid.lovers1)) infos.Add(cupidLover);
                 if (p == Tiebreaker.tiebreaker) infos.Add(tiebreaker);
                 if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == p.PlayerId)) infos.Add(antiTeleport);
                 if (Sunglasses.sunglasses.Any(x => x.PlayerId == p.PlayerId)) infos.Add(sunglasses);
@@ -281,6 +286,7 @@ namespace TheOtherRoles
             if (p == JekyllAndHyde.jekyllAndHyde || p == JekyllAndHyde.formerJekyllAndHyde) infos.Add(jekyllAndHyde);
             if (p == Akujo.akujo) infos.Add(akujo);
             if (p == Teleporter.teleporter) infos.Add(teleporter);
+            if (p == Cupid.cupid) infos.Add(cupid);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -449,7 +455,10 @@ namespace TheOtherRoles
                                     deathReasonString = $" - {Helpers.cs(Akujo.color, ModTranslation.getString("roleSummaryLoneliness"))}";
                                     break;
                                 case DeadPlayer.CustomDeathReason.Disease:
-                                    deathReasonString = string.Format(ModTranslation.getString("roleInfoDisease"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
+                                    deathReasonString = string.Format(ModTranslation.getString("roleSummaryDisease"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Scapegoat:
+                                    deathReasonString = $" - {Helpers.cs(Cupid.color, ModTranslation.getString("roleSummaryScapegoat"))}";
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                 //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

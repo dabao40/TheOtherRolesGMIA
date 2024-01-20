@@ -94,6 +94,7 @@ namespace TheOtherRoles
             Akujo.clearAndReload();
             PlagueDoctor.clearAndReload();
             JekyllAndHyde.clearAndReload();
+            Cupid.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -3339,6 +3340,61 @@ namespace TheOtherRoles
             timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
             numKeeps = Math.Min((int)CustomOptionHolder.akujoNumKeeps.getFloat(), PlayerControl.AllPlayerControls.Count - 2);
             keepsLeft = numKeeps;
+        }
+    }
+
+    public static class Cupid
+    {
+        public static PlayerControl cupid;
+        public static Color color = new Color32(246, 152, 150, byte.MaxValue);
+
+        public static PlayerControl lovers1;
+        public static PlayerControl lovers2;
+        public static PlayerControl shielded;
+        public static PlayerControl currentTarget;
+        public static PlayerControl shieldTarget;
+        public static DateTime startTime = DateTime.UtcNow;
+        public static bool isShieldOn = false;
+        public static int timeLeft;
+        public static float timeLimit;
+
+        private static Sprite arrowSprite;
+        public static Sprite getArrowSprite()
+        {
+            if (arrowSprite) return arrowSprite;
+            arrowSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.CupidButton.png", 115f);
+            return arrowSprite;
+        }
+
+        public static void breakLovers(PlayerControl lover)
+        {
+            if ((Lovers.lover1 != null && lover == Lovers.lover1) || (Lovers.lover2 != null && lover == Lovers.lover2))
+            {
+                PlayerControl otherLover = lover.getPartner();
+                if (otherLover != null && !otherLover.Data.IsDead)
+                {
+                    Lovers.clearAndReload();
+                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
+                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoveStolen);
+                }
+            }
+        }
+
+        public static void clearAndReload(bool resetLovers = true)
+        {
+            cupid = null;
+            if (resetLovers)
+            {
+                lovers1 = null;
+                lovers2 = null;
+            }
+            shielded = null;
+            currentTarget = null;
+            shieldTarget = null;
+            startTime = DateTime.UtcNow;
+            timeLimit = CustomOptionHolder.cupidTimeLimit.getFloat() + 10f;
+            timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
+            isShieldOn = CustomOptionHolder.cupidShield.getBool();
         }
     }
 

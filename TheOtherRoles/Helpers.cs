@@ -150,6 +150,56 @@ namespace TheOtherRoles {
             return res;
         }
 
+        // Intersteing Color Gradient Feature :)
+        public static string GradientColorText(string startColorHex, string endColorHex, string text)
+        {
+            if (startColorHex.Length != 6 || endColorHex.Length != 6)
+            {
+                TheOtherRolesPlugin.Logger.LogError("GradientColorText : Invalid Color Hex Code, Hex code should be 6 characters long (without #) (e.g., FFFFFF).");
+                return text;
+            }
+
+            Color startColor = HexToColor(startColorHex);
+            Color endColor = HexToColor(endColorHex);
+
+            int textLength = text.Length;
+            float stepR = (endColor.r - startColor.r) / (float)textLength;
+            float stepG = (endColor.g - startColor.g) / (float)textLength;
+            float stepB = (endColor.b - startColor.b) / (float)textLength;
+            float stepA = (endColor.a - startColor.a) / (float)textLength;
+
+            string gradientText = "";
+
+            for (int i = 0; i < textLength; i++)
+            {
+                float r = startColor.r + (stepR * i);
+                float g = startColor.g + (stepG * i);
+                float b = startColor.b + (stepB * i);
+                float a = startColor.a + (stepA * i);
+
+
+                string colorhex = ColorToHex(new Color(r, g, b, a));
+                gradientText += $"<color=#{colorhex}>{text[i]}</color>";
+
+            }
+
+            return gradientText;
+
+        }
+
+        private static Color HexToColor(string hex)
+        {
+            Color color = new();
+            ColorUtility.TryParseHtmlString("#" + hex, out color);
+            return color;
+        }
+
+        private static string ColorToHex(Color color)
+        {
+            Color32 color32 = (Color32)color;
+            return $"{color32.r:X2}{color32.g:X2}{color32.b:X2}{color32.a:X2}";
+        }
+
         public static void handleVampireBiteOnBodyReport() {
             // Murder the bitten player and reset bitten (regardless whether the kill was successful or not)
             Helpers.checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
@@ -165,55 +215,6 @@ namespace TheOtherRoles {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TrapperMeetingFlag, Hazel.SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.trapperMeetingFlag();
-        }
-        // Intersteing Color Gradient Feature :)
-        public static string GradientColorText(string startColorHex, string endColorHex, string text)
-        {
-           if (startColorHex.Length != 6 || endColorHex.Length != 6)
-           {
-              TheOtherRolesPlugin.Logger.LogError("GradientColorText : Invalid Color Hex Code, Hex code should be 6 characters long (without #) (e.g., FFFFFF).");
-              return text;
-           } 
-
-           Color startColor = HexToColor(startColorHex);
-           Color endColor = HexToColor(endColorHex);
-
-            int textLength = text.Length;
-            float stepR = (endColor.r - startColor.r) / (float)textLength;
-            float stepG = (endColor.g - startColor.g) / (float)textLength;
-            float stepB = (endColor.b - startColor.b) / (float)textLength;
-            float stepA = (endColor.a - startColor.a) / (float)textLength;
-
-            string gradientText = "";
-
-            for (int i = 0;  i < textLength; i++)
-            {
-                float r = startColor.r + (stepR * i);
-                float g = startColor.g + (stepG * i);
-                float b = startColor.b + (stepB * i);
-                float a = startColor.a + (stepA * i);
-
-
-                string colorhex = ColorToHex(new Color(r,g,b, a));
-                gradientText += $"<color=#{colorhex}>{text[i]}</color>";
-
-            }
-
-           return gradientText;
-
-        }
-
-        private static Color HexToColor(string hex)
-        {
-            Color color = new ();
-            ColorUtility.TryParseHtmlString("#" + hex, out color);
-            return color;
-        }
-
-        private static string ColorToHex(Color color)
-        {
-            Color32 color32 = (Color32)color;
-            return $"{color32.r:X2}{color32.g:X2}{color32.b:X2}{color32.a:X2}";
         }
 
         public static void enableCursor(bool initalSetCursor)
@@ -308,7 +309,7 @@ namespace TheOtherRoles {
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde);
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid);
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -655,6 +656,16 @@ namespace TheOtherRoles {
                 return MurderAttemptResult.SuppressKill;
             }
 
+            else if (Cupid.cupid != null && Cupid.shielded == target && !Cupid.cupid.Data.IsDead)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CupidSuicide, Hazel.SendOption.Reliable, -1);
+                writer.Write(Cupid.cupid.PlayerId);
+                writer.Write(true);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.cupidSuicide(Cupid.cupid.PlayerId, true);
+                return MurderAttemptResult.BlankKill;
+            }
+
             // Kill the killer if Veteran is on alert
             else if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == target)
             {
@@ -771,7 +782,8 @@ namespace TheOtherRoles {
                 player != Pursuer.pursuer &&
                 player != Opportunist.opportunist &&
                 player != Akujo.akujo &&
-                player != PlagueDoctor.plagueDoctor);
+                player != PlagueDoctor.plagueDoctor &&
+                player != Cupid.cupid);
 
         }
 

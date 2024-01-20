@@ -358,6 +358,10 @@ namespace TheOtherRoles {
         public static CustomOption pursuerCooldown;
         public static CustomOption pursuerBlanksNumber;
 
+        public static CustomOption cupidSpawnRate;
+        public static CustomOption cupidTimeLimit;
+        public static CustomOption cupidShield;
+
         public static CustomOption moriartySpawnRate;
         public static CustomOption moriartyBrainwashTime;
         public static CustomOption moriartyBrainwashCooldown;
@@ -787,6 +791,10 @@ namespace TheOtherRoles {
             akujoNumKeeps = CustomOption.Create(8102, Types.Neutral, ModTranslation.getString("akujoNumKeeps"), 2f, 1f, 10f, 1f, akujoSpawnRate);
             akujoKnowsRoles = CustomOption.Create(8103, Types.Neutral, ModTranslation.getString("akujoKnowsRoles"), true, akujoSpawnRate);
 
+            cupidSpawnRate = CustomOption.Create(9050, Types.Neutral, cs(Cupid.color, ModTranslation.getString("cupid")), rates, null, true);
+            cupidTimeLimit = CustomOption.Create(9051, Types.Neutral, ModTranslation.getString("cupidTimeLimit"), 300f, 30f, 1200f, 30f, cupidSpawnRate);
+            cupidShield = CustomOption.Create(9052, Types.Neutral, ModTranslation.getString("cupidShield"), true, cupidSpawnRate);
+
             jekyllAndHydeSpawnRate = CustomOption.Create(8104, Types.Neutral, cs(JekyllAndHyde.color, ModTranslation.getString("jekyllAndHyde")), rates, null, true);
             jekyllAndHydeNumberToWin = CustomOption.Create(8105, Types.Neutral, ModTranslation.getString("jekyllAndHydeNumberToWin"), 3f, 1f, 10f, 1f, jekyllAndHydeSpawnRate);
             jekyllAndHydeCooldown = CustomOption.Create(8106, Types.Neutral, ModTranslation.getString("jekyllAndHydeCooldown"), 18f, 2f, 30f, 1f, jekyllAndHydeSpawnRate);
@@ -1093,7 +1101,8 @@ namespace TheOtherRoles {
             blockedRolePairings.Add((byte)RoleId.Mini, new [] { (byte)RoleId.Spy});
             blockedRolePairings.Add((byte)RoleId.Vulture, new [] { (byte)RoleId.Cleaner});
             blockedRolePairings.Add((byte)RoleId.Cleaner, new [] { (byte)RoleId.Vulture});
-            
+            blockedRolePairings.Add((byte)RoleId.Cupid, new[] { (byte)RoleId.Akujo });
+            blockedRolePairings.Add((byte)RoleId.Akujo, new[] { (byte)RoleId.Cupid });
         }
     }
 }

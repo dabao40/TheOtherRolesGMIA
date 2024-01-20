@@ -88,6 +88,8 @@ namespace TheOtherRoles
         public static CustomButton jekyllAndHydeSuicideButton;
         public static CustomButton teleporterTeleportButton;
         public static CustomButton teleporterSampleButton;
+        public static CustomButton cupidArrowButton;
+        public static CustomButton cupidShieldButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -114,6 +116,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoBackupLeftText;
+        public static TMPro.TMP_Text cupidTimeRemainingText;
         public static TMPro.TMP_Text plagueDoctornumInfectionsText;
         public static TMPro.TMP_Text teleporterNumLeftText;
         public static TMPro.TMP_Text teleporterTarget1Text; 
@@ -190,6 +193,8 @@ namespace TheOtherRoles
             evilHackerCreatesMadmateButton.MaxTimer = 0f;
             moriartyBrainwashButton.MaxTimer = Moriarty.brainwashCooldown;
             moriartyKillButton.MaxTimer = 0f;
+            cupidArrowButton.MaxTimer = 0f;
+            cupidShieldButton.MaxTimer = 0f;
             jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
             jekyllAndHydeSuicideButton.MaxTimer = JekyllAndHyde.suicideTimer;
             jekyllAndHydeDrugButton.MaxTimer = 0f;
@@ -2402,6 +2407,71 @@ namespace TheOtherRoles
             sherlockNumKillTimerText.enableWordWrapping = false;
             sherlockNumKillTimerText.transform.localScale = Vector3.one * 0.5f;
             sherlockNumKillTimerText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            cupidArrowButton = new CustomButton(
+                () =>
+                {
+                    if (Veteran.veteran != null && Veteran.veteran == Cupid.currentTarget && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Cupid.currentTarget);
+                        return;
+                    }
+
+                    if (Cupid.lovers1 == null)
+                    {
+                        Cupid.lovers1 = Cupid.currentTarget;
+                    }
+                    else
+                    {
+                        if (Cupid.currentTarget != Cupid.lovers1)
+                        {
+                            Cupid.lovers2 = Cupid.currentTarget;
+                        }
+                    }
+                    if (Cupid.lovers1 != null && Cupid.lovers2 != null)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetCupidLovers, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Cupid.lovers1.PlayerId);
+                        writer.Write(Cupid.lovers2.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.setCupidLovers(Cupid.lovers1.PlayerId, Cupid.lovers2.PlayerId);
+                    }
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.currentTarget != null && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
+                () => { cupidArrowButton.Timer = cupidArrowButton.MaxTimer; },
+                Cupid.getArrowSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("CupidArrowText"),
+                abilityTexture: true
+            );
+            cupidTimeRemainingText = GameObject.Instantiate(cupidArrowButton.actionButton.cooldownTimerText, __instance.transform);
+            cupidTimeRemainingText.text = "";
+            cupidTimeRemainingText.enableWordWrapping = false;
+            cupidTimeRemainingText.transform.localScale = Vector3.one * 0.45f;
+            cupidTimeRemainingText.transform.localPosition = cupidArrowButton.actionButton.cooldownTimerText.transform.parent.localPosition + new Vector3(-0.1f, 0.35f, 0f);
+
+            cupidShieldButton = new CustomButton(
+                () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetCupidShield, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Cupid.shieldTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.setCupidShield(Cupid.shieldTarget.PlayerId);
+                },
+                () => { return Cupid.isShieldOn && Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.shielded == null; },
+                () => { return Cupid.isShieldOn && Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.shielded == null && Cupid.shieldTarget != null; },
+
+                () => { cupidShieldButton.Timer = cupidShieldButton.MaxTimer; },
+                Medic.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.G,
+                buttonText: ModTranslation.getString("ShieldText"),
+                abilityTexture: true
+            );
 
             // Akujo Honmei
             akujoHonmeiButton = new CustomButton(

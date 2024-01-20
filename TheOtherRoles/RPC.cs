@@ -80,6 +80,7 @@ namespace TheOtherRoles
         Moriarty,
         PlagueDoctor,
         Akujo,
+        Cupid,
         JekyllAndHyde,
         Witch,
         Assassin,
@@ -230,7 +231,10 @@ namespace TheOtherRoles
         PlagueDoctorSetInfected,
         PlagueDoctorUpdateProgress,
         SetOddIsJekyll,
-        TeleporterTeleport
+        TeleporterTeleport,
+        SetCupidLovers,
+        CupidSuicide,
+        SetCupidShield
     }
 
     public static class RPCProcedure {
@@ -522,6 +526,9 @@ namespace TheOtherRoles
                     case RoleId.BomberB:
                         BomberB.bomberB = player;
                         break;
+                    case RoleId.Cupid:
+                        Cupid.cupid = player;
+                        break;
                     case RoleId.Thief:
                         Thief.thief = player;
                         break;
@@ -769,6 +776,12 @@ namespace TheOtherRoles
                 if (Lovers.lover2 != null && oldShifter == Lovers.lover2) Lovers.lover2 = player;
                 else if (Lovers.lover2 != null && player == Lovers.lover2) Lovers.lover2 = oldShifter;
 
+                if (Cupid.lovers1 != null && oldShifter == Cupid.lovers1) Cupid.lovers1 = player;
+                else if (Cupid.lovers1 != null && player ==  Cupid.lovers1) Cupid.lovers1 = oldShifter;
+
+                if (Cupid.lovers2 != null && oldShifter == Cupid.lovers2) Cupid.lovers2 = player;
+                else if (Cupid.lovers2 != null && player == Cupid.lovers2) Cupid.lovers2 = oldShifter;
+
                 // Switch Anti-Teleport
                 if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == player.PlayerId))
                 {
@@ -909,6 +922,7 @@ namespace TheOtherRoles
             if (player == Sidekick.sidekick) Sidekick.sidekick = oldShifter;
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
             if (player == Akujo.akujo) Akujo.akujo = oldShifter;
+            if (player == Cupid.cupid) Cupid.cupid = oldShifter;
 
             if (Lawyer.lawyer != null && Lawyer.target == player)
             {
@@ -1259,6 +1273,7 @@ namespace TheOtherRoles
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.clearAndReload();
             if (player == Akujo.akujo) Akujo.clearAndReload();
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
+            if (player == Cupid.cupid) Cupid.clearAndReload(false);
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -1420,6 +1435,21 @@ namespace TheOtherRoles
             }
         }
 
+        public static void cupidSuicide(byte cupidId, bool isScapegoat)
+        {
+            var cupid = Helpers.playerById(cupidId);
+            if (cupid != null)
+            {
+                cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(cupid, isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
+            }
+        }
+
+        public static void setCupidShield(byte targetId)
+        {
+            Cupid.shielded = Helpers.playerById(targetId);
+        }
+
         public static void veteranAlert()
         {
             Veteran.alertActive = true;
@@ -1529,6 +1559,16 @@ namespace TheOtherRoles
             if (TaskMaster.taskMaster == null) return;
             TaskMaster.clearExTasks = clearExTasks;
             TaskMaster.allExTasks = allExTasks;
+        }
+
+        public static void setCupidLovers(byte playerId1, byte playerId2)
+        {
+            var p1 = Helpers.playerById(playerId1);
+            var p2 = Helpers.playerById(playerId2);
+            Cupid.lovers1 = p1;
+            Cupid.lovers2 = p2;
+            Cupid.breakLovers(p1);
+            Cupid.breakLovers(p2);
         }
 
         public static void akujoSetHonmei(byte akujoId, byte targetId)
@@ -1762,6 +1802,7 @@ namespace TheOtherRoles
             PlayerControl dyingMimicPartner;
             PlayerControl dyingBomberPartner;
             PlayerControl dyingAkujoPartner;
+            PlayerControl dyingCupidLover;
             byte NekoKabochaKillerId = byte.MaxValue;
             if (dyingTarget == null ) return;
             bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
@@ -1796,6 +1837,11 @@ namespace TheOtherRoles
             if ((Akujo.akujo != null && dyingTarget == Akujo.akujo) || (Akujo.honmei != null && dyingTarget == Akujo.honmei)) dyingAkujoPartner = dyingTarget == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
             else dyingAkujoPartner = null;
 
+            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (dyingTarget == Cupid.lovers1 || dyingTarget == Cupid.lovers2)) dyingCupidLover = dyingTarget == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
+            else dyingCupidLover = null;
+
+            PlayerControl cupid = Cupid.cupid != null && !Cupid.cupid.Data.IsDead && dyingCupidLover != null ? Cupid.cupid : null;
+
             if (Lawyer.target != null && dyingTarget == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
             if (Yasuna.yasuna != null && dyingTarget == Yasuna.yasuna) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
             if (Yasuna.yasuna != null && dyingTarget.PlayerId == Yasuna.specialVoteTargetPlayerId) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
@@ -1817,6 +1863,8 @@ namespace TheOtherRoles
             byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
             byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
             byte akujoPartnerId = dyingAkujoPartner != null ? dyingAkujoPartner.PlayerId : byte.MaxValue;
+            byte cupidLoverId = dyingCupidLover != null ? dyingCupidLover.PlayerId : byte.MaxValue;
+            byte cupidId = cupid != null ? Cupid.cupid.PlayerId : byte.MaxValue;
             //byte nKkillerId = (NekoKabocha.meetingKiller != null && revengeFlag) ? NekoKabocha.meetingKiller.PlayerId : dyingTargetId;
 
             HandleGuesser.remainingShots(killerId, true);
@@ -1824,7 +1872,7 @@ namespace TheOtherRoles
             if (MeetingHud.Instance) {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, dyingTargetId);
                 foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
-                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId) {
+                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId || pva.TargetPlayerId == cupidLoverId || pva.TargetPlayerId == cupidId) {
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
                     }
@@ -1864,6 +1912,18 @@ namespace TheOtherRoles
                 else if (dyingAkujoPartner != null && CachedPlayer.LocalPlayer.PlayerControl == dyingAkujoPartner)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingAkujoPartner.Data, dyingAkujoPartner.Data);
+                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                }
+
+                else if (dyingCupidLover != null && CachedPlayer.LocalPlayer.PlayerControl == dyingCupidLover)
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingCupidLover.Data, dyingCupidLover.Data);
+                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                }
+                
+                if (cupid != null && CachedPlayer.LocalPlayer.PlayerControl == cupid)
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(cupid.Data, cupid.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
 
@@ -2371,6 +2431,15 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.UndertakerDragBody:
                     var bodyId = reader.ReadByte();
                     Undertaker.DragBody(bodyId);
+                    break;
+                case (byte)CustomRPC.SetCupidLovers:
+                    RPCProcedure.setCupidLovers(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.CupidSuicide:
+                    RPCProcedure.cupidSuicide(reader.ReadByte(), reader.ReadBoolean());
+                    break;
+                case (byte)CustomRPC.SetCupidShield:
+                    RPCProcedure.setCupidShield(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.TeleporterTeleport:
                     RPCProcedure.teleporterTeleport(reader.ReadByte(), reader.ReadByte());
