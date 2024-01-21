@@ -2861,6 +2861,10 @@
         "0": "Neutral",
         "13": "\u4e2d\u7acb\u9635\u8425"
     },
+    "startingTimer": {
+        "0": "Starting in {0}",
+        "13": "\u5f00\u59cb\u5012\u8ba1\u65f6\uff1a{0}"
+    },
     "errorNotInstalled": {
         "0": " has a different or no version of The Other Roles",
         "11": " The Other Roles GM IA\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3046\u304b\u3001\u5c0e\u5165\u3055\u308c\u3066\u3044\u307e\u305b\u3093"
