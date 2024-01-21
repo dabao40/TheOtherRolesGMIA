@@ -2437,8 +2437,8 @@ namespace TheOtherRoles
                         RPCProcedure.setCupidLovers(Cupid.lovers1.PlayerId, Cupid.lovers2.PlayerId);
                     }
                 },
-                () => { return CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
-                () => { return CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.currentTarget != null && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
+                () => { return Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
+                () => { return Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.currentTarget != null && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
                 () => { cupidArrowButton.Timer = cupidArrowButton.MaxTimer; },
                 Cupid.getArrowSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
@@ -2456,6 +2456,12 @@ namespace TheOtherRoles
             cupidShieldButton = new CustomButton(
                 () =>
                 {
+                    if (Veteran.veteran != null && Cupid.shieldTarget == Veteran.veteran && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Cupid.cupid);
+                        return;
+                    }
+
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetCupidShield, Hazel.SendOption.Reliable, -1);
                     writer.Write(Cupid.shieldTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

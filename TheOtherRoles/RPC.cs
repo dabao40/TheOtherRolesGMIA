@@ -1018,6 +1018,7 @@ namespace TheOtherRoles
             var livingPlayers = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(p => p != PlagueDoctor.plagueDoctor && !p.Data.IsDead);
             foreach (PlayerControl p in livingPlayers)
             {
+                if (NekoKabocha.nekoKabocha != null && p == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = PlagueDoctor.plagueDoctor;
                 if (!p.Data.IsDead) p.Exiled();
                 GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Disease, PlagueDoctor.plagueDoctor);
             }
@@ -1772,6 +1773,7 @@ namespace TheOtherRoles
             Arsonist.triggerArsonistWin = true;
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
                 if (p != Arsonist.arsonist) {
+                    if (NekoKabocha.nekoKabocha != null && p == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = Arsonist.arsonist;
                     p.Exiled();
                     overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Arson, Arsonist.arsonist);
                 }

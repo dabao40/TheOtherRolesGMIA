@@ -1546,11 +1546,13 @@ namespace TheOtherRoles
         public static bool revengeExile = false;
 
         public static PlayerControl meetingKiller = null;
+        public static PlayerControl otherKiller;
 
         public static void clearAndReload()
         {
             nekoKabocha = null;
             meetingKiller = null;
+            otherKiller = null;
             revengeCrew = CustomOptionHolder.nekoKabochaRevengeCrew.getBool();
             revengeImpostor = CustomOptionHolder.nekoKabochaRevengeImpostor.getBool();
             revengeNeutral = CustomOptionHolder.nekoKabochaRevengeNeutral.getBool();
