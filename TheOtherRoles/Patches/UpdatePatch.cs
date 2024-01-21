@@ -254,6 +254,59 @@ namespace TheOtherRoles.Patches {
                             player.NameText.text += suffix;
             }
 
+            // Cupid
+            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (Cupid.lovers1 == CachedPlayer.LocalPlayer.PlayerControl || Cupid.lovers2 == CachedPlayer.LocalPlayer.PlayerControl || (Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid)))
+            {
+                string suffix = Helpers.cs(Cupid.color, " ♥");
+                Cupid.lovers1.cosmetics.nameText.text += suffix;
+                Cupid.lovers2.cosmetics.nameText.text += suffix;
+
+                if (MeetingHud.Instance != null)
+                    foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                        if (Cupid.lovers1.PlayerId == player.TargetPlayerId || Cupid.lovers2.PlayerId == player.TargetPlayerId)
+                            player.NameText.text += suffix;
+            }
+
+            // Akujo
+            if (Akujo.akujo != null && (Akujo.keeps != null || Akujo.honmei != null))
+            {
+                if (Akujo.keeps != null)
+                {
+                    foreach (PlayerControl p in Akujo.keeps)
+                    {
+                        if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) p.cosmetics.nameText.text += Helpers.cs(Color.gray, " ♥");
+                        if (CachedPlayer.LocalPlayer.PlayerControl == p)
+                        {
+                            Akujo.akujo.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                            p.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                        }
+                    }
+                }
+                if (Akujo.honmei != null)
+                {
+                    if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) Akujo.honmei.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                    if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.honmei)
+                    {
+                        Akujo.akujo.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                        Akujo.honmei.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                    }
+                }
+
+                if (MeetingHud.Instance != null)
+                {
+                    foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                    {
+                        if (player.TargetPlayerId == Akujo.akujo.PlayerId && ((Akujo.honmei != null && Akujo.honmei == CachedPlayer.LocalPlayer.PlayerControl) || (Akujo.keeps != null && Akujo.keeps.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId))))
+                            player.NameText.text += Helpers.cs(Akujo.color, " ♥");
+                        if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo)
+                        {
+                            if (player.TargetPlayerId == Akujo.honmei?.PlayerId) player.NameText.text += Helpers.cs(Akujo.color, " ♥");
+                            if (Akujo.keeps != null && Akujo.keeps.Any(x => x.PlayerId == player.TargetPlayerId)) player.NameText.text += Helpers.cs(Color.gray, " ♥");
+                        }
+                    }
+                }
+            }
+
             // Lawyer or Prosecutor
             bool localIsLawyer = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.lawyer == CachedPlayer.LocalPlayer.PlayerControl;
             bool localIsKnowingTarget = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.targetKnows && Lawyer.target == CachedPlayer.LocalPlayer.PlayerControl;
@@ -311,7 +364,7 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void miniUpdate() {
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == MimicK.mimicK && MimicK.victim != null || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == MimicK.mimicK && MimicK.victim != null || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;

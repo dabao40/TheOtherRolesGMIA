@@ -13,6 +13,8 @@ using TheOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
+using System.Runtime.InteropServices;
+using Iced.Intel;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -82,7 +84,7 @@ namespace TheOtherRoles.Patches {
                 bool isMorphedMorphling = target == Morphling.morphling && Morphling.morphTarget != null && Morphling.morphTimer > 0f;
                 bool hasVisibleShield = false;
                 Color color = Medic.shieldedColor;
-                if (Camouflager.camouflageTimer <= 0f && Medic.shielded != null && ((target == Medic.shielded && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == Medic.shielded))) {
+                if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && Medic.shielded != null && ((target == Medic.shielded && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == Medic.shielded))) {
                     hasVisibleShield = Medic.showShielded == 0 || Helpers.shouldShowGhostInfo() // Everyone or Ghost info
                         || (Medic.showShielded == 1 && (CachedPlayer.LocalPlayer.PlayerControl == Medic.shielded || CachedPlayer.LocalPlayer.PlayerControl == Medic.medic)) // Shielded + Medic
                         || (Medic.showShielded == 2 && CachedPlayer.LocalPlayer.PlayerControl == Medic.medic); // Medic only
@@ -90,7 +92,7 @@ namespace TheOtherRoles.Patches {
                     hasVisibleShield = hasVisibleShield && (Medic.meetingAfterShielding || !Medic.showShieldAfterMeeting || CachedPlayer.LocalPlayer.PlayerControl == Medic.medic || Helpers.shouldShowGhostInfo());
                 }
 
-                if (Camouflager.camouflageTimer <= 0f && TORMapOptions.firstKillPlayer != null && TORMapOptions.shieldFirstKill && ((target == TORMapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == TORMapOptions.firstKillPlayer))) {
+                if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && TORMapOptions.firstKillPlayer != null && TORMapOptions.shieldFirstKill && ((target == TORMapOptions.firstKillPlayer && !isMorphedMorphling) || (isMorphedMorphling && Morphling.morphTarget == TORMapOptions.firstKillPlayer))) {
                     hasVisibleShield = true;
                     color = Color.blue;
                 }
@@ -522,6 +524,18 @@ namespace TheOtherRoles.Patches {
             setPlayerOutline(Moriarty.currentTarget, Moriarty.color);
         }
 
+        static void cupidSetTarget()
+        {
+            if (Cupid.cupid == null || Cupid.cupid != CachedPlayer.LocalPlayer.PlayerControl) return;
+            var untargetables = new List<PlayerControl>();
+            if (Cupid.lovers1 != null) untargetables.Add(Cupid.lovers1);
+            if (Cupid.lovers1 != null) untargetables.Add(Cupid.lovers2);
+            Cupid.currentTarget = setTarget(untargetablePlayers: untargetables);
+            if (Cupid.isShieldOn) Cupid.shieldTarget = setTarget();
+            if (Cupid.lovers1 == null || Cupid.lovers2 == null) setPlayerOutline(Cupid.currentTarget, Cupid.color);
+            else if (Cupid.shielded == null && Cupid.isShieldOn) setPlayerOutline(Cupid.shieldTarget, Cupid.color);
+        }
+
         static void warlockSetTarget() {
             if (Warlock.warlock == null || Warlock.warlock != CachedPlayer.LocalPlayer.PlayerControl) return;
             if (Warlock.curseVictim != null && (Warlock.curseVictim.Data.Disconnected || Warlock.curseVictim.Data.IsDead)) {
@@ -572,6 +586,150 @@ namespace TheOtherRoles.Patches {
                 } else
                 {
                     Assassin.arrow.arrow.SetActive(false);
+                }
+            }
+        }
+
+        static void plagueDoctorSetTarget()
+        {
+            if (PlagueDoctor.plagueDoctor == null || CachedPlayer.LocalPlayer.PlayerControl != PlagueDoctor.plagueDoctor) return;
+            if (!PlagueDoctor.plagueDoctor.Data.IsDead && PlagueDoctor.numInfections > 0)
+            {
+                PlagueDoctor.currentTarget = setTarget(untargetablePlayers: PlagueDoctor.infected.Values.ToList());
+                setPlayerOutline(PlagueDoctor.currentTarget, PlagueDoctor.color);
+            }
+        }
+
+        static void teleporterSetTarget()
+        {
+            if (Teleporter.teleporter == null || Teleporter.teleporter != CachedPlayer.LocalPlayer.PlayerControl) return;
+            var untargetables = new List<PlayerControl>();
+            if (Teleporter.target1 != null) untargetables.Add(Teleporter.target1);
+            if (Teleporter.target2 != null) untargetables.Add(Teleporter.target2);
+            Teleporter.currentTarget = setTarget(untargetablePlayers: untargetables);
+            if ((Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0) setPlayerOutline(Teleporter.currentTarget, Teleporter.color);
+        }
+
+        public static void plagueDoctorUpdate()
+        {
+            if (MeetingHud.Instance != null)
+            {
+                if (PlagueDoctor.statusText != null)
+                {
+                    PlagueDoctor.statusText.gameObject.SetActive(false);
+                }
+            }
+
+            if (PlagueDoctor.plagueDoctor != null && (CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead))
+            {
+                if (PlagueDoctor.statusText == null)
+                {
+                    GameObject gameObject = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance?.roomTracker.gameObject);
+                    gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
+                    gameObject.SetActive(true);
+                    UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                    PlagueDoctor.statusText = gameObject.GetComponent<TMPro.TMP_Text>();
+                    gameObject.transform.localPosition = new Vector3(-2.7f, -0.1f, gameObject.transform.localPosition.z);
+
+                    PlagueDoctor.statusText.transform.localScale = new Vector3(1f, 1f, 1f);
+                    PlagueDoctor.statusText.fontSize = 1.5f;
+                    PlagueDoctor.statusText.fontSizeMin = 1.5f;
+                    PlagueDoctor.statusText.fontSizeMax = 1.5f;
+                    PlagueDoctor.statusText.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                    PlagueDoctor.statusText.alpha = byte.MaxValue;
+                }
+
+                PlagueDoctor.statusText.gameObject.SetActive(true);
+                string text = $"[{ModTranslation.getString("plagueDoctorProgress")}]\n";
+
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p == PlagueDoctor.plagueDoctor) continue;
+                    if (PlagueDoctor.dead.ContainsKey(p.PlayerId) && PlagueDoctor.dead[p.PlayerId]) continue;
+                    text += $"{p.name}: ";
+                    if (PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                    {
+                        text += Helpers.cs(Color.red, ModTranslation.getString("plagueDoctorInfectedText"));
+                    }
+                    else
+                    {
+                        // データが無い場合は作成する
+                        if (!PlagueDoctor.progress.ContainsKey(p.PlayerId))
+                        {
+                            PlagueDoctor.progress[p.PlayerId] = 0f;
+                        }
+                        text += PlagueDoctor.getProgressString(PlagueDoctor.progress[p.PlayerId]);
+                    }
+                    text += "\n";
+                }
+
+                PlagueDoctor.statusText.text = text;
+            }
+
+            if (PlagueDoctor.plagueDoctor != null && CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor)
+            {
+                if (!PlagueDoctor.meetingFlag && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead))
+                {
+                    List<PlayerControl> newInfected = new List<PlayerControl>();
+                    foreach (PlayerControl target in CachedPlayer.AllPlayers)
+                    {
+                        if (target == PlagueDoctor.plagueDoctor || target.Data.IsDead || PlagueDoctor.infected.ContainsKey(target.PlayerId) || target.inVent) continue;
+                        if (!PlagueDoctor.progress.ContainsKey(target.PlayerId)) PlagueDoctor.progress[target.PlayerId] = 0f;
+
+                        foreach (PlayerControl source in PlagueDoctor.infected.Values.ToList())
+                        {
+                            if (source.Data.IsDead) continue;
+                            float distance = Vector3.Distance(source.transform.position, target.transform.position);
+                            bool anythingBetween = PhysicsHelpers.AnythingBetween(source.GetTruePosition(), target.GetTruePosition(), Constants.ShipAndObjectsMask, false);
+
+                            if (distance <= PlagueDoctor.infectDistance && !anythingBetween)
+                            {
+                                PlagueDoctor.progress[target.PlayerId] += Time.fixedDeltaTime;
+
+                                // 他のクライアントに進行状況を通知する
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, Hazel.SendOption.Reliable, -1);
+                                writer.Write(target.PlayerId);
+                                writer.Write(PlagueDoctor.progress[target.PlayerId]);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                                // Only update a player's infection once per FixedUpdate
+                                break;
+                            }
+                        }
+
+                        if (PlagueDoctor.progress[target.PlayerId] > PlagueDoctor.infectDuration)
+                        {
+                            newInfected.Add(target);
+                        }
+
+                        foreach (PlayerControl p in newInfected)
+                        {
+                            byte targetId = p.PlayerId;
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
+                            writer.Write(targetId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.plagueDoctorInfected(targetId);
+                        }
+
+                        bool winFlag = true;
+                        foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                        {
+                            if (p.Data.IsDead) continue;
+                            if (p == PlagueDoctor.plagueDoctor) continue;
+                            if (!PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                            {
+                                winFlag = false;
+                                break;
+                            }
+                        }
+
+                        if (winFlag)
+                        {
+                            MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                            RPCProcedure.plagueDoctorWin();
+                        }
+                    }
                 }
             }
         }
@@ -639,7 +797,7 @@ namespace TheOtherRoles.Patches {
             collider.offset = Mini.defaultColliderOffset * Vector2.down;
 
             // Set adapted player size to Mini and Morphling
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || (Mini.mini == Morphling.morphling && Morphling.morphTimer > 0) || (Mini.mini == MimicA.mimicA && MimicA.isMorph) || (Mini.mini == MimicK.mimicK && MimicK.victim != null)) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || (Mini.mini == Morphling.morphling && Morphling.morphTimer > 0) || (Mini.mini == MimicA.mimicA && MimicA.isMorph) || (Mini.mini == MimicK.mimicK && MimicK.victim != null)) return;
 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
@@ -675,7 +833,7 @@ namespace TheOtherRoles.Patches {
 
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
-                if ((Lawyer.lawyerKnowsRole && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && p == Lawyer.target) || p == CachedPlayer.LocalPlayer.PlayerControl || CachedPlayer.LocalPlayer.Data.IsDead) {
+                if ((Lawyer.lawyerKnowsRole && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && p == Lawyer.target) || (Akujo.knowsRoles && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && (p == Akujo.honmei || Akujo.keeps.Any(x => x.PlayerId == p.PlayerId))) || p == CachedPlayer.LocalPlayer.PlayerControl || CachedPlayer.LocalPlayer.Data.IsDead) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -895,6 +1053,13 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void jekyllAndHydeSetTarget()
+        {
+            if (JekyllAndHyde.jekyllAndHyde == null || CachedPlayer.LocalPlayer.PlayerControl != JekyllAndHyde.jekyllAndHyde || JekyllAndHyde.jekyllAndHyde.Data.IsDead || JekyllAndHyde.isJekyll()) return;
+            JekyllAndHyde.currentTarget = setTarget();
+            setPlayerOutline(JekyllAndHyde.currentTarget, JekyllAndHyde.color);
+        }
+
         public static void trapperUpdate()
         {
             try
@@ -1015,12 +1180,17 @@ namespace TheOtherRoles.Patches {
             Medium.target = target;
         }
 
+        static bool mushroomSaboWasActive = false;
         static void morphlingAndCamouflagerUpdate() {
+            bool mushRoomSaboIsActive = Helpers.MushroomSabotageActive();
+            if (!mushroomSaboWasActive) mushroomSaboWasActive = mushRoomSaboIsActive;
+
             float oldCamouflageTimer = Camouflager.camouflageTimer;
             float oldMorphTimer = Morphling.morphTimer;
             Camouflager.camouflageTimer = Mathf.Max(0f, Camouflager.camouflageTimer - Time.fixedDeltaTime);
             Morphling.morphTimer = Mathf.Max(0f, Morphling.morphTimer - Time.fixedDeltaTime);
 
+            if (mushRoomSaboIsActive) return;
 
             // Camouflage reset and set Morphling look if necessary
             if (oldCamouflageTimer > 0f && Camouflager.camouflageTimer <= 0f) {
@@ -1031,9 +1201,25 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // If the MushRoomSabotage ends while Morph is still active set the Morphlings look to the target's look
+            if (mushroomSaboWasActive)
+            {
+                if (Morphling.morphTimer > 0f && Morphling.morphling != null && Morphling.morphTarget != null)
+                {
+                    PlayerControl target = Morphling.morphTarget;
+                    Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                }
+                if (Camouflager.camouflageTimer > 0)
+                {
+                    foreach (PlayerControl player in CachedPlayer.AllPlayers)
+                        player.setLook("", 6, "", "", "", "");
+                }
+            }
+
             // Morphling reset (only if camouflage is inactive)
             if (Camouflager.camouflageTimer <= 0f && oldMorphTimer > 0f && Morphling.morphTimer <= 0f && Morphling.morphling != null)
                 Morphling.resetMorph();
+            mushroomSaboWasActive = false;
         }
 
         /*public static void mimicAUpdate()
@@ -1089,6 +1275,78 @@ namespace TheOtherRoles.Patches {
             setPlayerOutline(BomberB.currentTarget, Palette.ImpostorRed);
         }
 
+        public static void akujoSetTarget()
+        {
+            if (Akujo.akujo == null || Akujo.akujo.Data.IsDead || CachedPlayer.LocalPlayer.PlayerControl != Akujo.akujo) return;
+            var untargetables = new List<PlayerControl>();
+            if (Akujo.honmei != null) untargetables.Add(Akujo.honmei);
+            if (Akujo.keeps != null) untargetables.AddRange(Akujo.keeps);
+            Akujo.currentTarget = setTarget(untargetablePlayers: untargetables);
+            if (Akujo.honmei == null || Akujo.keepsLeft > 0) setPlayerOutline(Akujo.currentTarget, Akujo.color);
+        }
+
+        public static void cupidUpdate()
+        {
+            if (Cupid.cupid == null || Cupid.cupid.Data.IsDead || CachedPlayer.LocalPlayer.PlayerControl != Cupid.cupid) return;
+            Cupid.timeLeft = (int)Math.Ceiling(Cupid.timeLimit - (DateTime.UtcNow - Cupid.startTime).TotalSeconds);
+
+            if (Cupid.timeLeft > 0)
+            {
+                if (Cupid.lovers1 == null || Cupid.lovers2 == null)
+                {
+                    if (HudManagerStartPatch.cupidTimeRemainingText != null)
+                    {
+                        HudManagerStartPatch.cupidTimeRemainingText.text = TimeSpan.FromSeconds(Cupid.timeLeft).ToString(@"mm\:ss");
+                    }
+                    HudManagerStartPatch.cupidTimeRemainingText.enabled = !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                      !MeetingHud.Instance &&
+                      !ExileController.Instance;
+                }
+                else HudManagerStartPatch.cupidTimeRemainingText.enabled = false;
+            }
+            else if (Cupid.timeLeft <= 0)
+            {
+                if (Cupid.lovers1 == null || Cupid.lovers2 == null)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CupidSuicide, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Cupid.cupid.PlayerId);
+                    writer.Write(false);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.cupidSuicide(Cupid.cupid.PlayerId, false);
+                }
+            }
+        }
+
+        public static void akujoUpdate()
+        {
+            if (Akujo.akujo == null || Akujo.akujo.Data.IsDead || CachedPlayer.LocalPlayer.PlayerControl != Akujo.akujo) return;
+            Akujo.timeLeft = (int)Math.Ceiling(Akujo.timeLimit - (DateTime.UtcNow - Akujo.startTime).TotalSeconds);
+            if (Akujo.timeLeft > 0)
+            {
+                if (Akujo.honmei == null)
+                {
+                    if (HudManagerStartPatch.akujoTimeRemainingText != null)
+                    {
+                        HudManagerStartPatch.akujoTimeRemainingText.text = TimeSpan.FromSeconds(Akujo.timeLeft).ToString(@"mm\:ss");
+                    }
+                    HudManagerStartPatch.akujoTimeRemainingText.enabled = !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                      !MeetingHud.Instance &&
+                      !ExileController.Instance;
+                }
+                else HudManagerStartPatch.akujoTimeRemainingText.enabled = false;
+            }
+            else if (Akujo.timeLeft <= 0)
+            {
+                if (Akujo.honmei == null)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSuicide, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Akujo.akujo.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.akujoSuicide(Akujo.akujo.PlayerId);
+                }
+            }
+        }
+
         public static void bomberAUpdate()
         {
             if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
@@ -1110,6 +1368,7 @@ namespace TheOtherRoles.Patches {
         public static void ninjaUpdate()
         {
             if (Ninja.ninja == null) return;
+            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive()) Ninja.ninja.setDefaultLook();
             if (Ninja.stealthed && Ninja.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl)
             {
                 MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
@@ -1123,7 +1382,8 @@ namespace TheOtherRoles.Patches {
         public static void sprinterUpdate()
         {
             if (Sprinter.sprinter == null) return;
-            if (Sprinter.sprinting && Sprinter.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Sprinter.sprinter == CachedPlayer.LocalPlayer.PlayerControl)
+            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive()) Sprinter.sprinter.setDefaultLook();
+            if (Sprinter.sprinting && Sprinter.invisibleTimer <= 0 && Sprinter.sprinter == CachedPlayer.LocalPlayer.PlayerControl)
             {
                 MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
                 invisibleWriter.Write(Sprinter.sprinter.PlayerId);
@@ -1181,7 +1441,7 @@ namespace TheOtherRoles.Patches {
         {
             if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
             {
-                if (FortuneTeller.fortuneTeller == null)
+                if (FortuneTeller.fortuneTeller == null || FortuneTeller.fortuneTeller.Data.IsDead)
                 {
                     foreach (Arrow arrows in FortuneTeller.arrows) arrows.arrow.SetActive(false);
                     return;
@@ -1547,6 +1807,8 @@ namespace TheOtherRoles.Patches {
                 morphlingAndCamouflagerUpdate();
                 // Lawyer
                 lawyerUpdate();
+                // Teleporter
+                teleporterSetTarget();
                 // Pursuer
                 pursuerSetTarget();
                 // Bomber
@@ -1582,6 +1844,17 @@ namespace TheOtherRoles.Patches {
                 // Moriarty
                 moriartySetTarget();
                 moriartyUpdate();
+                // Cupid
+                cupidSetTarget();
+                cupidUpdate();
+                // Plague Doctor
+                plagueDoctorSetTarget();
+                plagueDoctorUpdate();
+                // Jekyll and Hyde
+                jekyllAndHydeSetTarget();
+                // Akujo
+                akujoSetTarget();
+                akujoUpdate();
                 //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
@@ -1622,7 +1895,7 @@ namespace TheOtherRoles.Patches {
     class PlayerPhysicsWalkPlayerToPatch {
         private static Vector2 offset = Vector2.zero;
         public static void Prefix(PlayerPhysics __instance) {
-            bool correctOffset = Camouflager.camouflageTimer <= 0f && (__instance.myPlayer == Mini.mini ||  (Morphling.morphling != null && __instance.myPlayer == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
+            bool correctOffset = Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive() && (__instance.myPlayer == Mini.mini ||  (Morphling.morphling != null && __instance.myPlayer == Morphling.morphling && Morphling.morphTarget == Mini.mini && Morphling.morphTimer > 0f)
                  || (MimicA.mimicA != null && __instance.myPlayer == MimicA.mimicA && MimicA.isMorph && MimicK.mimicK != null && MimicK.mimicK == Mini.mini));
             correctOffset = correctOffset && !(Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f) && !(Mini.mini == MimicA.mimicA && MimicA.isMorph) && !(Mini.mini == MimicK.mimicK && MimicK.victim != null);
             if (correctOffset) {
@@ -1730,7 +2003,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate)
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate || target == JekyllAndHyde.jekyllAndHyde)
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1742,6 +2015,22 @@ namespace TheOtherRoles.Patches {
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
                     otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+            }
+
+            // Cupid and Cupid Lovers suicide
+            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (target == Cupid.lovers1 || target == Cupid.lovers2))
+            {
+                PlayerControl otherLover = target == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
+                if (otherLover != null && !otherLover.Data.IsDead)
+                {
+                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
+                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
+                {
+                    Cupid.cupid.MurderPlayer(Cupid.cupid, MurderResultFlags.Succeeded);
+                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
                 }
             }
 
@@ -1776,7 +2065,7 @@ namespace TheOtherRoles.Patches {
             // Show flash on bait kill to the killer if enabled
             if (Bait.bait != null && target == Bait.bait && Bait.showKillFlash && __instance != Bait.bait && __instance == CachedPlayer.LocalPlayer.PlayerControl)
             {
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+                Helpers.showFlash(new Color(204f / 255f, 102f / 255f, 0f / 255f));
             }
 
             // Ninja penalize
@@ -1793,6 +2082,13 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
                 SerialKiller.isCountDown = true;
                 //HudManagerStartPatch.serialKillerButton.isEffectActive = true;
+            }
+
+            if (JekyllAndHyde.jekyllAndHyde != null && CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && __instance == JekyllAndHyde.jekyllAndHyde && target != JekyllAndHyde.jekyllAndHyde)
+            {
+                JekyllAndHyde.counter++;
+                if (JekyllAndHyde.counter >= JekyllAndHyde.numberToWin) JekyllAndHyde.triggerWin = true;
+                HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
             }
 
             // Trapper peforms normal kills
@@ -1860,10 +2156,51 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Akujo Lovers trigger suicide
+            if ((Akujo.akujo != null && target ==  Akujo.akujo) || (Akujo.honmei != null && target == Akujo.honmei))
+            {
+                PlayerControl akujoPartner = target == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
+                if (akujoPartner != null && !akujoPartner.Data.IsDead)
+                {
+                    akujoPartner.MurderPlayer(akujoPartner, MurderResultFlags.Succeeded);
+                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+            }
+
             // Evil Tracker see flash
             if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
             {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+            }
+
+            // Plague Doctor infect killer
+            if (PlagueDoctor.plagueDoctor != null && target == PlagueDoctor.plagueDoctor && PlagueDoctor.infectKiller)
+            {
+                byte targetId = __instance.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
+                writer.Write(targetId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.plagueDoctorInfected(targetId);
+
+                // Force Plague Doctor trigger victory condition if the killer is the last one that is not infected
+                bool winFlag = true;
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    if (p == PlagueDoctor.plagueDoctor) continue;
+                    if (!PlagueDoctor.infected.ContainsKey(p.PlayerId))
+                    {
+                        winFlag = false;
+                        break;
+                    }
+                }
+
+                if (winFlag)
+                {
+                    MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                    RPCProcedure.plagueDoctorWin();
+                }
             }
 
             // Mimic(Killer) morph into victim
@@ -2063,11 +2400,11 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate)
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate || __instance == JekyllAndHyde.jekyllAndHyde)
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile
-            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller == null && CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.nekoKabocha)
+            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller == null && NekoKabocha.otherKiller == null && CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.nekoKabocha)
             {
                 if (NekoKabocha.revengeExile)
                 {
@@ -2110,10 +2447,55 @@ namespace TheOtherRoles.Patches {
             if ((Lovers.lover1 != null && __instance == Lovers.lover1) || (Lovers.lover2 != null && __instance == Lovers.lover2)) {
                 PlayerControl otherLover = __instance == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
+                    if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover; // Can put other non-null values here
                     otherLover.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
 
+            }
+
+            // Cupid and Cupid Lovers suicide
+            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (__instance == Cupid.lovers1 || __instance == Cupid.lovers2))
+            {
+                PlayerControl otherLover = __instance == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
+                if (otherLover != null && !otherLover.Data.IsDead)
+                {
+                    if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover;
+                    otherLover.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
+                {
+                    Cupid.cupid.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
+                }
+
+                if (MeetingHud.Instance && otherLover != null)
+                {
+                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                    {
+                        if (pva.VotedFor != otherLover.PlayerId) continue;
+                        pva.UnsetVote();
+                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                        if (!voteAreaPlayer.AmOwner) continue;
+                        MeetingHud.Instance.ClearVote();
+                    }
+
+                    if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
+                    {
+                        foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                        {
+                            if (pva.VotedFor != Cupid.cupid.PlayerId) continue;
+                            pva.UnsetVote();
+                            var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                            if (!voteAreaPlayer.AmOwner) continue;
+                            MeetingHud.Instance.ClearVote();
+                        }
+                    }
+
+                    if (AmongUsClient.Instance.AmHost)
+                        MeetingHud.Instance.CheckForEndVoting();
+                }
             }
 
             // Other Mimic suicide
@@ -2158,6 +2540,32 @@ namespace TheOtherRoles.Patches {
                     foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
                     {
                         if (pva.VotedFor != otherBomber.PlayerId) continue;
+                        pva.UnsetVote();
+                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                        if (!voteAreaPlayer.AmOwner) continue;
+                        MeetingHud.Instance.ClearVote();
+                    }
+
+                    if (AmongUsClient.Instance.AmHost)
+                        MeetingHud.Instance.CheckForEndVoting();
+                }
+            }
+
+            // Akujo Partner suicide
+            if ((Akujo.akujo != null && Akujo.akujo == __instance) || (Akujo.honmei != null && Akujo.honmei == __instance))
+            {
+                PlayerControl akujoPartner = __instance == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
+                if (akujoPartner != null && !akujoPartner.Data.IsDead)
+                {
+                    akujoPartner.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.Suicide);
+                }
+
+                if (MeetingHud.Instance && akujoPartner != null)
+                {
+                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                    {
+                        if (pva.VotedFor != akujoPartner.PlayerId) continue;
                         pva.UnsetVote();
                         var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
                         if (!voteAreaPlayer.AmOwner) continue;

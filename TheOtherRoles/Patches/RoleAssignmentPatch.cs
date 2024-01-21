@@ -137,6 +137,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Akujo, CustomOptionHolder.akujoSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.PlagueDoctor, CustomOptionHolder.plagueDoctorSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.JekyllAndHyde, CustomOptionHolder.jekyllAndHydeSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Cupid, CustomOptionHolder.cupidSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -575,7 +576,7 @@ namespace TheOtherRoles.Patches {
                 impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor || x == NekoKabocha.nekoKabocha);
                 if (MimicK.ifOneDiesBothDie) impPlayer.RemoveAll(y => y == MimicK.mimicK || y == MimicA.mimicA);
                 if (BomberA.ifOneDiesBothDie) impPlayer.RemoveAll(z => z == BomberA.bomberA || z == BomberB.bomberB);
-                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller || x == Akujo.akujo);
+                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller || x == Akujo.akujo || x == Cupid.cupid);
 
                 if (isEvilLover) firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, impPlayer);
                 else firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer);
@@ -716,7 +717,7 @@ namespace TheOtherRoles.Patches {
             {
                 var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
                 crewPlayerMadmate.RemoveAll(x => x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
-                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch);
+                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter);
 
                 // Always remember to remove the Mad Sheriff if Deputy is assigned
                 if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);

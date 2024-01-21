@@ -10,6 +10,15 @@ using TheOtherRoles.Utilities;
 using System.Linq;
 
 namespace TheOtherRoles.Patches {
+    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
+    public static class GameStartManagerUpdatePatch
+    {
+        public static void Prefix(GameStartManager __instance)
+        {
+            __instance.MinPlayers = 1;
+        }
+    }
+
     public class GameStartManagerPatch  {
         public static Dictionary<int, PlayerVersion> playerVersions = new Dictionary<int, PlayerVersion>();
         public static float timer = 600f;
@@ -128,7 +137,7 @@ namespace TheOtherRoles.Patches {
                             __instance.GameStartText.text = String.Empty;
                         }
                         else {
-                            __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
+                            __instance.GameStartText.text = string.Format(ModTranslation.getString("startingTimer"), (int)startingTimer + 1);
                             if (startingTimer <= 0) {
                                 __instance.GameStartText.text = String.Empty;
                             }
