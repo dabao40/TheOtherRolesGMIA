@@ -653,7 +653,7 @@ namespace TheOtherRoles.Patches {
                     }
                     else
                     {
-                        // ¥Ç©`¥¿¤¬Ÿo¤¤ˆöºÏ¤Ï×÷³É¤¹¤ë
+                        // ãƒ‡ãƒ¼ã‚¿ãŒç„¡ã„å ´åˆã¯ä½œæˆã™ã‚‹
                         if (!PlagueDoctor.progress.ContainsKey(p.PlayerId))
                         {
                             PlagueDoctor.progress[p.PlayerId] = 0f;
@@ -686,7 +686,7 @@ namespace TheOtherRoles.Patches {
                             {
                                 PlagueDoctor.progress[target.PlayerId] += Time.fixedDeltaTime;
 
-                                // Ëû¤Î¥¯¥é¥¤¥¢¥ó¥È¤ËßMĞĞ×´›r¤òÍ¨Öª¤¹¤ë
+                                // ä»–ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€²è¡ŒçŠ¶æ³ã‚’é€šçŸ¥ã™ã‚‹
                                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, Hazel.SendOption.Reliable, -1);
                                 writer.Write(target.PlayerId);
                                 writer.Write(PlagueDoctor.progress[target.PlayerId]);
@@ -1108,7 +1108,7 @@ namespace TheOtherRoles.Patches {
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && Trap.hasTrappedPlayer() && !Trapper.meetingFlag)
                 {
-                    // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤ë¥×¥ì¥¤¥ä©`¤ò¾È³ö¤¹¤ë
+                    // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ã‚‹ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ•‘å‡ºã™ã‚‹
                     foreach (var trap in Trap.traps)
                     {
                         if (trap.Value.trap == null || !trap.Value.isActive) return;
@@ -1404,7 +1404,7 @@ namespace TheOtherRoles.Patches {
                     if (p.Data.IsDead) continue;
                     var fortuneTeller = CachedPlayer.LocalPlayer.PlayerControl;
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
-                    // ÕÏº¦ÎïÅĞ¶¨
+                    // éšœå®³ç‰©åˆ¤å®š
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
                     if (!anythingBetween && distance <= FortuneTeller.distance && FortuneTeller.progress[p.PlayerId] < FortuneTeller.duration)
                     {
@@ -1449,13 +1449,13 @@ namespace TheOtherRoles.Patches {
             }
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
-                // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+                // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
                 FortuneTeller.updateTimer -= Time.fixedDeltaTime;
 
-                // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+                // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
-                    // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                    // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                     foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
                         if (arrow1?.arrow != null)
@@ -1465,7 +1465,7 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-                    // ArrowÒ»ÓE
+                    // Arrowä¸€è¦§
                     FortuneTeller.arrows = new List<Arrow>();
 
                     if (!FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
@@ -1478,7 +1478,7 @@ namespace TheOtherRoles.Patches {
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
 
-                    // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                    // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                     FortuneTeller.updateTimer = 1f;
                 }
                 else
@@ -1728,6 +1728,11 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void Postfix(PlayerControl __instance) {
+
+            if (GameStates.IsLobby)
+            {
+                Modules.CustomName.ApplySuffix();
+            }
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
 
             // Mini and Morphling shrink
@@ -2094,17 +2099,17 @@ namespace TheOtherRoles.Patches {
             // Trapper peforms normal kills
             if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && __instance == Trapper.trapper)
             {
-                if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤ëŒÏó¤ò¥­¥ë¤·¤¿ˆöºÏ¤Î¥Ü©`¥Ê¥¹
+                if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ã‚‹å¯¾è±¡ã‚’ã‚­ãƒ«ã—ãŸå ´åˆã®ãƒœãƒ¼ãƒŠã‚¹
                 {
                     Trapper.trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - Trapper.bonusTime;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown - Trapper.bonusTime;
                 }
-                else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // ¥È¥é¥Ã¥×¥­¥ë¤·¤¿ˆöºÏ¤Î¥Ú¥Ê¥ë¥Æ¥£
+                else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // ãƒˆãƒ©ãƒƒãƒ—ã‚­ãƒ«ã—ãŸå ´åˆã®ãƒšãƒŠãƒ«ãƒ†ã‚£
                 {
                     Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown;
                 }
-                else // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤Ê¤¤ŒÏó¤òÍ¨³£¥­¥ë¤·¤¿ˆöºÏ¤Ï¥Ú¥Ê¥ë¥Æ¥£©`¤òÊÜ¤±¤ë
+                else // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ãªã„å¯¾è±¡ã‚’é€šå¸¸ã‚­ãƒ«ã—ãŸå ´åˆã¯ãƒšãƒŠãƒ«ãƒ†ã‚£ãƒ¼ã‚’å—ã‘ã‚‹
                 {
                     Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
