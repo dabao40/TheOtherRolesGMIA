@@ -1729,10 +1729,7 @@ namespace TheOtherRoles.Patches {
 
         public static void Postfix(PlayerControl __instance) {
 
-            if (GameStates.IsLobby)
-            {
-                Modules.CustomName.ApplySuffix();
-            }
+            Modules.CustomName.ApplySuffix();
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
 
             // Mini and Morphling shrink

@@ -32,7 +32,6 @@ public static class DevManager
 
         DevUserList.Add(new(code: "farwig#2804", color: "#FFFFE0", tag: "开发者Among us"));
         DevUserList.Add(new(code: "breathzany#4350", color: "#FCCE03FF", tag: "开发者Imp11"));
-        //DevUserList.Add(new(code: "sofaagile#3120", color: "null", tag: "梦初私服提供者:天寸"));  (天寸不知道能不能同意加所以先注释掉）
         //  空白的例子   DevUserList.Add(new(code: "xxxxxx#0000", color: "#000000", tag: ""));
 
 
