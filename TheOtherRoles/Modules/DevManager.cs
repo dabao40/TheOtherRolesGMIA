@@ -29,9 +29,9 @@ public static class DevManager
     public static List<DevUser> DevUserList = new();
     public static void Init()
     {
-
-        DevUserList.Add(new(code: "farwig#2804", color: "#FFFFE0", tag: "开发者Among us"));
-        DevUserList.Add(new(code: "breathzany#4350", color: "#FCCE03FF", tag: "开发者Imp11"));
+        DevUserList.Add(new(code: "breathzany#4350", color: "#FCCE03FF", tag: ModTranslation.getString("devimp11")));
+        DevUserList.Add(new(code: "farwig#2804", color: "#FFFFE0", tag: ModTranslation.getString("devau")));
+        DevUserList.Add(new(code: "likebug#3428", color: "#5f1d2e", tag: ModTranslation.getString("devasakuna")));
         //  空白的例子   DevUserList.Add(new(code: "xxxxxx#0000", color: "#000000", tag: ""));
 
 

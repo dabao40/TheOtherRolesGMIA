@@ -3853,6 +3853,18 @@
         "0": "Cupid Activate Shield",
         "13": "\u5f00\u542f\u4e18\u6bd4\u7279\u66ff\u6b7b\u62a4\u76fe"
     },
+    "devimp11": {
+        "0": "Developer Imp11",
+        "13": "\u5f00\u53d1\u8005Imp11"
+    },
+    "devau": {
+        "0": "Developer Among us",
+        "13": "\u5f00\u53d1\u8005Among us"
+    },
+    "devasakuna": {
+        "0": "Developer Sakuna",
+        "13": "\u5f00\u53d1\u8005Sakuna"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "13": "\u9c91\u9c7c\u7ea2"
