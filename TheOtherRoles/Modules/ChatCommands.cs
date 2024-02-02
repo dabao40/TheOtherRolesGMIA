@@ -40,7 +40,7 @@ namespace TheOtherRoles.Modules {
                 if (text.ToLower().StartsWith("/help"))
                 {
                     __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "Help Command\nIf you are host,you can use /kick and /ban\nFor Example,You can use '/kick Tester' to kick player Tester.\nAlso You can use '/ban Tester' to ban Player 'Tester'");
-                    __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "If you are not host,\nyou can use /tp to teleport yourself to somebody.For Example,You can use '/tp tester' to teleport to player 'Tester' after you died.");
+                    __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "If you are not host,\nyou can use /tp to teleport yourself to somebody.For Example,You can use '/tp tester' to teleport to player 'Tester' after you died.(Host Also)");
                     handled = true;
 
                 }
