@@ -31,7 +31,7 @@ public static class DevManager
     {
         DevUserList.Add(new(code: "breathzany#4350", color: "#FCCE03FF", tag: ModTranslation.getString("devimp11")));
         DevUserList.Add(new(code: "farwig#2804", color: "#FFFFE0", tag: ModTranslation.getString("devau")));
-        DevUserList.Add(new(code: "likebug#3428", color: "#5f1d2e", tag: ModTranslation.getString("devasakuna")));
+        DevUserList.Add(new(code: "likebug#3428", color: "#06fcc6", tag: ModTranslation.getString("devasukuna")));
         //  空白的例子   DevUserList.Add(new(code: "xxxxxx#0000", color: "#000000", tag: ""));
 
 
