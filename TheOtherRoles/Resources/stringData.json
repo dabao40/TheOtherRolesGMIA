@@ -1,6 +1,7 @@
 {
     "torSettings": {
         "0": "The Other Roles Settings",
+        "11": "The Other Roles\u8a2d\u5b9a",
         "13": "The Other Roles \u8bbe\u7f6e"
     },
     "preset1": {
@@ -54,226 +55,294 @@
     },
     "modifiersCountMin": {
         "0": "Minimum Modifiers",
+        "11": "\u6700\u5c0f\u5c5e\u6027\u6570",
         "13": "\u6700\u5c0f\u526f\u804c\u4e1a\u6570"
     },
     "modifiersCountMax": {
         "0": "Maximum Modifiers",
+        "11": "\u6700\u5927\u5c5e\u6027\u6570",
         "13": "\u6700\u5927\u526f\u804c\u4e1a\u6570"
+    },
+    "crewmateFill": {
+        "0": "Fill: ",
+        "13": "\u586b\u5145\uff1a"
     },
     "maxNumberOfMeetings": {
         "0": "Number Of Meetings (excluding Mayor meeting)",
+        "11": "\u4f1a\u8b70\u306e\u56de\u6570\uff08\u5e02\u9577\u4f1a\u8b70\u3092\u9664\u304f\uff09",
         "13": "\u603b\u7d27\u6025\u4f1a\u8bae\u6570\uff08\u4e0d\u5305\u62ec\u5e02\u957f\u4f1a\u8bae\uff09"
     },
     "blockSkippingInEmergencyMeetings": {
         "0": "Block Skipping In Emergency Meetings",
+        "11": "\u7dca\u6025\u4f1a\u8b70\u3067\u306e\u30d6\u30ed\u30c3\u30af\u30b9\u30ad\u30c3\u30d7",
         "13": "\u4f1a\u8bae\u4e2d\u4e0d\u5141\u8bb8\u8df3\u8fc7\u4f1a\u8bae"
     },
     "noVoteIsSelfVote": {
         "0": "No Vote Is Self Vote",
+        "11": "\u7121\u6295\u7968\u306f\u81ea\u5df1\u6295\u7968",
         "13": "\u4e0d\u6295\u7968\u7b49\u540c\u4e8e\u6295\u7ed9\u81ea\u5df1"
     },
     "hidePlayerNames": {
         "0": "Hide Player Names",
+        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc\u540d\u306e\u975e\u8868\u793a",
         "13": "\u9690\u85cf\u73a9\u5bb6\u59d3\u540d"
     },
     "allowParallelMedBayScans": {
         "0": "Allow Parallel MedBay Scans",
+        "11": "\u30e1\u30c9\u30d9\u30fc\u4e26\u884c\u30b9\u30ad\u30e3\u30f3\u8a31\u53ef",
         "13": "\u5141\u8bb8\u540c\u65f6\u8fdb\u884c\u626b\u63cf"
     },
     "shieldFirstKill": {
         "0": "Shield Last Game First Kill",
+        "11": "\u30b7\u30fc\u30eb\u30c9\u306b\u3088\u308b\u30e9\u30b9\u30c8\u30b2\u30fc\u30e0\u30fb\u30d5\u30a1\u30fc\u30b9\u30c8\u30ad\u30eb",
         "13": "\u5c06\u62a4\u76fe\u7ed9\u4e88\u4e0a\u4e00\u8f6e\u88ab\u9996\u5200\u7684\u73a9\u5bb6"
     },
     "finishTasksBeforeHauntingOrZoomingOut": {
         "0": "Finish Tasks Before Haunting Or Zooming Out",
-        "13": "\u5728\u672a\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u524d\u4e0d\u53ef\u4ee5\u4f7f\u7528\u9b3c\u5f71\u60a0\u60a0\u53ca\u5343\u91cc\u773c"
+        "11": "\u30cf\u30f3\u30c8\u307e\u305f\u306f\u30ba\u30fc\u30e0\u30a2\u30a6\u30c8\u3059\u308b\u524d\u306b\u30bf\u30b9\u30af\u3092\u7d42\u4e86\u3059\u308b",
+        "13": "\u5728\u672a\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u524d\u4e0d\u53ef\u4ee5\u4f7f\u7528\u9b3c\u5f71\u5e7d\u5e7d\u53ca\u5343\u91cc\u773c"
     },
     "camsNightVision": {
         "0": "Cams Switch To Night Vision If Lights Are Off",
+        "11": "\u30e9\u30a4\u30c8\u304c\u6d88\u3048\u3066\u3044\u308b\u5834\u5408\u3001\u30ab\u30e0\u304c\u30ca\u30a4\u30c8\u30d3\u30b8\u30e7\u30f3\u306b\u5207\u308a\u66ff\u308f\u308b",
         "13": "\u5728\u706f\u5149\u88ab\u5173\u95ed\u65f6\u76d1\u63a7\u4f7f\u7528\u9ed1\u591c\u6a21\u5f0f"
     },
     "camsNoNightVisionIfImpVision": {
         "0": "Impostor Vision Ignores Night Vision Cams",
+        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u30d3\u30b8\u30e7\u30f3\u3067\u30ca\u30a4\u30c8\u30d3\u30b8\u30e7\u30f3\u30ab\u30e1\u30e9\u3092\u7121\u8996",
         "13": "\u62e5\u6709\u5185\u9b3c\u89c6\u91ce\u7684\u73a9\u5bb6\u65e0\u89c6\u9ed1\u591c\u6a21\u5f0f"
     },
     "additionalVents": {
         "0": "Additional Vents (Polus)",
+        "11": "\u8ffd\u52a0\u306e\u901a\u6c17\u53e3\uff08\u30dd\u30e9\u30b9\uff09",
         "13": "\u6ce2\u9c81\u65af\uff1a\u589e\u52a0\u989d\u5916\u7ba1\u9053\uff08\u8fd0\u8f93\u8239-\u4f1a\u8bae\u5ba4-\u6837\u672c\u5ba4\uff09"
     },
     "specimenVital": {
         "0": "Move Vitals To Specimen Room (Polus)",
+        "11": "\u30d0\u30a4\u30bf\u30eb\u3092\u6a19\u672c\u5ba4\u306b\u79fb\u52d5\uff08\u30dd\u30eb\u30b9\uff09",
         "13": "\u6ce2\u9c81\u65af\uff1a\u5c06\u751f\u547d\u68c0\u6d4b\u88c5\u7f6e\u79fb\u81f3\u6837\u672c\u5ba4"
     },
     "airshipLadder": {
         "0": "Additional Ladder (Airship)",
+        "11": "\u8ffd\u52a0\u306e\u306f\u3057\u3054\uff08\u98db\u884c\u8239\uff09",
         "13": "\u98de\u8247\uff1a\u589e\u52a0\u989d\u5916\u68af\u5b50\uff08\u4f1a\u8bae\u5ba4-\u95f4\u9699\u5ba4\uff09"
     },
     "airshipOptimize": {
         "0": "Optimize Map (Airship)",
+        "11": "\u30de\u30c3\u30d7\u306e\u6700\u9069\u5316\uff08\u98db\u884c\u8239\uff09",
         "13": "\u98de\u8247\uff1a\u4f18\u5316\u5730\u56fe"
     },
     "airshipAdditionalSpawn": {
         "0": "Additional Spawn (Airship)",
+        "11": "\u8ffd\u52a0\u30b9\u30dd\u30fc\u30f3\uff08\u98db\u884c\u8239\uff09",
         "13": "\u98de\u8247\uff1a\u989d\u5916\u51fa\u751f\u70b9"
+    },
+    "fungleElectrical": {
+        "0": "Additional Electrical (Fungle)",
+        "13": "\u771f\u83cc\u4e16\u754c\uff1a\u589e\u52a0\u7535\u529b\u7cfb\u7edf\uff08\u98df\u5802-\u5b9e\u9a8c\u5ba4-\u4e0a\u5f15\u64ce\uff09"
     },
     "randomGameStartPosition": {
         "0": "Random Spawn Location",
+        "11": "\u30e9\u30f3\u30c0\u30e0\u30b9\u30dd\u30fc\u30f3\u30ed\u30b1\u30fc\u30b7\u30e7\u30f3",
         "13": "\u968f\u673a\u51fa\u751f\u70b9"
     },
     "dynamicMap": {
         "0": "Play On A Random Map",
+        "11": "\u30e9\u30f3\u30c0\u30e0\u30de\u30c3\u30d7\u3067\u30d7\u30ec\u30a4",
         "13": "\u968f\u673a\u5730\u56fe\u73a9\u6cd5"
+    },
+    "dynamicMapSeparateSettings": {
+        "0": "Use Random Map Setting Presets",
+        "13": "\u4f7f\u7528\u968f\u673a\u5730\u56fe\u8bbe\u7f6e"
     },
     "guesserGamemodeCrewNumber": {
         "0": "Number of Crew Guessers",
+        "11": "\u30af\u30eb\u30fc\u30b2\u30c3\u30b5\u30fc\u306e\u6570",
         "13": "\u8239\u5458\u9635\u8425\u8d4c\u602a\u6570\u91cf"
     },
     "guesserGamemodeNeutralNumber": {
         "0": "Number of Neutral Guessers",
+        "11": "\u4e2d\u7acb\u306e\u63a8\u6e2c\u8005\u6570",
         "13": "\u4e2d\u7acb\u9635\u8425\u8d4c\u602a\u6570\u91cf"
     },
     "guesserGamemodeImpNumber": {
         "0": "Number of Impostor Guessers",
+        "11": "\u507d\u8005\u63a8\u6e2c\u8005\u6570",
         "13": "\u5185\u9b3c\u9635\u8425\u8d4c\u602a\u6570\u91cf"
     },
     "guesserForceJackalGuesser": {
         "0": "Force Jackal Guesser",
+        "11": "\u30d5\u30a9\u30fc\u30b9\u30b8\u30e3\u30c3\u30ab\u30eb\u30b2\u30b6\u30fc",
         "13": "\u6307\u5b9a\u8c7a\u72fc\u6210\u4e3a\u8d4c\u602a"
     },
     "guesserForceThiefGuesser": {
         "0": "Force Thief Guesser",
+        "11": "\u30d5\u30a9\u30fc\u30b9\u30b7\u30fc\u30d5\u30b2\u30b6\u30fc",
         "13": "\u6307\u5b9a\u7a83\u8d3c\u6210\u4e3a\u8d4c\u602a"
     },
     "guesserGamemodeHaveModifier": {
         "0": "Guessers Can Have A Modifier",
+        "11": "Guesser\u306f\u4fee\u6b63\u3092\u6301\u3064\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u8d4c\u602a\u53ef\u4ee5\u62e5\u6709\u9644\u52a0\u804c\u4e1a"
     },
     "guesserGamemodeNumberOfShots": {
         "0": "Guesser Number Of Shots",
+        "11": "\u30b2\u30c3\u30b5\u30fc\u306e\u30b7\u30e7\u30c3\u30c8\u6570",
         "13": "\u8d4c\u602a\u6700\u591a\u731c\u6d4b\u6b21\u6570"
     },
     "guesserGamemodeHasMultipleShotsPerMeeting": {
         "0": "Guesser Can Shoot Multiple Times Per Meeting",
+        "11": "Guesser\u306f1\u56de\u306b\u3064\u304d\u8907\u6570\u56de\u6483\u3064\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u8d4c\u602a\u53ef\u5728\u540c\u4e00\u8f6e\u4f1a\u8bae\u591a\u6b21\u731c\u6d4b"
     },
     "guesserGamemodeKillsThroughShield": {
         "0": "Guesses Ignore The Medic Shield",
+        "11": "\u30b2\u30c3\u30b5\u30fc\u306f\u30e1\u30c7\u30a3\u30c3\u30af\u30b7\u30fc\u30eb\u30c9\u3092\u7121\u8996\u3059\u308b",
         "13": "\u8d4c\u602a\u8d4c\u6740\u65e0\u89c6\u533b\u751f\u62a4\u76fe"
     },
     "guesserGamemodeEvilCanKillSpy": {
         "0": "Evil Guesser Can Guess The Spy",
+        "11": "\u90aa\u60aa\u306a\u63a8\u6e2c\u8005\u306f\u30b9\u30d1\u30a4\u3092\u63a8\u6e2c\u3067\u304d\u308b",
         "13": "\u90aa\u6076\u8d4c\u602a\u53ef\u4ee5\u8d4c\u961f\u53cb\u4e3a\u5367\u5e95"
     },
     "guesserGamemodeCantGuessSnitchIfTaksDone": {
         "0": "Guesser Can't Guess Snitch When Tasks Completed",
+        "11": "\u30b2\u30c3\u30b5\u30fc\u306f\u30bf\u30b9\u30af\u5b8c\u4e86\u6642\u306b\u30b9\u30cb\u30c3\u30c1\u3092\u63a8\u6e2c\u3067\u304d\u306a\u3044",
         "13": "\u8d4c\u602a\u65e0\u6cd5\u731c\u6d4b\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u7684\u544a\u5bc6\u8005"
     },
     "hideNSeekMap": {
         "0": "Map",
+        "11": "\u30de\u30c3\u30d7",
         "13": "\u5730\u56fe"
     },
     "hideNSeekHunterCount": {
         "0": "Number Of Hunters",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u306e\u6570",
         "13": "\u730e\u4eba\u6570\u91cf"
     },
     "hideNSeekKillCooldown": {
         "0": "Kill Cooldown",
+        "11": "\u30ad\u30eb\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u51fb\u6740\u51b7\u5374"
     },
     "hideNSeekHunterVision": {
         "0": "Hunter Vision",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30d3\u30b8\u30e7\u30f3",
         "13": "\u730e\u4eba\u89c6\u91ce"
     },
     "hideNSeekHuntedVision": {
         "0": "Hunted Vision",
+        "11": "\u72e9\u3089\u308c\u308b\u30d3\u30b8\u30e7\u30f3",
         "13": "\u8eb2\u85cf\u8005\u89c6\u91ce"
     },
     "hideNSeekCommonTasks": {
         "0": "Common Tasks",
+        "11": "\u4e00\u822c\u7684\u306a\u30bf\u30b9\u30af",
         "13": "\u666e\u901a\u4efb\u52a1\u6570\u91cf"
     },
     "hideNSeekShortTasks": {
         "0": "Short Tasks",
+        "11": "\u77ed\u3044\u30bf\u30b9\u30af",
         "13": "\u77ed\u4efb\u52a1\u6570"
     },
     "hideNSeekLongTasks": {
         "0": "Long Tasks",
+        "11": "\u9577\u3044\u30bf\u30b9\u30af",
         "13": "\u957f\u4efb\u52a1\u6570"
     },
     "hideNSeekTimer": {
         "0": "Timer In Min",
+        "11": "\u5206\u30bf\u30a4\u30de\u30fc",
         "13": "\u6700\u5c11\u8eb2\u85cf\u65f6\u95f4"
     },
     "hideNSeekTaskWin": {
         "0": "Task Win Is Possible",
+        "11": "\u30bf\u30b9\u30af\u52dd\u5229\u306e\u53ef\u80fd\u6027",
         "13": "\u53ef\u4ee5\u4efb\u52a1\u83b7\u80dc"
     },
     "hideNSeekTaskPunish": {
         "0": "Finish Tasks Punish In Sec",
+        "11": "\u79d2\u5358\u4f4d\u3067\u7f70\u3092\u4e0e\u3048\u308b",
         "13": "\u5b8c\u6210\u4efb\u52a1\u6240\u51cf\u5c11\u7684\u8eb2\u85cf\u65f6\u95f4"
     },
     "hideNSeekCanSabotage": {
         "0": "Enable Sabotages",
+        "11": "\u59a8\u5bb3\u306e\u6709\u52b9\u5316",
         "13": "\u5141\u8bb8\u7834\u574f"
     },
     "hideNSeekHunterWaiting": {
         "0": "Time The Hunter Needs To Wait",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u306e\u5f85\u6a5f\u6642\u9593",
         "13": "\u5f00\u5c40\u730e\u4eba\u7acb\u6b63\u7b49\u5f85\u65f6\u95f4"
     },
     "hunterLightCooldown": {
         "0": "Hunter Light Cooldown",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30e9\u30a4\u30c8\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u730e\u4eba\u7167\u660e\u51b7\u5374\u65f6\u95f4"
     },
     "hunterLightDuration": {
         "0": "Hunter Light Duration",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30e9\u30a4\u30c8\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u730e\u4eba\u7167\u660e\u6301\u7eed\u65f6\u95f4"
     },
     "hunterLightVision": {
         "0": "Hunter Light Vision",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30e9\u30a4\u30c8\u306e\u8996\u754c",
         "13": "\u730e\u4eba\u6280\u80fd\u89c6\u91ce\u8303\u56f4"
     },
     "hunterLightPunish": {
         "0": "Hunter Light Punish In Sec",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30e9\u30a4\u30c8\u306e\u7f70\uff08\u79d2",
         "13": "\u4f7f\u7528\u7167\u660e\u6240\u51cf\u5c11\u7684\u8eb2\u85cf\u65f6\u95f4"
     },
     "hunterAdminCooldown": {
         "0": "Hunter Admin Cooldown",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u7ba1\u7406\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u730e\u4eba\u7ba1\u7406\u5730\u56fe\u6280\u80fd\u51b7\u5374"
     },
     "hunterAdminDuration": {
         "0": "Hunter Admin Duration",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u7ba1\u7406\u8005\u306e\u52b9\u679c\u6642\u9593",
         "13": "\u730e\u4eba\u7ba1\u7406\u5730\u56fe\u6301\u7eed\u65f6\u95f4"
     },
     "hunterAdminPunish": {
         "0": "Hunter Admin Punish In Sec",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u7ba1\u7406\u8005\u306e\u7f70(\u79d2)",
         "13": "\u7ba1\u7406\u5730\u56fe\u6240\u51cf\u5c11\u7684\u8eb2\u85cf\u65f6\u95f4"
     },
     "hunterArrowCooldown": {
         "0": "Hunter Arrow Cooldown",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30a2\u30ed\u30fc\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u730e\u4eba\u8ffd\u8e2a\u51b7\u5374\u65f6\u95f4"
     },
     "hunterArrowDuration": {
         "0": "Hunter Arrow Duration",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30a2\u30ed\u30fc\u6301\u7d9a\u6642\u9593",
         "13": "\u730e\u4eba\u8ffd\u8e2a\u6301\u7eed\u65f6\u95f4"
     },
     "hunterArrowPunish": {
         "0": "Hunter Arrow Punish In Sec",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30a2\u30ed\u30fc\u306e\u7f70\uff08\u79d2",
         "13": "\u4f7f\u7528\u8ffd\u8e2a\u6240\u51cf\u5c11\u7684\u8eb2\u85cf\u65f6\u95f4"
     },
     "huntedShieldCooldown": {
         "0": "Hunted Shield Cooldown",
+        "11": "\u30cf\u30f3\u30bf\u30fc\u30b7\u30fc\u30eb\u30c9\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u8eb2\u85cf\u8005\u65f6\u95f4\u4e4b\u76fe\u51b7\u5374\u65f6\u95f4"
     },
     "huntedShieldDuration": {
         "0": "Hunted Shield Duration",
+        "11": "Hunted Shield\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u8eb2\u85cf\u8005\u65f6\u95f4\u4e4b\u76fe\u6301\u7eed\u65f6\u95f4"
     },
     "huntedShieldRewindTime": {
         "0": "Hunted Rewind Time",
+        "11": "Hunted\u5dfb\u304d\u623b\u3057\u6642\u9593",
         "13": "\u8eb2\u85cf\u8005\u65f6\u95f4\u56de\u6eaf\u65f6\u957f"
     },
     "huntedShieldNumber": {
         "0": "Hunted Shield Number",
+        "11": "Hunted Shield\u6570",
         "13": "\u8eb2\u85cf\u8005\u65f6\u95f4\u4e4b\u76fe\u6570\u91cf"
     },
     "blockOriginal": {
@@ -283,14 +352,17 @@
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
+        "11": "<size=60%>\u30e2\u30c7\u30ea\u30f3\u30b0<color=#FCCE03FF>Eisbison</color>\u3001\n<color=#FCCE03FF>EndOfFile</color>\u3001\n<color=#FCCE03FF>Thunderstorm584</color>\u304c\u62c5\u5f53\u3001\n<color=#FCCE03FF>Mall\u00f6ris</color> & \n<color=#FCCE03FF>Gendelo</color>\u30c7\u30b6\u30a4\u30f3 \n<color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color></size>",
         "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color> & <color=#808080FF>\u91ce\u751f\u7684\u7334\u5b50\u54c8\u54c8\u54e5</color>\u7ffb\u8bd1</size>"
     },
     "contributorsCredentials": {
-        "0": "<size=60%> <color=#FCCE03FF>Special thanks to K3ndo & Smeggy</color> & <color=#FFFFE0FF>Among us</color></size>",
-        "13": "<size=60%> <color=#FCCE03FF>\u7279\u522b\u9e23\u8c22K3ndo & Smeggy</color> & <color=#FFFFE0FF>Among us</color></size>"
+        "0": "<size=60%> <color=#FCCE03FF>Special thanks to <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
+        "11": "<size=60%> <color=#FCCE03FF>\u30b9\u30da\u30b7\u30e3\u30eb\u30b5\u30f3\u30af\u30b9\uff1aK3ndo & Smeggy</color> & <color=#FFFFE0FF>Among us</color></size>",
+        "13": "<size=60%> <color=#FCCE03FF>\u7279\u522b\u9e23\u8c22<color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>"
     },
     "mainMenuCredentials": {
         "0": "Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color>",
+        "11": "<size=60%>\u30e2\u30c7\u30ea\u30f3\u30b0<color=#FCCE03FF>Eisbison</color>\u3001\n<color=#FCCE03FF>EndOfFile</color>\u3001<color=#FCCE03FF>Thunderstorm584</color>\u304c\u62c5\u5f53\u3001\n<color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u30c7\u30b6\u30a4\u30f3 \n<color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color></size>",
         "13": "\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u672c\u5bb6\u6a21\u7ec4\n\u7531<color=#FCCE03FF>Bavari</color>\u8fdb\u884c\u6309\u94ae\u5236\u4f5c\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236"
     },
     "mafia": {
@@ -595,18 +667,22 @@
     },
     "miniIntroDesc": {
         "0": "No one will harm you until you grow up",
+        "11": "\u5927\u4eba\u306b\u306a\u308b\u307e\u3067\u8ab0\u3082\u50b7\u3064\u3051\u306a\u3044",
         "13": "\u6ca1\u4eba\u80fd\u4f24\u5bb3\u4f60"
     },
     "miniShortDesc": {
         "0": "No one will harm you",
+        "11": "\u8ab0\u3082\u3042\u306a\u305f\u3092\u50b7\u3064\u3051\u306a\u3044",
         "13": "\u6ca1\u4eba\u80fd\u4f24\u5bb3\u4f60"
     },
     "miniGrowingUpDuration": {
         "0": "Mini Growing Up Duration",
+        "11": "\u30df\u30cb\u306e\u6210\u9577\u671f\u9593",
         "13": "\u8ff7\u4f60\u8239\u5458\u6210\u957f\u6240\u9700\u65f6\u95f4"
     },
     "miniGrowingUpInMeeting": {
         "0": "Mini Grows Up In Meeting",
+        "11": "\u30df\u30cb\u306f\u4f1a\u8b70\u3067\u80b2\u3064",
         "13": "\u8ff7\u4f60\u8239\u5458\u5728\u4f1a\u8bae\u4e0a\u6210\u957f"
     },
     "lovers": {
@@ -950,54 +1026,67 @@
     },
     "mayorCanSeeVoteColor": {
         "0": "Mayor Can See Vote Colors",
+        "11": "\u5e02\u9577\u306f\u6295\u7968\u306e\u8272\u3092\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u5e02\u957f\u80fd\u770b\u5230\u6295\u7968\u73a9\u5bb6\u7684\u989c\u8272"
     },
     "mayorTasksNeededToSeeVoteColors": {
         "0": "Completed Tasks Needed To See Vote Colors",
+        "11": "\u6295\u7968\u8272\u3092\u898b\u308b\u305f\u3081\u306b\u5fc5\u8981\u306a\u5b8c\u4e86\u3057\u305f\u30bf\u30b9\u30af",
         "13": "\u67e5\u770b\u6295\u7968\u73a9\u5bb6\u989c\u8272\u6240\u9700\u7684\u5df2\u5b8c\u6210\u4efb\u52a1"
     },
     "mayorMeetingButton": {
         "0": "Mobile Emergency Button",
+        "11": "\u30e2\u30d0\u30a4\u30eb\u7dca\u6025\u30dc\u30bf\u30f3",
         "13": "\u8fdc\u7a0b\u7d27\u6025\u6309\u94ae"
     },
     "mayorMaxRemoteMeetings": {
         "0": "Number Of Remote Meetings",
+        "11": "\u9060\u9694\u4f1a\u8b70\u306e\u56de\u6570",
         "13": "\u8fdc\u7a0b\u7d27\u6025\u6309\u94ae\u6b21\u6570"
     },
     "mayorChooseSingleVote": {
         "0": "Mayor Can Choose Single Vote",
+        "11": "\u5e02\u9577\u306f\u5358\u4e00\u6295\u7968\u3092\u9078\u629e\u53ef\u80fd",
         "13": "\u5e02\u957f\u53ef\u9009\u62e9\u5355\u7968\u5236"
     },
     "mayorOff": {
         "0": "Off",
+        "11": "\u30aa\u30d5",
         "13": "\u5173"
     },
     "mayorBeforeVoting": {
         "0": "On (Before Voting)",
+        "11": "\u30aa\u30f3\uff08\u6295\u7968\u524d\uff09",
         "13": "\u5f00\uff08\u6295\u7968\u524d\uff09"
     },
     "mayorUntilMeetingEnd": {
         "0": "On (Until Meeting Ends)",
+        "11": "\u30aa\u30f3\uff08\u4f1a\u8b70\u7d42\u4e86\u307e\u3067\uff09",
         "13": "\u5f00\uff08\u76f4\u81f3\u4f1a\u8bae\u7ed3\u675f\uff09"
     },
     "mayorEmergencyMeetingText": {
         "0": "Meeting",
+        "11": "\u4f1a\u8b70",
         "13": "\u7d27\u6025\u4f1a\u8bae"
     },
     "mayorEmergencyLeftText": {
         "0": "Emergency",
+        "11": "\u7dca\u6025",
         "13": "\u7d27\u6025\u4f1a\u8bae"
     },
     "mayorDoubleVote": {
         "0": "Double Vote: ",
+        "11": "\u30c0\u30d6\u30eb\u6295\u7968 ",
         "13": "\u6295\u4e24\u7968\uff1a"
     },
     "mayorDoubleVoteOn": {
         "0": "On ",
+        "11": "\u30aa\u30f3 ",
         "13": "\u5f00\u542f"
     },
     "mayorDoubleVoteOff": {
         "0": "Off",
+        "11": "\u30aa\u30d5",
         "13": "\u5173\u95ed"
     },
     "engineer": {
@@ -1057,34 +1146,42 @@
     },
     "sheriffDeputy": {
         "0": "Sheriff Has A Deputy",
+        "11": "\u4fdd\u5b89\u5b98\u306b\u306f\u4fdd\u5b89\u5b98\u4ee3\u7406\u304c\u3044\u308b",
         "13": "\u8b66\u957f\u6709\u6355\u5feb"
     },
     "deputyNumberOfHandcuffs": {
         "0": "Deputy Number Of Handcuffs",
+        "11": "\u4fdd\u5b89\u5b98\u4ee3\u7406\u306e\u624b\u9320\u6570",
         "13": "\u6355\u5feb\u624b\u94d0\u6b21\u6570"
     },
     "deputyHandcuffDuration": {
         "0": "Handcuff Duration",
+        "11": "\u624b\u9320\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u624b\u94d0\u6301\u7eed\u65f6\u95f4"
     },
     "deputyHandcuffCooldown": {
         "0": "Handcuff Cooldown",
+        "11": "\u624b\u9320\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u624b\u94d0\u51b7\u5374\u65f6\u95f4"
     },
     "deputyKnowsSheriff": {
         "0": "Sheriff And Deputy Know Each Other",
+        "11": "\u4fdd\u5b89\u5b98\u3068\u4fdd\u5b89\u5b98\u4ee3\u7406\u304c\u304a\u4e92\u3044\u3092\u77e5\u3063\u3066\u3044\u308b",
         "13": "\u8b66\u957f\u548c\u6355\u5feb\u4e92\u76f8\u8ba4\u8bc6"
     },
     "deputyGetsPromoted": {
         "0": "Deputy Gets Promoted To Sheriff",
+        "11": "\u4fdd\u5b89\u5b98\u4ee3\u7406\u304c\u4fdd\u5b89\u5b98\u306b\u6607\u9032\u3059\u308b",
         "13": "\u6355\u5feb\u53ef\u4ee5\u4e0a\u4f4d"
     },
     "deputyKeepsHandcuffs": {
         "0": "Deputy Keeps Handcuffs When Promoted",
+        "11": "\u526f\u4fdd\u5b89\u5b98\u304c\u6607\u9032\u3057\u3066\u3082\u624b\u9320\u3092\u4fdd\u6301\u3059\u308b",
         "13": "\u6355\u5feb\u4e0a\u4f4d\u65f6\u4fdd\u7559\u624b\u94d0"
     },
     "deputyStopsGameEnd": {
         "0": "Deputy Stops Game End",
+        "11": "\u4fdd\u5b89\u5b98\u4ee3\u7406\u304c\u30b2\u30fc\u30e0\u7d42\u4e86\u3092\u6b62\u3081\u308b",
         "13": "\u6355\u5feb\u963b\u6b62\u6e38\u620f\u7ed3\u675f"
     },
     "deputy": {
@@ -1104,22 +1201,27 @@
     },
     "deputyOff": {
         "0": "Off",
+        "11": "\u30aa\u30d5",
         "13": "\u5173\u95ed"
     },
     "deputyOnImmediately": {
         "0": "On (Immediately)",
+        "11": "\u30aa\u30f3\uff08\u5373\u6642\uff09",
         "13": "\u5f00\u542f\uff08\u7acb\u5373\uff09"
     },
     "deputyOnAfterMeeting": {
         "0": "On (After Meeting)",
+        "11": "\u30aa\u30f3\uff08\u4f1a\u8b70\u5f8c\uff09",
         "13": "\u5f00\u542f\uff08\u4f1a\u8bae\u540e\uff09"
     },
     "deputyIntroLine": {
         "0": "\nYour Deputy is {0}",
+        "11": "\\\u3042\u306a\u305f\u306e\u4fdd\u5b89\u5b98\u4ee3\u7406\u306f\uff5b0\uff5d\u3067\u3059\u3002",
         "13": "\n\u4f60\u7684\u6355\u5feb\u662f {0}"
     },
     "sheriffIntroLine": {
         "0": "\nYour Sheriff is {0}",
+        "11": "\\\u3042\u306a\u305f\u306e\u4fdd\u5b89\u5b98\u306f{0}\u3067\u3059\u3002",
         "13": "\n\u4f60\u7684\u8b66\u957f\u662f {0}"
     },
     "lighter": {
@@ -1314,14 +1416,17 @@
     },
     "medicInstantly": {
         "0": "Instantly",
+        "11": "\u77ac\u6642\u306b",
         "13": "\u7acb\u5373\u751f\u6548"
     },
     "medicVisibleAfterMeeting": {
         "0": "Instantly, Visible\nAfter Meeting",
+        "11": "\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u306e\u5f8c",
         "13": "\u7acb\u5373\u751f\u6548\n\uff0c\u4f1a\u8bae\u540e\u663e\u793a"
     },
     "medicAftermeeting": {
         "0": "After Meeting",
+        "11": "\u4f1a\u8b70\u306e\u5f8c",
         "13": "\u4f1a\u8bae\u540e\u751f\u6548"
     },
     "medicReport": {
@@ -1391,14 +1496,17 @@
     },
     "swapperConfirmSwap": {
         "0": "Confirm Swap",
+        "11": "\u30b9\u30ef\u30c3\u30d7\u78ba\u8a8d",
         "13": "\u786e\u8ba4\u6362\u7968"
     },
     "swapperSwapping": {
         "0": "Swapping!",
+        "11": "\u30b9\u30ef\u30c3\u30d7",
         "13": "\u4ea4\u6362\u4e2d!"
     },
     "swapperRemainingSwaps": {
         "0": "Swaps: {0}",
+        "11": "\u30b9\u30ef\u30c3\u30d7 {0}",
         "13": "\u5269\u4f59\u6b21\u6570: {0}"
     },
     "seer": {
@@ -1588,18 +1696,22 @@
     },
     "snitchAlive": {
         "0": "Snitch is alive: ",
+        "11": "\u30b9\u30cb\u30c3\u30c1\u306f\u751f\u304d\u3066\u3044\u308b ",
         "13": "\u544a\u5bc6\u8005\u5b58\u6d3b\uff1a"
     },
     "snitchDead": {
         "0": "Snitch is dead!",
+        "11": "\u30b9\u30cb\u30c3\u30c1\u306f\u6b7b\u3093\u3060",
         "13": "\u544a\u5bc6\u8005\u6b7b\u4e86\uff01"
     },
     "snitchOutput": {
         "0": "Bad alive roles in game: \n \n",
+        "11": "\u30b2\u30fc\u30e0\u5185\u3067\u751f\u304d\u3066\u3044\u308b\u60aa\u3044\u5f79 \\\"\u30b9\u30cb\u30c3\u30c1\u306f\u6b7b\u3093\u3060",
         "13": "\u90aa\u6076\u5b58\u6d3b\u804c\u4e1a\uff1a\n \n"
     },
     "snitchLastSeen": {
         "0": ", was last seen ",
+        "11": "\u6700\u5f8c\u306b\u898b\u305f\u306e\u306f ",
         "13": "\uff0c\u6700\u540e\u88ab\u53d1\u73b0\u4e8e"
     },
     "spy": {
@@ -1694,6 +1806,7 @@
     },
     "securityGuardCamButton": {
         "0": "SECURITY",
+        "11": "\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3",
         "13": "\u4fdd\u5b89\u5ba4"
     },
     "bait": {
@@ -1728,6 +1841,7 @@
     },
     "madmate": {
         "0": "Madmate",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8",
         "13": "\u53db\u5f92"
     },
     "madmateIntroDesc": {
@@ -1851,94 +1965,117 @@
     },
     "mediumSheriffSuicide": {
         "0": "Yikes, that Sheriff shot backfired.",
+        "11": "\u30e4\u30d0\u3044\u3001\u4fdd\u5b89\u5b98\u306e\u30b7\u30e5\u30fc\u30c8\u304c\u88cf\u76ee\u306b\u51fa\u305f\u3002",
         "13": "\u554a\u5440\uff01\u90a3\u4e2a\u8b66\u957f\u8d70\u706b\u4e86\uff01"
     },
     "mediumWarlockSuicide": {
         "0": "MAYBE I cursed the person next to me and killed myself. Oops.",
+        "11": "\u96a3\u306e\u4eba\u3092\u546a\u3063\u3066\u81ea\u6bba\u3057\u305f\u306e\u304b\u3082\u3057\u308c\u306a\u3044\u3002\u304a\u3063\u3068\u3002",
         "13": "\u6211\u597d\u50cf\u8bc5\u5492\u4e86\u6211\u65c1\u8fb9\u7684\u4eba\u7136\u540e\u628a\u6211\u6740\u4e86"
     },
     "mediumThiefSuicide": {
         "0": "I tried to steal the gun from their pocket, but they were just happy to see me.",
+        "11": "\u79c1\u306f\u76f8\u624b\u306e\u30dd\u30b1\u30c3\u30c8\u304b\u3089\u9283\u3092\u76d7\u3082\u3046\u3068\u3057\u305f\u3051\u3069\u3001\u76f8\u624b\u306f\u79c1\u306b\u4f1a\u3048\u3066\u5b09\u3057\u304b\u3063\u305f\u3060\u3051\u3060\u3063\u305f\u3002",
         "13": "\u6211\u8bd5\u56fe\u4ece\u4ed6\u4eec\u7684\u53e3\u888b\u91cc\u5077\u8d70\u624b\u67aa\uff0c\u4f46\u662f\u4ed6\u4eec\u5f88\u9ad8\u5174\u89c1\u5230\u6211"
     },
     "mediumActiveLoverDies": {
         "0": "I wanted to get out of this toxic relationship anyways.",
+        "11": "\u3068\u306b\u304b\u304f\u3053\u306e\u6709\u5bb3\u306a\u95a2\u4fc2\u304b\u3089\u629c\u3051\u51fa\u3057\u305f\u304b\u3063\u305f\u3002",
         "13": "\u6211\u65e9\u5c31\u60f3\u6446\u8131\u4ed6\u7684\u675f\u7f1a\u4e86\uff01"
     },
     "mediumPassiveLoverSuicide": {
         "0": "The love of my life died, thus with a kiss I die.",
+        "11": "\u6700\u611b\u306e\u4eba\u304c\u6b7b\u306b\u3001\u3053\u3046\u3057\u3066\u79c1\u306f\u30ad\u30b9\u3067\u6b7b\u306c\u3002",
         "13": "\u6211\u4e00\u751f\u6700\u7231\u7684\u4eba\u79bb\u5f00\u4e86\u6211\uff0c\u56e0\u6b64\u6211\u543b\u4e86\u6211\u6700\u7231\u7684\u4eba\u540e\u79bb\u5f00\u4e86\u4eba\u4e16"
     },
     "mediumLawyerKilledByClient": {
         "0": "My client killed me. Do I still get paid?",
+        "11": "\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u304c\u79c1\u3092\u6bba\u3057\u305f\u3002\u79c1\u306f\u307e\u3060\u7d66\u6599\u3092\u3082\u3089\u3063\u3066\u3044\u308b\u306e\u3060\u308d\u3046\u304b\uff1f",
         "13": "\u6211\u7684\u5ba2\u6237\u628a\u6211\u6740\u4e86\uff0c\u6211\u8fd8\u80fd\u5f97\u5230\u62a5\u916c\u5417\uff1f"
     },
     "mediumJackalKillsSidekick": {
         "0": "First they sidekicked me, then they killed me. At least I don't need to do tasks anymore.",
+        "11": "\u6700\u521d\u306b\u6a2a\u53d6\u308a\u3055\u308c\u3001\u6b21\u306b\u6bba\u3055\u308c\u305f\u3002\u5c11\u306a\u304f\u3068\u3082\u3001\u3082\u3046\u4ed5\u4e8b\u3092\u3059\u308b\u5fc5\u8981\u306f\u306a\u3044\u3002",
         "13": "\u9996\u5148\u4ed6\u4eec\u628a\u6211\u62db\u52df\u4e86\uff0c\u5176\u6b21\u53c8\u628a\u6211\u6740\u4e86...\u81f3\u5c11\u6211\u4e0d\u7528\u518d\u505a\u4efb\u52a1\u4e86"
     },
     "mediumImpostorTeamkill": {
         "0": "I guess they confused me for the Spy, is there even one?",
+        "11": "\u5f7c\u3089\u306f\u79c1\u3092\u30b9\u30d1\u30a4\u3068\u52d8\u9055\u3044\u3057\u305f\u306e\u3060\u308d\u3046\u3002",
         "13": "\u4ed6\u4eec\u597d\u50cf\u628a\u6211\u8bef\u4ee5\u4e3a\u662f\u5367\u5e95\u4e86"
     },
     "mediumBodyCleaned": {
         "0": "Is my dead body some kind of art now or... aaand it's gone.",
+        "11": "\u79c1\u306e\u6b7b\u4f53\u306f\u82b8\u8853\u54c1\u306a\u306e\u304b\u3001\u305d\u308c\u3068\u3082...\u3002",
         "13": "\u6211\u7684\u5c38\u4f53\u597d\u50cf\u662f\u4e00\u79cd\u827a\u672f\u554a...\u4e0d\uff01\u5b83\u6d88\u5931\u4e86\uff01"
     },
     "mediumSoulPlayerPrefix": {
         "0": "{0}'s Soul:\n",
+        "11": "{0}\u306e\u9b42:{/netabare}",
         "13": "{0}\u7684\u7075\u9b42\uff1a\n"
     },
     "mediumSoulPlayerLighter": {
         "0": "lighter",
+        "11": "\u8efd\u3044",
         "13": "\u6d45\u8272"
     },
     "mediumSoulPlayerDarker": {
         "0": "darker",
+        "11": "\u6697\u3044",
         "13": "\u6df1\u8272"
     },
     "mediumAskPrefix": {
         "0": "When you asked, ",
+        "11": "\u3042\u306a\u305f\u304c\u5c0b\u306d\u305f\u3068\u304d ",
         "13": "\u5f53\u4f60\u8be2\u95ee\u7684\u65f6\u5019\uff0c"
     },
     "mediumPlural": {
         "0": "s",
+        "11": "[BLANK]",
         "13": "[BLANK]"
     },
     "mediumKiller": {
         "0": "killer",
+        "11": "\u30ad\u30e9\u30fc",
         "13": "\u6267\u5203\u8005"
     },
     "mediumPlayerUseVents": {
         "0": "player{0} who can use vents",
+        "11": "\u30d9\u30f3\u30c8\u3092\u4f7f\u3048\u308b\u30d7\u30ec\u30a4\u30e4\u30fc",
         "13": "\u540d\u73a9\u5bb6{0}\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1"
     },
     "mediumPlayer": {
         "0": "player",
+        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc",
         "13": "\u73a9\u5bb6"
     },
     "mediumIs": {
         "0": "is",
+        "11": "\u306f",
         "13": "\u662f"
     },
     "mediumAre": {
         "0": "are",
+        "11": "\u306f",
         "13": "\u662f"
     },
     "mediumPlayerNeutral": {
         "0": "player{0} who {1} neutral but cannot kill",
+        "11": "{1}\u7b2c\u4e09\u9663\u55b6\u3060\u304c\u6bba\u305b\u306a\u3044\u30d7\u30ec\u30a4\u30e4\u30fc{0}",
         "13": "\u540d\u73a9\u5bb6{0}{1}\u4e2d\u7acb\u4f46\u662f\u4e0d\u80fd\u51fb\u6740"
     },
     "mediumWas": {
         "0": "was",
+        "11": "\u3067\u3057\u305f",
         "13": "[BLANK]"
     },
     "mediumWere": {
         "0": "were",
+        "11": "\u3067\u3042\u3063\u305f",
         "13": "[BLANK]"
     },
     "mediumStillAlive": {
         "0": "{0} still alive",
+        "11": "{0}\u306f\u307e\u3060\u751f\u304d\u3066\u3044\u308b",
         "13": "\u8fd8\u5b58\u6d3b"
     },
     "lawyer": {
@@ -2321,10 +2458,12 @@
     },
     "divineMessageTeamImp": {
         "0": "{0} is an Impostor",
+        "11": "{0}\u306f\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3060",
         "13": "{0}\u662f\u4e2a\u5185\u9b3c"
     },
     "divineMessageTeamNeutral": {
         "0": "{0} is a Neutral",
+        "11": "{0}\u306f\u7b2c\u4e09\u9663\u55b6\u3060",
         "13": "{0}\u662f\u4e2a\u4e2d\u7acb"
     },
     "watcher": {
@@ -2454,78 +2593,97 @@
     },
     "modifiers": {
         "0": "Modifiers",
+        "11": "\u5c5e\u6027",
         "13": "\u526f\u804c\u4e1a"
     },
     "theOtherRolesSettings": {
         "0": "The Other Roles Settings",
+        "11": "TheOtherRoles\u306e\u8a2d\u5b9a",
         "13": "\u8d85\u591a\u804c\u4e1a\u8bbe\u5b9a"
     },
     "impostorRolesSettings": {
         "0": "Impostor Roles Settings",
+        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u5f79\u8077\u306e\u8a2d\u5b9a",
         "13": "\u5185\u9b3c\u804c\u4e1a\u8bbe\u5b9a"
     },
     "neutralRolesSettings": {
         "0": "Neutral Roles Settings",
+        "11": "\u4e2d\u7acb\u7684\u306a\u5f79\u5272\u306e\u8a2d\u5b9a",
         "13": "\u4e2d\u7acb\u804c\u4e1a\u8bbe\u5b9a"
     },
     "crewmateRolesSettings": {
         "0": "Crewmate Roles Settings",
+        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u306e\u5f79\u8077\u306e\u8a2d\u5b9a",
         "13": "\u8239\u5458\u804c\u4e1a\u8bbe\u5b9a"
     },
     "guesserSettings": {
         "0": "Guesser Mode Settings",
+        "11": "\u30b2\u30c3\u30b5\u30fc\u30e2\u30fc\u30c9\u8a2d\u5b9a",
         "13": "\u8d4c\u602a\u6a21\u5f0f\u8bbe\u5b9a"
     },
     "hideNSeekSettings": {
         "0": "Hide 'N Seek Settings",
+        "11": "\u304b\u304f\u308c\u3093\u307c\u306e\u8a2d\u5b9a",
         "13": "\u6349\u8ff7\u85cf\u8bbe\u5b9a"
     },
     "modifierSettings": {
         "0": "Modifier Settings",
+        "11": "\u30e2\u30c7\u30a3\u30d5\u30a1\u30a4\u30a2\u30fc\u306e\u8a2d\u5b9a",
         "13": "\u526f\u804c\u4e1a\u8bbe\u5b9a"
     },
     "pressTabForMore": {
         "0": "\n Press TAB or Page Number for more... ({0}/{1})",
+        "11": "\\TAB \u307e\u305f\u306f\u30da\u30fc\u30b8\u756a\u53f7\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044\u3002({0}/{1})",
         "13": "\n \u6309Tab\u952e\u67e5\u770b\u66f4\u591a... ({0}/{1})"
     },
     "page1": {
         "0": "Page 1: Vanilla Settings \n\n",
+        "11": "Page 1: \u30d0\u30cb\u30e9\u306e\u8a2d\u5b9a \uffe4\u30d0\u30cb\u30e9\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u4e00\u9875\uff1a\u539f\u7248\u8bbe\u7f6e \n\n"
     },
     "page2": {
         "0": "Page 2: The Other Roles Settings \n",
+        "11": "\u30da\u30fc\u30b82: \u4ed6\u306e\u30ed\u30fc\u30eb\u306e\u8a2d\u5b9a \uffe4\u30da\u30fc\u30b83:\u5f79\u8077\u3068\u5c5e\u6027\u306e\u30ec\u30fc\u30c8",
         "13": "\u7b2c\u4e8c\u9875\uff1a\u8d85\u591a\u804c\u4e1a\u8bbe\u7f6e \n"
     },
     "page3": {
         "0": "Page 3: Role and Modifier Rates \n",
+        "11": "\u30da\u30fc\u30b8 3: \u5f79\u8077\u3068\u5c5e\u6027\u306e\u30ec\u30fc\u30c8",
         "13": "\u7b2c\u4e09\u9875\uff1a\u804c\u4e1a\u4e0e\u526f\u804c\u4e1a\u6982\u7387 \n"
     },
     "page4": {
         "0": "Page 4: Impostor Role Settings \n",
+        "11": "\u30da\u30fc\u30b8 4: \u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u5f79\u8077\u306e\u8a2d\u5b9a \uffe4n",
         "13": "\u7b2c\u56db\u9875\uff1a\u5185\u9b3c\u804c\u4e1a\u8bbe\u7f6e \n"
     },
     "page5": {
         "0": "Page 5: Neutral Role Settings \n",
+        "11": "\u30da\u30fc\u30b8 5: \u7b2c\u4e09\u9663\u55b6\u30ed\u30fc\u30eb\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u4e94\u9875\uff1a\u4e2d\u7acb\u804c\u4e1a\u8bbe\u7f6e \n"
     },
     "page6": {
         "0": "Page 6: Crewmate Role Settings \n",
+        "11": "\u30da\u30fc\u30b8 6\uff1a \u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077\u306e\u8a2d\u5b9a \u246d\uff1a\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077\u306e\u8a2d\u5b9a \u246f\uff1a\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u516d\u9875\uff1a\u8239\u5458\u804c\u4e1a\u8bbe\u7f6e \n"
     },
     "page7": {
         "0": "Page 7: Modifier Settings \n",
+        "11": "\u30da\u30fc\u30b8 7\uff1a \u30e2\u30c7\u30a3\u30d5\u30a1\u30a4\u30a2\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u4e03\u9875\uff1a\u526f\u804c\u4e1a\u8bbe\u7f6e \n"
     },
     "hideNSeekPage1": {
         "0": "Page 1: Hide N Seek Settings \n\n",
+        "11": "Page 1: Hide N Seek Settings \uffe4\u975e\u8868\u793a\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u4e00\u9875\uff1a\u6349\u8ff7\u85cf\u8bbe\u7f6e \n\n"
     },
     "hideNSeekPage2": {
         "0": "Page 2: Hide N Seek Role Settings \n\n",
+        "11": "Page 2: Hide N Seek Role Settings \u246d\uff1a\u96a0\u3059\u5f79\u8077\u306e\u8a2d\u5b9a",
         "13": "\u7b2c\u4e8c\u9875\uff1a\u6349\u8ff7\u85cf\u804c\u4e1a\u8bbe\u7f6e \n\n"
     },
     "useScrollWheel": {
         "0": "(Use scroll wheel if necessary)",
+        "11": "(\u5fc5\u8981\u306b\u5fdc\u3058\u3066\u30b9\u30af\u30ed\u30fc\u30eb\u30db\u30a4\u30fc\u30eb\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044\u3002\uff09",
         "13": "(\u5982\u6709\u5fc5\u8981\u8bf7\u4f7f\u7528\u6eda\u8f6e)"
     },
     "roleNoSettings": {
@@ -2579,6 +2737,14 @@
         "0": "More Options...",
         "11": "\u305d\u306e\u4ed6\u306e\u30aa\u30d7\u30b7\u30e7\u30f3",
         "13": "\u66f4\u591a\u8bbe\u7f6e"
+    },
+    "modCredits": {
+        "0": "Mod Credits",
+        "13": "\u6a21\u7ec4\u8d21\u732e\u8005"
+    },
+    "modDiscord": {
+        "0": "Discord",
+        "13": "QQ\u7fa4"
     },
     "crewWin": {
         "0": "Crewmates Win",
@@ -2648,63 +2814,77 @@
     },
     "crewWinExtra": {
         "0": "Crewmates {0} Win",
+        "11": "\u4e57\u7d44\u54e1 {0}\u52dd\u5229",
         "13": "\u8239\u5458 {0} \u80dc\u5229"
     },
     "crewLoverWinExtra": {
         "0": "Crewmates And Lovers {0} Win",
+        "11": "\u4e57\u7d44\u54e1\u3068\u604b\u4eba {0}\u52dd\u5229",
         "13": "\u8239\u5458\u548c\u604b\u4eba {0} \u80dc\u5229"
     },
     "impostorWinExtra": {
         "0": "Impostors {0} Win",
+        "11": "\u8a50\u6b3a\u5e2b {0}\u52dd\u5229",
         "13": "\u5185\u9b3c {0} \u80dc\u5229"
     },
     "jesterWinExtra": {
         "0": "Jester {0} Win",
+        "11": "\u30b8\u30a7\u30b9\u30bf\u30fc {0}\u52dd\u5229",
         "13": "\u5c0f\u4e11 {0} \u80dc\u5229"
     },
     "arsonistWinExtra": {
         "0": "Arsonist {0} Win",
+        "11": "\u653e\u706b\u9b54 {0}\u52dd\u5229",
         "13": "\u7eb5\u706b\u72af {0} \u80dc\u5229"
     },
     "loversWinExtra": {
         "0": "Lovers {0} Win",
+        "11": "\u604b\u4eba{0} \u52dd\u5229",
         "13": "\u604b\u4eba {0} \u80dc\u5229"
     },
     "jackalWinExtra": {
         "0": "Team Jackal {0} Win",
+        "11": "\u30c1\u30fc\u30e0\u30b8\u30e3\u30c3\u30ab\u30eb {0}\u52dd\u5229",
         "13": "\u8c7a\u72fc\u56e2\u961f {0} \u80dc\u5229"
     },
     "miniDiedExtra": {
         "0": "Mini Died {0} Win",
+        "11": "\u30df\u30cb\u304c\u6b7b\u3093\u3060{0} \u52dd\u5229",
         "13": "\u8ff7\u4f60\u8239\u5458\u6b7b\u4ea1 {0} \u80dc\u5229"
     },
     "vultureWinExtra": {
         "0": "Vulture {0} Win",
+        "11": "\u30cf\u30b2\u30bf\u30ab {0}\u52dd\u5229",
         "13": "\u79c3\u9e6b {0} \u80dc\u5229"
     },
     "moriartyWinExtra": {
         "0": "Moriarty {0} Win",
+        "11": "\u30e2\u30ea\u30a2\u30fc\u30c6\u30a3 {0}\u52dd\u5229",
         "13": "\u83ab\u91cc\u4e9a\u8482 {0} \u80dc\u5229"
     },
     "akujoWinExtra": {
         "0": "Akujo {0} Win",
+        "11": "\u963f\u5f16\u6d41\u70ba {0}\u52dd\u5229",
         "13": "\u9b45\u9b54 {0} \u80dc\u5229"
     },
     "plagueDoctorWinExtra": {
         "0": "Plague Doctor {0} Win",
+        "11": "\u30da\u30b9\u30c8\u30c9\u30af\u30bf\u30fc {0}\u52dd\u5229",
         "13": "\u75ab\u533b {0} \u80dc\u5229"
     },
     "jekyllAndHydeWinExtra": {
         "0": "Jekyll and Hyde {0} Win",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9 {0}\u52dd\u5229",
         "13": "\u5316\u8eab\u535a\u58eb {0} \u80dc\u5229"
     },
     "everyoneDiedExtra": {
         "0": "Everyone Died {0}",
+        "11": "\u5168\u54e1\u6b7b\u4ea1 {0} \u52dd\u3061",
         "13": "\u65e0\u4eba\u751f\u8fd8 {0} \u80dc\u5229"
     },
     "opportunistExtra": {
         "0": "& <color=#00FF00FF>Opportunist</color>",
-        "11": "\uff06<color=#00ff00ff>\u30aa\u30dd\u30c1\u30e5\u30cb\u30b9\u30c8</color>",
+        "11": "& <color=#00FF00FF>\u30aa\u30dd\u30c1\u30e5\u30cb\u30b9\u30c8</color> {0}\u52dd\u5229",
         "13": "& <color=#00FF00FF>\u6295\u673a\u8005</color>"
     },
     "lawyerExtraStolen": {
@@ -2723,54 +2903,67 @@
     },
     "hauntMenuGhost": {
         "0": " Ghost",
+        "11": " \u30b4\u30fc\u30b9\u30c8",
         "13": " \u9b3c\u9b42"
     },
     "guesserModifier": {
         "0": " (Guesser)",
+        "11": " (\u30b2\u30c3\u30b5\u30fc)",
         "13": " (\u8d4c\u602a)"
     },
     "roleInfoErased": {
         "0": "(erased) ",
+        "11": "(\u6d88\u3055\u308c\u305f) ",
         "13": "(\u88ab\u62b9\u9664) "
     },
     "roleInfoBitten": {
         "0": "bitten",
+        "11": "\u565b\u307e\u308c\u305f",
         "13": "\u88ab\u5438\u8840"
     },
     "roleInfoCuffed": {
         "0": "(cuffed) ",
+        "11": "\uff08\u624b\u9320\u3092\u639b\u3051\u3089\u308c\u305f\uff09 ",
         "13": "(\u88ab\u902e\u6355) "
     },
     "roleInfoCursed": {
         "0": "(cursed) ",
+        "11": "\uff08\u546a\u308f\u308c\u305f\uff09 ",
         "13": "(\u88ab\u8bc5\u5492) "
     },
     "roleInfoMarked": {
         "0": "(marked) ",
+        "11": "\uff08\u5370\uff09 ",
         "13": "(\u88ab\u6807\u8bb0) "
     },
     "roleInfoBlanked": {
         "0": "(blanked) ",
+        "11": "\uff08\u7a7a\u767d\uff09 ",
         "13": "(\u88ab\u6295\u63b7\u7a7a\u5305\u5f39) "
     },
     "roleInfoBounty": {
         "0": "(bounty) ",
+        "11": "\uff08\u61f8\u8cde\u91d1\uff09 ",
         "13": "(\u8d4f\u91d1\u76ee\u6807) "
     },
     "roleInfoFakeSD": {
         "0": " (fake SK)",
+        "11": " \uff08\u507dSK\uff09",
         "13": " (\u5047\u8ddf\u73ed)"
     },
     "roleInfoRemaining": {
         "0": "left",
+        "11": "\u5de6",
         "13": "\u5269\u4f59"
     },
     "roleInfoHonmei": {
         "0": "True Love ",
+        "11": "\u771f\u5b9f\u306e\u611b ",
         "13": "\u771f\u7231 "
     },
     "roleInfoBackup": {
         "0": "Backup ",
+        "11": "\u30d0\u30c3\u30af\u30a2\u30c3\u30d7 ",
         "13": "\u5907\u80ce "
     },
     "roleSummaryText": {
@@ -2800,14 +2993,17 @@
     },
     "roleSummaryLoverDied": {
         "0": "lover died",
+        "11": "\u604b\u4eba\u6b7b\u4ea1",
         "13": "\u6b89\u60c5\u800c\u6b7b"
     },
     "roleSummaryFailedGuess": {
         "0": " - failed guess",
+        "11": " - \u5931\u6557\u3057\u305f\u63a8\u6e2c",
         "13": " - \u56e0\u8d4c\u800c\u6b7b"
     },
     "roleSummaryGuess": {
         "0": " - guessed by {0}",
+        "11": " - {0}\u304c\u63a8\u6e2c\u3057\u305f",
         "13": " - \u88ab\u8d4c\u6740\u4e8e {0}"
     },
     "roleSummarySpelled": {
@@ -2827,38 +3023,47 @@
     },
     "roleSummaryBombed": {
         "0": " - bombed by {0}",
+        "11": " - {0}\u3067\u7206\u6483\u3055\u308c\u305f",
         "13": " - \u88ab\u7206\u7834\u4e8e {0}"
     },
     "roleSummaryShift": {
         "0": "shifted",
+        "11": "\u30b7\u30d5\u30c8\u3055\u308c\u305f",
         "13": "\u4ea4\u6362"
     },
     "roleSummaryLoveStolen": {
         "0": "love stolen",
+        "11": "\u76d7\u307e\u308c\u305f\u611b",
         "13": "\u7231\u4eba\u88ab\u593a"
     },
     "roleSummaryLoneliness": {
         "0": "too lonely",
+        "11": "\u5bc2\u3057\u3059\u304e\u308b",
         "13": "\u7cbe\u529b\u8870\u7aed"
     },
     "roleSummaryBrainwashedKilled": {
         "0": " - <color=#00FF00FF>brainwashed killed</color> by {0}",
+        "11": " - <color=#00FF00FF>brainwashed killed</color> by {0}.",
         "13": " - <color=#00FF00FF>\u88ab\u6d17\u8111\u51fb\u6740\u4e8e</color> {0}"
     },
     "roleSummaryDisease": {
         "0": " - <color=#FFC000FF>diseased</color> by {0}",
+        "11": " - <color=#FFC000FF>diseased</color> by {0}.",
         "13": " - <color=#FFC000FF>\u88ab\u62b9\u6740\u4e8e</color> {0}"
     },
     "roleSummaryScapegoat": {
         "0": "cupid scapegoat",
+        "11": "\u30ad\u30e5\u30fc\u30d4\u30c3\u30c9\u306e\u30b9\u30b1\u30fc\u30d7\u30b4\u30fc\u30c8",
         "13": "\u4e18\u6bd4\u7279\u66ff\u6b7b"
     },
     "roleSummaryKillsInfo": {
         "0": " - <color=#FF0000FF>(Kills: {0})</color>",
+        "11": " - <color=#FF0000FF>(\u6bba\u5bb3: {0})</\u8272>\u306b\u3088\u3063\u3066\u6bba\u5bb3\u3055\u308c\u308b\u3002",
         "13": " - <color=#FF0000FF>(\u51fb\u6740\u6570: {0})</color>"
     },
     "roleIntroNeutral": {
         "0": "Neutral",
+        "11": "\u7b2c\u4e09\u9663\u55b6",
         "13": "\u4e2d\u7acb\u9635\u8425"
     },
     "startingTimer": {
@@ -2887,31 +3092,42 @@
     },
     "updateGMIA": {
         "0": "Update GMIA",
+        "11": "GMIA\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8",
         "13": "\u5347\u7ea7GMIA"
     },
     "updateText": {
         "0": "A new THE OTHER ROLES GMIA update to {0} is available",
+        "11": "{0} \u3078\u306e\u65b0\u3057\u3044 THE OTHER ROLES GMIA \u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u304c\u5229\u7528\u53ef\u80fd\u3067\u3059\u3002",
         "13": "\u60a8\u53ef\u4ee5\u66f4\u65b0\u81f3\u8d85\u591a\u804c\u4e1aGMIA {0}"
     },
     "updateManual": {
         "0": "A MANUAL UPDATE IS REQUIRED",
+        "11": "\u624b\u52d5\u66f4\u65b0\u304c\u5fc5\u8981\u3067\u3059",
         "13": "\u9700\u8981\u624b\u52a8\u5347\u7ea7"
     },
     "GMIA": {
         "0": "The Other Roles GMIA",
+        "11": "\u305d\u306e\u4ed6\u306e\u5f79\u5272 GMIA",
         "13": "\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "updatingGMIA": {
         "0": "Updating {0}\nPlease wait...",
+        "11": "{0}\u3092\u66f4\u65b0\u4e2d\u3067\u3059\u3002",
         "13": "\u6b63\u5728\u5347\u7ea7{0}\n\u8bf7\u7a0d\u540e"
     },
     "updateSuccessful": {
         "0": "{0}\nupdated successfully\nPlease restart the game.",
+        "11": "{0}nupdated successfully Please restart the game.",
         "13": "{0}\n\u5347\u7ea7\u5b8c\u6210\n\u8bf7\u91cd\u542f\u6e38\u620f"
     },
     "updateNotSuccessful": {
         "0": "Update wasn't successful\nTry again later,\nor update manually.",
+        "11": "\u30a2\u30c3\u30d7\u30c7\u30fc\u30c8\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002",
         "13": "\u5347\u7ea7\u5931\u8d25\n\u8bf7\u7a0d\u540e\u5c1d\u8bd5\n\u6216\u624b\u52a8\u66f4\u65b0"
+    },
+    "switchGamemodeFailed": {
+        "0": "Nice try, but you have to be the host to use this feature",
+        "13": "\u597d\u597d\u597d\uff0c\u4f46\u662f\u4e0b\u6b21\u4f60\u6700\u597d\u662f\u623f\u4e3b"
     },
     "swapperMeetingButton": {
         "0": "The Swapper can't start an emergency meeting",
@@ -2943,10 +3159,12 @@
     },
     "modifiersAreHidden": {
         "0": "Hide After Death Modifiers",
+        "11": "\u30cf\u30a4\u30c9\u30fb\u30a2\u30d5\u30bf\u30fc\u30fb\u30c7\u30b9",
         "13": "\u9690\u85cf\u6b7b\u540e\u53d1\u6325\u6548\u679c\u7684\u526f\u804c\u4e1a"
     },
     "modifiersQuantity": {
         "0": "Quantity",
+        "11": "\u6570\u91cf",
         "13": "\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "antiTeleport": {
@@ -2956,187 +3174,232 @@
     },
     "antiTeleportQuantity": {
         "0": "Anti Teleport Quantity",
-        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc",
+        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30c8\u6570\u91cf",
         "13": "\u901a\u8baf\u5175\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "antiTeleportPostfix": {
         "0": "Anti tp",
+        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30c8",
         "13": "\u901a\u8baf\u5175"
     },
     "antiTeleportIntroDesc": {
         "0": "You will not get teleported",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u3055\u308c\u306a\u3044",
         "13": "\u7ebf \u4e0a \u4f1a \u8bae!"
     },
     "antiTeleportShortDesc": {
         "0": "You will not get teleported",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u3055\u308c\u306a\u3044",
         "13": "\u4f60\u4e0d\u4f1a\u88ab\u4f20\u9001\u81f3\u4f1a\u8bae\u684c"
     },
     "sunglasses": {
         "0": "Sunglasses",
+        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9",
         "13": "\u5931\u660e\u8005"
     },
     "sunglassesQuantity": {
         "0": "Sunglasses Quantity",
+        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9\u6570\u91cf",
         "13": "\u5931\u660e\u8005\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "sunglassesVision": {
         "0": "Vision With Sunglasses",
+        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9",
         "13": "\u5931\u660e\u8005\u89c6\u91ce"
     },
     "sunglassesIntroDesc": {
         "0": "You got the sunglasses",
+        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9\u3092\u304b\u3051\u308b\u3068",
         "13": "\u4f60\u5e26\u4e0a\u4e86\u592a\u9633\u955c"
     },
     "sunglassesShortDesc": {
         "0": "Your vision is reduced",
+        "11": "\u8996\u754c\u304c\u72ed\u304f\u306a\u308b",
         "13": "\u4f60\u5e26\u4e0a\u4e86\u592a\u9633\u955c"
     },
     "tiebreaker": {
         "0": "Tiebreaker",
+        "11": "\u30bf\u30a4\u30d6\u30ec\u30fc\u30ab\u30fc",
         "13": "\u7834\u5e73\u8005"
     },
     "tiebreakerLongDesc": {
         "0": "Tie Breaker",
+        "11": "\u30bf\u30a4\u30d6\u30ec\u30fc\u30ab\u30fc",
         "13": "\u7834\u5e73\u8005"
     },
     "tiebreakerIntroDesc": {
         "0": "Your vote breaks the tie",
+        "11": "\u3042\u306a\u305f\u306e\u4e00\u7968\u304c\u540c\u70b9\u3092\u7834\u308b",
         "13": "\u6253\u7834\u5e73\u5c40"
     },
     "tiebreakerShortDesc": {
         "0": "Break the tie",
+        "11": "\u540c\u70b9\u306b\u8ffd\u3044\u3064\u304f",
         "13": "\u6253\u7834\u5e73\u5c40"
     },
     "tiebreakerSpecialIndicator": {
         "0": " (Tiebreaker)",
+        "11": " (\u30bf\u30a4\u30d6\u30ec\u30fc\u30ab\u30fc)",
         "13": " (\u7834\u5e73\u8005)"
     },
     "vip": {
         "0": "VIP",
+        "11": "VIP",
         "13": "VIP"
     },
     "vipQuantity": {
         "0": "VIP Quantity",
+        "11": "VIP\u6570\u91cf",
         "13": "VIP\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "vipShowColor": {
         "0": "Show Team Color",
+        "11": "\u30c1\u30fc\u30e0\u30ab\u30e9\u30fc\u3092\u8868\u793a",
         "13": "\u663e\u793a\u9635\u8425\u989c\u8272"
     },
     "vipIntroDesc": {
         "0": "You are the VIP",
+        "11": "\u3042\u306a\u305f\u304cVIP\u3067\u3059",
         "13": "\u4f60\u662fVIP"
     },
     "vipShortDesc": {
         "0": "Everyone is notified when you die",
+        "11": "\u3042\u306a\u305f\u304c\u6b7b\u306c\u3068\u5168\u54e1\u306b\u901a\u77e5\u3055\u308c\u308b",
         "13": "\u6240\u6709\u4eba\u90fd\u4f1a\u77e5\u9053\u4f60\u7684\u6b7b\u8baf"
     },
     "bloody": {
         "0": "Bloody",
+        "11": "\u30d6\u30e9\u30c3\u30c7\u30a3",
         "13": "\u6e85\u8840\u8005"
     },
     "bloodyQuantity": {
         "0": "Bloody Quantity",
+        "11": "\u30d6\u30e9\u30c3\u30c7\u30a3\u6570\u91cf",
         "13": "\u6e85\u8840\u8005\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "bloodDuration": {
         "0": "Trail Duration",
+        "11": "\u8ecc\u8de1\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u8840\u8ff9\u6301\u7eed\u65f6\u95f4"
     },
     "bloodyIntroDesc": {
         "0": "Your killer leaves a bloody trail",
+        "11": "\u3042\u306a\u305f\u306e\u6bba\u4eba\u8005\u306f\u8840\u307e\u307f\u308c\u306e\u8db3\u8de1\u3092\u6b8b\u3059",
         "13": "\u7528\u4f60\u7684\u8840\u542f\u793a\u540e\u4eba"
     },
     "bloodyShortDesc": {
         "0": "Your killer leaves a bloody trail",
+        "11": "\u3042\u306a\u305f\u306e\u6bba\u4eba\u8005\u306f\u8840\u307e\u307f\u308c\u306e\u75d5\u8de1\u3092\u6b8b\u3059",
         "13": "\u4f60\u7684\u51f6\u624b\u4f1a\u7559\u4e0b\u8840\u8ff9\u6591\u6591\u7684\u8f68\u8ff9"
     },
     "invert": {
         "0": "Invert",
+        "11": "\u53cd\u8ee2",
         "13": "\u9189\u9b3c"
     },
     "invertIntroDesc": {
         "0": "Your movement is inverted",
+        "11": "\u3042\u306a\u305f\u306e\u52d5\u304d\u304c\u53cd\u8ee2\u3059\u308b",
         "13": "\u4f60\u7684\u52a8\u4f5c\u662f\u76f8\u53cd\u7684"
     },
     "invertShortDesc": {
         "0": "Your movement is inverted",
+        "11": "\u3042\u306a\u305f\u306e\u52d5\u304d\u306f\u53cd\u8ee2\u3059\u308b",
         "13": "\u4f60\u7684\u52a8\u4f5c\u662f\u76f8\u53cd\u7684"
     },
     "invertQuantity": {
         "0": "Modifier Quantity",
+        "11": "\u4fee\u98fe\u8a9e\u306e\u6570\u91cf",
         "13": "\u9189\u9b3c\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "invertDuration": {
         "0": "Number Of Meetings Inverted",
+        "11": "\u53cd\u8ee2\u3059\u308b\u4f1a\u8b70\u306e\u6570",
         "13": "\u79fb\u52a8\u76f8\u53cd\u7684\u4f1a\u8bae\u6570\u91cf"
     },
     "chameleon": {
         "0": "Chameleon",
+        "11": "\u30ab\u30e1\u30ec\u30aa\u30f3",
         "13": "\u53d8\u8272\u9f99"
     },
     "chameleonIntroDesc": {
         "0": "You're hard to see when not moving",
+        "11": "\u3042\u306a\u305f\u306f\u52d5\u3044\u3066\u3044\u306a\u3044\u3068\u898b\u3048\u306b\u304f\u3044",
         "13": "\u4f60\u5728\u4e00\u52a8\u4e0d\u52a8\u65f6\u5f88\u96be\u88ab\u53d1\u73b0"
     },
     "chameleonShortDesc": {
         "0": "You're hard to see when not moving",
+        "11": "\u3042\u306a\u305f\u306f\u52d5\u3044\u3066\u3044\u306a\u3044\u3068\u898b\u3048\u306b\u304f\u3044",
         "13": "\u4f60\u5728\u4e00\u52a8\u4e0d\u52a8\u65f6\u5f88\u96be\u88ab\u53d1\u73b0"
     },
     "chameleonQuantity": {
         "0": "Chameleon Quantity",
+        "11": "\u30ab\u30e1\u30ec\u30aa\u30f3 \u6570\u91cf",
         "13": "\u53d8\u8272\u9f99\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "chameleonHoldDuration": {
         "0": "Time Until Fading Starts",
+        "11": "\u30d5\u30a7\u30fc\u30c9\u958b\u59cb\u307e\u3067\u306e\u6642\u9593",
         "13": "\u9690\u8eab\u5f00\u59cb\u6240\u9700\u65f6\u95f4"
     },
     "chameleonFadeDuration": {
         "0": "Fade Duration",
+        "11": "\u30d5\u30a7\u30fc\u30c9\u6642\u9593",
         "13": "\u9690\u8eab\u6240\u9700\u65f6\u95f4"
     },
     "chameleonMinVisibility": {
         "0": "Minimum Visibility",
+        "11": "\u6700\u5c0f\u8996\u754c",
         "13": "\u6700\u5c0f\u9690\u8eab\u53ef\u89c1\u5ea6"
     },
     "madmateQuantity": {
         "0": "Madmate Quantity",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u6570\u91cf",
         "13": "\u53db\u5f92\u526f\u804c\u4e1a\u6570\u91cf"
     },
     "madmateAbility": {
         "0": "Madmate Notice Impostors When Tasks Completed",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u30bf\u30b9\u30af\u5b8c\u4e86\u6642\u306b\u507d\u8005\u306b\u901a\u77e5\u3059\u308b",
         "13": "\u53db\u5f92\u5728\u5b8c\u6210\u4efb\u52a1\u540e\u77e5\u9053\u5185\u9b3c"
     },
     "madmateCommonTasks": {
         "0": "Common Tasks",
+        "11": "\u4e00\u822c\u7684\u306a\u30bf\u30b9\u30af",
         "13": "\u901a\u7528\u4efb\u52a1"
     },
     "madmateShortTasks": {
         "0": "Short Tasks",
+        "11": "\u77ed\u3044\u30bf\u30b9\u30af",
         "13": "\u77ed\u4efb\u52a1"
     },
     "madmateLongTasks": {
         "0": "Long Tasks",
+        "11": "\u9577\u3044\u30bf\u30b9\u30af",
         "13": "\u957f\u4efb\u52a1"
     },
     "madmateCanDieToSheriff": {
         "0": "Madmate Can Die To Sheriff",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u4fdd\u5b89\u5b98\u306b\u5bfe\u3057\u3066\u6b7b\u306c\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u8b66\u957f\u53ef\u4ee5\u6740\u6b7b\u53db\u5f92"
     },
     "madmateCanEnterVents": {
         "0": "Madmate Can Vent",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306e\u30ac\u30b9\u629c\u304d",
         "13": "\u53db\u5f92\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1"
     },
     "madmateCanSabotage": {
         "0": "Madmate Can Sabotage",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u59a8\u5bb3\u3067\u304d\u308b",
         "13": "\u53db\u5f92\u53ef\u4ee5\u7834\u574f"
     },
     "madmateHasImpostorVision": {
         "0": "Madmate Has Impoostor Vision",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u30a4\u30f3\u30d7\u30fc\u30b9\u30bf\u30fc\u30d3\u30b8\u30e7\u30f3\u3092\u6301\u3063\u3066\u3044\u308b",
         "13": "\u53db\u5f92\u6709\u4f2a\u88c5\u8005\u89c6\u91ce"
     },
     "madmateCanFixComm": {
         "0": "Madmate Can Fix Comms",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u901a\u4fe1\u3092\u4fee\u6b63\u3067\u304d\u308b",
         "13": "\u53db\u5f92\u53ef\u4ee5\u4fee\u590d\u901a\u8baf"
     },
     "assassin": {
@@ -3236,10 +3499,12 @@
     },
     "veteranIntroDesc": {
         "0": "Protect yourself from others",
+        "11": "\u4ed6\u4eba\u304b\u3089\u81ea\u5206\u3092\u5b88\u308b\u3002",
         "13": "\u8001\u9aa5\u4f0f\u67a5\uff0c\u65f6\u523b\u8b66\u60d5"
     },
     "veteranShortDesc": {
         "0": "Protect yourself from others",
+        "11": "\u4ed6\u4eba\u304b\u3089\u81ea\u5206\u3092\u5b88\u308b\u3002",
         "13": "\u8001\u9aa5\u4f0f\u67a5\uff0c\u65f6\u523b\u8b66\u60d5"
     },
     "veteranCooldown": {
@@ -3347,82 +3612,102 @@
     },
     "evilTracker": {
         "0": "Evil Tracker",
+        "11": "\u90aa\u60aa\u306a\u8ffd\u8de1\u8005",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005"
     },
     "evilTrackerIntroDesc": {
         "0": "Track other players",
+        "11": "\u4ed6\u306e\u9078\u624b\u3092\u8ffd\u8de1\u3059\u308b",
         "13": "\u8ffd\u6740\u5176\u4ed6\u73a9\u5bb6"
     },
     "evilTrackerShortDesc": {
         "0": "Track other players",
+        "11": "\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u8ffd\u8de1",
         "13": "\u8ffd\u6740\u5176\u4ed6\u73a9\u5bb6"
     },
     "evilTrackerCooldown": {
         "0": "Evil Tracker Track Cooldown",
+        "11": "\u90aa\u60aa\u306a\u8ffd\u8de1\u8005\u8ffd\u8de1\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u8ffd\u8e2a\u51b7\u5374"
     },
     "evilTrackerResetTargetAfterMeeting": {
         "0": "Reset Target After Meeting",
+        "11": "\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u5f8c\u30bf\u30fc\u30b2\u30c3\u30c8\u30ea\u30bb\u30c3\u30c8",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u5728\u4f1a\u8bae\u540e\u91cd\u7f6e\u76ee\u6807"
     },
     "evilTrackerCanSeeDeathFlash": {
         "0": "Can See Impostor Kill Flash",
+        "11": "\u507d\u8005\u30ad\u30eb\u30d5\u30e9\u30c3\u30b7\u30e5\u3092\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u770b\u89c1\u5185\u9b3c\u51fb\u6740"
     },
     "evilTrackerCanSeeTargetPosition": {
         "0": "Can See Target Position",
+        "11": "\u30bf\u30fc\u30b2\u30c3\u30c8\u306e\u4f4d\u7f6e\u3092\u78ba\u8a8d",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u770b\u89c1\u76ee\u6807\u4f4d\u7f6e"
     },
     "evilTrackerCanSetTargetOnMeeting": {
         "0": "Can Set Target On Meetings",
+        "11": "\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u6642\u306b\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u8a2d\u5b9a\u53ef\u80fd",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u5728\u4f1a\u8bae\u4e0a\u8bbe\u5b9a\u76ee\u6807"
     },
     "bomber": {
         "0": "Bomber",
+        "11": "\u30dc\u30de\u30fc",
         "13": "\u53cc\u5b50\u7206\u7834\u8005"
     },
     "bomberIntroDesc": {
         "0": "Bomb all Crewmates and make a blast",
+        "11": "\u3059\u3079\u3066\u306e\u4e57\u7d44\u54e1\u3092\u7206\u6483\u3057\u3001\u7206\u767a\u3055\u305b\u308b",
         "13": "\u827a\u672f\u5c31\u662f\u7206\u70b8"
     },
     "bomberShortDesc": {
         "0": "Bomb all Crewmates",
+        "11": "\u3059\u3079\u3066\u306e\u30af\u30eb\u30fc\u306b\u7206\u5f3e\u3092\u6295\u4e0b",
         "13": "\u827a\u672f\u5c31\u662f\u7206\u70b8"
     },
     "bomberCooldown": {
         "0": "Bomber Plant Bomb Cooldown",
+        "11": "\u30dc\u30de\u30fc\u30d7\u30e9\u30f3\u30c8\u30dc\u30e0\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u53cc\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f39\u51b7\u5374"
     },
     "bomberDuration": {
         "0": "Bomber Plant Bomb Duration",
+        "11": "\u30dc\u30de\u30fc\u30fb\u30d7\u30e9\u30f3\u30c8\u30fb\u30dc\u30e0\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u53cc\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f39\u65f6\u957f"
     },
     "bomberCountAsOne": {
         "0": "Count As One Impostor",
+        "11": "\u507d\u80051\u4eba\u3068\u3057\u3066\u30ab\u30a6\u30f3\u30c8",
         "13": "\u53cc\u5b50\u7206\u7834\u8005\u7b97\u4f5c\u4e00\u4e2a\u5185\u9b3c"
     },
     "bomberShowEffects": {
         "0": "Show Bomb Effect",
+        "11": "\u7206\u5f3e\u306e\u52b9\u679c\u3092\u8868\u793a",
         "13": "\u5c55\u793a\u7206\u70b8\u6548\u679c"
     },
     "bomberIfOneDiesBothDie": {
         "0": "If One Dies Both Dies",
+        "11": "\u7247\u65b9\u304c\u6b7b\u3093\u3060\u3089\u4e21\u65b9\u6b7b\u306c",
         "13": "\u5982\u679c\u4e00\u4e2a\u6b7b\u4ea1\u53e6\u4e00\u4e2a\u4e5f\u6b7b\u4ea1"
     },
     "bomberHasOneVote": {
         "0": "Two Impostors Only Has One Vote",
+        "11": "2\u4eba\u306e\u507d\u8005\u306f1\u7968\u3057\u304b\u6301\u3063\u3066\u3044\u306a\u3044",
         "13": "\u4e24\u540d\u5185\u9b3c\u7684\u6295\u7968\u7b97\u4e00\u7968"
     },
     "bomberAlwaysShowArrow": {
         "0": "Always Show Arrow Pointing To Each Other",
+        "11": "\u5e38\u306b\u304a\u4e92\u3044\u3092\u6307\u3059\u77e2\u5370\u3092\u8868\u793a",
         "13": "\u6c38\u8fdc\u6709\u7bad\u5934\u6307\u5411\u53e6\u4e00\u4e2a\u5185\u9b3c"
     },
     "bomberYourTarget": {
         "0": "Your Target",
+        "11": "\u81ea\u5206\u306e\u30bf\u30fc\u30b2\u30c3\u30c8",
         "13": "\u4f60\u7684\u76ee\u6807"
     },
     "bomberPartnerTarget": {
         "0": "Partner's Target",
+        "11": "\u76f8\u624b\u306e\u30bf\u30fc\u30b2\u30c3\u30c8",
         "13": "\u642d\u6863\u7684\u76ee\u6807"
     },
     "yasuna": {
@@ -3431,26 +3716,32 @@
     },
     "niceYasuna": {
         "0": "Yasuna",
+        "11": "\u30e4\u30b9\u30ca",
         "13": "\u6b63\u4e49\u7684\u88c1\u51b3\u8005"
     },
     "evilYasuna": {
         "0": "Evil Yasuna",
+        "11": "\u30e4\u30b9\u30ca",
         "13": "\u90aa\u6076\u7684\u88c1\u51b3\u8005"
     },
     "niceYasunaIntroDesc": {
         "0": "Exile suspicious Crewmates",
+        "11": "\u30a4\u30d3\u30eb\u30e4\u30b9\u30ca",
         "13": "\u5f3a\u51fa\u53ef\u7591\u7684\u8239\u5458"
     },
     "niceYasunaShortDesc": {
         "0": "Exile suspicious Crewmates",
+        "11": "\u602a\u3057\u3044\u30af\u30eb\u30fc\u3092\u8ffd\u653e\u3059\u308b",
         "13": "\u5f3a\u51fa\u53ef\u7591\u7684\u8239\u5458"
     },
     "evilYasunaIntroDesc": {
         "0": "Exile smart Crewmates",
+        "11": "\u602a\u3057\u3044\u30af\u30eb\u30fc\u3092\u8ffd\u653e\u3059\u308b",
         "13": "\u5f3a\u51fa\u806a\u660e\u7684\u8239\u5458"
     },
     "evilYasunaShortDesc": {
         "0": "Exile smart Crewmates",
+        "11": "\u30a8\u30b0\u30b6\u30a4\u30eb\u306e\u8ce2\u3044\u30af\u30eb\u30fc\u30e1\u30a4\u30c8",
         "13": "\u5f3a\u51fa\u806a\u660e\u7684\u8239\u5458"
     },
     "yasunaSpecialIndicator": {
@@ -3463,10 +3754,12 @@
     },
     "yasunaNumberOfSpecialVotes": {
         "0": "Yasuna Number Of Special Votes",
+        "11": "\u30e4\u30b9\u30ca\u304c\u507d\u8005\u3067\u3042\u308b\u53ef\u80fd\u6027",
         "13": "\u88c1\u51b3\u8005\u5f3a\u51fa\u6570\u91cf"
     },
     "yasunaSpecificMessageMode": {
         "0": "Use Specific Message To Indicate Special Vote",
+        "11": "\u30e4\u30b9\u30ca\u306e\u7279\u5225\u6295\u7968\u6570",
         "13": "\u7528\u7279\u6b8a\u4fe1\u606f\u6807\u8bb0\u5f3a\u51fa"
     },
     "portalmaker": {
@@ -3475,10 +3768,12 @@
     },
     "portalmakerIntroDesc": {
         "0": "You can create portals",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u30e1\u30fc\u30ab\u30fc",
         "13": "\u4f60\u53ef\u4ee5\u653e\u7f6e\u4f20\u9001\u95e8"
     },
     "portalmakerShortDesc": {
         "0": "You can create portals",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u3092\u4f5c\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u4f60\u53ef\u4ee5\u653e\u7f6e\u4f20\u9001\u95e8"
     },
     "portalmakerCooldown": {
@@ -3487,18 +3782,22 @@
     },
     "portalmakerUsePortalCooldown": {
         "0": "Use Portal Cooldown",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u30e1\u30fc\u30ab\u30fc\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u4f7f\u7528\u4f20\u9001\u95e8\u51b7\u5374"
     },
     "portalmakerLogOnlyColorType": {
         "0": "Portalmaker Log Only Shows Color Type",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3\u3092\u4f7f\u3046",
         "13": "\u5b88\u95e8\u4eba\u53ea\u4f1a\u6536\u5230\u989c\u8272\u6df1\u6d45\u4fe1\u606f"
     },
     "portalmakerLogHasTime": {
         "0": "Log Shows Time",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u30e1\u30fc\u30ab\u30fc\u306e\u30ed\u30b0\u306f\u30ab\u30e9\u30fc\u30bf\u30a4\u30d7\u306e\u307f\u8868\u793a",
         "13": "\u5b88\u95e8\u4eba\u4f1a\u6536\u5230\u65f6\u95f4\u7ebf\u7d22"
     },
     "portalmakerCanPortalFromAnywhere": {
         "0": "Can Port To Portal From Everywhere",
+        "11": "\u30ed\u30b0\u306b\u6642\u9593\u304c\u8868\u793a\u3055\u308c\u308b",
         "13": "\u53ef\u4ee5\u4ece\u4efb\u610f\u5730\u70b9\u4f20\u9001\u81f3\u4f20\u9001\u95e8"
     },
     "portalmakerLog": {
@@ -3507,18 +3806,22 @@
     },
     "portalmakerLogTime": {
         "0": "{0}s ago: ",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u30ed\u30b0",
         "13": "{0}\u79d2\u524d\uff1a"
     },
     "portalmakerLogName": {
         "0": "{0} used the teleporter\n",
+        "11": "{0}s ago\uff1a ",
         "13": "{0}\u7528\u4e86\u4f20\u9001\u95e8\n"
     },
     "portalmakerLogPlayer": {
         "0": "A player",
+        "11": "{0} used the teleporter",
         "13": "\u4e00\u540d\u73a9\u5bb6"
     },
     "portalmakerLogCamouflaged": {
         "0": "A camouflaged player",
+        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc",
         "13": "\u4e00\u4e2a\u9690\u853d\u540e\u7684\u73a9\u5bb6"
     },
     "thief": {
@@ -3527,10 +3830,12 @@
     },
     "thiefIntroDesc": {
         "0": "Steal a killers role by killing them",
+        "11": "\u6ce5\u68d2",
         "13": "\u5077\u7a83\u6267\u5203\u8005\u7684\u8eab\u4efd"
     },
     "thiefShortDesc": {
         "0": "Steal a killers role",
+        "11": "\u30ad\u30e9\u30fc\u3092\u6bba\u3057\u3066\u305d\u306e\u30ad\u30e9\u30fc\u306e\u5f79\u5272\u3092\u76d7\u3080",
         "13": "\u5077\u7a83\u6267\u5203\u8005\u7684\u8eab\u4efd"
     },
     "thiefCooldown": {
@@ -3539,18 +3844,22 @@
     },
     "thiefCanKillSheriff": {
         "0": "Thief Can Kill Sheriff",
+        "11": "Thief\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u8eab\u4efd\u7a83\u8d3c\u53ef\u4ee5\u51fb\u6740\u8b66\u957f"
     },
     "thiefHasImpVision": {
         "0": "Thief Has Impostor Vision",
+        "11": "Thief\u306fSheriff\u3092\u6bba\u3059\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u8eab\u4efd\u7a83\u8d3c\u62e5\u6709\u5185\u9b3c\u89c6\u91ce"
     },
     "thiefCanUseVents": {
         "0": "Thief Can Use Vents",
+        "11": "Thief\u306fImpostor Vision\u3092\u6301\u3063\u3066\u3044\u308b",
         "13": "\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053"
     },
     "thiefCanStealWithGuess": {
         "0": "Thief Can Guess To Steal A Role (If Guesser)",
+        "11": "Thief\u306fVents\u3092\u4f7f\u3046\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u53ef\u4ee5\u901a\u8fc7\u731c\u6d4b\u5077\u7a83\u804c\u4e1a"
     },
     "taskMaster": {
@@ -3559,26 +3868,32 @@
     },
     "taskMasterIntroDesc": {
         "0": "Complete all extra tasks to win",
+        "11": "\u30bf\u30b9\u30af\u30de\u30b9\u30bf\u30fc",
         "13": "\u5b8c\u6210\u6240\u6709\u9644\u52a0\u4efb\u52a1\u6765\u53d6\u5f97\u80dc\u5229"
     },
     "taskMasterShortDesc": {
         "0": "Complete all extra tasks",
+        "11": "\u3059\u3079\u3066\u306e\u30a8\u30af\u30b9\u30c8\u30e9\u30bf\u30b9\u30af\u3092\u3053\u306a\u3057\u3066\u52dd\u5229",
         "13": "\u5b8c\u6210\u6240\u6709\u9644\u52a0\u4efb\u52a1"
     },
     "taskMasterBecomeATaskMasterWhenCompleteAllTasks": {
         "0": "Become A Task Master When All Tasks Completed",
+        "11": "\u3059\u3079\u3066\u306e\u30a8\u30af\u30b9\u30c8\u30e9\u30bf\u30b9\u30af\u3092\u5b8c\u4e86\u3059\u308b",
         "13": "\u53ea\u6709\u5f53\u6240\u6709\u4efb\u52a1\u5b8c\u6210\u540e\u624d\u4f1a\u53d8\u6210\u4efb\u52a1\u5927\u5e08"
     },
     "taskMasterExtraCommonTasks": {
         "0": "Task Master Extra Common Tasks",
+        "11": "\u3059\u3079\u3066\u306e\u30bf\u30b9\u30af\u3092\u5b8c\u4e86\u3059\u308b\u3068\u30bf\u30b9\u30af\u30de\u30b9\u30bf\u30fc\u306b\u306a\u308b",
         "13": "\u9644\u52a0\u901a\u7528\u4efb\u52a1\u6570"
     },
     "taskMasterExtraShortTasks": {
         "0": "Task Master Extra Short Tasks",
+        "11": "\u30bf\u30b9\u30af\u30de\u30b9\u30bf\u30fc \u30a8\u30af\u30b9\u30c8\u30e9\u30b3\u30e2\u30f3\u30bf\u30b9\u30af",
         "13": "\u9644\u52a0\u77ed\u4efb\u52a1\u6570"
     },
     "taskMasterExtraLongTasks": {
         "0": "Task Master Extra Long Tasks",
+        "11": "\u30bf\u30b9\u30af\u30de\u30b9\u30bf\u30fc \u30a8\u30af\u30b9\u30c8\u30e9\u30b7\u30e7\u30fc\u30c8\u30bf\u30b9\u30af",
         "13": "\u9644\u52a0\u957f\u4efb\u52a1\u6570"
     },
     "taskMasterExTasks": {
@@ -3591,10 +3906,12 @@
     },
     "hunterIntroDesc": {
         "0": "Seek and kill everyone",
+        "11": "\u30cf\u30f3\u30bf\u30fc",
         "13": "\u8ffd\u6740\u6240\u6709\u730e\u7269"
     },
     "hunterShortDesc": {
         "0": "Seek and kill everyone",
+        "11": "\u3059\u3079\u3066\u306e\u4eba\u3092\u63a2\u3057\u3001\u6bba\u3059",
         "13": "\u8ffd\u6740\u6240\u6709\u730e\u7269"
     },
     "hunted": {
@@ -3603,254 +3920,317 @@
     },
     "huntedIntroDesc": {
         "0": "Hide",
+        "11": "\u72e9\u308b",
         "13": "\u8eb2\u8d77\u6765"
     },
     "huntedShortDesc": {
         "0": "Hide",
+        "11": "\u96a0\u308c\u308b",
         "13": "\u8eb2\u8d77\u6765"
     },
     "evilHacker": {
         "0": "Evil Hacker",
+        "11": "\u90aa\u60aa\u306a\u30cf\u30c3\u30ab\u30fc",
         "13": "\u90aa\u6076\u7684\u9ed1\u5ba2"
     },
     "evilHackerIntroDesc": {
         "0": "Hack systems to kill all Crewmates",
+        "11": "\u30b7\u30b9\u30c6\u30e0\u3092\u30cf\u30c3\u30af\u3057\u3066\u4e57\u7d44\u54e1\u5168\u54e1\u3092\u6bba\u3059",
         "13": "\u4fb5\u5165\u7cfb\u7edf\u6740\u5bb3\u8239\u5458"
     },
     "evilHackerShortDesc": {
         "0": "Hack systems to kill all Crewmates",
+        "11": "\u30b7\u30b9\u30c6\u30e0\u3092\u30cf\u30c3\u30af\u3057\u3066\u3059\u3079\u3066\u306e\u30af\u30eb\u30fc\u3092\u6bba\u3059",
         "13": "\u4fb5\u5165\u7cfb\u7edf\u6740\u5bb3\u8239\u5458"
     },
     "evilHackerCanHasBetterAdmin": {
         "0": "Evil Hacker Has Better Admin",
+        "11": "\u60aa\u306e\u30cf\u30c3\u30ab\u30fc\u306f\u3088\u308a\u826f\u3044\u7ba1\u7406\u8005\u3067\u3042\u308b",
         "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u62e5\u6709\u66f4\u597d\u7684\u5b9a\u4f4d\u5730\u56fe"
     },
     "evilHackerCanSeeDoorStatus": {
         "0": "Evil Hacker Can See Door Status",
+        "11": "\u90aa\u60aa\u306a\u30cf\u30c3\u30ab\u30fc\u306f\u30c9\u30a2\u306e\u72b6\u614b\u3092\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u53ef\u4ee5\u770b\u89c1\u95e8\u7684\u72b6\u6001"
     },
     "evilHackerCanCreateMadmate": {
         "0": "Evil Hacker Can Create Madmate",
+        "11": "\u60aa\u306e\u30cf\u30c3\u30ab\u30fc\u306f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u3092\u4f5c\u6210\u3067\u304d\u308b",
         "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u53ef\u4ee5\u62db\u52df\u53db\u5f92"
     },
     "evilHackerCanCreateMadmateFromJackal": {
         "0": "Evil Hacker Can Create Madmate From Jackal",
+        "11": "\u60aa\u306e\u30cf\u30c3\u30ab\u30fc\u306f\u30b8\u30e3\u30c3\u30ab\u30eb\u304b\u3089\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u3092\u4f5c\u6210\u53ef\u80fd",
         "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u53ef\u4ee5\u5c06\u8c7a\u72fc\u53d8\u4e3a\u53db\u5f92"
     },
     "createdMadmateCanDieToSheriff": {
         "0": "Created Madmate Can Die To Sheriff",
+        "11": "\u4f5c\u6210\u3055\u308c\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u4fdd\u5b89\u5b98\u306b\u5bfe\u3057\u3066\u6b7b\u306c\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u53ef\u4ee5\u88ab\u8b66\u957f\u51fb\u6740"
     },
     "createdMadmateCanEnterVents": {
         "0": "Created Madmate Can Enter Vents",
+        "11": "\u4f5c\u6210\u3057\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u901a\u6c17\u53e3\u306b\u5165\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1"
     },
     "createdMadmateCanFixComm": {
         "0": "Created Madmate Can Fix Comms",
+        "11": "\u4f5c\u6210\u3057\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u901a\u4fe1\u3092\u4fee\u6b63\u53ef\u80fd",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u53ef\u4ee5\u4fee\u590d\u901a\u8baf"
     },
     "createdMadmateCanSabotage": {
         "0": "Created Madmate Can Sabotage",
+        "11": "\u5275\u9020\u3057\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u59a8\u5bb3\u3067\u304d\u308b",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u53ef\u4ee5\u7834\u574f"
     },
     "createdMadmateHasImpostorVision": {
         "0": "Created Madmate Has Impostor Vision",
+        "11": "\u5275\u9020\u3057\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u30fb\u30d3\u30b8\u30e7\u30f3\u3092\u6301\u3064",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u62e5\u6709\u5185\u9b3c\u89c6\u91ce"
     },
     "createdMadmateAbility": {
         "0": "Created Madmate Can Notice Impostors",
+        "11": "\u4f5c\u6210\u3055\u308c\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306f\u507d\u8005\u306b\u6c17\u3065\u304f\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u53ef\u4ee5\u77e5\u9053\u5185\u9b3c"
     },
     "createdMadmateCommonTasks": {
         "0": "Created Madmate Number Of Tasks",
+        "11": "\u4f5c\u6210\u3057\u305f\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306e\u30bf\u30b9\u30af\u6570",
         "13": "\u88ab\u62db\u52df\u7684\u53db\u5f92\u4efb\u52a1\u6570"
     },
     "evilHackerCanInheritAbility": {
         "0": "Other Impostors Inherit Ability On Death",
+        "11": "\u305d\u306e\u4ed6\u306e\u507d\u8005 \u6b7b\u4ea1\u6642\u306b\u80fd\u529b\u3092\u7d99\u627f",
         "13": "\u5176\u4ed6\u5185\u9b3c\u5728\u90aa\u6076\u7684\u9ed1\u5ba2\u6b7b\u540e\u7ee7\u627f\u80fd\u529b"
     },
     "trapper": {
         "0": "Trapper",
+        "11": "\u30c8\u30e9\u30c3\u30d1\u30fc",
         "13": "\u8bbe\u9677\u8005"
     },
     "trapperIntroDesc": {
         "0": "Place traps to kill the Crewmates",
+        "11": "\u4e57\u7d44\u54e1\u3092\u6bba\u3059\u7f60\u3092\u8a2d\u7f6e\u3059\u308b",
         "13": "\u653e\u7f6e\u9677\u9631\u51fb\u6740\u4ed6\u4eba"
     },
     "trapperShortDesc": {
         "0": "Place traps to kill the Crewmates",
+        "11": "\u4e57\u7d44\u54e1\u3092\u6bba\u3059\u7f60\u3092\u8a2d\u7f6e\u3059\u308b",
         "13": "\u653e\u7f6e\u9677\u9631\u51fb\u6740\u4ed6\u4eba"
     },
     "trapperNumTrap": {
         "0": "Number Of Traps",
+        "11": "\u30c8\u30e9\u30c3\u30d7\u306e\u6570",
         "13": "\u6700\u5927\u53ef\u540c\u65f6\u653e\u4e0b\u7684\u9677\u9631\u6570"
     },
     "trapperExtensionTime": {
         "0": "Time The Trap Will Be Activated",
+        "11": "\u7f60\u304c\u767a\u52d5\u3059\u308b\u6642\u9593",
         "13": "\u9677\u9631\u6fc0\u6d3b\u6240\u9700\u65f6\u95f4"
     },
     "trapperCooldown": {
         "0": "Place Traps Cooldown",
+        "11": "\u7f60\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u653e\u7f6e\u9677\u9631\u51b7\u5374"
     },
     "trapperKillTimer": {
         "0": "Time Until Death If Caught By Trap",
+        "11": "\u7f60\u306b\u304b\u304b\u3063\u305f\u5834\u5408\u306b\u6b7b\u4ea1\u3059\u308b\u307e\u3067\u306e\u6642\u9593",
         "13": "\u6389\u8fdb\u9677\u9631\u540e\u88ab\u9677\u9631\u51fb\u6740\u6240\u9700\u65f6\u95f4"
     },
     "trapperTrapRange": {
         "0": "Trap Range",
+        "11": "\u30c8\u30e9\u30c3\u30d7\u306e\u7bc4\u56f2",
         "13": "\u9677\u9631\u6709\u6548\u8303\u56f4"
     },
     "trapperMaxDistance": {
         "0": "Trap Hear Range",
+        "11": "\u30c8\u30e9\u30c3\u30d7\u304c\u805e\u3053\u3048\u308b\u7bc4\u56f2",
         "13": "\u9677\u9631\u51fb\u6740\u58f0\u97f3\u64ad\u653e\u6709\u6548\u8303\u56f4"
     },
     "trapperPenaltyTime": {
         "0": "Penalty For Normal Kills",
+        "11": "\u901a\u5e38\u30ad\u30eb\u306e\u30da\u30ca\u30eb\u30c6\u30a3",
         "13": "\u8bbe\u9677\u8005\u8fdb\u884c\u901a\u5e38\u51fb\u6740\u7684\u8ffd\u52a0\u51b7\u5374"
     },
     "trapperBonusTime": {
         "0": "Cooldown Decrease If Trap Player Is Killed",
+        "11": "\u30c8\u30e9\u30c3\u30d7\u30d7\u30ec\u30a4\u30e4\u30fc\u304c\u6bba\u3055\u308c\u305f\u5834\u5408\u3001\u30af\u30fc\u30eb\u30c0\u30a6\u30f3\u6e1b\u5c11",
         "13": "\u8bbe\u9677\u8005\u901a\u5e38\u51fb\u6740\u843d\u5165\u9677\u9631\u7684\u73a9\u5bb6\u7684\u7f29\u51cf\u51b7\u5374"
     },
     "trapperGotTrapText": {
         "0": "{0} got caught in the trap",
+        "11": "{0}\u304c\u7f60\u306b\u304b\u304b\u3063\u305f",
         "13": "{0} \u6389\u8fdb\u4e86\u9677\u9631\u91cc\uff01"
     },
     "moriarty": {
         "0": "Moriarty",
+        "11": "\u30e2\u30ea\u30a2\u30fc\u30c6\u30a3",
         "13": "\u83ab\u91cc\u4e9a\u8482"
     },
     "moriartyIntroDesc": {
         "0": "Let others commit crime",
+        "11": "\u4ed6\u4eba\u306b\u72af\u7f6a\u3092\u72af\u3055\u305b\u308b",
         "13": "\u64cd\u63a7\u4ed6\u4eba\u5b9e\u65bd\u5b8c\u7f8e\u72af\u7f6a"
     },
     "moriartyShortDesc": {
         "0": "Let others commit crime",
+        "11": "\u4ed6\u4eba\u306b\u72af\u7f6a\u3092\u72af\u3055\u305b\u308b",
         "13": "\u64cd\u63a7\u4ed6\u4eba\u5b9e\u65bd\u5b8c\u7f8e\u72af\u7f6a"
     },
     "moriartyBrainwashCooldown": {
         "0": "Moriarty Brainwash Cooldown",
+        "11": "\u30e2\u30ea\u30a2\u30fc\u30c6\u30a3\u306e\u6d17\u8133 \u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u83ab\u91cc\u4e9a\u8482\u6d17\u8111\u51b7\u5374"
     },
     "moriartyBrainwashTime": {
         "0": "Moriarty Brainwash Time",
+        "11": "\u30e2\u30ea\u30a2\u30fc\u30c6\u30a3\u306e\u6d17\u8133\u6642\u9593",
         "13": "\u83ab\u91cc\u4e9a\u8482\u6d17\u8111\u6301\u7eed\u65f6\u95f4"
     },
     "moriartyNumberToWin": {
         "0": "Number Of Kills Required",
+        "11": "\u5fc5\u8981\u30ad\u30eb\u6570",
         "13": "\u83ab\u91cc\u4e9a\u8482\u9700\u8981\u51fb\u6740\u73a9\u5bb6\u6570\u91cf"
     },
     "akujo": {
         "0": "Akujo",
+        "11": "\u30a2\u30af\u30fc\u30b8\u30e7",
         "13": "\u9b45\u9b54"
     },
     "akujoIntroDesc": {
         "0": "Use your wiles to manipulate the crew into protecting you",
+        "11": "\u60aa\u77e5\u6075\u3092\u50cd\u304b\u305b\u3066\u30af\u30eb\u30fc\u3092\u64cd\u308a\u3001\u81ea\u5206\u3092\u5b88\u3089\u305b\u308b\u3002",
         "13": "\u8ba9\u6211\u4eec\u6765\u505a\u4e00\u4e9b\"\u5feb\u4e50\"\u7684\u4e8b\u5427"
     },
     "akujoShortDesc": {
         "0": "Use your wiles to manipulate the crew into protecting you",
+        "11": "\u60aa\u77e5\u6075\u3092\u50cd\u304b\u305b\u3066\u30af\u30eb\u30fc\u3092\u64cd\u308a\u3001\u81ea\u5206\u3092\u5b88\u3089\u305b\u308b\u3002",
         "13": "\u52fe\u5f15\u4ed6\u4eba\uff0c\u4e0e\u771f\u7231\u6d3b\u5230\u6700\u540e"
     },
     "akujoTimeLimit": {
         "0": "Akujo Time Limit",
+        "11": "\u5236\u9650\u6642\u9593",
         "13": "\u9b45\u9b54\u9009\u62e9\u771f\u7231\u5907\u80ce\u65f6\u95f4\u9650\u5236"
     },
     "akujoNumKeeps": {
         "0": "Akujo Number Of Keeps",
+        "11": "\u30ad\u30fc\u30d7\u6570",
         "13": "\u9b45\u9b54\u53ef\u9009\u62e9\u5907\u80ce\u6570\u91cf"
     },
     "akujoKnowsRoles": {
         "0": "Akujo Knows Partners' Roles",
+        "11": "\u30d1\u30fc\u30c8\u30ca\u30fc\u306e\u5f79\u5272\u3092\u77e5\u3063\u3066\u3044\u308b",
         "13": "\u9b45\u9b54\u77e5\u9053\u771f\u7231/\u5907\u80ce\u804c\u4e1a"
     },
     "jekyllAndHyde": {
         "0": "Jekyll and Hyde",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9",
         "13": "\u5316\u8eab\u535a\u58eb"
     },
     "jekyllAndHydeIntroDesc": {
         "0": "Kill players and watch them die in pain",
+        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u6bba\u3057\u3001\u82e6\u3057\u307f\u306a\u304c\u3089\u6b7b\u3093\u3067\u3044\u304f\u306e\u3092\u898b\u308b",
         "13": "\u6740\u6b7b\u4ed6\u4eba\u5815\u5165\u9ed1\u6697"
     },
     "jekyllAndHydeShortDesc": {
         "0": "Kill players to win",
+        "11": "\u52dd\u3064\u305f\u3081\u306b\u30d7\u30ec\u30fc\u30e4\u30fc\u3092\u6bba\u3059",
         "13": "\u6740\u6b7b\u4ed6\u4eba\u83b7\u5f97\u80dc\u5229"
     },
     "jekyllAndHydeNumberToWin": {
         "0": "Number Of Kills Needed",
+        "11": "\u5fc5\u8981\u306a\u30ad\u30eb\u6570",
         "13": "\u5316\u8eab\u535a\u58eb\u83b7\u80dc\u9700\u8981\u51fb\u6740\u7684\u73a9\u5bb6\u6570"
     },
     "jekyllAndHydeCooldown": {
         "0": "Jekyll and Hyde Kill Cooldown",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9 \u30ad\u30eb \u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u5316\u8eab\u535a\u58eb\u51fb\u6740\u51b7\u5374"
     },
     "jekyllAndHydeSuicideTimer": {
         "0": "Jekyll and Hyde Suicide Timer",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9\u306e\u81ea\u6bba\u30bf\u30a4\u30de\u30fc",
         "13": "\u5316\u8eab\u535a\u58eb\u81ea\u6740\u65f6\u9650"
     },
     "jekyllAndHydeResetAfterMeeting": {
         "0": "Reset Timer After Meeting",
+        "11": "\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u5f8c\u306e\u30bf\u30a4\u30de\u30fc\u30ea\u30bb\u30c3\u30c8",
         "13": "\u4f1a\u8bae\u540e\u91cd\u7f6e\u81ea\u6740\u65f6\u9650"
     },
     "jekyllAndHydeCommonTasks": {
         "0": "Jekyll and Hyde Common Tasks",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9 \u5171\u901a\u30bf\u30b9\u30af",
         "13": "\u5316\u8eab\u535a\u58eb\u901a\u7528\u4efb\u52a1\u6570"
     },
     "jekyllAndHydeShortTasks": {
         "0": "Jekyll and Hyde Short Tasks",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9\u306e\u77ed\u3044\u30bf\u30b9\u30af",
         "13": "\u5316\u8eab\u535a\u58eb\u77ed\u4efb\u52a1\u6570"
     },
     "jekyllAndHydeLongTasks": {
         "0": "Jekyll and Hyde Long Tasks",
+        "11": "\u30b8\u30ad\u30eb\u3068\u30cf\u30a4\u30c9\u306e\u9577\u3044\u30bf\u30b9\u30af",
         "13": "\u5316\u8eab\u535a\u58eb\u957f\u4efb\u52a1\u6570"
     },
     "jekyllAndHydeNumTasks": {
         "0": "Tasks Required To Get Drug",
+        "11": "\u85ac\u3092\u5165\u624b\u3059\u308b\u305f\u3081\u306b\u5fc5\u8981\u306a\u30bf\u30b9\u30af",
         "13": "\u5f97\u5230\u4e00\u5242\u79d8\u836f\u9700\u8981\u5b8c\u6210\u7684\u4efb\u52a1\u6570"
     },
     "teleporter": {
         "0": "Teleporter",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc",
         "13": "\u4f20\u9001\u5e08"
     },
     "teleporterIntroDesc": {
         "0": "Teleport other players",
+        "11": "\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u30c6\u30ec\u30dd\u30fc\u30c8\u3055\u305b\u308b",
         "13": "\u65f6 \u7a7a \u9519 \u4e71"
     },
     "teleporterShortDesc": {
         "0": "Teleport other players",
+        "11": "\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u30c6\u30ec\u30dd\u30fc\u30c8\u3059\u308b",
         "13": "\u79fb\u5f62\u6362\u4f4d\uff0c\u626d\u8f6c\u4e7e\u5764"
     },
     "teleporterCooldown": {
         "0": "Teleport Cooldown",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u4f20\u9001\u51b7\u5374\u65f6\u95f4"
     },
     "teleporterSampleCooldown": {
         "0": "Teleporter Sample Cooldown",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc \u30b5\u30f3\u30d7\u30eb \u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u9009\u62e9\u5bf9\u8c61\u51b7\u5374\u65f6\u95f4"
     },
     "teleporterTeleportNumber": {
         "0": "Number Of Teleports",
+        "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u6570",
         "13": "\u4f20\u9001\u5e08\u53ef\u4f20\u9001\u6b21\u6570"
     },
     "cupid": {
         "0": "Cupid",
+        "11": "\u30ad\u30e5\u30fc\u30d4\u30c3\u30c9",
         "13": "\u4e18\u6bd4\u7279"
     },
     "cupidIntroDesc": {
         "0": "Keep the couple alive",
+        "11": "\u30ab\u30c3\u30d7\u30eb\u3092\u751f\u304b\u3059",
         "13": "\u6784\u9020\u604b\u4eba\u4ee5\u7ef4\u6301\u751f\u8ba1"
     },
     "cupidShortDesc": {
         "0": "Keep the couple alive",
+        "11": "\u30ab\u30c3\u30d7\u30eb\u3092\u30ad\u30fc\u30d7",
         "13": "\u6784\u9020\u604b\u4eba\u4ee5\u7ef4\u6301\u751f\u8ba1"
     },
     "cupidTimeLimit": {
         "0": "Cupid Time Limit",
+        "11": "\u30ad\u30e5\u30fc\u30d4\u30c3\u30c9\u306e\u30bf\u30a4\u30e0\u30ea\u30df\u30c3\u30c8",
         "13": "\u4e18\u6bd4\u7279\u6784\u9020\u604b\u4eba\u65f6\u95f4\u9650\u5236"
     },
     "cupidShield": {
         "0": "Cupid Activate Shield",
+        "11": "\u30ad\u30e5\u30fc\u30d4\u30c3\u30c9\u306e\u30b7\u30fc\u30eb\u30c9\u767a\u52d5",
         "13": "\u5f00\u542f\u4e18\u6bd4\u7279\u66ff\u6b7b\u62a4\u76fe"
     },
     "colorSalmon": {
@@ -3902,7 +4282,7 @@
         "13": "\u67e0\u6aac\u9ec4"
     },
     "colorSignalOrange": {
-        "0": "Signal\nOrange",
+        "0": "Signal Orange",
         "13": "\u4fe1\u53f7\u6a59"
     },
     "colorTeal": {
