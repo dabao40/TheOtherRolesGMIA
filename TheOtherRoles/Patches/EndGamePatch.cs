@@ -194,7 +194,7 @@ namespace TheOtherRoles.Patches {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (p.Data.Role.IsImpostor || Madmate.madmate.Contains(p) || p == CreatedMadmate.createdMadmate)
+                    if (p.Data.Role.IsImpostor)
                     {
                         WinningPlayerData wpd = new(p.Data);
                         TempData.winners.Add(wpd);
@@ -309,7 +309,7 @@ namespace TheOtherRoles.Patches {
                         else if (p == Pursuer.pursuer && !Pursuer.pursuer.Data.IsDead)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                         else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor && p != Moriarty.moriarty && p != Akujo.akujo && p != JekyllAndHyde.jekyllAndHyde
-                            && p != Moriarty.formerMoriarty && p != JekyllAndHyde.formerJekyllAndHyde && p != PlagueDoctor.plagueDoctor && !Madmate.madmate.Contains(p))
+                            && p != Moriarty.formerMoriarty && p != JekyllAndHyde.formerJekyllAndHyde && p != PlagueDoctor.plagueDoctor && !Madmate.madmate.Contains(p) && p != CreatedMadmate.createdMadmate)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                     }
                 }
@@ -350,7 +350,25 @@ namespace TheOtherRoles.Patches {
                     wpdFormerJackal.IsImpostor = false; 
                     TempData.winners.Add(wpdFormerJackal);
                 }
-            }            
+            }
+
+            // Madmate win with impostors
+            if (TempData.winners.ToArray().Any(x => x.IsImpostor))
+            {
+                if (Madmate.madmate != null)
+                {
+                    foreach (var p in Madmate.madmate)
+                    {
+                        WinningPlayerData wpd = new WinningPlayerData(p.Data);
+                        TempData.winners.Add(wpd);
+                    }
+                }
+                if (CreatedMadmate.createdMadmate != null)
+                {
+                    WinningPlayerData wpd = new WinningPlayerData(CreatedMadmate.createdMadmate.Data);
+                    TempData.winners.Add(wpd);
+                }
+            }
 
             // Possible Additional winner: Lawyer
             // && !Lawyer.isProsecutor

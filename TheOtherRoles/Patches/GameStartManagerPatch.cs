@@ -217,6 +217,7 @@ namespace TheOtherRoles.Patches {
                         probabilities.Add(CustomOptionHolder.dynamicMapEnableMira.getSelection() / 10f);
                         probabilities.Add(CustomOptionHolder.dynamicMapEnablePolus.getSelection() / 10f);
                         probabilities.Add(CustomOptionHolder.dynamicMapEnableAirShip.getSelection() / 10f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnableFungle.getSelection() / 10f);
                         probabilities.Add(CustomOptionHolder.dynamicMapEnableSubmerged.getSelection() / 10f);
 
                         // if any map is at 100%, remove all maps that are not!

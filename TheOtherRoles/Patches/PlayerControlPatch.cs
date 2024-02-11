@@ -646,7 +646,7 @@ namespace TheOtherRoles.Patches {
                 {
                     if (p == PlagueDoctor.plagueDoctor) continue;
                     if (PlagueDoctor.dead.ContainsKey(p.PlayerId) && PlagueDoctor.dead[p.PlayerId]) continue;
-                    text += $"{p.name}: ";
+                    text += $"{p.Data.PlayerName}: ";
                     if (PlagueDoctor.infected.ContainsKey(p.PlayerId))
                     {
                         text += Helpers.cs(Color.red, ModTranslation.getString("plagueDoctorInfectedText"));
@@ -1086,7 +1086,7 @@ namespace TheOtherRoles.Patches {
                                 gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
                                 gameObject.transform.localScale = Vector3.one * 2f;
                                 text = gameObject.GetComponent<TMPro.TMP_Text>();
-                                text.text = string.Format(ModTranslation.getString("trapperGotTrapText"), p.name);
+                                text.text = string.Format(ModTranslation.getString("trapperGotTrapText"), p.Data.PlayerName);
                                 FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(3f, new Action<float>((p) =>
                                 {
                                     if (p == 1f && text != null && text.gameObject != null)
@@ -1365,7 +1365,7 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        public static void ninjaUpdate()
+        /*public static void ninjaUpdate()
         {
             if (Ninja.ninja == null) return;
             if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive()) Ninja.ninja.setDefaultLook();
@@ -1391,7 +1391,7 @@ namespace TheOtherRoles.Patches {
                 AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
                 RPCProcedure.sprinterSprint(Sprinter.sprinter.PlayerId, false);
             }
-        }
+        }*/
 
         public static void fortuneTellerUpdate()
         {
@@ -1468,7 +1468,7 @@ namespace TheOtherRoles.Patches {
                     // ArrowÒ»ÓE
                     FortuneTeller.arrows = new List<Arrow>();
 
-                    if (!FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
+                    if (FortuneTeller.fortuneTeller == null || !FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
                     {
                         return;
                     }
@@ -1819,9 +1819,9 @@ namespace TheOtherRoles.Patches {
                 // Bait
                 baitUpdate();
                 // Ninja
-                ninjaUpdate();
+                //ninjaUpdate();
                 // Sprinter
-                sprinterUpdate();
+                //sprinterUpdate();
                 // Serial Killer
                 //serialKillerUpdate();
                 // Evil Tracker
@@ -2464,11 +2464,6 @@ namespace TheOtherRoles.Patches {
                     otherLover.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
-                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
-                {
-                    Cupid.cupid.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
-                }
 
                 if (MeetingHud.Instance && otherLover != null)
                 {
@@ -2495,6 +2490,12 @@ namespace TheOtherRoles.Patches {
 
                     if (AmongUsClient.Instance.AmHost)
                         MeetingHud.Instance.CheckForEndVoting();
+                }
+
+                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
+                {
+                    Cupid.cupid.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
                 }
             }
 

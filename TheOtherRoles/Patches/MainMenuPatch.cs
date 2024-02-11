@@ -44,12 +44,13 @@ namespace TheOtherRoles.Modules {
 
             var textDiscord = buttonDiscord.transform.GetComponentInChildren<TMPro.TMP_Text>();
             __instance.StartCoroutine(Effects.Lerp(0.5f, new System.Action<float>((p) => {
-                textDiscord.SetText("Discord");
+                textDiscord.SetText(ModTranslation.getString("modDiscord"));
             })));
             PassiveButton passiveButtonDiscord = buttonDiscord.GetComponent<PassiveButton>();
             
             passiveButtonDiscord.OnClick = new Button.ButtonClickedEvent();
-            passiveButtonDiscord.OnClick.AddListener((System.Action)(() => Application.OpenURL("https://discord.gg/w7msq53dq7")));
+            passiveButtonDiscord.OnClick.AddListener((System.Action)(() => Application.OpenURL(AmongUs.Data.DataManager.Settings.Language.CurrentLanguage == SupportedLangs.SChinese
+                ? "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zye92aL_kkuduaPjnHj5MppLWoKrAEse&authKey=%2FUCYHv33zSXF%2FqRcqGFrAvgJO92yp%2B%2FF5BliBtsh9HmCqA56pW1dWgMiLYASnxhJ&noverify=0&group_code=787132035" : "https://discord.gg/w7msq53dq7")));
 
             CheckAndUnpatch();
 
@@ -63,7 +64,7 @@ namespace TheOtherRoles.Modules {
 
             var textCreditsButton = creditsButton.transform.GetComponentInChildren<TMPro.TMP_Text>();
             __instance.StartCoroutine(Effects.Lerp(0.5f, new System.Action<float>((p) => {
-                textCreditsButton.SetText("Mod Credits");
+                textCreditsButton.SetText(ModTranslation.getString("modCredits"));
             })));
             PassiveButton passiveCreditsButton = creditsButton.GetComponent<PassiveButton>();
 

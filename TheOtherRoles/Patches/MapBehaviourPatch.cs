@@ -62,7 +62,7 @@ namespace TheOtherRoles.Patches {
 					herePoints.Remove(s.Key);
 				}
 			}*/
-			if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && EvilTracker.canSeeTargetPosition)
+			if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
 			{
                 if (EvilTracker.target != null && MeetingHud.Instance == null)
                 {
@@ -85,7 +85,8 @@ namespace TheOtherRoles.Patches {
                 if (impostorHerePoint == null) impostorHerePoint = new();
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy))
+                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
+                        || (p == Jackal.jackal && Jackal.wasTeamRed))
                     {
                         if (!impostorHerePoint.ContainsKey(p.PlayerId))
                         {
@@ -103,7 +104,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (EvilHacker.canSeeDoorStatus && (CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker || EvilHacker.isInherited()))
+            if (EvilHacker.canSeeDoorStatus && ((EvilHacker.evilHacker != null && CachedPlayer.LocalPlayer.PlayerId == EvilHacker.evilHacker.PlayerId) || EvilHacker.isInherited()))
             {
                 //if (!EvilHacker.canSeeDoorStatus) return;
                 if (doorClosedSprite == null)
