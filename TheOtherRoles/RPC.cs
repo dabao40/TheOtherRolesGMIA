@@ -251,7 +251,6 @@ namespace TheOtherRoles
             AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
             MapBehaviourPatch.reset();
-            MadmateTasksHelper.Reset();
             SpawnInMinigamePatch.reset();
             //Trap.clearTraps();
             Trap.clearAllTraps();

@@ -89,6 +89,7 @@ namespace TheOtherRoles
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
             Teleporter.clearAndReload();
+            Watcher.clearAndReload();
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
             Akujo.clearAndReload();
@@ -676,8 +677,8 @@ namespace TheOtherRoles
         public static void resetCamouflage() {
             camouflageTimer = 0f;
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                if ((p == Ninja.ninja && Ninja.stealthed) || (p == Sprinter.sprinter && Sprinter.sprinting))
-                    continue;
+                /*if ((p == Ninja.ninja && Ninja.stealthed) || (p == Sprinter.sprinter && Sprinter.sprinting))
+                    continue;*/
                 p.setDefaultLook();
             }
         }
@@ -1649,15 +1650,15 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
             //if (MimicK.mimicK == null || MimicA.mimicA == null) return;
-            if (MimicK.arrows.FirstOrDefault()?.arrow != null)
+            if (arrows.FirstOrDefault()?.arrow != null)
             {
                 if (mimicK == null || MimicA.mimicA == null)
                 {
-                    foreach (Arrow arrows in MimicK.arrows) arrows.arrow.SetActive(false);
+                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                     return;
                 }
             }            
-            if (CachedPlayer.LocalPlayer.PlayerControl != MimicK.mimicK || mimicK == null) return;
+            if (CachedPlayer.LocalPlayer.PlayerControl != mimicK || mimicK == null) return;
             if (mimicK.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
@@ -1758,15 +1759,15 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
             //if (MimicA.mimicA == null || MimicK.mimicK == null) return;
-            if (MimicA.arrows.FirstOrDefault()?.arrow != null)
+            if (arrows.FirstOrDefault()?.arrow != null)
             {
-                if (MimicK.mimicK == null || MimicA.mimicA == null)
+                if (MimicK.mimicK == null || mimicA == null)
                 {
-                    foreach (Arrow arrows in MimicA.arrows) arrows.arrow.SetActive(false);
+                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                     return;
                 }
             }            
-            if (CachedPlayer.LocalPlayer.PlayerControl != MimicA.mimicA) return;
+            if (CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
 
             if (mimicA.Data.IsDead)
             {
@@ -1850,9 +1851,9 @@ namespace TheOtherRoles
 
         public static void setDivinedFlag(PlayerControl player, bool flag)
         {
-            if (player == FortuneTeller.fortuneTeller)
+            if (player == fortuneTeller)
             {
-                FortuneTeller.divinedFlag = flag;
+                divinedFlag = flag;
             }
         }
 
@@ -1900,7 +1901,7 @@ namespace TheOtherRoles
             string msg = "";
             Color color = Color.white;
 
-            if (FortuneTeller.divineResult == DivineResults.BlackWhite)
+            if (divineResult == DivineResults.BlackWhite)
             {
                 if (!Helpers.isNeutral(p) && !p.Data.Role.IsImpostor)
                 {
@@ -1965,6 +1966,8 @@ namespace TheOtherRoles
             fortuneTeller = null;
             playerStatus = new Dictionary<byte, bool>();
             progress = new Dictionary<byte, float>();
+            numUsed = 0;
+            divinedFlag = false;
         }
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -2901,21 +2904,22 @@ namespace TheOtherRoles
                 {
                     if (p.Data.IsDead)
                     {
-                        if ((p.Data.Role.IsImpostor || p == Spy.spy) && impostorPositionText.ContainsKey(p.name))
+                        if ((p.Data.Role.IsImpostor || p == Spy.spy) && impostorPositionText.ContainsKey(p.Data.PlayerName))
                         {
-                            impostorPositionText[p.name].text = "";
+                            impostorPositionText[p.Data.PlayerName].text = "";
                         }
                         continue;
                     }
                     Arrow arrow;
-                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy))
+                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
+                        || (p == Jackal.jackal && Jackal.wasTeamRed))
                     {
                         arrow = new Arrow(Palette.ImpostorRed);
                         arrow.arrow.SetActive(true);
                         arrow.Update(p.transform.position);
                         arrows.Add(arrow);
                         count += 1;
-                        if (!impostorPositionText.ContainsKey(p.name))
+                        if (!impostorPositionText.ContainsKey(p.Data.PlayerName))
                         {
                             RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
                             if (roomTracker == null) return;
@@ -2926,17 +2930,17 @@ namespace TheOtherRoles
                             gameObject.transform.localScale = Vector3.one * 1.0f;
                             TMPro.TMP_Text positionText = gameObject.GetComponent<TMPro.TMP_Text>();
                             positionText.alpha = 1.0f;
-                            impostorPositionText.Add(p.name, positionText);
+                            impostorPositionText.Add(p.Data.PlayerName, positionText);
                         }
                         PlainShipRoom room = Helpers.getPlainShipRoom(p);
-                        impostorPositionText[p.name].gameObject.SetActive(true);
+                        impostorPositionText[p.Data.PlayerName].gameObject.SetActive(true);
                         if (room != null)
                         {
-                            impostorPositionText[p.name].text = "<color=#FF1919FF>" + $"{p.name}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                            impostorPositionText[p.Data.PlayerName].text = "<color=#FF1919FF>" + $"{p.Data.PlayerName}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
                         }
                         else
                         {
-                            impostorPositionText[p.name].text = "";
+                            impostorPositionText[p.Data.PlayerName].text = "";
                         }
                     }
                 }
@@ -2964,7 +2968,7 @@ namespace TheOtherRoles
                     targetPositionText.gameObject.SetActive(true);
                     if (room != null)
                     {
-                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
                     }
                     else
                     {
@@ -2989,8 +2993,22 @@ namespace TheOtherRoles
             evilTracker = null;
             target = null;
             currentTarget = null;
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
             arrows = new List<Arrow>();
+            if (impostorPositionText != null)
+            {
+                foreach (var p in impostorPositionText.Values)
+                    if (p != null)
+                        UnityEngine.Object.Destroy(p);
+            }
             impostorPositionText = new();
+            if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText);
+            targetPositionText = null;
 
             cooldown = CustomOptionHolder.evilTrackerCooldown.getFloat();
             resetTargetAfterMeeting = CustomOptionHolder.evilTrackerResetTargetAfterMeeting.getBool();
@@ -3248,11 +3266,11 @@ namespace TheOtherRoles
                     }
                     if (room != null)
                     {
-                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}({nearestPlayer})(" + DestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}({nearestPlayer})(" + DestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
                     }
                     else
                     {
-                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.name}({nearestPlayer})</color>";
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}({nearestPlayer})</color>";
                     }
                 }
                 else
@@ -3276,12 +3294,22 @@ namespace TheOtherRoles
             target = null;
             currentTarget = null;
             killTarget = null;
-            brainwashed = new List<PlayerControl> ();
+            brainwashed = new List<PlayerControl>();
             counter = 0;
             triggerMoriartyWin = false;
             brainwashCooldown = CustomOptionHolder.moriartyBrainwashCooldown.getFloat();
             brainwashTime = CustomOptionHolder.moriartyBrainwashTime.getFloat();
             numberToWin = (int)CustomOptionHolder.moriartyNumberToWin.getFloat();
+
+            if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText);
+            targetPositionText = null;
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            arrows = new List<Arrow>();
         }
     }
 

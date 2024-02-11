@@ -488,6 +488,7 @@ namespace TheOtherRoles {
         public static CustomOption airshipLadder;
         public static CustomOption airshipOptimize;
         public static CustomOption airshipAdditionalSpawn;
+        public static CustomOption fungleElectrical;
         public static CustomOption randomGameStartPosition;
 
         public static CustomOption dynamicMap;
@@ -496,6 +497,7 @@ namespace TheOtherRoles {
         public static CustomOption dynamicMapEnablePolus;
         public static CustomOption dynamicMapEnableAirShip;
         public static CustomOption dynamicMapEnableSubmerged;
+        public static CustomOption dynamicMapEnableFungle;
         public static CustomOption dynamicMapSeparateSettings;
 
         //Guesser Gamemode
@@ -1084,6 +1086,7 @@ namespace TheOtherRoles {
             airshipLadder = CustomOption.Create(6070, Types.General, ModTranslation.getString("airshipLadder"), false);
             airshipOptimize = CustomOption.Create(6072, Types.General, ModTranslation.getString("airshipOptimize"), false);
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, ModTranslation.getString("airshipAdditionalSpawn"), false);
+            fungleElectrical = CustomOption.Create(6074, Types.General, ModTranslation.getString("fungleElectrical"), false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, ModTranslation.getString("randomGameStartPosition"), false);
 
 
@@ -1093,7 +1096,8 @@ namespace TheOtherRoles {
             dynamicMapEnablePolus = CustomOption.Create(503, Types.General, "Polus", rates, dynamicMap, false);
             dynamicMapEnableAirShip = CustomOption.Create(504, Types.General, "Airship", rates, dynamicMap, false);
             dynamicMapEnableSubmerged = CustomOption.Create(505, Types.General, "Submerged", rates, dynamicMap, false);
-            dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, "Use Random Map Setting Presets", false, dynamicMap, false);
+            dynamicMapEnableFungle = CustomOption.Create(506, Types.General, "Fungle", rates, dynamicMap, false);
+            dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, ModTranslation.getString("dynamicMapSeparateSettings"), false, dynamicMap, false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});
