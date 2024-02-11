@@ -3,6 +3,7 @@ using HarmonyLib;
 using System.Linq;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
+using Hazel;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch]
@@ -36,14 +37,36 @@ namespace TheOtherRoles.Modules {
                             }
                         }
                     }
-                }
-                if (text.ToLower().StartsWith("/help"))
-                {
-                    __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "Help Command\nIf you are host,you can use /kick and /ban\nFor Example,You can use '/kick Tester' to kick player Tester.\nAlso You can use '/ban Tester' to ban Player 'Tester'");
-                    __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "If you are not host,\nyou can use /tp to teleport yourself to somebody.For Example,You can use '/tp tester' to teleport to player 'Tester' after you died.(Host Also)");
-                    handled = true;
+                    else if (text.ToLower().StartsWith("/gm"))
+                    {
+                        string gm = text.Substring(4).ToLower();
+                        CustomGamemodes gameMode = CustomGamemodes.Classic;
+                        if (gm.StartsWith("guess") || gm.StartsWith("gm")) // /gm guess -> guesser
+                        {
+                            gameMode = CustomGamemodes.Guesser;
+                        }
+                        else if (gm.StartsWith("hide") || gm.StartsWith("hn")) // /gm hide -> hide N seek
+                        {
+                            gameMode = CustomGamemodes.HideNSeek;
+                        }
+                        // else its classic!
 
+                        if (AmongUsClient.Instance.AmHost)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
+                            writer.Write((byte)TORMapOptions.gameMode);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.shareGamemode((byte)gameMode);
+                            RPCProcedure.shareGamemode((byte)TORMapOptions.gameMode);
+                        }
+                        else
+                        {
+                            __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, ModTranslation.getString("switchGamemodeFailed"));
+                        }
+                        handled = true;
+                    }
                 }
+                
                 if (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay) {
                     if (text.ToLower().Equals("/murder")) {
                         CachedPlayer.LocalPlayer.PlayerControl.Exiled();
@@ -70,8 +93,7 @@ namespace TheOtherRoles.Modules {
                     }
                 }
 
-
-                    if (handled) {
+                if (handled) {
                     __instance.freeChatField.Clear();
                     __instance.quickChatMenu.Clear();
                 }
@@ -81,7 +103,8 @@ namespace TheOtherRoles.Modules {
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class EnableChat {
             public static void Postfix(HudManager __instance) {
-                if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (CachedPlayer.LocalPlayer.PlayerControl.isLover() && Lovers.enableChat)))
+                if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (CachedPlayer.LocalPlayer.PlayerControl.isLover() && Lovers.enableChat) || (Cupid.lovers1 != null
+                    && Cupid.lovers2 != null && (CachedPlayer.LocalPlayer.PlayerControl == Cupid.lovers1 || CachedPlayer.LocalPlayer.PlayerControl == Cupid.lovers2))))
                     __instance.Chat.SetVisible(true);
             }
         }
@@ -100,7 +123,8 @@ namespace TheOtherRoles.Modules {
                 if (__instance != FastDestroyableSingleton<HudManager>.Instance.Chat)
                     return true;
                 PlayerControl localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
-                return localPlayer == null || (MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead || localPlayer.isLover() && Lovers.enableChat) || (int)sourcePlayer.PlayerId == (int)CachedPlayer.LocalPlayer.PlayerId);
+                return localPlayer == null || (MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead || (localPlayer.isLover() && Lovers.enableChat) || (Cupid.lovers1 != null
+                    && Cupid.lovers2 != null && (CachedPlayer.LocalPlayer.PlayerControl == Cupid.lovers1 || CachedPlayer.LocalPlayer.PlayerControl == Cupid.lovers2))) || (int)sourcePlayer.PlayerId == (int)CachedPlayer.LocalPlayer.PlayerId);
 
             }
         }
