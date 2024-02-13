@@ -96,6 +96,7 @@ namespace TheOtherRoles
         EvilHacker,
         Undertaker,
         Trapper,
+        Blackmailer,
         Opportunist,
         Madmate,
         //Bomber,
@@ -234,7 +235,9 @@ namespace TheOtherRoles
         TeleporterTeleport,
         SetCupidLovers,
         CupidSuicide,
-        SetCupidShield
+        SetCupidShield,
+        BlackmailPlayer,
+        UnblackmailPlayer
     }
 
     public static class RPCProcedure {
@@ -457,6 +460,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Sherlock:
                         Sherlock.sherlock = player;
+                        break;
+                    case RoleId.Blackmailer:
+                        Blackmailer.blackmailer = player;
                         break;
                     case RoleId.SecurityGuard:
                         SecurityGuard.securityGuard = player;
@@ -900,6 +906,7 @@ namespace TheOtherRoles
             if (player == BountyHunter.bountyHunter) BountyHunter.bountyHunter = oldShifter;
             if (player == Vampire.vampire) Vampire.vampire = oldShifter;
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.createdMadmate = oldShifter;
+            if (player == Blackmailer.blackmailer) Blackmailer.blackmailer = oldShifter;
             if (player == MimicK.mimicK)
             {
                 MimicK.mimicK = oldShifter;
@@ -1247,6 +1254,7 @@ namespace TheOtherRoles
             if (player == BomberB.bomberB) BomberB.clearAndReload();
             if (player == EvilHacker.evilHacker) EvilHacker.clearAndReload();
             if (player == Trapper.trapper) Trapper.clearAndReload();
+            if (player == Blackmailer.blackmailer) Blackmailer.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -1569,6 +1577,18 @@ namespace TheOtherRoles
             Cupid.lovers2 = p2;
             Cupid.breakLovers(p1);
             Cupid.breakLovers(p2);
+        }
+
+        public static void blackmailPlayer(byte playerId)
+        {
+            PlayerControl target = Helpers.playerById(playerId);
+            Blackmailer.blackmailed = target;
+        }
+
+        public static void unblackmailPlayer()
+        {
+            Blackmailer.blackmailed = null;
+            Blackmailer.alreadyShook = false;
         }
 
         public static void akujoSetHonmei(byte akujoId, byte targetId)
@@ -2042,6 +2062,7 @@ namespace TheOtherRoles
             if (target == Undertaker.undertaker) Undertaker.undertaker = thief;
             if (target == EvilHacker.evilHacker) EvilHacker.evilHacker = thief;
             if (target == Trapper.trapper) Trapper.trapper = thief;
+            if (target == Blackmailer.blackmailer) Blackmailer.blackmailer = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -2428,6 +2449,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.AkujoSuicide:
                     RPCProcedure.akujoSuicide(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.BlackmailPlayer:
+                    RPCProcedure.blackmailPlayer(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.UnblackmailPlayer:
+                    RPCProcedure.unblackmailPlayer();
                     break;
                 case (byte)CustomRPC.UndertakerDragBody:
                     var bodyId = reader.ReadByte();

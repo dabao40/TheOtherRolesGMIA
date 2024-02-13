@@ -278,6 +278,9 @@ namespace TheOtherRoles {
         public static CustomOption tricksterLightsOutCooldown;
         public static CustomOption tricksterLightsOutDuration;
 
+        public static CustomOption blackmailerSpawnRate;
+        public static CustomOption blackmailerCooldown;
+
         public static CustomOption nekoKabochaSpawnRate;
         public static CustomOption nekoKabochaRevengeCrew;
         public static CustomOption nekoKabochaRevengeNeutral;
@@ -661,6 +664,9 @@ namespace TheOtherRoles {
             undertakerSpawnRate = CustomOption.Create(4056, Types.Impostor, cs(Undertaker.color, ModTranslation.getString("undertaker")), rates, null, true);
             undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, ModTranslation.getString("undertakerSpeedDecrease"), -50f, -80f, 0f, 10f, undertakerSpawnRate);
             undertakerDisableVent = CustomOption.Create(4058, Types.Impostor, ModTranslation.getString("undertakerDisableVent"), true, undertakerSpawnRate);
+
+            blackmailerSpawnRate = CustomOption.Create(710, Types.Impostor, cs(Blackmailer.color, ModTranslation.getString("blackmailer")), rates, null, true);
+            blackmailerCooldown = CustomOption.Create(711, Types.Impostor, ModTranslation.getString("blackmailerCooldown"), 30f, 5f, 120f, 5f, blackmailerSpawnRate);
 
             evilHackerSpawnRate = CustomOption.Create(8001, Types.Impostor, cs(EvilHacker.color, ModTranslation.getString("evilHacker")), rates, null, true);
             evilHackerCanHasBetterAdmin = CustomOption.Create(8002, Types.Impostor, ModTranslation.getString("evilHackerCanHasBetterAdmin"), false, evilHackerSpawnRate);

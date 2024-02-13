@@ -78,6 +78,7 @@ namespace TheOtherRoles
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
         public static CustomButton trapperSetTrapButton;
+        public static CustomButton blackmailerButton;
         public static CustomButton moriartyBrainwashButton;
         public static CustomButton moriartyKillButton;
         public static CustomButton akujoHonmeiButton;
@@ -195,6 +196,7 @@ namespace TheOtherRoles
             moriartyKillButton.MaxTimer = 0f;
             cupidArrowButton.MaxTimer = 0f;
             cupidShieldButton.MaxTimer = 0f;
+            blackmailerButton.MaxTimer = Blackmailer.cooldown;
             jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
             jekyllAndHydeSuicideButton.MaxTimer = JekyllAndHyde.suicideTimer;
             jekyllAndHydeDrugButton.MaxTimer = 0f;
@@ -1454,6 +1456,34 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("MadmateText")
             );
+
+            blackmailerButton = new CustomButton(
+               () => { // Action when Pressed
+                   if (Blackmailer.currentTarget != null)
+                   {
+                       if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Blackmailer.currentTarget)
+                       {
+                           Helpers.checkMurderAttemptAndKill(Veteran.veteran, Blackmailer.blackmailer);
+                           return;
+                       }
+
+                       MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BlackmailPlayer, Hazel.SendOption.Reliable, -1);
+                       writer.Write(Blackmailer.currentTarget.PlayerId);
+                       AmongUsClient.Instance.FinishRpcImmediately(writer);
+                       RPCProcedure.blackmailPlayer(Blackmailer.currentTarget.PlayerId);
+                       blackmailerButton.Timer = blackmailerButton.MaxTimer;
+                       SoundEffectsManager.play("blackmailerSilence");
+                   }
+               },
+               () => { return Blackmailer.blackmailer != null && Blackmailer.blackmailer == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
+               () => { return (Blackmailer.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove); },
+               () => { blackmailerButton.Timer = blackmailerButton.MaxTimer; },
+               Blackmailer.getBlackmailButtonSprite(),
+               CustomButton.ButtonPositions.upperRowLeft, //brb
+               __instance,
+               KeyCode.F,
+               buttonText: ModTranslation.getString("BlackmailerText")
+           );
 
             // Sidekick Kill
             sidekickKillButton = new CustomButton(
@@ -3260,6 +3290,8 @@ namespace TheOtherRoles
                    CachedPlayer.LocalPlayer.NetTransform.Halt(); // Stop current movement 
                    Mayor.remoteMeetingsLeft--;
 	               Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+                   Helpers.HandleUndertakerDropOnBodyReport();
+                   Helpers.handleTrapperTrapOnBodyReport();
                    RPCProcedure.uncheckedCmdReportDeadBody(CachedPlayer.LocalPlayer.PlayerId, Byte.MaxValue);
 
                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);

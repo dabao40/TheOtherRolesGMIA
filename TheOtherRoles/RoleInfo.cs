@@ -92,6 +92,7 @@ namespace TheOtherRoles
         public static RoleInfo evilSwapper = new RoleInfo(ModTranslation.getString("evilSwapper"), Palette.ImpostorRed, ModTranslation.getString("evilSwapperIntroDesc"), ModTranslation.getString("evilSwapperShortDesc"), RoleId.Swapper);
         public static RoleInfo evilHacker = new RoleInfo(ModTranslation.getString("evilHacker"), EvilHacker.color, ModTranslation.getString("evilHackerIntroDesc"), ModTranslation.getString("evilHackerShortDesc"), RoleId.EvilHacker);
         public static RoleInfo trapper = new RoleInfo(ModTranslation.getString("trapper"), Trapper.color, ModTranslation.getString("trapperIntroDesc"), ModTranslation.getString("trapperShortDesc"), RoleId.Trapper);
+        public static RoleInfo blackmailer = new RoleInfo(ModTranslation.getString("blackmailer"), Blackmailer.color, ModTranslation.getString("blackmailerIntroDesc"), ModTranslation.getString("blackmailerShortDesc"), RoleId.Blackmailer);
         public static RoleInfo fortuneTeller = new RoleInfo(ModTranslation.getString("fortuneTeller"), FortuneTeller.color, ModTranslation.getString("fortuneTellerIntroDesc"), ModTranslation.getString("fortuneTellerShortDesc"), RoleId.FortuneTeller);
         public static RoleInfo veteran = new RoleInfo(ModTranslation.getString("veteran"), Veteran.color, ModTranslation.getString("veteranIntroDesc"), ModTranslation.getString("veteranShortDesc"), RoleId.Veteran);
         public static RoleInfo sprinter = new RoleInfo(ModTranslation.getString("sprinter"), Sprinter.color, ModTranslation.getString("sprinterIntroDesc"), ModTranslation.getString("sprinterShortDesc"), RoleId.Sprinter);
@@ -151,6 +152,7 @@ namespace TheOtherRoles
             evilSwapper,
             trapper,
             undertaker,
+            blackmailer,
             mimicK,
             mimicA,
             bomberA,
@@ -287,6 +289,7 @@ namespace TheOtherRoles
             if (p == Akujo.akujo) infos.Add(akujo);
             if (p == Teleporter.teleporter) infos.Add(teleporter);
             if (p == Cupid.cupid) infos.Add(cupid);
+            if (p == Blackmailer.blackmailer) infos.Add(blackmailer);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)

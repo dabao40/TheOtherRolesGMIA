@@ -80,6 +80,7 @@ namespace TheOtherRoles
             BomberB.clearAndReload();
             EvilHacker.clearAndReload();
             Trapper.clearAndReload();
+            Blackmailer.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
             Veteran.clearAndReload();
@@ -2527,6 +2528,43 @@ namespace TheOtherRoles
             canCreateMadmateFromJackal = CustomOptionHolder.evilHackerCanCreateMadmateFromJackal.getBool();
             canInheritAbility = CustomOptionHolder.evilHackerCanInheritAbility.getBool();
             canSeeDoorStatus = CustomOptionHolder.evilHackerCanSeeDoorStatus.getBool();
+        }
+    }
+
+    public static class Blackmailer
+    {
+        public static PlayerControl blackmailer;
+        public static Color color = Palette.ImpostorRed;
+        public static Color blackmailedColor = Palette.White;
+
+        public static bool alreadyShook = false;
+        public static PlayerControl blackmailed;
+        public static PlayerControl currentTarget;
+        public static float cooldown = 30f;
+        private static Sprite blackmailButtonSprite;
+        private static Sprite overlaySprite;
+
+        public static Sprite getBlackmailOverlaySprite()
+        {
+            if (overlaySprite) return overlaySprite;
+            overlaySprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BlackmailerOverlay.png", 100f);
+            return overlaySprite;
+        }
+
+        public static Sprite getBlackmailButtonSprite()
+        {
+            if (blackmailButtonSprite) return blackmailButtonSprite;
+            blackmailButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BlackmailerBlackmailButton.png", 115f);
+            return blackmailButtonSprite;
+        }
+
+        public static void clearAndReload()
+        {
+            blackmailer = null;
+            currentTarget = null;
+            blackmailed = null;
+            alreadyShook = false;
+            cooldown = CustomOptionHolder.blackmailerCooldown.getFloat();
         }
     }
 
