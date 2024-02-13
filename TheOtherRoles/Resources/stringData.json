@@ -4233,6 +4233,26 @@
         "11": "\u30ad\u30e5\u30fc\u30d4\u30c3\u30c9\u306e\u30b7\u30fc\u30eb\u30c9\u767a\u52d5",
         "13": "\u5f00\u542f\u4e18\u6bd4\u7279\u66ff\u6b7b\u62a4\u76fe"
     },
+    "blackmailer": {
+        "0": "Blackmailer",
+        "13": "\u52d2\u7d22\u8005"
+    },
+    "blackmailerIntroDesc": {
+        "0": "Blackmail those who seek to hurt you",
+        "13": "\u4e0d\u8bb8\u8bf4\u8bdd\uff01"
+    },
+    "blackmailerShortDesc": {
+        "0": "Blackmail those who seek to hurt you",
+        "13": "\u52d2\u7d22\u8bd5\u56fe\u4f24\u5bb3\u4f60\u7684\u73a9\u5bb6"
+    },
+    "blackmailerCooldown": {
+        "0": "Blackmailer Cooldown",
+        "13": "\u52d2\u7d22\u51b7\u5374\u65f6\u95f4"
+    },
+    "blackmailerBlackmailText": {
+        "0": "YOU ARE BLACKMAILED",
+        "13": "\u4f60\u88ab\u52d2\u7d22\u4e86\uff01"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "13": "\u9c91\u9c7c\u7ea2"
@@ -4516,5 +4536,9 @@
     "CupidArrowText": {
         "0": "[BLANK]",
         "13": "\u7231\u4e4b\u7bad"
+    },
+    "BlackmailerText": {
+        "0": "[BLANK]",
+        "13": "\u52d2\u7d22"
     }
 }
