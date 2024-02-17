@@ -268,6 +268,15 @@ namespace TheOtherRoles {
         public static CustomOption taskMasterExtraShortTasks;
         public static CustomOption taskMasterExtraLongTasks;
 
+        public static CustomOption prophetSpawnRate;
+        public static CustomOption prophetCooldown;
+        public static CustomOption prophetNumExamines;
+        public static CustomOption prophetPowerCrewAsRed;
+        public static CustomOption prophetNeutralAsRed;
+        public static CustomOption prophetCanCallEmergency;
+        public static CustomOption prophetIsRevealed;
+        public static CustomOption prophetExaminesToBeRevealed;
+
         public static CustomOption teleporterSpawnRate;
         public static CustomOption teleporterCooldown;
         public static CustomOption teleporterSampleCooldown;
@@ -492,6 +501,7 @@ namespace TheOtherRoles {
         public static CustomOption airshipOptimize;
         public static CustomOption airshipAdditionalSpawn;
         public static CustomOption fungleElectrical;
+        public static CustomOption miraVitals;
         public static CustomOption randomGameStartPosition;
 
         public static CustomOption dynamicMap;
@@ -844,7 +854,7 @@ namespace TheOtherRoles {
             lighterCanSeeInvisible = CustomOption.Create(114, Types.Crewmate, ModTranslation.getString("lighterCanSeeInvisible"), true, lighterSpawnRate);
 
             sprinterSpawnRate = CustomOption.Create(4005, Types.Crewmate, cs(Sprinter.color, ModTranslation.getString("sprinter")), rates, null, true);
-            sprinterCooldown = CustomOption.Create(4006, Types.Crewmate, ModTranslation.getString("sprinterCooldown"), 30f, 20f, 60f, 2.5f, sprinterSpawnRate);
+            sprinterCooldown = CustomOption.Create(4006, Types.Crewmate, ModTranslation.getString("sprinterCooldown"), 30f, 2.5f, 60f, 2.5f, sprinterSpawnRate);
             sprinterDuration = CustomOption.Create(4007, Types.Crewmate, ModTranslation.getString("sprintDuration"), 15f, 10f, 60f, 2.5f, sprinterSpawnRate);
             sprinterFadeTime = CustomOption.Create(4008, Types.Crewmate, ModTranslation.getString("sprintFadeTime"), 0.5f, 0.0f, 2.5f, 0.5f, sprinterSpawnRate);
 
@@ -896,6 +906,15 @@ namespace TheOtherRoles {
             veteranAlertDuration = CustomOption.Create(4052, Types.Crewmate, ModTranslation.getString("veteranAlertDuration"), 3f, 1f, 20f, 1f, veteranSpawnRate);
             veteranAlertNumber = CustomOption.Create(4053, Types.Crewmate, ModTranslation.getString("veteranAlertNumber"), 5f, 1f, 15f, 1f, veteranSpawnRate);
 
+            prophetSpawnRate = CustomOption.Create(9005, Types.Crewmate, cs(Prophet.color, ModTranslation.getString("prophet")), rates, null, true);
+            prophetCooldown = CustomOption.Create(9011, Types.Crewmate, ModTranslation.getString("prophetCooldown"), 30f, 5f, 60f, 1f, prophetSpawnRate);
+            prophetNumExamines = CustomOption.Create(9006, Types.Crewmate, ModTranslation.getString("prophetNumExamines"), 4f, 1f, 10f, 1f, prophetSpawnRate);
+            prophetCanCallEmergency = CustomOption.Create(9007, Types.Crewmate, ModTranslation.getString("prophetCanCallEmergency"), false, prophetSpawnRate);
+            prophetIsRevealed = CustomOption.Create(9012, Types.Crewmate, ModTranslation.getString("prophetIsRevealed"), true, prophetSpawnRate);
+            prophetExaminesToBeRevealed = CustomOption.Create(9008, Types.Crewmate, ModTranslation.getString("prophetExaminesToBeRevealed"), 3f, 1f, 10f, 1f, prophetIsRevealed);
+            prophetNeutralAsRed = CustomOption.Create(9009, Types.Crewmate, ModTranslation.getString("prophetNeutralAsRed"), true, prophetSpawnRate);
+            prophetPowerCrewAsRed = CustomOption.Create(9010, Types.Crewmate, ModTranslation.getString("prophetPowerCrewAsRed"), false, prophetSpawnRate);
+            
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, ModTranslation.getString("teleporter")), rates, null, true);
             teleporterSampleCooldown = CustomOption.Create(9004, Types.Crewmate, ModTranslation.getString("teleporterSampleCooldown"), 30f, 5f, 60f, 5f, teleporterSpawnRate);
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, ModTranslation.getString("teleporterCooldown"), 30f, 5f, 120f, 5f, teleporterSpawnRate);
@@ -1089,6 +1108,7 @@ namespace TheOtherRoles {
             camsNoNightVisionIfImpVision = CustomOption.Create(12, Types.General, ModTranslation.getString("camsNoNightVisionIfImpVision"), false, camsNightVision, false);
             additionalVents = CustomOption.Create(5060, Types.General, ModTranslation.getString("additionalVents"), false);
             specimenVital = CustomOption.Create(5061, Types.General, ModTranslation.getString("specimenVital"), false);
+            miraVitals = CustomOption.Create(6075, Types.General, ModTranslation.getString("miraVitals"), false);
             airshipLadder = CustomOption.Create(6070, Types.General, ModTranslation.getString("airshipLadder"), false);
             airshipOptimize = CustomOption.Create(6072, Types.General, ModTranslation.getString("airshipOptimize"), false);
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, ModTranslation.getString("airshipAdditionalSpawn"), false);

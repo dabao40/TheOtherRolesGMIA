@@ -67,6 +67,7 @@ namespace TheOtherRoles
         public static List<CustomButton> fortuneTellerButtons;
         public static CustomButton veteranAlertButton;
         public static CustomButton undertakerDragButton;
+        public static CustomButton prophetButton;
         public static CustomButton mimicAAdminButton;
         public static CustomButton mimicAMorphButton;
         public static CustomButton sherlockInvestigateButton;
@@ -122,6 +123,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text teleporterNumLeftText;
         public static TMPro.TMP_Text teleporterTarget1Text; 
         public static TMPro.TMP_Text teleporterTarget2Text;
+        public static TMPro.TMP_Text prophetButtonText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
@@ -202,6 +204,7 @@ namespace TheOtherRoles
             jekyllAndHydeDrugButton.MaxTimer = 0f;
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
+            prophetButton.MaxTimer = Prophet.cooldown;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -1456,6 +1459,45 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("MadmateText")
             );
+
+            prophetButton = new CustomButton(
+                () =>
+                {
+                    if (Prophet.currentTarget != null)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ProphetExamine, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Prophet.currentTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.prophetExamine(Prophet.currentTarget.PlayerId);
+                        prophetButton.Timer = prophetButton.MaxTimer;
+                    }
+                },
+                () => { return Prophet.prophet != null && CachedPlayer.LocalPlayer.PlayerControl == Prophet.prophet && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Prophet.examinesLeft > 0; },
+                () =>
+                {
+                    if (prophetButtonText != null)
+                    {
+                        if (Prophet.examinesLeft > 0)
+                            prophetButtonText.text = $"{Prophet.examinesLeft}";
+                        else
+                            prophetButtonText.text = "";
+                    }
+                    return Prophet.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () => { prophetButton.Timer = prophetButton.MaxTimer; },
+                Prophet.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("ProphetText"),
+                abilityTexture: true
+            );
+
+            prophetButtonText = GameObject.Instantiate(prophetButton.actionButton.cooldownTimerText, prophetButton.actionButton.cooldownTimerText.transform.parent);
+            prophetButtonText.text = "";
+            prophetButtonText.enableWordWrapping = false;
+            prophetButtonText.transform.localScale = Vector3.one * 0.5f;
+            prophetButtonText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             blackmailerButton = new CustomButton(
                () => { // Action when Pressed

@@ -70,6 +70,7 @@ namespace TheOtherRoles
         Medium,
         Shifter, 
         Yasuna,
+        Prophet,
         TaskMaster,
         Teleporter,
         EvilYasuna,
@@ -237,7 +238,8 @@ namespace TheOtherRoles
         CupidSuicide,
         SetCupidShield,
         BlackmailPlayer,
-        UnblackmailPlayer
+        UnblackmailPlayer,
+        ProphetExamine
     }
 
     public static class RPCProcedure {
@@ -463,6 +465,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Blackmailer:
                         Blackmailer.blackmailer = player;
+                        break;
+                    case RoleId.Prophet:
+                        Prophet.prophet = player;
                         break;
                     case RoleId.SecurityGuard:
                         SecurityGuard.securityGuard = player;
@@ -885,6 +890,8 @@ namespace TheOtherRoles
                 TaskMaster.taskMaster = oldShifter;
             if (Teleporter.teleporter != null && Teleporter.teleporter == player)
                 Teleporter.teleporter = oldShifter;
+            if (Prophet.prophet != null && Prophet.prophet == player)
+                Prophet.prophet = oldShifter;
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
@@ -1091,6 +1098,16 @@ namespace TheOtherRoles
             return;
         }
 
+        public static void prophetExamine(byte targetId)
+        {
+            var target = Helpers.playerById(targetId);
+            if (target == null) return;
+            if (Prophet.examined.ContainsKey(target)) Prophet.examined.Remove(target);
+            Prophet.examined.Add(target, Prophet.isKiller(target));
+            Prophet.examinesLeft--;
+            if ((Prophet.examineNum - Prophet.examinesLeft >= Prophet.examinesToBeRevealed) && Prophet.revealProphet) Prophet.isRevealed = true;
+        }
+
         // Hmm... Lots of bugs huh?
         public static void fortuneTellerUsedDivine(byte fortuneTellerId, byte targetId)
         {
@@ -1228,6 +1245,7 @@ namespace TheOtherRoles
             if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.clearAndReload();
             if (player == Teleporter.teleporter) Teleporter.clearAndReload();
+            if (player == Prophet.prophet) Prophet.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -1397,7 +1415,6 @@ namespace TheOtherRoles
             PlayerControl player = Helpers.playerById(playerId);
             //if (Camouflager.camouflageTimer <= 0) player.setDefaultLook();
             Ninja.setStealthed(player, stealthed);
-            Ninja.invisibleTimer = Ninja.stealthDuration;
         }
 
         public static void nekoKabochaExile(byte targetId)
@@ -1418,8 +1435,31 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             Sprinter.setSprinting(player, sprinting);
-            //if (Camouflager.camouflageTimer <= 0) player.setDefaultLook();
-            Sprinter.invisibleTimer = Sprinter.sprintDuration;
+        }
+
+        public static void updateMeeting(byte targetId)
+        {
+            if (MeetingHud.Instance)
+            {
+                foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
+                {
+                    if (pva.TargetPlayerId == targetId)
+                    {
+                        pva.SetDead(pva.DidReport, true);
+                        pva.Overlay.gameObject.SetActive(true);
+                    }
+
+                    // Give players back their vote if target is shot dead
+                    if (pva.VotedFor != targetId) continue;
+                    pva.UnsetVote();
+                    var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
+                    if (!voteAreaPlayer.AmOwner) continue;
+                    MeetingHud.Instance.ClearVote();
+                }
+
+                if (AmongUsClient.Instance.AmHost)
+                    MeetingHud.Instance.CheckForEndVoting();
+            }
         }
 
         public static void teleporterTeleport(byte target1Id, byte target2Id)
@@ -1450,6 +1490,7 @@ namespace TheOtherRoles
             {
                 cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
                 GameHistory.overrideDeathReasonAndKiller(cupid, isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
+                if (MeetingHud.Instance) updateMeeting(cupidId);
             }
         }
 
@@ -1623,6 +1664,7 @@ namespace TheOtherRoles
             {
                 akujo.MurderPlayer(akujo, MurderResultFlags.Succeeded);
                 GameHistory.overrideDeathReasonAndKiller(akujo, DeadPlayer.CustomDeathReason.Loneliness);
+                if (MeetingHud.Instance) updateMeeting(akujoId);
             }
         }
 
@@ -2434,6 +2476,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.EvilHackerCreatesMadmate:
                     RPCProcedure.evilHackerCreatesMadmate(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ProphetExamine:
+                    RPCProcedure.prophetExamine(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.VeteranAlert:
                     RPCProcedure.veteranAlert();

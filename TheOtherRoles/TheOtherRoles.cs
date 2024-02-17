@@ -87,6 +87,7 @@ namespace TheOtherRoles
             Sherlock.clearAndReload();
             TaskMaster.clearAndReload();
             Yasuna.clearAndReload();
+            Prophet.clearAndReload();
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
             Teleporter.clearAndReload();
@@ -2850,24 +2851,6 @@ namespace TheOtherRoles
             return buttonSprite;
         }
 
-        public static void suicide()
-        {
-            byte targetId = SerialKiller.serialKiller.PlayerId;
-            MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SerialKillerSuicide, Hazel.SendOption.Reliable, -1);
-            //killWriter.Write(targetId);
-            AmongUsClient.Instance.FinishRpcImmediately(killWriter);
-            RPCProcedure.serialKillerSuicide(targetId);
-        }
-
-        public static void OnKill(PlayerControl target)
-        {
-            if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller) SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
-
-            //serialKillerButton.Timer = suicideTimer;            
-            HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;            
-            SerialKiller.isCountDown = true;
-        }
-
         public static void clearAndReload()
         {
             serialKiller = null;
@@ -2875,6 +2858,63 @@ namespace TheOtherRoles
             suicideTimer = Mathf.Max(CustomOptionHolder.serialKillerSuicideTimer.getFloat(), killCooldown + 2.5f);
             resetTimer = CustomOptionHolder.serialKillerResetTimer.getBool();
             isCountDown = false;
+        }
+    }
+
+    public static class Prophet
+    {
+        public static PlayerControl prophet;
+        public static Color32 color = new Color32(255, 204, 127, byte.MaxValue);
+
+        public static float cooldown = 30f;
+        public static bool powerCrewAsRed = false;
+        public static bool neutralAsRed = true;
+        public static bool canCallEmergency = false;
+        public static int examineNum = 3;
+        public static int examinesToBeRevealed = 1;
+        public static int examinesLeft;
+        public static bool revealProphet = true;
+        public static bool isRevealed = false;
+        public static List<Arrow> arrows = new List<Arrow>();
+
+        public static Dictionary<PlayerControl, bool> examined = new Dictionary<PlayerControl, bool>();
+        public static PlayerControl currentTarget;
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SeerButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static bool isKiller(PlayerControl p)
+        {
+            return Helpers.isKiller(p)
+                || ((p == Sheriff.sheriff || p == Deputy.deputy || p == Veteran.veteran || p == Mayor.mayor || p == Swapper.swapper || p == Guesser.niceGuesser || p == Yasuna.yasuna) && powerCrewAsRed) || (Helpers.isNeutral(p) && neutralAsRed);
+        }
+
+        public static void clearAndReload()
+        {
+            prophet = null;
+            currentTarget = null;
+            isRevealed = false;
+            examined = new Dictionary<PlayerControl, bool>();
+            revealProphet = CustomOptionHolder.prophetIsRevealed.getBool();
+            cooldown = CustomOptionHolder.prophetCooldown.getFloat();
+            examineNum = Mathf.RoundToInt(CustomOptionHolder.prophetNumExamines.getFloat());
+            powerCrewAsRed = CustomOptionHolder.prophetPowerCrewAsRed.getBool();
+            neutralAsRed = CustomOptionHolder.prophetNeutralAsRed.getBool();
+            canCallEmergency = CustomOptionHolder.prophetCanCallEmergency.getBool();
+            examinesToBeRevealed = Math.Min(examineNum, Mathf.RoundToInt(CustomOptionHolder.prophetExaminesToBeRevealed.getFloat()));
+            examinesLeft = examineNum;
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            arrows = new List<Arrow>();
         }
     }
 
@@ -3520,66 +3560,6 @@ namespace TheOtherRoles
             return flag;
         }
 
-        public static void UpdateStatusText()
-        {
-            //if (PlagueDoctor.plagueDoctor == null) return;
-            // Something will go wrong if the Plague Doctor hasn't infected anyone
-            //if (!hasInfected()) return;
-            if (MeetingHud.Instance != null)
-            {
-                if (statusText != null)
-                {
-                    statusText.gameObject.SetActive(false);
-                }
-                return;
-            }
-
-            if ((PlagueDoctor.plagueDoctor != null && CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor) || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
-            {
-                if (statusText == null)
-                {
-                    GameObject gameObject = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance?.roomTracker.gameObject);
-                    gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                    gameObject.SetActive(true);
-                    UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-                    statusText = gameObject.GetComponent<TMPro.TMP_Text>();
-                    gameObject.transform.localPosition = new Vector3(-2.7f, -0.1f, gameObject.transform.localPosition.z);
-
-                    statusText.transform.localScale = new Vector3(1f, 1f, 1f);
-                    statusText.fontSize = 1.5f;
-                    statusText.fontSizeMin = 1.5f;
-                    statusText.fontSizeMax = 1.5f;
-                    statusText.alignment = TMPro.TextAlignmentOptions.BottomLeft;
-                }
-
-                statusText.gameObject.SetActive(true);
-                string text = $"[Infection Progress]\n";
-
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
-                {
-                    if (p == PlagueDoctor.plagueDoctor) continue;
-                    if (dead.ContainsKey(p.PlayerId) && dead[p.PlayerId]) continue;
-                    text += $"{p.name}: ";
-                    if (infected.ContainsKey(p.PlayerId))
-                    {
-                        text += Helpers.cs(Color.red, "Infected");
-                    }
-                    else
-                    {
-                        // ¥Ç©`¥¿¤¬Ÿo¤¤ˆöºÏ¤Ï×÷³É¤¹¤ë
-                        if (!progress.ContainsKey(p.PlayerId))
-                        {
-                            progress[p.PlayerId] = 0f;
-                        }
-                        text += getProgressString(progress[p.PlayerId]);
-                    }
-                    text += "\n";
-                }
-
-                statusText.text = text;
-            }
-        }
-
         public static string getProgressString(float progress)
         {
             // Go from green -> yellow -> red based on infection progress
@@ -3594,6 +3574,28 @@ namespace TheOtherRoles
             return Helpers.cs(color, $"{progPercent.ToString("F1")}%");
         }
 
+        public static void checkWinStatus()
+        {
+            bool winFlag = true;
+            foreach (PlayerControl p in CachedPlayer.AllPlayers)
+            {
+                if (p.Data.IsDead) continue;
+                if (p == plagueDoctor) continue;
+                if (!infected.ContainsKey(p.PlayerId))
+                {
+                    winFlag = false;
+                    break;
+                }
+            }
+
+            if (winFlag)
+            {
+                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                RPCProcedure.plagueDoctorWin();
+            }
+        }
+
         public static void clearAndReload()
         {
             plagueDoctor = null;
@@ -3604,13 +3606,14 @@ namespace TheOtherRoles
             immunityTime = CustomOptionHolder.plagueDoctorImmunityTime.getFloat();
             infectKiller = CustomOptionHolder.plagueDoctorInfectKiller.getBool();
             canWinDead = CustomOptionHolder.plagueDoctorWinDead.getBool();
-
+            meetingFlag = false;
             triggerPlagueDoctorWin = false;
             numInfections = maxInfectable;
             currentTarget = null;
             infected = new Dictionary<int, PlayerControl>();
             progress = new Dictionary<int, float>();
             dead = new Dictionary<int, bool>();
+            if (statusText != null) UnityEngine.Object.Destroy(statusText);
             statusText = null;
         }
     }
@@ -3638,8 +3641,6 @@ namespace TheOtherRoles
         public static bool canUseVents = false;
         public static bool canBeTargeted;
         public static float addition = 0f;
-
-        public static float invisibleTimer = 0f;
 
         public static bool penalized = false;
         public static bool stealthed = false;
@@ -3797,7 +3798,6 @@ namespace TheOtherRoles
         public static float sprintCooldown = 30f;
         public static float sprintDuration = 15f;
         public static float fadeTime = 0.5f;
-        public static float invisibleTimer = 0f;
 
         public static bool sprinting = false;
 
