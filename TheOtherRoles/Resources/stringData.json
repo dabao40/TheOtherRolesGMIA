@@ -100,7 +100,7 @@
     "finishTasksBeforeHauntingOrZoomingOut": {
         "0": "Finish Tasks Before Haunting Or Zooming Out",
         "11": "\u30cf\u30f3\u30c8\u307e\u305f\u306f\u30ba\u30fc\u30e0\u30a2\u30a6\u30c8\u3059\u308b\u524d\u306b\u30bf\u30b9\u30af\u3092\u7d42\u4e86\u3059\u308b",
-        "13": "\u5728\u672a\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u524d\u4e0d\u53ef\u4ee5\u4f7f\u7528\u9b3c\u5f71\u5e7d\u5e7d\u53ca\u5343\u91cc\u773c"
+        "13": "\u5728\u672a\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u524d\u4e0d\u53ef\u4ee5\u4f7f\u7528\u5e7d\u5e7d\u9b3c\u5f71\u53ca\u5343\u91cc\u773c"
     },
     "camsNightVision": {
         "0": "Cams Switch To Night Vision If Lights Are Off",
@@ -121,6 +121,10 @@
         "0": "Move Vitals To Specimen Room (Polus)",
         "11": "\u30d0\u30a4\u30bf\u30eb\u3092\u6a19\u672c\u5ba4\u306b\u79fb\u52d5\uff08\u30dd\u30eb\u30b9\uff09",
         "13": "\u6ce2\u9c81\u65af\uff1a\u5c06\u751f\u547d\u68c0\u6d4b\u88c5\u7f6e\u79fb\u81f3\u6837\u672c\u5ba4"
+    },
+    "miraVitals": {
+        "0": "Create Vitals (Mira)",
+        "13": "\u7c73\u62c9\u603b\u90e8\uff1a\u589e\u52a0\u751f\u547d\u68c0\u6d4b\u88c5\u7f6e\uff08\u5b9e\u9a8c\u5ba4\uff09"
     },
     "airshipLadder": {
         "0": "Additional Ladder (Airship)",
@@ -3148,6 +3152,10 @@
         "0": "The Fortune Teller can't start an emergency meeting",
         "13": "\u5360\u535c\u5e08\u4e0d\u53ef\u4ee5\u53d1\u8d77\u7d27\u6025\u4f1a\u8bae"
     },
+    "prophetMeetingButton": {
+        "0": "The Prophet can't start an emergency meeting",
+        "13": "\u9884\u8a00\u5bb6\u4e0d\u53ef\u4ee5\u53d1\u8d77\u7d27\u6025\u4f1a\u8bae"
+    },
     "meetingStatus": {
         "0": "CREWMEMBER {0} HAS\n\n\nEMERGENCY MEETINGS LEFT",
         "11": "\u4e57\u54e1 {0} \u304c\u7dca\u6025\u4f1a\u8b70\u3092\u6b8b\u3057\u3066\u3044\u308b"
@@ -4253,6 +4261,46 @@
         "0": "YOU ARE BLACKMAILED",
         "13": "\u4f60\u88ab\u52d2\u7d22\u4e86\uff01"
     },
+    "prophet": {
+        "0": "Prophet",
+        "13": "\u9884\u8a00\u5bb6"
+    },
+    "prophetIntroDesc": {
+        "0": "Reveal the alliance of other players",
+        "13": "\u6211\u770b\u900f\u4e86\u4f60\u7684\u5fc3"
+    },
+    "prophetShortDesc": {
+        "0": "Reveal the alliance of other players",
+        "13": "\u901a\u8fc7\u9884\u8a00\u63ed\u793a\u5bf9\u65b9\u9635\u8425"
+    },
+    "prophetCooldown": {
+        "0": "Prophet Examination Cooldown",
+        "13": "\u9884\u8a00\u5bb6\u63ed\u793a\u51b7\u5374\u65f6\u95f4"
+    },
+    "prophetNumExamines": {
+        "0": "Prophet Number Of Examinations",
+        "13": "\u9884\u8a00\u5bb6\u63ed\u793a\u6b21\u6570"
+    },
+    "prophetCanCallEmergency": {
+        "0": "Prophet Can Call Emergency Meeting",
+        "13": "\u9884\u8a00\u5bb6\u53ef\u4ee5\u53ec\u5f00\u7d27\u6025\u4f1a\u8bae"
+    },
+    "prophetIsRevealed": {
+        "0": "Prophet Is Revealed To The Killers",
+        "13": "\u9884\u8a00\u5bb6\u53ef\u4ee5\u88ab\u6267\u5203\u8005\u53d1\u73b0"
+    },
+    "prophetExaminesToBeRevealed": {
+        "0": "Number Of Examinations Required To Be Revealed",
+        "13": "\u9884\u8a00\u5bb6\u88ab\u53d1\u73b0\u6240\u9700\u63ed\u793a\u6b21\u6570"
+    },
+    "prophetNeutralAsRed": {
+        "0": "Neutral Roles Shown As Evil",
+        "13": "\u4e2d\u7acb\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d"
+    },
+    "prophetPowerCrewAsRed": {
+        "0": "Power Crew Shown As Evil",
+        "13": "\u5f3a\u529b\u8239\u5458\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "13": "\u9c91\u9c7c\u7ea2"
@@ -4540,5 +4588,9 @@
     "BlackmailerText": {
         "0": "[BLANK]",
         "13": "\u52d2\u7d22"
+    },
+    "ProphetText": {
+        "0": "[BLANK]",
+        "13": "\u63ed\u793a"
     }
 }
