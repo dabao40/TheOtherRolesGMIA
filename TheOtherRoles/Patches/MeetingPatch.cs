@@ -10,7 +10,8 @@ using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using Innersloth.Assets;
-using TheOtherRoles.Modules;
+using Reactor.Utilities;
+using AmongUs.QuickChat;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -181,18 +182,9 @@ namespace TheOtherRoles.Patches {
                 parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
                 return false;
             }
-        }
+        } 
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.OnDestroy))]
-        class OnDestroyPatch
-        {
-            public static void Postfix()
-            {
-                GMIAAntiCheat.MeetingTimes = 0;
-            }
-        }
-
-                [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
         class MeetingHudPopulateVotesPatch {
             
             static bool Prefix(MeetingHud __instance, Il2CppStructArray<MeetingHud.VoterState> states) {
@@ -820,10 +812,12 @@ namespace TheOtherRoles.Patches {
                 // Resett Bait list
                 //Bait.active = new Dictionary<DeadPlayer, float>();
                 // Save AntiTeleport position, if the player is able to move (i.e. not on a ladder or a gap thingy)
-                if (CachedPlayer.LocalPlayer.PlayerPhysics.enabled && CachedPlayer.LocalPlayer.PlayerControl.moveable || CachedPlayer.LocalPlayer.PlayerControl.inVent
+                if (CachedPlayer.LocalPlayer.PlayerPhysics.enabled && (CachedPlayer.LocalPlayer.PlayerControl.moveable || CachedPlayer.LocalPlayer.PlayerControl.inVent
                     || HudManagerStartPatch.hackerVitalsButton.isEffectActive || HudManagerStartPatch.hackerAdminTableButton.isEffectActive || HudManagerStartPatch.securityGuardCamButton.isEffectActive
-                    || Portal.isTeleporting && Portal.teleportedPlayers.Last().playerId == CachedPlayer.LocalPlayer.PlayerId) {
-                    AntiTeleport.position = CachedPlayer.LocalPlayer.transform.position;
+                    || Portal.isTeleporting && Portal.teleportedPlayers.Last().playerId == CachedPlayer.LocalPlayer.PlayerId))
+                {
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.inMovingPlat)
+                        AntiTeleport.position = CachedPlayer.LocalPlayer.transform.position;
                 }
 
                 // Medium meeting start time
@@ -843,11 +837,18 @@ namespace TheOtherRoles.Patches {
 
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
+                PlagueDoctor.meetingFlag = true;
                 // Evil Tracker reset target
                 if (EvilTracker.resetTargetAfterMeeting) EvilTracker.target = null;
 
                 // Reset the victim for Mimic(Killer)
                 MimicK.victim = null;
+
+                // Blackmail target
+                if (Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    Coroutines.Start(Helpers.BlackmailShhh());
+                }
 
                 // Add Portal info into Portalmaker Chat:
                 if (Portalmaker.portalmaker != null && (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker || Helpers.shouldShowGhostInfo()) && !Portalmaker.portalmaker.Data.IsDead) {
@@ -935,6 +936,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
         class MeetingHudUpdatePatch {
+            public static Sprite Overlay => Blackmailer.getBlackmailOverlaySprite();
             static void Postfix(MeetingHud __instance) {
                 // Deactivate skip Button if skipping on emergency meetings is disabled
                 if (target == null && blockSkippingInEmergencyMeetings)
@@ -945,6 +947,45 @@ namespace TheOtherRoles.Patches {
                     // Remove first kill shield
                     TORMapOptions.firstKillPlayer = null;
                 }
+
+                if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null)
+                {
+                    // Blackmailer show overlay
+                    var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == Blackmailer.blackmailed.PlayerId);
+                    playerState.Overlay.gameObject.SetActive(true);
+                    playerState.Overlay.sprite = Overlay;
+                    if (__instance.state != MeetingHud.VoteStates.Animating && !Blackmailer.alreadyShook)
+                    {
+                        Blackmailer.alreadyShook = true;
+                        __instance.StartCoroutine(Effects.SwayX(playerState.transform));
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(QuickChatMenu), nameof(QuickChatMenu.Open))]
+        public class BlockQuickChatAbility
+        {
+            public static bool Prefix(QuickChatMenu __instance)
+            {
+                if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(TextBoxTMP), nameof(TextBoxTMP.SetText))]
+        public class BlockChatBlackmailed
+        {
+            public static bool Prefix(TextBoxTMP __instance)
+            {
+                if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    return false;
+                }
+                return true;
             }
         }
 

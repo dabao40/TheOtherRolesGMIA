@@ -95,7 +95,7 @@ namespace TheOtherRoles.Patches {
                     setPlayerNameColor(Sheriff.sheriff, Sheriff.color);
                 }
             }
-            if (Sheriff.sheriff != null && Sheriff.sheriff == localPlayer)
+            else if (Sheriff.sheriff != null && Sheriff.sheriff == localPlayer)
             {
                 setPlayerNameColor(Sheriff.sheriff, Sheriff.color);
                 if (Deputy.deputy != null && Deputy.knowsSheriff) setPlayerNameColor(Deputy.deputy, Sheriff.color);
@@ -147,6 +147,17 @@ namespace TheOtherRoles.Patches {
             else if (Yasuna.yasuna != null && Yasuna.yasuna == localPlayer)
             {
                 setPlayerNameColor(Yasuna.yasuna, localPlayer.Data.Role.IsImpostor ? Palette.ImpostorRed : Yasuna.color);
+            }
+            else if (Prophet.prophet != null && Prophet.prophet == localPlayer)
+            {
+                setPlayerNameColor(Prophet.prophet, Prophet.color);
+                if (Prophet.examined != null && !localPlayer.Data.IsDead) // Reset the name tags when Prophet is dead
+                {
+                    foreach (var p in Prophet.examined)
+                    {
+                        setPlayerNameColor(p.Key, p.Value ? Palette.ImpostorRed : Color.green);
+                    }
+                }
             }
             /*else if (Spy.spy != null && Spy.spy == localPlayer) {
                 setPlayerNameColor(Spy.spy, Spy.color);
@@ -355,9 +366,6 @@ namespace TheOtherRoles.Patches {
             Hacker.hackerTimer -= dt;
             Trickster.lightsOutTimer -= dt;
             Tracker.corpsesTrackingTimer -= dt;
-            //Assassin.invisibleTimer -= dt;
-            Ninja.invisibleTimer -= dt;
-            Sprinter.invisibleTimer -= dt;
             HideNSeek.timer -= dt;
             foreach (byte key in Deputy.handcuffedKnows.Keys)
                 Deputy.handcuffedKnows[key] -= dt;

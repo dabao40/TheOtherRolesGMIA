@@ -274,6 +274,12 @@ namespace TheOtherRoles.Patches {
                 roleCanCallEmergency = false;
                 statusText = ModTranslation.getString("fortuneTellerMeetingButton");
             }
+            // Potentially deactivate emergency button for Prophet
+            if (Prophet.prophet != null && Prophet.prophet == CachedPlayer.LocalPlayer.PlayerControl && !Prophet.canCallEmergency)
+            {
+                roleCanCallEmergency = false;
+                statusText = ModTranslation.getString("prophetMeetingButton");
+            }
 
             if (!roleCanCallEmergency) {
                 __instance.StatusText.text = statusText;
@@ -771,9 +777,6 @@ namespace TheOtherRoles.Patches {
 
             if (isLightsOut && !nightVisionIsActive && nightVisionEnabled && !ignoreNightVision) {  // only update when something changed!
                 foreach (PlayerControl pc in CachedPlayer.AllPlayers) {
-                    if (pc == Ninja.ninja && Ninja.invisibleTimer > 0f || pc == Sprinter.sprinter && Sprinter.invisibleTimer > 0f) {
-                        continue;
-                    }
                     pc.setLook("", 11, "", "", "", "", false);
                 }
                 foreach (var overlayObject in nightVisionOverlays) {
@@ -805,8 +808,6 @@ namespace TheOtherRoles.Patches {
                     } else if (pc == Morphling.morphling && Morphling.morphTimer > 0) {
                         PlayerControl target = Morphling.morphTarget;
                         Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
-                    } else if (pc == Ninja.ninja && Ninja.invisibleTimer > 0f || pc == Sprinter.sprinter && Sprinter.invisibleTimer > 0f) {
-                        continue;
                     } else {
                         Helpers.setDefaultLook(pc, false);
                     }

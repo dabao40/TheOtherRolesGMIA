@@ -125,6 +125,7 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.Undertaker, CustomOptionHolder.undertakerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.EvilHacker, CustomOptionHolder.evilHackerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Blackmailer, CustomOptionHolder.blackmailerSpawnRate.getSelection());
             //impSettings.Add((byte)RoleId.Bomber, CustomOptionHolder.bomberSpawnRate.getSelection());
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
@@ -165,6 +166,7 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Sherlock, CustomOptionHolder.sherlockSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.TaskMaster, CustomOptionHolder.taskMasterSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Teleporter, CustomOptionHolder.teleporterSpawnRate.getSelection());
+            crewSettings.Add((byte)RoleId.Prophet, CustomOptionHolder.prophetSpawnRate.getSelection());
             //crewSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.getSelection());
             //crewSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
             if (impostors.Count > 1) {
@@ -358,13 +360,8 @@ namespace TheOtherRoles.Patches {
                 crew--;
                 crewValues -= crewSteps;
             }
-            while (imp > 0 && (isEvilGuesser && !isGuesser)) { 
+            while (imp > 0 && ((isEvilGuesser && !isGuesser) || (isEvilWatcher && !isWatcher))) { 
                 if (rnd.Next(impValues) < CustomOptionHolder.guesserSpawnRate.getSelection()) isGuesser = true;
-                imp--;
-                impValues -= impSteps;
-            }
-            while (imp > 0 && (isEvilWatcher && !isWatcher))
-            {
                 if (rnd.Next(impValues) < CustomOptionHolder.watcherSpawnRate.getSelection()) isWatcher = true;
                 imp--;
                 impValues -= impSteps;
@@ -443,9 +440,7 @@ namespace TheOtherRoles.Patches {
                     data.maxImpostorRoles--;
                 }
                 else if (CustomOptionHolder.watcherSpawnBothRate.getSelection() < 10)
-                {
                     data.impSettings.Add((byte)RoleId.EvilWatcher, CustomOptionHolder.watcherSpawnBothRate.getSelection());
-                }
             }
             else if (isEvilWatcher && Watcher.evilwatcher != null)
             {
@@ -456,9 +451,7 @@ namespace TheOtherRoles.Patches {
                     data.maxCrewmateRoles--;
                 }
                 else if (CustomOptionHolder.watcherSpawnBothRate.getSelection() < 10)
-                {
                     data.crewSettings.Add((byte)RoleId.NiceWatcher, CustomOptionHolder.watcherSpawnBothRate.getSelection());
-                }
             }
         }
         private static void assignChanceRoles(RoleAssignmentData data) {
@@ -717,7 +710,7 @@ namespace TheOtherRoles.Patches {
             {
                 var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
                 crewPlayerMadmate.RemoveAll(x => x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
-                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter);
+                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
 
                 // Always remember to remove the Mad Sheriff if Deputy is assigned
                 if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);

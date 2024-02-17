@@ -181,9 +181,6 @@ namespace TheOtherRoles.Patches {
 
         static void sheriffSetTarget() {
             if (Sheriff.sheriff == null || Sheriff.sheriff != CachedPlayer.LocalPlayer.PlayerControl) return;
-            //var untargetablePlayers = new List<PlayerControl>();
-            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-            //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             Sheriff.currentTarget = setTarget();
             setPlayerOutline(Sheriff.currentTarget, Sheriff.color);
         }
@@ -264,8 +261,6 @@ namespace TheOtherRoles.Patches {
             if (Jackal.canCreateSidekickFromImpostor) {
                 // Only exclude sidekick from beeing targeted if the jackal can create sidekicks from impostors
                 if (Sidekick.sidekick != null) untargetablePlayers.Add(Sidekick.sidekick);
-                //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-                //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             }
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
             Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
@@ -277,8 +272,6 @@ namespace TheOtherRoles.Patches {
             var untargetablePlayers = new List<PlayerControl>();
             if (Jackal.jackal != null) untargetablePlayers.Add(Jackal.jackal);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Sidekick from targeting the Mini unless it has grown up
-            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetablePlayers.Add(Ninja.ninja);
-            //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetablePlayers.Add(Sprinter.sprinter);
             Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             if (Sidekick.canKill) setPlayerOutline(Sidekick.currentTarget, Palette.ImpostorRed);
         }
@@ -301,8 +294,6 @@ namespace TheOtherRoles.Patches {
             if (Spy.spy != null) untargetables.Add(Spy.spy);
             if (Sidekick.wasTeamRed) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
-            //if (Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
-            //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
             Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? new List<PlayerControl>() : untargetables);
             setPlayerOutline(Eraser.currentTarget, Eraser.color);
         }
@@ -550,6 +541,13 @@ namespace TheOtherRoles.Patches {
                 Warlock.curseVictimTarget = setTarget(targetingPlayer: Warlock.curseVictim);
                 setPlayerOutline(Warlock.curseVictimTarget, Warlock.color);
             }
+        }
+
+        static void prophetSetTarget()
+        {
+            if (Prophet.prophet == null ||CachedPlayer.LocalPlayer.PlayerControl != Prophet.prophet) return;
+            Prophet.currentTarget = setTarget();
+            if (Prophet.examinesLeft > 0) setPlayerOutline(Prophet.currentTarget, Prophet.color);
         }
 
         static void assassinUpdate()
@@ -1243,6 +1241,13 @@ namespace TheOtherRoles.Patches {
             setPlayerOutline(EvilHacker.currentTarget, EvilHacker.color);
         }
 
+        static void blackmailerSetTarget()
+        {
+            if (Blackmailer.blackmailer == null || Blackmailer.blackmailer != CachedPlayer.LocalPlayer.PlayerControl) return;
+            Blackmailer.currentTarget = setTarget();
+            setPlayerOutline(Blackmailer.currentTarget, Blackmailer.blackmailedColor);
+        }
+
         public static void lawyerUpdate() {
             if (Lawyer.lawyer == null || Lawyer.lawyer != CachedPlayer.LocalPlayer.PlayerControl) return;
 
@@ -1283,6 +1288,25 @@ namespace TheOtherRoles.Patches {
             if (Akujo.keeps != null) untargetables.AddRange(Akujo.keeps);
             Akujo.currentTarget = setTarget(untargetablePlayers: untargetables);
             if (Akujo.honmei == null || Akujo.keepsLeft > 0) setPlayerOutline(Akujo.currentTarget, Akujo.color);
+        }
+
+        static void prophetUpdate()
+        {
+            if (Prophet.arrows == null) return;
+
+            foreach (var arrow in Prophet.arrows) arrow.arrow.SetActive(false);
+
+            if (Prophet.prophet == null || Prophet.prophet.Data.IsDead) return;
+
+            if (Prophet.isRevealed && Helpers.isKiller(CachedPlayer.LocalPlayer.PlayerControl))
+            {
+                if (Prophet.arrows.Count == 0) Prophet.arrows.Add(new Arrow(Prophet.color));
+                if (Prophet.arrows.Count != 0 && Prophet.arrows[0] != null)
+                {
+                    Prophet.arrows[0].arrow.SetActive(true);
+                    Prophet.arrows[0].Update(Prophet.prophet.transform.position);
+                }
+            }
         }
 
         public static void cupidUpdate()
@@ -1847,6 +1871,11 @@ namespace TheOtherRoles.Patches {
                 // Cupid
                 cupidSetTarget();
                 cupidUpdate();
+                // Blackmailer
+                blackmailerSetTarget();
+                // Prophet
+                prophetSetTarget();
+                prophetUpdate();
                 // Plague Doctor
                 plagueDoctorSetTarget();
                 plagueDoctorUpdate();
@@ -2181,27 +2210,9 @@ namespace TheOtherRoles.Patches {
                 writer.Write(targetId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.plagueDoctorInfected(targetId);
-
-                // Force Plague Doctor trigger victory condition if the killer is the last one that is not infected
-                bool winFlag = true;
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
-                {
-                    if (p.Data.IsDead) continue;
-                    if (p == PlagueDoctor.plagueDoctor) continue;
-                    if (!PlagueDoctor.infected.ContainsKey(p.PlayerId))
-                    {
-                        winFlag = false;
-                        break;
-                    }
-                }
-
-                if (winFlag)
-                {
-                    MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                    RPCProcedure.plagueDoctorWin();
-                }
             }
+
+            if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
 
             // Mimic(Killer) morph into victim
             if (MimicK.mimicK != null && __instance == MimicK.mimicK)
@@ -2235,6 +2246,19 @@ namespace TheOtherRoles.Patches {
             {
                 MimicA.mimicA.setDefaultLook();
                 MimicA.isMorph = false;
+            }
+
+            // Set the correct opacity to the Ninja and Sprinter
+            if (Ninja.ninja != null && target == Ninja.ninja)
+            {
+                Ninja.stealthed = false;
+                Ninja.setOpacity(Ninja.ninja, 1.0f);
+            }
+
+            if (Sprinter.sprinter != null && target == Sprinter.sprinter)
+            {
+                Sprinter.sprinting = false;
+                Sprinter.setOpacity(Sprinter.sprinter, 1.0f);
             }
 
             // Mimic(Assistant) show flash
@@ -2577,6 +2601,9 @@ namespace TheOtherRoles.Patches {
                         MeetingHud.Instance.CheckForEndVoting();
                 }
             }
+
+            // Check Plague Doctor status
+            if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
 
             // Sidekick promotion trigger on exile
             if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && __instance == Jackal.jackal && Jackal.jackal == CachedPlayer.LocalPlayer.PlayerControl) {
