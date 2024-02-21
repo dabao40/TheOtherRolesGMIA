@@ -2259,7 +2259,7 @@ BepInEx - Used to hook game functions
 Essentials - Custom game options by DorCoMaNdO:  
 Before v1.6: We used the default Essentials release  
 v1.6-v1.8: We slightly changed the default Essentials.  
-Four Han sinicization group - Some of the pictures are made by them  
+Four-Han-sinicization-group - Some of the pictures are made by them  
 Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard  
 Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
 Jester - Idea for the Jester role came from Maartii  
@@ -2271,7 +2271,7 @@ Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottoma
 Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
 Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-TOHE - For Gradient Color code (i forgot to make it in my last pr)
+Town-Of-Host-Enhanced - Gradient color (full code)
 
 # Translation
 
