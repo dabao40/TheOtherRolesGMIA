@@ -21,6 +21,7 @@ using static HarmonyLib.InlineSignature;
 using System.Globalization;
 using TheOtherRoles.Patches;
 using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles {
 
@@ -554,6 +555,47 @@ namespace TheOtherRoles {
                 if (p == 1f && renderer != null) renderer.enabled = false;
                 if (p == 1f) messageText.gameObject.Destroy();
             })));
+        }
+
+        public static GameObject CreateObject(string objName, Transform parent, Vector3 localPosition, int? layer = null)
+        {
+            var obj = new GameObject(objName);
+            obj.transform.SetParent(parent);
+            obj.transform.localPosition = localPosition;
+            obj.transform.localScale = new Vector3(1f, 1f, 1f);
+            if (layer.HasValue) obj.layer = layer.Value;
+            else if (parent != null) obj.layer = parent.gameObject.layer;
+            return obj;
+        }
+
+        public static T CreateObject<T>(string objName, Transform parent, Vector3 localPosition, int? layer = null) where T : Component
+        {
+            return CreateObject(objName, parent, localPosition, layer).AddComponent<T>();
+        }
+
+        public static void SetModText(this TextTranslatorTMP text, string translationKey)
+        {
+            text.TargetText = (StringNames)short.MaxValue;
+            text.defaultStr = translationKey;
+        }
+
+        public static void DoTransitionFade(this TransitionFade transitionFade, GameObject transitionFrom, GameObject transitionTo, Action onTransition, Action callback)
+        {
+            if (transitionTo) transitionTo!.SetActive(false);
+
+            IEnumerator Coroutine()
+            {
+                yield return Effects.ColorFade(transitionFade.overlay, Color.clear, Color.black, 0.1f);
+                if (transitionFrom && transitionFrom!.gameObject) transitionFrom.gameObject.SetActive(false);
+                if (transitionTo && transitionTo!.gameObject) if (transitionTo != null) transitionTo.gameObject.SetActive(true);
+                onTransition.Invoke();
+                yield return null;
+                yield return Effects.ColorFade(transitionFade.overlay, Color.black, Color.clear, 0.1f);
+                callback.Invoke();
+                yield break;
+            }
+
+            transitionFade.StartCoroutine(Coroutine().WrapToIl2Cpp());
         }
 
         public static PlainShipRoom getPlainShipRoom(PlayerControl p)
