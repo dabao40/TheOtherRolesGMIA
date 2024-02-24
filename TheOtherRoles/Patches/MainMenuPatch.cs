@@ -13,6 +13,8 @@ using Assets.InnerNet;
 using System.Linq;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
+using TMPro;
+using System.Text;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -132,7 +134,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                         DataManager.Player.Announcements.SetAnnouncements(new Announcement[] { creditsAnnouncement });
                         popUp.CreateAnnouncementList();
                         popUp.UpdateAnnouncementText(creditsAnnouncement.Number);
-                        popUp.visibleAnnouncements[0].PassiveButton.OnClick.RemoveAllListeners();
+                        popUp.visibleAnnouncements._items[0].PassiveButton.OnClick.RemoveAllListeners();
                         DataManager.Player.Announcements.allAnnouncements = backup;
                     }
                 })));
@@ -191,6 +193,130 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                     HideNSeekButtonText.SetText("TOR Hide N Seek");
                  })));
             }));
+        }
+    }
+
+    // Original credits to Nebula On the Ship
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
+    public static class MainMenuSetUpPatch
+    {
+        public static Sprite sprite;
+        public static GameObject modScreen = null;
+        public static GameObject aboutScreen = null;
+
+        public static void Postfix(MainMenuManager __instance)
+        {
+            var leftPanel = __instance.mainMenuUI.transform.FindChild("AspectScaler").FindChild("LeftPanel");
+            leftPanel.GetComponent<SpriteRenderer>().size += new Vector2(0f, 0.5f);
+            var auLogo = leftPanel.FindChild("Sizer").GetComponent<AspectSize>();
+            auLogo.PercentWidth = 0.14f;
+            auLogo.DoSetUp();
+            auLogo.transform.localPosition += new Vector3(-0.8f, 0.25f, 0f);
+
+            float height = __instance.newsButton.transform.localPosition.y - __instance.myAccountButton.transform.localPosition.y;
+
+            // disable old panels and create a new button
+            var reworkedPanel = Helpers.CreateObject<SpriteRenderer>("ReworkedLeftPanel", leftPanel, new Vector3(0f, height * 0.5f, 0f));
+            var oldPanel = leftPanel.GetComponent<SpriteRenderer>();
+            reworkedPanel.sprite = oldPanel.sprite;
+            reworkedPanel.tileMode = oldPanel.tileMode;
+            reworkedPanel.drawMode = oldPanel.drawMode;
+            reworkedPanel.size = oldPanel.size;
+            oldPanel.enabled = false;
+
+            loadSprite();
+
+            // Move the buttons upwards
+            foreach (var button in __instance.mainButtons.GetFastEnumerator())
+                if (Math.Abs(button.transform.localPosition.x) < 0.1f) button.transform.localPosition += new Vector3(0f, height, 0f);
+            leftPanel.FindChild("Main Buttons").FindChild("Divider").transform.localPosition += new Vector3(0f, height, 0f);
+
+            var modButton = Object.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
+            modButton.transform.localPosition += new Vector3(0f, -height, 0f);
+            modButton.gameObject.name = "TORButton";
+            modButton.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((obj) => {
+                var icon = obj.transform.FindChild("Icon");
+                if (icon != null)
+                {
+                    icon.localScale = new Vector3(1f, 1f, 1f);
+                    icon.GetComponent<SpriteRenderer>().sprite = sprite;
+                }
+            }));
+
+            var modPassiveButton = modButton.GetComponent<PassiveButton>();
+            modPassiveButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            modPassiveButton.OnClick.AddListener((System.Action)(() =>
+            {
+                __instance.ResetScreen();
+                modScreen.SetActive(true);
+                __instance.screenTint.enabled = true;
+            }));
+            modButton.transform.FindChild("FontPlacer").GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("GMIA");
+
+            modScreen = Object.Instantiate(__instance.accountButtons, __instance.accountButtons.transform.parent);
+            modScreen.name = "modScreen";
+            modScreen.transform.GetChild(0).GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("The Other Roles GMIA");
+            __instance.mainButtons.Add(modButton);
+
+            Object.Destroy(modScreen.transform.GetChild(4).gameObject);
+
+            var temp = modScreen.transform.GetChild(3);
+            int index = 0;
+
+            void SetUpButton(string button, Action clickAction)
+            {
+                GameObject obj = temp.gameObject;
+                if (index > 0) obj = Object.Instantiate(obj, obj.transform.parent);
+
+                obj.transform.GetChild(0).GetChild(0).GetComponent<TextTranslatorTMP>().SetModText(button);
+                var passiveButton = obj.GetComponent<PassiveButton>();
+                passiveButton.OnClick = new ButtonClickedEvent();
+                passiveButton.OnClick.AddListener((System.Action)(() => {
+                    clickAction.Invoke();
+                }));
+                obj.transform.localPosition = new Vector3(0f, 0.98f - index * 0.68f, 0f);
+
+                index++;
+            }
+            SetUpButton(ModTranslation.getString("modAbout"), () => {
+                __instance.ResetScreen();
+                if (!aboutScreen) createAboutScreen();
+                aboutScreen?.SetActive(true);
+                __instance.screenTint.enabled = true;
+            });
+            SetUpButton(ModTranslation.getString("modHowToPlay"), () =>
+            {
+                PlayManager.Open(__instance);
+            });
+
+            void createAboutScreen()
+            {
+                aboutScreen = Helpers.CreateObject("About", __instance.accountButtons.transform.parent, new Vector3(0, 0, -1f));
+                aboutScreen.transform.localScale = modScreen!.transform.localScale;
+                var screen = Helpers.CreateObject("Screen", aboutScreen.transform, new Vector3(-0.1f, 0, 0f), LayerMask.NameToLayer("UI"));
+                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => GameObject.Destroy(obj)));
+                var text = screen.AddComponent<TextMeshPro>();
+                text.SetText("<line-height=50%><size=50%>" + Helpers.GradientColorText("E78C0B", "37A796", ModTranslation.getString("mainMenuAboutSection")) + "</size></line-height>");
+                text.alignment = TextAlignmentOptions.Center;
+                text.fontSize *= 0.05f;
+                text.transform.SetParent(screen.transform);
+                text.transform.localPosition = 2 * Vector3.up - new Vector3(0f, 0.3f);
+            }
+        }
+
+        public static void loadSprite()
+        {
+            if (sprite == null) sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.LogoButton.png", 100f);
+        }
+    }
+
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.ResetScreen))]
+    public static class MainMenuClearScreenPatch
+    {
+        public static void Postfix(MainMenuManager __instance)
+        {
+            if (MainMenuSetUpPatch.modScreen) MainMenuSetUpPatch.modScreen?.SetActive(false);
+            if (MainMenuSetUpPatch.aboutScreen) MainMenuSetUpPatch.aboutScreen?.SetActive(false);
         }
     }
 }
