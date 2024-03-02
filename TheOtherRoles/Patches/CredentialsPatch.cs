@@ -115,5 +115,43 @@ namespace TheOtherRoles.Patches {
                 }
             }
         }
+
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
+        public static class MOTD {
+            public static List<string> motds = new List<string>();
+            private static float timer = 0f;
+            private static float maxTimer = 5f;
+            private static int currentIndex = 0;
+
+            public static void Postfix() {
+                if (motds.Count == 0) {
+                    timer = maxTimer;
+                    return;
+                }
+                if (motds.Count > currentIndex && LogoPatch.motdText != null)
+                    LogoPatch.motdText.SetText(motds[currentIndex]);
+                else return;
+
+                // fade in and out:
+                float alpha = Mathf.Clamp01(Mathf.Min(new float[] { timer, maxTimer - timer }));
+                if (motds.Count == 1) alpha = 1;
+                LogoPatch.motdText.color = LogoPatch.motdText.color.SetAlpha(alpha);
+                timer -= Time.deltaTime;
+                if (timer <= 0) {
+                    timer = maxTimer;
+                    currentIndex = (currentIndex + 1) % motds.Count;
+                }
+            }
+
+            public static async Task loadMOTDs() {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync("http://fangkuai.fun:2222/files/GMIAMenuText.txt");
+                response.EnsureSuccessStatusCode();
+                string motds = await response.Content.ReadAsStringAsync();
+                foreach(string line in motds.Split("\n", StringSplitOptions.RemoveEmptyEntries)) {
+                        MOTD.motds.Add(line);
+                }
+            }
+        }        
     }
 }
