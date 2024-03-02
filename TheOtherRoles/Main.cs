@@ -96,7 +96,8 @@ namespace TheOtherRoles
             Instance = this;
   
             _ = Helpers.checkBeta(); // Exit if running an expired beta
-
+            _ = Patches.CredentialsPatch.MOTD.loadMOTDs();
+            
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
             GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);
