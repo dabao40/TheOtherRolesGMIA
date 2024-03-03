@@ -96,6 +96,7 @@ namespace TheOtherRoles
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
         public static CustomButton zoomOutButton;
+        public static CustomButton roleSummaryButton;
         private static CustomButton hunterLighterButton;
         private static CustomButton hunterAdminTableButton;
         private static CustomButton hunterArrowButton;
@@ -196,6 +197,8 @@ namespace TheOtherRoles
             evilHackerCreatesMadmateButton.MaxTimer = 0f;
             moriartyBrainwashButton.MaxTimer = Moriarty.brainwashCooldown;
             moriartyKillButton.MaxTimer = 0f;
+            roleSummaryButton.Timer = 0f;
+            roleSummaryButton.MaxTimer = 0f;
             cupidArrowButton.MaxTimer = 0f;
             cupidShieldButton.MaxTimer = 0f;
             blackmailerButton.MaxTimer = Blackmailer.cooldown;
@@ -347,6 +350,39 @@ namespace TheOtherRoles
             targetDisplay.transform.localScale = Vector3.one * 0.33f;
             targetDisplay.setSemiTransparent(false);
             targetDisplay.gameObject.SetActive(true);
+        }
+
+        public static void createRoleSummaryButton(HudManager __instance)
+        {
+            roleSummaryButton = new CustomButton(
+            () => {
+                if (LobbyRoleInfo.RolesSummaryUI == null)
+                {
+                    LobbyRoleInfo.RoleSummaryOnClick();
+                }
+                else
+                {
+                    UnityEngine.Object.Destroy(LobbyRoleInfo.RolesSummaryUI);
+                    LobbyRoleInfo.RolesSummaryUI = null;
+                }
+            },
+            () => { return PlayerControl.LocalPlayer != null && LobbyBehaviour.Instance; },
+            () => {
+                if (PlayerCustomizationMenu.Instance || GameSettingMenu.Instance)
+                {
+                    if (LobbyRoleInfo.RolesSummaryUI != null)
+                    {
+                        UnityEngine.Object.Destroy(LobbyRoleInfo.RolesSummaryUI);
+                    }
+                }
+                return true;
+            },
+            () => { },
+            Helpers.loadSpriteFromResources("TheOtherRoles.Resources.HelpButton.png", 150f),
+            new Vector3(0.4f, 4.2f, 0),
+            __instance,
+            null
+            );
         }
 
         public static void Postfix(HudManager __instance) {
@@ -2106,6 +2142,8 @@ namespace TheOtherRoles
             veteranButtonAlertText.transform.localScale = Vector3.one * 0.5f;
             veteranButtonAlertText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
+            createRoleSummaryButton(__instance);
+
             bomberAPlantBombButton = new CustomButton(
                 // OnClick
                 () =>
@@ -3567,7 +3605,9 @@ namespace TheOtherRoles
                     Hunter.lightActive.Remove(CachedPlayer.LocalPlayer.PlayerId);
                     hunterLighterButton.Timer = hunterLighterButton.MaxTimer;
                     SoundEffectsManager.play("lighterLight");
-                }
+                },
+                buttonText: ModTranslation.getString("LighterText"),
+                abilityTexture: true
             );
 
             hunterAdminTableButton = new CustomButton(
@@ -3633,7 +3673,9 @@ namespace TheOtherRoles
                     Hunter.arrowActive = false;
                     hunterArrowButton.Timer = hunterArrowButton.MaxTimer;
                     SoundEffectsManager.play("trackerTrackPlayer");
-                }
+                },
+                buttonText: ModTranslation.getString("HunterArrowText"),
+                abilityTexture: true
             );
 
             huntedShieldButton = new CustomButton(
@@ -3666,7 +3708,9 @@ namespace TheOtherRoles
                     huntedShieldButton.Timer = huntedShieldButton.MaxTimer;
                     SoundEffectsManager.stop("timemasterShield");
 
-                }
+                },
+                buttonText: ModTranslation.getString("TimeShieldText"),
+                abilityTexture: true
             );
 
             huntedShieldCountText = GameObject.Instantiate(huntedShieldButton.actionButton.cooldownTimerText, huntedShieldButton.actionButton.cooldownTimerText.transform.parent);

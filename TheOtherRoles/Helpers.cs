@@ -557,6 +557,22 @@ namespace TheOtherRoles {
             })));
         }
 
+        private static Sprite roleSummaryBackground;
+        public static Sprite getRoleSummaryBackground()
+        {
+            if (roleSummaryBackground != null) return roleSummaryBackground;
+            roleSummaryBackground = loadSpriteFromResources("TheOtherRoles.Resources.LobbyRoleInfo.TeamScreen.png", 110f);
+            return roleSummaryBackground;
+        }
+
+        private static Sprite menuBackground;
+        public static Sprite getMenuBackground()
+        {
+            if (menuBackground != null) return menuBackground;
+            menuBackground = loadSpriteFromResources("TheOtherRoles.Resources.LobbyRoleInfo.RoleListScreen.png", 110f);
+            return menuBackground;
+        }
+
         public static GameObject CreateObject(string objName, Transform parent, Vector3 localPosition, int? layer = null)
         {
             var obj = new GameObject(objName);
