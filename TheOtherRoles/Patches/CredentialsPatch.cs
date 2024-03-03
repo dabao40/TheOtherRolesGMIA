@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using TheOtherRoles;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Players;
@@ -69,6 +72,9 @@ namespace TheOtherRoles.Patches {
             public static Sprite horseBannerSprite;
             public static Sprite banner2Sprite;
             private static PingTracker instance;
+            public static GameObject motdObject;
+            public static TextMeshPro motdText;
+
             static void Postfix(PingTracker __instance) {
                 var torLogo = new GameObject("bannerLogo_TOR");
                 torLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
@@ -91,6 +97,23 @@ namespace TheOtherRoles.Patches {
                 credentials.transform.SetParent(torLogo.transform);
                 //credentials.transform.localPosition = Vector3.down * 2;
                 credentials.transform.localPosition = Vector3.down + new Vector3(0f, -0.6f, 0f);
+
+                motdObject = new GameObject("torMOTD");
+                motdText = motdObject.AddComponent<TextMeshPro>();
+                motdText.alignment = TMPro.TextAlignmentOptions.Center;
+                motdText.fontSize *= 0.04f;
+
+                motdText.transform.SetParent(torLogo.transform);
+                motdText.enableWordWrapping = true;
+                var rect = motdText.gameObject.GetComponent<RectTransform>();
+                rect.sizeDelta = new Vector2(5.2f, 0.25f);
+
+                motdText.transform.localPosition = Vector3.down * 2.6f;
+                motdText.color = new Color(1, 53f / 255, 31f / 255);
+                Material mat = motdText.fontSharedMaterial;
+                mat.shaderKeywords = new string[] { "OUTLINE_ON" };
+                motdText.SetOutlineColor(Color.white);
+                motdText.SetOutlineThickness(0.025f);
             }
 
             public static void loadSprites() {
@@ -112,6 +135,50 @@ namespace TheOtherRoles.Patches {
                             })));
                         }
                     })));
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
+        public static class MOTD
+        {
+            public static List<string> motds = new List<string>();
+            private static float timer = 0f;
+            private static float maxTimer = 5f;
+            private static int currentIndex = 0;
+
+            public static void Postfix()
+            {
+                if (motds.Count == 0)
+                {
+                    timer = maxTimer;
+                    return;
+                }
+                if (motds.Count > currentIndex && LogoPatch.motdText != null)
+                    LogoPatch.motdText.SetText(motds[currentIndex]);
+                else return;
+
+                // fade in and out:
+                float alpha = Mathf.Clamp01(Mathf.Min(new float[] { timer, maxTimer - timer }));
+                if (motds.Count == 1) alpha = 1;
+                LogoPatch.motdText.color = LogoPatch.motdText.color.SetAlpha(alpha);
+                timer -= Time.deltaTime;
+                if (timer <= 0)
+                {
+                    timer = maxTimer;
+                    currentIndex = (currentIndex + 1) % motds.Count;
+                }
+            }
+
+            public static async Task loadMOTDs()
+            {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync("http://fangkuai.fun:2222/files/home.txt");
+                response.EnsureSuccessStatusCode();
+                string motds = await response.Content.ReadAsStringAsync();
+                foreach (string line in motds.Split("\n", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    MOTD.motds.Add(line);
                 }
             }
         }

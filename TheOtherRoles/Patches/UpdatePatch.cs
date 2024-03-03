@@ -372,7 +372,7 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void miniUpdate() {
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == MimicK.mimicK && MimicK.victim != null || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || SurveillanceMinigamePatch.nightVisionIsActive) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == MimicK.mimicK && MimicK.victim != null || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || Mini.mini == Sprinter.sprinting && Sprinter.sprinting || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;

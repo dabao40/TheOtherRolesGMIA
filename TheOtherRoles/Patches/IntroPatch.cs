@@ -8,6 +8,7 @@ using Hazel;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.Objects;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -49,7 +50,7 @@ namespace TheOtherRoles.Patches {
                         if (HideNSeek.isHunted() && p.Data.Role.IsImpostor) {
                             player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0.4f, 0) + Vector3.right * playerCounter++ * 0.6f;
                             player.transform.localScale = Vector3.one * 0.3f;
-                            player.cosmetics.nameText.text += $"{Helpers.cs(Color.red, " (Hunter)")}";
+                            player.cosmetics.nameText.text += $"{Helpers.cs(Color.red, $" ({ModTranslation.getString("hunter")})")}";
                             player.gameObject.SetActive(true);
                         } else if (!p.Data.Role.IsImpostor) {
                             player.transform.localPosition = bottomLeft + new Vector3(-0.35f, -0.25f, 0) + Vector3.right * hideNSeekCounter++ * 0.35f;
@@ -293,11 +294,21 @@ namespace TheOtherRoles.Patches {
             }
             TORMapOptions.firstKillName = "";
 
+            if (Helpers.isAirship() && CustomOptionHolder.airshipOptimize.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)))
+            {
+                var obj = ShipStatus.Instance.FastRooms[SystemTypes.GapRoom].gameObject;
+                OneWayShadows oneWayShadow = obj.transform.FindChild("Shadow").FindChild("LedgeShadow").GetComponent<OneWayShadows>();
+                oneWayShadow.gameObject.SetActive(false);
+            }
+
             // Additional Vents
             AdditionalVents.AddAdditionalVents();
 
             // Specimen Vitals
             SpecimenVital.moveVital();
+
+            // Add Electrical
+            FungleAdditionalElectrical.CreateElectrical();
 
             EventUtility.gameStartsUpdate();
 
@@ -409,6 +420,11 @@ namespace TheOtherRoles.Patches {
                 RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
                 RoleInfo modifierInfo = infos.Where(info => info.isModifier).FirstOrDefault();
 
+                if (roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0)
+                {
+                    roleInfo = RoleInfo.crewmate;
+                }
+
                 if (EventUtility.isEnabled) {
                     var roleInfos = RoleInfo.allRoleInfos.Where(x => !x.isModifier).ToList();
                     if (roleInfo.isNeutral) roleInfos.RemoveAll(x => !x.isNeutral);
@@ -419,7 +435,7 @@ namespace TheOtherRoles.Patches {
                 }
 
                 __instance.RoleBlurbText.text = "";
-                if (roleInfo != null && !(roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0)) {
+                if (roleInfo != null) {
                     __instance.YouAreText.color = roleInfo.color;
                     __instance.RoleText.text = roleInfo.name;
                     __instance.RoleText.color = roleInfo.color;
@@ -472,7 +488,11 @@ namespace TheOtherRoles.Patches {
             public static void Postfix(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> teamToDisplay) {
                 setupIntroTeam(__instance, ref teamToDisplay);
 
-                if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId)) MadmateTasksHelper.SetMadmateTasks();
+                if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
+                {
+                    CachedPlayer.LocalPlayer.PlayerControl.clearAllTasks();
+                    CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(Madmate.commonTasks, Madmate.shortTasks, Madmate.longTasks);
+                }
                 if (JekyllAndHyde.jekyllAndHyde != null && CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde)
                 {
                     PlayerControl.LocalPlayer.clearAllTasks();
