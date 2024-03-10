@@ -1163,34 +1163,6 @@ namespace TheOtherRoles
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo != null) playerInfo.text = "";
                 }
-                // Specify the Mimic
-                if (player == MimicK.mimicK)
-                {
-                    MimicK.mimicK.setDefaultLook();
-                    MimicA.isMorph = false;
-                    MimicA.mimicA.setDefaultLook();
-                }
-                if (player == MimicA.mimicA)
-                {
-                    MimicA.isMorph = false;
-                    MimicA.mimicA.setDefaultLook();
-                }
-
-                if (player == BomberA.bomberA && CachedPlayer.LocalPlayer.PlayerControl == player)
-                {
-                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-                    BomberA.arrows.FirstOrDefault()?.arrow.SetActive(false);
-                }
-                if (player == BomberB.bomberB && CachedPlayer.LocalPlayer.PlayerControl == player)
-                {
-                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-                    BomberB.arrows.FirstOrDefault()?.arrow.SetActive(false);
-                }
-                if (player == Ninja.ninja)
-                {
-                    Ninja.stealthed = false;
-                    Ninja.setOpacity(player, 1f);
-                }
 
                 erasePlayerRoles(player.PlayerId, true);
                 Sidekick.sidekick = player;
@@ -1199,6 +1171,8 @@ namespace TheOtherRoles
                 Sidekick.wasSpy = wasSpy;
                 Sidekick.wasImpostor = wasImpostor;
                 if (player == CachedPlayer.LocalPlayer.PlayerControl) SoundEffectsManager.play("jackalSidekick");
+                if (HandleGuesser.isGuesserGm && CustomOptionHolder.guesserGamemodeSidekickIsAlwaysGuesser.getBool() && !HandleGuesser.isGuesser(targetId))
+                    setGuesserGm(targetId);
             }
             Jackal.canCreateSidekick = false;
         }
@@ -1833,7 +1807,7 @@ namespace TheOtherRoles
         public static void arsonistWin() {
             Arsonist.triggerArsonistWin = true;
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                if (p != Arsonist.arsonist) {
+                if (p != Arsonist.arsonist && !p.Data.IsDead) {
                     if (NekoKabocha.nekoKabocha != null && p == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = Arsonist.arsonist;
                     p.Exiled();
                     overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Arson, Arsonist.arsonist);

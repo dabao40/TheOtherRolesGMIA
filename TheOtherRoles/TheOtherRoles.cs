@@ -114,6 +114,9 @@ namespace TheOtherRoles
             HandleGuesser.clearAndReload();
             HideNSeek.clearAndReload();
 
+            // Objects
+            FootprintHolder.clearAndReload();
+
         }
 
         public static class Jester {
@@ -487,6 +490,24 @@ namespace TheOtherRoles
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ShieldButton.png", 115f);
             return buttonSprite;
+        }
+
+        public static bool shieldVisible(PlayerControl target)
+        {
+            bool hasVisibleShield = false;
+
+            bool isMorphedMorphling = target == Morphling.morphling && Morphling.morphTarget != null && Morphling.morphTimer > 0f;
+            bool isMimicKShield = target == MimicK.mimicK && MimicK.victim != null;
+            bool isMimicAMorph = target == MimicA.mimicA && MimicA.isMorph;
+            if (shielded != null && ((target == shielded && !isMorphedMorphling && !isMimicKShield && !isMimicAMorph) || (isMorphedMorphling && Morphling.morphTarget == shielded) || (isMimicAMorph && MimicK.mimicK == shielded)))
+            {
+                hasVisibleShield = showShielded == 0 || Helpers.shouldShowGhostInfo() // Everyone or Ghost info
+                    || (showShielded == 1 && (CachedPlayer.LocalPlayer.PlayerControl == shielded || CachedPlayer.LocalPlayer.PlayerControl == medic)) // Shielded + Medic
+                    || (showShielded == 2 && CachedPlayer.LocalPlayer.PlayerControl == medic); // Medic only
+                // Make shield invisible till after the next meeting if the option is set (the medic can already see the shield)
+                hasVisibleShield = hasVisibleShield && (meetingAfterShielding || !showShieldAfterMeeting || CachedPlayer.LocalPlayer.PlayerControl == medic || Helpers.shouldShowGhostInfo());
+            }
+            return hasVisibleShield;
         }
 
         public static void clearAndReload() {
@@ -1503,8 +1524,13 @@ namespace TheOtherRoles
                 int randomNumber = rnd.Next(4);
                 string typeOfColor = Helpers.isLighterColor(Medium.target.killerIfExisting.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("mediumSoulPlayerLighter") : ModTranslation.getString("mediumSoulPlayerDarker");
                 float timeSinceDeath = ((float)(Medium.meetingStartTime - Medium.target.timeOfDeath).TotalMilliseconds);
+                var roleString = RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true);
 
-                if (randomNumber == 0) msg = string.Format(ModTranslation.getString("mediumQuestion1"), RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true));
+                if (randomNumber == 0)
+                {
+                    if (!roleString.Contains(RoleInfo.impostor.name) && !roleString.Contains(RoleInfo.crewmate.name)) msg = string.Format(ModTranslation.getString("mediumQuestion1"), RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true));
+                    else msg = string.Format(ModTranslation.getString("mediumQuestion5"), roleString);
+                }
                 else if (randomNumber == 1) msg = string.Format(ModTranslation.getString("mediumQuestion2"), typeOfColor);
                 else if (randomNumber == 2) msg = string.Format(ModTranslation.getString("mediumQuestion3"), Math.Round(timeSinceDeath / 1000));
                 else msg = string.Format(ModTranslation.getString("mediumQuestion4"), RoleInfo.GetRolesString(Medium.target.killerIfExisting, false, false, true, includeHidden: true));
@@ -1716,11 +1742,26 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
+            mimicK?.setDefaultLook();
+            if (MimicA.mimicA != null)
+            {
+                MimicA.isMorph = false;
+                MimicA.mimicA.setDefaultLook();
+            }
+
             mimicK = null;
             victim = null;
             ifOneDiesBothDie = CustomOptionHolder.mimicIfOneDiesBothDie.getBool();
             hasOneVote = CustomOptionHolder.mimicHasOneVote.getBool();
             countAsOne = CustomOptionHolder.mimicCountAsOne.getBool();
+
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            arrows = new List<Arrow>();
         }
     }
 
@@ -1811,9 +1852,16 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
+            mimicA?.setDefaultLook();
             mimicA = null;
             isMorph = false;
-            //MimicKName = MimicK.mimicK.Data.PlayerName;
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            arrows = new List<Arrow>();
         }
     }
 
@@ -2255,6 +2303,14 @@ namespace TheOtherRoles
             playerIcons = new Dictionary<byte, PoolablePlayer>();
             targetText = null;
             partnerTargetText = null;
+            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values)
+                pp?.gameObject?.SetActive(false);
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
             arrows = new List<Arrow>();
 
             duration = CustomOptionHolder.bomberDuration.getFloat();
@@ -2400,6 +2456,14 @@ namespace TheOtherRoles
             bombTarget = null;
             currentTarget = null;
             tmpTarget = null;
+            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values)
+                pp?.gameObject?.SetActive(false);
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
             arrows = new List<Arrow>();
             playerIcons = new Dictionary<byte, PoolablePlayer>();
             targetText = null;
@@ -3737,6 +3801,7 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
+            setOpacity(ninja, 1.0f);
             ninja = null;
             stealthCooldown = CustomOptionHolder.ninjaStealthCooldown.getFloat();
             stealthDuration = CustomOptionHolder.ninjaStealthDuration.getFloat();
@@ -3745,7 +3810,6 @@ namespace TheOtherRoles
             fadeTime = CustomOptionHolder.ninjaFadeTime.getFloat();
             canUseVents = CustomOptionHolder.ninjaCanVent.getBool();
             canBeTargeted = CustomOptionHolder.ninjaCanBeTargeted.getBool();
-            setOpacity(Ninja.ninja, 1.0f);
 
             penalized = false;
             stealthed = false;
@@ -3871,6 +3935,7 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
+            setOpacity(sprinter, 1.0f);
             sprinter = null;
             sprinting = false;
             sprintCooldown = CustomOptionHolder.sprinterCooldown.getFloat();

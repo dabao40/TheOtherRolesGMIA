@@ -22,8 +22,7 @@ namespace TheOtherRoles {
         public static CustomOption modifiersCountMin;
         public static CustomOption modifiersCountMax;
 
-        public static CustomOption enableCodenameHorsemode;
-        public static CustomOption enableCodenameDisableHorses;
+        public static CustomOption enableEventMode;
 
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
@@ -525,6 +524,7 @@ namespace TheOtherRoles {
         public static CustomOption guesserGamemodeKillsThroughShield;
         public static CustomOption guesserGamemodeEvilCanKillSpy;
         public static CustomOption guesserGamemodeCantGuessSnitchIfTaksDone;
+        public static CustomOption guesserGamemodeSidekickIsAlwaysGuesser;
 
         // Hide N Seek Gamemode
         public static CustomOption hideNSeekHunterCount;
@@ -576,8 +576,7 @@ namespace TheOtherRoles {
             presetSelection = CustomOption.Create(0, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("presetSelection")), presets, null, true);
             activateRoles = CustomOption.Create(1, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("blockOriginal")), true, null, true);
 
-            if (Utilities.EventUtility.canBeEnabled) enableCodenameHorsemode = CustomOption.Create(10423, Types.General, cs(Color.green, ModTranslation.getString("Enable Codename Horsemode")), true, null, true);
-            if (Utilities.EventUtility.canBeEnabled) enableCodenameDisableHorses = CustomOption.Create(10424, Types.General, cs(Color.green, ModTranslation.getString("Disable Horses")), false, enableCodenameHorsemode, false);
+            if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(10423, Types.General, cs(Color.green, "Enable Special Mode"), true, null, true);
 
             // Using new id's for the options to not break compatibilty with older versions
             crewmateRolesCountMin = CustomOption.Create(300, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("crewmateRolesCountMin")), 15f, 0f, 15f, 1f, null, true);
@@ -1057,6 +1056,7 @@ namespace TheOtherRoles {
             guesserGamemodeNeutralNumber = CustomOption.Create(2002, Types.Guesser, cs(Guesser.color, ModTranslation.getString("guesserGamemodeNeutralNumber")), 15f, 1f, 15f, 1f, null, true);
             guesserGamemodeImpNumber = CustomOption.Create(2003, Types.Guesser, cs(Guesser.color, ModTranslation.getString("guesserGamemodeImpNumber")), 15f, 1f, 15f, 1f, null, true);
             guesserForceJackalGuesser = CustomOption.Create(2007, Types.Guesser, ModTranslation.getString("guesserForceJackalGuesser"), false, null, true);
+            guesserGamemodeSidekickIsAlwaysGuesser = CustomOption.Create(2012, Types.Guesser, ModTranslation.getString("guesserGamemodeSidekickIsAlwaysGuesser"), false, null);
             guesserForceThiefGuesser = CustomOption.Create(2011, Types.Guesser, ModTranslation.getString("guesserForceThiefGuesser"), false, null, true);
             guesserGamemodeHaveModifier = CustomOption.Create(2004, Types.Guesser, ModTranslation.getString("guesserGamemodeHaveModifier"), true, null);
             guesserGamemodeNumberOfShots = CustomOption.Create(2005, Types.Guesser, ModTranslation.getString("guesserGamemodeNumberOfShots"), 3f, 1f, 15f, 1f, null);
