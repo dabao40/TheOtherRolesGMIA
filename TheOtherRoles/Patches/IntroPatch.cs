@@ -82,9 +82,6 @@ namespace TheOtherRoles.Patches {
             // Set the name of the Mimic(Killer)
             if (MimicK.mimicK != null) MimicK.name = MimicK.mimicK.Data.PlayerName;
 
-            // Dunno why, but we have to set the Mimic(Assistant) to alive status
-            //if (MimicA.mimicA != null) MimicA.mimicA.Data.IsDead = false;
-
             // Force Reload of SoundEffectHolder
             SoundEffectsManager.Load();
 
@@ -518,11 +515,21 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(Constants), nameof(Constants.ShouldHorseAround))]
+    /* Horses are broken since 2024.3.5 - keeping this code in case they return.
+     * [HarmonyPatch(typeof(AprilFoolsMode), nameof(AprilFoolsMode.ShouldHorseAround))]
     public static class ShouldAlwaysHorseAround {
         public static bool Prefix(ref bool __result) {
-            __result = EventUtility.isEnabled && !EventUtility.disableHorses;
+            __result = EventUtility.isEnabled && !EventUtility.disableEventMode;
             return false;
+        }
+    }*/
+
+    [HarmonyPatch(typeof(AprilFoolsMode), nameof(AprilFoolsMode.ShouldShowAprilFoolsToggle))]
+    public static class ShouldShowAprilFoolsToggle
+    {
+        public static void Postfix(ref bool __result)
+        {
+            __result = __result || EventUtility.isEventDate || EventUtility.canBeEnabled;  // Extend it to a 7 day window instead of just 1st day of the Month
         }
     }
 }
