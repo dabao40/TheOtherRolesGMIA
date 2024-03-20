@@ -2251,6 +2251,21 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 
 # Credits & Resources
 
+## Developers
+- [Imp11](https://github.com/dabao40)  
+- [Among us](https://github.com/XiezibanWrite)
+- [Sukuna](https://github.com/SaskueUchiwa)
+
+## Artists
+- [Fangkuai](https://github.com/FangkuaiYa)
+
+## Translators
+- [LezaiYa](https://github.com/LezaiYa)  
+- [Fangkuai](https://github.com/FangkuaiYa)
+- [yuunozikkyou](https://github.com/yuunozikkyou)
+- [unhappyset](https://github.com/unhappyset)
+- [KS](https://github.com/Ks-777)
+
 Firstly, credits to The Other Roles, since this mod is based on their developement.  
 Also credits to The Other Roles GM and The Other Roles GM H, for some of the roles are based on their ideas.  
 OxygenFilter - For the versions v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation  
