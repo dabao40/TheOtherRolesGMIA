@@ -300,6 +300,7 @@ namespace TheOtherRoles {
         public static CustomOption evilTrackerResetTargetAfterMeeting;
         public static CustomOption evilTrackerCanSeeDeathFlash;
         public static CustomOption evilTrackerCanSeeTargetPosition;
+        public static CustomOption evilTrackerCanSeeTargetTask;
         public static CustomOption evilTrackerCanSetTargetOnMeeting;
 
         public static CustomOption evilHackerSpawnRate;
@@ -668,6 +669,7 @@ namespace TheOtherRoles {
             evilTrackerResetTargetAfterMeeting = CustomOption.Create(4028, Types.Impostor, ModTranslation.getString("evilTrackerResetTargetAfterMeeting"), true, evilTrackerSpawnRate);
             evilTrackerCanSeeDeathFlash = CustomOption.Create(4029, Types.Impostor, ModTranslation.getString("evilTrackerCanSeeDeathFlash"), true, evilTrackerSpawnRate);
             evilTrackerCanSeeTargetPosition = CustomOption.Create(4031, Types.Impostor, ModTranslation.getString("evilTrackerCanSeeTargetPosition"), true, evilTrackerSpawnRate);
+            evilTrackerCanSeeTargetTask = CustomOption.Create(4030, Types.Impostor, ModTranslation.getString("evilTrackerCanSeeTargetTask"), false, evilTrackerSpawnRate);
             evilTrackerCanSetTargetOnMeeting = CustomOption.Create(4032, Types.Impostor, ModTranslation.getString("evilTrackerCanSetTargetOnMeeting"), true, evilTrackerSpawnRate);
 
             undertakerSpawnRate = CustomOption.Create(4056, Types.Impostor, cs(Undertaker.color, ModTranslation.getString("undertaker")), rates, null, true);
