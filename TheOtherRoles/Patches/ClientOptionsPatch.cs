@@ -20,6 +20,7 @@ namespace TheOtherRoles.Patches
             new SelectionBehaviour(ModTranslation.getString("ghostsSeeModifiersButton"), () => TORMapOptions.ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value = !TheOtherRolesPlugin.GhostsSeeModifier.Value, TheOtherRolesPlugin.GhostsSeeModifier.Value),
             new SelectionBehaviour(ModTranslation.getString("showRoleSummaryButton"), () => TORMapOptions.showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value = !TheOtherRolesPlugin.ShowRoleSummary.Value, TheOtherRolesPlugin.ShowRoleSummary.Value),
             new SelectionBehaviour(ModTranslation.getString("showLighterDarker"), () => TORMapOptions.showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value = !TheOtherRolesPlugin.ShowLighterDarker.Value, TheOtherRolesPlugin.ShowLighterDarker.Value),
+            new SelectionBehaviour(ModTranslation.getString("toggleCursor"), () => TORMapOptions.toggleCursor = TheOtherRolesPlugin.ToggleCursor.Value = !TheOtherRolesPlugin.ToggleCursor.Value, TheOtherRolesPlugin.ToggleCursor.Value),
             new SelectionBehaviour(ModTranslation.getString("enableSoundEffects"), () => TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value = !TheOtherRolesPlugin.EnableSoundEffects.Value, TheOtherRolesPlugin.EnableSoundEffects.Value),
         };
         
@@ -108,12 +109,14 @@ namespace TheOtherRoles.Patches
             moreOptionsButton.OnClick = new ButtonClickedEvent();
             moreOptionsButton.OnClick.AddListener((Action) (() =>
             {
+                bool closeUnderlying = false;
                 if (!popUp) return;
 
                 if (__instance.transform.parent && __instance.transform.parent == FastDestroyableSingleton<HudManager>.Instance.transform)
                 {
                     popUp.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
                     popUp.transform.localPosition = new Vector3(0, 0, -800f);
+                    closeUnderlying = true;
                 }
                 else
                 {
@@ -123,6 +126,8 @@ namespace TheOtherRoles.Patches
                 
                 CheckSetTitle();
                 RefreshOpen();
+                if (closeUnderlying)
+                    __instance.Close();
             }));
         }
 
@@ -180,6 +185,11 @@ namespace TheOtherRoles.Patches
 
                 passiveButton.OnClick.AddListener((Action) (() =>
                 {
+                    if (info.Title == ModTranslation.getString("toggleCursor"))
+                    {
+                        Helpers.enableCursor(false);
+                    }
+
                     button.onState = info.OnClick();
                     button.Background.color = button.onState ? Color.green : Palette.ImpostorRed;
                 }));

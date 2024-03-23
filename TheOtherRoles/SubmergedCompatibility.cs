@@ -18,10 +18,10 @@ namespace TheOtherRoles
         {
             public const string ElevatorMover = "ElevatorMover";
         }
-        
+
         public const string SUBMERGED_GUID = "Submerged";
-        public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType) 5;
-        
+        public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)6;
+
         public static SemanticVersioning.Version Version { get; private set; }
         public static bool Loaded { get; private set; }
         public static bool LoadedExternally { get; private set; }
@@ -33,16 +33,8 @@ namespace TheOtherRoles
         public static MonoBehaviour SubmarineStatus { get; private set; }
 
         public static bool IsSubmerged { get; private set; }
-        
-        public static bool DisableO2MaskCheckForEmergency
-        {
-            set
-            {
-                if (!Loaded) return;
-                DisableO2MaskCheckField.SetValue(null, value);
-            }
-        }
-        
+
+
         public static void SetupMap(ShipStatus map)
         {
             if (map == null)
@@ -51,25 +43,22 @@ namespace TheOtherRoles
                 SubmarineStatus = null;
                 return;
             }
-            
+
             IsSubmerged = map.Type == SubmergedCompatibility.SUBMERGED_MAP_TYPE;
             if (!IsSubmerged) return;
-            
+
             SubmarineStatus = map.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
         }
 
         private static Type SubmarineStatusType;
         private static MethodInfo CalculateLightRadiusMethod;
-        
-        private static Type TaskIsEmergencyPatchType;
-        private static FieldInfo DisableO2MaskCheckField;
 
         private static MethodInfo RpcRequestChangeFloorMethod;
         private static Type FloorHandlerType;
         private static MethodInfo GetFloorHandlerMethod;
 
-        private static Type Vent_MoveToVent_PatchType;
-        private static FieldInfo InTransitionField;
+        private static Type VentPatchDataType;
+        private static PropertyInfo InTransitionField;
 
         private static Type CustomTaskTypesType;
         private static FieldInfo RetrieveOxigenMaskField;
@@ -93,10 +82,10 @@ namespace TheOtherRoles
                 Assembly = Assembly.Load(assemblyBuffer);
 
                 var pluginType = Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(BasePlugin)));
-                Plugin = (BasePlugin) Activator.CreateInstance(pluginType!);
+                Plugin = (BasePlugin)Activator.CreateInstance(pluginType!);
                 Plugin.Load();
 
-                Version = pluginType.GetCustomAttribute<BepInPlugin>().Version.BaseVersion();;
+                Version = pluginType.GetCustomAttribute<BepInPlugin>().Version.BaseVersion(); ;
 
                 IL2CPPChainloader.Instance.Plugins[SUBMERGED_GUID] = new();
                 return true;
@@ -107,7 +96,7 @@ namespace TheOtherRoles
             }
             return false;
         }
-        
+
 
         public static void Initialize()
         {
@@ -127,30 +116,30 @@ namespace TheOtherRoles
 
             CredentialsPatch.PingTrackerPatch.modStamp = new GameObject();
             Object.DontDestroyOnLoad(CredentialsPatch.PingTrackerPatch.modStamp);
-            
+
             Types = AccessTools.GetTypesFromAssembly(Assembly);
-            
-            InjectedTypes = (Dictionary<string, Type>) AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
+
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
                 .Invoke(null, Array.Empty<object>());
-            
+
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");
             CalculateLightRadiusMethod = AccessTools.Method(SubmarineStatusType, "CalculateLightRadius");
-            
-            TaskIsEmergencyPatchType = Types.First(t => t.Name == "PlayerTask_TaskIsEmergency_Patch");
-            DisableO2MaskCheckField = AccessTools.Field(TaskIsEmergencyPatchType, "DisableO2MaskCheck");
 
             FloorHandlerType = Types.First(t => t.Name == "FloorHandler");
-            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new Type[] {typeof(PlayerControl)});
+            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new Type[] { typeof(PlayerControl) });
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
 
-            Vent_MoveToVent_PatchType = Types.First(t => t.Name == "Vent_MoveToVent_Patch");
-            InTransitionField = AccessTools.Field(Vent_MoveToVent_PatchType, "InTransition");
+            VentPatchDataType = Types.First(t => t.Name == "VentPatchData");
+
+            InTransitionField = AccessTools.Property(VentPatchDataType, "InTransition");
 
             CustomTaskTypesType = Types.First(t => t.Name == "CustomTaskTypes");
             RetrieveOxigenMaskField = AccessTools.Field(CustomTaskTypesType, "RetrieveOxygenMask");
-            RetrieveOxygenMask = (TaskTypes)RetrieveOxigenMaskField.GetValue(null);
+            var RetrieveOxigenMaskTaskTypeField = AccessTools.Field(CustomTaskTypesType, "taskType");
+            object OxygenMaskCustomTaskType = RetrieveOxigenMaskField.GetValue(null);
+            RetrieveOxygenMask = (TaskTypes)RetrieveOxigenMaskTaskTypeField.GetValue(OxygenMaskCustomTaskType);
 
-            SubmarineOxygenSystemType = Types.First(t => t.Name == "SubmarineOxygenSystem" && t.Namespace == "Submerged.Systems.CustomSystems.Oxygen");
+            SubmarineOxygenSystemType = Types.First(t => t.Name == "SubmarineOxygenSystem" && t.Namespace == "Submerged.Systems.Oxygen");
             SubmarineOxygenSystemInstanceField = AccessTools.PropertyGetter(SubmarineOxygenSystemType, "Instance");
             RepairDamageMethod = AccessTools.Method(SubmarineOxygenSystemType, "RepairDamage");
         }
@@ -162,29 +151,35 @@ namespace TheOtherRoles
             return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
         }
 
-        public static float GetSubmergedNeutralLightRadius(bool isImpostor) {
+        public static float GetSubmergedNeutralLightRadius(bool isImpostor)
+        {
             if (!Loaded) return 0;
             return (float)CalculateLightRadiusMethod.Invoke(SubmarineStatus, new object[] { null, true, isImpostor });
         }
 
-        public static void ChangeFloor(bool toUpper) {
+        public static void ChangeFloor(bool toUpper)
+        {
             if (!Loaded) return;
             MonoBehaviour _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { CachedPlayer.LocalPlayer.PlayerControl })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
-        public static bool getInTransition() {
+        public static bool getInTransition()
+        {
             if (!Loaded) return false;
             return (bool)InTransitionField.GetValue(null);
         }
 
-        public static void RepairOxygen() {
+        public static void RepairOxygen()
+        {
             if (!Loaded) return;
-            try {
+            try
+            {
                 ShipStatus.Instance.RpcUpdateSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.Invoke(null, Array.Empty<object>()), new object[] { CachedPlayer.LocalPlayer.PlayerControl, 64 });
             }
-            catch (System.NullReferenceException) {
+            catch (System.NullReferenceException)
+            {
                 TheOtherRolesPlugin.Logger.LogMessage("null reference in engineer oxygen fix");
             }
 

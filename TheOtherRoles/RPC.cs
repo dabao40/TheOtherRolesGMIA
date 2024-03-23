@@ -239,7 +239,8 @@ namespace TheOtherRoles
         SetCupidShield,
         BlackmailPlayer,
         UnblackmailPlayer,
-        ProphetExamine
+        ProphetExamine,
+        ShareRealTasks
     }
 
     public static class RPCProcedure {
@@ -256,6 +257,7 @@ namespace TheOtherRoles
             AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
             MapBehaviourPatch.reset();
+            MapBehaviourPatch.resetRealTasks();
             SpawnInMinigamePatch.reset();
             //Trap.clearTraps();
             Trap.clearAllTraps();
@@ -1108,6 +1110,22 @@ namespace TheOtherRoles
             if ((Prophet.examineNum - Prophet.examinesLeft >= Prophet.examinesToBeRevealed) && Prophet.revealProphet) Prophet.isRevealed = true;
         }
 
+        public static void shareRealTasks(MessageReader reader)
+        {
+            byte count = reader.ReadByte();
+            for (int i = 0; i < count; i++)
+            {
+                byte playerId = reader.ReadByte();
+                byte[] taskTmp = reader.ReadBytes(4);
+                float x = System.BitConverter.ToSingle(taskTmp, 0);
+                taskTmp = reader.ReadBytes(4);
+                float y = System.BitConverter.ToSingle(taskTmp, 0);
+                Vector2 pos = new Vector2(x, y);
+                if (!MapBehaviourPatch.realTasks.ContainsKey(playerId)) MapBehaviourPatch.realTasks[playerId] = new Il2CppSystem.Collections.Generic.List<Vector2>();
+                MapBehaviourPatch.realTasks[playerId].Add(pos);
+            }
+        }
+
         // Hmm... Lots of bugs huh?
         public static void fortuneTellerUsedDivine(byte fortuneTellerId, byte targetId)
         {
@@ -1496,14 +1514,16 @@ namespace TheOtherRoles
 
             PlayerControl mimicA = Helpers.playerById(mimicAId);
             PlayerControl mimicB = Helpers.playerById(mimicBId);
-            mimicA.setLook(mimicB.Data.PlayerName, mimicB.Data.DefaultOutfit.ColorId, mimicB.Data.DefaultOutfit.HatId, mimicB.Data.DefaultOutfit.VisorId, mimicB.Data.DefaultOutfit.SkinId, mimicB.Data.DefaultOutfit.PetId);
+            if (Camouflager.camouflageTimer <= 0f)
+                mimicA.setLook(mimicB.Data.PlayerName, mimicB.Data.DefaultOutfit.ColorId, mimicB.Data.DefaultOutfit.HatId, mimicB.Data.DefaultOutfit.VisorId, mimicB.Data.DefaultOutfit.SkinId, mimicB.Data.DefaultOutfit.PetId);
             MimicA.isMorph = true;
         }
 
         public static void mimicResetMorph(byte mimicAId)
         {
             PlayerControl mimicA = Helpers.playerById(mimicAId);
-            mimicA.setDefaultLook();
+            if (Camouflager.camouflageTimer <= 0f)
+                mimicA.setDefaultLook();
             MimicA.isMorph = false;
         }
 
@@ -2504,6 +2524,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MimicResetMorph:
                     RPCProcedure.mimicResetMorph(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ShareRealTasks:
+                    RPCProcedure.shareRealTasks(reader);
                     break;
                 case (byte)CustomRPC.SetShifterType:
                     RPCProcedure.setShifterType(reader.ReadBoolean());

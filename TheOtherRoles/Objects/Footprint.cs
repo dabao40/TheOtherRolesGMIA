@@ -31,33 +31,6 @@ namespace TheOtherRoles.Objects
         private static bool AnonymousFootprints => TheOtherRoles.Detective.anonymousFootprints;
         private static float FootprintDuration => TheOtherRoles.Detective.footprintDuration;
 
-        private static int FootPrintsPerPlayer => (int)(1 / TheOtherRoles.Detective.footprintIntervall * TheOtherRoles.Detective.footprintDuration);
-
-        private static int nextFootStep = 0;
-
-        private static List<List<Footprint>> footPrintObjectList2D = new();
-
-        public static void clearAndReload()
-        {
-            footPrintObjectList2D.ForEach(x => x.ForEach(y => y.GameObject.Destroy()));
-            footPrintObjectList2D.Clear();
-            foreach (var player in CachedPlayer.AllPlayers)
-            {
-                List<Footprint> fpList = new();
-                for (int i = 0; i < FootPrintsPerPlayer; i++)
-                {
-                    fpList.Add(new Footprint());
-                }
-                footPrintObjectList2D.Add(fpList);
-            }
-            nextFootStep = 0;
-        }
-
-        public static void updateNextFootstep()
-        {
-            nextFootStep = (nextFootStep + 1) % FootPrintsPerPlayer;
-        }
-
         private class Footprint
         {
             public GameObject GameObject;
@@ -75,16 +48,22 @@ namespace TheOtherRoles.Objects
                 Renderer.sprite = FootprintSprite;
                 Renderer.color = Color.clear;
                 GameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-                GameObject.SetActive(false);
             }
         }
 
 
+
+        private readonly ConcurrentBag<Footprint> _pool = new();
+        private readonly List<Footprint> _activeFootprints = new();
+        private readonly List<Footprint> _toRemove = new();
+
         [HideFromIl2Cpp]
         public void MakeFootprint(PlayerControl player)
         {
-            int playerN = CachedPlayer.AllPlayers.IndexOf(CachedPlayer.AllPlayers.First(x => x.PlayerId == player.PlayerId));
-            Footprint print = footPrintObjectList2D[player.PlayerId][nextFootStep];
+            if (!_pool.TryTake(out var print))
+            {
+                print = new();
+            }
 
             print.Lifetime = FootprintDuration;
 
@@ -94,8 +73,8 @@ namespace TheOtherRoles.Objects
             print.GameObject.SetActive(true);
             print.Owner = player;
             print.Data = player.Data;
+            _activeFootprints.Add(print);
         }
-
 
         private static float updateDt = 0.10f;
 
@@ -103,40 +82,54 @@ namespace TheOtherRoles.Objects
         {
             InvokeRepeating(nameof(FootprintUpdate), updateDt, updateDt);
         }
+
         private void FootprintUpdate()
         {
-            if (Detective.detective == null || Detective.detective != CachedPlayer.LocalPlayer.PlayerControl)
-                return;
-            for (int playerN = 0; playerN < CachedPlayer.AllPlayers.Count; playerN++)
+            var dt = updateDt;
+            _toRemove.Clear();
+            foreach (var activeFootprint in _activeFootprints)
             {
-                foreach (var activeFootprint in footPrintObjectList2D[playerN])
+                var p = activeFootprint.Lifetime / FootprintDuration;
+
+                if (activeFootprint.Lifetime <= 0)
                 {
-                    var p = activeFootprint.Lifetime / FootprintDuration;
-
-                    if (activeFootprint.Lifetime <= 0)
-                    {
-                        activeFootprint.GameObject.SetActive(false);
-                        continue;
-                    }
-
-                    Color color;
-                    if (AnonymousFootprints || Camouflager.camouflageTimer > 0 || Helpers.MushroomSabotageActive())
-                    {
-                        color = Palette.PlayerColors[6];
-                    }
-                    else if (activeFootprint.Owner == Morphling.morphling && Morphling.morphTimer > 0 && Morphling.morphTarget && Morphling.morphTarget.Data != null)
-                    {
-                        color = Palette.PlayerColors[Morphling.morphTarget.Data.DefaultOutfit.ColorId];
-                    }
-                    else
-                    {
-                        color = Palette.PlayerColors[activeFootprint.Data.DefaultOutfit.ColorId];
-                    }
-                    color.a = Math.Clamp(p, 0f, 1f);
-                    activeFootprint.Renderer.color = color;
-
-                    activeFootprint.Lifetime -= updateDt;
+                    _toRemove.Add(activeFootprint);
+                    continue;
                 }
+
+                Color color;
+                if (AnonymousFootprints || Camouflager.camouflageTimer > 0 || Helpers.MushroomSabotageActive())
+                {
+                    color = Palette.PlayerColors[6];
+                }
+                else if (activeFootprint.Owner == Morphling.morphling && Morphling.morphTimer > 0 && Morphling.morphTarget && Morphling.morphTarget.Data != null)
+                {
+                    color = Palette.PlayerColors[Morphling.morphTarget.Data.DefaultOutfit.ColorId];
+                }
+                else if (activeFootprint.Owner == MimicK.mimicK && MimicK.victim != null && MimicK.victim.Data != null)
+                {
+                    color = Palette.PlayerColors[MimicK.victim.Data.DefaultOutfit.ColorId];
+                }
+                else if (activeFootprint.Owner == MimicA.mimicA && MimicA.isMorph && MimicK.mimicK != null && MimicK.mimicK.Data != null)
+                {
+                    color = Palette.PlayerColors[MimicK.mimicK.Data.DefaultOutfit.ColorId];
+                }
+                else
+                {
+                    color = Palette.PlayerColors[activeFootprint.Data.DefaultOutfit.ColorId];
+                }
+
+                color.a = Math.Clamp(p, 0f, 1f);
+                activeFootprint.Renderer.color = color;
+
+                activeFootprint.Lifetime -= dt;
+            }
+
+            foreach (var footprint in _toRemove)
+            {
+                footprint.GameObject.SetActive(false);
+                _activeFootprints.Remove(footprint);
+                _pool.Add(footprint);
             }
         }
 

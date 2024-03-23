@@ -114,9 +114,6 @@ namespace TheOtherRoles
             HandleGuesser.clearAndReload();
             HideNSeek.clearAndReload();
 
-            // Objects
-            FootprintHolder.clearAndReload();
-
         }
 
         public static class Jester {
@@ -2992,6 +2989,7 @@ namespace TheOtherRoles
         public static bool canSeeDeathFlash = true;
         public static bool canSeeTargetPosition = true;
         public static bool canSetTargetOnMeeting = true;
+        public static bool canSeeTargetTasks = false;
 
         public static float updateTimer = 0f;
         public static float arrowUpdateInterval = 0.5f;
@@ -3156,6 +3154,7 @@ namespace TheOtherRoles
             resetTargetAfterMeeting = CustomOptionHolder.evilTrackerResetTargetAfterMeeting.getBool();
             canSeeDeathFlash = CustomOptionHolder.evilTrackerCanSeeDeathFlash.getBool();
             canSeeTargetPosition = CustomOptionHolder.evilTrackerCanSeeTargetPosition.getBool();
+            canSeeTargetTasks = CustomOptionHolder.evilTrackerCanSeeTargetTask.getBool();
             canSetTargetOnMeeting = CustomOptionHolder.evilTrackerCanSetTargetOnMeeting.getBool();
         }
     }

@@ -13,6 +13,7 @@ namespace TheOtherRoles
     {
         public static int defaultLanguage = (int)SupportedLangs.English;
         public static Dictionary<string, Dictionary<int, string>> stringData;
+        private const string blankText = "[BLANK]";
 
         public static void Load()
         {
@@ -44,7 +45,8 @@ namespace TheOtherRoles
 
                         if (text != null && text.Length > 0)
                         {
-                            strings[j] = text;
+                            if (text == blankText) strings[j] = "";
+                            else strings[j] = text;
                         }
                     }
 

@@ -221,7 +221,6 @@ namespace TheOtherRoles.Patches {
                         FootprintHolder.Instance.MakeFootprint(player);
                     }
                 }
-                FootprintHolder.updateNextFootstep();
             }
         }
 
@@ -1196,6 +1195,16 @@ namespace TheOtherRoles.Patches {
                     PlayerControl target = Morphling.morphTarget;
                     Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
                 }
+                if (MimicK.mimicK != null && MimicK.victim != null)
+                {
+                    PlayerControl target = MimicK.victim;
+                    MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                }
+                if (MimicK.mimicK != null && MimicA.mimicA != null && MimicA.isMorph)
+                {
+                    PlayerControl target = MimicK.mimicK;
+                    MimicA.mimicA.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                }
             }
 
             // If the MushRoomSabotage ends while Morph is still active set the Morphlings look to the target's look
@@ -1205,6 +1214,16 @@ namespace TheOtherRoles.Patches {
                 {
                     PlayerControl target = Morphling.morphTarget;
                     Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                }
+                if (MimicK.mimicK != null && MimicK.victim != null)
+                {
+                    PlayerControl target = MimicK.victim;
+                    MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+                }
+                if (MimicK.mimicK != null && MimicA.mimicA != null && MimicA.isMorph)
+                {
+                    PlayerControl target = MimicK.mimicK;
+                    MimicA.mimicA.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
                 }
                 if (Camouflager.camouflageTimer > 0)
                 {
@@ -2225,7 +2244,10 @@ namespace TheOtherRoles.Patches {
                         array[i].gameObject.active = false;
                     }
                 }
-                MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+
+                // Block Mimic(Killer) from morphing if camo or mushroom is active
+                if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive())
+                    MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
                 MimicK.victim = target;
             }
 

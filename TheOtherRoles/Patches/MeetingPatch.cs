@@ -481,7 +481,7 @@ namespace TheOtherRoles.Patches {
                 button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 buttons.Add(button);
                 int row = i/5, col = i%5;
-                buttonParent.localPosition = new Vector3(-3.47f + 1.75f * col, 1.5f - 0.45f * row, -5);
+                buttonParent.localPosition = new Vector3(-3.47f + 1.75f * col, 1.5f - 0.40f * row, -5);
                 buttonParent.localScale = new Vector3(0.55f, 0.55f, 1f);
                 label.text = Helpers.cs(roleInfo.color, roleInfo.name);
                 label.alignment = TMPro.TextAlignmentOptions.Center;
@@ -820,6 +820,9 @@ namespace TheOtherRoles.Patches {
                         AntiTeleport.position = CachedPlayer.LocalPlayer.transform.position;
                 }
 
+                // Save real tasks
+                MapBehaviourPatch.shareRealTasks();
+
                 // Medium meeting start time
                 Medium.meetingStartTime = DateTime.UtcNow;
                 // Mini
@@ -843,6 +846,7 @@ namespace TheOtherRoles.Patches {
 
                 // Reset the victim for Mimic(Killer)
                 MimicK.victim = null;
+                MimicA.isMorph = false;
 
                 // Blackmail target
                 if (Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)

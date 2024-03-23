@@ -47,12 +47,15 @@ namespace TheOtherRoles.Objects {
             bool flip = playerControl.cosmetics.currentBodySprite.BodySprite.flipX; // use the original player control here, not the morhpTarget.
             firstPortal.animationFgRenderer.flipX = flip;
             secondPortal.animationFgRenderer.flipX = flip;
-            if (Morphling.morphling != null && Morphling.morphTimer > 0) playerControl = Morphling.morphTarget;  // Will output info of morph-target instead
-            string playerNameDisplay = Portalmaker.logOnlyHasColors ? ModTranslation.getString("portalmakerLogPlayer") + " (" + (Helpers.isLighterColor(playerControl.Data.DefaultOutfit.ColorId) ? "L" : "D") + ")" : playerControl.Data.PlayerName;
+            if (Morphling.morphling != null && Morphling.morphTimer > 0 && Morphling.morphling == playerControl) playerControl = Morphling.morphTarget;  // Will output info of morph-target instead
+            else if (MimicK.mimicK != null && MimicA.mimicA != null && MimicA.isMorph && MimicA.mimicA == playerControl) playerControl = MimicK.mimicK;
+            else if (MimicK.mimicK != null && MimicK.victim != null && MimicK.mimicK == playerControl) playerControl = MimicK.victim;
+
+            string playerNameDisplay = Portalmaker.logOnlyHasColors ? ModTranslation.getString("portalmakerLogPlayer") + " (" + (Helpers.isLighterColor(playerControl.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("detectiveLightLabel") : ModTranslation.getString("detectiveDarkLabel")) + ")" : playerControl.Data.PlayerName;
 
             int colorId = playerControl.Data.DefaultOutfit.ColorId;
 
-            if (Camouflager.camouflageTimer > 0) {
+            if (Camouflager.camouflageTimer > 0 || Helpers.MushroomSabotageActive()) {
                 playerNameDisplay = ModTranslation.getString("portalmakerLogCamouflagedPlayer");
                 colorId = 6;
             }
