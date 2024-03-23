@@ -156,6 +156,7 @@ namespace TheOtherRoles.Objects
                     else
                     { // ¥«¥¦¥ó¥È¥À¥¦¥óÖÐ¤Î„IÀí
                         target.moveable = false;
+                        target.NetTransform.Halt();
                         target.transform.position = trap.trap.transform.position + new Vector3(0, 0.3f, 0);
                     }
                 }

@@ -48,6 +48,16 @@ namespace TheOtherRoles.Patches
                             // Also set hat color, cause the line destroys it...
                             player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
                         }
+                        else if (player == MimicK.mimicK && MimicK.victim != null)
+                        {
+                            hand.SetPlayerColor(MimicK.victim.CurrentOutfit, PlayerMaterial.MaskType.None);
+                            player.RawSetHat(MimicK.victim.Data.DefaultOutfit.HatId, MimicK.victim.Data.DefaultOutfit.ColorId);
+                        }
+                        else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph)
+                        {
+                            hand.SetPlayerColor(MimicK.mimicK.CurrentOutfit, PlayerMaterial.MaskType.None);
+                            player.RawSetHat(MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.ColorId);
+                        }
                         else
                         {
                             hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None);
@@ -78,9 +88,14 @@ namespace TheOtherRoles.Patches
             // Fix camo:
             var player = __instance.myPlayer;
             __instance.StartCoroutine(Effects.Lerp(5.0f, new System.Action<float>((p) => {
-                if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive() && player == Morphling.morphling && Morphling.morphTimer > 0.1f)
+                if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive())
                 {
-                    player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
+                    if (player == Morphling.morphling && Morphling.morphTimer > 0.1f)
+                        player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
+                    else if (player == MimicK.mimicK && MimicK.victim != null && MimicK.victim.Data != null)
+                        player.RawSetHat(MimicK.victim.Data.DefaultOutfit.HatId, MimicK.victim.Data.DefaultOutfit.ColorId);
+                    else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph)
+                        player.RawSetHat(MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.ColorId);
                 }
             })));
         }

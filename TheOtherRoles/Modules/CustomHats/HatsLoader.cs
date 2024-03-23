@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Text.Json;
 using BepInEx.Unity.IL2CPP.Utils;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using static TheOtherRoles.Modules.CustomHats.CustomHatManager;
@@ -18,6 +19,7 @@ public class HatsLoader : MonoBehaviour
         this.StartCoroutine(CoFetchHats());
     }
 
+    [HideFromIl2Cpp]
     private IEnumerator CoFetchHats()
     {
         isRunning = true;
@@ -50,6 +52,7 @@ public class HatsLoader : MonoBehaviour
 
         UnregisteredHats.AddRange(SanitizeHats(response));
         var toDownload = GenerateDownloadList(UnregisteredHats);
+        if (EventUtility.isEnabled) UnregisteredHats.AddRange(CustomHatManager.loadHorseHats());
 
         TheOtherRolesPlugin.Logger.LogMessage($"I'll download {toDownload.Count} hat files");
 
@@ -65,6 +68,8 @@ public class HatsLoader : MonoBehaviour
     {
         var www = new UnityWebRequest();
         www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
+        fileName = fileName.Replace(" ", "%20");
+        TheOtherRolesPlugin.Logger.LogMessage($"downloading hat: {fileName}");
         www.SetUrl($"{RepositoryUrl}/hats/{fileName}");
         www.downloadHandler = new DownloadHandlerBuffer();
         var operation = www.SendWebRequest();
@@ -81,6 +86,7 @@ public class HatsLoader : MonoBehaviour
         }
 
         var filePath = Path.Combine(HatsDirectory, fileName);
+        filePath = filePath.Replace("%20", " ");
         var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
         while (!persistTask.IsCompleted)
         {

@@ -275,6 +275,14 @@ namespace TheOtherRoles.Patches {
             // Tracker reset deadBodyPositions
             Tracker.deadBodyPositions = new List<Vector3>();
 
+            // Blackmailer reset blackmail
+            if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnblackmailPlayer, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.unblackmailPlayer();
+            }
+
             // Arsonist deactivate dead poolable players
             if (Arsonist.arsonist != null && Arsonist.arsonist == CachedPlayer.LocalPlayer.PlayerControl) {
                 int visibleCounter = 0;
@@ -326,6 +334,8 @@ namespace TheOtherRoles.Patches {
 
             // AntiTeleport set position
             AntiTeleport.setPosition();
+
+            MapBehaviourPatch.resetRealTasks();
 
             if (CustomOptionHolder.randomGameStartPosition.getBool() && (AntiTeleport.antiTeleport.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId).Count == 0))
             { //Random spawn on round start

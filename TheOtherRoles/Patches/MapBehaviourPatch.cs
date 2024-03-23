@@ -22,6 +22,42 @@ namespace TheOtherRoles.Patches {
         public static Dictionary<string, SpriteRenderer> doorMarks;
         public static Il2CppArrayBase<PlainDoor> plainDoors = null;
 
+        public static Dictionary<byte, Il2CppSystem.Collections.Generic.List<Vector2>> realTasks = new();
+        public static void resetRealTasks()
+        {
+            realTasks.Clear();
+        }
+
+        public static void shareRealTasks()
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareRealTasks, Hazel.SendOption.Reliable, -1);
+            int count = 0;
+            foreach (var task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+            {
+                if (!task.IsComplete && task.HasLocation && !PlayerTask.TaskIsEmergency(task))
+                {
+                    foreach (var loc in task.Locations)
+                    {
+                        count++;
+                    }
+                }
+            }
+            writer.Write((byte)count);
+            foreach (var task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+            {
+                if (!task.IsComplete && task.HasLocation && !PlayerTask.TaskIsEmergency(task))
+                {
+                    foreach (var loc in task.Locations)
+                    {
+                        writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                        writer.Write(loc.x);
+                        writer.Write(loc.y);
+                    }
+                }
+            }
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
         public static void reset()
         {
             if (doorMarks != null)
@@ -36,6 +72,52 @@ namespace TheOtherRoles.Patches {
             if (plainDoors != null)
             {
                 plainDoors = null;
+            }
+        }
+
+        private static bool evilTrackerShowTask(MapTaskOverlay __instance)
+        {
+            if (!MeetingHud.Instance) return true;  // Only run in meetings, and then set the Position of the HerePoint to the Position before the Meeting!
+            if (CachedPlayer.LocalPlayer.PlayerControl != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
+            if (EvilTracker.target == null) return true;
+            if (realTasks[EvilTracker.target.PlayerId] == null) return false;
+            __instance.gameObject.SetActive(true);
+            __instance.data.Clear();
+            for (int i = 0; i < realTasks[EvilTracker.target.PlayerId].Count; i++)
+            {
+                try
+                {
+                    Vector2 pos = realTasks[EvilTracker.target.PlayerId][i];
+
+                    Vector3 localPosition = pos / MapUtilities.CachedShipStatus.MapScale;
+                    localPosition.z = -1f;
+                    PooledMapIcon pooledMapIcon = __instance.icons.Get<PooledMapIcon>();
+                    pooledMapIcon.transform.localScale = new Vector3(pooledMapIcon.NormalSize, pooledMapIcon.NormalSize, pooledMapIcon.NormalSize);
+                    pooledMapIcon.rend.color = Palette.CrewmateBlue;
+                    pooledMapIcon.name = $"{i}";
+                    pooledMapIcon.lastMapTaskStep = 0;
+                    pooledMapIcon.transform.localPosition = localPosition;
+                    string text = $"{i}";
+                    __instance.data.Add(text, pooledMapIcon);
+                }
+                catch (Exception ex)
+                {
+                    TheOtherRolesPlugin.Logger.LogError(ex.Message);
+                }
+            }
+            return false;
+        }
+
+        [HarmonyPatch(typeof(MapTaskOverlay), nameof(MapTaskOverlay.Show))]
+        class MapTaskOverlayShow
+        {
+            static bool Prefix(MapTaskOverlay __instance)
+            {
+                if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId)
+                {
+                    return evilTrackerShowTask(__instance);
+                }
+                return true;
             }
         }
 

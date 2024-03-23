@@ -808,7 +808,18 @@ namespace TheOtherRoles.Patches {
                     } else if (pc == Morphling.morphling && Morphling.morphTimer > 0) {
                         PlayerControl target = Morphling.morphTarget;
                         Morphling.morphling.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
-                    } else {
+                    }
+                    else if (pc == MimicK.mimicK && MimicK.victim != null)
+                    {
+                        var victim = MimicK.victim;
+                        MimicK.mimicK.setLook(victim.Data.PlayerName, victim.Data.DefaultOutfit.ColorId, victim.Data.DefaultOutfit.HatId, victim.Data.DefaultOutfit.VisorId, victim.Data.DefaultOutfit.SkinId, victim.Data.DefaultOutfit.PetId, false);
+                    }
+                    else if (pc == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph)
+                    {
+                        var victim = MimicK.mimicK;
+                        MimicA.mimicA.setLook(victim.Data.PlayerName, victim.Data.DefaultOutfit.ColorId, victim.Data.DefaultOutfit.HatId, victim.Data.DefaultOutfit.VisorId, victim.Data.DefaultOutfit.SkinId, victim.Data.DefaultOutfit.PetId, false);
+                    }
+                    else {
                         Helpers.setDefaultLook(pc, false);
                     }
                     // Dead Bodies
