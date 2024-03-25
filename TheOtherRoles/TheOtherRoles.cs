@@ -2995,6 +2995,7 @@ namespace TheOtherRoles
         public static float arrowUpdateInterval = 0.5f;
 
         public static PlayerControl target;
+        public static PlayerControl futureTarget;
         public static PlayerControl currentTarget;
         public static Sprite trackerButtonSprite;
         public static Sprite arrowSprite;
@@ -3044,7 +3045,8 @@ namespace TheOtherRoles
                 {
                     if (p.Data.IsDead)
                     {
-                        if ((p.Data.Role.IsImpostor || p == Spy.spy) && impostorPositionText.ContainsKey(p.Data.PlayerName))
+                        if ((p.Data.Role.IsImpostor || p == Spy.spy || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
+                        || (p == Jackal.jackal && Jackal.wasTeamRed)) && impostorPositionText.ContainsKey(p.Data.PlayerName))
                         {
                             impostorPositionText[p.Data.PlayerName].text = "";
                         }
@@ -3132,6 +3134,7 @@ namespace TheOtherRoles
         {
             evilTracker = null;
             target = null;
+            futureTarget = null;
             currentTarget = null;
             if (arrows != null)
             {

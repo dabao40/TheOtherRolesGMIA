@@ -2832,7 +2832,13 @@ namespace TheOtherRoles
                 },
                 () => { return EvilTracker.target == null && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
                 () => { return EvilTracker.currentTarget != null && EvilTracker.target == null && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
-                () => { evilTrackerButton.Timer = evilTrackerButton.MaxTimer; },
+                () =>
+                {
+                    // Reset here, else the task option would be useless
+                    if (EvilTracker.resetTargetAfterMeeting) EvilTracker.target = EvilTracker.futureTarget;
+                    EvilTracker.futureTarget = null;
+                    evilTrackerButton.Timer = evilTrackerButton.MaxTimer;
+                },
                 EvilTracker.getEvilTrackerButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,

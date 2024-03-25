@@ -1070,6 +1070,32 @@ namespace TheOtherRoles
         public static void evilHackerCreatesMadmate(byte targetId)
         {
             PlayerControl player = Helpers.playerById(targetId);
+
+            if (player == Lawyer.lawyer && Lawyer.target != null)
+            {
+                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
+                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
+                if (playerInfo != null) playerInfo.text = "";
+            }
+            else if (player == Akujo.akujo)
+            {
+                if (Akujo.honmei != null)
+                {
+                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
+                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                    if (playerInfo != null) playerInfo.text = "";
+                }
+                if (Akujo.keeps != null)
+                {
+                    foreach (PlayerControl playerControl in Akujo.keeps)
+                    {
+                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
+                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                        if (playerInfo != null) playerInfo.text = "";
+                    }
+                }
+            }
+
             if (!EvilHacker.canCreateMadmateFromJackal && player == Jackal.jackal)
             {
                 EvilHacker.fakeMadmate = player;
@@ -1180,6 +1206,24 @@ namespace TheOtherRoles
                     Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo != null) playerInfo.text = "";
+                }
+                else if (player == Akujo.akujo)
+                {
+                    if (Akujo.honmei != null)
+                    {
+                        Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
+                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                        if (playerInfo != null) playerInfo.text = "";
+                    }
+                    if (Akujo.keeps != null)
+                    {
+                        foreach (PlayerControl playerControl in Akujo.keeps)
+                        {
+                            Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
+                            TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                            if (playerInfo != null) playerInfo.text = "";
+                        }
+                    }
                 }
 
                 erasePlayerRoles(player.PlayerId, true);

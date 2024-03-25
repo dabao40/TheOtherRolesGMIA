@@ -715,7 +715,7 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.AddListener((System.Action)(() =>
                     {
                         PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[copiedIndex].TargetPlayerId);
-                        EvilTracker.target = focusedTarget;
+                        EvilTracker.futureTarget = EvilTracker.target = focusedTarget;
                         // Reset the GUI
                         __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("EvilTrackerButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("EvilTrackerButton").gameObject); });
                         GameObject targetMark = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
@@ -841,8 +841,6 @@ namespace TheOtherRoles.Patches {
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
                 PlagueDoctor.meetingFlag = true;
-                // Evil Tracker reset target
-                if (EvilTracker.resetTargetAfterMeeting) EvilTracker.target = null;
 
                 // Reset the victim for Mimic(Killer)
                 MimicK.victim = null;
