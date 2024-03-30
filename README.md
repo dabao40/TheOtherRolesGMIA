@@ -17,14 +17,15 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/v1.1.7) |
-| 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
+| 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
 
 <details>
   <summary>Click to show older versions</summary>
   
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.7) |
+| 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
 | 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
 | 2023.10.24s        | v1.1.26     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.26) |
 | 2023.7.12s         | v1.1.0      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0) |
@@ -42,6 +43,13 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.2.3**
+ - Fixed several bugs with the colors/footprints of the Mimic (both Killer and Assistant).  
+ - Changed the implementation of the detective footprints.  
+ - Added new option: Evil Tracker can see target tasks during meetings.  
+ - Changed and now the target of the Evil Tracker will reset after the meeting.  
+ - Fixed a bug where the Akujo may still see the roles of the True Love and the Backup even if the former has been sidekicked.
   
   **Version v1.1.7**
  - Added some sound effects to the game. Now most roles have a sound!
