@@ -1,7 +1,7 @@
 {
     "torSettings": {
         "0": "The Other Roles Settings",
-        "11": "The Other Roles\u8a2d\u5b9a",
+        "11": "The Other Roles\u306e\u8a2d\u5b9a",
         "13": "The Other Roles \u8bbe\u7f6e",
         "14": "The Other Roles \u8a2d\u7f6e"
     },
@@ -37,6 +37,7 @@
     },
     "crewmateRolesFill": {
         "0": "Fill Crewmate Roles\n(Ignores Min/Max)",
+        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077\u3092\u57cb\u3081\u308b\n(\u6700\u5c0f\u6570\u3068\u6700\u5927\u6570\u3092\u7121\u8996\u3059\u308b)",
         "13": "\u586b\u5145\u8239\u5458\u804c\u4e1a\uff08\u5ffd\u7565\u6700\u5927/\u6700\u5c0f\uff09",
         "14": "\u586b\u5145\u8239\u54e1\u8077\u696d\uff08\u5ffd\u7565\u6700\u5927/\u6700\u5c0f\uff09"
     },
@@ -78,7 +79,7 @@
     },
     "crewmateFill": {
         "0": "Fill: ",
-        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077\u3092\u57cb\u3081\u308b",
+        "11": "\u57cb\u3081\u308b:",
         "13": "\u586b\u5145\uff1a",
         "14": "\u586b\u5145\uff1a"
     },
@@ -126,13 +127,13 @@
     },
     "camsNightVision": {
         "0": "Cams Switch To Night Vision If Lights Are Off",
-        "11": "\u505c\u96fb\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5\u6642\u3001\u30ab\u30e1\u30e9\u304c\u505c\u96fb\u6642\u306e\u8996\u754c\u306b\u5207\u308a\u66ff\u308f\u308b",
+        "11": "\u505c\u96fb\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5\u6642\u3001\u30ab\u30e1\u30e9\u306e\u8996\u754c\u3092\u72ed\u3081\u308b",
         "13": "\u5728\u706f\u5149\u88ab\u5173\u95ed\u65f6\u76d1\u63a7\u4f7f\u7528\u9ed1\u591c\u6a21\u5f0f",
         "14": "\u5728\u71c8\u5149\u88ab\u95dc\u9589\u6642\u76e3\u63a7\u4f7f\u7528\u9ed1\u591c\u6a21\u5f0f"
     },
     "camsNoNightVisionIfImpVision": {
         "0": "Impostor Vision Ignores Night Vision Cams",
-        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306f\u505c\u96fb\u6642\u306b\u30ab\u30e1\u30e9\u3092\u898b\u308b\u3068\u304d\u3082\u505c\u96fb\u6642\u306e\u8996\u754c\u306b\u306a\u3089\u306a\u3044",
+        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u304c\u505c\u96fb\u6642\u306b\u30ab\u30e1\u30e9\u3092\u898b\u305f\u5834\u5408\u3001\u8996\u754c\u3092\u72ed\u3081\u306a\u3044\u304b",
         "13": "\u62e5\u6709\u5185\u9b3c\u89c6\u91ce\u7684\u73a9\u5bb6\u65e0\u89c6\u9ed1\u591c\u6a21\u5f0f",
         "14": "\u64c1\u6709\u5167\u9b3c\u8996\u91ce\u7684\u73a9\u5bb6\u7121\u8996\u9ed1\u591c\u6a21\u5f0f"
     },
@@ -174,7 +175,7 @@
     },
     "fungleElectrical": {
         "0": "Additional Electrical (Fungle)",
-        "11": "\u30d5\u30a1\u30f3\u30b0\u30eb\u306b\u505c\u96fb\u3092\u8ffd\u52a0",
+        "11": "\u30d5\u30a1\u30f3\u30b0\u30eb\u306b\u505c\u96fb\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5\u3092\u8ffd\u52a0",
         "13": "\u771f\u83cc\u4e16\u754c\uff1a\u589e\u52a0\u7535\u529b\u7cfb\u7edf\uff08\u98df\u5802-\u5b9e\u9a8c\u5ba4-\u4e0a\u5f15\u64ce\uff09",
         "14": "\u771f\u83cc\u4e16\u754c\uff1a\u589e\u52a0\u96fb\u529b\u7e6b\u7d71\uff08\u98df\u5802-\u5be6\u9a57\u5ba4-\u4e0a\u5f15\u64ce\uff09"
     },
@@ -438,49 +439,49 @@
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
-        "11": "<size=60%>mod\u4f5c\u6210<color=#FCCE03FF>Eisbison</color>\u3001\n<color=#FCCE03FF>EndOfFile</color>\u3001\n<color=#FCCE03FF>Thunderstorm584</color>\u304c\u62c5\u5f53\n<color=#FCCE03FF>Mall\u00f6ris</color> & \n<color=#FCCE03FF>Gendelo</color>\u30c7\u30b6\u30a4\u30f3 \n<color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color>\n\u65e5\u672c\u8a9e\u7ffb\u8a33<color=#F08080>\u30a2\u30f3\u30cf\u30c3\u30d4\u30fc\u30bb\u30c3\u30c8</color>&<color=#FF1919FF>KS</color>\n\u5143\u65e5\u672c\u8a9e\u7ffb\u8a33<color=#FCCE03FF>yuunozikkyou</color></size>",
+        "11": "mod\u88fd\u4f5c <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\n\u30c7\u30b6\u30a4\u30f3 <color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color>",
         "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color> & <color=#808080FF>\u91ce\u751f\u7684\u7334\u5b50\u54c8\u54c8\u54e5</color>\u7ffb\u8bd1</size>",
         "14": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7d44\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u9215\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u584a</color>\u7e41\u4e2d\u7ffb\u8b6f</size>"
     },
     "contributorsCredentials": {
         "0": "<size=60%> <color=#FCCE03FF>Special thanks to <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
-        "11": "<size=60%> <color=#FCCE03FF>\u30b9\u30da\u30b7\u30e3\u30eb\u30b5\u30f3\u30af\u30b9 to <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
+        "11": "<size=60%> <color=#FCCE03FF>\u30b9\u30da\u30b7\u30e3\u30eb\u30b5\u30f3\u30af\u30b9 <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
         "13": "<size=60%> <color=#FCCE03FF>\u7279\u522b\u9e23\u8c22<color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
         "14": "<size=60%> <color=#FCCE03FF>\u7279\u5225\u9cf4\u8b1d<color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>"
     },
     "mainMenuCredentials": {
         "0": "Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color>",
-        "11": "<size=60%>mod\u4f5c\u6210<color=#FCCE03FF>Eisbison</color>\u3001\n<color=#FCCE03FF>EndOfFile</color>\u3001<color=#FCCE03FF>Thunderstorm584</color>\u304c\u62c5\u5f53\n<color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u30c7\u30b6\u30a4\u30f3 \n<color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color></size>",
+        "11": "mod\u88fd\u4f5c <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\n\u30c7\u30b6\u30a4\u30f3 <color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color>",
         "13": "\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u672c\u5bb6\u6a21\u7ec4\n\u7531<color=#FCCE03FF>Bavari</color>\u8fdb\u884c\u6309\u94ae\u5236\u4f5c\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236",
         "14": "\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u672c\u5bb6\u6a21\u7d44\n\u7531<color=#FCCE03FF>Bavari</color>\u9032\u884c\u6309\u9215\u5236\u4f5c\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236"
     },
     "mainMenuAboutSection": {
         "0": "The Other Roles GMIA is a mod made from orginal TOR and adds many new roles and options to the game.\nI (indicating Imp11) decided to make this mod because the author of The Other Roles GM H broke up \nwith his team and the mod itself seemed to vanish.\nI was really intrigued in the mod and I don't want the whole mod to be gone.\nTherefore I decided to rebuild the mod and add new stuff to it, but unfortunately, I could not run the program.\nAt that time my programming knowledge was less than zero, so I started learning C# on my own.\nAfter a month or so, I made my first role Ninja and got better at programming as the days flew pass.\nUp to now my team and I have coded more than 30 roles/modifiers and lots of custom options.\nI hope you can join us and we can have fun together.\nDiscord: https://discord.com/invite/w7msq53dq7",
-        "11": "\u305d\u306e\u4ed6\u306e\u30ad\u30e3\u30e9\u30af\u30bf\u30fcGMIA\u306f\u3001\u30aa\u30ea\u30b8\u30ca\u30ebTOR\u3067\u4f5c\u3089\u308c\u305fmod\u3067\u3001\u30b2\u30fc\u30e0\u306b\u591a\u304f\u306e\u65b0\u3057\u3044\u30ad\u30e3\u30e9\u30af\u30bf\u30fc\u3084\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u8ffd\u52a0\u3055\u308c\u3066\u3044\u307e\u3059\u3002\n\u79c1\uff08Imp11\u3092\u8868\u3059\uff09\u306f\u3053\u306emod\u3092\u4f5c\u308b\u3053\u3068\u306b\u3057\u307e\u3057\u305f\u3002\u300e\u305d\u306e\u4ed6\u306e\u30ad\u30e3\u30e9\u30af\u30bf\u30fc\u300f\u306e\u4f5c\u8005\u3067\u3042\u308bGM H\u304c\u5225\u308c\u305f\u304b\u3089\u3067\u3059\n\u5f7c\u306e\u30c1\u30fc\u30e0\u3068mod\u81ea\u4f53\u304c\u6d88\u3048\u305f\u3088\u3046\u3060\u3002\n\u79c1\u306f\u672c\u5f53\u306b\u3053\u306emod\u306b\u8208\u5473\u304c\u3042\u308a\u307e\u3059\u3002mod\u5168\u4f53\u304c\u6d88\u3048\u305f\u304f\u3042\u308a\u307e\u305b\u3093\u3002\n\u305d\u3053\u3067\u3001mod\u3092\u518d\u69cb\u7bc9\u3057\u3066\u65b0\u3057\u3044\u3082\u306e\u3092\u8ffd\u52a0\u3059\u308b\u3053\u3068\u306b\u3057\u307e\u3057\u305f\u304c\u3001\u6b8b\u5ff5\u306a\u3053\u3068\u306b\u3001\u79c1\u306f\u3053\u306e\u30d7\u30ed\u30b0\u30e9\u30e0\u3092\u5b9f\u884c\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\n\u5f53\u6642\u3001\u79c1\u306e\u30d7\u30ed\u30b0\u30e9\u30df\u30f3\u30b0\u77e5\u8b58\u306f\u307e\u3060\u30bc\u30ed\u3067\u306f\u306a\u304b\u3063\u305f\u306e\u3067\u3001\u79c1\u306fC#\u3092\u72ec\u5b66\u3057\u59cb\u3081\u307e\u3057\u305f\u3002\n\u7d041\u30f6\u6708\u5f8c\u3001\u79c1\u306f\u6700\u521d\u306e\u5fcd\u8005\u5f79\u3092\u6f14\u3058\u307e\u3057\u305f\u304c\u3001\u6642\u9593\u304c\u7d4c\u3064\u306b\u3064\u308c\u3066\u30d7\u30ed\u30b0\u30e9\u30df\u30f3\u30b0\u306e\u9762\u3067\u307e\u3059\u307e\u3059\u4e0a\u624b\u306b\u306a\u308a\u307e\u3057\u305f\u3002\n\u3053\u308c\u307e\u3067\u3001\u79c1\u3068\u79c1\u306e\u30c1\u30fc\u30e0\u306f30\u4ee5\u4e0a\u306e\u30ed\u30fc\u30eb/\u30e2\u30c7\u30a3\u30d5\u30a1\u30a4\u30e4\u3068\u591a\u304f\u306e\u30ab\u30b9\u30bf\u30e0\u30aa\u30d7\u30b7\u30e7\u30f3\u3092\u30b3\u30fc\u30c7\u30a3\u30f3\u30b0\u3057\u3066\u304d\u307e\u3057\u305f\u3002\n\u79c1\u306f\u3042\u306a\u305f\u304c\u79c1\u305f\u3061\u306b\u53c2\u52a0\u3059\u308b\u3053\u3068\u3092\u671b\u3093\u3067\u3001\u79c1\u305f\u3061\u306f\u4e00\u7dd2\u306b\u697d\u3057\u304f\u904a\u3076\u3053\u3068\u304c\u3067\u304d\u307e\u3059\u3002\nDiscord: https://discord.com/invite/w7msq53dq7",
+        "11": "TheOtherRolesGMIA\u306f\u3001\u30aa\u30ea\u30b8\u30ca\u30eb\u306eTOR\u304b\u3089\u4f5c\u3089\u308c\u305fmod\u3067\u3001\u30b2\u30fc\u30e0\u306b\u591a\u304f\u306e\u65b0\u5f79\u8077\u3084\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u8ffd\u52a0\u3055\u308c\u3066\u3044\u307e\u3059\u3002\n\u79c1\uff08Imp11\uff09\u306f\u3053\u306emod\u3092\u4f5c\u308b\u3053\u3068\u306b\u3057\u307e\u3057\u305f\u3002\nTheOtherRolesGMH\u304c\u6d88\u3048\u305f\u304b\u3089\u3067\u3059\u3002\n\u5f7c\u306e\u30c1\u30fc\u30e0\u3068mod\u81ea\u4f53\u304c\u6d88\u3048\u305f\u3088\u3046\u3060\u3002\n\u79c1\u306f\u672c\u5f53\u306b\u3053\u306emod\u306b\u8208\u5473\u304c\u3042\u308a\u307e\u3059\u3002mod\u5168\u4f53\u304c\u6d88\u3048\u305f\u304f\u3042\u308a\u307e\u305b\u3093\u3002\n\u305d\u3053\u3067\u3001mod\u3092\u518d\u69cb\u7bc9\u3057\u3066\u65b0\u3057\u3044\u3082\u306e\u3092\u8ffd\u52a0\u3059\u308b\u3053\u3068\u306b\u3057\u307e\u3057\u305f\u304c\u3001\u6b8b\u5ff5\u306a\u3053\u3068\u306b\u3001\u79c1\u306f\u3053\u306e\u30d7\u30ed\u30b0\u30e9\u30e0\u3092\u5b9f\u884c\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\n\u5f53\u6642\u3001\u79c1\u306e\u30d7\u30ed\u30b0\u30e9\u30df\u30f3\u30b0\u77e5\u8b58\u306f\u307e\u3060\u30bc\u30ed\u3067\u306f\u306a\u304b\u3063\u305f\u306e\u3067\u3001\u79c1\u306fC#\u3092\u72ec\u5b66\u3057\u59cb\u3081\u307e\u3057\u305f\u3002\n\u7d041\u30f6\u6708\u5f8c\u3001\u79c1\u306f\u6700\u521d\u306e\u5f79\u8077\u3068\u3057\u3066\u30cb\u30f3\u30b8\u30e3\u3092\u4f5c\u308a\u307e\u3057\u305f\u304c\u3001\u6642\u9593\u304c\u7d4c\u3064\u306b\u3064\u308c\u3066\u30d7\u30ed\u30b0\u30e9\u30df\u30f3\u30b0\u306e\u9762\u3067\u307e\u3059\u307e\u3059\u4e0a\u624b\u306b\u306a\u308a\u307e\u3057\u305f\u3002\n\u3053\u308c\u307e\u3067\u3001\u79c1\u3068\u79c1\u306e\u30c1\u30fc\u30e0\u306f30\u4ee5\u4e0a\u306e\u5f79\u8077/\u5c5e\u6027\u3068\u591a\u304f\u306e\u30ab\u30b9\u30bf\u30e0\u30aa\u30d7\u30b7\u30e7\u30f3\u3092\u88fd\u4f5c\u3057\u3066\u304d\u307e\u3057\u305f\u3002\n\u79c1\u306f\u3042\u306a\u305f\u304c\u79c1\u305f\u3061\u306b\u53c2\u52a0\u3059\u308b\u3053\u3068\u3092\u671b\u3093\u3067\u3001\u79c1\u305f\u3061\u306f\u4e00\u7dd2\u306b\u697d\u3057\u304f\u904a\u3076\u3053\u3068\u304c\u3067\u304d\u307e\u3059\u3002\nDiscord: https://discord.com/invite/w7msq53dq7",
         "13": "\u8d85\u591a\u804c\u4e1aGMIA\u662f\u4ece\u8d85\u591a\u804c\u4e1a\u672c\u5bb6\u505a\u8d77\uff0c\u589e\u52a0\u8bb8\u591a\u65b0\u89d2\u8272\u548c\u65b0\u529f\u80fd\u7684\u4e00\u6b3e\u6a21\u7ec4\n\u6211\uff08\u6307Imp11\uff09\u4e4b\u6240\u4ee5\u6253\u7b97\u7740\u624b\u505a\u672c\u6a21\u7ec4\u662f\u56e0\u4e3a\u8d85\u591a\u804c\u4e1aGMH\u7684\u4f5c\u8005\u7684\u56e2\u961f\u89e3\u6563\u4e86\uff0c\u800cGMH\u4f3c\u4e4e\u4e5f\u51e0\u8fd1\u6d88\u5931\n\u6211\u88ab\u8fd9\u4e2a\u6a21\u7ec4\u6df1\u6df1\u5730\u8ff7\u4f4f\u4e86\uff0c\u6211\u5e76\u4e0d\u5e0c\u671b\u8fd9\u4e48\u597d\u7684\u6a21\u7ec4\u5f7b\u5e95\u88ab\u57cb\u6ca1\n\u6211\u56e0\u6b64\u5e0c\u671b\u91cd\u5236\u8fd9\u4e2a\u6a21\u7ec4\u5e76\u589e\u52a0\u4e00\u4e9b\u65b0\u529f\u80fd\uff0c\u4f46\u5f88\u53ef\u60dc\u7684\u662f\u6211\u5e76\u4e0d\u80fd\u751f\u6210GMH\n\u5f53\u65f6\u6211\u7684\u7f16\u7a0b\u6c34\u5e73\u4e3a0\uff0c\u6240\u4ee5\u6211\u5f00\u59cb\u81ea\u5b66C#\uff0c\u5e76\u57281\u4e2a\u6708\u4e4b\u540e\u5b8c\u6210\u4e86\u7b2c\u4e00\u4e2a\u89d2\u8272\u5fcd\u8005\n\u4e4b\u540e\u5728\u5f00\u53d1\u8005\u56e2\u961f\u7684\u4e0d\u65ad\u52aa\u529b\u4e0b\u6211\u4eec\u6210\u529f\u7f16\u5199\u4e8630+\u4e2a\u804c\u4e1a/\u526f\u804c\u4e1a\u4ee5\u53ca\u5927\u91cf\u9644\u52a0\u6e38\u620f\u529f\u80fd\n\u6211\u4eec\u7531\u8877\u5730\u611f\u8c22\u6b63\u5728\u6e38\u73a9\u8d85\u591a\u804c\u4e1aGMIA\u7684\u6240\u6709\u73a9\u5bb6\uff0c\u5e76\u4e14\u5e0c\u671b\u53ef\u4ee5\u52a0\u5165\u6211\u4eec\nQQ\u7fa4\u53f7\uff1a787132035",
         "14": "\u8d85\u591a\u8077\u696dGMIA\u662f\u5f9e\u8d85\u591a\u8077\u696d\u672c\u5bb6\u505a\u8d77\uff0c\u589e\u52a0\u8a31\u591a\u65b0\u89d2\u8272\u548c\u65b0\u529f\u80fd\u7684\u4e00\u6b3e\u6a21\u7d44\n\u6211\uff08\u6307Imp11\uff09\u4e4b\u6240\u4ee5\u6253\u7b97\u8457\u624b\u505a\u672c\u6a21\u7d44\u662f\u56e0\u70ba\u8d85\u591a\u8077\u696dGMH\u7684\u4f5c\u8005\u7684\u5718\u968a\u89e3\u6563\u4e86\uff0c\u800cGMH\u4f3c\u4e4e\u4e5f\u5e7e\u8fd1\u6d88\u5931\n\u6211\u88ab\u9019\u500b\u6a21\u7d44\u6df1\u6df1\u5730\u8ff7\u4f4f\u4e86\uff0c\u6211\u4f75\u4e0d\u5e0c\u671b\u9019\u9ebd\u597d\u7684\u6a21\u7d44\u5fb9\u5e95\u88ab\u57cb\u6c92\n\u6211\u56e0\u6b64\u5e0c\u671b\u91cd\u5236\u9019\u500b\u6a21\u7d44\u4f75\u589e\u52a0\u4e00\u4e9b\u65b0\u529f\u80fd\uff0c\u4f46\u5f88\u53ef\u60dc\u7684\u662f\u6211\u4f75\u4e0d\u80fd\u751f\u6210GMH\n\u7576\u6642\u6211\u7684\u7de8\u7a0b\u6c34\u5e73\u70ba0\uff0c\u6240\u4ee5\u6211\u958b\u59cb\u81ea\u5b78C#\uff0c\u4f75\u57281\u500b\u6708\u4e4b\u5f8c\u5b8c\u6210\u4e86\u7b2c\u4e00\u500b\u89d2\u8272\u5fcd\u8005\n\u4e4b\u5f8c\u5728\u958b\u767c\u8005\u5718\u968a\u7684\u4e0d\u65b7\u52aa\u529b\u4e0b\u6211\u5011\u6210\u529f\u7de8\u5beb\u4e8630+\u500b\u8077\u696d/\u526f\u8077\u696d\u4ee5\u53ca\u5927\u91cf\u9644\u52a0\u904a\u6232\u529f\u80fd\n\u6211\u5011\u7531\u8877\u5730\u611f\u8b1d\u6b63\u5728\u904a\u73a9\u8d85\u591a\u8077\u696dGMIA\u7684\u6240\u6709\u73a9\u5bb6\uff0c\u4f75\u4e14\u5e0c\u671b\u53ef\u4ee5\u52a0\u5165\u6211\u5011\nQQ\u7fa4\u865f\uff1a787132035"
     },
     "howToPlayCrewmate": {
         "0": "<color=#8CFFFFFF>Crewmate</color>\nAs a Crewmate, your objective goal is to complete all tasks and exile the <color=#FF1919FF>Impostors</color>.\nYou might also use your special abilities to discover all hidden <color=#4C544EFF>Neutrals</color>.\nFor some individuals, your power is hidden until a certain amount of tasks have been completed.\nUse your abilities wisely and uncover the evil powers that are among you.",
-        "11": "<color=#8CFFFFFF>\u8239\u54e1</color>\n\u8239\u54e1\u3068\u3057\u3066\u3001\u3042\u306a\u305f\u306e\u76ee\u6a19\u306f\u3059\u3079\u3066\u306e\u4efb\u52d9\u3092\u9054\u6210\u3057\u3066<color=#FF1919FF>\u306e\u66ff\u3048\u7389</color>\u3092\u8ffd\u653e\u3059\u308b\u3053\u3068\u3067\u3059\u3002\n\u7279\u6b8a\u306a\u80fd\u529b\u3092\u4f7f\u7528\u3057\u3066\u3001\u3059\u3079\u3066\u306e\u96a0\u308c\u305f<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3092\u767a\u898b\u3059\u308b\u3053\u3068\u3082\u3067\u304d\u307e\u3059\u3002\n\u4e00\u90e8\u306e\u4eba\u306b\u3068\u3063\u3066\u3001\u3042\u306a\u305f\u306e\u529b\u306f\u4e00\u5b9a\u6570\u306e\u4efb\u52d9\u3092\u9054\u6210\u3059\u308b\u307e\u3067\u96a0\u308c\u3066\u3044\u307e\u3059\u3002",
+        "11": "<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\n<color=#FFD700>\u52dd\u5229\u6761\u4ef6:</color>\u3059\u3079\u3066\u306e\u30bf\u30b9\u30af\u3092\u7d42\u308f\u3089\u305b\u308b\u304b<color=#FF1919FF>\u4eba\u5916</color>\u3092\u5168\u54e1\u3053\u306e\u8239\u304b\u3089\u8ffd\u653e\u3059\u308b\u3053\u3068\n\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u3067\u3042\u308b\u3042\u306a\u305f\u306e\u76ee\u7684\u306f\u3059\u3079\u3066\u306e<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3092\u8ffd\u653e\u3059\u308b\u3053\u3068\u3002\n\u307e\u305f\u3001\u80fd\u529b\u3092\u4f7f\u3044\u6f5c\u3093\u3067\u3044\u308b<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3092\u5168\u54e1\u898b\u3064\u3051\u51fa\u3059\u3053\u3068\u3082\u3067\u304d\u308b\n\u5f79\u8077\u306b\u3088\u3063\u3066\u306f\u30bf\u30b9\u30af\u3092\u4e00\u5b9a\u6570\u5b8c\u4e86\u3055\u305b\u308b\u307e\u3067\u80fd\u529b\u304c\u4f7f\u3048\u306a\u3044\u3002\n\u3055\u3042\u3001\u541b\u306e\u529b\u3092\u4f7f\u3063\u3066\u3053\u306e\u8239\u306b\u6f5c\u3093\u3067\u3044\u308b<color=#FF1919FF>\u4eba\u5916</color>\u3092\u5168\u54e1\u8ffd\u653e\u3057\u3088\u3046",
         "13": "<color=#8CFFFFFF>\u8239\u5458\u9635\u8425</color>\n\u4f5c\u4e3a<color=#8CFFFFFF>\u8239\u5458</color>\uff0c\u4f60\u5e94\u8be5\u505a\u597d<color=#8CFFFFFF>\u8239\u5458</color>\u8be5\u505a\u7684\u4e8b\u60c5\uff0c\u62fc\u5c3d\u5168\u529b\u5b8c\u6210\u4efb\u52a1\uff0c\u5e76\u5728\u5b8c\u6210\u4efb\u52a1\u7684\u8fc7\u7a0b\u4e2d\n\u4f7f\u7528\u4f60\u9510\u5229\u7684\u773c\u795e\u548c\u667a\u6167\u7684\u5927\u8111\u89c2\u5bdf\u6bcf\u4e00\u4e2a\u4eba\u7684\u4e3e\u52a8\u5e76\u4ece\u4e2d\u627e\u51fa<color=#FF1919FF>\u5185\u9b3c</color>\u548c\u90aa\u6076\u7684<color=#4C544E>\u4e2d\u7acb\u9635\u8425</color>",
         "14": "<color=#8CFFFFFF>\u8239\u54e1\u9663\u71df</color>\n\u4f5c\u70ba<color=#8CFFFFFF>\u8239\u54e1</color>\uff0c\u59b3\u61c9\u8a72\u505a\u597d<color=#8CFFFFFF>\u8239\u54e1</color>\u8a72\u505a\u7684\u4e8b\u60c5\uff0c\u62fc\u76e1\u5168\u529b\u5b8c\u6210\u4efb\u52d9\uff0c\u4f75\u5728\u5b8c\u6210\u4efb\u52d9\u7684\u904e\u7a0b\u4e2d\n\u4f7f\u7528\u59b3\u92b3\u5229\u7684\u773c\u795e\u548c\u667a\u6167\u7684\u5927\u8166\u89c0\u5bdf\u6bcf\u4e00\u500b\u4eba\u7684\u8209\u52d5\u4f75\u5f9e\u4e2d\u627e\u51fa<color=#FF1919FF>\u5167\u9b3c</color>\u548c\u90aa\u60e1\u7684<color=#4C544E>\u4e2d\u7acb\u9663\u71df</color>"
     },
     "howToPlayImpostor": {
         "0": "<color=#FF1919FF>Impostor</color>\nAs an Impostor, do whatever it takes to kill all <color=#8CFFFFFF>Crewmates</color> and sabotage the map.\nYou can also use your special abilities to hide among the Crew.\nBeware of the killing <color=#4C544EFF>Neutrals</color> that might hurt you.",
-        "11": "<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\n\u66ff\u3048\u7389\u3068\u3057\u3066\u3001\u3042\u3089\u3086\u308b\u4ee3\u4fa1\u3092\u6255\u3063\u3066<color=#8CFFFFFF>\u8239\u54e1</color>\u3092\u6bba\u3057\u3001\u5730\u56f3\u3092\u7834\u58ca\u3059\u308b\u3002\n\u3042\u306a\u305f\u306e\u7279\u6b8a\u306a\u80fd\u529b\u3092\u4f7f\u3063\u3066\u8239\u54e1\u306e\u4e2d\u306b\u96a0\u3059\u3053\u3068\u3082\u3067\u304d\u307e\u3059\u3002\n<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3092\u614e\u91cd\u306b\u6bba\u3059\u3053\u3068\u306f\u3001\u3042\u306a\u305f\u3092\u50b7\u3064\u3051\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002",
+        "11": "<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\n<color=#FFD700>\u52dd\u5229\u6761\u4ef6:</color><color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\u3068<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3092\u5168\u6ec5\u3055\u305b\u308b\u3053\u3068\n<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3068\u3057\u3066<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\u3092\u7686\u6bba\u3057\u306b\u3057\u3066\u3001\u59a8\u5bb3\u3092\u3059\u308b\u305f\u3081\u306a\u3089\u306a\u3093\u3067\u3082\u3057\u308d\u3002\n\u80fd\u529b\u3092\u4f7f\u3044\u3001<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\u306e\u4e2d\u306b\u6f5c\u3080\u3053\u3068\u3082\u3067\u304d\u308b\u3002\n\u305f\u3060\u3057\u3001\u541b\u306b\u5371\u5bb3\u3092\u52a0\u3048\u308b\u304b\u3082\u3057\u308c\u306a\u3044<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u306b\u306f\u304f\u308c\u3050\u308c\u3082\u6ce8\u610f...",
         "13": "<color=#FF1919FF>\u5185\u9b3c\u9635\u8425</color>\n\u8eab\u4e3a<color=#FF1919FF>\u5185\u9b3c</color>\uff0c\u4f60\u5e94\u8be5\u5c3d\u529b\u7684\u5728<color=#8CFFFFFF>\u8239\u5458</color>\u4e4b\u4e2d\u9690\u85cf\u81ea\u5df1\n\u5e76\u4f7f\u7528\u7834\u574f\u6280\u80fd\u4e3a<color=#8CFFFFFF>\u8239\u5458</color>\u7684\u4efb\u52a1\u9053\u8def\u5236\u4f5c\u963b\u788d\n\u5f53\u7136\u4f60\u53ef\u4ee5\u5047\u88c5\u505a\u4efb\u52a1\u4e0d\u88ab<color=#8CFFFFFF>\u8239\u5458</color>\u6000\u7591\uff0c\u5e76\u4e14\u4f60\u53ef\u4ee5\u4f7f\u7528\u4f60\u7684\u6280\u80fd\u5c3d\u53ef\u80fd\u7684\u51fb\u6740\u8239\u5458\u83b7\u53d6\u80dc\u5229",
         "14": "<color=#FF1919FF>\u5167\u9b3c\u9663\u71df</color>\n\u8eab\u70ba<color=#FF1919FF>\u5167\u9b3c</color>\uff0c\u59b3\u61c9\u8a72\u76e1\u529b\u7684\u5728<color=#8CFFFFFF>\u8239\u54e1</color>\u4e4b\u4e2d\u96b1\u85cf\u81ea\u5df1\n\u4f75\u4f7f\u7528\u7834\u58de\u6280\u80fd\u70ba<color=#8CFFFFFF>\u8239\u54e1</color>\u7684\u4efb\u52d9\u9053\u8def\u5236\u4f5c\u963b\u7919\n\u7576\u7136\u59b3\u53ef\u4ee5\u5047\u88dd\u505a\u4efb\u52d9\u4e0d\u88ab<color=#8CFFFFFF>\u8239\u54e1</color>\u61f7\u7591\uff0c\u4f75\u4e14\u59b3\u53ef\u4ee5\u4f7f\u7528\u59b3\u7684\u6280\u80fd\u76e1\u53ef\u80fd\u7684\u64ca\u6bba\u8239\u54e1\u7372\u53d6\u52dd\u5229"
     },
     "howToPlayNeutral": {
         "0": "<color=#4C544EFF>Neutral</color>\nAs a <color=#4C544EFF>Neutral</color>, you must win as a solo.\nFor some roles, it is possible for them to create a helper to support them.\nUse your abilities to act against the <color=#8CFFFFFF>Crewmates</color> and <color=#FF1919FF>Impostors</color>.",
-        "11": "<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\n<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3068\u3057\u3066\u3001\u30bd\u30ed\u3067\u52dd\u3064\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002\n\u4e00\u90e8\u306e\u30ed\u30fc\u30eb\u3067\u306f\u3001\u30d8\u30eb\u30d1\u30fc\u3092\u4f5c\u6210\u3057\u3066\u30b5\u30dd\u30fc\u30c8\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u3059\u3002\n\u3042\u306a\u305f\u306e\u80fd\u529b\u3092\u4f7f\u3063\u3066<color=#8CFFFFFF>\u8239\u54e1</color>\u3068<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u306b\u5bfe\u6297\u3057\u307e\u3059\u3002",
+        "11": "<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\n<color=#FFD700>\u52dd\u5229\u6761\u4ef6:</color>:\u81ea\u8eab\u306e\u76ee\u7684\u3092\u679c\u305f\u3059\u3053\u3068\n<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3068\u3057\u3066\u3001\u541b\u306f\u4e00\u4eba\u3067\u52dd\u5229\u3092\u63b4\u307e\u306a\u3044\u3068\u3044\u3051\u306a\u3044\u3002\n\u5f79\u8077\u306b\u3088\u3063\u3066\u306f\u4ef2\u9593\u3092\u4f5c\u308b\u3053\u3068\u3082\u3067\u304d\u308b\u3002\n<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color> \u3084 <color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u306b\u5bfe\u3057\u3066\u306f\u3001\u80fd\u529b\u3092\u4f7f\u3044\u8ce2\u304f\u884c\u52d5\u3057\u3088\u3046\u3002",
         "13": "<color=#4C544EFF>\u4e2d\u7acb\u9635\u8425</color>\n\u8eab\u4e3a<color=#4C544EFF>\u4e2d\u7acb</color>\uff0c\u4f60\u5e94\u8be5\u6309\u7167\u81ea\u5df1\u7684\u89d2\u8272\u7279\u6027\u5c3d\u81ea\u5df1\u5168\u90e8\u7684\u529b\u91cf\u5b8c\u6210\u4efb\u52a1\n\u4f8b\u5982: <color=#00B4EBFF>\u8c7a\u72fc</color>\u53ef\u4ee5\u62db\u52df\u4e00\u4e2a\u540c\u4f19\u4e00\u8d77\u5e72\u6d3b\uff0c<color=#EC62A5FF>\u5c0f\u4e11</color>\u7aed\u5c3d\u5168\u529b\u8ba9\u522b\u4eba\u6000\u7591\u81ea\u5df1\uff0c<color=#8B4513>\u79c3\u9e6b</color>\u52aa\u529b\u7684\u7528\u9e21\u817f\u586b\u9971\u81ea\u5df1\u7684\u809a\u5b50...",
         "14": "<color=#4C544EFF>\u4e2d\u7acb\u9663\u71df</color>\n\u8eab\u70ba<color=#4C544EFF>\u4e2d\u7acb</color>\uff0c\u59b3\u61c9\u8a72\u6309\u7167\u81ea\u5df1\u7684\u89d2\u8272\u7279\u6027\u76e1\u81ea\u5df1\u5168\u90e8\u7684\u529b\u91cf\u5b8c\u6210\u4efb\u52d9\n\u4f8b\u5982: <color=#00B4EBFF>\u8c7a\u72fc</color>\u53ef\u4ee5\u62db\u52df\u4e00\u500b\u540c\u5925\u4e00\u8d77\u5e79\u6d3b\uff0c<color=#EC62A5FF>\u5c0f\u919c</color>\u7aed\u76e1\u5168\u529b\u8b93\u5225\u4eba\u61f7\u7591\u81ea\u5df1\uff0c<color=#8B4513>\u79bf\u9df2</color>\u52aa\u529b\u7684\u7528\u96de\u817f\u586b\u98fd\u81ea\u5df1\u7684\u809a\u5b50..."
     },
     "howToPlayMadmate": {
         "0": "<color=#FF1919FF>Madmate</color>\nThe <color=#FF1919FF>Madmate</color> is counted as a <color=#8CFFFFFF>Crewmate</color>, but your alliance lies with the <color=#FF1919FF>Impostors</color>.\nUse your abilities to act like a Crew, but support the <color=#FF1919FF>Impostors</color> at all cost.\nBeware that the <color=#FF1919FF>Impostors</color> might not be able to recognize you and might harm you.",
-        "11": "<color=#FF1919FF>\u30de\u30c3\u30c9\u30e1\u30a4\u30c8</color>\n<color=#FF1919FF>\u30de\u30c3\u30c9\u30e1\u30a4\u30c8</color>\u306f<color=#8CFFFFFF>\u8239\u54e1</color>\u3068\u307f\u306a\u3055\u308c\u3066\u3044\u307e\u3059\u304c\u3001\u3042\u306a\u305f\u306e\u540c\u76df\u306f<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u306b\u5c5e\u3057\u3066\u3044\u307e\u3059\u3002\n\u3042\u306a\u305f\u306e\u80fd\u529b\u3092\u4f7f\u3063\u3066\u8239\u54e1\u306e\u3088\u3046\u306b\u8868\u73fe\u3057\u307e\u3059\u304c\u3001\u3042\u3089\u3086\u308b\u4ee3\u4fa1\u3092\u6255\u3063\u3066<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3092\u652f\u6301\u3057\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093\u3002",
+        "11": "<color=#FF1919FF>\u30de\u30c3\u30c9\u30e1\u30a4\u30c8</color>\n<color=#FFD700>\u52dd\u5229\u6761\u4ef6:</color><color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u9663\u55b6</color>\u306e\u52dd\u5229\n<color=#FF1919FF>\u30de\u30c3\u30c9\u30e1\u30a4\u30c8</color>\u306f<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\u3068\u3057\u3066\u30ab\u30a6\u30f3\u30c8\u3055\u308c\u308b\u304c\u3001\u541b\u306e\u76ee\u7684\u306f<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u9663\u55b6</color>\u306e\u52dd\u5229\u3002\n<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\u3089\u3057\u304f\u632f\u308b\u821e\u3044\u3001<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3092\u5168\u529b\u3067\u30b5\u30dd\u30fc\u30c8\u3057\u308d\u3002\n\u3057\u304b\u3057\u3001<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u306f<color=#FF1919FF>\u30de\u30c3\u30c9\u30e1\u30a4\u30c8</color>\u304c\u8ab0\u304b\u3092\u8a8d\u8b58\u3057\u3066\u3044\u306a\u3044...",
         "13": "<color=#FF1919FF>\u53db\u5f92</color>\n\u8eab\u4e3a<color=#FF1919FF>\u53db\u5f92</color>\uff0c\u4f60\u5e94\u8be5\u5c3d\u81ea\u5df1\u7684\u529b\u6c14\u5b8c\u6210\u4e00\u90e8\u5206\u4efb\u52a1\u6765\u53d1\u73b0<color=#FF1919FF>\u5185\u9b3c</color>\n\u5e76\u6084\u65e0\u58f0\u606f\u7684\u5e2e\u52a9<color=#FF1919FF>\u5185\u9b3c</color>\uff0c\u5f53<color=#FF1919FF>\u5185\u9b3c</color>\u80dc\u5229\u4e4b\u65e5\uff0c\u4f60\u5c31\u53ef\u4ee5\u8ddf\u968f\u4ed6\u4eec\u4e00\u8d77\u89e3\u8131",
         "14": "<color=#FF1919FF>\u53db\u5f92</color>\n\u8eab\u70ba<color=#FF1919FF>\u53db\u5f92</color>\uff0c\u59b3\u61c9\u8a72\u76e1\u81ea\u5df1\u7684\u529b\u6c23\u5b8c\u6210\u4e00\u90e8\u5206\u4efb\u52d9\u4f86\u767c\u73fe<color=#FF1919FF>\u5167\u9b3c</color>\n\u4f75\u6084\u7121\u8072\u606f\u7684\u5e6b\u52a9<color=#FF1919FF>\u5167\u9b3c</color>\uff0c\u7576<color=#FF1919FF>\u5167\u9b3c</color>\u52dd\u5229\u4e4b\u65e5\uff0c\u59b3\u5c31\u53ef\u4ee5\u8ddf\u96a8\u4ed6\u5011\u4e00\u8d77\u89e3\u812b"
     },
@@ -642,7 +643,7 @@
     },
     "vampireShortDesc": {
         "0": "Bite your enemies",
-        "11": "\u30af\u30eb\u30fc\u306e\u8840\u3092\u5438\u3063\u3066\u5168\u6ec5\u3055\u305b\u3088\u3046",
+        "11": "\u30af\u30eb\u30fc\u306b\u565b\u307f\u4ed8\u304d\u6bba\u5bb3\u3057\u308d",
         "13": "\u54ac\u6b7b\u4f60\u7684\u654c\u4eba",
         "14": "\u54ac\u6b7b\u59b3\u7684\u6575\u4eba"
     },
@@ -672,13 +673,13 @@
     },
     "eraserIntroDesc": {
         "0": "Kill the Crewmates and erase their roles",
-        "11": "\u30af\u30eb\u30fc\u306e\u30ed\u30fc\u30eb\u3092\u524a\u9664\u3057\u3088\u3046",
+        "11": "\u30af\u30eb\u30fc\u306e\u5f79\u8077\u3092\u524a\u9664\u3057\u3088\u3046",
         "13": "\u51fb\u6740\u8239\u5458\u5e76\u62b9\u53bb\u4ed6\u4eec\u7684\u8eab\u4efd",
         "14": "\u64ca\u6bba\u8239\u54e1\u4f75\u62b9\u53bb\u4ed6\u5011\u7684\u8eab\u4efd"
     },
     "eraserShortDesc": {
         "0": "Erase the roles of your enemies",
-        "11": "\u30ed\u30fc\u30eb\u3092\u6d88\u3059\u80fd\u529b\u3092\u6d3b\u7528\u3057\u3066\u30af\u30eb\u30fc\u3092\u6df7\u6c8c\u3078\u843d\u3068\u3057\u8fbc\u3082\u3046",
+        "11": "\u5f79\u8077\u3092\u6d88\u3059\u80fd\u529b\u3092\u6d3b\u7528\u3057\u3066\u30af\u30eb\u30fc\u3092\u6df7\u6c8c\u3078\u843d\u3068\u3057\u8fbc\u3082\u3046",
         "13": "\u62b9\u53bb\u654c\u4eba\u7684\u8eab\u4efd",
         "14": "\u62b9\u53bb\u6575\u4eba\u7684\u8eab\u4efd"
     },
@@ -756,7 +757,7 @@
     },
     "cleanerCooldown": {
         "0": "Cleaner Cooldown",
-        "11": "\u6b7b\u4f53\u3092\u6d88\u3059\u30af\u30fc\u30eb\u30bf\u30a4\u30e0",
+        "11": "\u6b7b\u4f53\u6d88\u3057\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u6e05\u6d01\u51b7\u5374",
         "14": "\u6e05\u6f54\u51b7\u537b"
     },
@@ -935,13 +936,13 @@
     },
     "niceGuesserIntroDesc": {
         "0": "Guess and shoot",
-        "11": "\u63a8\u6e2c\u3057\u3001\u6483\u3061\u629c\u3051",
+        "11": "\u63a8\u6e2c\u3057\u3066\u6483\u3061\u629c\u3051",
         "13": "\u751f\u547d\u5c31\u662f\u4e00\u573a\u8c6a\u8d4c\uff01",
         "14": "\u751f\u547d\u5c31\u662f\u4e00\u5834\u8c6a\u8ced\uff01"
     },
     "niceGuesserShortDesc": {
         "0": "Guess and shoot",
-        "11": "\u63a8\u6e2c\u3057\u3001\u6483\u3061\u629c\u3051",
+        "11": "\u63a8\u6e2c\u3057\u3066\u6483\u3061\u629c\u3051",
         "13": "\u751f\u547d\u5c31\u662f\u4e00\u573a\u8c6a\u8d4c\uff01",
         "14": "\u751f\u547d\u5c31\u662f\u4e00\u5834\u8c6a\u8ced\uff01"
     },
@@ -953,13 +954,13 @@
     },
     "evilGuesserIntroDesc": {
         "0": "Guess and shoot",
-        "11": "\u63a8\u6e2c\u3057\u3001\u6483\u3061\u629c\u3051",
+        "11": "\u63a8\u6e2c\u3057\u3066\u6483\u3061\u629c\u3051",
         "13": "\u751f\u547d\u5c31\u662f\u4e00\u573a\u8c6a\u8d4c\uff01",
         "14": "\u751f\u547d\u5c31\u662f\u4e00\u5834\u8c6a\u8ced\uff01"
     },
     "evilGuesserShortDesc": {
         "0": "Guess and shoot",
-        "11": "\u63a8\u6e2c\u3057\u3001\u6483\u3061\u629c\u3051",
+        "11": "\u63a8\u6e2c\u3057\u3066\u6483\u3061\u629c\u3051",
         "13": "\u751f\u547d\u5c31\u662f\u4e00\u573a\u8c6a\u8d4c\uff01",
         "14": "\u751f\u547d\u5c31\u662f\u4e00\u5834\u8c6a\u8ced\uff01"
     },
@@ -1007,13 +1008,13 @@
     },
     "guesserGuessChat": {
         "0": "{0} guessed the role {1} for {2}!",
-        "11": "{0} \u306f {2} \u306e\u30ed\u30fc\u30eb\u3092 {1} \u3060\u3068\u63a8\u6e2c\u3057\u305f!",
+        "11": "{0} \u306f {2} \u306e\u5f79\u8077\u3092 {1} \u3060\u3068\u63a8\u6e2c\u3057\u305f!",
         "13": "{0} \u731c\u6d4b {2} \u7684\u8eab\u4efd\u4e3a {1}\uff01",
         "14": "{0} \u731c\u6e2c {2} \u7684\u8eab\u4efd\u70ba {1}\uff01"
     },
     "watcherGuessChat": {
         "0": "The Guesser guessed the role {0} for {1}!",
-        "11": "\u30b2\u30c3\u30b5\u30fc\u306f\u300c{1}\u300d\u306e\u30ed\u30fc\u30eb\u304c\u300c{0}\u300d\u3060\u3068\u63a8\u6e2c\u3057\u305f\uff01",
+        "11": "\u30b2\u30c3\u30b5\u30fc\u306f\u300c{1}\u300d\u306e\u5f79\u8077\u304c\u300c{0}\u300d\u3060\u3068\u63a8\u6e2c\u3057\u305f\uff01",
         "13": "\u8d4c\u602a\u731c\u6d4b {1} \u7684\u8eab\u4efd\u4e3a {0}\uff01",
         "14": "\u8ced\u602a\u731c\u6e2c {1} \u7684\u8eab\u4efd\u70ba {0}\uff01"
     },
@@ -1199,13 +1200,13 @@
     },
     "shifterIntroDesc": {
         "0": "Shift your role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u596a\u304a\u3046",
+        "11": "\u5f79\u8077\u3092\u596a\u304a\u3046",
         "13": "\u4ea4\u6362\u4f60\u7684\u804c\u4e1a",
         "14": "\u4ea4\u63db\u59b3\u7684\u8077\u696d"
     },
     "shifterShortDesc": {
         "0": "Shift your role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u596a\u304a\u3046",
+        "11": "\u5f79\u8077\u3092\u596a\u304a\u3046",
         "13": "\u4ea4\u6362\u4f60\u7684\u804c\u4e1a",
         "14": "\u4ea4\u63db\u59b3\u7684\u8077\u696d"
     },
@@ -1217,11 +1218,11 @@
     },
     "niceShifterIntroDesc": {
         "0": "Shift your role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u596a\u304a\u3046"
+        "11": "\u5f79\u8077\u3092\u596a\u304a\u3046"
     },
     "niceShifterShortDesc": {
         "0": "Shift your role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u596a\u304a\u3046"
+        "11": "\u5f79\u8077\u3092\u596a\u304a\u3046"
     },
     "corruptedShifter": {
         "0": "Chain-Shifter",
@@ -1231,13 +1232,13 @@
     },
     "corruptedShifterIntroDesc": {
         "0": "Steal someone's role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u4ea4\u63db\u3057\u52dd\u5229\u3092\u63b4\u3082\u3046",
+        "11": "\u5f79\u8077\u3092\u4ea4\u63db\u3057\u52dd\u5229\u3092\u63b4\u3082\u3046",
         "13": "\u7a83\u53d6\u4ed6\u4eba\u804c\u4e1a",
         "14": "\u7aca\u53d6\u4ed6\u4eba\u8077\u696d"
     },
     "corruptedShifterShortDesc": {
         "0": "Steal someone's role",
-        "11": "\u30ed\u30fc\u30eb\u3092\u4ea4\u63db\u3057\u52dd\u5229\u3092\u63b4\u3082\u3046",
+        "11": "\u5f79\u8077\u3092\u4ea4\u63db\u3057\u52dd\u5229\u3092\u63b4\u3082\u3046",
         "13": "\u7a83\u53d6\u4ed6\u4eba\u804c\u4e1a",
         "14": "\u7aca\u53d6\u4ed6\u4eba\u8077\u696d"
     },
@@ -1390,6 +1391,10 @@
         "11": "\u30d9\u30f3\u30c8\u4f7f\u7528\u6642\u3001\u30b8\u30e3\u30c3\u30ab\u30eb\u9663\u55b6\u306b\u30d0\u30ec\u308b",
         "13": "\u8c7a\u72fc\u548c\u8ddf\u73ed\u770b\u5230\u901a\u98ce\u53e3\u7684\u6807\u8bb0",
         "14": "\u8c7a\u72fc\u548c\u8ddf\u73ed\u770b\u5230\u901a\u98a8\u53e3\u7684\u6a19\u8a18"
+    },
+    "engineerInfo": {
+        "0": "Engineer Fix",
+        "13": "\u5de5\u7a0b\u5e08\u79d2\u4fee\u706f\u5149"
     },
     "sheriff": {
         "0": "Sheriff",
@@ -1769,6 +1774,10 @@
         "13": "\u5c38\u4f53\u62a5\u544a\uff1a{0}\u79d2\u524d\u88ab\u6740",
         "14": "\u5c4d\u9ad4\u5831\u544a\uff1a{0}\u79d2\u524d\u88ab\u6bba"
     },
+    "medicInfo": {
+        "0": "Failed Murder Attempt on Shielded Player",
+        "13": "\u6709\u4eba\u8bd5\u56fe\u51fb\u6740\u88ab\u62a4\u76fe\u4fdd\u62a4\u7684\u73a9\u5bb6"
+    },
     "swapper": {
         "0": "Swapper",
         "11": "\u30b9\u30ef\u30c3\u30d1\u30fc",
@@ -1913,6 +1922,10 @@
         "13": "\u7075\u9b42\u6301\u7eed\u65f6\u95f4",
         "14": "\u9748\u9b42\u6301\u7e8c\u6642\u9593"
     },
+    "seerInfo": {
+        "0": "Seer Info: Someone Died",
+        "13": "\u7075\u5a92\u4fe1\u606f\uff1a\u6709\u73a9\u5bb6\u6b7b\u4ea1"
+    },
     "hacker": {
         "0": "Hacker",
         "11": "\u30cf\u30c3\u30ab\u30fc",
@@ -1966,6 +1979,10 @@
         "11": "\u643a\u5e2f\u88c5\u7f6e\u4f7f\u7528\u6642\u3001\u79fb\u52d5\u4e0d\u80fd",
         "13": "\u5728\u4f7f\u7528\u79fb\u52a8\u8bbe\u65bd\u65f6\u4e0d\u80fd\u79fb\u52a8",
         "14": "\u5728\u4f7f\u7528\u79fb\u52d5\u8a2d\u65bd\u6642\u4e0d\u80fd\u79fb\u52d5"
+    },
+    "hackerTimer": {
+        "0": "{0}s",
+        "13": "{0}\u79d2"
     },
     "tracker": {
         "0": "Tracker",
@@ -2083,26 +2100,26 @@
     },
     "snitchAlive": {
         "0": "Snitch is alive: ",
-        "11": "\u30b9\u30cb\u30c3\u30c1\u751f\u5b58\u4e2d",
+        "11": "\u30b9\u30cb\u30c3\u30c1\u751f\u5b58\u4e2d:",
         "13": "\u544a\u5bc6\u8005\u5b58\u6d3b\uff1a",
         "14": "\u544a\u5bc6\u8005\u5b58\u6d3b\uff1a"
     },
     "snitchDead": {
         "0": "Snitch is dead!",
-        "11": "\u30b9\u30cb\u30c3\u30c1\u6b7b\u4ea1",
+        "11": "\u30b9\u30cb\u30c3\u30c1\u6b7b\u4ea1!",
         "13": "\u544a\u5bc6\u8005\u6b7b\u4e86\uff01",
         "14": "\u544a\u5bc6\u8005\u6b7b\u4e86\uff01"
     },
     "snitchOutput": {
         "0": "Bad alive roles in game: \n \n",
-        "11": "\u4eca\u73fe\u5728\u751f\u304d\u3066\u308b\u4eba\u5916 \n \n",
+        "11": "\u73fe\u5728\u751f\u5b58\u4e2d\u306e\u4eba\u5916: \n \n",
         "13": "\u90aa\u6076\u5b58\u6d3b\u804c\u4e1a\uff1a\n \n",
         "14": "\u90aa\u60e1\u5b58\u6d3b\u8077\u696d\uff1a\n \n"
     },
     "snitchLastSeen": {
-        "0": ", was last seen ",
-        "11": "\u6700\u5f8c\u306b\u898b\u305f\u306e\u306f ",
-        "13": "\uff0c\u6700\u540e\u88ab\u53d1\u73b0\u4e8e",
+        "0": "{0}, was last seen {1}",
+        "11": "{0}\u6700\u5f8c\u306b\u898b\u305f\u306e\u306f{1}",
+        "13": "{0}\u6700\u540e\u88ab\u53d1\u73b0\u4e8e{1}",
         "14": "\uff0c\u6700\u5f8c\u88ab\u767c\u73fe\u65bc"
     },
     "spy": {
@@ -2149,7 +2166,7 @@
     },
     "securityGuard": {
         "0": "Security Guard",
-        "11": "\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30ac\u30fc\u30c9",
+        "11": "\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30fc\u30ac\u30fc\u30c9",
         "13": "\u4fdd\u5b89",
         "14": "\u4fdd\u5b89"
     },
@@ -2167,7 +2184,7 @@
     },
     "securityGuardCooldown": {
         "0": "Security Guard Cooldown",
-        "11": "\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
+        "11": "\u30d9\u30f3\u30c8\u5c01\u9396/\u30ab\u30e1\u30e9\u8a2d\u7f6e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u51b7\u5374\u65f6\u95f4",
         "14": "\u51b7\u537b\u6642\u9593"
     },
@@ -2275,7 +2292,7 @@
     },
     "madmatePrefix": {
         "0": "Mad ",
-        "11": "\u30de\u30c3\u30c9 ",
+        "11": "\u30de\u30c3\u30c9",
         "13": "\u80cc\u53db\u7684",
         "14": "\u80cc\u53db\u7684"
     },
@@ -2383,7 +2400,7 @@
     },
     "mediumQuestion1": {
         "0": "If my role hasn't been saved, there's no {0} in the game anymore.",
-        "11": "\u300c\u3042\u306a\u305f\u306e\u30ed\u30fc\u30eb\u306f\u4f55\u3067\u3059\u304b\u300d\u300e\u79c1\u306f{0}\u3067\u3059\u300f",
+        "11": "\u300c\u3042\u306a\u305f\u306e\u5f79\u8077\u306f\u4f55\u3067\u3059\u304b\u300d\u300e\u79c1\u306f{0}\u3067\u3059\u300f",
         "13": "\u5982\u679c\u6211\u6ca1\u6709\u5b58\u6d3b\uff0c\u90a3\u4e48\u573a\u4e0a\u5c31\u4e0d\u4f1a\u518d\u6709 {0} \u4e86",
         "14": "\u5982\u679c\u6211\u6c92\u6709\u5b58\u6d3b\uff0c\u90a3\u9ebd\u5834\u4e0a\u5c31\u4e0d\u6703\u518d\u6709 {0} \u4e86"
     },
@@ -2401,7 +2418,7 @@
     },
     "mediumQuestion4": {
         "0": "It seems like my killer was the {0}.",
-        "11": "\u300c\u3042\u306a\u305f\u3092\u6bba\u3057\u305f\u4eba\u306e\u30ed\u30fc\u30eb\u306f\u4f55\u3067\u3057\u3087\u3046\u300d\u300e\u79c1\u3092\u6bba\u3057\u305f\u4eba\u306f{0}\u3067\u3059\u300f",
+        "11": "\u300c\u3042\u306a\u305f\u3092\u6bba\u3057\u305f\u4eba\u306e\u5f79\u8077\u306f\u4f55\u3067\u3057\u3087\u3046\u300d\u300e\u79c1\u3092\u6bba\u3057\u305f\u4eba\u306f{0}\u3067\u3059\u300f",
         "13": "\u770b\u6837\u5b50\u6211\u7684\u51f6\u624b\u662f {0}",
         "14": "\u770b\u6a23\u5b50\u6211\u7684\u5147\u624b\u662f {0}"
     },
@@ -2411,13 +2428,13 @@
     },
     "mediumSheriffSuicide": {
         "0": "Yikes, that Sheriff shot backfired.",
-        "11": "\u3042...\u3042\u308a\u306e\u307e\u307e \u4eca\u3000\u8d77\u3053\u3063\u305f\u4e8b\u3092\u8a71\u3059\u305c\uff01\u300c\u304a\u308c\u306f\u3000\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3092\u57f7\u884c\u3057\u3088\u3046\u3068\u601d\u3063\u305f\u3089\u3000\u3044\u3064\u306e\u307e\u306b\u304b\u81ea\u5206\u304c\u6b7b\u3093\u3067\u3044\u305f\u300d \u306a...\u4f55\u3092\u8a00\u3063\u3066\u3044\u308b\u306e\u304b\u3000\u308f\u304b\u3089\u306d\u30fc\u3068\u601d\u3046\u304c \u304a\u308c\u3082\u3000\u4f55\u3092\u3055\u308c\u305f\u306e\u304b\u3000\u308f\u304b\u3089\u306a\u304b\u3063\u305f...\u982d\u304c\u3069\u3046\u306b\u304b\u306a\u308a\u305d\u3046\u3060\u3063\u305f...\u50ac\u7720\u8853\u3060\u3068\u304b\u8d85\u30b9\u30d4\u30fc\u30c9\u3060\u3068\u304b\u305d\u3093\u306a\u30c1\u30e3\u30c1\u306a\u3082\u3093\u3058\u3083\u3042\u3000\u65ad\u3058\u3066\u306d\u3048 \u3082\u3063\u3068\u6050\u308d\u3057\u3044\u3082\u306e\u306e\u7247\u9c57\u3092\u3000\u5473\u308f\u3063\u305f\u305c...",
+        "11": "\u79c1\u306f\u30b7\u30a7\u30ea\u30d5\u3067\u8aa4\u3063\u3066\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u3092\u6483\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002",
         "13": "\u554a\u5440\uff01\u90a3\u4e2a\u8b66\u957f\u8d70\u706b\u4e86\uff01",
         "14": "\u554a\u5440\uff01\u90a3\u500b\u8b66\u9577\u8d70\u706b\u4e86\uff01"
     },
     "mediumWarlockSuicide": {
         "0": "MAYBE I cursed the person next to me and killed myself. Oops.",
-        "11": "\u96a3\u306e\u4eba\u3092\u546a\u3063\u3066\u305d\u306e\u4eba\u306b\u6bba\u3055\u308c\u3061\u3083\u3063\u305f\u2661",
+        "11": "\u4ffa\u30d0\u30ab\u304b\u3082\u3057\u308c\u306d\u3048...\u96a3\u306e\u4eba\u3092\u546a\u3063\u3066\u81ea\u5206\u3092\u30ad\u30eb\u3055\u305b\u3061\u3083\u3063\u305f\u3088...",
         "13": "\u6211\u597d\u50cf\u8bc5\u5492\u4e86\u6211\u65c1\u8fb9\u7684\u4eba\u7136\u540e\u628a\u6211\u6740\u4e86",
         "14": "\u6211\u597d\u50cf\u8a5b\u5492\u4e86\u6211\u65c1\u908a\u7684\u4eba\u7136\u5f8c\u628a\u6211\u6bba\u4e86"
     },
@@ -2447,19 +2464,19 @@
     },
     "mediumJackalKillsSidekick": {
         "0": "First they sidekicked me, then they killed me. At least I don't need to do tasks anymore.",
-        "11": "\u6700\u521d\u306b\u81ea\u5206\u3092\u30b5\u30a4\u30c9\u30ad\u30c3\u30af\u306b\u3057\u305f\u304f\u305b\u306b\u88cf\u5207\u3089\u308c\u305f...",
+        "11": "\u81ea\u5206\u3092\u30b5\u30a4\u30c9\u30ad\u30c3\u30af\u306b\u3057\u305f\u304f\u305b\u306b\u88cf\u5207\u3089\u308c\u305f...",
         "13": "\u9996\u5148\u4ed6\u4eec\u628a\u6211\u62db\u52df\u4e86\uff0c\u5176\u6b21\u53c8\u628a\u6211\u6740\u4e86...\u81f3\u5c11\u6211\u4e0d\u7528\u518d\u505a\u4efb\u52a1\u4e86",
         "14": "\u9996\u5148\u4ed6\u5011\u628a\u6211\u62db\u52df\u4e86\uff0c\u5176\u6b21\u53c8\u628a\u6211\u6bba\u4e86...\u81f3\u5c11\u6211\u4e0d\u7528\u518d\u505a\u4efb\u52d9\u4e86"
     },
     "mediumImpostorTeamkill": {
         "0": "I guess they confused me for the Spy, is there even one?",
-        "11": "\u3042\u3044\u3064\u3089\u304c\u4ffa\u3092\u30b9\u30d1\u30a4\u3060\u3068\u7591\u3044\u6bba\u3057\u3084\u304c\u3063\u305f!",
+        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306e\u76f8\u65b9\u306b\u88cf\u5207\u3089\u308c\u305f\u3093\u3060\u3051\u3069\u30fc\u30fc\u30fc",
         "13": "\u4ed6\u4eec\u597d\u50cf\u628a\u6211\u8bef\u4ee5\u4e3a\u662f\u5367\u5e95\u4e86",
         "14": "\u4ed6\u5011\u597d\u50cf\u628a\u6211\u8aa4\u4ee5\u70ba\u662f\u81e5\u5e95\u4e86"
     },
     "mediumBodyCleaned": {
         "0": "Is my dead body some kind of art now or... aaand it's gone.",
-        "11": "\u306a\u3093\u3060\u308d\u3046\u3001\u50d5\u306e\u6b7b\u4f53\u6d88\u3059\u306e\u3084\u3081\u3066\u3082\u3089\u3063\u3066\u3044\u3044\u3067\u3059\u304b",
+        "11": "\u79c1\u306e\u6b7b\u4f53\u306f\u8ab0\u304b\u306b\u6d88\u3055\u308c\u307e\u3057\u305f...",
         "13": "\u6211\u7684\u5c38\u4f53\u597d\u50cf\u662f\u4e00\u79cd\u827a\u672f\u554a...\u4e0d\uff01\u5b83\u6d88\u5931\u4e86\uff01",
         "14": "\u6211\u7684\u5c4d\u9ad4\u597d\u50cf\u662f\u4e00\u7a2e\u85dd\u8853\u554a...\u4e0d\uff01\u5b83\u6d88\u5931\u4e86\uff01"
     },
@@ -2525,19 +2542,19 @@
     },
     "mediumPlayerNeutral": {
         "0": "player{0} who {1} neutral but cannot kill",
-        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc{0}{1}\u306f\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u3060\u304c\u30ad\u30eb\u306f\u3067\u304d\u306a\u3044\u3002",
+        "11": "{0}\u306f\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u3060\u304c{1}\u3092\u6bba\u3059\u3053\u3068\u306f\u3067\u304d\u306a\u3044",
         "13": "\u540d\u73a9\u5bb6{0}{1}\u4e2d\u7acb\u4f46\u662f\u4e0d\u80fd\u51fb\u6740",
         "14": "\u540d\u73a9\u5bb6{0}{1}\u4e2d\u7acb\u4f46\u662f\u4e0d\u80fd\u64ca\u6bba"
     },
     "mediumWas": {
         "0": "was",
-        "11": "\u3060\u3063\u305f\u3002",
+        "11": "[BLANK]",
         "13": "[BLANK]",
         "14": "[BLANK]"
     },
     "mediumWere": {
         "0": "were",
-        "11": "\u3060\u3063\u305f\u3002",
+        "11": "[BLANK]",
         "13": "[BLANK]",
         "14": "[BLANK]"
     },
@@ -3144,19 +3161,19 @@
     },
     "crewmateRoles": {
         "0": "Crewmate Roles",
-        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u30ed\u30fc\u30eb",
+        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u5f79\u8077",
         "13": "\u8239\u5458\u804c\u4e1a",
         "14": "\u8239\u54e1\u8077\u696d"
     },
     "neutralRoles": {
         "0": "Neutral Roles",
-        "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u30ed\u30fc\u30eb",
+        "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u5f79\u8077",
         "13": "\u4e2d\u7acb\u804c\u4e1a",
         "14": "\u4e2d\u7acb\u8077\u696d"
     },
     "impostorRoles": {
         "0": "Impostor Roles",
-        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u30ed\u30fc\u30eb",
+        "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u5f79\u8077",
         "13": "\u5185\u9b3c\u804c\u4e1a",
         "14": "\u5167\u9b3c\u8077\u696d"
     },
@@ -3210,7 +3227,7 @@
     },
     "pressTabForMore": {
         "0": "\n Press TAB or Page Number for more... ({0}/{1})",
-        "11": "\nTAB\u307e\u305f\u306f\u30da\u30fc\u30b8\u6570\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044({0}/{1})",
+        "11": "\nTab\u30ad\u30fc\u307e\u305f\u306f\u30da\u30fc\u30b8\u756a\u53f7\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044({0}/{1})",
         "13": "\n \u6309Tab\u952e\u67e5\u770b\u66f4\u591a... ({0}/{1})",
         "14": "\n \u6309Tab\u9375\u67e5\u770b\u66f4\u591a... ({0}/{1})"
     },
@@ -3228,7 +3245,7 @@
     },
     "page3": {
         "0": "Page 3: Role and Modifier Rates \n",
-        "11": "Page 3: \u30ed\u30fc\u30eb\u3068\u5c5e\u6027\u306e\u6570 \n",
+        "11": "Page 3: \u5f79\u8077\u3068\u5c5e\u6027\u306e\u6570 \n",
         "13": "\u7b2c\u4e09\u9875\uff1a\u804c\u4e1a\u4e0e\u526f\u804c\u4e1a\u6982\u7387 \n",
         "14": "\u7b2c\u4e09\u9801\uff1a\u8077\u696d\u8207\u526f\u8077\u696d\u6982\u7387 \n"
     },
@@ -3270,7 +3287,7 @@
     },
     "useScrollWheel": {
         "0": "(Use scroll wheel if necessary)",
-        "11": "(\u5fc5\u8981\u306b\u5fdc\u3058\u3066\u30de\u30a6\u30b9\u30b9\u30af\u30ed\u30fc\u30eb\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044!)",
+        "11": "(\u30b9\u30af\u30ed\u30fc\u30eb\u30db\u30a4\u30fc\u30eb\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044)",
         "13": "(\u5982\u6709\u5fc5\u8981\u8bf7\u4f7f\u7528\u6eda\u8f6e)",
         "14": "(\u5982\u6709\u5fc5\u8981\u8acb\u4f7f\u7528\u6efe\u8f2a)"
     },
@@ -3280,25 +3297,25 @@
     },
     "ghostsSeeInfoButton": {
         "0": "Ghosts See Tasks & Other Info",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u6642\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u30bf\u30b9\u30af\u6b8b\u91cf\u3092\u898b\u308c\u308b",
+        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u30bf\u30b9\u30af\u6b8b\u91cf\u3092\u898b\u308c\u308b",
         "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u4efb\u52a1\u8fdb\u5ea6\u53ca\u5176\u4ed6\u4fe1\u606f",
         "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u4efb\u52d9\u9032\u5ea6\u53ca\u5176\u4ed6\u4fe1\u606f"
     },
     "ghostsSeeRolesButton": {
         "0": "Ghosts Can See Roles",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u6642\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5f79\u8077\u3092\u898b\u308c\u308b",
+        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5f79\u8077\u3092\u898b\u308c\u308b",
         "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u804c\u4e1a",
         "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u8077\u696d"
     },
     "ghostsSeeModifiersButton": {
         "0": "Ghosts Can Additionally See Modifier",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u6642\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5c5e\u6027\u3092\u898b\u308c\u308b",
+        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5c5e\u6027\u3092\u898b\u308c\u308b",
         "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u526f\u804c\u4e1a",
         "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u526f\u8077\u696d"
     },
     "ghostsSeeVotesButton": {
         "0": "Ghosts Can See Votes",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u6642\u6295\u7968\u3092\u898b\u308c\u308b",
+        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u6295\u7968\u3092\u898b\u308c\u308b",
         "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u6295\u7968",
         "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u6295\u7968"
     },
@@ -3340,7 +3357,7 @@
     },
     "modCredits": {
         "0": "Mod Credits",
-        "11": "\u30af\u30ec\u30b8\u30c3\u30c8(MOD)",
+        "11": "MOD\u30af\u30ec\u30b8\u30c3\u30c8",
         "13": "\u6a21\u7ec4\u8d21\u732e\u8005",
         "14": "\u6a21\u7d44\u8ca2\u737b\u8005"
     },
@@ -3352,13 +3369,13 @@
     },
     "modAbout": {
         "0": "About",
-        "11": "\u672c\u30e2\u30b8\u30e5\u30fc\u30eb\u306b\u3064\u3044\u3066",
+        "11": "\u3053\u306eMOD\u306b\u3064\u3044\u3066",
         "13": "\u5173\u4e8e\u672c\u6a21\u7ec4",
         "14": "\u95dc\u65bc\u672c\u6a21\u7d44"
     },
     "modHowToPlay": {
         "0": "How To Play",
-        "11": "\u30e2\u30b8\u30e5\u30fc\u30eb\u306e\u904a\u3073\u65b9\u8aac\u660e",
+        "11": "\u30d7\u30ec\u30a4\u65b9\u6cd5",
         "13": "\u6a21\u7ec4\u73a9\u6cd5\u8bf4\u660e",
         "14": "\u6a21\u7d44\u73a9\u6cd5\u8aaa\u660e"
     },
@@ -3370,19 +3387,19 @@
     },
     "lobbyInfoCrewmate": {
         "0": "Crewmate",
-        "11": "\u8239\u54e1",
+        "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8",
         "13": "\u8239\u5458\u9635\u8425",
         "14": "\u8239\u54e1\u9663\u71df"
     },
     "lobbyInfoModifier": {
         "0": "Modifier",
-        "11": "\u30b5\u30d6\u30ad\u30e3\u30ea\u30a2",
+        "11": "\u5c5e\u6027",
         "13": "\u526f\u804c\u4e1a",
         "14": "\u526f\u8077\u696d"
     },
     "lobbyInfoSummary": {
         "0": "Role Summary",
-        "11": "\u30ed\u30fc\u30eb\u89e3\u91c8",
+        "11": "\u5f79\u8077\u306e\u6982\u8981",
         "13": "\u89d2\u8272\u89e3\u91ca\u4e00\u89c8",
         "14": "\u89d2\u8272\u89e3\u91cb\u4e00\u89bd"
     },
@@ -3579,9 +3596,9 @@
         "14": "\u8d77\u8a34\u4eba\u6d3b\u4e0b\u4f86\u4e86"
     },
     "hauntMenuGhost": {
-        "0": " Ghost",
-        "11": "\u30b4\u30fc\u30b9\u30c8",
-        "13": " \u9b3c\u9b42",
+        "0": "{0} Ghost",
+        "11": "{0} \u30b4\u30fc\u30b9\u30c8",
+        "13": "(\u9b3c\u9b42) {0}",
         "14": " \u9b3c\u9b42"
     },
     "guesserModifier": {
@@ -3634,7 +3651,7 @@
     },
     "roleInfoFakeSD": {
         "0": " (fake SK)",
-        "11": "(\u30d5\u30a7\u30a4\u30afSK)",
+        "11": "(\u30d5\u30a7\u30a4\u30af\u30b5\u30a4\u30c9\u30ad\u30c3\u30af)",
         "13": " (\u5047\u8ddf\u73ed)",
         "14": " (\u5047\u8ddf\u73ed)"
     },
@@ -3664,7 +3681,7 @@
     },
     "roleSummaryKilled": {
         "0": " - killed by {0}",
-        "11": "- {0} \u306b\u3088\u308a\u6bba\u5bb3",
+        "11": "- {0} \u306b\u6bba\u5bb3\u3055\u308c\u305f",
         "13": " - \u88ab\u51fb\u6740\u4e8e {0}",
         "14": " - \u88ab\u64ca\u6bba\u65bc {0}"
     },
@@ -3676,7 +3693,7 @@
     },
     "roleSummaryTorched": {
         "0": " - burnt by {0}",
-        "11": "- {0} \u306b\u3088\u308a\u653e\u706b",
+        "11": "- {0} \u306b\u653e\u706b\u3055\u308c\u305f",
         "13": " - \u7eb5\u706b\u4e8e {0}",
         "14": " - \u7e31\u706b\u65bc {0}"
     },
@@ -3700,19 +3717,19 @@
     },
     "roleSummaryGuess": {
         "0": " - guessed by {0}",
-        "11": "- {0} \u306b\u3088\u308a\u63a8\u6bba",
+        "11": "- {0} \u306b\u63a8\u6bba\u3055\u308c\u305f",
         "13": " - \u88ab\u8d4c\u6740\u4e8e {0}",
         "14": " - \u88ab\u8ced\u6bba\u65bc {0}"
     },
     "roleSummarySpelled": {
         "0": " - <color=#FF1919FF>witched</color> by {0}",
-        "11": "- {0} \u306b\u3088\u308a<color=#FF1919FF>\u546a\u6bba</color>",
+        "11": "- {0} \u306b<color=#FF1919FF>\u546a\u6bba</color>\u3055\u308c\u305f",
         "13": " - <color=#FF1919FF>\u88ab\u5492\u6740\u4e8e</color> {0}",
         "14": " - <color=#FF1919FF>\u88ab\u5492\u6bba\u65bc</color> {0}"
     },
     "roleSummaryRevenge": {
         "0": " - <color=#FF1919FF>revenged</color> by {0}",
-        "11": "- {0} \u306b\u3088\u308a<color=#FF1919FF>\u5fa9\u8b90</color>",
+        "11": "- {0} \u306b<color=#FF1919FF>\u5fa9\u8b90</color>\u3055\u308c\u305f",
         "13": " - <color=#FF1919FF>\u88ab\u590d\u4ec7\u4e8e</color> {0}",
         "14": " - <color=#FF1919FF>\u88ab\u5fa9\u4ec7\u65bc</color> {0}"
     },
@@ -3724,7 +3741,7 @@
     },
     "roleSummaryBombed": {
         "0": " - bombed by {0}",
-        "11": "- {0} \u306b\u3088\u308a\u7206\u6bba",
+        "11": "- {0} \u306b\u7206\u6bba\u3055\u308c\u305f",
         "13": " - \u88ab\u7206\u7834\u4e8e {0}",
         "14": " - \u88ab\u7206\u7834\u65bc {0}"
     },
@@ -3748,13 +3765,13 @@
     },
     "roleSummaryBrainwashedKilled": {
         "0": " - <color=#00FF00FF>brainwashed killed</color> by {0}",
-        "11": " - {0} \u306b\u3088\u308a<color=#00FF00FF>\u6d17\u8133</color> ",
+        "11": " - {0} \u306b<color=#00FF00FF>\u6d17\u8133</color> \u3055\u308c\u305f",
         "13": " - <color=#00FF00FF>\u88ab\u6d17\u8111\u51fb\u6740\u4e8e</color> {0}",
         "14": " - <color=#00FF00FF>\u88ab\u6d17\u8166\u64ca\u6bba\u65bc</color> {0}"
     },
     "roleSummaryDisease": {
         "0": " - <color=#FFC000FF>diseased</color> by {0}",
-        "11": " - {0} \u306b\u3088\u308a<color=#FFC000FF>\u611f\u67d3</color>",
+        "11": " - {0} \u306b<color=#FFC000FF>\u611f\u67d3</color>\u3055\u305b\u3089\u308c\u305f",
         "13": " - <color=#FFC000FF>\u88ab\u62b9\u6740\u4e8e</color> {0}",
         "14": " - <color=#FFC000FF>\u88ab\u62b9\u6bba\u65bc</color> {0}"
     },
@@ -3766,7 +3783,7 @@
     },
     "roleSummaryKillsInfo": {
         "0": " - <color=#FF0000FF>(Kills: {0})</color>",
-        "11": " - <color=#FF0000FF>(\u30ad\u30eb: {0})</color>",
+        "11": " - <color=#FF0000FF>(\u30ad\u30eb\u6570:{0})</color>",
         "13": " - <color=#FF0000FF>(\u51fb\u6740\u6570: {0})</color>",
         "14": " - <color=#FF0000FF>(\u64ca\u6bba\u6578: {0})</color>"
     },
@@ -3783,24 +3800,33 @@
         "14": "\u958b\u59cb\u5012\u8a08\u6642\uff1a{0}"
     },
     "errorNotInstalled": {
-        "0": " has a different or no version of The Other Roles",
-        "11": " TheOtherRolesGMIA\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3046\u304b\u3001\u5c0e\u5165\u3055\u308c\u3066\u3044\u307e\u305b\u3093!"
+        "0": "{0} has a different or no version of GMIA",
+        "11": "{0} TheOtherRolesGMIA\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3046\u304b\u3001\u5c0e\u5165\u3055\u308c\u3066\u3044\u307e\u305b\u3093!",
+        "13": "{0} \u6709\u4e0d\u540c\u6216\u6ca1\u6709\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "errorOlderVersion": {
-        "0": " has an older version of The Other Roles",
-        "11": " \u53e4\u3044\u30d0\u30fc\u30b8\u30e7\u30f3\u306eTheOtherRolesGMIA\u3092\u5c0e\u5165\u3057\u3066\u3044\u307e\u3059!"
+        "0": "{0} has an older version of GMIA",
+        "11": "{0} \u53e4\u3044\u30d0\u30fc\u30b8\u30e7\u30f3\u306eTheOtherRolesGMIA\u3092\u5c0e\u5165\u3057\u3066\u3044\u307e\u3059!",
+        "13": "{0} \u6709\u4e00\u4e2a\u66f4\u8001\u7248\u672c\u7684\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "errorNewerVersion": {
-        "0": " has a newer version of The Other Roles",
-        "11": " \u6700\u65b0\u30d0\u30fc\u30b8\u30e7\u30f3\u306eTheOtherRoles\u3092\u5c0e\u5165\u3057\u3066\u3044\u307e\u3059"
+        "0": "{0} has a newer version of GMIA",
+        "11": "{0} \u6700\u65b0\u30d0\u30fc\u30b8\u30e7\u30f3\u306eTheOtherRoles\u3092\u5c0e\u5165\u3057\u3066\u3044\u307e\u3059",
+        "13": "{0} \u6709\u4e00\u4e2a\u66f4\u65b0\u7248\u672c\u7684\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "errorWrongVersion": {
-        "0": " has a modified version of TOR",
-        "11": " TORGMIA\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u5909\u66f4\u3055\u308c\u3066\u3044\u307e\u3059"
+        "0": "{0} has a modified version of GMIA",
+        "11": "{0} TORGMIA\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u5909\u66f4\u3055\u308c\u3066\u3044\u307e\u3059",
+        "13": "{0} \u6709\u4e00\u4e2a\u4fee\u6539\u8fc7\u7684\u8d85\u591a\u804c\u4e1aGMIA"
     },
     "errorHostNoVersion": {
-        "0": "The host has no or a different version of The Other Roles\nYou will be kicked in {0}s",
-        "11": "\u30db\u30b9\u30c8\u306bTORGMIA\u304c\u5c0e\u5165\u3055\u308c\u3066\u306a\u3044\u304b\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3044\u307e\u3059\n{0}\u79d2\u5f8c\u306b\u81ea\u52d5\u30ad\u30c3\u30af\u3055\u308c\u307e\u3059!!"
+        "0": "The host has no or a different version of GMIA\nYou will be kicked in {0}s",
+        "11": "\u30db\u30b9\u30c8\u306bTORGMIA\u304c\u5c0e\u5165\u3055\u308c\u3066\u306a\u3044\u304b\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u9055\u3044\u307e\u3059\n{0}\u79d2\u5f8c\u306b\u81ea\u52d5\u30ad\u30c3\u30af\u3055\u308c\u307e\u3059!!",
+        "13": "\u623f\u4e3b\u6ca1\u6709\u8d85\u591a\u804c\u4e1aGMIA\u6216\u6709\u53e6\u4e00\u4e2a\u7248\u672c\n\u4f60\u5c06\u4f1a\u5728{0}\u79d2\u540e\u88ab\u8e22"
+    },
+    "errorDifferentVersion": {
+        "0": "Players With Different Versions:",
+        "13": "\u62e5\u6709\u4e0d\u540c\u7248\u672c\u7684\u73a9\u5bb6:"
     },
     "updateGMIA": {
         "0": "Update GMIA",
@@ -3876,6 +3902,7 @@
     },
     "prophetMeetingButton": {
         "0": "The Prophet can't start an emergency meeting",
+        "11": "\u9810\u8a00\u8005\u304c\u7dca\u6025\u4f1a\u8b70\u3092\u958b\u3051\u306a\u3044",
         "13": "\u9884\u8a00\u5bb6\u4e0d\u53ef\u4ee5\u53d1\u8d77\u7d27\u6025\u4f1a\u8bae",
         "14": "\u9810\u8a00\u5bb6\u4e0d\u53ef\u4ee5\u767c\u8d77\u7dca\u6025\u6703\u8b70"
     },
@@ -3903,19 +3930,19 @@
     },
     "antiTeleport": {
         "0": "Anti Teleport",
-        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc",
+        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30c8",
         "13": "\u901a\u8baf\u5175",
         "14": "\u901a\u8a0a\u5175"
     },
     "antiTeleportQuantity": {
         "0": "Anti Teleport Quantity",
-        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc\u306e\u4eba\u6570",
+        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30c8\u306e\u4eba\u6570",
         "13": "\u901a\u8baf\u5175\u526f\u804c\u4e1a\u6570\u91cf",
         "14": "\u901a\u8a0a\u5175\u526f\u8077\u696d\u6578\u91cf"
     },
     "antiTeleportPostfix": {
         "0": "Anti tp",
-        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30bf\u30fc",
+        "11": "\u30a2\u30f3\u30c1\u30c6\u30ec\u30dd\u30fc\u30c8",
         "13": "\u901a\u8baf\u5175",
         "14": "\u901a\u8a0a\u5175"
     },
@@ -3945,19 +3972,19 @@
     },
     "sunglassesVision": {
         "0": "Vision With Sunglasses",
-        "11": "\u3042\u306a\u305f\u306e\u8996\u529b\u306f\u30b5\u30f3\u30b0\u30e9\u30b9\u304b\u3051\u3066\u308b\u72b6\u614b\u3068\u540c\u3058",
+        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9\u306e\u8996\u754c",
         "13": "\u5931\u660e\u8005\u89c6\u91ce",
         "14": "\u5931\u660e\u8005\u8996\u91ce"
     },
     "sunglassesIntroDesc": {
         "0": "You got the sunglasses",
-        "11": "\u30b5\u30f3\u30b0\u30e9\u30b9\u3092\u304b\u3051\u3066\u3044\u308b",
+        "11": "\u3042\u306a\u305f\u306f\u30b5\u30f3\u30b0\u30e9\u30b9\u3092\u304b\u3051\u3066\u3044\u308b",
         "13": "\u4f60\u5e26\u4e0a\u4e86\u592a\u9633\u955c",
         "14": "\u59b3\u5e36\u4e0a\u4e86\u592a\u967d\u93e1"
     },
     "sunglassesShortDesc": {
         "0": "Your vision is reduced",
-        "11": "\u8996\u754c\u304c\u72ed\u304f\u306a\u308b",
+        "11": "\u3042\u306a\u305f\u306e\u8996\u754c\u306f\u901a\u5e38\u306e\u30af\u30eb\u30fc\u3088\u308a\u72ed\u307e\u3063\u3066\u3044\u308b\u3002",
         "13": "\u4f60\u5e26\u4e0a\u4e86\u592a\u9633\u955c",
         "14": "\u59b3\u5e36\u4e0a\u4e86\u592a\u967d\u93e1"
     },
@@ -4017,7 +4044,7 @@
     },
     "vipShortDesc": {
         "0": "Everyone is notified when you die",
-        "11": "VIP\u304c\u6b7b\u306c\u3068\u5168\u54e1\u306b\u901a\u77e5\u3055\u308c\u308b",
+        "11": "\u3042\u306a\u305f\u306e\u6b7b\u306f\u5168\u54e1\u306b\u901a\u77e5\u3055\u308c\u308b\u3002",
         "13": "\u6240\u6709\u4eba\u90fd\u4f1a\u77e5\u9053\u4f60\u7684\u6b7b\u8baf",
         "14": "\u6240\u6709\u4eba\u90fd\u6703\u77e5\u9053\u59b3\u7684\u6b7b\u8a0a"
     },
@@ -4125,7 +4152,7 @@
     },
     "madmateQuantity": {
         "0": "Madmate Quantity",
-        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u4eba\u6570",
+        "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8\u306e\u4eba\u6570",
         "13": "\u53db\u5f92\u526f\u804c\u4e1a\u6570\u91cf",
         "14": "\u53db\u5f92\u526f\u8077\u696d\u6578\u91cf"
     },
@@ -4269,13 +4296,13 @@
     },
     "undertakerIntroDesc": {
         "0": "Drag bodies to hide them",
-        "11": "\u6b7b\u4f53\u3092\u904b\u3073\u3001\u96a0\u853d\u3057\u3088\u3046",
+        "11": "\u6b7b\u4f53\u3092\u904b\u3073\u3001\u96a0\u853d\u3057\u308d",
         "13": "\u62d6\u62fd\u5c38\u4f53\uff0c\u9690\u85cf\u6b7b\u5c38",
         "14": "\u62d6\u62fd\u5c4d\u9ad4\uff0c\u96b1\u85cf\u6b7b\u5c4d"
     },
     "undertakerShortDesc": {
         "0": "Drag bodies to hide them",
-        "11": "\u6b7b\u4f53\u3092\u904b\u3073\u3001\u96a0\u853d\u3057\u3088\u3046",
+        "11": "\u6b7b\u4f53\u3092\u904b\u3093\u3067\u96a0\u853d\u3057\u308d",
         "13": "\u62d6\u62fd\u5c38\u4f53\uff0c\u9690\u85cf\u6b7b\u5c38",
         "14": "\u62d6\u62fd\u5c4d\u9ad4\uff0c\u96b1\u85cf\u6b7b\u5c4d"
     },
@@ -4387,6 +4414,10 @@
         "13": "\u4e24\u4e2a\u5185\u9b3c\u53ea\u6709\u4e00\u7968",
         "14": "\u5169\u500b\u5167\u9b3c\u53ea\u6709\u4e00\u7968"
     },
+    "mimicAInfo": {
+        "0": "Mimic(Assistant) Info: The Mimic(Killer) Killed Someone",
+        "13": "\u6a21\u4eff\u8005\uff08\u52a9\u624b\uff09\u4fe1\u606f\uff1a\u6a21\u4eff\u8005\uff08\u6740\u624b\uff09\u51fb\u6740\u4e86\u4e00\u540d\u73a9\u5bb6"
+    },
     "sherlock": {
         "0": "Sherlock",
         "11": "\u30b7\u30e3\u30fc\u30ed\u30c3\u30af",
@@ -4477,11 +4508,20 @@
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u770b\u89c1\u76ee\u6807\u4f4d\u7f6e",
         "14": "\u90aa\u60e1\u7684\u8ffd\u8e64\u8005\u53ef\u4ee5\u770b\u898b\u76ee\u6a19\u4f4d\u7f6e"
     },
+    "evilTrackerCanSeeTargetTask": {
+        "0": "Can See Target Tasks During Meetings",
+        "11": "\u4f1a\u8b70\u4e2d\u306b\u30bf\u30fc\u30b2\u30c3\u30c8\u306e\u30bf\u30b9\u30af\u3092\u78ba\u8a8d\u3067\u304d\u308b",
+        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u5728\u4f1a\u8bae\u4e0a\u53ef\u4ee5\u770b\u89c1\u76ee\u6807\u4efb\u52a1"
+    },
     "evilTrackerCanSetTargetOnMeeting": {
         "0": "Can Set Target On Meetings",
         "11": "\u4f1a\u8b70\u6642\u306b\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u6307\u5b9a\u3067\u304d\u308b",
         "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u5728\u4f1a\u8bae\u4e0a\u8bbe\u5b9a\u76ee\u6807",
         "14": "\u90aa\u60e1\u7684\u8ffd\u8e64\u8005\u53ef\u4ee5\u5728\u6703\u8b70\u4e0a\u8a2d\u5b9a\u76ee\u6a19"
+    },
+    "evilTrackerInfo": {
+        "0": "Evil Tracker Info: An Impostor Killed Someone",
+        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u4fe1\u606f\uff1a\u4f60\u7684\u5185\u9b3c\u961f\u53cb\u51fb\u6740\u4e86\u4e00\u540d\u73a9\u5bb6"
     },
     "bomber": {
         "0": "Bomber",
@@ -4671,12 +4711,13 @@
     },
     "portalmakerLog": {
         "0": "Potal Log:\n",
-        "11": "{0}\u79d2\u524d:",
+        "11": "\u30dd\u30fc\u30bf\u30eb\u30ed\u30b0:\n",
         "13": "\u4f20\u9001\u95e8\u8bb0\u5f55\uff1a\n",
         "14": "\u50b3\u9001\u9580\u8a18\u9304\uff1a\n"
     },
     "portalmakerLogTime": {
         "0": "{0}s ago: ",
+        "11": "{0}\u79d2\u524d:",
         "13": "{0}\u79d2\u524d\uff1a",
         "14": "{0}\u79d2\u524d\uff1a"
     },
@@ -4706,13 +4747,13 @@
     },
     "thiefIntroDesc": {
         "0": "Steal a killers role by killing them",
-        "11": "\u30ad\u30eb\u5f79\u8077\u3092\u6bba\u3057\u3066\u5f79\u8077\u3092\u596a\u3048",
+        "11": "\u5f79\u8077\u3092\u5f37\u596a\u3057\u308d",
         "13": "\u5077\u7a83\u6267\u5203\u8005\u7684\u8eab\u4efd",
         "14": "\u5077\u7aca\u57f7\u5203\u8005\u7684\u8eab\u4efd"
     },
     "thiefShortDesc": {
         "0": "Steal a killers role",
-        "11": "\u30ad\u30eb\u5f79\u8077\u3092\u6bba\u3057\u3066\u5f79\u8077\u3092\u596a\u3048",
+        "11": "\u5f79\u8077\u3092\u5f37\u596a\u3057\u308d",
         "13": "\u5077\u7a83\u6267\u5203\u8005\u7684\u8eab\u4efd",
         "14": "\u5077\u7aca\u57f7\u5203\u8005\u7684\u8eab\u4efd"
     },
@@ -4736,7 +4777,7 @@
     },
     "thiefCanUseVents": {
         "0": "Thief Can Use Vents",
-        "11": "\u30d9\u30f3\u30c8\u3092\u4f7f\u3048\u308b\u304b",
+        "11": "\u30d9\u30f3\u30c8\u3092\u4f7f\u3048\u308b",
         "13": "\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053",
         "14": "\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053"
     },
@@ -4754,7 +4795,7 @@
     },
     "taskMasterIntroDesc": {
         "0": "Complete all extra tasks to win",
-        "11": "\u8ffd\u52a0\u30bf\u30b9\u30af\u3092\u3059\u3079\u3066\u7d42\u308f\u3089\u305b\u3066\u52dd\u5229\u3057\u3088\u3046",
+        "11": "\u8ffd\u52a0\u30bf\u30b9\u30af\u3092\u3059\u3079\u3066\u7d42\u308f\u3089\u305b\u3066\u30af\u30eb\u30fc\u3092\u52dd\u5229\u306b\u5c0e\u3051",
         "13": "\u5b8c\u6210\u6240\u6709\u9644\u52a0\u4efb\u52a1\u6765\u53d6\u5f97\u80dc\u5229",
         "14": "\u5b8c\u6210\u6240\u6709\u9644\u52a0\u4efb\u52d9\u4f86\u53d6\u5f97\u52dd\u5229"
     },
@@ -4790,7 +4831,7 @@
     },
     "taskMasterExTasks": {
         "0": "Ex Tasks",
-        "11": "\u5143\u306e\u30bf\u30b9\u30af",
+        "11": "\u8ffd\u52a0\u30bf\u30b9\u30af",
         "13": "\u9644\u52a0\u4efb\u52a1",
         "14": "\u9644\u52a0\u4efb\u52d9"
     },
@@ -4916,7 +4957,7 @@
     },
     "evilHackerCanInheritAbility": {
         "0": "Other Impostors Inherit Ability On Death",
-        "11": "\u76f8\u65b9\u6b7b\u4ea1\u6642\u306b\u80fd\u529b\u3092\u7d99\u627f",
+        "11": "\u6b8b\u3063\u305f\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306b\u80fd\u529b\u3092\u7d99\u627f\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u5176\u4ed6\u5185\u9b3c\u5728\u90aa\u6076\u7684\u9ed1\u5ba2\u6b7b\u540e\u7ee7\u627f\u80fd\u529b",
         "14": "\u5176\u4ed6\u5167\u9b3c\u5728\u90aa\u60e1\u7684\u9ed1\u5ba2\u6b7b\u5f8c\u7e7c\u627f\u80fd\u529b"
     },
@@ -5060,7 +5101,7 @@
     },
     "akujoKnowsRoles": {
         "0": "Akujo Knows Partners' Roles",
-        "11": "\u30d1\u30fc\u30c8\u30ca\u30fc\u306e\u30ed\u30fc\u30eb\u304c\u898b\u3048\u308b",
+        "11": "\u30d1\u30fc\u30c8\u30ca\u30fc\u306e\u5f79\u8077\u304c\u898b\u3048\u308b",
         "13": "\u9b45\u9b54\u77e5\u9053\u771f\u7231/\u5907\u80ce\u804c\u4e1a",
         "14": "\u9b45\u9b54\u77e5\u9053\u771f\u611b/\u5099\u80ce\u8077\u696d"
     },
@@ -5198,19 +5239,19 @@
     },
     "blackmailer": {
         "0": "Blackmailer",
-        "11": "\u30d6\u30e9\u30c3\u30af\u30e1\u30fc\u30e9\u30fc",
+        "11": "\u30d6\u30e9\u30c3\u30af\u30e1\u30a4\u30e9\u30fc",
         "13": "\u52d2\u7d22\u8005",
         "14": "\u52d2\u7d22\u8005"
     },
     "blackmailerIntroDesc": {
         "0": "Blackmail those who seek to hurt you",
-        "11": "\u3042\u306a\u305f\u3092\u50b7\u3064\u3051\u3088\u3046\u3068\u3059\u308b\u4eba\u3092\u8105\u8feb\u3057\u3088\u3046",
+        "11": "\u30af\u30eb\u30fc\u3092\u8105\u8feb\u3057\u3066\u9ed9\u3089\u305b\u308d",
         "13": "\u4e0d\u8bb8\u8bf4\u8bdd\uff01",
         "14": "\u4e0d\u8a31\u8aaa\u8a71\uff01"
     },
     "blackmailerShortDesc": {
         "0": "Blackmail those who seek to hurt you",
-        "11": "\u3042\u306a\u305f\u3092\u50b7\u3064\u3051\u3088\u3046\u3068\u3059\u308b\u4eba\u3092\u8105\u8feb\u3057\u3088\u3046",
+        "11": "\u30af\u30eb\u30fc\u3092\u8105\u8feb\u3057\u3066\u9ed9\u3089\u305b\u308d",
         "13": "\u52d2\u7d22\u8bd5\u56fe\u4f24\u5bb3\u4f60\u7684\u73a9\u5bb6",
         "14": "\u52d2\u7d22\u8a66\u5716\u50b7\u5bb3\u59b3\u7684\u73a9\u5bb6"
     },
@@ -5234,25 +5275,25 @@
     },
     "prophetIntroDesc": {
         "0": "Reveal the alliance of other players",
-        "11": "\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u9663\u55b6\u3092\u7cbe\u67fb\u3057\u308d",
+        "11": "\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u9663\u55b6\u3092\u635c\u67fb\u3057\u308d",
         "13": "\u6211\u770b\u900f\u4e86\u4f60\u7684\u5fc3",
         "14": "\u6211\u770b\u900f\u4e86\u59b3\u7684\u5fc3"
     },
     "prophetShortDesc": {
         "0": "Reveal the alliance of other players",
-        "11": "\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u9663\u55b6\u3092\u7cbe\u67fb\u3057\u308d",
+        "11": "\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u9663\u55b6\u3092\u635c\u67fb\u3057\u308d",
         "13": "\u901a\u8fc7\u9884\u8a00\u63ed\u793a\u5bf9\u65b9\u9635\u8425",
         "14": "\u901a\u904e\u9810\u8a00\u63ed\u793a\u5c0d\u65b9\u9663\u71df"
     },
     "prophetCooldown": {
         "0": "Prophet Examination Cooldown",
-        "11": "\u691c\u67fb\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
+        "11": "\u635c\u67fb\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
         "13": "\u9884\u8a00\u5bb6\u63ed\u793a\u51b7\u5374\u65f6\u95f4",
         "14": "\u9810\u8a00\u5bb6\u63ed\u793a\u51b7\u537b\u6642\u9593"
     },
     "prophetNumExamines": {
         "0": "Prophet Number Of Examinations",
-        "11": "\u691c\u67fb\u56de\u6570",
+        "11": "\u635c\u67fb\u56de\u6570",
         "13": "\u9884\u8a00\u5bb6\u63ed\u793a\u6b21\u6570",
         "14": "\u9810\u8a00\u5bb6\u63ed\u793a\u6b21\u6578"
     },
@@ -5270,19 +5311,19 @@
     },
     "prophetExaminesToBeRevealed": {
         "0": "Number Of Examinations Required To Be Revealed",
-        "11": "\u516c\u958b\u306b\u5fc5\u8981\u306a\u691c\u67fb\u56de\u6570",
+        "11": "\u516c\u958b\u306b\u5fc5\u8981\u306a\u635c\u67fb\u56de\u6570",
         "13": "\u9884\u8a00\u5bb6\u88ab\u53d1\u73b0\u6240\u9700\u63ed\u793a\u6b21\u6570",
         "14": "\u9810\u8a00\u5bb6\u88ab\u767c\u73fe\u6240\u9700\u63ed\u793a\u6b21\u6578"
     },
     "prophetNeutralAsRed": {
         "0": "Neutral Roles Shown As Evil",
-        "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u304c\u9ed2\u3068\u3044\u3046\u7d50\u679c\u306b\u306a\u308b\u304b",
+        "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u306e\u540d\u524d\u3092\u8d64\u304f\u3059\u308b",
         "13": "\u4e2d\u7acb\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d",
         "14": "\u4e2d\u7acb\u8077\u696d\u986f\u793a\u70ba\u7d05\u540d"
     },
     "prophetPowerCrewAsRed": {
         "0": "Power Crew Shown As Evil",
-        "11": "\u30ad\u30eb\u80fd\u529b\u306e\u3042\u308b\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u3092\u9ed2\u3068\u3044\u3046\u7d50\u679c\u306b\u3059\u308b",
+        "11": "\u30ad\u30eb\u80fd\u529b\u306e\u3042\u308b\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u306e\u540d\u524d\u3092\u8d64\u304f\u3059\u308b",
         "13": "\u5f3a\u529b\u8239\u5458\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d",
         "14": "\u5f37\u529b\u8239\u54e1\u8077\u696d\u986f\u793a\u70ba\u7d05\u540d"
     },
