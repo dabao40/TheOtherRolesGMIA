@@ -236,6 +236,13 @@ namespace TheOtherRoles.Patches {
                 AdditionalTempData.winCondition = WinCondition.PlagueDoctorWin;
             }
 
+            // Everyone Died
+            else if (everyoneDead)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                AdditionalTempData.winCondition = WinCondition.EveryoneDied;
+            }
+
             else if (jekyllAndHydeWin)
             {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
@@ -262,13 +269,6 @@ namespace TheOtherRoles.Patches {
                     WinningPlayerData wpdFormerMoriarty = new WinningPlayerData(Moriarty.formerMoriarty.Data);
                     TempData.winners.Add(wpdFormerMoriarty);
                 }
-            }
-
-            // Everyone Died
-            else if (everyoneDead)
-            {
-                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
-                AdditionalTempData.winCondition = WinCondition.EveryoneDied;
             }
 
             // Vulture win
@@ -308,6 +308,8 @@ namespace TheOtherRoles.Patches {
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                         else if (p == Pursuer.pursuer && !Pursuer.pursuer.Data.IsDead)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
+                        else if (p == Cupid.lovers1 || p == Cupid.lovers2)
+                            TempData.winners.Add(new WinningPlayerData(p.Data));
                         else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor && p != Moriarty.moriarty && p != Akujo.akujo && p != JekyllAndHyde.jekyllAndHyde
                             && p != Moriarty.formerMoriarty && p != JekyllAndHyde.formerJekyllAndHyde && p != PlagueDoctor.plagueDoctor && !Madmate.madmate.Contains(p) && p != CreatedMadmate.createdMadmate)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
@@ -328,7 +330,6 @@ namespace TheOtherRoles.Patches {
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                 TempData.winners.Add(new WinningPlayerData(Cupid.lovers1.Data));
                 TempData.winners.Add(new WinningPlayerData(Cupid.lovers2.Data));
-                if (Cupid.cupid != null) TempData.winners.Add(new WinningPlayerData(Cupid.cupid.Data));
             }
             
             // Jackal win condition (should be implemented using a proper GameOverReason in the future)
@@ -394,6 +395,16 @@ namespace TheOtherRoles.Patches {
                         }                       
                     }                    
                 } 
+            }
+
+            // Cupid wins with both cupid Loverse
+            if (Cupid.cupid != null && Cupid.lovers1 != null && Cupid.lovers2 != null)
+            {
+                if (TempData.winners.ToArray().Any(x => x.PlayerName == Cupid.lovers1.Data.PlayerName) &&
+                    TempData.winners.ToArray().Any(x => x.PlayerName == Cupid.lovers2.Data.PlayerName) && 
+                    !TempData.winners.ToArray().Any(x => x.PlayerName == Cupid.cupid.Data.PlayerName)) {
+                    TempData.winners.Add(new WinningPlayerData(Cupid.cupid.Data));
+                }
             }
 
             // Possible Additional winner: Pursuer
@@ -722,7 +733,7 @@ namespace TheOtherRoles.Patches {
         private static bool CheckAndEndGameForJekyllAndHydeWin(ShipStatus __instance, PlayerStatistics statistics)
         {
             if (JekyllAndHyde.triggerWin || (statistics.TeamJekyllAndHydeAlive >= statistics.TotalAlive - statistics.TeamJekyllAndHydeAlive &&
-                        statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0))
+                        statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamSheriffAlive == 0))
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.JekyllAndHydeWin, false);
                 return true;
@@ -805,7 +816,7 @@ namespace TheOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForJackalWin(ShipStatus __instance, PlayerStatistics statistics) {
-            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamJackalHasAliveLover && (statistics.TeamLoversAlive == 2 || statistics.TeamCupidLoversAlive == 2))) {
+            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamJackalHasAliveLover && (statistics.TeamLoversAlive == 2 || statistics.TeamCupidLoversAlive == 2 || statistics.TeamAkujoAlive == 2))) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.TeamJackalWin, false);
                 return true;
@@ -827,7 +838,7 @@ namespace TheOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM) 
                 if ((0 != statistics.TotalAlive - statistics.TeamImpostorsAlive)) return false;
 
-            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamImpostorHasAliveLover && (statistics.TeamLoversAlive == 2 || statistics.TeamCupidLoversAlive == 2))) {
+            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && !(statistics.TeamImpostorHasAliveLover && (statistics.TeamLoversAlive == 2 || statistics.TeamCupidLoversAlive == 2 || statistics.TeamAkujoAlive == 2))) {
                 //__instance.enabled = false;
                 GameOverReason endReason;
                 switch (TempData.LastDeathReason) {
@@ -853,7 +864,7 @@ namespace TheOtherRoles.Patches {
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
                 return true;
             }
-            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0) {
+            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && statistics.TeamAkujoAlive <= 1) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
                 return true;
@@ -895,6 +906,10 @@ namespace TheOtherRoles.Patches {
             return (Cupid.lovers1 != null && Cupid.lovers1.PlayerId == p.PlayerId) || (Cupid.lovers2 != null && Cupid.lovers2.PlayerId == p.PlayerId);
         }
 
+        private bool isAkujoHonmei(GameData.PlayerInfo p) { 
+            return Akujo.akujo != null && Akujo.honmei != null && Akujo.honmei.PlayerId == p.PlayerId;
+        }
+
         private void GetPlayerCounts() {
             int numJackalAlive = 0;
             int numImpostorsAlive = 0;
@@ -918,20 +933,21 @@ namespace TheOtherRoles.Patches {
 
                         bool lover = isLover(playerInfo);
                         bool cupidLover = isCupidLover(playerInfo);
+                        bool akujoHonmei = isAkujoHonmei(playerInfo);
                         if (lover) numLoversAlive++;
                         if (cupidLover) numCupidLoversAlive++;
 
                         if (playerInfo.Role.IsImpostor) {
                             numImpostorsAlive++;
-                            if (lover || cupidLover) impLover = true;
+                            if (lover || cupidLover || akujoHonmei) impLover = true;
                         }
                         if (Jackal.jackal != null && Jackal.jackal.PlayerId == playerInfo.PlayerId) {
                             numJackalAlive++;
-                            if (lover || cupidLover) jackalLover = true;
+                            if (lover || cupidLover || akujoHonmei) jackalLover = true;
                         }
                         if (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == playerInfo.PlayerId) {
                             numJackalAlive++;
-                            if (lover || cupidLover) jackalLover = true;
+                            if (lover || cupidLover || akujoHonmei) jackalLover = true;
                         }
                         if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId && !Madmate.madmate.Contains(Sheriff.sheriff))
                         {

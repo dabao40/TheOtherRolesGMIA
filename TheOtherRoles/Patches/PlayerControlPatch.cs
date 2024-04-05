@@ -2097,7 +2097,7 @@ namespace TheOtherRoles.Patches {
 
             // Seer show flash and add dead player position
             if (Seer.seer != null && (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer || Helpers.shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1) {
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message : "Seer Info: Someone Died");
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message : ModTranslation.getString("seerInfo"));
             }
             if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
 
@@ -2217,7 +2217,7 @@ namespace TheOtherRoles.Patches {
             // Evil Tracker see flash
             if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
             {
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("evilTrackerInfo"));
             }
 
             // Plague Doctor infect killer
@@ -2285,7 +2285,7 @@ namespace TheOtherRoles.Patches {
             // Mimic(Assistant) show flash
             if (MimicK.mimicK != null && MimicA.mimicA != null && __instance == MimicK.mimicK && CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
             {
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("mimicAInfo"));
             }
 
             // Sherlock record log

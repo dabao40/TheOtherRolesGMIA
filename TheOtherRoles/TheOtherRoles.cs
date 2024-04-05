@@ -3775,6 +3775,9 @@ namespace TheOtherRoles
             var color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
             try
             {
+                // Block setting opacity of the Chameleon skill is active
+                if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !stealthed) return;
+                
                 if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
                 {
                     player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
@@ -3909,6 +3912,7 @@ namespace TheOtherRoles
             var color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
             try
             {
+                if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !sprinting) return;
                 if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
                 {
                     player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
@@ -4288,6 +4292,7 @@ namespace TheOtherRoles
         }
 
         public static float visibility(byte playerId) {
+            if ((playerId == Ninja.ninja?.PlayerId && Ninja.stealthed) || (playerId == Sprinter.sprinter?.PlayerId && Sprinter.sprinting)) return 1f;
             float visibility = 1f;
             if (lastMoved != null && lastMoved.ContainsKey(playerId)) {
                 var tStill = Time.time - lastMoved[playerId];
@@ -4305,7 +4310,7 @@ namespace TheOtherRoles
         public static void update() {
             foreach (var chameleonPlayer in chameleon) {
                 //if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
-                //if ((chameleonPlayer == Ninja.ninja && Ninja.stealthed) || (chameleonPlayer == Sprinter.sprinter && Sprinter.sprinting)) continue;
+                if ((chameleonPlayer == Ninja.ninja && Ninja.stealthed) || (chameleonPlayer == Sprinter.sprinter && Sprinter.sprinting)) continue;
                 // check movement by animation
                 PlayerPhysics playerPhysics = chameleonPlayer.MyPhysics;
                 var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();

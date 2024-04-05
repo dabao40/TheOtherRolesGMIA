@@ -394,7 +394,7 @@ namespace TheOtherRoles.Patches {
                             if (deadPlayer != null && k < hackerTexts.Count && hackerTexts[k] != null) {
                                 float timeSinceDeath = ((float)(DateTime.UtcNow - deadPlayer.timeOfDeath).TotalMilliseconds);
                                 hackerTexts[k].gameObject.SetActive(true);
-                                hackerTexts[k].text = Math.Round(timeSinceDeath / 1000) + "s";
+                                hackerTexts[k].text = string.Format(ModTranslation.getString("hackerTimer"), Math.Round(timeSinceDeath / 1000));
                             }
                         }
                     }

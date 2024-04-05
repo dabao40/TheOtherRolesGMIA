@@ -669,7 +669,7 @@ namespace TheOtherRoles
         public static void engineerUsedRepair() {
             Engineer.remainingFixes--;
             if (Helpers.shouldShowGhostInfo()) {
-                Helpers.showFlash(Engineer.color, 0.5f, "Engineer Fix"); ;
+                Helpers.showFlash(Engineer.color, 0.5f, ModTranslation.getString("engineerInfo")); ;
             }
         }
 
@@ -737,7 +737,7 @@ namespace TheOtherRoles
             isShieldedAndShow = isShieldedAndShow && (Medic.meetingAfterShielding || !Medic.showShieldAfterMeeting);  // Dont show attempt, if shield is not shown yet
             bool isMedicAndShow = Medic.medic == CachedPlayer.LocalPlayer.PlayerControl && Medic.showAttemptToMedic;
 
-            if (isShieldedAndShow || isMedicAndShow || Helpers.shouldShowGhostInfo()) Helpers.showFlash(Palette.ImpostorRed, duration: 0.5f, "Failed Murder Attempt on Shielded Player");
+            if (isShieldedAndShow || isMedicAndShow || Helpers.shouldShowGhostInfo()) Helpers.showFlash(Palette.ImpostorRed, duration: 0.5f, ModTranslation.getString("medicInfo"));
         }
 
         public static void shifterShift(byte targetId)
