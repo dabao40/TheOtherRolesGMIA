@@ -52,6 +52,7 @@ namespace TheOtherRoles
         public static RoleInfo bountyHunter = new RoleInfo(ModTranslation.getString("bountyHunter"), BountyHunter.color, ModTranslation.getString("bountyHunterIntroDesc"), ModTranslation.getString("bountyHunterShortDesc"), RoleId.BountyHunter, fullDescription: ModTranslation.getString("bountyHunterFullDesc"));
         public static RoleInfo detective = new RoleInfo(ModTranslation.getString("detective"), Detective.color, ModTranslation.getString("detectiveIntroDesc"), ModTranslation.getString("detectiveShortDesc"), RoleId.Detective, fullDescription: ModTranslation.getString("detectiveFullDesc"));
         public static RoleInfo bait = new RoleInfo(ModTranslation.getString("bait"), Bait.color, ModTranslation.getString("baitIntroDesc"), ModTranslation.getString("baitShortDesc"), RoleId.Bait, fullDescription: ModTranslation.getString("baitFullDesc"));
+        public static RoleInfo reverser = new RoleInfo("Reverser", Reverser.color, "翻转吧", "翻转行动", RoleId.Reverser, fullDescription: "The skill of the reverser will cause all players to move in the opposite direction (including the reverser himself) during its validity period");
         public static RoleInfo timeMaster = new RoleInfo(ModTranslation.getString("timeMaster"), TimeMaster.color, ModTranslation.getString("timeMasterIntroDesc"), ModTranslation.getString("timeMasterShortDesc"), RoleId.TimeMaster, fullDescription: ModTranslation.getString("timeMasterFullDesc"));
         public static RoleInfo medic = new RoleInfo(ModTranslation.getString("medic"), Medic.color, ModTranslation.getString("medicIntroDesc"), ModTranslation.getString("medicShortDesc"), RoleId.Medic, fullDescription: ModTranslation.getString("medicFullDesc"));
         public static RoleInfo niceSwapper = new RoleInfo(ModTranslation.getString("niceSwapper"), Swapper.color, ModTranslation.getString("niceSwapperIntroDesc"), ModTranslation.getString("niceSwapperShortDesc"), RoleId.Swapper, fullDescription: ModTranslation.getString("swapperFullDesc"));
@@ -179,6 +180,7 @@ namespace TheOtherRoles
             chainshifter,
             plagueDoctor,
             akujo,
+            reverser,
             jekyllAndHyde,
             moriarty,
             cupid,
@@ -294,6 +296,7 @@ namespace TheOtherRoles
             if (p == Akujo.akujo) infos.Add(akujo);
             if (p == Teleporter.teleporter) infos.Add(teleporter);
             if (p == Cupid.cupid) infos.Add(cupid);
+            if (p == Reverser.reverser) infos.Add(reverser);
             if (p == Blackmailer.blackmailer) infos.Add(blackmailer);
             if (p == Prophet.prophet) infos.Add(prophet);
             if (p == FortuneTeller.fortuneTeller)

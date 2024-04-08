@@ -178,6 +178,12 @@ namespace TheOtherRoles {
         public static CustomOption sprinterDuration;
         public static CustomOption sprinterFadeTime;
 
+        public static CustomOption ReverserSpawnRate;
+        public static CustomOption ReverserCooldown;
+        public static CustomOption ReverserDuration;
+        public static CustomOption ReverserAbilityChance;
+
+
         public static CustomOption fortuneTellerSpawnRate;
         public static CustomOption fortuneTellerNumTasks;
         public static CustomOption fortuneTellerResults;
@@ -956,6 +962,15 @@ namespace TheOtherRoles {
             portalmakerLogOnlyColorType = CustomOption.Create(393, Types.Crewmate, ModTranslation.getString("portalmakerLogOnlyColorType"), true, portalmakerSpawnRate);
             portalmakerLogHasTime = CustomOption.Create(394, Types.Crewmate, ModTranslation.getString("portalmakerLogHasTime"), true, portalmakerSpawnRate);
             portalmakerCanPortalFromAnywhere = CustomOption.Create(395, Types.Crewmate, ModTranslation.getString("portalmakerCanPortalFromAnywhere"), true, portalmakerSpawnRate);
+
+
+            ReverserSpawnRate = CustomOption.Create(5881, Types.Crewmate, cs(Reverser.color, "Reverser"), rates, null, true);
+            ReverserCooldown = CustomOption.Create(5882, Types.Crewmate, "Reverser Cooldown", 30f, 10f, 50f, 3f, ReverserSpawnRate);
+            ReverserDuration = CustomOption.Create(5883, Types.Crewmate, "Reverser Duration", 5f, 4f, 18f, 2f, ReverserSpawnRate);
+            ReverserAbilityChance = CustomOption.Create(5884, Types.Crewmate, "Reverser Chance", 1f, 1f, 5f, 1f, ReverserSpawnRate);
+
+
+
 
             securityGuardSpawnRate = CustomOption.Create(280, Types.Crewmate, cs(SecurityGuard.color, ModTranslation.getString("securityGuard")), rates, null, true);
             securityGuardCooldown = CustomOption.Create(281, Types.Crewmate, ModTranslation.getString("securityGuardCooldown"), 30f, 10f, 60f, 2.5f, securityGuardSpawnRate);

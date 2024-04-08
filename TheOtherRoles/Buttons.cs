@@ -56,6 +56,7 @@ namespace TheOtherRoles
         public static CustomButton serialKillerButton;
         public static CustomButton vultureEatButton;
         public static CustomButton mediumButton;
+        public static CustomButton reverserButton;
         public static CustomButton pursuerButton;
         public static CustomButton witchSpellButton;
         public static CustomButton assassinButton;
@@ -207,6 +208,7 @@ namespace TheOtherRoles
             jekyllAndHydeDrugButton.MaxTimer = 0f;
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
+            reverserButton.MaxTimer = Reverser.cooldown;
             prophetButton.MaxTimer = Prophet.cooldown;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
@@ -231,6 +233,7 @@ namespace TheOtherRoles
             witchSpellButton.EffectDuration = Witch.spellCastingDuration;
             securityGuardCamButton.EffectDuration = SecurityGuard.duration;
             ninjaButton.EffectDuration = Ninja.stealthDuration;
+            reverserButton.EffectDuration = Reverser.EffortTime;
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
@@ -600,6 +603,39 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("TimeShieldText"),
                 abilityTexture: true
             );
+
+            reverserButton = new CustomButton(
+               () => {
+                   MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ReverserStartRpc, Hazel.SendOption.Reliable, -1);
+                   AmongUsClient.Instance.FinishRpcImmediately(writer);
+                   RPCProcedure.ReverserStartAbility();
+          
+               },
+               () => { return Reverser.reverser != null && Reverser.reverser == CachedPlayer.LocalPlayer.PlayerControl; },
+               () => { return Reverser.reverser != null && Reverser.reverser == CachedPlayer.LocalPlayer.PlayerControl&& Reverser.Chance > 0; },
+               () => {
+                   reverserButton.Timer = reverserButton.MaxTimer;
+                   reverserButton.isEffectActive = false;
+    
+               },
+               null,
+               CustomButton.ButtonPositions.lowerRowRight,
+               __instance,
+               KeyCode.F,
+               true,
+               Reverser.EffortTime,
+               () => {
+
+                   MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ReverSetStopRpc, Hazel.SendOption.Reliable, -1);
+                   AmongUsClient.Instance.FinishRpcImmediately(writer);
+                   RPCProcedure.ReverserEndAbility();
+               },
+               buttonText: "Reverse",
+               abilityTexture: true
+           );
+
+
+
 
             // Medic Shield
             medicShieldButton = new CustomButton(
@@ -1608,21 +1644,21 @@ namespace TheOtherRoles
 
             trapperSetTrapButton = new CustomButton(
                 () =>
-                { // ¥Ü¥¿¥ó¤¬Ñº¤µ¤ì¤¿•r¤ËŒgĞĞ
+                { // ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸæ™‚ã«å®Ÿè¡Œ
                     if (!CachedPlayer.LocalPlayer.PlayerControl.CanMove || Trap.hasTrappedPlayer()) return;
                     Trapper.setTrap();
                     trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
                 },
                 () =>
-                { /*¥Ü¥¿¥óÓĞ„¿¤Ë¤Ê¤ëÌõ¼ş*/
+                { /*ãƒœã‚¿ãƒ³æœ‰åŠ¹ã«ãªã‚‹æ¡ä»¶*/
                     return CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
                 },
                 () =>
-                { /*¥Ü¥¿¥ó¤¬Ê¹¤¨¤ëÌõ¼ş*/
+                { /*ãƒœã‚¿ãƒ³ãŒä½¿ãˆã‚‹æ¡ä»¶*/
                     return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !Trap.hasTrappedPlayer();
                 },
                 () =>
-                { /*¥ß©`¥Æ¥£¥ó¥°½KÁË•r*/
+                { /*ãƒŸãƒ¼ãƒ†ã‚£ãƒ³ã‚°çµ‚äº†æ™‚*/
                     trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
                 },
                 Trapper.getTrapButtonSprite(),
@@ -1650,7 +1686,7 @@ namespace TheOtherRoles
                         RPCProcedure.setBrainwash(Moriarty.currentTarget.PlayerId);
                         SoundEffectsManager.play("moriartyBrainwash");
 
-                        // Ï´Ã—½KÁË¤Ş¤Ç¤Î¥«¥¦¥ó¥È¥À¥¦¥ó
+                        // æ´—è„³çµ‚äº†ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
                         TMPro.TMP_Text text;
                         RoomTracker roomTracker = HudManager.Instance?.roomTracker;
                         GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
@@ -3041,7 +3077,7 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
-                    //¡¡Õ¼¤¤ŸÒÔÍâ¤ÎˆöºÏ¡¢¥ê¥½©`¥¹¤¬¤Ê¤¤ˆöºÏ¤Ï¥Ü¥¿¥ó¤ò±íÊ¾¤·¤Ê¤¤
+                    //ã€€å ã„å¸«ä»¥å¤–ã®å ´åˆã€ãƒªã‚½ãƒ¼ã‚¹ãŒãªã„å ´åˆã¯ãƒœã‚¿ãƒ³ã‚’è¡¨ç¤ºã—ãªã„
                     if (!TORMapOptions.playerIcons.ContainsKey(index) ||
                         !CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
@@ -3054,10 +3090,10 @@ namespace TheOtherRoles
                         return false;
                     }
 
-                    // ¥Ü¥¿¥ó¤ÎÎ»ÖÃ¤ò‰ä¸ü
+                    // ãƒœã‚¿ãƒ³ã®ä½ç½®ã‚’å¤‰æ›´
                     setButtonPos(index);
 
-                    // ¥Ü¥¿¥ó¤Ë¥Æ¥­¥¹¥È¤òÔO¶¨
+                    // ãƒœã‚¿ãƒ³ã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®š
                     bool status = true;
                     if (FortuneTeller.playerStatus.ContainsKey(index))
                     {
@@ -3075,7 +3111,7 @@ namespace TheOtherRoles
                         fortuneTellerButtons[index].buttonText = ModTranslation.getString("fortuneTellerDead");
                     }
 
-                    // ¥¢¥¤¥³¥ó¤ÎÎ»ÖÃ¤ÈÍ¸Ã÷¶È¤ò‰ä¸ü
+                    // ã‚¢ã‚¤ã‚³ãƒ³ã®ä½ç½®ã¨é€æ˜åº¦ã‚’å¤‰æ›´
                     setIconPos(index, !FortuneTeller.canDivine(index));
 
                     TORMapOptions.playerIcons[index].gameObject.SetActive(!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
