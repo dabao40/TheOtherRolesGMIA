@@ -949,16 +949,13 @@ namespace TheOtherRoles.Patches {
                             numJackalAlive++;
                             if (lover || cupidLover || akujoHonmei) jackalLover = true;
                         }
-                        if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId && !Madmate.madmate.Contains(Sheriff.sheriff))
-                        {
+                        if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId && !Madmate.madmate.Contains(Sheriff.sheriff)) {
                             numSheriffAlive++;
                         }
-                        if (Deputy.deputy != null && Deputy.deputy.PlayerId == playerInfo.PlayerId && Deputy.stopsGameEnd)
-                        {
+                        if (Deputy.deputy != null && Deputy.deputy.PlayerId == playerInfo.PlayerId && Deputy.stopsGameEnd && !Madmate.madmate.Contains(Deputy.deputy)) {
                             numSheriffAlive++;
                         }
-                        if (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == playerInfo.PlayerId)
-                        {
+                        if (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == playerInfo.PlayerId) {
                             numMoriartyAlive++;
                         }
                         if (JekyllAndHyde.jekyllAndHyde != null && JekyllAndHyde.jekyllAndHyde.PlayerId == playerInfo.PlayerId) { 
