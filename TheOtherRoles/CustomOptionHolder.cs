@@ -503,6 +503,10 @@ namespace TheOtherRoles {
         public static CustomOption fungleElectrical;
         public static CustomOption miraVitals;
         public static CustomOption randomGameStartPosition;
+        public static CustomOption activateProps;
+        public static CustomOption numAccelTraps;
+        public static CustomOption accelerationDuration;
+        public static CustomOption speedAcceleration;
 
         public static CustomOption dynamicMap;
         public static CustomOption dynamicMapEnableSkeld;
@@ -1116,6 +1120,10 @@ namespace TheOtherRoles {
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, ModTranslation.getString("airshipAdditionalSpawn"), false);
             fungleElectrical = CustomOption.Create(6074, Types.General, ModTranslation.getString("fungleElectrical"), false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, ModTranslation.getString("randomGameStartPosition"), false);
+            activateProps = CustomOption.Create(6083, Types.General, ModTranslation.getString("activateProps"), false, null, true);
+            numAccelTraps = CustomOption.Create(6084, Types.General, ModTranslation.getString("numAccelTraps"), 1f, 1f, 5f, 1f, activateProps);
+            accelerationDuration = CustomOption.Create(6085, Types.General, ModTranslation.getString("accelerationDuration"), 5f, 1f, 10f, 1f, activateProps);
+            speedAcceleration = CustomOption.Create(6086, Types.General, ModTranslation.getString("speedAcceleration"), 1.25f, 0.5f, 2f, 0.25f, activateProps);
 
 
             dynamicMap = CustomOption.Create(500, Types.General, ModTranslation.getString("dynamicMap"), false, null, true);

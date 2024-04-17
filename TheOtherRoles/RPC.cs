@@ -15,13 +15,6 @@ using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.Data;
 using AmongUs.GameOptions;
-using UnityEngine.UIElements;
-using Cpp2IL.Core.Extensions;
-using MonoMod.Cil;
-using MS.Internal.Xml.XPath;
-using static UnityEngine.GraphicsBuffer;
-using static Rewired.Utils.Classes.Utility.ObjectInstanceTracker;
-using static HarmonyLib.InlineSignature;
 
 namespace TheOtherRoles
 {
@@ -240,7 +233,10 @@ namespace TheOtherRoles
         BlackmailPlayer,
         UnblackmailPlayer,
         ProphetExamine,
-        ShareRealTasks
+        ShareRealTasks,
+        PlaceProps,
+        ActivateAccel,
+        DeactivateAccel
     }
 
     public static class RPCProcedure {
@@ -259,6 +255,7 @@ namespace TheOtherRoles
             MapBehaviourPatch.reset();
             MapBehaviourPatch.resetRealTasks();
             SpawnInMinigamePatch.reset();
+            Props.clearProps();
             //Trap.clearTraps();
             Trap.clearAllTraps();
             clearAndReloadMapOptions();
@@ -1385,6 +1382,27 @@ namespace TheOtherRoles
             }
         }
 
+        public static void placeProps(byte id)
+        {
+            new Props.AccelTrap(Props.propPos[id]);
+        }
+
+        public static void activateAccel(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            if (Props.AccelTrap.acceled.ContainsKey(player)) Props.AccelTrap.acceled.Remove(player);
+            Props.AccelTrap.acceled.Add(player, DateTime.UtcNow);
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("jekyllAndHydeDrug");
+        }
+
+        public static void deactivateAccel(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+
+            if (Props.AccelTrap.acceled.ContainsKey(player)) Props.AccelTrap.acceled.Remove(player);
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("jekyllAndHydeDrug");
+        }
+
         public static void placeAssassinTrace(byte[] buff) {
             Vector3 position = Vector3.zero;
             position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
@@ -2508,6 +2526,15 @@ namespace TheOtherRoles
                     byte[] progressByte = reader.ReadBytes(4);
                     float progress = System.BitConverter.ToSingle(progressByte, 0);
                     RPCProcedure.plagueDoctorProgress(progressTarget, progress);
+                    break;
+                case (byte)CustomRPC.PlaceProps:
+                    RPCProcedure.placeProps(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ActivateAccel:
+                    RPCProcedure.activateAccel(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.DeactivateAccel:
+                    RPCProcedure.deactivateAccel(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.SetOddIsJekyll:
                     RPCProcedure.setOddIsJekyll(reader.ReadBoolean());
