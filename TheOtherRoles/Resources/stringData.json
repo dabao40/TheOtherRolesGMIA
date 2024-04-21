@@ -95,6 +95,14 @@
         "13": "\u4f1a\u8bae\u4e2d\u4e0d\u5141\u8bb8\u8df3\u8fc7\u4f1a\u8bae",
         "14": "\u6703\u8b70\u4e2d\u4e0d\u5141\u8a31\u8df3\u904e\u6703\u8b70"
     },
+    "anyPlayerCanStopStart": {
+        "0": "Any Player Can Stop The Start",
+        "13": "\u4efb\u4f55\u73a9\u5bb6\u90fd\u53ef\u4ee5\u963b\u6b62\u6e38\u620f\u5f00\u59cb"
+    },
+    "enableEventMode": {
+        "0": "Enable Special Mode",
+        "13": "\u542f\u7528\u7279\u6b8a\u6a21\u5f0f"
+    },
     "noVoteIsSelfVote": {
         "0": "No Vote Is Self Vote",
         "11": "\u7121\u6295\u7968\u306e\u4eba\u306f\u81ea\u6295\u7968\u306b\u3059\u308b",
@@ -200,6 +208,30 @@
     "speedAcceleration": {
         "0": "Acceleration Trap Speed Bonus",
         "13": "\u52a0\u901f\u677f\u52a0\u901f\u65f6\u901f\u5ea6\u500d\u7387"
+    },
+    "numDecelTraps": {
+        "0": "Number Of Deceleration Traps",
+        "13": "\u51cf\u901f\u677f\u6570\u91cf"
+    },
+    "decelerationDuration": {
+        "0": "Deceleration Duration",
+        "13": "\u51cf\u901f\u677f\u51cf\u901f\u65f6\u95f4"
+    },
+    "speedDeceleration": {
+        "0": "Deceleration Trap Speed Decrease",
+        "13": "\u51cf\u901f\u677f\u51cf\u901f\u65f6\u901f\u5ea6\u51cf\u5c11"
+    },
+    "decelUpdateInterval": {
+        "0": "Deceleration Trap Trigger Update Interval",
+        "13": "\u89e6\u53d1\u51cf\u901f\u677f\u65f6\u7684\u66f4\u65b0\u95f4\u9694"
+    },
+    "accelTrapPropTip": {
+        "0": "Acceleration Trap:\nYou get a speed bonus for {0}s",
+        "13": "\u52a0\u901f\u677f\uff1a\n\u4f60\u5728{0}\u79d2\u5185\u6709\u52a0\u901f\u6548\u679c"
+    },
+    "decelTrapPropTip": {
+        "0": "Deceleration Trap:\nYou get a speed decrease for {0}s",
+        "13": "\u51cf\u901f\u677f\uff1a\n\u4f60\u5728{0}\u79d2\u5185\u6709\u51cf\u901f\u6548\u679c"
     },
     "dynamicMap": {
         "0": "Play On A Random Map",
@@ -452,6 +484,15 @@
         "11": "\u30d0\u30cb\u30e9\u306e\u5f79\u8077\u3092\u7121\u52b9\u5316",
         "13": "\u542f\u7528\u6a21\u7ec4\u8eab\u4efd\u5e76\u7981\u7528\u539f\u7248\u8eab\u4efd",
         "14": "\u555f\u7528\u6a21\u7d44\u8eab\u4efd\u4f75\u7981\u7528\u539f\u7248\u8eab\u4efd"
+    },
+    "stopGameStartText": {
+        "0": "STOP",
+        "11": "\u30b9\u30c8\u30c3\u30d7",
+        "13": "\u505c\u6b62"
+    },
+    "playerStopGameStartText": {
+        "0": "{0} stopped the game start!",
+        "13": "{0} \u963b\u6b62\u4e86\u6e38\u620f\u5f00\u59cb\uff01"
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
