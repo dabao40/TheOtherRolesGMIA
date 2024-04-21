@@ -7,6 +7,10 @@ using UnityEngine;
 using System;
 using static TheOtherRoles.TheOtherRoles;
 using HarmonyLib;
+using Reactor.Utilities.Attributes;
+using Reactor.Utilities.Extensions;
+using Rewired.Utils.Platforms.Windows;
+using TMPro;
 
 namespace TheOtherRoles.Objects
 {
@@ -89,6 +93,21 @@ namespace TheOtherRoles.Objects
                 new Vector3(20.5093f, -8.3817f, 0.0f)
         };
 
+        public static List<Vector3> miraDoorway = new List<Vector3>()
+        {
+            new Vector3(7.2639f, 14.1907f, 0.0f),
+            new Vector3(6.2961f, 3.7184f, 0.0f),
+            new Vector3(13.5582f, 4.2025f, 0.0f),
+            new Vector3(13.6618f, 0.2669f, 0.0f),
+            new Vector3(-4.3283f, 0.0749f, 0.0f),
+            new Vector3(13.1907f, 7.2752f, 0.0f),
+            new Vector3(22.21f, 7.2627f, 0.0f),
+            new Vector3(25.5939f, -1.173f, 0.0f),
+            new Vector3(22.0724f, -0.9444f, 0.0f),
+            new Vector3(19.5806f, 1.2253f, 0.0f),
+            new Vector3(17.8747f, 15.9618f, 0.0f)
+        };
+
         public static List<Vector3> propPos = new List<Vector3>();
 
         public class AccelTrap
@@ -159,23 +178,117 @@ namespace TheOtherRoles.Objects
                     
                     foreach (var item in buff)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceProps, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceAccel, Hazel.SendOption.Reliable);
                         writer.Write(item);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.placeProps(item);
-                        System.Console.WriteLine($"{item}");
+                        RPCProcedure.placeAccel(item);
                     }
                 }
             }
+        }
 
-            [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-            public static class PlayerPhysicsPropPatch
+        public class DecelTrap
+        {
+            private static Sprite decelTrapSprite;
+            public GameObject decelTrap;
+            public static List<DecelTrap> decels = new List<DecelTrap>();
+            public static List<Vector3> decelPos;
+            public bool isTriggered = false;
+            public DateTime activateTime = DateTime.UtcNow;
+
+            public static Dictionary<PlayerControl, DateTime> deceled = new Dictionary<PlayerControl, DateTime>();
+
+            public DecelTrap(Vector2 p)
             {
-                public static void Postfix(PlayerPhysics __instance)
+                decelTrap = new GameObject("DecelTrap");
+
+                Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
+                decelTrap.transform.position = position;
+                decelTrap.transform.localPosition = position;
+                var decelRenderer = decelTrap.AddComponent<SpriteRenderer>();
+                decelRenderer.sprite = getDecelSprite();
+
+                decelTrap.SetActive(true);
+                decels.Add(this);
+            }
+
+            public static Sprite getDecelSprite()
+            {
+                if (decelTrapSprite) return decelTrapSprite;
+                decelTrapSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DecelerateButton.png", 300);
+                return decelTrapSprite;
+            }
+
+            public static void clearDecelTrap()
+            {
+                foreach (DecelTrap decel in decels)
                 {
-                    if (__instance.AmOwner && __instance.myPlayer.CanMove && GameData.Instance && acceled.ContainsKey(__instance.myPlayer))
+                    decel.isTriggered = false;
+                    decel.activateTime = DateTime.UtcNow;
+                    decel.decelTrap.SetActive(false);
+                    UnityEngine.Object.Destroy(decel.decelTrap);
+                }
+                decels = new List<DecelTrap>();
+                deceled = new Dictionary<PlayerControl, DateTime>();
+            }
+
+            public static List<Vector3> findDecelPos()
+            {
+                if (Helpers.isMira()) return miraDoorway;
+                var pos = new List<Vector3>();
+                foreach (var door in DestroyableSingleton<ShipStatus>.Instance.AllDoors)
+                {
+                    var position = door.transform.position;
+                    pos.Add(new Vector3(position.x, position.y - 0.2f, position.z - 50f));
+                }
+                decelPos = pos;
+
+                return pos;
+            }
+
+            public static byte getId(DecelTrap decelTrap)
+            {
+                for (int i = 0; i < decels.Count; i++)
+                {
+                    if (decels[i] == decelTrap)
+                        return (byte)i;
+                }
+                return 0;
+            }
+
+            public static void placeDecelTrap()
+            {
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    int count = 0;
+                    byte[] buff = new byte[(int)CustomOptionHolder.numDecelTraps.getFloat()];
+                    while (count < (int)CustomOptionHolder.numDecelTraps.getFloat())
                     {
-                        __instance.body.velocity *= CustomOptionHolder.speedAcceleration.getFloat() + 1;
+                        bool isDuplicated = false;
+                        byte id = (byte)rnd.Next(findDecelPos().Count);
+
+                        for (int i = 0; i < buff.Length; i++)
+                        {
+                            if (id == buff[i])
+                            {
+                                isDuplicated = true;
+                                break;
+                            }
+                        }
+
+                        if (!isDuplicated)
+                        {
+                            buff[count] = id;
+                            count++;
+                        }
+                    }
+
+                    foreach (var item in buff)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceDecel, Hazel.SendOption.Reliable);
+                        writer.Write(item);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.placeDecel(item);
                     }
                 }
             }
@@ -189,11 +302,96 @@ namespace TheOtherRoles.Objects
             else if (Helpers.isAirship()) propPos = airshipSpawn;
             else propPos = fungleSpawn;
             AccelTrap.placeAccelTrap();
+            DecelTrap.placeDecelTrap();
         }
 
         public static void clearProps()
         {
             AccelTrap.clearAccelTrap();
+            DecelTrap.clearDecelTrap();
+        }
+
+        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+        public static class PlayerPhysicsPropPatch
+        {
+            public static void Postfix(PlayerPhysics __instance)
+            {
+                if (__instance.AmOwner && __instance.myPlayer.CanMove && GameData.Instance)
+                {
+                    if (AccelTrap.acceled.ContainsKey(__instance.myPlayer))
+                        __instance.body.velocity *= CustomOptionHolder.speedAcceleration.getFloat() + 1;
+                    if (DecelTrap.deceled.ContainsKey(__instance.myPlayer))
+                        __instance.body.velocity *= CustomOptionHolder.speedDeceleration.getFloat() + 1;
+                }
+            }
+        }
+
+        [RegisterInIl2Cpp]
+        public class Proptip : MonoBehaviour
+        {
+            public Proptip(IntPtr ptr) : base(ptr)
+            {
+            }
+
+            public GameObject ProptipObj { get; set; }
+            public TextMeshPro ProptipTMP { get; set; }
+            public RectTransform ProptipTransform { get; set; }
+            public MeshRenderer ProptipRenderer { get; set; }
+            public bool Enabled { get; set; }
+            public string ProptipText { get; set; }
+
+            private void Start()
+            {
+                Enabled = true;
+
+                ProptipObj = new GameObject().DontDestroy();
+                ProptipObj.layer = 5;
+
+                ProptipTMP = ProptipObj.AddComponent<TextMeshPro>();
+                ProptipTMP.fontSize = 1.7f;
+                ProptipTMP.alignment = TextAlignmentOptions.BottomLeft;
+                ProptipTMP.overflowMode = TextOverflowModes.Overflow;
+                ProptipTMP.maskable = false;
+
+                ProptipRenderer = ProptipObj.GetComponent<MeshRenderer>();
+                ProptipRenderer.sortingOrder = 1000;
+
+                ProptipTransform = ProptipObj.GetComponent<RectTransform>();
+                ProptipObj.SetActive(false);
+            }
+
+            public void OnDisable()
+            {
+                if (ProptipObj == null) return;
+                ProptipObj.SetActive(false);
+            }
+
+            public void OnDestroy()
+            {
+                if (ProptipObj == null) return;
+                ProptipObj.SetActive(false);
+                ProptipObj.Destroy();
+            }
+
+            public void LateUpdate()
+            {
+                ProptipTransform.sizeDelta = ProptipTMP.GetPreferredValues(ProptipText);
+                ProptipTMP.text = "<color=#EEFFB3FF>" + ProptipText + "</color>";
+
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                ProptipObj.transform.position = new Vector3(mousePosition.x + (ProptipTMP.renderedWidth / 2) + 0.1f, mousePosition.y - (ProptipTMP.renderedHeight * 1.5f));
+            }
+
+            public void FixedUpdate()
+            {
+                ProptipObj.SetActive(false);
+            }
+
+            private void OnMouseOver()
+            {
+                if (!Enabled) return;
+                ProptipObj.SetActive(true);
+            }
         }
     }
 }

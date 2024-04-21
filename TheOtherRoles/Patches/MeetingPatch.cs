@@ -182,7 +182,16 @@ namespace TheOtherRoles.Patches {
                 parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
                 return false;
             }
-        } 
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.OnDestroy))]
+        class OnDestroyPatch
+        {
+            public static void Postfix()
+            {
+                Modules.AntiCheat.MeetingTimes = 0;
+            }
+        }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
         class MeetingHudPopulateVotesPatch {
@@ -922,6 +931,12 @@ namespace TheOtherRoles.Patches {
 
                 // Remove revealed traps
                 //Trap.clearRevealedTraps();
+
+                // Clear props here else something will get wrong
+                if (CustomOptionHolder.activateProps.getBool())
+                {
+                    Props.clearProps();
+                }
 
                 BombEffect.clearBombEffects();
 

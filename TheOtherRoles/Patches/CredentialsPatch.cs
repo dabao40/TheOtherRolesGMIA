@@ -173,7 +173,7 @@ namespace TheOtherRoles.Patches {
             public static async Task loadMOTDs()
             {
                 HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://fangkuai.fun:2222/files/home.txt");
+                HttpResponseMessage response = await client.GetAsync("https://fangkuai.fun/files/home.txt");
                 response.EnsureSuccessStatusCode();
                 string motds = await response.Content.ReadAsStringAsync();
                 foreach (string line in motds.Split("\n", StringSplitOptions.RemoveEmptyEntries))

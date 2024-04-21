@@ -531,6 +531,8 @@ namespace TheOtherRoles.Patches {
 
             }
 
+            if (CustomOptionHolder.activateProps.getBool()) Props.placeProps();
+
             // Invert add meeting
             if (Invert.meetings > 0) Invert.meetings--;
 

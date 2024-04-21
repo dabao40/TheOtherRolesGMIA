@@ -23,6 +23,7 @@ namespace TheOtherRoles {
         public static CustomOption modifiersCountMax;
 
         public static CustomOption enableEventMode;
+        public static CustomOption anyPlayerCanStopStart;
 
         public static CustomOption mafiaSpawnRate;
         public static CustomOption janitorCooldown;
@@ -507,6 +508,10 @@ namespace TheOtherRoles {
         public static CustomOption numAccelTraps;
         public static CustomOption accelerationDuration;
         public static CustomOption speedAcceleration;
+        public static CustomOption numDecelTraps;
+        public static CustomOption decelerationDuration;
+        public static CustomOption speedDeceleration;
+        public static CustomOption decelUpdateInterval;
 
         public static CustomOption dynamicMap;
         public static CustomOption dynamicMapEnableSkeld;
@@ -581,7 +586,8 @@ namespace TheOtherRoles {
             presetSelection = CustomOption.Create(0, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("presetSelection")), presets, null, true);
             activateRoles = CustomOption.Create(1, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("blockOriginal")), true, null, true);
 
-            if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(10423, Types.General, cs(Color.green, "Enable Special Mode"), true, null, true);
+            anyPlayerCanStopStart = CustomOption.Create(2, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("anyPlayerCanStopStart")), false, null, false);
+            if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(10423, Types.General, cs(Color.green, ModTranslation.getString("enableEventMode")), true, null, true);
 
             // Using new id's for the options to not break compatibilty with older versions
             crewmateRolesCountMin = CustomOption.Create(300, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("crewmateRolesCountMin")), 15f, 0f, 15f, 1f, null, true);
@@ -1122,8 +1128,12 @@ namespace TheOtherRoles {
             randomGameStartPosition = CustomOption.Create(6071, Types.General, ModTranslation.getString("randomGameStartPosition"), false);
             activateProps = CustomOption.Create(6083, Types.General, ModTranslation.getString("activateProps"), false, null, true);
             numAccelTraps = CustomOption.Create(6084, Types.General, ModTranslation.getString("numAccelTraps"), 1f, 1f, 5f, 1f, activateProps);
-            accelerationDuration = CustomOption.Create(6085, Types.General, ModTranslation.getString("accelerationDuration"), 5f, 1f, 10f, 1f, activateProps);
+            accelerationDuration = CustomOption.Create(6085, Types.General, ModTranslation.getString("accelerationDuration"), 5f, 1f, 20f, 1f, activateProps);
             speedAcceleration = CustomOption.Create(6086, Types.General, ModTranslation.getString("speedAcceleration"), 1.25f, 0.5f, 2f, 0.25f, activateProps);
+            numDecelTraps = CustomOption.Create(6087, Types.General, ModTranslation.getString("numDecelTraps"), 1f, 1f, 3f, 1f, activateProps);
+            decelerationDuration = CustomOption.Create(6091, Types.General, ModTranslation.getString("decelerationDuration"), 5f, 1f, 20f, 1f, activateProps);
+            speedDeceleration = CustomOption.Create(6089, Types.General, ModTranslation.getString("speedDeceleration"), -0.5f, -0.8f, -0.1f, 0.1f, activateProps);
+            decelUpdateInterval = CustomOption.Create(6090, Types.General, ModTranslation.getString("decelUpdateInterval"), 10f, 5f, 60f, 2.5f, activateProps);
 
 
             dynamicMap = CustomOption.Create(500, Types.General, ModTranslation.getString("dynamicMap"), false, null, true);

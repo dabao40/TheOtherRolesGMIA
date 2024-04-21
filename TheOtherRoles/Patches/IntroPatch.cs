@@ -85,6 +85,12 @@ namespace TheOtherRoles.Patches {
             // Force Reload of SoundEffectHolder
             SoundEffectsManager.Load();
 
+            // Place props
+            if (CustomOptionHolder.activateProps.getBool())
+            {
+                Props.placeProps();
+            }
+
             if (CustomOptionHolder.randomGameStartPosition.getBool())
             { //Random spawn on game start
 

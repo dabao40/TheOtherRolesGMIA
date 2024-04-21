@@ -97,6 +97,8 @@ namespace TheOtherRoles
         //public static CustomButton defuseButton;
         public static CustomButton zoomOutButton;
         public static CustomButton roleSummaryButton;
+        public static CustomButton accelAttributeButton;
+        public static CustomButton decelAttributeButton;
         private static CustomButton hunterLighterButton;
         private static CustomButton hunterAdminTableButton;
         private static CustomButton hunterArrowButton;
@@ -129,6 +131,9 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
         public static TMPro.TMP_Text huntedShieldCountText;
+
+        public static Props.Proptip accelAttributePropTip;
+        public static Props.Proptip decelAttributePropTip;
 
         public static void setCustomButtonCooldowns() {
             if (!initialized) {
@@ -201,6 +206,10 @@ namespace TheOtherRoles
             roleSummaryButton.MaxTimer = 0f;
             cupidArrowButton.MaxTimer = 0f;
             cupidShieldButton.MaxTimer = 0f;
+            accelAttributeButton.MaxTimer = 0f;
+            accelAttributeButton.Timer = 0f;
+            decelAttributeButton.MaxTimer = 0f;
+            decelAttributeButton.Timer = 0f;
             blackmailerButton.MaxTimer = Blackmailer.cooldown;
             jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
             jekyllAndHydeSuicideButton.MaxTimer = JekyllAndHyde.suicideTimer;
@@ -2143,6 +2152,44 @@ namespace TheOtherRoles
             veteranButtonAlertText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
             createRoleSummaryButton(__instance);
+
+            accelAttributeButton = new CustomButton(
+                () => { },
+                () => { return Props.AccelTrap.acceled.ContainsKey(CachedPlayer.LocalPlayer.PlayerControl) && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () =>
+                {
+                    if (accelAttributePropTip != null)
+                        accelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("accelTrapPropTip"), Math.Round(CustomOptionHolder.accelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.AccelTrap.acceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds));
+                    return true;
+                },
+                () => { },
+                Helpers.loadSpriteFromResources("TheOtherRoles.Resources.AccelAttribute.png", 250f),
+                new Vector3(-0.5f, 1f, 0f),
+                __instance,
+                null,
+                true
+            );
+
+            accelAttributePropTip = accelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
+
+            decelAttributeButton = new CustomButton(
+                () => { },
+                () => { return Props.DecelTrap.deceled.ContainsKey(CachedPlayer.LocalPlayer.PlayerControl) && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () =>
+                {
+                    if (decelAttributePropTip != null)
+                        decelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("decelTrapPropTip"), Math.Round(CustomOptionHolder.decelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.DecelTrap.deceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds));
+                    return true;
+                },
+                () => { },
+                Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DecelAttribute.png", 250f),
+                new Vector3(0.1f, 1f, 0),
+                __instance,
+                null,
+                true
+            );
+
+            decelAttributePropTip = decelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
 
             bomberAPlantBombButton = new CustomButton(
                 // OnClick

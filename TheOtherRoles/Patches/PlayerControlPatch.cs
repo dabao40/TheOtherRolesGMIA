@@ -15,6 +15,7 @@ using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
 using System.Runtime.InteropServices;
 using Iced.Intel;
+using UnityEngine.UIElements;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -1132,6 +1133,80 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void accelTrapUpdate()
+        {
+            if (Props.AccelTrap.accels == null || MeetingHud.Instance) return;
+            try
+            {
+                foreach (var acce in Props.AccelTrap.accels)
+                {
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && acce.accelTrap.transform != null
+                        && Vector3.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.position, acce.accelTrap.transform.position) < 0.25f &&
+                        !CachedPlayer.LocalPlayer.PlayerControl.inVent)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ActivateAccel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.activateAccel(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                    }
+                }
+                if (Props.AccelTrap.acceled.ContainsKey(CachedPlayer.LocalPlayer.PlayerControl) && DateTime.UtcNow.Subtract(Props.AccelTrap.acceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds >
+                        CustomOptionHolder.accelerationDuration.getFloat())
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DeactivateAccel, Hazel.SendOption.Reliable, -1);
+                    writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.deactivateAccel(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                TheOtherRolesPlugin.Logger.LogWarning(e.Message);
+            }
+        }
+
+        static void decelTrapUpdate()
+        {
+            if (Props.DecelTrap.decels == null || MeetingHud.Instance) return;
+            try
+            {
+                foreach (var decel in Props.DecelTrap.decels)
+                {
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && decel.decelTrap.transform != null
+                        && Vector3.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.position, decel.decelTrap.transform.position) < 0.6f &&
+                        !CachedPlayer.LocalPlayer.PlayerControl.inVent && !decel.isTriggered)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ActivateDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Props.DecelTrap.getId(decel));
+                        writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.activateDecel(Props.DecelTrap.getId(decel), CachedPlayer.LocalPlayer.PlayerId);
+                    }
+
+                    if (decel.isTriggered && DateTime.UtcNow.Subtract(decel.activateTime).TotalSeconds >= CustomOptionHolder.decelUpdateInterval.getFloat())
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UntriggerDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Props.DecelTrap.getId(decel));
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.untriggerDecel(Props.DecelTrap.getId(decel));
+                    }
+
+                    if (Props.DecelTrap.deceled.ContainsKey(CachedPlayer.LocalPlayer.PlayerControl) && DateTime.UtcNow.Subtract(Props.DecelTrap.deceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds >
+                        CustomOptionHolder.decelerationDuration.getFloat())
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DeactivateDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.deactivateDecel(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                    }
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                TheOtherRolesPlugin.Logger.LogWarning(e.Message);
+            }
+        }
+
         static void vultureUpdate() {
             if (Vulture.vulture == null || CachedPlayer.LocalPlayer.PlayerControl != Vulture.vulture || Vulture.localArrows == null || !Vulture.showArrows) return;
             if (Vulture.vulture.Data.IsDead) {
@@ -1931,6 +2006,9 @@ namespace TheOtherRoles.Patches {
                 //Bomb.update();
                 // Bomber
                 BombEffect.UpdateAll();
+                // Props
+                accelTrapUpdate();
+                decelTrapUpdate();
 
                 // -- GAME MODE --
                 hunterUpdate();
@@ -2138,7 +2216,7 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
             }
 
-            // Trapper peforms normal kills
+            // Trapper peforms kills
             if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && __instance == Trapper.trapper)
             {
                 if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // •»•È•√•◊§À§´§´§√§∆§§§ÎåùœÛ§Ú•≠•Î§∑§øàˆ∫œ§Œ•‹©`• •π

@@ -129,6 +129,7 @@ namespace TheOtherRoles
         DynamicMapOption,
         SetGameStarting,
         ShareGamemode,
+        StopStart,
 
         // Role functionality
 
@@ -234,9 +235,13 @@ namespace TheOtherRoles
         UnblackmailPlayer,
         ProphetExamine,
         ShareRealTasks,
-        PlaceProps,
+        PlaceAccel,
         ActivateAccel,
-        DeactivateAccel
+        DeactivateAccel,
+        PlaceDecel,
+        ActivateDecel,
+        UntriggerDecel,
+        DeactivateDecel
     }
 
     public static class RPCProcedure {
@@ -300,6 +305,15 @@ namespace TheOtherRoles
 
         public static void shareGamemode(byte gm) {
             TORMapOptions.gameMode = (CustomGamemodes) gm;
+        }
+
+        public static void stopStart(byte playerId)
+        {
+            if (AmongUsClient.Instance.AmHost && CustomOptionHolder.anyPlayerCanStopStart.getBool())
+            {
+                GameStartManager.Instance.ResetStartState();
+                PlayerControl.LocalPlayer.RpcSendChat(string.Format(ModTranslation.getString("playerStopGameStartText"), Helpers.playerById(playerId).Data.PlayerName));
+            }
         }
 
         public static void workaroundSetRoles(byte numberOfRoles, MessageReader reader)
@@ -1382,9 +1396,40 @@ namespace TheOtherRoles
             }
         }
 
-        public static void placeProps(byte id)
+        public static void placeAccel(byte id)
         {
             new Props.AccelTrap(Props.propPos[id]);
+        }
+
+        public static void placeDecel(byte id)
+        {
+            new Props.DecelTrap(Props.DecelTrap.findDecelPos()[id]);
+        }
+
+        public static void activateDecel(byte decelId, byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            var decel = Props.DecelTrap.decels[decelId];
+            decel.isTriggered = true;
+            decel.activateTime = DateTime.UtcNow;
+            if (Props.DecelTrap.deceled.ContainsKey(player)) Props.DecelTrap.deceled.Remove(player);
+            Props.DecelTrap.deceled.Add(player, DateTime.UtcNow);
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("triggerDeceleration");
+            decel.decelTrap.SetActive(false);
+        }
+
+        public static void untriggerDecel(byte decelId)
+        {
+            var decel = Props.DecelTrap.decels[decelId];
+            decel.decelTrap.SetActive(true);
+            decel.isTriggered = false;
+        }
+
+        public static void deactivateDecel(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            if (Props.DecelTrap.deceled.ContainsKey(player)) Props.DecelTrap.deceled.Remove(player);
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("untriggerDeceleration");
         }
 
         public static void activateAccel(byte playerId)
@@ -2322,6 +2367,12 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     class RPCHandlerPatch
     {
+        static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
+        {
+            if (Modules.AntiCheat.RpcSafe(__instance, callId, reader)) return false;
+            return true;
+        }
+
         static void Postfix([HarmonyArgument(0)]byte callId, [HarmonyArgument(1)]MessageReader reader)
         {
             byte packetId = callId;
@@ -2527,8 +2578,20 @@ namespace TheOtherRoles
                     float progress = System.BitConverter.ToSingle(progressByte, 0);
                     RPCProcedure.plagueDoctorProgress(progressTarget, progress);
                     break;
-                case (byte)CustomRPC.PlaceProps:
-                    RPCProcedure.placeProps(reader.ReadByte());
+                case (byte)CustomRPC.PlaceAccel:
+                    RPCProcedure.placeAccel(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.PlaceDecel:
+                    RPCProcedure.placeDecel(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ActivateDecel:
+                    RPCProcedure.activateDecel(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.UntriggerDecel:
+                    RPCProcedure.untriggerDecel(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.DeactivateDecel:
+                    RPCProcedure.deactivateDecel(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.ActivateAccel:
                     RPCProcedure.activateAccel(reader.ReadByte());
@@ -2728,6 +2791,9 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.ShareGamemode:
                     byte gm = reader.ReadByte();
                     RPCProcedure.shareGamemode(gm);
+                    break;
+                case (byte)CustomRPC.StopStart:
+                    RPCProcedure.stopStart(reader.ReadByte());
                     break;
 
                 // Game mode
