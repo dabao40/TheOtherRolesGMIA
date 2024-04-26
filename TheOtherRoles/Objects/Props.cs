@@ -379,7 +379,7 @@ namespace TheOtherRoles.Objects
                 ProptipTMP.text = "<color=#EEFFB3FF>" + ProptipText + "</color>";
 
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                ProptipObj.transform.position = new Vector3(mousePosition.x + (ProptipTMP.renderedWidth / 2) + 0.1f, mousePosition.y - (ProptipTMP.renderedHeight * 1.5f));
+                ProptipObj.transform.position = new Vector3(mousePosition.x + (ProptipTMP.renderedWidth / 2) + 0.1f, mousePosition.y + (ProptipTMP.renderedHeight * 1.2f));
             }
 
             public void FixedUpdate()
