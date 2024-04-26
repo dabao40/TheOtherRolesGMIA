@@ -2159,7 +2159,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     if (accelAttributePropTip != null)
-                        accelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("accelTrapPropTip"), Math.Round(CustomOptionHolder.accelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.AccelTrap.acceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds));
+                        accelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("accelTrapPropTip"), Math.Abs(Math.Round(CustomOptionHolder.accelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.AccelTrap.acceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds)));
                     return true;
                 },
                 () => { },
@@ -2178,7 +2178,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     if (decelAttributePropTip != null)
-                        decelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("decelTrapPropTip"), Math.Round(CustomOptionHolder.decelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.DecelTrap.deceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds));
+                        decelAttributePropTip.ProptipText = string.Format(ModTranslation.getString("decelTrapPropTip"), Math.Abs(Math.Round(CustomOptionHolder.decelerationDuration.getFloat() - DateTime.UtcNow.Subtract(Props.DecelTrap.deceled[CachedPlayer.LocalPlayer.PlayerControl]).TotalSeconds)));
                     return true;
                 },
                 () => { },
