@@ -189,10 +189,19 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                 }));
 
                 template.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {
-                    guesserButtonText.SetText("TOR Guesser");
-                    HideNSeekButtonText.SetText("TOR Hide N Seek");
+                    guesserButtonText.SetText(ModTranslation.getString("torGuesser"));
+                    HideNSeekButtonText.SetText(ModTranslation.getString("torHideNSeek"));
                  })));
             }));
+        }
+    }
+
+    [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
+    public static class VersionShower_Start
+    {
+        public static void Postfix(VersionShower __instance)
+        {
+            __instance.text.text = $"Among Us v{Application.version} - {Helpers.GradientColorText("FFD700", "FF0000", $"The Other Roles GM IA")} <color=#FCCE03FF>v{TheOtherRolesPlugin.VersionString + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}</color>";
         }
     }
 

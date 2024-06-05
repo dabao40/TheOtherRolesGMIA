@@ -13,9 +13,6 @@ using TheOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
-using System.Runtime.InteropServices;
-using Iced.Intel;
-using UnityEngine.UIElements;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -29,19 +26,16 @@ namespace TheOtherRoles.Patches {
             if (targetingPlayer == null) targetingPlayer = CachedPlayer.LocalPlayer.PlayerControl;
             if (targetingPlayer.Data.IsDead) return result;
 
-            if (untargetablePlayers == null)
-            {
-                untargetablePlayers = new List<PlayerControl>();
-            }
+            untargetablePlayers ??= new List<PlayerControl>();
 
-            if (!Ninja.canBeTargeted && Ninja.ninja != null && Ninja.stealthed)
-            {
+            if (!Ninja.canBeTargeted && Ninja.ninja != null && Ninja.stealthed) {
                 untargetablePlayers.Add(Ninja.ninja);
             }
-
-            if (Sprinter.sprinter != null && Sprinter.sprinting)
-            {
+            if (Sprinter.sprinter != null && Sprinter.sprinting) {
                 untargetablePlayers.Add(Sprinter.sprinter);
+            }
+            if (Fox.fox != null && Fox.stealthed) {
+                untargetablePlayers.Add(Fox.fox);
             }
 
             Vector2 truePosition = targetingPlayer.GetTruePosition();
@@ -455,6 +449,8 @@ namespace TheOtherRoles.Patches {
                 if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f)
                 {
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+                    Helpers.HandleUndertakerDropOnBodyReport();
+                    Helpers.handleTrapperTrapOnBodyReport();
 
                     byte reporter = deadPlayer.killerIfExisting.PlayerId;
 
@@ -519,7 +515,6 @@ namespace TheOtherRoles.Patches {
             if (Cupid.cupid == null || Cupid.cupid != CachedPlayer.LocalPlayer.PlayerControl) return;
             var untargetables = new List<PlayerControl>();
             if (Cupid.lovers1 != null) untargetables.Add(Cupid.lovers1);
-            if (Cupid.lovers1 != null) untargetables.Add(Cupid.lovers2);
             Cupid.currentTarget = setTarget(untargetablePlayers: untargetables);
             if (Cupid.isShieldOn) Cupid.shieldTarget = setTarget();
             if (Cupid.lovers1 == null || Cupid.lovers2 == null) setPlayerOutline(Cupid.currentTarget, Cupid.color);
@@ -736,10 +731,11 @@ namespace TheOtherRoles.Patches {
             if (Tracker.arrow?.arrow != null) {
                 if (Tracker.tracker == null || CachedPlayer.LocalPlayer.PlayerControl != Tracker.tracker) {
                     Tracker.arrow.arrow.SetActive(false);
+                    if (Tracker.DangerMeterParent) Tracker.DangerMeterParent.SetActive(false);
                     return;
                 }
 
-                if (Tracker.tracker != null && Tracker.tracked != null && CachedPlayer.LocalPlayer.PlayerControl == Tracker.tracker && !Tracker.tracker.Data.IsDead) {
+                if (Tracker.tracked != null && !Tracker.tracker.Data.IsDead) {
                     Tracker.timeUntilUpdate -= Time.fixedDeltaTime;
 
                     if (Tracker.timeUntilUpdate <= 0f) {
@@ -753,12 +749,22 @@ namespace TheOtherRoles.Patches {
                             }
                         }
 
-                        Tracker.arrow.Update(position);
-                        Tracker.arrow.arrow.SetActive(trackedOnMap);
+                        if (Tracker.trackingMode == 1 || Tracker.trackingMode == 2) Arrow.UpdateProximity(position);
+                        if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
+                        {
+                            Tracker.arrow.Update(position);
+                            Tracker.arrow.arrow.SetActive(trackedOnMap);
+                        }
                         Tracker.timeUntilUpdate = Tracker.updateIntervall;
                     } else {
-                        Tracker.arrow.Update();
+                        if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
+                            Tracker.arrow.Update();
                     }
+                }
+                else if (Tracker.tracker.Data.IsDead)
+                {
+                    Tracker.DangerMeterParent?.SetActive(false);
+                    Tracker.Meter?.gameObject.SetActive(false);
                 }
             }
 
@@ -783,6 +789,33 @@ namespace TheOtherRoles.Patches {
                 foreach (Arrow arrow in Tracker.localArrows) UnityEngine.Object.Destroy(arrow.arrow);
                 Tracker.localArrows = new List<Arrow>();
             }
+        }
+
+        static void foxUpdate()
+        {
+            if (Fox.fox == null || CachedPlayer.LocalPlayer.PlayerControl != Fox.fox) return;
+            Fox.arrowUpdate();
+        }
+
+        static void immoralistUpdate()
+        {
+            if (Immoralist.immoralist == null || CachedPlayer.LocalPlayer.PlayerControl != Immoralist.immoralist) return;
+            Immoralist.arrowUpdate();
+        }
+
+        static void foxSetTarget()
+        {
+            if (Fox.fox == null || CachedPlayer.LocalPlayer.PlayerControl != Fox.fox || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) return;
+            List<PlayerControl> untargetablePlayers = new();
+            foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+            {
+                if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty)
+                {
+                    untargetablePlayers.Add(p);
+                }
+            }
+            Fox.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            if (Fox.canCreateImmoralist) setPlayerOutline(Fox.currentTarget, Fox.color);
         }
 
         public static void playerSizeUpdate(PlayerControl p) {
@@ -1135,7 +1168,8 @@ namespace TheOtherRoles.Patches {
 
         static void accelTrapUpdate()
         {
-            if (Props.AccelTrap.accels == null || MeetingHud.Instance) return;
+            if (!CustomOptionHolder.activateProps.getBool()) return;
+            if (Props.AccelTrap.accels == null || Props.AccelTrap.accels.Count == 0 || MeetingHud.Instance) return;
             try
             {
                 foreach (var acce in Props.AccelTrap.accels)
@@ -1167,7 +1201,8 @@ namespace TheOtherRoles.Patches {
 
         static void decelTrapUpdate()
         {
-            if (Props.DecelTrap.decels == null || MeetingHud.Instance) return;
+            if (!CustomOptionHolder.activateProps.getBool()) return;
+            if (Props.DecelTrap.decels == null || Props.DecelTrap.decels.Count == 0 || MeetingHud.Instance) return;
             try
             {
                 foreach (var decel in Props.DecelTrap.decels)
@@ -1344,6 +1379,16 @@ namespace TheOtherRoles.Patches {
         public static void lawyerUpdate() {
             if (Lawyer.lawyer == null || Lawyer.lawyer != CachedPlayer.LocalPlayer.PlayerControl) return;
 
+            // Meeting win
+            if (Lawyer.winsAfterMeetings && Lawyer.neededMeetings == Lawyer.meetings && Lawyer.target != null && !Lawyer.target.Data.IsDead)
+            {
+                Lawyer.winsAfterMeetings = false; // Avoid sending mutliple RPCs until the host finshes the game
+                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerWin, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                RPCProcedure.lawyerWin();
+                return;
+            }
+
             // Promote to Pursuer
             if (Lawyer.target != null && Lawyer.target.Data.Disconnected && !Lawyer.lawyer.Data.IsDead) {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
@@ -1356,20 +1401,30 @@ namespace TheOtherRoles.Patches {
         public static void bomberASetTarget()
         {
             if (CachedPlayer.LocalPlayer.PlayerControl != BomberA.bomberA || BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-            var untargetablePlayers = new List<PlayerControl>();
-            //if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini);
-            if (BomberA.bombTarget != null) untargetablePlayers.Add(BomberA.bombTarget);
-            BomberA.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            List<PlayerControl> untargetables;
+            if (BomberA.tmpTarget != null)
+                untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != BomberA.tmpTarget.PlayerId).ToList();
+            else
+            {
+                untargetables = new List<PlayerControl>();
+                if (BomberA.bombTarget != null) untargetables.Add(BomberA.bombTarget);
+            }
+            BomberA.currentTarget = setTarget(untargetablePlayers: untargetables);
             setPlayerOutline(BomberA.currentTarget, Palette.ImpostorRed);
         }
 
         public static void bomberBSetTarget()
         {
             if (CachedPlayer.LocalPlayer.PlayerControl != BomberB.bomberB || BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-            var untargetablePlayers = new List<PlayerControl>();
-            //if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini);
-            if (BomberB.bombTarget != null) untargetablePlayers.Add(BomberB.bombTarget);
-            BomberB.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+            List<PlayerControl> untargetables;
+            if (BomberB.tmpTarget != null)
+                untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != BomberB.tmpTarget.PlayerId).ToList();
+            else
+            {
+                untargetables = new List<PlayerControl>();
+                if (BomberB.bombTarget != null) untargetables.Add(BomberB.bombTarget);
+            }
+            BomberB.currentTarget = setTarget(untargetablePlayers: untargetables);
             setPlayerOutline(BomberB.currentTarget, Palette.ImpostorRed);
         }
 
@@ -1972,6 +2027,11 @@ namespace TheOtherRoles.Patches {
                 // Plague Doctor
                 plagueDoctorSetTarget();
                 plagueDoctorUpdate();
+                // Fox
+                foxSetTarget();
+                foxUpdate();
+                // Immorailst
+                immoralistUpdate();
                 // Jekyll and Hyde
                 jekyllAndHydeSetTarget();
                 // Akujo
@@ -2128,7 +2188,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate || target == JekyllAndHyde.jekyllAndHyde)
+            if (target.hasFakeTasks() || target == Lawyer.lawyer || target == Pursuer.pursuer || target == Thief.thief || (target == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || target == CreatedMadmate.createdMadmate || target == JekyllAndHyde.jekyllAndHyde || target == Fox.fox)
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -2296,6 +2356,18 @@ namespace TheOtherRoles.Patches {
             if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && EvilTracker.canSeeDeathFlash)
             {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("evilTrackerInfo"));
+            }
+
+            if (Immoralist.immoralist != null && CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+
+            if (Fox.fox != null && target == Fox.fox)
+            {
+                if (Immoralist.immoralist != null && !Immoralist.immoralist.Data.IsDead)
+                {
+                    Immoralist.immoralist.MurderPlayer(Immoralist.immoralist, MurderResultFlags.Succeeded);
+                    GameHistory.overrideDeathReasonAndKiller(Immoralist.immoralist, DeadPlayer.CustomDeathReason.Suicide);
+                }
             }
 
             // Plague Doctor infect killer
@@ -2523,7 +2595,7 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate || __instance == JekyllAndHyde.jekyllAndHyde)
+            if (__instance.hasFakeTasks() || __instance == Lawyer.lawyer || __instance == Pursuer.pursuer || __instance == Thief.thief || (__instance == Shifter.shifter && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance == CreatedMadmate.createdMadmate || __instance == JekyllAndHyde.jekyllAndHyde || __instance == Fox.fox)
                 __instance.clearAllTasks();
 
             // Neko-Kabocha revenge on exile
@@ -2698,6 +2770,16 @@ namespace TheOtherRoles.Patches {
 
                     if (AmongUsClient.Instance.AmHost)
                         MeetingHud.Instance.CheckForEndVoting();
+                }
+            }
+
+            if (Fox.fox != null && __instance == Fox.fox)
+            {
+                if (Immoralist.immoralist != null)
+                {
+                    Immoralist.immoralist.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(Immoralist.immoralist, DeadPlayer.CustomDeathReason.Suicide);
+                    if (MeetingHud.Instance) RPCProcedure.updateMeeting(Immoralist.immoralist.PlayerId);
                 }
             }
 

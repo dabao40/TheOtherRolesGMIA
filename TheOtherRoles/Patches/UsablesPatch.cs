@@ -263,9 +263,9 @@ namespace TheOtherRoles.Patches {
                 statusText = ModTranslation.getString("jesterMeetingButton");
             }
             // Potentially deactivate emergency button for Lawyer/Prosecutor
-            if (Lawyer.lawyer != null && Lawyer.lawyer == CachedPlayer.LocalPlayer.PlayerControl && !Lawyer.canCallEmergency) {
+            if (Lawyer.lawyer != null && Lawyer.lawyer == CachedPlayer.LocalPlayer.PlayerControl && Lawyer.winsAfterMeetings) {
                 roleCanCallEmergency = false;
-                statusText = ModTranslation.getString("lawyerMeetingButton");
+                statusText = string.Format(ModTranslation.getString("lawyerMeetingButton"), Lawyer.neededMeetings - Lawyer.meetings);
                 //if (Lawyer.isProsecutor) statusText = "The Prosecutor can't start an emergency meeting";
             }
             // Potentially deactivate emergency button for Fortune Teller
@@ -315,8 +315,10 @@ namespace TheOtherRoles.Patches {
                 return !__instance.TaskTypes.Any(x => (!Madmate.canFixComm && x == TaskTypes.FixComms) || x == TaskTypes.FixLights);
             if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl && __instance.AllowImpostor)
                 return !__instance.TaskTypes.Any(x => (!CreatedMadmate.canFixComm && x == TaskTypes.FixComms) || x == TaskTypes.FixLights);
-            if (JekyllAndHyde.jekyllAndHyde != null && JekyllAndHyde.jekyllAndHyde == CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde && !JekyllAndHyde.isJekyll())
+            if (JekyllAndHyde.jekyllAndHyde != null && JekyllAndHyde.jekyllAndHyde == CachedPlayer.LocalPlayer.PlayerControl && !JekyllAndHyde.isJekyll())
                 return __instance.TaskTypes.Any(x => x == TaskTypes.FixComms || x == TaskTypes.FixLights || x == TaskTypes.RestoreOxy || x == TaskTypes.StopCharles || x == TaskTypes.ResetSeismic || x == TaskTypes.ResetReactor);
+            if (Fox.fox != null && Fox.fox == CachedPlayer.LocalPlayer.PlayerControl)
+                return !__instance.TaskTypes.Any(x => x == TaskTypes.FixComms || x == TaskTypes.FixLights || x == TaskTypes.RestoreOxy || x == TaskTypes.StopCharles || x == TaskTypes.ResetSeismic || x == TaskTypes.ResetReactor || (Fox.stealthed && x == TaskTypes.None));
             if (__instance.AllowImpostor) return true;
             if (!Helpers.hasFakeTasks(pc.Object)) return true;
             __result = float.MaxValue;

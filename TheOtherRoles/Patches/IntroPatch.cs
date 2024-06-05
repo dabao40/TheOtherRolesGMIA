@@ -79,9 +79,6 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            // Set the name of the Mimic(Killer)
-            if (MimicK.mimicK != null) MimicK.name = MimicK.mimicK.Data.PlayerName;
-
             // Force Reload of SoundEffectHolder
             SoundEffectsManager.Load();
 
@@ -312,6 +309,23 @@ namespace TheOtherRoles.Patches {
 
             // Add Electrical
             FungleAdditionalElectrical.CreateElectrical();
+
+            if (CustomOptionHolder.foxSpawnRate.getSelection() > 0)
+            {
+                Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
+                List<Byte> taskIdList = new();
+                Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
+                taskIdList.Shuffle();
+                var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (Fox.fox != null && p == Fox.fox)
+                    {
+                        p.clearAllTasks();
+                        cpt.addTaskToPlayer(p.PlayerId);
+                    }
+                }
+            }
 
             EventUtility.gameStartsUpdate();
 

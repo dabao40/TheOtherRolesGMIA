@@ -25,6 +25,8 @@ namespace TheOtherRoles.Patches {
         private static TMPro.TextMeshPro meetingExtraButtonLabel;
         private static PlayerVoteArea swapped1 = null;
         private static PlayerVoteArea swapped2 = null;
+        static TMPro.TextMeshPro[] meetingInfoText = new TMPro.TextMeshPro[4];
+        static int meetingTextIndex = 0;
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         class MeetingCalculateVotesPatch {
@@ -261,6 +263,11 @@ namespace TheOtherRoles.Patches {
                 Swapper.playerId1 = Byte.MaxValue;
                 Swapper.playerId2 = Byte.MaxValue;
 
+                // Disable meeting info text
+                if (meetingInfoText != null)
+                    foreach (var text in meetingInfoText)
+                        text.gameObject.SetActive(false);
+
                 // Lovers, Lawyer & Pursuer save next to be exiled, because RPC of ending game comes before RPC of exiled
                 Lovers.notAckedExiledIsLover = false;
                 Pursuer.notAckedExiled = false;
@@ -472,6 +479,7 @@ namespace TheOtherRoles.Patches {
                 else if (roleInfo.roleId == RoleId.BomberA && CustomOptionHolder.bomberSpawnRate.getSelection() == 0) continue;
                 if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.deputySpawnRate.getSelection() == 0 || CustomOptionHolder.sheriffSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
+                if (roleInfo.roleId == RoleId.Immoralist && CustomOptionHolder.foxSpawnRate.getSelection() == 0) continue;
                 if (roleInfo.roleId == RoleId.Spy && roleData.impostors.Count <= 1) continue;
                 if (roleInfo.roleId == RoleId.BomberB) continue;
                 //if (roleInfo.roleId == RoleId.Prosecutor && (CustomOptionHolder.lawyerIsProsecutorChance.getSelection() == 0 || CustomOptionHolder.lawyerSpawnRate.getSelection() == 0)) continue;
@@ -490,8 +498,8 @@ namespace TheOtherRoles.Patches {
                 button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 buttons.Add(button);
                 int row = i/5, col = i%5;
-                buttonParent.localPosition = new Vector3(-3.47f + 1.75f * col, 1.5f - 0.40f * row, -5);
-                buttonParent.localScale = new Vector3(0.55f, 0.55f, 1f);
+                buttonParent.localPosition = new Vector3(-3.47f + 1.55f * col, 1.5f - 0.35f * row, -5);
+                buttonParent.localScale = new Vector3(0.45f, 0.45f, 1f);
                 label.text = Helpers.cs(roleInfo.color, roleInfo.name);
                 label.alignment = TMPro.TextAlignmentOptions.Center;
                 label.transform.localPosition = new Vector3(0, 0, label.transform.localPosition.z);
@@ -784,6 +792,97 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void updateMeetingText(MeetingHud __instance)
+        {
+            // Uses remaining text for guesser/yasuna etc.
+            if (meetingInfoText[0] == null)
+            {
+                for (int i = 0; i < meetingInfoText.Length; i++)
+                {
+                    meetingInfoText[i] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.TaskPanel.taskText, __instance.transform);
+                    meetingInfoText[i].alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                    meetingInfoText[i].transform.position = Vector3.zero;
+                    meetingInfoText[i].transform.localPosition = new Vector3(-3.07f, 3.33f, -20f);
+                    meetingInfoText[i].transform.localScale *= 1.1f;
+                    meetingInfoText[i].color = Palette.White;
+                    meetingInfoText[i].gameObject.SetActive(false);
+                }
+            }
+
+            for (int i = 0; i < meetingInfoText.Length; i++)
+            {
+                meetingInfoText[i].text = "";
+                meetingInfoText[i].gameObject.SetActive(false);
+            }
+
+            if (MeetingHud.Instance.state is not MeetingHud.VoteStates.Voted and
+                not MeetingHud.VoteStates.NotVoted and
+                not MeetingHud.VoteStates.Discussion)
+                return;
+
+            int numGuesses = HandleGuesser.isGuesser(CachedPlayer.LocalPlayer.PlayerControl.PlayerId) ? HandleGuesser.remainingShots(CachedPlayer.LocalPlayer.PlayerControl.PlayerId) : 0;
+            if (numGuesses > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("guesserGuessesLeft"), numGuesses);
+            }
+
+            int numSpecialVotes = Yasuna.isYasuna(CachedPlayer.LocalPlayer.PlayerId) ? Yasuna.remainingSpecialVotes() : 0;
+            if (numSpecialVotes > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("yasunaSpecialVotes"), numSpecialVotes);
+            }
+
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && Akujo.timeLeft > 0)
+            {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("akujoTimeRemaining"), $"{TimeSpan.FromSeconds(Akujo.timeLeft):mm\\:ss}");
+            }
+
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && Cupid.timeLeft > 0)
+            {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("akujoTimeRemaining"), $"{TimeSpan.FromSeconds(Cupid.timeLeft):mm\\:ss}");
+            }
+
+            if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && EvilTracker.target != null)
+            {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("evilTrackerCurrentTarget"), EvilTracker.target?.Data?.PlayerName ?? "");
+            }
+
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && Lawyer.winsAfterMeetings)
+            {
+                meetingInfoText.getFirst().text = Lawyer.neededMeetings - Lawyer.meetings > 1 ? string.Format(ModTranslation.getString("lawyerMeetingInfo"), Lawyer.neededMeetings - Lawyer.meetings - 1) : ModTranslation.getString("lawyerAboutToWin");
+            }
+
+            meetingInfoText[meetingTextIndex].gameObject.SetActive(true);
+            if (meetingInfoText.totalCounts() == 0) return;
+            if (meetingTextIndex + 1 > meetingInfoText.totalCounts())
+                meetingTextIndex = meetingInfoText.totalCounts() - 1;
+        }
+
+        [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
+        public static class MeetingTextUpdatePatch
+        {
+            public static void Postfix(KeyboardJoystick __instance)
+            {
+                if (meetingInfoText[0] == null || meetingInfoText.totalCounts() == 0) return;
+                if (Input.GetKeyDown(KeyCode.Tab))
+                {
+                    meetingTextIndex = (meetingTextIndex + 1) % meetingInfoText.totalCounts();
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+                {
+                    meetingTextIndex = 0;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+                {
+                    meetingTextIndex = 1 % meetingInfoText.totalCounts();
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+                {
+                    meetingTextIndex = meetingInfoText.totalCounts() <= 3 ? meetingInfoText.totalCounts() - 1 : 2;
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ServerStart))]
         class MeetingServerStartPatch {
             static void Postfix(MeetingHud __instance)
@@ -843,6 +942,7 @@ namespace TheOtherRoles.Patches {
                 if (meetingTarget == null) meetingsCount++;
                 // Save the meeting target
                 target = meetingTarget;
+                meetingTextIndex = 0;
 
                 BomberA.bombTarget = null;
                 BomberB.bombTarget = null;
@@ -875,6 +975,13 @@ namespace TheOtherRoles.Patches {
                 }
 
                 NekoKabocha.meetingKiller = null;
+
+                if (Shifter.shifter != null && Shifter.isNeutral && Shifter.shifter.Data.IsDead && Shifter.futureShift != null && Shifter.futureShift.Data.Role.IsImpostor)
+                {
+                    var dp = GameHistory.deadPlayers.FirstOrDefault(x => x.player.PlayerId == Shifter.shifter.PlayerId);
+                    Shifter.killer = dp.killerIfExisting;
+                    Shifter.deathReason = dp.deathReason;
+                }
 
                 // Add trapped Info into Trapper chat
                 /*if (Trapper.trapper != null && (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper || Helpers.shouldShowGhostInfo()) && !Trapper.trapper.Data.IsDead) {
@@ -964,6 +1071,8 @@ namespace TheOtherRoles.Patches {
                     // Remove first kill shield
                     TORMapOptions.firstKillPlayer = null;
                 }
+
+                updateMeetingText(__instance);
 
                 if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null)
                 {

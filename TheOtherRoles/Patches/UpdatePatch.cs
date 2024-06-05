@@ -34,7 +34,7 @@ namespace TheOtherRoles.Patches {
                 {
                     var playerName = text;
                     if (morphTimerNotUp && morphTargetNotNull && Morphling.morphling == player) playerName = Morphling.morphTarget.Data.PlayerName;
-                    if (MimicA.isMorph && MimicA.mimicA == player && MimicA.mimicA != null && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead) playerName = MimicK.name;
+                    if (MimicA.isMorph && MimicA.mimicA == player && MimicA.mimicA != null && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead) playerName = MimicK.mimicK.Data.PlayerName;
                     if (MimicK.mimicK != null && MimicK.victim != null && MimicK.mimicK == player) playerName = MimicK.victim.Data.PlayerName;
                     var nameText = player.cosmetics.nameText;
                 
@@ -200,7 +200,18 @@ namespace TheOtherRoles.Patches {
             if (Jackal.jackal != null && Jackal.wasTeamRed && localPlayer.Data.Role.IsImpostor) {
                 setPlayerNameColor(Jackal.jackal, Spy.color);
             }
-
+            if (Fox.fox != null && localPlayer == Fox.fox) { 
+                setPlayerNameColor(localPlayer, Fox.color);
+                if (Immoralist.immoralist != null) { 
+                    setPlayerNameColor(Immoralist.immoralist, Immoralist.color);
+                }
+            }
+            if (Immoralist.immoralist != null && localPlayer == Immoralist.immoralist) {
+                setPlayerNameColor(localPlayer, Immoralist.color);
+                if (Fox.fox != null) { 
+                    setPlayerNameColor(Fox.fox, Immoralist.color);
+                }
+            }
             if (Madmate.madmate.Contains(localPlayer))
             {
                 setPlayerNameColor(CachedPlayer.LocalPlayer.PlayerControl, Madmate.color);
@@ -386,7 +397,7 @@ namespace TheOtherRoles.Patches {
         public static void miniUpdate() {
             //  || Mini.mini == MimicK.mimicK && MimicK.victim != null
             // the above line deleted in 2024.3.9, specified the MimicK instead
-            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || Mini.mini == MimicA.mimicA && MimicA.isMorph || Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f || Mini.mini == Ninja.ninja && Ninja.stealthed || Mini.mini == Sprinter.sprinting && Sprinter.sprinting || SurveillanceMinigamePatch.nightVisionIsActive) return;
+            if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || (Mini.mini == MimicA.mimicA && MimicA.isMorph) || (Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f) || (Mini.mini == Ninja.ninja && Ninja.stealthed) || (Mini.mini == Sprinter.sprinter && Sprinter.sprinting) || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;

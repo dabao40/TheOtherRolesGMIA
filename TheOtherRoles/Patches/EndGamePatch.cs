@@ -22,7 +22,9 @@ namespace TheOtherRoles.Patches {
         AkujoWin = 17,
         PlagueDoctorWin = 18,
         JekyllAndHydeWin = 19,
-        CupidLoversWin = 20
+        CupidLoversWin = 20,
+        LawyerSoloWin = 21,
+        FoxWin = 22
         //ProsecutorWin = 16
     }
 
@@ -35,12 +37,14 @@ namespace TheOtherRoles.Patches {
         MiniLose,
         ArsonistWin,
         VultureWin,
+        LawyerSoloWin,
         AdditionalLawyerBonusWin,
         AdditionalAlivePursuerWin,
         AdditionalLawyerStolenWin,
         OpportunistWin,
         CrewmateWin, 
-        ImpostorWin, 
+        ImpostorWin,
+        FoxWin,
         MoriartyWin,
         AkujoWin,
         PlagueDoctorWin,
@@ -82,7 +86,6 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public class OnGameEndPatch {
         private static GameOverReason gameOverReason;
@@ -95,6 +98,23 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)]ref EndGameResult endGameResult) {
+            bool foxTaskComplete = Fox.tasksComplete();
+            if (foxTaskComplete)
+            {
+                if (gameOverReason == GameOverReason.HumansByTask && !Fox.crewWinsByTasks)
+                {
+                    gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
+                }
+                else if (gameOverReason == GameOverReason.ImpostorBySabotage && !Fox.impostorWinsBySabotage)
+                {
+                    gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
+                }
+                else if (gameOverReason is GameOverReason.HumansByVote or GameOverReason.ImpostorByKill or GameOverReason.ImpostorByVote)
+                {
+                    gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
+                }
+            }
+
             AdditionalTempData.clear();
 
             foreach(var playerControl in CachedPlayer.AllPlayers) {
@@ -137,6 +157,8 @@ namespace TheOtherRoles.Patches {
             if (JekyllAndHyde.jekyllAndHyde != null) notWinners.Add(JekyllAndHyde.jekyllAndHyde);
             if (JekyllAndHyde.formerJekyllAndHyde != null) notWinners.Add(JekyllAndHyde.formerJekyllAndHyde);
             if (Cupid.cupid != null) notWinners.Add(Cupid.cupid);
+            if (Fox.fox != null) notWinners.Add(Fox.fox);
+            if (Immoralist.immoralist != null) notWinners.Add(Immoralist.immoralist);
 
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -162,9 +184,11 @@ namespace TheOtherRoles.Patches {
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
+            bool lawyerSoloWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.LawyerSoloWin;
             bool moriartyWin = Moriarty.moriarty != null && gameOverReason == (GameOverReason)CustomGameOverReason.MoriartyWin;
             bool akujoWin = Akujo.akujo != null && gameOverReason == (GameOverReason)CustomGameOverReason.AkujoWin && (Akujo.honmei != null && !Akujo.honmei.Data.IsDead && !Akujo.akujo.Data.IsDead);
             bool plagueDoctorWin = PlagueDoctor.plagueDoctor != null && gameOverReason == (GameOverReason)CustomGameOverReason.PlagueDoctorWin;
+            bool foxWin = Fox.fox != null && gameOverReason == (GameOverReason)CustomGameOverReason.FoxWin;
             bool jekyllAndHydeWin = JekyllAndHyde.jekyllAndHyde != null && gameOverReason == (GameOverReason)CustomGameOverReason.JekyllAndHydeWin;
             bool cupidLoversWin = Cupid.lovers1 != null && Cupid.lovers2 != null && !Cupid.lovers1.Data.IsDead && !Cupid.lovers2.Data.IsDead && gameOverReason == (GameOverReason)CustomGameOverReason.CupidLoversWin;
             bool everyoneDead = AdditionalTempData.playerRoles.All(x => !x.IsAlive);
@@ -311,7 +335,7 @@ namespace TheOtherRoles.Patches {
                         else if (p == Cupid.lovers1 || p == Cupid.lovers2)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                         else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Vulture.vulture && !Jackal.formerJackals.Contains(p) && !p.Data.Role.IsImpostor && p != Moriarty.moriarty && p != Akujo.akujo && p != JekyllAndHyde.jekyllAndHyde
-                            && p != Moriarty.formerMoriarty && p != JekyllAndHyde.formerJekyllAndHyde && p != PlagueDoctor.plagueDoctor && !Madmate.madmate.Contains(p) && p != CreatedMadmate.createdMadmate)
+                            && p != Moriarty.formerMoriarty && p != JekyllAndHyde.formerJekyllAndHyde && p != PlagueDoctor.plagueDoctor && !Madmate.madmate.Contains(p) && p != CreatedMadmate.createdMadmate && p != Fox.fox && p != Immoralist.immoralist)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                     }
                 }
@@ -350,6 +374,28 @@ namespace TheOtherRoles.Patches {
                     WinningPlayerData wpdFormerJackal = new WinningPlayerData(player.Data);
                     wpdFormerJackal.IsImpostor = false; 
                     TempData.winners.Add(wpdFormerJackal);
+                }
+            }
+
+            else if (lawyerSoloWin)
+            {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new(Lawyer.lawyer.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.LawyerSoloWin;
+            }
+
+            else if (foxWin)
+            {
+                AdditionalTempData.winCondition = WinCondition.FoxWin;
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new(Fox.fox.Data);
+                TempData.winners.Add(wpd);
+
+                if (Immoralist.immoralist != null)
+                {
+                    WinningPlayerData wpdI = new(Immoralist.immoralist.Data);
+                    TempData.winners.Add(wpdI);
                 }
             }
 
@@ -514,12 +560,26 @@ namespace TheOtherRoles.Patches {
                 textRenderer.color = Vulture.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Vulture.color);
             }
+            else if (AdditionalTempData.winCondition == WinCondition.LawyerSoloWin)
+            {
+                nonModTranslationText = "lawyerWin";
+                textRenderer.text = ModTranslation.getString("lawyerWin");
+                textRenderer.color = Lawyer.color;
+                __instance.BackgroundBar.material.SetColor("_Color", Lawyer.color);
+            }
             else if (AdditionalTempData.winCondition == WinCondition.PlagueDoctorWin)
             {
                 nonModTranslationText = "plagueDoctorWin";
                 textRenderer.text = ModTranslation.getString("plagueDoctorWin");
                 textRenderer.color = PlagueDoctor.color;
                 __instance.BackgroundBar.material.SetColor("_Color", PlagueDoctor.color);
+            }
+            else if (AdditionalTempData.winCondition == WinCondition.FoxWin)
+            {
+                nonModTranslationText = "foxWin";
+                textRenderer.text = ModTranslation.getString("foxWin");
+                textRenderer.color = Fox.color;
+                __instance.BackgroundBar.material.SetColor("_Color", Fox.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.JekyllAndHydeWin)
             {
@@ -667,6 +727,7 @@ namespace TheOtherRoles.Patches {
             var statistics = new PlayerStatistics(__instance);
             if (CheckAndEndGameForMiniLose(__instance)) return false;
             if (CheckAndEndGameForJesterWin(__instance)) return false;
+            if (CheckAndEndGameForLawyerMeetingWin(__instance)) return false;
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
             if (CheckAndEndGameForVultureWin(__instance)) return false;
             if (CheckAndEndGameForPlagueDoctorWin(__instance)) return false;
@@ -715,6 +776,16 @@ namespace TheOtherRoles.Patches {
             if (Vulture.triggerVultureWin) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.VultureWin, false);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckAndEndGameForLawyerMeetingWin(ShipStatus __instance)
+        {
+            if (Lawyer.triggerLawyerWin)
+            {
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.LawyerSoloWin, false);
                 return true;
             }
             return false;
