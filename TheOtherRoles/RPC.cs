@@ -15,6 +15,7 @@ using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.Data;
 using AmongUs.GameOptions;
+using MonoMod.Cil;
 
 namespace TheOtherRoles
 {
@@ -76,6 +77,8 @@ namespace TheOtherRoles
         Akujo,
         Cupid,
         JekyllAndHyde,
+        Fox,
+        Immoralist,
         Witch,
         Assassin,
         Ninja, 
@@ -241,7 +244,10 @@ namespace TheOtherRoles
         PlaceDecel,
         ActivateDecel,
         UntriggerDecel,
-        DeactivateDecel
+        DeactivateDecel,
+        LawyerWin,
+        FoxStealth,
+        FoxCreatesImmoralist,
     }
 
     public static class RPCProcedure {
@@ -263,6 +269,8 @@ namespace TheOtherRoles
             Props.clearProps();
             //Trap.clearTraps();
             Trap.clearAllTraps();
+            CustomNormalPlayerTask.reset();
+            Shrine.reset();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
             clearGameHistory();
@@ -499,6 +507,12 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Vulture:
                         Vulture.vulture = player;
+                        break;
+                    case RoleId.Fox:
+                        Fox.fox = player;
+                        break;
+                    case RoleId.Immoralist:
+                        Immoralist.immoralist = player;
                         break;
                     case RoleId.Medium:
                         Medium.medium = player;
@@ -761,7 +775,7 @@ namespace TheOtherRoles
             if (!Shifter.isNeutral) Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate))
+            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate) && !oldShifter.Data.IsDead)
             {
                 oldShifter.Exiled();
                 GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
@@ -884,7 +898,10 @@ namespace TheOtherRoles
             if (Guesser.niceGuesser != null && Guesser.niceGuesser == player)
                 Guesser.niceGuesser = oldShifter;
             if (Bait.bait != null && Bait.bait == player)
+            {
                 Bait.bait = oldShifter;
+                if (Bait.bait.Data.IsDead) Bait.reported = true;
+            }
             if (Medium.medium != null && Medium.medium == player)
                 Medium.medium = oldShifter;
             if (Watcher.nicewatcher != null && Watcher.nicewatcher == player)
@@ -927,11 +944,7 @@ namespace TheOtherRoles
             if (player == Vampire.vampire) Vampire.vampire = oldShifter;
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.createdMadmate = oldShifter;
             if (player == Blackmailer.blackmailer) Blackmailer.blackmailer = oldShifter;
-            if (player == MimicK.mimicK)
-            {
-                MimicK.mimicK = oldShifter;
-                MimicK.name = oldShifter.Data.PlayerName;
-            }
+            if (player == MimicK.mimicK) MimicK.mimicK = oldShifter;
             if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
             if (player == BomberA.bomberA) BomberA.bomberA = oldShifter;
             if (player == BomberB.bomberB) BomberB.bomberB = oldShifter;
@@ -947,6 +960,8 @@ namespace TheOtherRoles
             if (player == Jackal.jackal) Jackal.jackal = oldShifter;
             if (player == Sidekick.sidekick) Sidekick.sidekick = oldShifter;
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
+            if (player == Fox.fox) Fox.fox = oldShifter;
+            if (player == Immoralist.immoralist) Immoralist.immoralist = oldShifter;
             if (player == Akujo.akujo) Akujo.akujo = oldShifter;
             if (player == Cupid.cupid) Cupid.cupid = oldShifter;
 
@@ -963,6 +978,11 @@ namespace TheOtherRoles
                 {
                     FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
                     FastDestroyableSingleton<RoleManager>.Instance.SetRole(oldShifter, RoleTypes.Impostor);
+                    if (Shifter.deathReason != DeadPlayer.CustomDeathReason.Disconnect && !oldShifter.Data.IsDead) // In case the Chain-Shifter revives
+                    {
+                        oldShifter.Exiled();
+                        GameHistory.overrideDeathReasonAndKiller(oldShifter, Shifter.deathReason, Shifter.killer);
+                    }
                 }
             }
 
@@ -1171,18 +1191,23 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
+            if (Fox.fox != null && Fox.fox == target)
+            {
+                KillAnimationCoPerformKillPatch.hideNextAnimation = true;
+                fortuneTeller.MurderPlayer(target, MurderResultFlags.Succeeded);
+            }
+
             // インポスターの場合は占い師の位置に矢印を表示
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
                 FortuneTeller.setDivinedFlag(fortuneTeller, true);
             }
-
-            // The ghosts will also receive a message
-            /*if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            if (Immoralist.immoralist != null && target == Immoralist.immoralist && CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist)
             {
-                FortuneTeller.fortuneTellerMessage($"{target.Data.PlayerName} Was Just Divined", 7f, Color.white);
-            }*/
+                FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedYou"), 7f, Color.white);
+            }
+            FortuneTeller.divineTarget = target;
         }
 
         public static void deputyUsedHandcuffs(byte targetId)
@@ -1345,6 +1370,8 @@ namespace TheOtherRoles
             if (player == Moriarty.moriarty) Moriarty.clearAndReload();
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.clearAndReload();
             if (player == Akujo.akujo) Akujo.clearAndReload();
+            if (player == Fox.fox) Fox.clearAndReload();
+            if (player == Immoralist.immoralist) Immoralist.clearAndReload();
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
             if (player == Cupid.cupid) Cupid.clearAndReload(false);
 
@@ -1394,6 +1421,46 @@ namespace TheOtherRoles
             if (player != null) {
                 Witch.futureSpelled.Add(player);
             }
+        }
+
+        public static void foxStealth(bool stealthed)
+        {
+            Fox.setStealthed(stealthed);
+        }
+
+        public static void foxCreatesImmoralist(byte targetId)
+        {
+            PlayerControl player = Helpers.playerById(targetId);
+            FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
+            erasePlayerRoles(player.PlayerId, true);
+            Immoralist.immoralist = player;
+            player.clearAllTasks();
+
+            if (player == Lawyer.lawyer && Lawyer.target != null)
+            {
+                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
+                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
+                if (playerInfo != null) playerInfo.text = "";
+            }
+            else if (player == Akujo.akujo)
+            {
+                if (Akujo.honmei != null)
+                {
+                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
+                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                    if (playerInfo != null) playerInfo.text = "";
+                }
+                if (Akujo.keeps != null)
+                {
+                    foreach (PlayerControl playerControl in Akujo.keeps)
+                    {
+                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
+                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                        if (playerInfo != null) playerInfo.text = "";
+                    }
+                }
+            }
+            Fox.canCreateImmoralist = false;
         }
 
         public static void placeAccel(byte id)
@@ -1960,6 +2027,11 @@ namespace TheOtherRoles
             }
         }
 
+        public static void lawyerWin()
+        {
+            Lawyer.triggerLawyerWin = true;
+        }
+
         public static void guesserShoot(byte killerId, byte dyingTargetId, byte guessedTargetId, byte guessedRoleId) {
             PlayerControl killer = Helpers.playerById(killerId);
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
@@ -1967,6 +2039,7 @@ namespace TheOtherRoles
             PlayerControl dyingBomberPartner;
             PlayerControl dyingAkujoPartner;
             PlayerControl dyingCupidLover;
+            PlayerControl dyingImmoralist = Fox.fox != null && dyingTarget == Fox.fox && Immoralist.immoralist != null ? Immoralist.immoralist : null;
             byte NekoKabochaKillerId = byte.MaxValue;
             if (dyingTarget == null ) return;
             bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
@@ -2082,6 +2155,12 @@ namespace TheOtherRoles
                 else if (dyingCupidLover != null && CachedPlayer.LocalPlayer.PlayerControl == dyingCupidLover)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingCupidLover.Data, dyingCupidLover.Data);
+                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                }
+
+                else if (dyingImmoralist != null && CachedPlayer.LocalPlayer.PlayerControl == dyingImmoralist)
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingImmoralist.Data, dyingImmoralist.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
                 
@@ -2690,6 +2769,12 @@ namespace TheOtherRoles
                     byte allExTasks = reader.ReadByte();
                     RPCProcedure.taskMasterUpdateExTasks(clearExTasks, allExTasks);
                     break;
+                case (byte)CustomRPC.FoxStealth:
+                    RPCProcedure.foxStealth(reader.ReadBoolean());
+                    break;
+                case (byte)CustomRPC.FoxCreatesImmoralist:
+                    RPCProcedure.foxCreatesImmoralist(reader.ReadByte());
+                    break;
                 case (byte)CustomRPC.PlaceTrap:
                     RPCProcedure.placeTrap(reader.ReadBytesAndSize());
                     break;
@@ -2744,6 +2829,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.LawyerPromotesToPursuer:
                     RPCProcedure.lawyerPromotesToPursuer();
+                    break;
+                case (byte)CustomRPC.LawyerWin:
+                    RPCProcedure.lawyerWin();
                     break;
                 case (byte)CustomRPC.SetBlanked:
                     var pid = reader.ReadByte();

@@ -21,6 +21,7 @@ namespace TheOtherRoles {
             LoveStolen,
             Loneliness,
             Scapegoat,
+            Divined,
             Disease,
             Bomb,
             Arson,

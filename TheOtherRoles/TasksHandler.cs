@@ -54,9 +54,10 @@ namespace TheOtherRoles {
                         || (playerInfo.PlayerId == Pursuer.pursuer?.PlayerId && Pursuer.pursuer.Data.IsDead) // Tasks of the Pursuer only count, if he's alive
                         || (playerInfo.PlayerId == Shifter.shifter?.PlayerId && Shifter.isNeutral) // Chain-Shifter has tasks, but they don't count
                         || playerInfo.PlayerId == Thief.thief?.PlayerId // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
-                        || (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == playerInfo.PlayerId)
+                        || (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == playerInfo.PlayerId))
                         || (CreatedMadmate.hasTasks && playerInfo.PlayerId == CreatedMadmate.createdMadmate?.PlayerId)
-                        || playerInfo.PlayerId == JekyllAndHyde.jekyllAndHyde?.PlayerId)
+                        || playerInfo.PlayerId == JekyllAndHyde.jekyllAndHyde?.PlayerId
+                        || playerInfo.PlayerId == Fox.fox?.PlayerId
                         )
                         continue;
                     var (playerCompleted, playerTotal) = taskInfo(playerInfo);

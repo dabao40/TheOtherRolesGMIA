@@ -114,9 +114,6 @@ namespace TheOtherRoles
                 Assembly = Plugin!.GetType().Assembly;
             }
 
-            CredentialsPatch.PingTrackerPatch.modStamp = new GameObject();
-            Object.DontDestroyOnLoad(CredentialsPatch.PingTrackerPatch.modStamp);
-
             Types = AccessTools.GetTypesFromAssembly(Assembly);
 
             InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")

@@ -76,6 +76,7 @@ namespace TheOtherRoles
         public static CustomButton bomberAReleaseBombButton;
         public static CustomButton bomberBPlantBombButton;
         public static CustomButton bomberBReleaseBombButton;
+        public static CustomButton jackalAndSidekickSabotageLightsButton;
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
         public static CustomButton trapperSetTrapButton;
@@ -92,6 +93,10 @@ namespace TheOtherRoles
         public static CustomButton teleporterSampleButton;
         public static CustomButton cupidArrowButton;
         public static CustomButton cupidShieldButton;
+        public static CustomButton foxStealthButton;
+        public static CustomButton foxRepairButton;
+        public static CustomButton foxImmoralistButton;
+        public static CustomButton immoralistButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -189,6 +194,9 @@ namespace TheOtherRoles
             trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             sprintButton.MaxTimer = Sprinter.sprintCooldown;
             veteranAlertButton.MaxTimer = Veteran.cooldown;
+            plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
+            teleporterSampleButton.MaxTimer = Teleporter.sampleCooldown;
+            teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             undertakerDragButton.MaxTimer = 0f;
             mimicAAdminButton.MaxTimer = 0f;
             mimicAMorphButton.MaxTimer = 0f;
@@ -217,6 +225,10 @@ namespace TheOtherRoles
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
             prophetButton.MaxTimer = Prophet.cooldown;
+            foxStealthButton.MaxTimer = Fox.stealthCooldown;
+            foxRepairButton.MaxTimer = 0f;
+            foxImmoralistButton.MaxTimer = 20f;
+            immoralistButton.MaxTimer = 20f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
             hunterLighterButton.MaxTimer = Hunter.lightCooldown;
@@ -242,11 +254,9 @@ namespace TheOtherRoles
             ninjaButton.EffectDuration = Ninja.stealthDuration;
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
-            plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
-            teleporterSampleButton.MaxTimer = Teleporter.sampleCooldown;
-            teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
+            foxStealthButton.EffectDuration = Fox.stealthDuration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
             hunterArrowButton.EffectDuration = Hunter.ArrowDuration;
             huntedShieldButton.EffectDuration = Hunted.shieldDuration;
@@ -579,6 +589,30 @@ namespace TheOtherRoles
             deputyButtonHandcuffsText.enableWordWrapping = false;
             deputyButtonHandcuffsText.transform.localScale = Vector3.one * 0.5f;
             deputyButtonHandcuffsText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            jackalAndSidekickSabotageLightsButton = new CustomButton(
+                () => {
+                    ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Sabotage, (byte)SystemTypes.Electrical);
+                },
+                () => {
+                    return (Jackal.jackal != null && Jackal.jackal == CachedPlayer.LocalPlayer.PlayerControl && Jackal.canSabotageLights ||
+                            Sidekick.sidekick != null && Sidekick.sidekick == CachedPlayer.LocalPlayer.PlayerControl && Sidekick.canSabotageLights) && !CachedPlayer.LocalPlayer.Data.IsDead
+                             && (!Helpers.isFungle() || CustomOptionHolder.fungleElectrical.getBool());
+                },
+                () => {
+                    if (Helpers.sabotageTimer() > jackalAndSidekickSabotageLightsButton.Timer || Helpers.sabotageActive())
+                        jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;  // this will give imps time to do another sabotage.
+                    return Helpers.canUseSabotage();
+                },
+                () => {
+                    jackalAndSidekickSabotageLightsButton.Timer = Helpers.sabotageTimer() + 5f;
+                },
+                Trickster.getLightsOutButtonSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.G,
+                buttonText: ModTranslation.getString("LightsOutText")
+            );
 
             // Time Master Rewind Time
             timeMasterShieldButton = new CustomButton(
@@ -2828,6 +2862,165 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("NinjaText")
             );
             ninjaButton.effectCancellable = true;
+
+            foxStealthButton = new CustomButton(
+                () =>
+                {
+                    if (foxStealthButton.isEffectActive)
+                    {
+                        foxStealthButton.Timer = 0;
+                        return;
+                    }
+
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxStealth, Hazel.SendOption.Reliable, -1);
+                    writer.Write(true);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.foxStealth(true);
+                },
+                () => { return Fox.fox != null && CachedPlayer.LocalPlayer.PlayerControl == Fox.fox && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () =>
+                {
+                    if (foxStealthButton.isEffectActive)
+                    {
+                        foxStealthButton.buttonText = ModTranslation.getString("FoxUnstealthText");
+                    }
+                    else
+                    {
+                        foxStealthButton.buttonText = ModTranslation.getString("FoxStealthText");
+                    }
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () =>
+                {
+                    foxStealthButton.Timer = foxStealthButton.MaxTimer = Fox.stealthCooldown;
+                    foxStealthButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                    foxStealthButton.isEffectActive = false;
+                    Fox.stealthed = false;
+                },
+                Fox.getHideButtonSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.F,
+                true,
+                Fox.stealthDuration,
+                () =>
+                {
+                    foxStealthButton.Timer = foxStealthButton.MaxTimer = Fox.stealthCooldown;
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxStealth, Hazel.SendOption.Reliable, -1);
+                    writer.Write(false);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.foxStealth(false);
+                },
+                buttonText: ModTranslation.getString("FoxStealthText"),
+                abilityTexture: true
+            );
+            foxStealthButton.effectCancellable = true;
+
+            foxRepairButton = new CustomButton(
+                () =>
+                {
+                    bool sabotageActive = false;
+                    foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+                        if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles)
+                            sabotageActive = true;
+                    if (!sabotageActive) return;
+
+                    foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+                    {
+                        if (task.TaskType == TaskTypes.FixLights)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EngineerFixLights, Hazel.SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.engineerFixLights();
+                        }
+                        else if (task.TaskType == TaskTypes.RestoreOxy)
+                        {
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 0 | 64);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 1 | 64);
+                        }
+                        else if (task.TaskType == TaskTypes.ResetReactor)
+                        {
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 16);
+                        }
+                        else if (task.TaskType == TaskTypes.ResetSeismic)
+                        {
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Laboratory, 16);
+                        }
+                        else if (task.TaskType == TaskTypes.FixComms)
+                        {
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 0);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 1);
+                        }
+                        else if (task.TaskType == TaskTypes.StopCharles)
+                        {
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 0 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 1 | 16);
+                        }
+                    }
+                    Fox.numRepair -= 1;
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Fox.fox && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Fox.numRepair > 0; },
+                () =>
+                {
+                    bool sabotageActive = false;
+                    foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+                        if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles)
+                            sabotageActive = true;
+                    return sabotageActive && Fox.numRepair > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () => { foxRepairButton.Timer = foxRepairButton.MaxTimer = 0f; },
+                Fox.getRepairButtonSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.G,
+                abilityTexture: true,
+                buttonText: ModTranslation.getString("RepairText")
+            );
+
+            foxImmoralistButton = new CustomButton(
+                () =>
+                {
+                    if (Veteran.veteran != null && Fox.currentTarget == Veteran.veteran && Veteran.alertActive)
+                    {
+                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Fox.fox);
+                        return;
+                    }
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxCreatesImmoralist, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Fox.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.foxCreatesImmoralist(Fox.currentTarget.PlayerId);
+                },
+                () => { return Fox.canCreateImmoralist && CachedPlayer.LocalPlayer.PlayerControl == Fox.fox && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => { return Fox.canCreateImmoralist && Fox.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { foxImmoralistButton.Timer = foxImmoralistButton.MaxTimer = 20f; },
+                Fox.getImmoralistButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.I,
+                abilityTexture: true,
+                buttonText: ModTranslation.getString("FoxImmoralistText")
+            );
+
+            immoralistButton = new CustomButton(
+                () =>
+                {
+                    byte targetId = CachedPlayer.LocalPlayer.PlayerControl.PlayerId;
+                    MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SerialKillerSuicide, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                    RPCProcedure.serialKillerSuicide(targetId);
+                },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => { return true; },
+                () =>
+                {
+                    immoralistButton.Timer = immoralistButton.MaxTimer = 20f;
+                },
+                Immoralist.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("ImmoralistSuicideText")
+            );
 
             // Serial Killer Suicide Countdown
             serialKillerButton = new CustomButton(

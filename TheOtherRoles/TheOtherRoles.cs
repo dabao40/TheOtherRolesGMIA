@@ -15,6 +15,7 @@ using Steamworks;
 using TheOtherRoles.Patches;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UIElements;
+using Reactor.Utilities.Extensions;
 
 namespace TheOtherRoles
 {
@@ -98,6 +99,8 @@ namespace TheOtherRoles
             PlagueDoctor.clearAndReload();
             JekyllAndHyde.clearAndReload();
             Cupid.clearAndReload();
+            Fox.clearAndReload();
+            Immoralist.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -792,6 +795,7 @@ namespace TheOtherRoles
         public static float corpsesTrackingCooldown = 30f;
         public static float corpsesTrackingDuration = 5f;
         public static float corpsesTrackingTimer = 0f;
+        public static int trackingMode = 0;
         public static List<Vector3> deadBodyPositions = new List<Vector3>();
 
         public static PlayerControl currentTarget;
@@ -799,6 +803,9 @@ namespace TheOtherRoles
         public static bool usedTracker = false;
         public static float timeUntilUpdate = 0f;
         public static Arrow arrow = new Arrow(Color.blue);
+
+        public static GameObject DangerMeterParent;
+        public static DangerMeter Meter;
 
         private static Sprite trackCorpsesButtonSprite;
         public static Sprite getTrackCorpsesButtonSprite()
@@ -817,10 +824,16 @@ namespace TheOtherRoles
 
         public static void resetTracked() {
             currentTarget = tracked = null;
+            timeUntilUpdate = 0f;
             usedTracker = false;
             if (arrow?.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             arrow = new Arrow(Color.blue);
             if (arrow.arrow != null) arrow.arrow.SetActive(false);
+            if (DangerMeterParent)
+            {
+                Meter.gameObject.Destroy();
+                DangerMeterParent.Destroy();
+            }
         }
 
         public static void clearAndReload() {
@@ -839,6 +852,7 @@ namespace TheOtherRoles
             corpsesTrackingCooldown = CustomOptionHolder.trackerCorpsesTrackingCooldown.getFloat();
             corpsesTrackingDuration = CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat();
             canTrackCorpses = CustomOptionHolder.trackerCanTrackCorpses.getBool();
+            trackingMode = CustomOptionHolder.trackerTrackingMethod.getSelection();
         }
     }
 
@@ -936,6 +950,7 @@ namespace TheOtherRoles
         public static bool wasTeamRed;
         public static bool wasImpostor;
         public static bool wasSpy;
+        public static bool canSabotageLights;
 
         public static Sprite getSidekickButtonSprite() {
             if (buttonSprite) return buttonSprite;
@@ -965,6 +980,7 @@ namespace TheOtherRoles
             formerJackals.Clear();
             hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
             wasTeamRed = wasImpostor = wasSpy = false;
+            canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
         }
         
     }
@@ -984,6 +1000,7 @@ namespace TheOtherRoles
         public static bool canKill = true;
         public static bool promotesToJackal = true;
         public static bool hasImpostorVision = false;
+        public static bool canSabotageLights;
 
         public static void clearAndReload() {
             sidekick = null;
@@ -994,6 +1011,7 @@ namespace TheOtherRoles
             promotesToJackal = CustomOptionHolder.sidekickPromotesToJackal.getBool();
             hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
             wasTeamRed = wasImpostor = wasSpy = false;
+            canSabotageLights = CustomOptionHolder.sidekickCanSabotageLights.getBool();
         }
     }
 
@@ -1593,9 +1611,12 @@ namespace TheOtherRoles
         public static Sprite targetSprite;
         //public static bool triggerProsecutorWin = false;
         //public static bool isProsecutor = false;
-        public static bool canCallEmergency = true;
         public static bool targetKnows = true;
+        public static bool triggerLawyerWin = false;
+        public static int meetings = 0;
 
+        public static bool winsAfterMeetings = false;
+        public static int neededMeetings = 4;
         public static float vision = 1f;
         public static bool lawyerTargetKnows = true;
         public static bool lawyerKnowsRole = false;
@@ -1614,13 +1635,16 @@ namespace TheOtherRoles
                 target = null;
                 targetWasGuessed = false;
             }
+            triggerLawyerWin = false;
+            meetings = 0;
             //isProsecutor = false;
             //triggerProsecutorWin = false;
             vision = CustomOptionHolder.lawyerVision.getFloat();
             lawyerKnowsRole = CustomOptionHolder.lawyerKnowsRole.getBool();
             lawyerTargetKnows = CustomOptionHolder.lawyerTargetKnows.getBool();
             targetCanBeJester = CustomOptionHolder.lawyerTargetCanBeJester.getBool();
-            canCallEmergency = CustomOptionHolder.lawyerCanCallEmergency.getBool();
+            winsAfterMeetings = CustomOptionHolder.lawyerWinsAfterMeetings.getBool();
+            neededMeetings = Mathf.RoundToInt(CustomOptionHolder.lawyerNeededMeetings.getFloat());
             targetKnows = CustomOptionHolder.lawyerTargetKnows.getBool();
         }
     }
@@ -1865,6 +1889,7 @@ namespace TheOtherRoles
     public static class FortuneTeller
     {
         public static PlayerControl fortuneTeller;
+        public static PlayerControl divineTarget;
         public static Color color = new Color32(175, 198, 241, byte.MaxValue);
 
         public enum DivineResults
@@ -2015,6 +2040,7 @@ namespace TheOtherRoles
             progress = new Dictionary<byte, float>();
             numUsed = 0;
             divinedFlag = false;
+            divineTarget = null;
         }
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -3170,6 +3196,8 @@ namespace TheOtherRoles
 
         public static PlayerControl futureShift;
         public static PlayerControl currentTarget;
+        public static PlayerControl killer;
+        public static DeadPlayer.CustomDeathReason deathReason;
         public static bool shiftModifiers = false;
 
         public static bool isNeutral = false;
@@ -3189,6 +3217,8 @@ namespace TheOtherRoles
             pastShifters = new List<int>();
             currentTarget = null;
             futureShift = null;
+            killer = null;
+            deathReason = DeadPlayer.CustomDeathReason.Disconnect; // Get something unreachable here
             shiftModifiers = CustomOptionHolder.shifterShiftsModifiers.getBool();
             shiftPastShifters = CustomOptionHolder.shifterPastShifters.getBool();
             isNeutral = false;
@@ -3509,7 +3539,7 @@ namespace TheOtherRoles
             keeps = new List<PlayerControl>();
             currentTarget = null;
             startTime = DateTime.UtcNow;
-            timeLimit = CustomOptionHolder.akujoTimeLimit.getFloat() + 360f;
+            timeLimit = CustomOptionHolder.akujoTimeLimit.getFloat() + 10f;
             knowsRoles = CustomOptionHolder.akujoKnowsRoles.getBool();
             timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
             numKeeps = Math.Min((int)CustomOptionHolder.akujoNumKeeps.getFloat(), PlayerControl.AllPlayerControls.Count - 2);
@@ -3569,6 +3599,307 @@ namespace TheOtherRoles
             timeLimit = CustomOptionHolder.cupidTimeLimit.getFloat() + 10f;
             timeLeft = (int)Math.Ceiling(timeLimit - (DateTime.UtcNow - startTime).TotalSeconds);
             isShieldOn = CustomOptionHolder.cupidShield.getBool();
+        }
+    }
+
+    public static class Fox
+    {
+        public static PlayerControl fox;
+        public static Color color = new Color32(167, 87, 168, byte.MaxValue);
+
+        public enum TaskType
+        {
+            Serial,
+            Parallel
+        }
+
+        public static List<Arrow> arrows = new();
+        public static float updateTimer = 0f;
+        public static float arrowUpdateInterval = 0.5f;
+        public static bool crewWinsByTasks = false;
+        public static bool impostorWinsBySabotage = true;
+        public static float stealthCooldown;
+        public static float stealthDuration;
+        public static int numTasks;
+        public static float stayTime;
+
+        public static bool stealthed = false;
+        public static DateTime stealthedAt = DateTime.UtcNow;
+        public static float fadeTime = 1f;
+
+        public static int numRepair = 0;
+        public static bool canCreateImmoralist;
+        public static PlayerControl currentTarget;
+        public static TaskType taskType;
+
+        private static Sprite hideButtonSprite;
+        private static Sprite repairButtonSprite;
+        private static Sprite immoralistButtonSprite;
+
+        public static Sprite getHideButtonSprite()
+        {
+            if (hideButtonSprite) return hideButtonSprite;
+            hideButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.FoxHideButton.png", 115f);
+            return hideButtonSprite;
+        }
+
+        public static Sprite getRepairButtonSprite()
+        {
+            if (repairButtonSprite) return repairButtonSprite;
+            repairButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RepairButton.png", 115f);
+            return repairButtonSprite;
+        }
+
+        public static Sprite getImmoralistButtonSprite()
+        {
+            if (immoralistButtonSprite) return immoralistButtonSprite;
+            immoralistButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.FoxImmoralistButton.png", 115f);
+            return immoralistButtonSprite;
+        }
+
+        public static float stealthFade()
+        {
+            if (fox != null && !fox.Data.IsDead)
+                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - stealthedAt).TotalSeconds / fadeTime);
+            return 1.0f;
+        }
+
+        public static void setStealthed(bool stealthed = true)
+        {
+            Fox.stealthed = stealthed;
+            stealthedAt = DateTime.UtcNow;
+        }
+
+        public static void setOpacity(PlayerControl player, float opacity)
+        {
+            var color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
+            try
+            {
+                if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !stealthed) return;
+                Helpers.setInvisible(player, color);
+            }
+            catch { }
+        }
+
+        public static bool tasksComplete()
+        {
+            if (fox == null) return false;
+            if (fox.Data.IsDead) return false;
+            int counter = 0;
+            int totalTasks = 1;
+            foreach (var task in fox.Data.Tasks)
+            {
+                if (task.Complete)
+                {
+                    counter++;
+                }
+            }
+            return counter == totalTasks;
+        }
+
+        public static void arrowUpdate()
+        {
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow?.arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrows一覧
+                arrows = new List<Arrow>();
+
+                // インポスターの位置を示すArrowsを描画
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    Arrow arrow;
+                    // float distance = Vector2.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
+                    if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == Sheriff.sheriff || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty || p == Thief.thief)
+                    {
+                        if (p.Data.Role.IsImpostor)
+                        {
+                            arrow = new Arrow(Palette.ImpostorRed);
+                        }
+                        else if (p == Jackal.jackal)
+                        {
+                            arrow = new Arrow(Jackal.color);
+                        }
+                        else if (p == Sheriff.sheriff)
+                        {
+                            arrow = new Arrow(Palette.White);
+                        }
+                        else if (p == JekyllAndHyde.jekyllAndHyde)
+                        {
+                            arrow = new Arrow(JekyllAndHyde.color);
+                        }
+                        else if (p == Moriarty.moriarty)
+                        {
+                            arrow = new Arrow(Moriarty.color);
+                        }
+                        else
+                        {
+                            arrow = new Arrow(Thief.color);
+                        }
+                        arrow.arrow.SetActive(true);
+                        arrow.Update(p.transform.position);
+                        arrows.Add(arrow);
+                    }
+                }
+
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+            else
+            {
+                arrows.Do(x => x.Update());
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            setOpacity(fox, 1.0f);
+            fox = null;
+            currentTarget = null;
+            stealthed = false;
+            stealthedAt = DateTime.UtcNow;
+            crewWinsByTasks = CustomOptionHolder.foxCrewWinsByTasks.getBool();
+            impostorWinsBySabotage = CustomOptionHolder.foxImpostorWinsBySabotage.getBool();
+            stealthCooldown = CustomOptionHolder.foxStealthCooldown.getFloat();
+            stealthDuration = CustomOptionHolder.foxStealthDuration.getFloat();
+            canCreateImmoralist = CustomOptionHolder.foxCanCreateImmoralist.getBool();
+            numTasks = (int)CustomOptionHolder.foxNumTasks.getFloat();
+            numRepair = (int)CustomOptionHolder.foxNumRepairs.getFloat();
+            stayTime = (int)CustomOptionHolder.foxStayTime.getFloat();
+            taskType = (TaskType)CustomOptionHolder.foxTaskType.getSelection();
+            foreach (Arrow arrow in arrows)
+            {
+                if (arrow?.arrow != null)
+                {
+                    arrow.arrow.SetActive(false);
+                    UnityEngine.Object.Destroy(arrow.arrow);
+                }
+            }
+            arrows = new List<Arrow>();
+            Immoralist.clearAndReload();
+        }
+
+        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+        public static class PlayerPhysicsFoxPatch
+        {
+            public static void Postfix(PlayerPhysics __instance)
+            {
+                if (fox != null && fox == __instance.myPlayer)
+                {
+                    var fox = __instance.myPlayer;
+                    if (fox == null || fox.Data.IsDead) return;
+
+                    bool canSee =
+                        CachedPlayer.LocalPlayer.PlayerControl == fox ||
+                        CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
+                        (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible) ||
+                        CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist;
+
+                    var opacity = canSee ? 0.1f : 0.0f;
+
+                    if (stealthed)
+                    {
+                        opacity = Math.Max(opacity, 1.0f - stealthFade());
+                        fox.cosmetics?.currentBodySprite?.BodySprite.material.SetFloat("_Outline", 0f);
+                    }
+                    else
+                    {
+                        opacity = Math.Max(opacity, stealthFade());
+                    }
+
+                    setOpacity(fox, opacity);
+                }
+            }
+        }
+    }
+
+    public static class Immoralist
+    {
+        public static PlayerControl immoralist;
+        public static Color color = Fox.color;
+
+        public static List<Arrow> arrows = new();
+        public static float updateTimer = 0f;
+        public static float arrowUpdateInterval = 1f;
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SuicideButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static void arrowUpdate()
+        {
+            // 前フレームからの経過時間をマイナスする
+            updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if (updateTimer <= 0.0f)
+            {
+                // 前回のArrowをすべて破棄する
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow?.arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
+                }
+
+                // Arrow一覧
+                arrows = new List<Arrow>();
+
+                // 狐の位置を示すArrowを描画
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p.Data.IsDead) continue;
+                    Arrow arrow;
+                    if (p == Fox.fox)
+                    {
+                        arrow = new Arrow(Fox.color);
+                        arrow.arrow.SetActive(true);
+                        arrow.Update(p.transform.position);
+                        arrows.Add(arrow);
+                    }
+                }
+                // タイマーに時間をセット
+                updateTimer = arrowUpdateInterval;
+            }
+            else
+            {
+                arrows.Do(x => x.Update());
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            immoralist = null;
+            foreach (Arrow arrow in arrows)
+            {
+                if (arrow?.arrow != null)
+                {
+                    arrow.arrow.SetActive(false);
+                    UnityEngine.Object.Destroy(arrow.arrow);
+                }
+            }
+            arrows = new List<Arrow>();
         }
     }
 
@@ -3775,31 +4106,9 @@ namespace TheOtherRoles
             var color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
             try
             {
-                // Block setting opacity of the Chameleon skill is active
+                // Block setting opacity if the Chameleon skill is active
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !stealthed) return;
-                
-                if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
-                {
-                    player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
-                }
-
-                if (player.MyPhysics?.myPlayer.cosmetics.skin?.layer != null)
-                    player.MyPhysics.myPlayer.cosmetics.skin.layer.color = color;
-
-                if (player.cosmetics.hat != null)
-                    player.cosmetics.hat.SpriteColor = color;
-
-                //player.cosmetics.currentPet.renderers[0].color = color;
-                //player.cosmetics.currentPet.shadows[0].color = color;
-
-                if (player.GetPet() != null)
-                    player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
-
-                if (player.cosmetics.visor != null)
-                    player.cosmetics.visor.Image.color = color;
-
-                if (player.cosmetics.colorBlindText != null)
-                    player.cosmetics.colorBlindText.color = color;
+                Helpers.setInvisible(player, color);
             }
             catch { }
         }
@@ -3913,28 +4222,7 @@ namespace TheOtherRoles
             try
             {
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !sprinting) return;
-                if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
-                {
-                    player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
-                }
-
-                if (player.MyPhysics?.myPlayer.cosmetics.skin?.layer != null)
-                    player.MyPhysics.myPlayer.cosmetics.skin.layer.color = color;
-
-                if (player.cosmetics.hat != null)
-                    player.cosmetics.hat.SpriteColor = color;
-
-                //player.cosmetics.currentPet.renderers[0].color = color;
-                //player.cosmetics.currentPet.shadows[0].color = color;
-
-                if (player.GetPet() != null)
-                    player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
-
-                if (player.cosmetics.visor != null)
-                    player.cosmetics.visor.Image.color = color;
-
-                if (player.cosmetics.colorBlindText != null)
-                    player.cosmetics.colorBlindText.color = color;
+                Helpers.setInvisible(player, color);
             }
             catch { }
         }

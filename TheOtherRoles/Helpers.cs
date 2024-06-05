@@ -423,6 +423,46 @@ namespace TheOtherRoles {
             return result;
         }
 
+        public static TMPro.TextMeshPro getFirst(this TMPro.TextMeshPro[] text)
+        {
+            if (text == null) return null;
+            foreach (var self in text)
+                if (self.text == "") return self;
+            return text[0];
+        }
+
+        public static int totalCounts(this TMPro.TextMeshPro[] text)
+        {
+            if (text == null) return 0;
+            int count = 0;
+            foreach (var self in text)
+                if (self.text != "") count++;
+            return count;
+        }
+
+        public static bool sabotageActive()
+        {
+            var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
+            return sabSystem.AnyActive;
+        }
+
+        public static float sabotageTimer()
+        {
+            var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
+            return sabSystem.Timer;
+        }
+        public static bool canUseSabotage()
+        {
+            var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
+            ISystemType systemType;
+            IActivatable doors = null;
+            if (ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Doors, out systemType))
+            {
+                doors = systemType.CastFast<IActivatable>();
+            }
+            return GameManager.Instance.SabotagesEnabled() && sabSystem.Timer <= 0f && !sabSystem.AnyActive && !(doors != null && doors.IsActive);
+        }
+
         public static List<byte> generateTasks(int numCommon, int numShort, int numLong)
         {
             if (numCommon + numShort + numLong <= 0)
@@ -467,10 +507,31 @@ namespace TheOtherRoles {
             RPCProcedure.uncheckedSetTasks(player.PlayerId, taskTypeIds.ToArray());
         }
 
+        public static bool isChinese()
+        {
+            try
+            {
+                var name = CultureInfo.CurrentUICulture.Name;
+                if (name.StartsWith("zh")) return true;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string getGithubUrl(this string url)
+        {
+            if (!isChinese()) return url;
+            return url.Replace("https://", "https://github.moeyy.xyz/");
+        }
+
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f || MushroomSabotageActive()) return true; // No names are visible
-            if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide ninja nametags from non-impostors
-            if (Sprinter.sprinting && Sprinter.sprinter == target) return true; // Hide Sprinter nametags
+            if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide Ninja nametags from non-impostors
+            if (Sprinter.sprinting && Sprinter.sprinter == target && source != Sprinter.sprinter) return true; // Hide Sprinter nametags
+            if (Fox.stealthed && Fox.fox == target && source != Fox.fox) return true; // Hide Fox nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
             //else if (Assassin.isInvisble && Assassin.assassin == target) return true;
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
@@ -480,6 +541,7 @@ namespace TheOtherRoles {
             else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
             else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
             else if (Deputy.knowsSheriff && (source == Sheriff.sheriff || source == Deputy.deputy) && (target == Sheriff.sheriff || target == Deputy.deputy)) return false; // Sheriff & Deputy see the names of each other
+            else if ((source == Fox.fox || source == Immoralist.immoralist) && (target == Fox.fox || target == Immoralist.immoralist)) return false; // Members of team Fox see the names of each other
             return true;
         }
 
@@ -612,6 +674,28 @@ namespace TheOtherRoles {
             }
 
             transitionFade.StartCoroutine(Coroutine().WrapToIl2Cpp());
+        }
+
+        public static void setInvisible(PlayerControl player, Color color)
+        {
+
+            if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
+                player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
+
+            if (player.MyPhysics?.myPlayer.cosmetics.skin?.layer != null)
+                player.MyPhysics.myPlayer.cosmetics.skin.layer.color = color;
+
+            if (player.cosmetics.hat != null)
+                player.cosmetics.hat.SpriteColor = color;
+
+            if (player.GetPet() != null)
+                player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
+
+            if (player.cosmetics.visor != null)
+                player.cosmetics.visor.Image.color = color;
+
+            if (player.cosmetics.colorBlindText != null)
+                player.cosmetics.colorBlindText.color = color;
         }
 
         public static PlainShipRoom getPlainShipRoom(PlayerControl p)
@@ -936,7 +1020,8 @@ namespace TheOtherRoles {
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision)
                 || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision)
                 || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId)
-                || (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde.PlayerId == player.PlayerId);
+                || (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde.PlayerId == player.PlayerId)
+                || (Fox.fox != null && Fox.fox.PlayerId == player.PlayerId);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)
