@@ -85,7 +85,7 @@ internal static class HatsTabPatches
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
             title.enableAutoSizing = false;
-            hatsTab.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { title.SetText(packageName); })));
+            hatsTab.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { title.SetText(ModTranslation.getString(packageName.ToLower().Replace(" ", ""))); })));
             offset -= 0.8f * hatsTab.YOffset;
         }
 
@@ -126,7 +126,7 @@ internal static class HatsTabPatches
                     description.transform.localPosition = new Vector3(0f, -0.65f, -1f);
                     description.alignment = TextAlignmentOptions.Center;
                     description.transform.localScale = Vector3.one * 0.65f;
-                    hatsTab.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { description.SetText($"{hat.name}\nby {ext.Author}"); })));
+                    hatsTab.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => { description.SetText(string.Format(ModTranslation.getString("hatsAuthor"), hat.name, ext.Author)); })));
                 }
             }
             

@@ -33,7 +33,10 @@ namespace TheOtherRoles.Modules
         public ModUpdateBehaviour(IntPtr ptr) : base(ptr) { }
         public class UpdateData
         {
-            public string Content;
+            public string Content { get { return DataManager.Settings.Language.CurrentLanguage == SupportedLangs.SChinese ? ContentZh : ContentDefault; } }
+
+            string ContentDefault;
+            string ContentZh;
             public string Tag;
             public string TimeString;
             public JObject Request;
@@ -42,9 +45,41 @@ namespace TheOtherRoles.Modules
             public UpdateData(JObject data)
             {
                 Tag = data["tag_name"]?.ToString().TrimStart('v');
-                Content = data["body"]?.ToString();
                 TimeString = DateTime.FromBinary(((Il2CppSystem.DateTime)data["published_at"]).ToBinaryRaw()).ToString();
                 Request = data;
+
+                ContentDefault = data["body"]?.ToString();
+                var content = ContentDefault;
+                int zhTagStartIndex = content.IndexOf("### ZH");
+                int zhTagEndIndex = zhTagStartIndex != -1 ? zhTagStartIndex + "### ZH".Length + 2 : -1;
+                int tagStartIndex = content.IndexOf("### EN");
+                int tagEndIndex = tagStartIndex != -1 ? tagStartIndex + "### EN".Length + 2 : -1;
+
+                if (zhTagStartIndex == -1 && tagStartIndex == -1)
+                {
+                    ContentDefault = ContentZh = content;
+                }
+                else if (zhTagStartIndex != -1 && tagStartIndex == -1)
+                {
+                    ContentDefault = ContentZh = content[tagEndIndex..];
+                }
+                else if (zhTagStartIndex == -1 && tagStartIndex != -1)
+                {
+                    ContentDefault = ContentZh = content[zhTagEndIndex..];
+                }
+                else
+                {
+                    if (zhTagStartIndex < tagEndIndex)
+                    {
+                        ContentZh = content[zhTagEndIndex..tagStartIndex];
+                        ContentDefault = content[tagEndIndex..];
+                    }
+                    else
+                    {
+                        ContentDefault = content[tagEndIndex..zhTagStartIndex];
+                        ContentZh = content[zhTagEndIndex..];
+                    }
+                }
             }
 
             public bool IsNewer(Version version)
@@ -214,7 +249,7 @@ namespace TheOtherRoles.Modules
 
             try
             {
-                var req = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
+                var req = await client.GetAsync($"https://api.{(Helpers.isChinese() ? "kk":"")}github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
 
                 if (!req.IsSuccessStatusCode) return null;
 

@@ -34,6 +34,7 @@ namespace TheOtherRoles {
 
         public int id;
         public string name;
+        public string format;
         public System.Object[] selections;
 
         public int defaultSelection;
@@ -46,9 +47,10 @@ namespace TheOtherRoles {
 
         // Option creation
 
-        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader) {
+        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, string format) {
             this.id = id;
             this.name = parent == null ? name : "- " + name;
+            this.format = format;
             this.selections = selections;
             int index = Array.IndexOf(selections, defaultValue);
             this.defaultSelection = index >= 0 ? index : 0;
@@ -63,19 +65,19 @@ namespace TheOtherRoles {
             options.Add(this);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false) {
-            return new CustomOption(id, type, name, selections, "", parent, isHeader);
+        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, string format = "") {
+            return new CustomOption(id, type, name, selections, "", parent, isHeader, format);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false) {
+        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, string format = "") {
             List<object> selections = new();
             for (float s = min; s <= max; s += step)
                 selections.Add(s);
-            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader);
+            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, format);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false) {
-            return new CustomOption(id, type, name, new string[]{ModTranslation.getString("optionOff"), ModTranslation.getString("optionOn")}, defaultValue ? ModTranslation.getString("optionOn") : ModTranslation.getString("optionOff"), parent, isHeader);
+        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, string format = "") {
+            return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format);
         }
 
         // Static behaviour
@@ -92,7 +94,7 @@ namespace TheOtherRoles {
                 option.selection = Mathf.Clamp(option.entry.Value, 0, option.selections.Length - 1);
                 if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption) {
                     stringOption.oldValue = stringOption.Value = option.selection;
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
+                    stringOption.ValueText.text = option.getString();
                 }
             }
         }
@@ -157,13 +159,38 @@ namespace TheOtherRoles {
             return selection + 1;
         }
 
+        public string getString()
+        {
+            string sel = selections[selection].ToString();
+            if (format != "")
+            {
+                return string.Format(ModTranslation.getString(format), sel);
+            }
+
+            if (sel is "optionOn" or "mayorBeforeVoting" or "mayorUntilMeetingEnd" or "deputyOnImmediately" or "deputyOnAfterMeeting")
+            {
+                return "<color=#FFFF00FF>" + ModTranslation.getString(sel) + "</color>";
+            }
+            else if (sel == "optionOff")
+            {
+                return "<color=#CCCCCCFF>" + ModTranslation.getString(sel) + "</color>";
+            }
+
+            return ModTranslation.getString(sel);
+        }
+
+        public string getName()
+        {
+            return ModTranslation.getString(name);
+        }
+
         // Option changes
 
         public void updateSelection(int newSelection) {
             selection = Mathf.Clamp((newSelection + selections.Length) % selections.Length, 0, selections.Length - 1);
             if (optionBehaviour != null && optionBehaviour is StringOption stringOption) {
                 stringOption.oldValue = stringOption.Value = selection;
-                stringOption.ValueText.text = selections[selection].ToString();
+                stringOption.ValueText.text = getString();
 
                 if (AmongUsClient.Instance?.AmHost == true && CachedPlayer.LocalPlayer.PlayerControl) {
                     if (id == 0 && selection != preset) {
@@ -406,9 +433,9 @@ namespace TheOtherRoles {
                     StringOption stringOption = UnityEngine.Object.Instantiate(template, menus[(int)option.type]);
                     optionBehaviours[(int)option.type].Add(stringOption);
                     stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-                    stringOption.TitleText.text = option.name;
+                    stringOption.TitleText.text = option.getName();
                     stringOption.Value = stringOption.oldValue = option.selection;
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
+                    stringOption.ValueText.text = option.getString();
 
                     option.optionBehaviour = stringOption;
                 }
@@ -541,9 +568,9 @@ namespace TheOtherRoles {
                     StringOption stringOption = UnityEngine.Object.Instantiate(template, menus[(int)option.type]);
                     optionBehaviours[(int)option.type].Add(stringOption);
                     stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-                    stringOption.TitleText.text = option.name;
+                    stringOption.TitleText.text = option.getName();
                     stringOption.Value = stringOption.oldValue = option.selection;
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
+                    stringOption.ValueText.text = option.getString();
 
                     option.optionBehaviour = stringOption;
                 }
@@ -630,9 +657,9 @@ namespace TheOtherRoles {
                     StringOption stringOption = UnityEngine.Object.Instantiate(template, menus[index]);
                     optionBehaviours[index].Add(stringOption);
                     stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
-                    stringOption.TitleText.text = option.name;
+                    stringOption.TitleText.text = option.getName();
                     stringOption.Value = stringOption.oldValue = option.selection;
-                    stringOption.ValueText.text = option.selections[option.selection].ToString();
+                    stringOption.ValueText.text = option.getString();
 
                     option.optionBehaviour = stringOption;
                 }
@@ -725,9 +752,9 @@ namespace TheOtherRoles {
             if (option == null) return true;
 
             __instance.OnValueChanged = new Action<OptionBehaviour>((o) => {});
-            __instance.TitleText.text = option.name;
+            __instance.TitleText.text = option.getName();
             __instance.Value = __instance.oldValue = option.selection;
-            __instance.ValueText.text = option.selections[option.selection].ToString();
+            __instance.ValueText.text = option.getString();
             
             return false;
         }
@@ -842,7 +869,7 @@ namespace TheOtherRoles {
         private static string buildModifierExtras(CustomOption customOption) {
             // find options children with quantity
             var children = CustomOption.options.Where(o => o.parent == customOption);
-            var quantity = children.Where(o => o.name.Contains(ModTranslation.getString("modifiersQuantity"))).ToList();
+            var quantity = children.Where(o => o.name.Contains("Quantity")).ToList();
             if (customOption.getSelection() == 0) return "";
             if (quantity.Count == 1) return $" ({quantity[0].getQuantity()})";
             if (customOption == CustomOptionHolder.modifierLover) {
@@ -866,17 +893,17 @@ namespace TheOtherRoles {
 
             foreach (var option in options) {
                 if (option.parent == null) {
-                    string line = $"{option.name}: {option.selections[option.selection].ToString()}";
+                    string line = $"{option.getName()}: {option.getString()}";
                     if (type == CustomOption.CustomOptionType.Modifier) line += buildModifierExtras(option);
                     sb.AppendLine(line);
                 }
                 else if (option.parent.getSelection() > 0) {
                     if (option.id == 103) //Deputy
-                        sb.AppendLine($"- {Helpers.cs(Deputy.color, ModTranslation.getString("deputy"))}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"- {Helpers.cs(Deputy.color, ModTranslation.getString("deputy"))}: {option.getString()}");
                     else if (option.id == 224) //Sidekick
-                        sb.AppendLine($"- {Helpers.cs(Sidekick.color, ModTranslation.getString("sidekick"))}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"- {Helpers.cs(Sidekick.color, ModTranslation.getString("sidekick"))}: {option.getString()}");
                     else if (option.id == 8000) // Created Madmate
-                        sb.AppendLine($"- {Helpers.cs(Madmate.color, Madmate.fullName)}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"- {Helpers.cs(Madmate.color, Madmate.fullName)}: {option.getString()}");
                     //else if (option.id == 358) //Prosecutor
                     //sb.AppendLine($"- {Helpers.cs(Lawyer.color, "Prosecutor")}: {option.selections[option.selection].ToString()}");
                 }
@@ -891,7 +918,7 @@ namespace TheOtherRoles {
 
                     Color c = isIrrelevant ? Color.grey : Color.white;  // No use for now
                     if (isIrrelevant) continue;
-                    sb.AppendLine(Helpers.cs(c, $"{option.name}: {option.selections[option.selection].ToString()}"));
+                    sb.AppendLine(Helpers.cs(c, $"{option.getName()}: {option.getString()}"));
                 } else {
                     if (option == CustomOptionHolder.crewmateRolesCountMin) {
                         var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), ModTranslation.getString("crewmateRoles"));
@@ -937,7 +964,7 @@ namespace TheOtherRoles {
                     } else if ((option == CustomOptionHolder.crewmateRolesCountMax) || (option == CustomOptionHolder.neutralRolesCountMax) || (option == CustomOptionHolder.impostorRolesCountMax) || option == CustomOptionHolder.modifiersCountMax) {
                         continue;
                     } else {
-                        sb.AppendLine($"\n{option.name}: {option.selections[option.selection].ToString()}");
+                        sb.AppendLine($"\n{option.getName()}: {option.getString()}");
                     }
                 }
             }
