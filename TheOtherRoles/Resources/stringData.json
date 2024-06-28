@@ -5653,6 +5653,30 @@
         "0": "Support the Fox at all cost, even your life",
         "13": "\u4e0d\u60dc\u4e00\u5207\u4ee3\u4ef7\u4fdd\u62a4\u72d0\u5996"
     },
+    "catcher ": {
+        "0": "Catcher",
+        "13": "\u6293\u6355\u8005"
+    },
+    "catcherIntroDesc": {
+        "0": "I Catch You",
+        "13": "\u6211\u6293\u4f4f\u4f60\u55bd"
+    },
+    "catcherShortDesc": {
+        "0": "I Catch You",
+        "13": "\u6211\u6293\u4f4f\u4f60\u55bd"
+    },
+    "catchCooldown": {
+        "0": "Catch Cooldown",
+        "13": "\u6293\u6355\u51b7\u5374"
+    },
+    "Catchchance": {
+        "0": "Catch Chance",
+        "13": "\u53ef\u6293\u6355\u6b21\u6570"
+    },
+    "CatchButtonText": {
+        "0": "Catch",
+        "13": "\u6293\u6355"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",

@@ -1,4 +1,4 @@
-﻿global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -176,7 +176,8 @@ namespace TheOtherRoles
             StringBuilder builder = new StringBuilder();
             SHA256 sha = SHA256Managed.Create();
             Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(TheOtherRolesPlugin.DebugMode.Value));
-            foreach (var b in hashed) {
+            foreach (var b in hashed)
+            {
                 builder.Append(b.ToString("x2"));
             }
             string enteredHash = builder.ToString();
