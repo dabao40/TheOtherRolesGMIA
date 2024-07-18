@@ -2282,6 +2282,7 @@ BepInEx - Used to hook game functions
 Essentials - Custom game options by DorCoMaNdO:  
 Before v1.6: We used the default Essentials release  
 v1.6-v1.8: We slightly changed the default Essentials.  
+Nebula-On-The-Ship: Partly code of the Achievements and the UIs are from Dolly  
 Four-Han-sinicization-group - Some of the pictures are made by them  
 Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard  
 Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
