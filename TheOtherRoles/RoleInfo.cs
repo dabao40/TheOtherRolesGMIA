@@ -43,6 +43,7 @@ namespace TheOtherRoles
         public static RoleInfo morphling = new RoleInfo("morphling", Morphling.color, RoleId.Morphling);
         public static RoleInfo camouflager = new RoleInfo("camouflager", Camouflager.color, RoleId.Camouflager);
         public static RoleInfo vampire = new RoleInfo("vampire", Vampire.color, RoleId.Vampire);
+        public static RoleInfo catcher = new RoleInfo("Catcher", Catcher.color, RoleId.Catcher);
         public static RoleInfo eraser = new RoleInfo("eraser", Eraser.color, RoleId.Eraser);
         public static RoleInfo trickster = new RoleInfo("trickster", Trickster.color, RoleId.Trickster);
         public static RoleInfo cleaner = new RoleInfo("cleaner", Cleaner.color, RoleId.Cleaner);
@@ -141,6 +142,7 @@ namespace TheOtherRoles
             morphling,
             camouflager,
             vampire,
+            catcher,
             eraser,
             trickster,
             cleaner,
@@ -191,7 +193,7 @@ namespace TheOtherRoles
             engineer,
             sheriff,
             deputy,
-            niceshifter, 
+            niceshifter,
             bait,
             lighter,
             detective,
@@ -224,7 +226,7 @@ namespace TheOtherRoles
             invert,
             chameleon,
             cupidLover,
-            //shifter, 
+            //shifter,
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false) {
@@ -267,6 +269,7 @@ namespace TheOtherRoles
             if (p == Morphling.morphling) infos.Add(morphling);
             if (p == Camouflager.camouflager) infos.Add(camouflager);
             if (p == Vampire.vampire) infos.Add(vampire);
+            if (p == Catcher.catcher) infos.Add(catcher);
             if (p == Eraser.eraser) infos.Add(eraser);
             if (p == Trickster.trickster) infos.Add(trickster);
             if (p == Cleaner.cleaner) infos.Add(cleaner);
@@ -376,9 +379,9 @@ namespace TheOtherRoles
                 }
             }
 
-            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target) 
+            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target)
                 roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
-            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");            
+            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");
 
             if (!suppressGhostInfo && p != null) {
                 if (p == Shifter.shifter && (CachedPlayer.LocalPlayer.PlayerControl == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
