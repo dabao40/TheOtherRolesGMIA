@@ -24,6 +24,7 @@ namespace TheOtherRoles.Modules
             flag = true;
             LoadAudioAssets();
             LoadSpriteAssets();
+            LoadShaderAssets();
         }
 
         private static void LoadAudioAssets()
@@ -43,6 +44,14 @@ namespace TheOtherRoles.Modules
             var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
             FoxTask.prefab = assetBundleBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
             Shrine.sprite = assetBundleBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
+        }
+
+        private static void LoadShaderAssets()
+        {
+            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets");
+            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
+            Achievement.materialShader = assetBundleBundle.LoadAsset<Shader>("Sprites-White").DontUnload();
+            Helpers.HSVShader = assetBundleBundle.LoadAsset<Shader>("Sprites-HSV").DontUnload();
         }
     }
 }
