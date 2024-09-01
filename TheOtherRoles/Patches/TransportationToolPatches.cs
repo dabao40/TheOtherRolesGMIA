@@ -68,7 +68,8 @@ namespace TheOtherRoles.Patches
                         PlayerMaterial.SetColors(6, hand.handRenderer);
                     }
 
-                    if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)) hand.gameObject.SetActive(false);
+                    if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)
+                    || (Fox.fox != null && Fox.fox == player && Fox.stealthed)) hand.gameObject.SetActive(false);
                 }
             })));
         }

@@ -13,13 +13,14 @@ using TheOtherRoles.Objects;
 using TheOtherRoles.CustomGameModes;
 using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Patches {
 
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentCanUsePatch
     {
-        public static bool Prefix(Vent __instance, ref float __result, [HarmonyArgument(0)] GameData.PlayerInfo pc, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse) {
+        public static bool Prefix(Vent __instance, ref float __result, [HarmonyArgument(0)] NetworkedPlayerInfo pc, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
             float num = float.MaxValue;
             PlayerControl @object = pc.Object;
@@ -114,6 +115,7 @@ namespace TheOtherRoles.Patches {
             bool couldUse;
             __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
             bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy && CachedPlayer.LocalPlayer.PlayerControl != Jester.jester && !Madmate.madmate.Contains(CachedPlayer.LocalPlayer.PlayerControl) && CachedPlayer.LocalPlayer.PlayerControl != CreatedMadmate.createdMadmate; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
+            if (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer) canMoveInVents = true;
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
             bool isEnter = !CachedPlayer.LocalPlayer.PlayerControl.inVent;
@@ -145,6 +147,11 @@ namespace TheOtherRoles.Patches {
         public static bool Prefix(Vent otherVent) {
             //return !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl);
             return true;
+        }
+        public static void Postfix(Vent otherVent)
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == Tracker.tracked && Tracker.tracked != null)
+                Tracker.unlockAch(GameStatistics.currentTime);
         }
     }
 
@@ -307,7 +314,7 @@ namespace TheOtherRoles.Patches {
 
     [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
     public static class ConsoleCanUsePatch {
-        public static bool Prefix(ref float __result, Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo pc, [HarmonyArgument(1)] out bool canUse, [HarmonyArgument(2)] out bool couldUse) {
+        public static bool Prefix(ref float __result, Console __instance, [HarmonyArgument(0)] NetworkedPlayerInfo pc, [HarmonyArgument(1)] out bool canUse, [HarmonyArgument(2)] out bool couldUse) {
             canUse = couldUse = false;
             if (Swapper.swapper != null && Swapper.swapper == CachedPlayer.LocalPlayer.PlayerControl)
                 return !__instance.TaskTypes.Any(x => x == TaskTypes.FixLights || x == TaskTypes.FixComms);
@@ -357,6 +364,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
         class VitalsMinigameStartPatch {
             static void Postfix(VitalsMinigame __instance) {
+                VitalsMinigameUpdatePatch.UpdateVitals(__instance);
                 if (Hacker.hacker != null && CachedPlayer.LocalPlayer.PlayerControl == Hacker.hacker) {
                     hackerTexts = new List<TMPro.TextMeshPro>();
                     foreach (VitalsPanel panel in __instance.vitals) {
@@ -382,13 +390,78 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
         class VitalsMinigameUpdatePatch {
 
+            public static void UpdateVitals(VitalsMinigame __instance)
+            {
+                if (__instance.SabText.isActiveAndEnabled && !PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(PlayerControl.LocalPlayer))
+                {
+                    __instance.SabText.gameObject.SetActive(false);
+                    foreach (var v in __instance.vitals) v.gameObject.SetActive(true);
+                }
+                else if (!__instance.SabText.isActiveAndEnabled && PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(PlayerControl.LocalPlayer))
+                {
+                    __instance.SabText.gameObject.SetActive(true);
+                    foreach (var v in __instance.vitals) v.gameObject.SetActive(false);
+                }
+
+                var vitals = VitalsStatePatch.VitalsFromActuals;
+                foreach (var v in __instance.vitals)
+                {
+                    var myInfo = vitals.Players.FirstOrDefault(p => p.playerId == v.PlayerInfo.PlayerId);
+                    if (myInfo.state == VitalsState.Disconnected)
+                    {
+                        if (!v.IsDiscon)
+                        {
+                            v.SetDisconnected();
+                        }
+                    }
+                    else if (myInfo.state == VitalsState.Dead && Busker.buskerList.FindAll(x => x == v.PlayerInfo.PlayerId).Count <= 0)
+                    {
+                        if (!v.IsDead)
+                        {
+                            v.SetDead();
+                            v.Cardio.gameObject.SetActive(true);
+                        }
+                    }
+                    else
+                    {
+                        if (v.IsDiscon || v.IsDead)
+                        {
+                            v.IsDiscon = false;
+                            v.IsDead = false;
+                            v.SetAlive();
+                            v.Background.sprite = __instance.PanelPrefab.Background.sprite;
+                            v.Cardio.gameObject.SetActive(true);
+                        }
+                    }
+                }
+            }
+
+            static bool Prefix(VitalsMinigame __instance)
+            {
+                UpdateVitals(__instance);
+                return false;
+            }
+
             static void Postfix(VitalsMinigame __instance) {
+                // Restrict information for Busker
+                if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag && Busker.restrictInformation)
+                {
+                    __instance.SabText.gameObject.SetActive(true);
+                    __instance.SabText.text = "[ I N F O  R E S T R I C T E D ]";
+                    for (int k = 0; k < __instance.vitals.Length; k++)
+                    {
+                        VitalsPanel vitalsPanel = __instance.vitals[k];
+                        vitalsPanel.gameObject.SetActive(false);
+                    }
+                    return;
+                }
+
                 // Hacker show time since death
                 
                 if (Hacker.hacker != null && Hacker.hacker == CachedPlayer.LocalPlayer.PlayerControl && Hacker.hackerTimer > 0) {
                     for (int k = 0; k < __instance.vitals.Length; k++) {
                         VitalsPanel vitalsPanel = __instance.vitals[k];
-                        GameData.PlayerInfo player = vitalsPanel.PlayerInfo;
+                        NetworkedPlayerInfo player = vitalsPanel.PlayerInfo;
 
                         // Hacker update
                         if (vitalsPanel.IsDead) {
@@ -412,6 +485,7 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch]
     class AdminPanelPatch {
         static Dictionary<SystemTypes, List<Color>> players = new Dictionary<SystemTypes, System.Collections.Generic.List<Color>>();
+        static TMPro.TextMeshPro restrictInfo = null;
         [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
         class MapCountOverlayUpdatePatch {
             static bool Prefix(MapCountOverlay __instance) {
@@ -425,14 +499,34 @@ namespace TheOtherRoles.Patches {
                 players = new Dictionary<SystemTypes, List<Color>>();
                 bool commsActive = false;
                     foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks.GetFastEnumerator())
-                        if (task.TaskType == TaskTypes.FixComms) commsActive = true;       
+                        if (task.TaskType == TaskTypes.FixComms) commsActive = true;
 
+
+                // Restrict admin for Busker
+                if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.restrictInformation && !commsActive)
+                {
+                    if (restrictInfo == null)
+                    {
+                        restrictInfo = UnityEngine.Object.Instantiate(__instance.SabotageText, __instance.SabotageText.transform.parent);
+                        restrictInfo.text = "[ I N F O  R E S T R I C T E D ]";
+                    }
+                    if (Busker.pseudocideFlag)
+                    {
+                        __instance.BackgroundColor.SetColor(Palette.DisabledGrey);
+                        foreach (CounterArea ca in __instance.CountAreas) ca.UpdateCount(0);
+                        restrictInfo.gameObject.SetActive(true);
+                        return false;
+                    }
+                    else
+                        restrictInfo.gameObject.SetActive(false);
+                }
 
                 if (!__instance.isSab && commsActive)
                 {
                     __instance.isSab = true;
                     __instance.BackgroundColor.SetColor(Palette.DisabledGrey);
                     __instance.SabotageText.gameObject.SetActive(true);
+                    restrictInfo?.gameObject.SetActive(false);
                     return false;
                 }
                 if (__instance.isSab && !commsActive)
@@ -440,6 +534,7 @@ namespace TheOtherRoles.Patches {
                     __instance.isSab = false;
                     __instance.BackgroundColor.SetColor(Color.green);
                     __instance.SabotageText.gameObject.SetActive(false);
+                    restrictInfo?.gameObject.SetActive(false);
                 }
 
                 for (int i = 0; i < __instance.CountAreas.Length; i++)
@@ -464,7 +559,7 @@ namespace TheOtherRoles.Patches {
                                     num2++;
                                     DeadBody bodyComponent = collider2D.GetComponent<DeadBody>();
                                     if (bodyComponent) {
-                                        GameData.PlayerInfo playerInfo = GameData.Instance.GetPlayerById(bodyComponent.ParentId);
+                                        NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(bodyComponent.ParentId);
                                         if (playerInfo != null) {
                                             var color = Palette.PlayerColors[playerInfo.DefaultOutfit.ColorId];
                                             if (Hacker.onlyColorType)
@@ -641,6 +736,18 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.Update))]
         class SurveillanceMinigameUpdatePatch {
             public static bool Prefix(SurveillanceMinigame __instance) {
+                // Restrict Information
+                if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag && Busker.restrictInformation)
+                {
+                    for (int i = 0; i < __instance.SabText.Length; i++)
+                    {
+                        __instance.SabText[i].text = "[ I N F O  R E S T R I C T E D ]";
+                        __instance.SabText[i].gameObject.SetActive(true);
+                    }
+                    for (int i = 0; i < __instance.ViewPorts.Length; i++)
+                        __instance.ViewPorts[i].sharedMaterial = __instance.StaticMaterial;
+                }
+
                 // Update normal and securityGuard cameras
                 timer += Time.deltaTime;
                 int numberOfPages = Mathf.CeilToInt(MapUtilities.CachedShipStatus.AllCameras.Length / 4f);
@@ -682,6 +789,23 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.Update))]
         class PlanetSurveillanceMinigameUpdatePatch {
+            public static bool Prefix(PlanetSurveillanceMinigame __instance)
+            {
+                bool commsActive = PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(CachedPlayer.LocalPlayer.PlayerControl);
+                if (commsActive)
+                {
+                    __instance.SabText.gameObject.SetActive(true);
+                    __instance.ViewPort.sharedMaterial = __instance.StaticMaterial;
+                }
+                if (!commsActive && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag && Busker.restrictInformation)
+                {
+                    __instance.SabText.text = "[ I N F O  R E S T R I C T E D ]";
+                    __instance.SabText.gameObject.SetActive(true);
+                    __instance.ViewPort.sharedMaterial = __instance.StaticMaterial;
+                }
+                return false;
+            }
+
             public static void Postfix(PlanetSurveillanceMinigame __instance) {
                 if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
                     __instance.NextCamera(1);

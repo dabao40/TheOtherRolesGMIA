@@ -9,6 +9,7 @@ using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -28,7 +29,7 @@ namespace TheOtherRoles.Patches {
                 bottomLeft = new Vector3(xpos / 2, ypos/2, -61f);
 
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                    GameData.PlayerInfo data = p.Data;
+                    NetworkedPlayerInfo data = p.Data;
                     PoolablePlayer player = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
                     playerPrefab = __instance.PlayerPrefab;
                     p.SetPlayerMaterialColors(player.cosmetics.currentBodySprite.BodySprite);
@@ -86,6 +87,14 @@ namespace TheOtherRoles.Patches {
             if (CustomOptionHolder.activateProps.getBool())
             {
                 Props.placeProps();
+            }
+
+            if (AmongUsClient.Instance.AmHost)
+            {
+                MessageWriter roleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetRoleHistory, SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(roleWriter);
+                RPCProcedure.setRoleHistory();
+                GameStatistics.Event.GameStatistics.RpcRecordEvent(GameStatistics.EventVariation.GameStart, EventDetail.GameStart, null, 0);
             }
 
             if (CustomOptionHolder.randomGameStartPosition.getBool())
@@ -301,6 +310,10 @@ namespace TheOtherRoles.Patches {
                 oneWayShadow.gameObject.SetActive(false);
             }
 
+            HudManager.Instance.ShowVanillaKeyGuide();
+            GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
+            GameStatistics.MapScale = ShipStatus.Instance.MapScale;
+
             // Additional Vents
             AdditionalVents.AddAdditionalVents();
 
@@ -317,14 +330,7 @@ namespace TheOtherRoles.Patches {
                 Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
                 taskIdList.Shuffle();
                 var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
-                {
-                    if (Fox.fox != null && p == Fox.fox)
-                    {
-                        p.clearAllTasks();
-                        cpt.addTaskToPlayer(p.PlayerId);
-                    }
-                }
+                if (CachedPlayer.LocalPlayer.PlayerControl == Fox.fox) cpt.addTaskToPlayer(CachedPlayer.LocalPlayer.PlayerId);
             }
 
             EventUtility.gameStartsUpdate();
@@ -487,7 +493,6 @@ namespace TheOtherRoles.Patches {
                 }
             }
             public static bool Prefix(IntroCutscene __instance) {
-                if (!CustomOptionHolder.activateRoles.getBool()) return true;
                 seed = rnd.Next(5000);
                 FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(1f, new Action<float>((p) => {
                     SetRoleTexts(__instance);

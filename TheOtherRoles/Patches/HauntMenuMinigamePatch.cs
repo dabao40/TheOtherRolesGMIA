@@ -72,6 +72,8 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance) {
             bool isHideNSeek = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek;
+            if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && !(!Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead))
+                __instance.Hide();
             if (CachedPlayer.LocalPlayer.Data.IsDead && (CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool() || isHideNSeek)) {
                 // player has haunt button.
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data);

@@ -13,6 +13,7 @@ using TheOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -211,7 +212,8 @@ namespace TheOtherRoles.Patches {
             if (Detective.timer <= 0f) {
                 Detective.timer = Detective.footprintIntervall;
                 foreach (PlayerControl player in CachedPlayer.AllPlayers) {
-                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent && !((player == Ninja.ninja && Ninja.stealthed) || (player == Sprinter.sprinter && Sprinter.sprinting))) 
+                    if (player != null && player != CachedPlayer.LocalPlayer.PlayerControl && !player.Data.IsDead && !player.inVent && !((player == Ninja.ninja && Ninja.stealthed) || (player == Sprinter.sprinter && Sprinter.sprinting)
+                        || (player == Fox.fox && Fox.stealthed))) 
                     {
                         FootprintHolder.Instance.MakeFootprint(player);
                     }
@@ -413,6 +415,22 @@ namespace TheOtherRoles.Patches {
                     catch { }
                 }
             }
+
+            if (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer && Engineer.acTokenChallenge != null)
+            {
+                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+                {
+                    if (CachedPlayer.LocalPlayer.PlayerControl.inVent && !Engineer.acTokenChallenge.Value.inVent)
+                        Engineer.acTokenChallenge.Value.inVent = true;
+                    else if (!CachedPlayer.LocalPlayer.PlayerControl.inVent && Engineer.acTokenChallenge.Value.inVent)
+                        Engineer.acTokenChallenge.Value.inVent = false;
+                }
+                else
+                {
+                    if (Engineer.acTokenChallenge.Value.inVent && !Engineer.acTokenChallenge.Value.cleared)
+                        Engineer.acTokenChallenge.Value.cleared = true;
+                }
+            }
         }
 
         static void impostorSetTarget() {
@@ -448,6 +466,8 @@ namespace TheOtherRoles.Patches {
                 DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == Bait.bait.PlayerId)?.FirstOrDefault();
                 if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f)
                 {
+                    Bait.acTokenCommon ??= new("bait.common1");
+
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
                     Helpers.HandleUndertakerDropOnBodyReport();
                     Helpers.handleTrapperTrapOnBodyReport();
@@ -460,6 +480,8 @@ namespace TheOtherRoles.Patches {
                         int i = rnd.Next(0, candidates.Count);
                         reporter = candidates.Count > 0 ? candidates[i].PlayerId : deadPlayer.killerIfExisting.PlayerId;
                     }
+
+                    Bait.acTokenChallenge.Value.killerId = reporter;
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
                     writer.Write(reporter);
@@ -602,14 +624,6 @@ namespace TheOtherRoles.Patches {
             if ((Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0) setPlayerOutline(Teleporter.currentTarget, Teleporter.color);
         }
 
-
-        static void CatcherSetTarget()
-        {
-            if (Catcher.catcher == null || Catcher.catcher != CachedPlayer.LocalPlayer.PlayerControl) return;
-            Catcher.neartarget = setTarget();
-            setPlayerOutline(Catcher.neartarget,Catcher.color);
-        }
-
         public static void plagueDoctorUpdate()
         {
             if (MeetingHud.Instance != null)
@@ -653,7 +667,7 @@ namespace TheOtherRoles.Patches {
                     }
                     else
                     {
-                        // ãƒ‡ãƒ¼ã‚¿ãŒç„¡ã„å ´åˆã¯ä½œæˆã™ã‚‹
+                        // ¥Ç©`¥¿¤¬Ÿo¤¤ˆöºÏ¤Ï×÷³É¤¹¤ë
                         if (!PlagueDoctor.progress.ContainsKey(p.PlayerId))
                         {
                             PlagueDoctor.progress[p.PlayerId] = 0f;
@@ -686,7 +700,7 @@ namespace TheOtherRoles.Patches {
                             {
                                 PlagueDoctor.progress[target.PlayerId] += Time.fixedDeltaTime;
 
-                                // ä»–ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€²è¡ŒçŠ¶æ³ã‚’é€šçŸ¥ã™ã‚‹
+                                // Ëû¤Î¥¯¥é¥¤¥¢¥ó¥È¤ËßMĞĞ×´›r¤òÍ¨Öª¤¹¤ë
                                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, Hazel.SendOption.Reliable, -1);
                                 writer.Write(target.PlayerId);
                                 writer.Write(PlagueDoctor.progress[target.PlayerId]);
@@ -767,6 +781,16 @@ namespace TheOtherRoles.Patches {
                     } else {
                         if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
                             Tracker.arrow.Update();
+                    }
+
+                    if (Tracker.tracked.inVent && !Tracker.acTokenChallenge.Value.inVent)
+                    {
+                        Tracker.acTokenChallenge.Value.inVent = true;
+                        Tracker.acTokenChallenge.Value.ventTime = GameStatistics.currentTime;
+                    }
+                    else if (!Tracker.tracked.inVent && Tracker.acTokenChallenge.Value.inVent)
+                    {
+                        Tracker.acTokenChallenge.Value.inVent = false;
                     }
                 }
                 else if (Tracker.tracker.Data.IsDead)
@@ -871,7 +895,8 @@ namespace TheOtherRoles.Patches {
 
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
-                if ((Lawyer.lawyerKnowsRole && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && p == Lawyer.target) || (Akujo.knowsRoles && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && (p == Akujo.honmei || Akujo.keeps.Any(x => x.PlayerId == p.PlayerId))) || p == CachedPlayer.LocalPlayer.PlayerControl || CachedPlayer.LocalPlayer.Data.IsDead) {
+                if ((Lawyer.lawyerKnowsRole && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && p == Lawyer.target) || (Akujo.knowsRoles && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && (p == Akujo.honmei || Akujo.keeps.Any(x => x.PlayerId == p.PlayerId))) || p == CachedPlayer.LocalPlayer.PlayerControl || (CachedPlayer.LocalPlayer.Data.IsDead
+                    && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag))) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -1023,6 +1048,12 @@ namespace TheOtherRoles.Patches {
                 return;
             }
             if (numberOfTasks <= Snitch.taskCountForReveal) Snitch.isRevealed = true;
+
+            if (numberOfTasks == 0)
+            {
+                if (local == Snitch.snitch)
+                    Snitch.acTokenChallenge.Value.taskComplete = true;
+            }
         }
 
         static void bountyHunterUpdate() {
@@ -1146,7 +1177,7 @@ namespace TheOtherRoles.Patches {
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && Trap.hasTrappedPlayer() && !Trapper.meetingFlag)
                 {
-                    // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ã‚‹ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ•‘å‡ºã™ã‚‹
+                    // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤ë¥×¥ì¥¤¥ä©`¤ò¾È³ö¤¹¤ë
                     foreach (var trap in Trap.traps)
                     {
                         if (trap.Value.trap == null || !trap.Value.isActive) return;
@@ -1182,6 +1213,7 @@ namespace TheOtherRoles.Patches {
             {
                 foreach (var acce in Props.AccelTrap.accels)
                 {
+                    if (acce.accelTrap == null) return;
                     if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && acce.accelTrap.transform != null
                         && Vector3.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.position, acce.accelTrap.transform.position) < 0.25f &&
                         !CachedPlayer.LocalPlayer.PlayerControl.inVent)
@@ -1215,6 +1247,7 @@ namespace TheOtherRoles.Patches {
             {
                 foreach (var decel in Props.DecelTrap.decels)
                 {
+                    if (decel.decelTrap == null) return;
                     if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && decel.decelTrap.transform != null
                         && Vector3.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.position, decel.decelTrap.transform.position) < 0.6f &&
                         !CachedPlayer.LocalPlayer.PlayerControl.inVent && !decel.isTriggered)
@@ -1584,7 +1617,7 @@ namespace TheOtherRoles.Patches {
                     if (p.Data.IsDead) continue;
                     var fortuneTeller = CachedPlayer.LocalPlayer.PlayerControl;
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
-                    // éšœå®³ç‰©åˆ¤å®š
+                    // ÕÏº¦ÎïÅĞ¶¨
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
                     if (!anythingBetween && distance <= FortuneTeller.distance && FortuneTeller.progress[p.PlayerId] < FortuneTeller.duration)
                     {
@@ -1617,6 +1650,14 @@ namespace TheOtherRoles.Patches {
             Moriarty.arrowUpdate();
         }
 
+        static void noisemakerSetTarget()
+        {
+            if (Noisemaker.noisemaker == null || CachedPlayer.LocalPlayer.PlayerControl != Noisemaker.noisemaker) return;
+            Noisemaker.currentTarget = setTarget();
+            if (Noisemaker.target == null && Noisemaker.numSound > 0)
+                setPlayerOutline(Noisemaker.currentTarget, Noisemaker.color);
+        }
+
         public static void impostorArrowUpdate()
         {
             if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
@@ -1629,13 +1670,13 @@ namespace TheOtherRoles.Patches {
             }
             if (CachedPlayer.LocalPlayer.Data.Role.IsImpostor)
             {
-                // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
+                // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
                 FortuneTeller.updateTimer -= Time.fixedDeltaTime;
 
-                // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
+                // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
                 if (FortuneTeller.updateTimer <= 0.0f)
                 {
-                    // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
+                    // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                     foreach (Arrow arrow1 in FortuneTeller.arrows)
                     {
                         if (arrow1?.arrow != null)
@@ -1645,7 +1686,7 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-                    // Arrowä¸€è¦§
+                    // ArrowÒ»ÓE
                     FortuneTeller.arrows = new List<Arrow>();
 
                     if (FortuneTeller.fortuneTeller == null || !FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
@@ -1658,7 +1699,7 @@ namespace TheOtherRoles.Patches {
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
 
-                    // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
+                    // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
                     FortuneTeller.updateTimer = 1f;
                 }
                 else
@@ -1685,6 +1726,7 @@ namespace TheOtherRoles.Patches {
             if (playerCompleted == Swapper.rechargedTasks) {
                 Swapper.rechargedTasks += Swapper.rechargeTasksNumber;
                 Swapper.charges++;
+                Swapper.acTokenCommon ??= new("niceSwapper.common1");
             }
         }
 
@@ -1948,8 +1990,6 @@ namespace TheOtherRoles.Patches {
                 // Vampire
                 vampireSetTarget();
                 Garlic.UpdateAll();
-                //Catcher
-                CatcherSetTarget();
                 //Trap.Update();
                 // Eraser
                 eraserSetTarget();
@@ -2047,6 +2087,8 @@ namespace TheOtherRoles.Patches {
                 // Akujo
                 akujoSetTarget();
                 akujoUpdate();
+                // Noisemaker
+                noisemakerSetTarget();
                 //mimicAUpdate();
                 // Witch                
                 witchSetTarget();
@@ -2114,7 +2156,7 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(CachedPlayer.LocalPlayer.PlayerControl.CmdReportDeadBody))]
     class BodyReportPatch
     {
-        static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo target)
+        static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] NetworkedPlayerInfo target)
         {
             if (Moriarty.brainwashed.FindAll(x => x.PlayerId == __instance.PlayerId).Count > 0)
             {
@@ -2123,7 +2165,7 @@ namespace TheOtherRoles.Patches {
             return true;
         }
 
-        static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo target)
+        static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]NetworkedPlayerInfo target)
         {
             // Medic or Detective report
             bool isMedicReport = Medic.medic != null && Medic.medic == CachedPlayer.LocalPlayer.PlayerControl && __instance.PlayerId == Medic.medic.PlayerId;
@@ -2139,8 +2181,11 @@ namespace TheOtherRoles.Patches {
                     if (isMedicReport) {
                         msg = string.Format(ModTranslation.getString("medicReport"), Math.Round(timeSinceDeath / 1000));
                     } else if (isDetectiveReport) {
+                        Detective.acTokenChallenge.Value.reported = true;
+                        Detective.acTokenChallenge.Value.killerId = deadPlayer.killerIfExisting.PlayerId;
                         if (timeSinceDeath < Detective.reportNameDuration * 1000) {
                             msg = string.Format(ModTranslation.getString("detectiveReportName"), deadPlayer.killerIfExisting.Data.PlayerName);
+                            Detective.acTokenCommon.Value = true;
                         } else if (timeSinceDeath < Detective.reportColorDuration * 1000) {
                             var typeOfColor = Helpers.isLighterColor(deadPlayer.killerIfExisting.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("detectiveColorLight") : ModTranslation.getString("detectiveColorDark");
                             msg = string.Format(ModTranslation.getString("detectiveReportColor"), typeOfColor);
@@ -2153,7 +2198,7 @@ namespace TheOtherRoles.Patches {
                     {   
                         if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
                         {
-                            FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer.PlayerControl, msg);
+                            FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer.PlayerControl, msg, false);
 
                             // Ghost Info
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
@@ -2204,12 +2249,18 @@ namespace TheOtherRoles.Patches {
             // First kill (set before lover suicide)
             if (TORMapOptions.firstKillName == "") TORMapOptions.firstKillName = target.Data.PlayerName;
 
+            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, __instance.PlayerId, 1 << target.PlayerId) { RelatedTag = EventDetail.Kill});
+
             // Lover suicide trigger on murder
             if ((Lovers.lover1 != null && target == Lovers.lover1) || (Lovers.lover2 != null && target == Lovers.lover2)) {
                 PlayerControl otherLover = target == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
                 if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
                     otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+                if (otherLover == Busker.busker && Lovers.bothDie && Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker) // If not pseudociding then the Busker is already killed
+                {
+                    Busker.dieBusker(true);
                 }
             }
 
@@ -2221,6 +2272,10 @@ namespace TheOtherRoles.Patches {
                 {
                     otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                }
+                if (otherLover == Busker.busker && Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker)
+                {
+                    Busker.dieBusker(true);
                 }
                 if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
                 {
@@ -2246,6 +2301,11 @@ namespace TheOtherRoles.Patches {
             // Seer show flash and add dead player position
             if (Seer.seer != null && (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer || Helpers.shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1) {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message : ModTranslation.getString("seerInfo"));
+                if (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer)
+                {
+                    Seer.acTokenCommon ??= new("seer.common1");
+                    Seer.acTokenChallenge.Value.flash++;
+                }
             }
             if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
 
@@ -2269,6 +2329,57 @@ namespace TheOtherRoles.Patches {
                 Ninja.OnKill(target);
             }
 
+            if (Sheriff.sheriff != null && CachedPlayer.LocalPlayer.PlayerControl == Sheriff.sheriff && __instance == Sheriff.sheriff)
+            {
+                Sheriff.acTokenChallenge.Value.isTriggeredFalse = false;
+
+                if (Sheriff.acTokenChallenge.Value.cleared)
+                {
+                    foreach (var dp in deadPlayers)
+                    {
+                        if (dp.player == null || !Helpers.isEvil(dp.player)) continue;
+                        if (dp.killerIfExisting != Sheriff.sheriff)
+                        {
+                            Sheriff.acTokenChallenge.Value.cleared = false;
+                            break;
+                        }
+                    }
+
+                    foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                    {
+                        if (p == null || !Helpers.isEvil(p)) continue;
+                        if (!p.Data.IsDead)
+                        {
+                            Sheriff.acTokenChallenge.Value.isTriggeredFalse = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (TaskMaster.taskMaster != null && CachedPlayer.LocalPlayer.PlayerControl == TaskMaster.taskMaster && target == TaskMaster.taskMaster)
+            {
+                var (taskComplete, total) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data);
+                if (taskComplete == 0 && total > 0)
+                    TaskMaster.acTokenSecret ??= new("taskMaster.another1");
+            }
+
+            if (Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter)
+            {
+                var teleportT = target.PlayerId == Teleporter.acTokenChallenge.Value.target1 ? Teleporter.acTokenChallenge.Value.target2 : Teleporter.acTokenChallenge.Value.target1;
+                PlayerControl teleportTarget = null;
+                if (teleportT != byte.MaxValue) teleportTarget = Helpers.playerById(teleportT);
+                if (teleportTarget != null)
+                {
+                    if (target.PlayerId != teleportT && DateTime.UtcNow.Subtract(Teleporter.acTokenChallenge.Value.swapTime).TotalSeconds <= 4f)
+                    {
+                        if (Teleporter.acTokenChallenge.Value.target2 != byte.MaxValue && (teleportTarget == Snitch.snitch || teleportTarget == Mayor.mayor || teleportTarget == Guesser.niceGuesser || teleportTarget == FortuneTeller.fortuneTeller
+                            || teleportTarget == Sheriff.sheriff))
+                            Teleporter.acTokenChallenge.Value.cleared = true;
+                    }
+                }
+            }
+
             // Serial Killer set suicide timer
             if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller && target != SerialKiller.serialKiller)
             {
@@ -2286,20 +2397,24 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
             }
 
+            // Triggers Show, and if disabled, goes to HauntMenuMinigamePatch
+            if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && target == Busker.busker)
+                FastDestroyableSingleton<HudManager>.Instance.AbilityButton.Show();
+
             // Trapper peforms kills
             if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && __instance == Trapper.trapper)
             {
-                if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ã‚‹å¯¾è±¡ã‚’ã‚­ãƒ«ã—ãŸå ´åˆã®ãƒœãƒ¼ãƒŠã‚¹
+                if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤ëŒÏó¤ò¥­¥ë¤·¤¿ˆöºÏ¤Î¥Ü©`¥Ê¥¹
                 {
                     Trapper.trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - Trapper.bonusTime;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown - Trapper.bonusTime;
                 }
-                else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // ãƒˆãƒ©ãƒƒãƒ—ã‚­ãƒ«ã—ãŸå ´åˆã®ãƒšãƒŠãƒ«ãƒ†ã‚£
+                else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // ¥È¥é¥Ã¥×¥­¥ë¤·¤¿ˆöºÏ¤Î¥Ú¥Ê¥ë¥Æ¥£
                 {
                     Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown;
                 }
-                else // ãƒˆãƒ©ãƒƒãƒ—ã«ã‹ã‹ã£ã¦ã„ãªã„å¯¾è±¡ã‚’é€šå¸¸ã‚­ãƒ«ã—ãŸå ´åˆã¯ãƒšãƒŠãƒ«ãƒ†ã‚£ãƒ¼ã‚’å—ã‘ã‚‹
+                else // ¥È¥é¥Ã¥×¤Ë¤«¤«¤Ã¤Æ¤¤¤Ê¤¤ŒÏó¤òÍ¨³£¥­¥ë¤·¤¿ˆöºÏ¤Ï¥Ú¥Ê¥ë¥Æ¥£©`¤òÊÜ¤±¤ë
                 {
                     Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
@@ -2360,6 +2475,10 @@ namespace TheOtherRoles.Patches {
                     akujoPartner.MurderPlayer(akujoPartner, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
+                if (akujoPartner == Busker.busker && Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker)
+                {
+                    Busker.dieBusker(true);
+                }
             }
 
             // Evil Tracker see flash
@@ -2391,6 +2510,26 @@ namespace TheOtherRoles.Patches {
             }
 
             if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
+
+            if (__instance.Data.Role.IsImpostor && Spy.spy != null && CachedPlayer.LocalPlayer.PlayerControl == Spy.spy)
+            {
+                if (target == Spy.spy) Spy.acTokenAnother ??= new("spy.another1");
+                else
+                {
+                    if (!Helpers.AnyNonTriggersBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), target.GetTruePosition(), out var vec)
+                        && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerControl.PlayerId)) * 0.75f)
+                        Spy.acTokenChallenge ??= new("spy.challenge");
+                }
+            }
+
+            if (Noisemaker.noisemaker != null && Noisemaker.target != null && Noisemaker.target == target)
+            {
+                if ((Noisemaker.soundTarget == Noisemaker.SoundTarget.Noisemaker && CachedPlayer.LocalPlayer.PlayerControl == Noisemaker.noisemaker) ||
+                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Crewmates && !Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl) && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) ||
+                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Everyone))
+                { Helpers.InstantiateNoisemakerArrow(target.transform.localPosition, true).arrow.SetDuration(Noisemaker.duration); }
+                Noisemaker.target = null;
+            }
 
             // Mimic(Killer) morph into victim
             if (MimicK.mimicK != null && __instance == MimicK.mimicK)
@@ -2436,10 +2575,19 @@ namespace TheOtherRoles.Patches {
                 Ninja.setOpacity(Ninja.ninja, 1.0f);
             }
 
-            if (Sprinter.sprinter != null && target == Sprinter.sprinter)
+            if (Sprinter.sprinter != null)
             {
-                Sprinter.sprinting = false;
-                Sprinter.setOpacity(Sprinter.sprinter, 1.0f);
+                if (target == Sprinter.sprinter)
+                {
+                    Sprinter.sprinting = false;
+                    Sprinter.setOpacity(Sprinter.sprinter, 1.0f);
+                }
+                else if (CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter && Sprinter.sprinting)
+                {
+                    if (!Helpers.AnyNonTriggersBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), target.GetTruePosition(), out var vec) &&
+                    vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerControl.PlayerId)) * 0.75f)
+                        Sprinter.acTokenChallenge ??= new("sprinter.challenge");
+                }
             }
 
             // Mimic(Assistant) show flash
@@ -2537,6 +2685,29 @@ namespace TheOtherRoles.Patches {
                     MapBehaviourPatch.herePoints.Remove(a.Key);
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Revive))]
+    class RevivePatch
+    {
+        public static bool Prefix(PlayerControl __instance)
+        {
+            __instance.Data.IsDead = false;
+            __instance.gameObject.layer = LayerMask.NameToLayer("Players");
+            __instance.MyPhysics.ResetMoveState(true);
+            __instance.clickKillCollider.enabled = true;
+            __instance.cosmetics.SetPetSource(__instance);
+            __instance.cosmetics.SetNameMask(true);
+            if (__instance.AmOwner)
+            {
+                DestroyableSingleton<HudManager>.Instance.ShadowQuad.gameObject.SetActive(true);
+                DestroyableSingleton<HudManager>.Instance.SetHudActive(true);
+                DestroyableSingleton<HudManager>.Instance.Chat.ForceClosed();
+                DestroyableSingleton<HudManager>.Instance.Chat.SetVisible(false);
+            }
+
+            return false;
         }
     }
 
@@ -2891,6 +3062,10 @@ namespace TheOtherRoles.Patches {
         public static void Prefix(GameData __instance, PlayerControl player, DisconnectReasons reason) {
             if (MeetingHud.Instance) {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, player.PlayerId);
+            }
+            if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && GameStatistics.roleHistory != null) {
+                GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });
+                if (CachedPlayer.LocalPlayer.PlayerControl == player) Props.clearProps();
             }
         }
     }

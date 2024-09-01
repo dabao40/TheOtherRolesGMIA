@@ -32,6 +32,7 @@ namespace TheOtherRoles.Patches {
                 if (CachedPlayer.LocalPlayer != null) {
                     Helpers.shareGameVersion();
                 }
+                GameStartManagerUpdatePatch.sendGamemode = true;
             }
         }
 
@@ -57,6 +58,7 @@ namespace TheOtherRoles.Patches {
             private static bool update = false;
             private static string currentText = "";
             private static GameObject copiedStartButton;
+            public static bool sendGamemode = true;
 
             public static void Prefix(GameStartManager __instance) {
                 if (!GameData.Instance ) return; // No instance
@@ -76,9 +78,6 @@ namespace TheOtherRoles.Patches {
                 string message = "";
                 foreach (InnerNet.ClientData client in AmongUsClient.Instance.allClients.ToArray()) {
                     if (client.Character == null) continue;
-                    var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
-                    if (dummyComponent != null && dummyComponent.enabled)
-                        continue;
                     else if (!playerVersions.ContainsKey(client.Id))  {
                         versionMismatch = true;
                         message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorNotInstalled"), $"{client.Character.Data.PlayerName}")}\n</color>";
@@ -101,12 +100,18 @@ namespace TheOtherRoles.Patches {
                 // Display message to the host
                 if (AmongUsClient.Instance.AmHost) {
                     if (versionMismatch) {
-                        __instance.StartButton.color = __instance.startLabelText.color = Palette.DisabledClear;
                         __instance.GameStartText.text = message;
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 5;
+                        __instance.GameStartText.transform.localScale = new Vector3(2f, 2f, 1f);
+                        __instance.GameStartTextParent.SetActive(true);
                     } else {
-                        __instance.StartButton.color = __instance.startLabelText.color = ((__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor : Palette.DisabledClear);
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
+                        __instance.GameStartText.transform.localPosition = Vector3.zero;
+                        __instance.GameStartText.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+                        if (!__instance.GameStartText.text.Contains(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")))
+                        {
+                            __instance.GameStartText.text = String.Empty;
+                            __instance.GameStartTextParent.SetActive(false);
+                        }
                     }
 
                     if (__instance.startState != GameStartManager.StartingStates.Countdown)
@@ -121,10 +126,9 @@ namespace TheOtherRoles.Patches {
                         // Activate Stop-Button
                         copiedStartButton = GameObject.Instantiate(__instance.StartButton.gameObject, __instance.StartButton.gameObject.transform.parent);
                         copiedStartButton.transform.localPosition = __instance.StartButton.transform.localPosition;
-                        copiedStartButton.GetComponent<SpriteRenderer>().sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.StopClean.png", 180f);
                         copiedStartButton.SetActive(true);
                         var startButtonText = copiedStartButton.GetComponentInChildren<TMPro.TextMeshPro>();
-                        startButtonText.text = ModTranslation.getString("stopGameStartText");
+                        startButtonText.text = "";
                         startButtonText.fontSize *= 0.8f;
                         startButtonText.fontSizeMax = startButtonText.fontSize;
                         startButtonText.gameObject.transform.localPosition = Vector3.zero;
@@ -138,12 +142,9 @@ namespace TheOtherRoles.Patches {
                         }
                         startButtonPassiveButton.OnClick.AddListener((Action)(() => StopStartFunc()));
                         __instance.StartCoroutine(Effects.Lerp(.1f, new System.Action<float>((p) => {
-                            startButtonText.text = ModTranslation.getString("stopGameStartText");
+                            startButtonText.text = "";
                         })));
                     }
-
-                    if (__instance.startState == GameStartManager.StartingStates.Countdown)
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 0.6f;
                 }
 
                 // Client update with handshake infos
@@ -157,14 +158,20 @@ namespace TheOtherRoles.Patches {
                         }
 
                         __instance.GameStartText.text = $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorHostNoVersion"), Math.Round(10 - kickingTimer))}</color>";
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 5;
+                        __instance.GameStartText.transform.localScale = new Vector3(2f, 2f, 1f);
+                        __instance.GameStartTextParent.SetActive(true);
                     } else if (versionMismatch) {
                         __instance.GameStartText.text = $"<color=#FF0000FF>{ModTranslation.getString("errorDifferentVersion")}\n</color>" + message;
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 5;
+                        __instance.GameStartText.transform.localScale = new Vector3(2f, 2f, 1f);
+                        __instance.GameStartTextParent.SetActive(true);
                     } else {
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
-                        if (!__instance.GameStartText.text.StartsWith(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", ""))) {
+                        __instance.GameStartText.transform.localPosition = Vector3.zero;
+                        __instance.GameStartText.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+                        if (!__instance.GameStartText.text.Contains(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", ""))) {
                             __instance.GameStartText.text = String.Empty;
+                            __instance.GameStartTextParent.SetActive(false);
                         }
                         /*else {
                             __instance.GameStartText.text = string.Format(ModTranslation.getString("startingTimer"), (int)startingTimer + 1);
@@ -175,19 +182,18 @@ namespace TheOtherRoles.Patches {
                         }*/
                     }
 
-                    if (!__instance.GameStartText.text.StartsWith(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")) || !CustomOptionHolder.anyPlayerCanStopStart.getBool())
+                    if (!__instance.GameStartText.text.Contains(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")) || !CustomOptionHolder.anyPlayerCanStopStart.getBool())
                         copiedStartButton?.Destroy();
-                    if (CustomOptionHolder.anyPlayerCanStopStart.getBool() && copiedStartButton == null && __instance.GameStartText.text.StartsWith(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")))
+                    if (CustomOptionHolder.anyPlayerCanStopStart.getBool() && copiedStartButton == null && __instance.GameStartText.text.Contains(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")))
                     {
 
                         // Activate Stop-Button
                         copiedStartButton = GameObject.Instantiate(__instance.StartButton.gameObject, __instance.StartButton.gameObject.transform.parent);
                         copiedStartButton.transform.localPosition = __instance.StartButton.transform.localPosition;
-                        copiedStartButton.GetComponent<SpriteRenderer>().sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.StopClean.png", 180f);
                         copiedStartButton.SetActive(true);
                         var startButtonText = copiedStartButton.GetComponentInChildren<TMPro.TextMeshPro>();
-                        startButtonText.text = ModTranslation.getString("stopGameStartText");
-                        startButtonText.fontSize *= AmongUs.Data.DataManager.Settings.Language.CurrentLanguage == SupportedLangs.English ? 0.8f : 0.62f;
+                        startButtonText.text = "";
+                        startButtonText.fontSize *= 0.8f;
                         startButtonText.fontSizeMax = startButtonText.fontSize;
                         startButtonText.gameObject.transform.localPosition = Vector3.zero;
                         PassiveButton startButtonPassiveButton = copiedStartButton.GetComponent<PassiveButton>();
@@ -203,12 +209,10 @@ namespace TheOtherRoles.Patches {
                         }
                         startButtonPassiveButton.OnClick.AddListener((Action)(() => StopStartFunc()));
                         __instance.StartCoroutine(Effects.Lerp(.1f, new System.Action<float>((p) => {
-                            startButtonText.text = ModTranslation.getString("stopGameStartText");
+                            startButtonText.text = "";
                         })));
 
                     }
-                    if (__instance.GameStartText.text.StartsWith(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")) && CustomOptionHolder.anyPlayerCanStopStart.getBool())
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 0.6f;
                 }
 
                 // Start Timer
@@ -216,7 +220,7 @@ namespace TheOtherRoles.Patches {
                     startingTimer -= Time.deltaTime;
                 }
                 // Lobby timer
-                if (!GameData.Instance) return; // No instance
+                if (!GameData.Instance || !__instance.PlayerCounter) return; // No instance
 
                 if (update) currentText = __instance.PlayerCounter.text;
 
@@ -225,14 +229,14 @@ namespace TheOtherRoles.Patches {
                 int seconds = (int)timer % 60;
                 string suffix = $" ({minutes:00}:{seconds:00})";
 
-                __instance.PlayerCounter.text = currentText + suffix;
-                __instance.PlayerCounter.autoSizeTextContainer = true;
+                if (!AmongUsClient.Instance) return;
 
-                if (AmongUsClient.Instance.AmHost) {
+                if (AmongUsClient.Instance.AmHost && sendGamemode && CachedPlayer.LocalPlayer != null) {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGamemode, Hazel.SendOption.Reliable, -1);
                     writer.Write((byte) TORMapOptions.gameMode);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.shareGamemode((byte) TORMapOptions.gameMode);
+                    sendGamemode = false;
                 }
             }
         }

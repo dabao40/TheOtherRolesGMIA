@@ -12,13 +12,16 @@ using UnityEngine;
 using Innersloth.Assets;
 using Reactor.Utilities;
 using AmongUs.QuickChat;
+using Epic.OnlineServices.Presence;
+using TheOtherRoles.Modules;
+using Il2CppSystem.Reflection;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
     class MeetingHudPatch {
         static bool[] selections;
         static SpriteRenderer[] renderers;
-        private static GameData.PlayerInfo target = null;
+        private static NetworkedPlayerInfo target = null;
         private const float scale = 0.65f;
         private static TMPro.TextMeshPro meetingExtraButtonText;
         private static PassiveButton[] swapperButtonList;
@@ -47,6 +50,10 @@ namespace TheOtherRoles.Patches {
                     if (Helpers.playerById((byte)playerState.TargetPlayerId) == BomberB.bomberB && BomberA.bomberA != null && BomberA.hasOneVote && !BomberA.bomberA.Data.IsDead) continue;
                     var amMayorEnabled = Mayor.mayor != null && Mayor.mayor.PlayerId == playerState.TargetPlayerId &&
                                          Mayor.voteTwice;
+                    if (amMayorEnabled)
+                        Mayor.unlockAch(playerState.VotedFor);
+                    if (Detective.detective != null && Detective.detective.PlayerId == playerState.TargetPlayerId)
+                        Detective.unlockAch(playerState.VotedFor);
                     var voteCount = amMayorEnabled ? 2 : 1;
                     votes[playerState.VotedFor] =
                         !votes.TryGetValue(playerState.VotedFor, out var num) ? voteCount : num + voteCount;
@@ -86,10 +93,10 @@ namespace TheOtherRoles.Patches {
 			        Dictionary<byte, int> self = CalculateVotes(__instance);
                     bool tie;
 			        KeyValuePair<byte, int> max = self.MaxPair(out tie);
-                    GameData.PlayerInfo exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == max.Key && !v.IsDead);
+                    NetworkedPlayerInfo exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == max.Key && !v.IsDead);
 
                     // TieBreaker 
-                    List<GameData.PlayerInfo> potentialExiled = new List<GameData.PlayerInfo>();
+                    List<NetworkedPlayerInfo> potentialExiled = new List<NetworkedPlayerInfo>();
                     bool skipIsTie = false;
                     if (self.Count > 0) {
                         Tiebreaker.isTiebreak = false;
@@ -155,7 +162,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
         class MeetingHudBloopAVoteIconPatch {
-            public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)]GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)]int index, [HarmonyArgument(2)]Transform parent) {
+            public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)]NetworkedPlayerInfo voterPlayer, [HarmonyArgument(1)]int index, [HarmonyArgument(2)]Transform parent) {
                 var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
                 var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
                                      (CachedPlayer.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) ||
@@ -230,7 +237,7 @@ namespace TheOtherRoles.Patches {
                     bool mayorFirstVoteDisplayed = false;
                     for (int j = 0; j < states.Length; j++) {
                         MeetingHud.VoterState voterState = states[j];
-                        GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
+                        NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
                         if (playerById == null) 
                         {
                             Debug.LogError(string.Format("Couldn't find player info for voter: {0}", voterState.VoterId));
@@ -257,7 +264,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
         class MeetingHudVotingCompletedPatch {
-            static void Postfix(MeetingHud __instance, [HarmonyArgument(0)]byte[] states, [HarmonyArgument(1)]GameData.PlayerInfo exiled, [HarmonyArgument(2)]bool tie)
+            static void Postfix(MeetingHud __instance, [HarmonyArgument(0)]byte[] states, [HarmonyArgument(1)]NetworkedPlayerInfo exiled, [HarmonyArgument(2)]bool tie)
             {
                 // Reset swapper values
                 Swapper.playerId1 = Byte.MaxValue;
@@ -276,6 +283,12 @@ namespace TheOtherRoles.Patches {
                     
                     // Changed this: The Lawyer doesn't die if the target was ejected
                     Pursuer.notAckedExiled = (Pursuer.pursuer != null && Pursuer.pursuer.PlayerId == exiled.PlayerId);  //|| (Lawyer.lawyer != null && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId && Lawyer.target != Jester.jester); // && !Lawyer.isProsecutor
+                }
+
+                if (Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor) { 
+                    if (Mayor.acTokenDoubleVote != null) {
+                        Mayor.acTokenDoubleVote.Value.cleared |= Mayor.acTokenDoubleVote.Value.doubleVote;
+                    }
                 }
 
                 // Yasuna
@@ -357,6 +370,8 @@ namespace TheOtherRoles.Patches {
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
+                Swapper.acTokenChallenge.Value.swapped1 = firstPlayer.TargetPlayerId;
+                Swapper.acTokenChallenge.Value.swapped2 = secondPlayer.TargetPlayerId;
                 meetingExtraButtonLabel.text = Helpers.cs(Color.green, ModTranslation.getString("swapperSwapping"));
                 Swapper.charges--;
                 meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
@@ -473,7 +488,7 @@ namespace TheOtherRoles.Patches {
                 if (roleData.neutralSettings.ContainsKey((byte)roleInfo.roleId) && roleData.neutralSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.impSettings.ContainsKey((byte)roleInfo.roleId) && roleData.impSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId] == 0) continue;
-                else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && CustomOptionHolder.mafiaSpawnRate.getSelection() == 0) continue;
+                else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && (CustomOptionHolder.mafiaSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 3)) continue;
                 else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.jackalCanCreateSidekick.getBool() || CustomOptionHolder.jackalSpawnRate.getSelection() == 0)) continue;
                 else if (new List<RoleId>() { RoleId.MimicA, RoleId.MimicK }.Contains(roleInfo.roleId) && CustomOptionHolder.mimicSpawnRate.getSelection() == 0) continue;
                 else if (roleInfo.roleId == RoleId.BomberA && CustomOptionHolder.bomberSpawnRate.getSelection() == 0) continue;
@@ -574,6 +589,7 @@ namespace TheOtherRoles.Patches {
             writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
             writer.Write(targetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            if (Yasuna.yasunaAcTokenChallenge != null) Yasuna.yasunaAcTokenChallenge.Value.targetId = targetId;
 
             __instance.SkipVoteButton.gameObject.SetActive(false);
             for (int i = 0; i < __instance.playerStates.Length; i++)
@@ -904,7 +920,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch {
-            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) {
+            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]NetworkedPlayerInfo meetingTarget) {
                 RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
                 byte roomId = Byte.MinValue;
                 if (roomTracker != null && roomTracker.LastRoom != null) {
@@ -947,6 +963,44 @@ namespace TheOtherRoles.Patches {
                 BomberA.bombTarget = null;
                 BomberB.bombTarget = null;
 
+                TranslatableTag tag = meetingTarget == null ? EventDetail.EmergencyButton : EventDetail.Report;
+                if (meetingTarget != null)
+                {
+                    var player = Helpers.playerById(meetingTarget.PlayerId);
+                    if (Bait.bait != null && player == Bait.bait && Bait.reportDelay <= 0f)
+                        tag = EventDetail.BaitReport;
+                }
+                GameStatistics.Event.GameStatistics.RecordEvent(new GameStatistics.Event(
+            meetingTarget == null ? GameStatistics.EventVariation.EmergencyButton : GameStatistics.EventVariation.Report, __instance.PlayerId,
+                meetingTarget == null ? 0 : (1 << meetingTarget.PlayerId)) { RelatedTag = tag });
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor) {
+                    if (Mayor.acTokenDoubleVote != null) {
+                        Mayor.acTokenDoubleVote.Value.doubleVote = false;
+                    }
+                    if (Mayor.acTokenChallenge != null) {
+                        Mayor.acTokenChallenge.Value.doubleVote = false;
+                    }
+                }
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Swapper.swapper)
+                {
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                    {
+                        Swapper.acTokenChallenge.Value.swapped1 = byte.MaxValue;
+                        Swapper.acTokenChallenge.Value.swapped2 = byte.MaxValue;
+                    }
+                }
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer)
+                {
+                    Seer.acTokenChallenge.Value.cleared |= Seer.acTokenChallenge.Value.flash >= 5;
+                    Seer.acTokenChallenge.Value.flash = 0;
+                }
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Snitch.snitch)
+                    Snitch.acTokenChallenge.Value.cleared |= Snitch.acTokenChallenge.Value.taskComplete && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
                 PlagueDoctor.meetingFlag = true;
@@ -954,6 +1008,14 @@ namespace TheOtherRoles.Patches {
                 // Reset the victim for Mimic(Killer)
                 MimicK.victim = null;
                 MimicA.isMorph = false;
+
+                if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker)
+                {
+                    if (Busker.pseudocideFlag)
+                        Busker.dieBusker();
+                    else
+                        Busker.acTokenChallenge.Value.cleared |= DateTime.UtcNow.Subtract(Busker.acTokenChallenge.Value.pseudocide).TotalSeconds <= 3f && __instance != Busker.busker;
+                }
 
                 // Blackmail target
                 if (Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)
@@ -970,7 +1032,7 @@ namespace TheOtherRoles.Patches {
                             msg += Portalmaker.logShowsTime ? string.Format(ModTranslation.getString("portalmakerLogTime"), (int)timeBeforeMeeting) : "";
                             msg = msg + string.Format(ModTranslation.getString("portalmakerLogName"), entry.name);
                         }
-                        FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}");
+                        FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}", false);
                     }
                 }
 
@@ -1025,13 +1087,13 @@ namespace TheOtherRoles.Patches {
                                     }
                                     output += "- " + string.Format(ModTranslation.getString("snitchLastSeen"), RoleInfo.GetRolesString(p, false, false, true), roomName) + "\n";
                                 }
-                                FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Snitch.snitch, $"{output}");
+                                FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Snitch.snitch, $"{output}", false);
                             }
                         })));
                     }
                 }
 
-                if (CachedPlayer.LocalPlayer.Data.IsDead && output != "") FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer, $"{output}");
+                if (CachedPlayer.LocalPlayer.Data.IsDead && output != "") FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer, $"{output}", false);
 
                 //Trapper.playersOnMap = new List<PlayerControl>();
                 Snitch.playerRoomMap = new Dictionary<byte, byte>();

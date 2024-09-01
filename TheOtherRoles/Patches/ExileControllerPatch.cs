@@ -8,13 +8,15 @@ using System;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
+using Epic.OnlineServices.Connect;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
     [HarmonyPriority(Priority.First)]
     class ExileControllerBeginPatch {
-        public static GameData.PlayerInfo lastExiled;
-        public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref GameData.PlayerInfo exiled, [HarmonyArgument(1)]bool tie) {
+        public static NetworkedPlayerInfo lastExiled;
+        public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref NetworkedPlayerInfo exiled, [HarmonyArgument(1)]bool tie) {
             lastExiled = exiled;
 
             // Medic shield
@@ -181,7 +183,12 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        static void WrapUpPostfix(GameData.PlayerInfo exiled) {
+        static void WrapUpPostfix(NetworkedPlayerInfo exiled)
+        {
+            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.MeetingEnd, null, 0) { RelatedTag = EventDetail.MeetingEnd });
+            if (exiled != null)
+                GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Exile, null, 1 << exiled.PlayerId) { RelatedTag = EventDetail.Exiled });
+            
             // Prosecutor win condition
             /*if (exiled != null && Lawyer.lawyer != null && Lawyer.target != null && Lawyer.isProsecutor && Lawyer.target.PlayerId == exiled.PlayerId && !Lawyer.lawyer.Data.IsDead)
                 Lawyer.triggerProsecutorWin = true;*/
@@ -208,6 +215,63 @@ namespace TheOtherRoles.Patches {
             // Mimic(Assistant) and Mimic(Killer) reset outfit
             if (MimicA.mimicA != null) MimicA.mimicA.setDefaultLook();
             if (MimicK.mimicK != null) MimicK.mimicK.setDefaultLook();
+
+            if (Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor && exiled != null)
+            {
+                Mayor.acTokenChallenge.Value.cleared |= Mayor.acTokenChallenge.Value.votedFor == exiled.PlayerId && Mayor.acTokenChallenge.Value.doubleVote &&
+                    ((Helpers.isEvil(exiled.Object) && Jester.jester != exiled.Object) || Madmate.madmate.Any(x => x.PlayerId == exiled.PlayerId)
+                || CreatedMadmate.createdMadmate == exiled.Object);
+            }
+
+            if (Shifter.niceShifterAcTokenChallenge != null && CachedPlayer.LocalPlayer.PlayerControl.PlayerId == Shifter.niceShifterAcTokenChallenge.Value.oldShifterId && !Shifter.isNeutral &&
+                exiled != null)
+            {
+                Shifter.niceShifterAcTokenChallenge.Value.cleared |= Shifter.niceShifterAcTokenChallenge.Value.shiftId == exiled.PlayerId;
+            }
+
+            if (Bait.bait != null && Bait.bait.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Bait.bait && exiled != null)
+            {
+                Bait.acTokenChallenge.Value.cleared |= Bait.acTokenChallenge.Value.killerId == exiled.PlayerId;
+            }
+
+            if (Detective.detective != null && !Detective.detective.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Detective.detective)
+            {
+                if (exiled != null)
+                    Detective.acTokenChallenge.Value.cleared |= Detective.acTokenChallenge.Value.reported && Detective.acTokenChallenge.Value.votedFor == exiled.PlayerId;
+                Detective.acTokenChallenge.Value.reported = false;
+                Detective.acTokenChallenge.Value.killerId = byte.MaxValue;
+            }
+
+            if (Medic.medic != null && CachedPlayer.LocalPlayer.PlayerControl == Medic.medic)
+            {
+                if (exiled != null)
+                    Medic.acTokenChallenge.Value.cleared |= Medic.acTokenChallenge.Value.killerId == exiled.PlayerId;
+                Medic.acTokenChallenge.Value.killerId = byte.MaxValue;
+            }
+
+            if (Swapper.swapper != null && CachedPlayer.LocalPlayer.PlayerControl == Swapper.swapper && exiled != null)
+            {
+                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                    Swapper.acTokenChallenge.Value.cleared |= (Swapper.acTokenChallenge.Value.swapped1 == exiled.PlayerId || Swapper.acTokenChallenge.Value.swapped2 == exiled.PlayerId)
+                        && exiled.Object.Data.Role.IsImpostor;
+            }
+
+            if (Yasuna.yasuna != null && CachedPlayer.LocalPlayer.PlayerControl == Yasuna.yasuna && exiled != null)
+            {
+                if (Yasuna.yasunaAcTokenChallenge.Value.targetId == exiled.PlayerId)
+                {
+                    PlayerControl exiledPlayer = Helpers.playerById(exiled.PlayerId);
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                    {
+                        Yasuna.yasunaAcTokenChallenge.Value.cleared |= Helpers.isEvil(exiledPlayer) && (((exiledPlayer == Lovers.lover1 && Lovers.lover2 != null) ||
+                            (exiledPlayer == Lovers.lover2 && Lovers.lover1 != null)) && Lovers.lover1 && Lovers.lover2
+                            && Helpers.isEvil(exiledPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1)) || (((exiledPlayer == Cupid.lovers1 && Cupid.lovers2 != null) || (exiledPlayer == Cupid.lovers2 && Cupid.lovers1 != null)) &&
+                            Cupid.lovers1 && Cupid.lovers2 && Helpers.isEvil(exiledPlayer == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1));
+                        if (exiledPlayer == Jester.jester) Yasuna.yasunaAcTokenAnother ??= new("niceYasuna.another1");
+                        Yasuna.yasunaAcTokenChallenge.Value.targetId = byte.MaxValue;
+                    }
+                }
+            }
 
             // Seer spawn souls
             if (Seer.deadBodyPositions != null && Seer.seer != null && CachedPlayer.LocalPlayer.PlayerControl == Seer.seer && (Seer.mode == 0 || Seer.mode == 2)) {
@@ -249,6 +313,10 @@ namespace TheOtherRoles.Patches {
                 {
                     FortuneTeller.playerStatus[p.PlayerId] = !p.Data.IsDead;
                 }
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller)
+                    FortuneTeller.acTokenImpostor.Value.cleared |= exiled != null && FortuneTeller.acTokenImpostor.Value.divined && FortuneTeller.divineTarget != null
+                        && FortuneTeller.divineTarget.PlayerId == exiled.PlayerId;
             }
 
             if (PlagueDoctor.plagueDoctor != null)
@@ -311,6 +379,9 @@ namespace TheOtherRoles.Patches {
 
             // Medium spawn souls
             if (Medium.medium != null && CachedPlayer.LocalPlayer.PlayerControl == Medium.medium) {
+                Medium.acTokenChallenge.Value.cleared |= exiled != null && Medium.acTokenChallenge.Value.additionals.Any(x => x == exiled.PlayerId);
+                Medium.acTokenChallenge.Value.additionals = new();
+
                 if (Medium.souls != null) {
                     foreach (SpriteRenderer sr in Medium.souls) UnityEngine.Object.Destroy(sr.gameObject);
                     Medium.souls = new List<SpriteRenderer>();
@@ -331,6 +402,9 @@ namespace TheOtherRoles.Patches {
                     Medium.futureDeadBodies = new List<Tuple<DeadPlayer, Vector3>>();
                 }
             }
+
+            if (Lawyer.lawyer != null && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && !Lawyer.lawyer.Data.IsDead)
+                Lawyer.meetings++;
 
             // AntiTeleport set position
             AntiTeleport.setPosition();

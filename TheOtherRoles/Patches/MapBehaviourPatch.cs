@@ -18,9 +18,6 @@ namespace TheOtherRoles.Patches {
 
         public static SpriteRenderer targetHerePoint;
         public static Dictionary<byte, SpriteRenderer> impostorHerePoint;
-        public static Sprite doorClosedSprite;
-        public static Dictionary<string, SpriteRenderer> doorMarks;
-        public static Il2CppArrayBase<PlainDoor> plainDoors = null;
 
         public static Dictionary<byte, Il2CppSystem.Collections.Generic.List<Vector2>> realTasks = new();
         public static void resetRealTasks()
@@ -60,19 +57,8 @@ namespace TheOtherRoles.Patches {
 
         public static void reset()
         {
-            if (doorMarks != null)
-            {
-                foreach (var mark in doorMarks.Values)
-                {
-                    UnityEngine.Object.Destroy(mark.gameObject);
-                }
-                doorMarks.Clear();
-                doorMarks = null;
-            }
-            if (plainDoors != null)
-            {
-                plainDoors = null;
-            }
+            herePoints = new();
+            impostorHerePoint = new();
         }
 
         private static bool evilTrackerShowTask(MapTaskOverlay __instance)
@@ -153,7 +139,7 @@ namespace TheOtherRoles.Patches {
                         targetHerePoint = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                     }
                     targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead);
-                    GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
+                    NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
                     PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
                     Vector3 pos = new Vector3(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
                     pos /= MapUtilities.CachedShipStatus.MapScale;
@@ -175,56 +161,13 @@ namespace TheOtherRoles.Patches {
                             impostorHerePoint[p.PlayerId] = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                         }
                         impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null);
-                        GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
+                        NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
                         PlayerMaterial.SetColors(0, impostorHerePoint[p.PlayerId]);
                         Vector3 pos = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
                         pos /= MapUtilities.CachedShipStatus.MapScale;
                         pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
                         pos.z = -10;
                         impostorHerePoint[p.PlayerId].transform.localPosition = pos;
-                    }
-                }
-            }
-
-            if (EvilHacker.canSeeDoorStatus && ((EvilHacker.evilHacker != null && CachedPlayer.LocalPlayer.PlayerId == EvilHacker.evilHacker.PlayerId) || EvilHacker.isInherited()))
-            {
-                //if (!EvilHacker.canSeeDoorStatus) return;
-                if (doorClosedSprite == null)
-                {
-                    doorClosedSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Cross.png", 500f);
-                }
-                if (doorMarks == null) doorMarks = new();
-                plainDoors = GameObject.FindObjectsOfType<PlainDoor>();
-                foreach (var door in plainDoors)
-                {
-                    Vector3 pos = door.gameObject.transform.position / MapUtilities.CachedShipStatus.MapScale;
-                    pos.z = -10f;
-                    String key = $"{pos.x},{pos.y}";
-                    SpriteRenderer mark;
-                    if (doorMarks.ContainsKey(key))
-                    {
-                        mark = doorMarks[key];
-                        if (mark == null) mark = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
-                    }
-                    else
-                    {
-                        mark = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
-                        doorMarks.Add(key, mark);
-                    }
-                    if (mark != null)
-                    {
-                        if (!door.Open)
-                        {
-                            mark.gameObject.SetActive(true);
-                            mark.sprite = doorClosedSprite;
-                            PlayerMaterial.SetColors(0, mark);
-                            mark.transform.localPosition = pos;
-                            mark.gameObject.SetActive(true);
-                        }
-                        else
-                        {
-                            mark.gameObject.SetActive(false);
-                        }
                     }
                 }
             }

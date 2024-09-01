@@ -15,6 +15,7 @@ using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using TMPro;
 using System.Text;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -210,11 +211,15 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
     public static class MainMenuSetUpPatch
     {
         public static Sprite sprite;
+        public static Sprite discordSprite;
         public static GameObject modScreen = null;
         public static GameObject aboutScreen = null;
+        public static Dictionary<string, string> contributors = new Dictionary<string, string> { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" }, 
+            { "Fangkuai", "mainMenuArtist" }, { "Yuunozikkyou" , "mainMenuTranslator"} };
 
         public static void Postfix(MainMenuManager __instance)
         {
+            VanillaAsset.LoadAssetAtInitialize();
             var leftPanel = __instance.mainMenuUI.transform.FindChild("AspectScaler").FindChild("LeftPanel");
             leftPanel.GetComponent<SpriteRenderer>().size += new Vector2(0f, 0.5f);
             var auLogo = leftPanel.FindChild("Sizer").GetComponent<AspectSize>();
@@ -297,25 +302,78 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
             {
                 PlayManager.Open(__instance);
             });
+            SetUpButton(ModTranslation.getString("modAchievements"), () => {
+                AchievementViewer.Open(__instance);
+            });
+
+            var discordRenderer = Helpers.CreateObject<SpriteRenderer>("DiscordButton", modScreen.transform, new Vector3(2.8f, -1.4f));
+            discordRenderer.sprite = discordSprite;
+            var discordButton = discordRenderer.gameObject.SetUpButton(true, discordRenderer);
+            discordButton.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(discordButton, ModTranslation.getString("mainMenuDiscordText"))));
+            discordButton.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(discordButton)));
+            discordButton.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/w7msq53dq7")));
+            discordButton.gameObject.AddComponent<CircleCollider2D>().radius = 0.25f;
 
             void createAboutScreen()
             {
                 aboutScreen = Helpers.CreateObject("About", __instance.accountButtons.transform.parent, new Vector3(0, 0, -1f));
                 aboutScreen.transform.localScale = modScreen!.transform.localScale;
-                var screen = Helpers.CreateObject("Screen", aboutScreen.transform, new Vector3(-0.1f, 0, 0f), LayerMask.NameToLayer("UI"));
-                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => GameObject.Destroy(obj)));
-                var text = screen.AddComponent<TextMeshPro>();
-                text.SetText("<line-height=50%><size=50%>" + Helpers.GradientColorText("E78C0B", "37A796", ModTranslation.getString("mainMenuAboutSection")) + "</size></line-height>");
-                text.alignment = TextAlignmentOptions.Center;
-                text.fontSize *= 0.05f;
-                text.transform.SetParent(screen.transform);
-                text.transform.localPosition = 2 * Vector3.up - new Vector3(0f, 0.3f);
+                var screen = MetaScreen.GenerateScreen(new Vector2(6.2f, 4.1f), aboutScreen.transform, new Vector3(-0.1f, 0, 0f), false, false, false);
+                TextAttribute detailAttribute = new TextAttribute(TextAttribute.BoldAttr)
+                {
+                    FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
+                    Size = new Vector2(5.8f, 0.4f),
+                    Alignment = TMPro.TextAlignmentOptions.TopLeft,
+                    FontSize = 2f,
+                    FontMaxSize = 2f,
+                    FontMinSize = 1.7f
+                };
+                TextAttribute descriptionAttribute = new TextAttribute(TextAttribute.ContentAttr)
+                {
+                    FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
+                    Size = new Vector2(5.8f, 0.4f),
+                    Alignment = TMPro.TextAlignmentOptions.TopLeft,
+                    FontSize = 1.7f,
+                    FontMaxSize = 1.7f,
+                    FontMinSize = 1.3f
+                };
+                TextAttribute titleAttribute = new TextAttribute(TextAttribute.NormalAttr)
+                {
+                    FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
+                    Size = new Vector2(3.4f, 0.3f),
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 4f,
+                    FontMaxSize = 4f,
+                    FontMinSize = 3.5f
+                };
+
+                var inner = new MetaContextOld();
+                inner.Append(new MetaContextOld.Text(titleAttribute) { RawText = ModTranslation.getString("modAbout").ToUpper(), Alignment = IMetaContextOld.AlignmentOption.Center });
+                inner.Append(new MetaContextOld.VerticalMargin(0.5f));
+                foreach (var contributor in contributors)
+                {
+                    inner.Append(new CombinedContextOld(0.5f,
+                    new MetaContextOld.Image(Helpers.loadSpriteFromResources($"TheOtherRoles.Resources.Contributors.{contributor.Key}.png", 50f)) { Width = 0.7f },
+                    new MetaContextOld.Text(detailAttribute) { RawText = $"{ModTranslation.getString(contributor.Value)} - {contributor.Key}" })
+                    { Alignment = IMetaContextOld.AlignmentOption.Left });
+                    inner.Append(new MetaContextOld.VerticalMargin(0.3f));
+                    var lines = Helpers.removeLineFeed(ModTranslation.getString($"mainMenu{contributor.Key}AboutSection"));
+                    foreach (var l in lines)
+                    {
+                        inner.Append(new MetaContextOld.Text(descriptionAttribute) { RawText = l });
+                    }
+                    inner.Append(new CombinedContextOld(0.5f,
+                        new MetaContextOld.VerticalMargin(0.3f)
+                        ));
+                }
+                screen.SetContext(new MetaContextOld.ScrollView(new Vector2(6.2f, 4.1f), inner, true) { Alignment = IMetaContextOld.AlignmentOption.Center });
             }
         }
 
         public static void loadSprite()
         {
             if (sprite == null) sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.LogoButton.png", 100f);
+            if (discordSprite == null) discordSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DiscordIcon.png", 100f);
         }
     }
 
@@ -326,6 +384,52 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
         {
             if (MainMenuSetUpPatch.modScreen) MainMenuSetUpPatch.modScreen?.SetActive(false);
             if (MainMenuSetUpPatch.aboutScreen) MainMenuSetUpPatch.aboutScreen?.SetActive(false);
+        }
+    }
+
+    [HarmonyPatch]
+    public class MainMenuButtonHoverAnimation
+    {
+
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix]
+        [HarmonyPriority(Priority.Last)]
+        private static void Start_Postfix(MainMenuManager __instance)
+        {
+            var mainButtons = GameObject.Find("Main Buttons");
+            mainButtons.ForEachChild((Il2CppSystem.Action<GameObject>)Init);
+            static void Init(GameObject obj)
+            {
+                if (obj.name is "BottomButtonBounds" or "Divider") return;
+                if (AllButtons.ContainsKey(obj)) return;
+                SetButtonStatus(obj, false);
+                var pb = obj.GetComponent<PassiveButton>();
+                pb.OnMouseOver.AddListener((Action)(() => SetButtonStatus(obj, true)));
+                pb.OnMouseOut.AddListener((Action)(() => SetButtonStatus(obj, false)));
+            }
+        }
+
+        private static Dictionary<GameObject, (Vector3, bool)> AllButtons = new();
+        private static void SetButtonStatus(GameObject obj, bool active)
+        {
+            AllButtons.TryAdd(obj, (obj.transform.position, active));
+            AllButtons[obj] = (AllButtons[obj].Item1, active);
+        }
+
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate)), HarmonyPostfix]
+        private static void Update_Postfix(MainMenuManager __instance)
+        {
+            if (GameObject.Find("MainUI") == null) return;
+
+            foreach (var kvp in AllButtons.Where(x => x.Key != null && x.Key.active))
+            {
+                var button = kvp.Key;
+                var pos = button.transform.position;
+                var targetPos = kvp.Value.Item1 + new Vector3(kvp.Value.Item2 ? 0.35f : 0f, 0f, 0f);
+                if (kvp.Value.Item2 && pos.x > (kvp.Value.Item1.x + 0.2f)) continue;
+                button.transform.position = kvp.Value.Item2
+                    ? Vector3.Lerp(pos, targetPos, Time.deltaTime * 2f)
+                    : Vector3.MoveTowards(pos, targetPos, Time.deltaTime * 2f);
+            }
         }
     }
 }

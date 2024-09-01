@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using AmongUs.GameOptions;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -26,23 +27,33 @@ namespace TheOtherRoles.Patches {
         internal static class PingTrackerPatch
         {
             static void Postfix(PingTracker __instance){
-                __instance.text.alignment = TMPro.TextAlignmentOptions.TopRight;
+                __instance.text.alignment = AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started ? TextAlignmentOptions.Top : TextAlignmentOptions.TopLeft;
                 var position = __instance.GetComponent<AspectPosition>();
+                position.Alignment = AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started ? AspectPosition.EdgeAlignments.Top : AspectPosition.EdgeAlignments.LeftTop;
                 if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started) {
                     string gameModeText = $"";
                     if (HideNSeek.isHideNSeekGM) gameModeText = ModTranslation.getString("gamemodeHideNSeek");
                     else if (HandleGuesser.isGuesserGm) gameModeText = ModTranslation.getString("gamemodeGuesser");
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
                     __instance.text.text = $"<size=130%>{Helpers.GradientColorText("FFD700", "FF0000", $"TheOtherRoles GM IA")}</size>" + $" v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
-                    position.DistanceFromEdge = new Vector3(2.25f, 0.11f, 0);
+                    position.DistanceFromEdge = new Vector3(1.5f, 0.11f, 0);
                 } else {
                     string gameModeText = $"";
                     if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) gameModeText = ModTranslation.getString("gamemodeHideNSeek");
                     else if (TORMapOptions.gameMode == CustomGamemodes.Guesser) gameModeText = ModTranslation.getString("gamemodeGuesser");
-                    if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
+                    if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText);
 
-                    __instance.text.text = $"{fullCredentialsVersion}\n  {gameModeText + ModTranslation.getString(fullCredentials)}\n {__instance.text.text}";
-                    position.DistanceFromEdge = new Vector3(3.5f, 0.1f, 0);
+                    __instance.text.text = $"{ModTranslation.getString(fullCredentialsVersion)}\n{ModTranslation.getString(fullCredentials)}\n {__instance.text.text}";
+                    position.DistanceFromEdge = new Vector3(0.5f, 0.11f);
+
+                    try
+                    {
+                        var GameModeText = GameObject.Find("GameModeText")?.GetComponent<TextMeshPro>();
+                        GameModeText.text = gameModeText == "" ? (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek ? "Van. HideNSeek" : ModTranslation.getString("modeClassic")) : gameModeText;
+                        var ModeLabel = GameObject.Find("ModeLabel")?.GetComponentInChildren<TextMeshPro>();
+                        ModeLabel.text = ModTranslation.getString("modeLabel");
+                    }
+                    catch { }
                 }
                 position.AdjustPosition();
             }
