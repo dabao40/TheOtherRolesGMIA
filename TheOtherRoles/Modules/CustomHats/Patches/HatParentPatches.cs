@@ -241,7 +241,7 @@ internal static class HatParentPatches
             __instance.BackLayer.sprite = asset.MainImage;
         }
 
-        if (!__instance.options.Initialized || !__instance.HideHat()) return false;
+        if (!__instance.HideHat()) return false;
         __instance.FrontLayer.enabled = false;
         __instance.BackLayer.enabled = false;
         return false;
