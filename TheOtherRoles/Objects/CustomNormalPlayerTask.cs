@@ -8,7 +8,8 @@ using TheOtherRoles.Modules;
 using TheOtherRoles;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
-
+using Hazel;
+using TheOtherRoles.Players;
 
 namespace TheOtherRoles.Objects
 {
@@ -17,7 +18,7 @@ namespace TheOtherRoles.Objects
         public static List<Shrine> allTasks = new();
         public static List<int> completedConsoles = new();
         public static uint counter = 0;
-        NormalPlayerTask npt;
+        public static NormalPlayerTask npt;
 
         public CustomNormalPlayerTask(string name, Il2CppSystem.Type taskType, int maxStep, byte[] Data, SystemTypes startAt, bool showTaskStep)
         {
@@ -52,10 +53,10 @@ namespace TheOtherRoles.Objects
 
         public void addTaskToPlayer(byte playerId)
         {
-            Helpers.playerById(playerId).myTasks.Add(npt);
-            GameData.PlayerInfo pi = GameData.Instance.GetPlayerById(playerId);
-            var taskinfo = new GameData.TaskInfo((byte)npt.Id, npt.Id);
-            pi.Tasks.Add(taskinfo);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxSetTask, SendOption.Reliable, -1);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.foxSetTasks(playerId);
         }
 
         public static void reset()
