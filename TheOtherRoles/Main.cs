@@ -1,4 +1,4 @@
-global using Il2CppInterop.Runtime;
+﻿global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -23,6 +23,8 @@ using Reactor.Networking.Attributes;
 using AmongUs.Data;
 using TheOtherRoles.Modules.CustomHats;
 using TheOtherRoles.Objects;
+using TheOtherRoles.MetaContext;
+using UnityEngine.SceneManagement;
 
 namespace TheOtherRoles
 {
@@ -33,7 +35,7 @@ namespace TheOtherRoles
     public class TheOtherRolesPlugin : BasePlugin
     {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "1.2.6";
+        public const string VersionString = "1.2.7";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -57,6 +59,7 @@ namespace TheOtherRoles
         public static ConfigEntry<ushort> Port { get; set; }
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
         public static ConfigEntry<bool> ToggleCursor { get; set; }
+        public static ConfigEntry<bool> ShowChatNotifications { get; set; }
 
         public static Sprite ModStamp;
 
@@ -110,11 +113,13 @@ namespace TheOtherRoles
             EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
-            
+            ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
+
             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
             defaultRegions = ServerManager.DefaultRegions;
 
+            ServerManager.DefaultRegions = new Il2CppReferenceArray<IRegionInfo>(new IRegionInfo[0]);
             UpdateRegions();
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
@@ -124,6 +129,9 @@ namespace TheOtherRoles
             CustomColors.Load();
             CustomHatManager.LoadHats();
             AssetLoader.LoadAssets();
+            Achievement.LoadAchievements();
+            EventDetail.Load();
+            TranslatableTag.Load();
             if (ToggleCursor.Value) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
@@ -135,6 +143,10 @@ namespace TheOtherRoles
             SubmergedCompatibility.Initialize();
             AddComponent<ModUpdateBehaviour>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
+            SceneManager.sceneLoaded += (UnityEngine.Events.UnityAction<Scene, LoadSceneMode>)((scene, loadMode) =>
+            {
+                new GameObject("TORManager").AddComponent<TORGUIManager>();
+            });
 
             ClassInjector.RegisterTypeInIl2Cpp(typeof(FoxTask));
         }
@@ -176,8 +188,7 @@ namespace TheOtherRoles
             StringBuilder builder = new StringBuilder();
             SHA256 sha = SHA256Managed.Create();
             Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(TheOtherRolesPlugin.DebugMode.Value));
-            foreach (var b in hashed)
-            {
+            foreach (var b in hashed) {
                 builder.Append(b.ToString("x2"));
             }
             string enteredHash = builder.ToString();
@@ -185,7 +196,7 @@ namespace TheOtherRoles
 
 
             // Spawn dummys
-            if (Input.GetKeyDown(KeyCode.F)) {
+            /*if (Input.GetKeyDown(KeyCode.F)) {
                 var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
                 var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
 
@@ -199,7 +210,7 @@ namespace TheOtherRoles
                 playerControl.SetName(RandomString(10));
                 playerControl.SetColor((byte) random.Next(Palette.PlayerColors.Length));
                 GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
-            }
+            }*/
 
             // Terminate round
             if(Input.GetKeyDown(KeyCode.L)) {

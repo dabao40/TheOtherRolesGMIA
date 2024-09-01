@@ -23,6 +23,7 @@ namespace TheOtherRoles {
             Scapegoat,
             Divined,
             Disease,
+            Pseudocide,
             Bomb,
             Arson,
         };

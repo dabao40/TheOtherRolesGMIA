@@ -19,6 +19,7 @@ namespace TheOtherRoles{
         public static bool enableSoundEffects = true;
         public static bool enableHorseMode = false;
         public static bool shieldFirstKill = false;
+        public static bool ShowChatNotifications = true;
         public static CustomGamemodes gameMode = CustomGamemodes.Classic;
 
         // Updating values
@@ -54,6 +55,7 @@ namespace TheOtherRoles{
             toggleCursor = TheOtherRolesPlugin.ToggleCursor.Value;
             enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value;
             enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
+            ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
             //Patches.ShouldAlwaysHorseAround.isHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         }
     }

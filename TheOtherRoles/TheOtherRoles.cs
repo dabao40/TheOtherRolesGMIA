@@ -16,6 +16,7 @@ using TheOtherRoles.Patches;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UIElements;
 using Reactor.Utilities.Extensions;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles
 {
@@ -48,7 +49,6 @@ namespace TheOtherRoles
             Hacker.clearAndReload();
             Tracker.clearAndReload();
             Vampire.clearAndReload();
-            Catcher.clearAndReload();
             Snitch.clearAndReload();
             Jackal.clearAndReload();
             Sidekick.clearAndReload();
@@ -93,6 +93,8 @@ namespace TheOtherRoles
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
             Teleporter.clearAndReload();
+            Busker.clearAndReload();
+            Noisemaker.clearAndReload();
             Watcher.clearAndReload();
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
@@ -137,7 +139,7 @@ namespace TheOtherRoles
                 canUseVents = CustomOptionHolder.jesterCanVent.getBool();
             }
         }
-
+        
         public static class Portalmaker {
             public static PlayerControl portalmaker;
             public static Color color = new Color32(69, 69, 169, byte.MaxValue);
@@ -153,6 +155,10 @@ namespace TheOtherRoles
             private static Sprite usePortalSpecialButtonSprite1;
             private static Sprite usePortalSpecialButtonSprite2;
             private static Sprite logSprite;
+
+            public static StaticAchievementToken acTokenCommon = null;
+            public static StaticAchievementToken acTokenAnother = null;
+            public static AchievementToken<(int portal, bool cleared)> acTokenChallenge = null;
 
             public static Sprite getPlacePortalButtonSprite() {
                 if (placePortalButtonSprite) return placePortalButtonSprite;
@@ -184,6 +190,12 @@ namespace TheOtherRoles
                 return logSprite;
             }
 
+            public static void onAchievementActivate()
+            {
+                if (portalmaker == null || CachedPlayer.LocalPlayer.PlayerControl != portalmaker) return;
+                acTokenChallenge ??= new("portalmaker.challenge", (0, false), (val, _) => val.cleared);
+            }
+
             public static void clearAndReload() {
                 portalmaker = null;
                 cooldown = CustomOptionHolder.portalmakerCooldown.getFloat();
@@ -191,6 +203,9 @@ namespace TheOtherRoles
                 logOnlyHasColors = CustomOptionHolder.portalmakerLogOnlyColorType.getBool();
                 logShowsTime = CustomOptionHolder.portalmakerLogHasTime.getBool();
                 canPortalFromAnywhere = CustomOptionHolder.portalmakerCanPortalFromAnywhere.getBool();
+                acTokenCommon = null;
+                acTokenAnother = null;
+                acTokenChallenge = null;
             }
 
 
@@ -209,6 +224,9 @@ namespace TheOtherRoles
             public static int mayorChooseSingleVote;
 
             public static bool voteTwice = true;
+            public static AchievementToken<(bool doubleVote, bool cleared)> acTokenDoubleVote = null;
+            public static AchievementToken<(byte votedFor, bool doubleVote, bool cleared)> acTokenChallenge = null;
+            public static StaticAchievementToken acTokenAnother = null;
 
             public static Sprite getMeetingSprite()
             {
@@ -217,16 +235,34 @@ namespace TheOtherRoles
                 return emergencySprite;
             }
 
+            public static void onAchievementActivate()
+            {
+                if (mayor == null || CachedPlayer.LocalPlayer.PlayerControl != mayor) return;
+                acTokenDoubleVote ??= new("mayor.common1", (false, false), (val, _) => val.cleared);
+                acTokenChallenge ??= new("mayor.challenge", (byte.MaxValue, false, false), (val, _) => val.cleared);
+            }
+
+            public static void unlockAch(byte votedFor)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockMayorAcCommon, SendOption.Reliable, -1);
+                writer.Write(votedFor);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.unlockMayorAcCommon(votedFor);
+            }
+
             public static void clearAndReload() {
                 mayor = null;
                 emergency = null;
                 emergencySprite = null;
-		        remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat());
+		        remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat()); 
                 canSeeVoteColors = CustomOptionHolder.mayorCanSeeVoteColors.getBool();
                 tasksNeededToSeeVoteColors = (int)CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getFloat();
                 meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
                 mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
                 voteTwice = true;
+                acTokenDoubleVote = null;
+                acTokenChallenge = null;
+                acTokenAnother = null;
             }
         }
 
@@ -235,9 +271,18 @@ namespace TheOtherRoles
             public static Color color = new Color32(0, 40, 245, byte.MaxValue);
             private static Sprite buttonSprite;
 
-            public static int remainingFixes = 1;
+            public static int remainingFixes = 1;           
             public static bool highlightForImpostors = true;
             public static bool highlightForTeamJackal = true;
+
+            public static StaticAchievementToken acTokenCommon = null;
+            public static AchievementToken<(bool inVent, bool cleared)> acTokenChallenge = null;
+
+            public static void onAchievementActivate()
+            {
+                if (engineer == null || CachedPlayer.LocalPlayer.PlayerControl != engineer) return;
+                acTokenChallenge ??= new("engineer.another1", (false, false), (val, _) => val.cleared);
+            }
 
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
@@ -250,6 +295,8 @@ namespace TheOtherRoles
                 remainingFixes = Mathf.RoundToInt(CustomOptionHolder.engineerNumberOfFixes.getFloat());
                 highlightForImpostors = CustomOptionHolder.engineerHighlightForImpostors.getBool();
                 highlightForTeamJackal = CustomOptionHolder.engineerHighlightForTeamJackal.getBool();
+                acTokenCommon = null;
+                acTokenChallenge = null;
             }
         }
 
@@ -304,6 +351,16 @@ namespace TheOtherRoles
             public static PlayerControl formerDeputy;  // Needed for keeping handcuffs + shifting
             public static PlayerControl formerSheriff;  // When deputy gets promoted...
 
+            public static StaticAchievementToken acTokenCommon = null;
+            public static StaticAchievementToken acTokenAnother = null;
+            public static AchievementToken<(bool isTriggeredFalse, bool cleared)> acTokenChallenge = null;
+
+            public static void onAchievementActivate()
+            {
+                if (sheriff == null || CachedPlayer.LocalPlayer.PlayerControl != sheriff) return;
+                acTokenChallenge ??= new("sheriff.challenge", (true, true), (val, _) => val.cleared && !val.isTriggeredFalse);
+            }
+
             public static void replaceCurrentSheriff(PlayerControl deputy)
             {
                 if (!formerSheriff) formerSheriff = sheriff;
@@ -320,6 +377,9 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
                 canKillNeutrals = CustomOptionHolder.sheriffCanKillNeutrals.getBool();
                 spyCanDieToSheriff = CustomOptionHolder.spyCanDieToSheriff.getBool();
+                acTokenCommon = null;
+                acTokenAnother = null;
+                acTokenChallenge = null;
             }
         }
 
@@ -342,6 +402,9 @@ namespace TheOtherRoles
             private static Sprite buttonSprite;
             private static Sprite handcuffedSprite;
 
+            public static StaticAchievementToken acTokenCommon = null;
+            public static StaticAchievementToken acTokenAnother = null;
+            
             public static Sprite getButtonSprite()
             {
                 if (buttonSprite) return buttonSprite;
@@ -378,7 +441,7 @@ namespace TheOtherRoles
                     HudManagerStartPatch.setAllButtonsHandcuffedStatus(active);
                     SoundEffectsManager.play("deputyHandcuff");
 		}
-
+ 
 	    }
 
             public static void clearAndReload()
@@ -395,13 +458,15 @@ namespace TheOtherRoles
                 handcuffDuration = CustomOptionHolder.deputyHandcuffDuration.getFloat();
                 knowsSheriff = CustomOptionHolder.deputyKnowsSheriff.getBool();
                 stopsGameEnd = CustomOptionHolder.deputyStopsGameEnd.getBool();
+                acTokenCommon = null;
+                acTokenAnother = null;
             }
         }
 
         public static class Lighter {
             public static PlayerControl lighter;
             public static Color color = new Color32(238, 229, 190, byte.MaxValue);
-
+            
             public static float lighterModeLightsOnVision = 2f;
             public static float lighterModeLightsOffVision = 0.75f;
             public static float flashlightWidth = 0.75f;
@@ -427,6 +492,24 @@ namespace TheOtherRoles
             public static float reportColorDuration = 20f;
             public static float timer = 6.2f;
 
+            public static AchievementToken<bool> acTokenCommon = null;
+            public static AchievementToken<(bool reported, byte votedFor, byte killerId, bool cleared)> acTokenChallenge = null;
+
+            public static void onAchievementActivate()
+            {
+                if (detective == null || CachedPlayer.LocalPlayer.PlayerControl != detective) return;
+                acTokenChallenge ??= new("detective.challenge", (false, byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+                acTokenCommon ??= new("detective.common1", false, (val, _) => val);
+            }
+
+            public static void unlockAch(byte votedFor)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockDetectiveAcChallenge, SendOption.Reliable, -1);
+                writer.Write(votedFor);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.unlockDetectiveAcChallenge(votedFor);
+            }
+
             public static void clearAndReload() {
                 detective = null;
                 anonymousFootprints = CustomOptionHolder.detectiveAnonymousFootprints.getBool();
@@ -435,6 +518,8 @@ namespace TheOtherRoles
                 reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
                 reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
                 timer = 6.2f;
+                acTokenCommon = null;
+                acTokenChallenge = null;
             }
         }
     }
@@ -451,6 +536,8 @@ namespace TheOtherRoles
         public static bool shieldActive = false;
         public static bool isRewinding = false;
 
+        public static StaticAchievementToken acTokenChallenge = null;
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
@@ -465,6 +552,7 @@ namespace TheOtherRoles
             rewindTime = CustomOptionHolder.timeMasterRewindTime.getFloat();
             shieldDuration = CustomOptionHolder.timeMasterShieldDuration.getFloat();
             cooldown = CustomOptionHolder.timeMasterCooldown.getFloat();
+            acTokenChallenge = null;
         }
     }
 
@@ -472,7 +560,7 @@ namespace TheOtherRoles
         public static PlayerControl medic;
         public static PlayerControl shielded;
         public static PlayerControl futureShielded;
-
+        
         public static Color color = new Color32(126, 251, 194, byte.MaxValue);
         public static bool usedShield;
 
@@ -486,11 +574,20 @@ namespace TheOtherRoles
         public static Color shieldedColor = new Color32(0, 221, 255, byte.MaxValue);
         public static PlayerControl currentTarget;
 
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(byte killerId, bool cleared)> acTokenChallenge = null;
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ShieldButton.png", 115f);
             return buttonSprite;
+        }
+
+        public static void onAchievementActivate()
+        {
+            if (medic == null || CachedPlayer.LocalPlayer.PlayerControl != medic) return;
+            acTokenChallenge ??= new("medic.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static bool shieldVisible(PlayerControl target)
@@ -523,40 +620,10 @@ namespace TheOtherRoles
             setShieldAfterMeeting = CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 2;
             showShieldAfterMeeting = CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 1;
             meetingAfterShielding = false;
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
-
-    public static class Catcher
-    {
-        public static PlayerControl catcher;
-        public static Color color= new Color32(71, 95, 250,byte.MaxValue);
-        public static PlayerControl neartarget;
-        public static PlayerControl target;
-        private static Sprite CatchButton;
-        public static float catchchance;
-        public static float catchcooldown;
-
-        public static Sprite getCheckSprite() {
-            if (CatchButton) return CatchButton;
-            CatchButton = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SwapperCheck.png", 150f);
-            return CatchButton;
-        }
-
-        public static void clearAndReload()
-        {
-            catcher = null;
-            target = null;
-            neartarget = null;
-            catchchance = CustomOptionHolder.catchChance.getFloat();
-            catchcooldown = CustomOptionHolder.catchCooldown.getFloat();
-        }
-
-    }
-
-
-
-
-
 
     public static class Swapper {
         public static PlayerControl swapper;
@@ -567,9 +634,18 @@ namespace TheOtherRoles
         public static int charges;
         public static float rechargeTasksNumber;
         public static float rechargedTasks;
-
+ 
         public static byte playerId1 = Byte.MaxValue;
         public static byte playerId2 = Byte.MaxValue;
+
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(byte swapped1, byte swapped2, bool cleared)> acTokenChallenge = null;
+
+        public static void niceSwapperOnAchievementActivate()
+        {
+            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper || CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            acTokenChallenge ??= new("niceSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+        }
 
         public static Sprite getCheckSprite() {
             if (spriteCheck) return spriteCheck;
@@ -586,6 +662,8 @@ namespace TheOtherRoles
             charges = Mathf.RoundToInt(CustomOptionHolder.swapperSwapsNumber.getFloat());
             rechargeTasksNumber = Mathf.RoundToInt(CustomOptionHolder.swapperRechargeTasksNumber.getFloat());
             rechargedTasks = Mathf.RoundToInt(CustomOptionHolder.swapperRechargeTasksNumber.getFloat());
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -654,6 +732,15 @@ namespace TheOtherRoles
         public static bool limitSoulDuration = false;
         public static int mode = 0;
 
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(byte flash, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (seer == null || CachedPlayer.LocalPlayer.PlayerControl != seer) return;
+            acTokenChallenge ??= new("seer.challenge", (0, false), (val, _) => val.flash >= 5 || val.cleared);
+        }
+
         private static Sprite soulSprite;
         public static Sprite getSoulSprite() {
             if (soulSprite) return soulSprite;
@@ -667,6 +754,8 @@ namespace TheOtherRoles
             limitSoulDuration = CustomOptionHolder.seerLimitSoulDuration.getBool();
             soulDuration = CustomOptionHolder.seerSoulDuration.getFloat();
             mode = CustomOptionHolder.seerMode.getSelection();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -675,7 +764,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
-
+    
         public static float cooldown = 30f;
         public static float duration = 10f;
 
@@ -718,7 +807,7 @@ namespace TheOtherRoles
     public static class Camouflager {
         public static PlayerControl camouflager;
         public static Color color = Palette.ImpostorRed;
-
+    
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
@@ -770,6 +859,9 @@ namespace TheOtherRoles
         private static Sprite logSprite;
         private static Sprite adminSprite;
 
+        public static StaticAchievementToken acTokenAdmin = null;
+        public static StaticAchievementToken acTokenVitals = null;
+
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.HackerButton.png", 115f);
@@ -814,6 +906,8 @@ namespace TheOtherRoles
             chargesVitals = Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat()) / 2;
             chargesAdminTable = Mathf.RoundToInt(CustomOptionHolder.hackerToolsNumber.getFloat()) / 2;
             cantMove = CustomOptionHolder.hackerNoMove.getBool();
+            acTokenAdmin = null;
+            acTokenVitals = null;
         }
     }
 
@@ -839,6 +933,23 @@ namespace TheOtherRoles
 
         public static GameObject DangerMeterParent;
         public static DangerMeter Meter;
+
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(bool inVent, float ventTime, bool cleared)> acTokenChallenge = null;
+
+        public static void unlockAch(float ventTime)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockTrackerAcChallenge, SendOption.Reliable, -1);
+            writer.Write(ventTime);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.unlockTrackerAcChallenge(ventTime);
+        }
+
+        public static void onAchievementActivate()
+        {
+            if (tracker == null || CachedPlayer.LocalPlayer.PlayerControl != tracker) return;
+            acTokenChallenge ??= new("tracker.challenge", (false, 0f, false), (val, _) => val.cleared);
+        }
 
         private static Sprite trackCorpsesButtonSprite;
         public static Sprite getTrackCorpsesButtonSprite()
@@ -886,6 +997,8 @@ namespace TheOtherRoles
             corpsesTrackingDuration = CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat();
             canTrackCorpses = CustomOptionHolder.trackerCanTrackCorpses.getBool();
             trackingMode = CustomOptionHolder.trackerTrackingMethod.getSelection();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -900,7 +1013,7 @@ namespace TheOtherRoles
         public static bool garlicsActive = true;
 
         public static PlayerControl currentTarget;
-        public static PlayerControl bitten;
+        public static PlayerControl bitten; 
         public static bool targetNearGarlic = false;
 
         private static Sprite buttonSprite;
@@ -943,6 +1056,14 @@ namespace TheOtherRoles
             Killers = 1
         }
 
+        public static AchievementToken<(bool taskComplete, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (snitch == null || CachedPlayer.LocalPlayer.PlayerControl != snitch) return;
+            acTokenChallenge ??= new("snitch.challenge", (false, false), (val, _) => val.cleared);
+        }
+
         public static Mode mode = Mode.Chat;
         public static Targets targets = Targets.EvilPlayers;
         public static int taskCountForReveal = 1;
@@ -962,6 +1083,7 @@ namespace TheOtherRoles
             needsUpdate = true;
             mode = (Mode) CustomOptionHolder.snitchMode.getSelection();
             targets = (Targets) CustomOptionHolder.snitchTargets.getSelection();
+            acTokenChallenge = null;
         }
     }
 
@@ -971,7 +1093,7 @@ namespace TheOtherRoles
         public static PlayerControl fakeSidekick;
         public static PlayerControl currentTarget;
         public static List<PlayerControl> formerJackals = new List<PlayerControl>();
-
+        
         public static float cooldown = 30f;
         public static float createSidekickCooldown = 30f;
         public static bool canUseVents = true;
@@ -1015,7 +1137,7 @@ namespace TheOtherRoles
             wasTeamRed = wasImpostor = wasSpy = false;
             canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
         }
-
+        
     }
 
     public static class Sidekick {
@@ -1057,7 +1179,7 @@ namespace TheOtherRoles
         public static List<PlayerControl> futureErased = new List<PlayerControl>();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
-        public static bool canEraseAnyone = false;
+        public static bool canEraseAnyone = false; 
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -1075,7 +1197,7 @@ namespace TheOtherRoles
             alreadyErased = new List<byte>();
         }
     }
-
+    
     public static class Spy {
         public static PlayerControl spy;
         public static Color color = Palette.ImpostorRed;
@@ -1083,6 +1205,9 @@ namespace TheOtherRoles
         public static bool impostorsCanKillAnyone = true;
         public static bool canEnterVents = false;
         public static bool hasImpostorVision = false;
+
+        public static StaticAchievementToken acTokenChallenge = null;
+        public static StaticAchievementToken acTokenAnother = null;
 
         public static void clearAndReload() {
             spy = null;
@@ -1217,6 +1342,16 @@ namespace TheOtherRoles
         public static Vent ventTarget = null;
         public static Minigame minigame = null;
 
+        public static AchievementToken<(bool vent, bool camera)> acTokenCommon = null;
+        public static AchievementToken<int> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (securityGuard == null || CachedPlayer.LocalPlayer.PlayerControl != securityGuard) return;
+            acTokenCommon ??= new("securityGuard.common1", (false, false), (val, _) => val.vent && val.camera);
+            acTokenChallenge ??= new("securityGuard.challenge", 0, (val, _) => val >= 5);
+        }
+
         private static Sprite closeVentButtonSprite;
         public static Sprite getCloseVentButtonSprite() {
             if (closeVentButtonSprite) return closeVentButtonSprite;
@@ -1303,6 +1438,8 @@ namespace TheOtherRoles
             camPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardCamPrice.getFloat());
             ventPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardVentPrice.getFloat());
             cantMove = CustomOptionHolder.securityGuardNoMove.getBool();
+            acTokenChallenge = null;
+            acTokenCommon = null;
         }
     }
 
@@ -1339,7 +1476,7 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             arsonist = null;
             currentTarget = null;
-            douseTarget = null;
+            douseTarget = null; 
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
             foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
@@ -1476,6 +1613,16 @@ namespace TheOtherRoles
         public static bool oneTimeUse = false;
         public static float chanceAdditionalInfo = 0f;
 
+        public static AchievementToken<int> acTokenCommon = null;
+        public static AchievementToken<(List<byte> additionals, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (medium == null || CachedPlayer.LocalPlayer.PlayerControl != medium) return;
+            acTokenCommon = new("medium.common1", 0, (val, _) => val >= 3);
+            acTokenChallenge ??= new("medium.challenge", (new(), false), (val, _) => val.cleared);
+        }
+
         private static Sprite soulSprite;
 
         enum SpecialMediumInfo {
@@ -1486,6 +1633,7 @@ namespace TheOtherRoles
             LawyerKilledByClient,
             JackalKillsSidekick,
             ImpostorTeamkill,
+            BuskerPseudocide,
             SubmergedO2,
             WarlockSuicide,
             BodyCleaned,
@@ -1516,6 +1664,8 @@ namespace TheOtherRoles
             duration = CustomOptionHolder.mediumDuration.getFloat();
             oneTimeUse = CustomOptionHolder.mediumOneTimeUse.getBool();
             chanceAdditionalInfo = CustomOptionHolder.mediumChanceAdditionalInfo.getSelection() / 10f;
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
 
         public static string getInfo(PlayerControl target, PlayerControl killer) {
@@ -1529,6 +1679,7 @@ namespace TheOtherRoles
                 if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.PassiveLoverSuicide);
                 if (target == Thief.thief) infos.Add(SpecialMediumInfo.ThiefSuicide);
                 if (target == Warlock.warlock) infos.Add(SpecialMediumInfo.WarlockSuicide);
+                if (target == Busker.busker) infos.Add(SpecialMediumInfo.BuskerPseudocide);
             } else {
                 if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.ActiveLoverDies);
                 if (target.Data.Role.IsImpostor && killer.Data.Role.IsImpostor && Thief.formerThief != killer) infos.Add(SpecialMediumInfo.ImpostorTeamkill);
@@ -1536,7 +1687,7 @@ namespace TheOtherRoles
             if (target == Sidekick.sidekick && (killer == Jackal.jackal || Jackal.formerJackals.Any(x => x.PlayerId == killer.PlayerId))) infos.Add(SpecialMediumInfo.JackalKillsSidekick);
             if (target == Lawyer.lawyer && killer == Lawyer.target) infos.Add(SpecialMediumInfo.LawyerKilledByClient);
             if (Medium.target.wasCleaned) infos.Add(SpecialMediumInfo.BodyCleaned);
-
+            
             if (infos.Count > 0) {
                 var selectedInfo = infos[rnd.Next(infos.Count)];
                 switch (selectedInfo) {
@@ -1557,6 +1708,9 @@ namespace TheOtherRoles
                         break;
                     case SpecialMediumInfo.LawyerKilledByClient:
                         msg = ModTranslation.getString("mediumLawyerKilledByClient");
+                        break;
+                    case SpecialMediumInfo.BuskerPseudocide:
+                        msg = ModTranslation.getString("mediumBuskerPseudocide");
                         break;
                     case SpecialMediumInfo.JackalKillsSidekick:
                         msg = ModTranslation.getString("mediumJackalKillsSidekick");
@@ -1606,6 +1760,8 @@ namespace TheOtherRoles
                         break;
                 }
                 msg += $"\n" + ModTranslation.getString("mediumAskPrefix") + $"{count} " + $"{condition} " + string.Format(ModTranslation.getString("mediumStillAlive"), (count == 1 ? ModTranslation.getString("mediumWas") : ModTranslation.getString("mediumWere")));
+
+                acTokenChallenge.Value.additionals.Add(Medium.target.killerIfExisting.PlayerId);
             }
 
             return string.Format(ModTranslation.getString("mediumSoulPlayerPrefix"), Medium.target.player.Data.PlayerName) + msg;
@@ -1739,21 +1895,21 @@ namespace TheOtherRoles
                     foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                     return;
                 }
-            }
+            }            
             if (CachedPlayer.LocalPlayer.PlayerControl != mimicK || mimicK == null) return;
             if (mimicK.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1765,10 +1921,10 @@ namespace TheOtherRoles
 
                 //if (MimicK.mimicK == null) return;
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 /*foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -1789,7 +1945,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicA.mimicA.transform.position);
                 arrows.Add(arrow);
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1863,7 +2019,7 @@ namespace TheOtherRoles
                     foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                     return;
                 }
-            }
+            }            
             if (CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
 
             if (mimicA.Data.IsDead)
@@ -1872,14 +2028,14 @@ namespace TheOtherRoles
                 return;
             }
 
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -1891,7 +2047,7 @@ namespace TheOtherRoles
 
                 //if (MimicA.mimicA == null) return;
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 if (MimicK.mimicK.Data.IsDead || MimicK.mimicK == null) return;
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
@@ -1899,7 +2055,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicK.mimicK.transform.position);
                 arrows.Add(arrow);
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -1947,6 +2103,15 @@ namespace TheOtherRoles
 
         public static List<Arrow> arrows = new List<Arrow>();
         public static float updateTimer = 0f;
+
+        public static AchievementToken<(bool divined, bool cleared)> acTokenImpostor = null;
+        public static StaticAchievementToken acTokenFox = null;
+
+        public static void onAchievementActivate()
+        {
+            if (fortuneTeller == null || CachedPlayer.LocalPlayer.PlayerControl != fortuneTeller) return;
+            acTokenImpostor ??= new("fortuneTeller.challenge", (false, false), (val, _) => val.cleared);
+        }
 
         public static bool isCompletedNumTasks(PlayerControl p)
         {
@@ -2052,7 +2217,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // Õ¼ï¿½ï¿½ï¿½ï¿½gï¿½Ð¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤Ç°kï¿½ð¤µ¤ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¥¤ï¿½ï¿½ï¿½ï¿½È¤ï¿½Í¨Öª
+            // Õ¼¤¤¤òŒgÐÐ¤·¤¿¤³¤È¤Ç°k»ð¤µ¤ì¤ë„IÀí¤òËû¥¯¥é¥¤¥¢¥ó¥È¤ËÍ¨Öª
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
@@ -2074,6 +2239,8 @@ namespace TheOtherRoles
             numUsed = 0;
             divinedFlag = false;
             divineTarget = null;
+            acTokenFox = null;
+            acTokenImpostor = null;
         }
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -2103,6 +2270,9 @@ namespace TheOtherRoles
         public static byte oldTaskMasterPlayerId = byte.MaxValue;
         public static bool triggerTaskMasterWin = false;
 
+        public static StaticAchievementToken acTokenChallenge = null;
+        public static StaticAchievementToken acTokenSecret = null;
+
         public static void clearAndReload()
         {
             taskMaster = null;
@@ -2112,6 +2282,8 @@ namespace TheOtherRoles
             allExTasks = 0;
             oldTaskMasterPlayerId = byte.MaxValue;
             triggerTaskMasterWin = false;
+            acTokenChallenge = null;
+            acTokenSecret = null;
         }
 
         public static bool isTaskMaster(byte playerId)
@@ -2128,11 +2300,22 @@ namespace TheOtherRoles
         private static int _remainingSpecialVotes = 1;
         private static Sprite targetSprite;
 
+        public static AchievementToken<(byte targetId, bool cleared)> yasunaAcTokenChallenge = null;
+        public static StaticAchievementToken yasunaAcTokenAnother = null;
+
+        public static void yasunaOnAchievementActivate()
+        {
+            if (yasuna != null && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor && CachedPlayer.LocalPlayer.PlayerControl == yasuna)
+                yasunaAcTokenChallenge ??= new("niceYasuna.another1", (byte.MaxValue, false), (val, _) => val.cleared);
+        }
+
         public static void clearAndReload()
         {
             yasuna = null;
             _remainingSpecialVotes = Mathf.RoundToInt(CustomOptionHolder.yasunaNumberOfSpecialVotes.getFloat());
             specialVoteTargetPlayerId = byte.MaxValue;
+            yasunaAcTokenChallenge = null;
+            yasunaAcTokenAnother = null;
         }
 
         public static Sprite getTargetSprite(bool isImpostor)
@@ -2254,21 +2437,21 @@ namespace TheOtherRoles
         }
 
         public static void arrowUpdate()
-        {
+        {            
             if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
             if (bomberA.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2278,10 +2461,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 /*if (BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberB.bomberB.transform.position);
@@ -2299,7 +2482,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2328,7 +2511,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
                 if (BomberB.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberB.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId];
@@ -2420,7 +2603,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // ï¿½à·½ï¿½ï¿½ï¿½Oï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
                 if (BomberA.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberA.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId];
@@ -2443,21 +2626,21 @@ namespace TheOtherRoles
         }
 
         public static void arrowUpdate()
-        {
+        {            
             if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !BomberA.alwaysShowArrow) return;
             if (bomberB.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2467,12 +2650,12 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
                 /*if (BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-                // ï¿½à·½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
-
+                
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberA.bomberA.transform.position);
                 arrows.Add(arrow);*/
@@ -2488,7 +2671,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2580,6 +2763,15 @@ namespace TheOtherRoles
         public static PlayerControl target2;
         public static PlayerControl currentTarget;
 
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(byte target1, byte target2, DateTime swapTime, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (teleporter == null || CachedPlayer.LocalPlayer.PlayerControl != teleporter) return;
+            acTokenChallenge ??= new("teleporter.challenge", (byte.MaxValue, byte.MaxValue, DateTime.UtcNow, false), (val, _) => val.cleared);
+        }
+
         public static Sprite getButtonSprite()
         {
             if (teleportButtonSprite) return teleportButtonSprite;
@@ -2596,6 +2788,8 @@ namespace TheOtherRoles
             teleportCooldown = CustomOptionHolder.teleporterCooldown.getFloat();
             teleportNumber = (int)CustomOptionHolder.teleporterTeleportNumber.getFloat();
             sampleCooldown = CustomOptionHolder.teleporterSampleCooldown.getFloat();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -2607,7 +2801,6 @@ namespace TheOtherRoles
         public static bool canCreateMadmate = false;
         public static bool canCreateMadmateFromJackal;
         public static bool canInheritAbility;
-        public static bool canSeeDoorStatus;
         public static PlayerControl fakeMadmate;
         public static PlayerControl currentTarget;
 
@@ -2648,7 +2841,6 @@ namespace TheOtherRoles
             canHasBetterAdmin = CustomOptionHolder.evilHackerCanHasBetterAdmin.getBool();
             canCreateMadmateFromJackal = CustomOptionHolder.evilHackerCanCreateMadmateFromJackal.getBool();
             canInheritAbility = CustomOptionHolder.evilHackerCanInheritAbility.getBool();
-            canSeeDoorStatus = CustomOptionHolder.evilHackerCanSeeDoorStatus.getBool();
         }
     }
 
@@ -2709,6 +2901,17 @@ namespace TheOtherRoles
         private static Sprite watchIcon;
         private static Sprite investigateIcon;
 
+        public static AchievementToken<bool> acTokenChallenge = null;
+        static public StaticAchievementToken acTokenCommon = null;
+
+        public static HideAndSeekDeathPopup killPopup = null;
+
+        public static void onAchievementActivate()
+        {
+            if (sherlock == null || CachedPlayer.LocalPlayer.PlayerControl != sherlock) return;
+            acTokenChallenge ??= new("sherlock.challenge", false, (val, _) => val);
+        }
+
         public static Sprite getInvestigateIcon()
         {
             if (investigateIcon) return investigateIcon;
@@ -2764,11 +2967,14 @@ namespace TheOtherRoles
         public static void clearAndReload()
         {
             sherlock = null;
+            killPopup = null;
             numUsed = 0;
             killLog = new();
             numTasks = Mathf.RoundToInt(CustomOptionHolder.sherlockRechargeTasksNumber.getFloat());
             cooldown = CustomOptionHolder.sherlockCooldown.getFloat();
             investigateDistance = CustomOptionHolder.sherlockInvestigateDistance.getFloat();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -2783,6 +2989,7 @@ namespace TheOtherRoles
         public static int remainingAlerts = 5;
 
         public static bool alertActive = false;
+        public static StaticAchievementToken acTokenChallenge = null;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
@@ -2799,6 +3006,44 @@ namespace TheOtherRoles
             alertDuration = CustomOptionHolder.veteranAlertDuration.getFloat();
             cooldown = CustomOptionHolder.veteranCooldown.getFloat();
             remainingAlerts = Mathf.RoundToInt(CustomOptionHolder.veteranAlertNumber.getFloat());
+            acTokenChallenge = null;
+        }
+    }
+
+    public static class Noisemaker
+    {
+        public static Color32 color = new Color32(160, 131, 187, byte.MaxValue);
+        public static PlayerControl noisemaker;
+        public static PlayerControl currentTarget;
+        public static PlayerControl target;
+
+        public enum SoundTarget
+        {
+            Noisemaker,
+            Crewmates,
+            Everyone
+        }
+
+        public static float cooldown;
+        public static float duration;
+        public static int numSound;
+        public static SoundTarget soundTarget;
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.NoisemakerButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static void clearAndReload()
+        {
+            noisemaker = null;
+            cooldown = CustomOptionHolder.noisemakerCooldown.getFloat();
+            duration = CustomOptionHolder.noisemakerSoundDuration.getFloat();
+            numSound = Mathf.RoundToInt(CustomOptionHolder.noisemakerSoundNumber.getFloat());
+            soundTarget = (SoundTarget)CustomOptionHolder.noisemakerSoundTarget.getSelection();
         }
     }
 
@@ -2981,6 +3226,82 @@ namespace TheOtherRoles
         }
     }
 
+    public static class Busker
+    {
+        public static PlayerControl busker;
+        public static List<byte> buskerList;
+        public static Color color = new Color(255f / 255f, 172f / 255f, 117f / 255f);
+
+        public static float cooldown = 30f;
+        public static float duration = 10f;
+        public static bool pseudocideFlag = false;
+        public static bool buttonInterrupted = false;
+        public static bool pseudocideComplete = false;
+        public static bool restrictInformation = true;
+        public static Vector3 deathPosition = new Vector3();
+
+        public static StaticAchievementToken acTokenCommon = null;
+        public static StaticAchievementToken acTokenAnother = null;
+        public static AchievementToken<(DateTime pseudocide, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (busker == null || CachedPlayer.LocalPlayer.PlayerControl != busker) return;
+            acTokenChallenge ??= new("busker.challenge", (DateTime.UtcNow, false), (val, _) => val.cleared);
+        }
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BuskerButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static void dieBusker(bool isLoverSuicide = false)
+        {
+            pseudocideFlag = false;
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BuskerPseudocide, SendOption.Reliable, -1);
+            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+            writer.Write(true);
+            writer.Write(isLoverSuicide);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.buskerPseudocide(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, true, isLoverSuicide);
+        }
+
+        public static bool checkPseudocide()
+        {
+            if (!pseudocideFlag) return false;
+
+            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            foreach (var deadBody in array)
+            {
+                if (deadBody.ParentId == PlayerControl.LocalPlayer.PlayerId)
+                {
+                    return true;
+                }
+            }
+            dieBusker();
+            return false;
+        }
+
+        public static void clearAndReload()
+        {
+            busker = null;
+            buskerList = new List<byte>();
+            cooldown = CustomOptionHolder.buskerCooldown.getFloat();
+            duration = CustomOptionHolder.buskerDuration.getFloat();
+            restrictInformation = CustomOptionHolder.buskerRestrictInformation.getBool();
+            pseudocideFlag = false;
+            buttonInterrupted = false;
+            pseudocideComplete = false;
+            deathPosition = new Vector3();
+            acTokenChallenge = null;
+            acTokenAnother = null;
+            acTokenCommon = null;
+        }
+    }
+
     public static class Prophet
     {
         public static PlayerControl prophet;
@@ -2999,6 +3320,15 @@ namespace TheOtherRoles
 
         public static Dictionary<PlayerControl, bool> examined = new Dictionary<PlayerControl, bool>();
         public static PlayerControl currentTarget;
+
+        public static StaticAchievementToken acTokenUse = null;
+        public static AchievementToken<(bool triggered, bool cleared)> acTokenEvil = null;
+
+        public static void onAchievementActivate()
+        {
+            if (prophet == null || CachedPlayer.LocalPlayer.PlayerControl != prophet) return;
+            acTokenEvil ??= new("prophet.challenge2", (false, true), (val, _) => val.triggered && val.cleared);
+        }
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
@@ -3035,6 +3365,8 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(arrow.arrow);
             }
             arrows = new List<Arrow>();
+            acTokenEvil = null;
+            acTokenUse = null;
         }
     }
 
@@ -3078,14 +3410,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -3095,10 +3427,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 int count = 0;
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
@@ -3146,7 +3478,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
+                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -3184,7 +3516,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3236,12 +3568,25 @@ namespace TheOtherRoles
         public static bool isNeutral = false;
         public static bool shiftPastShifters = false;
 
+        public static StaticAchievementToken niceShifterAcTokenCommon = null;
+        public static AchievementToken<(byte shiftId, byte oldShifterId, bool cleared)> niceShifterAcTokenChallenge = null;
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
         {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ShiftButton.png", 115f);
             return buttonSprite;
+        }
+
+        public static void niceShifterOnAchievementActivate()
+        {
+            niceShifterAcTokenCommon = null;
+            niceShifterAcTokenChallenge = null;
+            if (shifter != null && CachedPlayer.LocalPlayer.PlayerControl == shifter && !isNeutral)
+            {
+                niceShifterAcTokenChallenge ??= new("niceShifter.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+            }
         }
 
         public static void clearAndReload()
@@ -3307,6 +3652,7 @@ namespace TheOtherRoles
         public static PlayerControl nicewatcher;
         public static PlayerControl evilwatcher;
         public static Color color = Palette.Purple;
+        public static bool canSeeGuesses = false;
 
         public static void clear(byte playerId)
         {
@@ -3318,6 +3664,7 @@ namespace TheOtherRoles
         {
             nicewatcher = null;
             evilwatcher = null;
+            canSeeGuesses = CustomOptionHolder.watcherSeeGuesses.getBool();
         }
     }
 
@@ -3332,6 +3679,15 @@ namespace TheOtherRoles
 
         public static bool reported = false;
 
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<(byte killerId, bool cleared)> acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (bait == null || CachedPlayer.LocalPlayer.PlayerControl != bait) return;
+            acTokenChallenge ??= new("bait.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
+        }
+
         public static void clearAndReload()
         {
             bait = null;
@@ -3339,6 +3695,8 @@ namespace TheOtherRoles
             highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -3422,14 +3780,14 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
 
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -3439,9 +3797,9 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
-                // ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ã¥È¤ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
+                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -3488,7 +3846,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3709,7 +4067,7 @@ namespace TheOtherRoles
             try
             {
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !stealthed) return;
-                Helpers.setInvisible(player, color);
+                Helpers.setInvisible(player, color, opacity);
             }
             catch { }
         }
@@ -3732,14 +4090,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow?.arrow != null)
@@ -3749,10 +4107,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ï¿½E
+                // ArrowsÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Ý¥ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowsï¿½ï¿½ï¿½è»­
+                // ¥¤¥ó¥Ý¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -3790,7 +4148,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
             else
@@ -3839,11 +4197,12 @@ namespace TheOtherRoles
 
                     bool canSee =
                         CachedPlayer.LocalPlayer.PlayerControl == fox ||
-                        CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
+                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        && Busker.pseudocideFlag && Busker.restrictInformation)) ||
                         (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible) ||
                         CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist;
 
-                    var opacity = canSee ? 0.1f : 0.0f;
+                    var opacity = canSee ? 0.5f : 0.0f;
 
                     if (stealthed)
                     {
@@ -3880,13 +4239,13 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°ï¿½Õ¥ï¿½`ï¿½à¤«ï¿½ï¿½Î½Uï¿½^ï¿½rï¿½gï¿½ï¿½Þ¥ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Þ¥¤¥Ê¥¹¤¹¤ë
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1ï¿½ï¿½Uï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Arrowï¿½ï¿½ï¿½ï¿½ï¿½
+            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üÐÂ
             if (updateTimer <= 0.0f)
             {
-                // Ç°ï¿½Ø¤ï¿½Arrowï¿½ò¤¹¤Ù¤ï¿½ï¿½Æ—ï¿½ï¿½ï¿½ï¿½ï¿½
+                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow?.arrow != null)
@@ -3896,10 +4255,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowÒ»ï¿½E
+                // ArrowÒ»ÓE
                 arrows = new List<Arrow>();
 
-                // ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¤ï¿½Ê¾ï¿½ï¿½Arrowï¿½ï¿½ï¿½è»­
+                // ºü¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -3912,7 +4271,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Þ©`ï¿½Ë•rï¿½gï¿½ò¥»¥Ã¥ï¿½
+                // ¥¿¥¤¥Þ©`¤Ë•rég¤ò¥»¥Ã¥È
                 updateTimer = arrowUpdateInterval;
             }
             else
@@ -4141,7 +4500,7 @@ namespace TheOtherRoles
             {
                 // Block setting opacity if the Chameleon skill is active
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !stealthed) return;
-                Helpers.setInvisible(player, color);
+                Helpers.setInvisible(player, color, opacity);
             }
             catch { }
         }
@@ -4179,11 +4538,12 @@ namespace TheOtherRoles
                     if (ninja == null || ninja.Data.IsDead) return;
 
                     bool canSee =
-                        PlayerControl.LocalPlayer.Data.IsDead ||
+                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        && Busker.pseudocideFlag && Busker.restrictInformation)) ||
                         PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
                         (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
 
-                    var opacity = canSee ? 0.1f : 0.0f;
+                    var opacity = canSee ? 0.5f : 0.0f;
 
                     if (isStealthed(ninja))
                     {
@@ -4213,6 +4573,17 @@ namespace TheOtherRoles
         public static bool sprinting = false;
 
         public static DateTime sprintAt = DateTime.UtcNow;
+
+        public static StaticAchievementToken acTokenSprint = null;
+        public static AchievementToken<(Vector3 pos, bool cleared)> acTokenMove = null;
+        public static StaticAchievementToken acTokenChallenge = null;
+
+        public static void onAchievementActivate()
+        {
+            if (sprinter == null || CachedPlayer.LocalPlayer.PlayerControl != sprinter) return;
+            if (sprintDuration <= 15f)
+                acTokenMove ??= new("sprinter.common2", (Vector3.zero, false), (val, _) => val.cleared);
+        }
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
@@ -4255,7 +4626,7 @@ namespace TheOtherRoles
             try
             {
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId) && Chameleon.visibility(player.PlayerId) < 1f && !sprinting) return;
-                Helpers.setInvisible(player, color);
+                Helpers.setInvisible(player, color, opacity);
             }
             catch { }
         }
@@ -4268,6 +4639,9 @@ namespace TheOtherRoles
             sprintCooldown = CustomOptionHolder.sprinterCooldown.getFloat();
             sprintDuration = CustomOptionHolder.sprinterDuration.getFloat();
             fadeTime = CustomOptionHolder.sprinterFadeTime.getFloat();
+            acTokenChallenge = null;
+            acTokenMove = null;
+            acTokenSprint = null;
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
@@ -4281,11 +4655,12 @@ namespace TheOtherRoles
                     if (sprinter == null || sprinter.Data.IsDead) return;
 
                     bool canSee =
-                        PlayerControl.LocalPlayer.Data.IsDead ||
+                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        && Busker.pseudocideFlag && Busker.restrictInformation)) ||
                         CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter ||
                         (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
 
-                    var opacity = canSee ? 0.1f : 0.0f;
+                    var opacity = canSee ? 0.5f : 0.0f;
 
                     if (Sprinter.sprinting)
                     {
@@ -4348,7 +4723,7 @@ namespace TheOtherRoles
         public static List<PlayerControl> playersOnMap = new List<PlayerControl>();
         public static bool anonymousMap = false;
         public static int infoType = 0; // 0 = Role, 1 = Good/Evil, 2 = Name
-        public static float trapDuration = 5f;
+        public static float trapDuration = 5f; 
 
         private static Sprite trapButtonSprite;
 
@@ -4561,7 +4936,7 @@ namespace TheOtherRoles
         public static int commonTasks;
         public static int shortTasks;
         public static int longTasks;
-
+        
         public static string fullName { get { return ModTranslation.getString("madmate"); } }
         public static string prefix { get { return ModTranslation.getString("madmatePrefix"); } }
 
@@ -4631,7 +5006,7 @@ namespace TheOtherRoles
         public static void update() {
             foreach (var chameleonPlayer in chameleon) {
                 //if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
-                if ((chameleonPlayer == Ninja.ninja && Ninja.stealthed) || (chameleonPlayer == Sprinter.sprinter && Sprinter.sprinting)) continue;
+                if ((chameleonPlayer == Ninja.ninja && Ninja.stealthed) || (chameleonPlayer == Sprinter.sprinter && Sprinter.sprinting) || (chameleonPlayer == Fox.fox && Fox.stealthed)) continue;
                 // check movement by animation
                 PlayerPhysics playerPhysics = chameleonPlayer.MyPhysics;
                 var currentPhysicsAnim = playerPhysics.Animations.Animator.GetCurrentAnimation();
@@ -4660,7 +5035,7 @@ namespace TheOtherRoles
                     //chameleonPlayer.cosmetics.currentPet.shadows[0].color = chameleonPlayer.cosmetics.currentPet.shadows[0].color.SetAlpha(petVisibility);
                 } catch { }
             }
-
+                
         }
     }
 

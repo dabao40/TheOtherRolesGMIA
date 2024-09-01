@@ -19,7 +19,7 @@ namespace TheOtherRoles
         public RoleId roleId;
         public bool isNeutral;
         public bool isModifier;
-        private string nameKey;
+        public string nameKey;
 
         public RoleInfo(string name, Color color, RoleId roleId, bool isNeutral = false, bool isModifier = false)
         {
@@ -43,7 +43,6 @@ namespace TheOtherRoles
         public static RoleInfo morphling = new RoleInfo("morphling", Morphling.color, RoleId.Morphling);
         public static RoleInfo camouflager = new RoleInfo("camouflager", Camouflager.color, RoleId.Camouflager);
         public static RoleInfo vampire = new RoleInfo("vampire", Vampire.color, RoleId.Vampire);
-        public static RoleInfo catcher = new RoleInfo("Catcher", Catcher.color, RoleId.Catcher);
         public static RoleInfo eraser = new RoleInfo("eraser", Eraser.color, RoleId.Eraser);
         public static RoleInfo trickster = new RoleInfo("trickster", Trickster.color, RoleId.Trickster);
         public static RoleInfo cleaner = new RoleInfo("cleaner", Cleaner.color, RoleId.Cleaner);
@@ -103,6 +102,8 @@ namespace TheOtherRoles
         public static RoleInfo taskMaster = new RoleInfo("taskMaster", TaskMaster.color, RoleId.TaskMaster);
         public static RoleInfo teleporter = new RoleInfo("teleporter", Teleporter.color, RoleId.Teleporter);
         public static RoleInfo prophet = new RoleInfo("prophet", Prophet.color, RoleId.Prophet);
+        public static RoleInfo busker = new RoleInfo("busker", Busker.color, RoleId.Busker);
+        public static RoleInfo noisemaker = new RoleInfo("noisemaker", Noisemaker.color, RoleId.Noisemaker);
         public static RoleInfo evilYasuna = new RoleInfo("evilYasuna", Palette.ImpostorRed, RoleId.EvilYasuna);
         public static RoleInfo opportunist = new RoleInfo("opportunist", Opportunist.color, RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new RoleInfo("corruptedShifter", Shifter.color, RoleId.Shifter, true);
@@ -142,7 +143,6 @@ namespace TheOtherRoles
             morphling,
             camouflager,
             vampire,
-            catcher,
             eraser,
             trickster,
             cleaner,
@@ -193,7 +193,7 @@ namespace TheOtherRoles
             engineer,
             sheriff,
             deputy,
-            niceshifter,
+            niceshifter, 
             bait,
             lighter,
             detective,
@@ -216,6 +216,8 @@ namespace TheOtherRoles
             taskMaster,
             teleporter,
             prophet,
+            busker,
+            noisemaker,
             //trapper,
             bloody,
             antiTeleport,
@@ -226,7 +228,7 @@ namespace TheOtherRoles
             invert,
             chameleon,
             cupidLover,
-            //shifter,
+            //shifter, 
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false) {
@@ -269,7 +271,6 @@ namespace TheOtherRoles
             if (p == Morphling.morphling) infos.Add(morphling);
             if (p == Camouflager.camouflager) infos.Add(camouflager);
             if (p == Vampire.vampire) infos.Add(vampire);
-            if (p == Catcher.catcher) infos.Add(catcher);
             if (p == Eraser.eraser) infos.Add(eraser);
             if (p == Trickster.trickster) infos.Add(trickster);
             if (p == Cleaner.cleaner) infos.Add(cleaner);
@@ -303,6 +304,8 @@ namespace TheOtherRoles
             if (p == Prophet.prophet) infos.Add(prophet);
             if (p == Fox.fox) infos.Add(fox);
             if (p == Immoralist.immoralist) infos.Add(immoralist);
+            if (p == Busker.busker) infos.Add(busker);
+            if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -379,9 +382,9 @@ namespace TheOtherRoles
                 }
             }
 
-            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target)
+            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target) 
                 roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
-            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");
+            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");            
 
             if (!suppressGhostInfo && p != null) {
                 if (p == Shifter.shifter && (CachedPlayer.LocalPlayer.PlayerControl == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
@@ -488,6 +491,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Divined:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryDivined"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Pseudocide:
+                                    deathReasonString = $" - {Helpers.cs(Busker.color, ModTranslation.getString("roleSummaryPseudocide"))}";
                                     break;
                                 case DeadPlayer.CustomDeathReason.Arson:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryTorched"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));

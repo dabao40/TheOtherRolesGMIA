@@ -10,7 +10,7 @@ namespace TheOtherRoles {
     [HarmonyPatch]
     public static class TasksHandler {
 
-        public static Tuple<int, int> taskInfo(GameData.PlayerInfo playerInfo, bool isResult = false) {
+        public static Tuple<int, int> taskInfo(NetworkedPlayerInfo playerInfo, bool isResult = false) {
             int TotalTasks = 0;
             int CompletedTasks = 0;
             if (!playerInfo.Disconnected && playerInfo.Tasks != null &&
@@ -25,6 +25,14 @@ namespace TheOtherRoles {
                     TotalTasks = CompletedTasks = GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks + 
                     GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks + 
                     GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks;
+                }
+                else if (Fox.fox != null && Fox.fox.PlayerId == playerInfo.PlayerId)
+                {
+                    foreach (var playerInfoTask in playerInfo.Tasks)
+                    {
+                        if (playerInfoTask.Complete) CompletedTasks++;
+                        TotalTasks++;
+                    }
                 }
                 else
                 {
@@ -118,6 +126,9 @@ namespace TheOtherRoles {
                         else if (!TaskMaster.triggerTaskMasterWin)
                         {
                             action();
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockTaskMasterAcChallenge, SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.unlockTaskMasterAcChallenge();
                             TaskMaster.triggerTaskMasterWin = true;
                         }
                     }

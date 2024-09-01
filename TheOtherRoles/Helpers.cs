@@ -22,6 +22,10 @@ using System.Globalization;
 using TheOtherRoles.Patches;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using System.Runtime.InteropServices;
+using TheOtherRoles.MetaContext;
+using System.Text;
+using BepInEx.Unity.IL2CPP.UnityEngine;
 
 namespace TheOtherRoles {
 
@@ -189,7 +193,7 @@ namespace TheOtherRoles {
 
         }
 
-        private static Color HexToColor(string hex)
+        public static Color HexToColor(string hex)
         {
             Color color = new();
             ColorUtility.TryParseHtmlString("#" + hex, out color);
@@ -337,7 +341,7 @@ namespace TheOtherRoles {
         }
 
         public static bool shouldShowGhostInfo() {
-            return CachedPlayer.LocalPlayer.PlayerControl != null && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && TORMapOptions.ghostsSeeInformation || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
+            return CachedPlayer.LocalPlayer.PlayerControl != null && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag) && TORMapOptions.ghostsSeeInformation || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
         public static void clearAllTasks(this PlayerControl player) {
@@ -379,6 +383,179 @@ namespace TheOtherRoles {
         public static bool MushroomSabotageActive()
         {
             return CachedPlayer.LocalPlayer.PlayerControl.myTasks.ToArray().Any((x) => x.TaskType == TaskTypes.MushroomMixupSabotage);
+        }
+
+        public static List<string> removeLineFeed(string line)
+        {
+            var lines = line.Split("\n", StringSplitOptions.None);
+            return lines.ToList();
+        }
+
+        public static string camelString(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            string firstLetter = input.Substring(0, 1).ToUpper();
+            string remainingLetters = input.Substring(1).ToLower();
+            return firstLetter + remainingLetters;
+        }
+
+        public static IEnumerator CoGush(this PlayerControl player)
+        {
+
+            player.MyPhysics.body.velocity = Vector2.zero;
+            if (player.AmOwner) player.MyPhysics.inputHandler.enabled = true;
+            player.moveable = false;
+            player.MyPhysics.myPlayer.Visible = true;
+            player.cosmetics.AnimateSkinExitVent();
+
+            yield return player.MyPhysics.Animations.CoPlayExitVentAnimation();
+
+            player.cosmetics.AnimateSkinIdle();
+            player.MyPhysics.Animations.PlayIdleAnimation();
+            player.moveable = true;
+            player.currentRoleAnimations.ForEach((Action<RoleEffectAnimation>)((an) => an.ToggleRenderer(true)));
+            if (player.AmOwner) player.MyPhysics.inputHandler.enabled = false;
+        }
+
+        public static Camera FindCamera(int cameraLayer) => Camera.allCameras.FirstOrDefault(c => (c.cullingMask & (1 << cameraLayer)) != 0);
+
+        public static Vector3 WorldToScreenPoint(Vector3 worldPos, int cameraLayer)
+        {
+            return FindCamera(cameraLayer)?.WorldToScreenPoint(worldPos) ?? Vector3.zero;
+        }
+
+        public static Vector3 ScreenToWorldPoint(Vector3 screenPos, int cameraLayer)
+        {
+            return FindCamera(cameraLayer)?.ScreenToWorldPoint(screenPos) ?? Vector3.zero;
+        }
+
+        public static string GetClipboardString()
+        {
+            uint type = 0;
+            if (ClipboardHelper.IsClipboardFormatAvailable(1U)) { type = 1U; Debug.Log("ASCII"); }
+            if (ClipboardHelper.IsClipboardFormatAvailable(13U)) { type = 13U; Debug.Log("UNICODE"); }
+            if (type == 0) return "";
+
+            string result;
+            try
+            {
+                if (!ClipboardHelper.OpenClipboard(IntPtr.Zero))
+                {
+                    result = "";
+                }
+                else
+                {
+
+                    IntPtr clipboardData = ClipboardHelper.GetClipboardData(type);
+                    if (clipboardData == IntPtr.Zero)
+                        result = "";
+                    else
+                    {
+                        IntPtr intPtr = IntPtr.Zero;
+                        try
+                        {
+                            intPtr = ClipboardHelper.GlobalLock(clipboardData);
+                            int len = ClipboardHelper.GlobalSize(clipboardData);
+
+                            if (type == 1U)
+                                result = Marshal.PtrToStringAnsi(clipboardData, len);
+                            else
+                            {
+                                result = Marshal.PtrToStringUni(clipboardData) ?? "";
+                            }
+                        }
+                        finally
+                        {
+                            if (intPtr != IntPtr.Zero) ClipboardHelper.GlobalUnlock(intPtr);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ClipboardHelper.CloseClipboard();
+            }
+            return result;
+        }
+
+        static public SpriteRenderer CreateSharpBackground(Vector2 size, Color color, Transform transform)
+        {
+            var renderer = CreateObject<SpriteRenderer>("Background", transform, new Vector3(0, 0, 0.25f));
+            return CreateSharpBackground(renderer, color, size);
+        }
+
+        static public SpriteRenderer CreateSharpBackground(SpriteRenderer renderer, Color color, Vector2 size)
+        {
+            renderer.sprite = loadSpriteFromResources("TheOtherRoles.Resources.StatisticsBackground.png", 100f);
+            renderer.drawMode = SpriteDrawMode.Sliced;
+            renderer.tileMode = SpriteTileMode.Continuous;
+            renderer.color = color;
+            renderer.size = size;
+            return renderer;
+        }
+
+        static public IEnumerator Sequence(params IEnumerator[] enumerator)
+        {
+            foreach (var e in enumerator) yield return e;
+        }
+
+        public static int ComputeConstantHash(this string str)
+        {
+            const long MulPrime = 467;
+            const int SurPrime = 9670057;
+
+            long val = 0;
+            foreach (char c in str)
+            {
+                val *= MulPrime;
+                val += c;
+                val %= SurPrime;
+            }
+            return (int)(val % SurPrime);
+        }
+
+        public static string ComputeConstantHashAsString(this string str)
+        {
+            var val = str.ComputeConstantHash();
+            StringBuilder builder = new StringBuilder();
+            while (val > 0)
+            {
+                builder.Append((char)('a' + (val % 26)));
+                val /= 26;
+            }
+            return builder.ToString();
+        }
+
+        public static PassiveButton SetUpButton(this GameObject gameObject, bool withSound = false, SpriteRenderer buttonRenderer = null, Color? defaultColor = null, Color? selectedColor = null)
+        {
+            var button = gameObject.AddComponent<PassiveButton>();
+            button.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            button.OnMouseOut = new UnityEngine.Events.UnityEvent();
+            button.OnMouseOver = new UnityEngine.Events.UnityEvent();
+
+            if (withSound)
+            {
+                button.OnClick.AddListener((Action)(() => SoundManager.Instance.PlaySound(VanillaAsset.SelectClip, false, 0.8f)));
+                button.OnMouseOver.AddListener((Action)(() => SoundManager.Instance.PlaySound(VanillaAsset.HoverClip, false, 0.8f)));
+            }
+            if (buttonRenderer != null)
+            {
+                button.OnMouseOut.AddListener((Action)(() => buttonRenderer!.color = defaultColor ?? Color.white));
+                button.OnMouseOver.AddListener((Action)(() => buttonRenderer!.color = selectedColor ?? Color.green));
+            }
+
+            if (buttonRenderer != null) buttonRenderer.color = defaultColor ?? Color.white;
+
+            return button;
+        }
+
+        static public bool AnyNonTriggersBetween(Vector2 pos1, Vector2 pos2, out Vector2 vector, int? layerMask = null)
+        {
+            layerMask ??= Constants.ShipAndAllObjectsMask;
+            vector = pos2 - pos1;
+            return PhysicsHelpers.AnyNonTriggersBetween(pos1, vector.normalized, vector.magnitude, layerMask!.Value);
         }
 
         public static void setSemiTransparent(this PoolablePlayer player, bool value) {
@@ -524,8 +701,38 @@ namespace TheOtherRoles {
         public static string getGithubUrl(this string url)
         {
             if (!isChinese()) return url;
-            return url.Replace("https://", "https://github.moeyy.xyz/");
+            return url.Replace("https://", "https://mirror.ghproxy.com/");
         }
+
+        public static T FindAsset<T>(string name) where T : Il2CppObjectBase
+        {
+            foreach (var asset in UnityEngine.Object.FindObjectsOfTypeIncludingAssets(Il2CppType.Of<T>()))
+            {
+                if (asset.name == name) return asset.Cast<T>();
+            }
+            return null;
+        }
+
+        static public float Distance(this Vector3 myVec, Vector3 vector)
+        {
+            var vec = myVec - vector;
+            vec.z = 0;
+            return vec.magnitude;
+        }
+
+        public static LineRenderer SetUpLineRenderer(string objName, Transform parent, Vector3 localPosition, int? layer = null, float width = 0.2f)
+        {
+            var line = CreateObject<LineRenderer>(objName, parent, localPosition, layer);
+            line.material.shader = Shader.Find("Sprites/Default");
+            line.SetColors(Color.clear, Color.clear);
+            line.positionCount = 2;
+            line.SetPositions(new Vector3[] { Vector3.zero, Vector3.zero });
+            line.useWorldSpace = false;
+            line.SetWidth(width, width);
+            return line;
+        }
+
+        static public float Distance(this Vector2 myVec, Vector2 vector) => (myVec - vector).magnitude;
 
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f || MushroomSabotageActive()) return true; // No names are visible
@@ -550,7 +757,7 @@ namespace TheOtherRoles {
             {
                 var instance = ShipStatus.Instance.CastFast<FungleShipStatus>().specialSabotage;
                 MushroomMixupSabotageSystem.CondensedOutfit condensedOutfit = instance.currentMixups[target.PlayerId];
-                GameData.PlayerOutfit playerOutfit = instance.ConvertToPlayerOutfit(condensedOutfit);
+                NetworkedPlayerInfo.PlayerOutfit playerOutfit = instance.ConvertToPlayerOutfit(condensedOutfit);
                 target.MixUpOutfit(playerOutfit);
             }
             else
@@ -657,6 +864,61 @@ namespace TheOtherRoles {
             text.defaultStr = translationKey;
         }
 
+        public static R GetRolePrefab<R>() where R : RoleBehaviour
+        {
+            foreach (RoleBehaviour role in RoleManager.Instance.AllRoles)
+            {
+                R r = role.TryCast<R>();
+                if (r != null)
+                {
+                    return r;
+                }
+            }
+            return null;
+        }
+
+        public static Shader HSVShader;
+
+        public static (GameObject obj, NoisemakerArrow arrow) InstantiateNoisemakerArrow(Vector2 targetPos, bool withSound = false, float? hue = null)
+        {
+            var noisemaker = GetRolePrefab<NoisemakerRole>();
+            if (noisemaker != null)
+            {
+                if (withSound && Constants.ShouldPlaySfx())
+                {
+                    SoundManager.Instance.PlayDynamicSound("NoisemakerAlert", noisemaker.deathSound, false, (DynamicSound.GetDynamicsFunction)((source, dt) =>
+                    {
+                        if (!PlayerControl.LocalPlayer)
+                        {
+                            source.volume = 0f;
+                            return;
+                        }
+                        source.volume = 1f;
+                        Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                        source.volume = SoundManager.GetSoundVolume(targetPos, truePosition, 7f, 50f, 0.5f);
+                    }), SoundManager.Instance.SfxChannel);
+                    VibrationManager.Vibrate(1f, PlayerControl.LocalPlayer.GetTruePosition(), 7f, 1.2f, VibrationManager.VibrationFalloff.None, null, false);
+                }
+                GameObject gameObject = GameObject.Instantiate<GameObject>(noisemaker.deathArrowPrefab, Vector3.zero, Quaternion.identity);
+                var deathArrow = gameObject.GetComponent<NoisemakerArrow>();
+                deathArrow.SetDuration(3f);
+                deathArrow.gameObject.SetActive(true);
+                deathArrow.target = targetPos;
+
+                if (hue.HasValue)
+                {
+                    deathArrow.GetComponentsInChildren<SpriteRenderer>().Do(renderer =>
+                    {
+                        renderer.material = new Material(HSVShader);
+                        renderer.sharedMaterial.SetFloat("_Hue", 314);
+                    });
+                }
+                return (gameObject, deathArrow);
+            }
+
+            return (null, null)!;
+        }
+
         public static void DoTransitionFade(this TransitionFade transitionFade, GameObject transitionFrom, GameObject transitionTo, Action onTransition, Action callback)
         {
             if (transitionTo) transitionTo!.SetActive(false);
@@ -676,26 +938,31 @@ namespace TheOtherRoles {
             transitionFade.StartCoroutine(Coroutine().WrapToIl2Cpp());
         }
 
-        public static void setInvisible(PlayerControl player, Color color)
+        public static void setInvisible(PlayerControl player, Color color, float alpha)
         {
+            if (player.cosmetics.currentBodySprite.BodySprite != null)
+                player.cosmetics.currentBodySprite.BodySprite.color = color;
 
-            if (player.MyPhysics?.myPlayer.cosmetics.currentBodySprite.BodySprite != null)
-                player.MyPhysics.myPlayer.cosmetics.currentBodySprite.BodySprite.color = color;
-
-            if (player.MyPhysics?.myPlayer.cosmetics.skin?.layer != null)
-                player.MyPhysics.myPlayer.cosmetics.skin.layer.color = color;
+            if (player.cosmetics.skin?.layer != null)
+                player.cosmetics.skin.layer.color = color;
 
             if (player.cosmetics.hat != null)
-                player.cosmetics.hat.SpriteColor = color;
+            {
+                player.cosmetics.hat.FrontLayer.color = color;
+                player.cosmetics.hat.BackLayer.color = color;
+            }
 
-            if (player.GetPet() != null)
-                player.GetPet().ForEachRenderer(true, (Il2CppSystem.Action<SpriteRenderer>)((render) => render.color = color));
+            if (player.cosmetics.currentPet != null)
+                player.cosmetics.currentPet.SetAlpha(alpha);
 
             if (player.cosmetics.visor != null)
                 player.cosmetics.visor.Image.color = color;
 
             if (player.cosmetics.colorBlindText != null)
                 player.cosmetics.colorBlindText.color = color;
+
+            if (player.cosmetics.PettingHand != null)
+                player.cosmetics.PettingHand.SetAlpha(alpha);
         }
 
         public static PlainShipRoom getPlainShipRoom(PlayerControl p)
@@ -799,6 +1066,11 @@ namespace TheOtherRoles {
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.shieldedMurderAttempt();
                 SoundEffectsManager.play("fail");
+
+                MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockMedicAcChallenge, SendOption.Reliable, -1);
+                writer.Write(killer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(acWriter);
+                RPCProcedure.unlockMedicAcChallenge(killer.PlayerId);
                 return MurderAttemptResult.SuppressKill;
             }
 
@@ -830,9 +1102,9 @@ namespace TheOtherRoles {
             // Kill the killer if Veteran is on alert
             else if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == target)
             {
-                //MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.VeteranKill, Hazel.SendOption.Reliable, -1);
-                //AmongUsClient.Instance.FinishRpcImmediately(writer);
-                //RPCProcedure.veteranKill(killer.PlayerId);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.UnlockVeteranAcChallenge, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.unlockVeteranAcChallenge();
                 return MurderAttemptResult.ReverseKill;
             }
 
@@ -962,11 +1234,23 @@ namespace TheOtherRoles {
                 if (cam != null && cam.gameObject.name == "UI Camera") cam.orthographicSize = orthographicSize;  // The UI is scaled too, else we cant click the buttons. Downside: map is super small.
             }
 
-            if (HudManagerStartPatch.zoomOutButton != null) {
-                HudManagerStartPatch.zoomOutButton.Sprite = zoomOutStatus ? Helpers.loadSpriteFromResources("TheOtherRoles.Resources.PlusButton.png", 75f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MinusButton.png", 150f);
-                HudManagerStartPatch.zoomOutButton.PositionOffset = zoomOutStatus ? new Vector3(0f, 3f, 0) : new Vector3(0.4f, 2.8f, 0);
+            var tzGO = GameObject.Find("TOGGLEZOOMBUTTON");
+            if (tzGO != null)
+            {
+                var rend = tzGO.transform.Find("Inactive").GetComponent<SpriteRenderer>();
+                var rendActive = tzGO.transform.Find("Active").GetComponent<SpriteRenderer>();
+                rend.sprite = zoomOutStatus ? Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Plus_Button.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_Button.png", 100f);
+                rendActive.sprite = zoomOutStatus ? Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Plus_ButtonActive.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_ButtonActive.png", 100f);
+                tzGO.transform.localScale = new Vector3(1.2f, 1.2f, 1f) * (zoomOutStatus ? 4 : 1);
             }
+
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen); // This will move button positions to the correct position.
+        }
+
+        public static void AddModSettingsChangeMessage(this NotificationPopper popper, StringNames key, string value, string option, bool playSound = true)
+        {
+            string str = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.LobbyChangeSettingNotification, "<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">" + option + "</font>", "<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">" + value + "</font>");
+            popper.SettingsChangeMessageLogic(key, str, playSound);
         }
 
         private static long GetBuiltInTicks()
@@ -1010,7 +1294,7 @@ namespace TheOtherRoles {
             }
         }
 
-        public static bool hasImpVision(GameData.PlayerInfo player) {
+        public static bool hasImpVision(NetworkedPlayerInfo player) {
             return player.Role.IsImpostor
                 || ((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
                 || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
