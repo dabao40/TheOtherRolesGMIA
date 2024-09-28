@@ -64,6 +64,7 @@ namespace TheOtherRoles {
                         || playerInfo.PlayerId == Thief.thief?.PlayerId // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
                         || (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == playerInfo.PlayerId))
                         || (CreatedMadmate.hasTasks && playerInfo.PlayerId == CreatedMadmate.createdMadmate?.PlayerId)
+                        || (SchrodingersCat.hideRole && playerInfo.PlayerId == SchrodingersCat.schrodingersCat?.PlayerId)
                         || playerInfo.PlayerId == JekyllAndHyde.jekyllAndHyde?.PlayerId
                         || playerInfo.PlayerId == Fox.fox?.PlayerId
                         )

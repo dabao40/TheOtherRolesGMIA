@@ -99,6 +99,7 @@ namespace TheOtherRoles
         Opportunist,
         Busker,
         Noisemaker,
+        SchrodingersCat,
         Madmate,
         //Bomber,
         Crewmate,
@@ -264,7 +265,8 @@ namespace TheOtherRoles
         RecordStatistics,
         SetRoleHistory,
         NoisemakerSetSounded,
-        FoxSetTask
+        FoxSetTask,
+        SchrodingersCatSetTeam,
     }
 
     public static class RPCProcedure {
@@ -293,6 +295,7 @@ namespace TheOtherRoles
             clearGameHistory();
             setCustomButtonCooldowns();
             reloadPluginOptions();
+            CustomOverlay.resetOverlays();
             Helpers.toggleZoom(reset : true);
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
             SurveillanceMinigamePatch.nightVisionOverlays = null;
@@ -452,6 +455,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.PlagueDoctor:
                         PlagueDoctor.plagueDoctor = player;
+                        break;
+                    case RoleId.SchrodingersCat:
+                        SchrodingersCat.schrodingersCat = player;
                         break;
                     case RoleId.TaskMaster:
                         TaskMaster.taskMaster = player;
@@ -942,6 +948,7 @@ namespace TheOtherRoles
             {
                 Swapper.swapper = oldShifter;
                 Swapper.niceSwapperOnAchievementActivate();
+                Swapper.evilSwapperOnAchievementActivate();
             }
             if (Seer.seer != null && Seer.seer == player)
             {
@@ -968,7 +975,10 @@ namespace TheOtherRoles
                 SecurityGuard.onAchievementActivate();
             }
             if (Guesser.niceGuesser != null && Guesser.niceGuesser == player)
+            {
                 Guesser.niceGuesser = oldShifter;
+                Guesser.niceGuesserOnAchievementActivate();
+            }
             if (Bait.bait != null && Bait.bait == player)
             {
                 Bait.bait = oldShifter;
@@ -1003,6 +1013,7 @@ namespace TheOtherRoles
             {
                 Yasuna.yasuna = oldShifter;
                 Yasuna.yasunaOnAchievementActivate();
+                Yasuna.evilYasunaOnAcheivementActivate();
             }
             if (player == TaskMaster.taskMaster)
                 TaskMaster.taskMaster = oldShifter;
@@ -1022,34 +1033,97 @@ namespace TheOtherRoles
                 Busker.onAchievementActivate();
             }
             if (Noisemaker.noisemaker != null && Noisemaker.noisemaker == player)
+            {
                 Noisemaker.noisemaker = oldShifter;
+                Noisemaker.onAchievementActivate();
+            }
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
             if (player == Janitor.janitor) Janitor.janitor = oldShifter;
-            if (player == Morphling.morphling) Morphling.morphling = oldShifter;
-            if (player == Trickster.trickster) Trickster.trickster = oldShifter;
-            if (player == Cleaner.cleaner) Cleaner.cleaner = oldShifter;
-            if (player == Ninja.ninja) Ninja.ninja = oldShifter;
+            if (player == Morphling.morphling)
+            {
+                Morphling.morphling = oldShifter;
+                Morphling.onAchievementActivate();
+            }
+            if (player == Trickster.trickster)
+            {
+                Trickster.trickster = oldShifter;
+                Trickster.onAchievementActivate();
+            }
+            if (player == Cleaner.cleaner)
+            {
+                Cleaner.cleaner = oldShifter;
+                Cleaner.onAchievementActivate();
+            }
+            if (player == Ninja.ninja)
+            {
+                Ninja.ninja = oldShifter;
+                Ninja.onAchievementActivate();
+            }
             if (player == NekoKabocha.nekoKabocha) NekoKabocha.nekoKabocha = oldShifter;
-            if (player == Assassin.assassin) Assassin.assassin = oldShifter;
+            if (player == Assassin.assassin)
+            {
+                Assassin.assassin = oldShifter;
+                Assassin.onAchievementActivate();
+            }
             if (player == SerialKiller.serialKiller) SerialKiller.serialKiller = oldShifter;
             if (player == EvilTracker.evilTracker) EvilTracker.evilTracker = oldShifter;
-            if (player == EvilHacker.evilHacker) EvilHacker.evilHacker = oldShifter;
-            if (player == Witch.witch) Witch.witch = oldShifter;
-            if (player == Camouflager.camouflager) Camouflager.camouflager = oldShifter;
-            if (player == Guesser.evilGuesser) Guesser.evilGuesser = oldShifter;
-            if (player == Eraser.eraser) Eraser.eraser = oldShifter;
-            if (player == Warlock.warlock) Warlock.warlock = oldShifter;
-            if (player == BountyHunter.bountyHunter) BountyHunter.bountyHunter = oldShifter;
-            if (player == Vampire.vampire) Vampire.vampire = oldShifter;
+            if (player == EvilHacker.evilHacker)
+            {
+                EvilHacker.evilHacker = oldShifter;
+                EvilHacker.onAchievementActivate();
+            }
+            if (player == Witch.witch)
+            {
+                Witch.witch = oldShifter;
+                Witch.onAchievementActivate();
+            }
+            if (player == Camouflager.camouflager)
+            {
+                Camouflager.camouflager = oldShifter;
+                Camouflager.onAchievementActivate();
+            }
+            if (player == Guesser.evilGuesser)
+            {
+                Guesser.evilGuesser = oldShifter;
+                Guesser.evilGuesserOnAchievementActivate();
+            }
+            if (player == Eraser.eraser)
+            {
+                Eraser.eraser = oldShifter;
+                Eraser.onAchievementActivate();
+            }
+            if (player == Warlock.warlock)
+            {
+                Warlock.warlock = oldShifter;
+                Warlock.onAchievementActivate();
+            }
+            if (player == BountyHunter.bountyHunter)
+            {
+                BountyHunter.bountyHunter = oldShifter;
+                BountyHunter.onAchievementActivate();
+            }
+            if (player == Vampire.vampire)
+            {
+                Vampire.vampire = oldShifter;
+                Vampire.onAchievementActivate();
+            }
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.createdMadmate = oldShifter;
-            if (player == Blackmailer.blackmailer) Blackmailer.blackmailer = oldShifter;
+            if (player == Blackmailer.blackmailer)
+            {
+                Blackmailer.blackmailer = oldShifter;
+                Blackmailer.onAchievementActivate();
+            }
             if (player == MimicK.mimicK) MimicK.mimicK = oldShifter;
             if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
             if (player == BomberA.bomberA) BomberA.bomberA = oldShifter;
             if (player == BomberB.bomberB) BomberB.bomberB = oldShifter;
-            if (player == Trapper.trapper) Trapper.trapper = oldShifter;
+            if (player == Trapper.trapper)
+            {
+                Trapper.trapper = oldShifter;
+                Trapper.onAchievementActivate();
+            }
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
@@ -1068,6 +1142,7 @@ namespace TheOtherRoles
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.jekyllAndHyde = oldShifter;
             if (player == Moriarty.formerMoriarty) Moriarty.formerMoriarty = oldShifter;
             if (player == JekyllAndHyde.formerJekyllAndHyde) JekyllAndHyde.formerJekyllAndHyde = oldShifter;
+            if (player == SchrodingersCat.schrodingersCat) SchrodingersCat.schrodingersCat = oldShifter;
 
             if (Lawyer.lawyer != null && Lawyer.target == player)
             {
@@ -1240,6 +1315,9 @@ namespace TheOtherRoles
             }
             else
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker)
+                    EvilHacker.acTokenCommon ??= new("evilHacker.common1");
+
                 // Jackalバグ対応
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
@@ -1308,10 +1386,11 @@ namespace TheOtherRoles
             if (target == null) return;
             if (target.Data.IsDead) return;
 
-            if (Fox.fox != null && Fox.fox == target)
+            if ((Fox.fox != null && Fox.fox == target) || (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat == target))
             {
                 KillAnimationCoPerformKillPatch.hideNextAnimation = true;
                 fortuneTeller.MurderPlayer(target, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.Divined, fortuneTeller);
             }
 
             // インポスターの場合は占い師の位置に矢印を表示
@@ -1507,6 +1586,7 @@ namespace TheOtherRoles
             if (player == Immoralist.immoralist) Immoralist.clearAndReload();
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
             if (player == Cupid.cupid) Cupid.clearAndReload(false);
+            if (player == SchrodingersCat.schrodingersCat) SchrodingersCat.clearAndReload();
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -1674,6 +1754,32 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             Noisemaker.target = player;
+        }
+
+        public static void schrodingersCatSetTeam(byte team)
+        {
+            switch ((SchrodingersCat.Team)team)
+            {
+                case SchrodingersCat.Team.Crewmate:
+                    SchrodingersCat.setCrewFlag();
+                    break;
+                case SchrodingersCat.Team.Impostor:
+                    SchrodingersCat.setImpostorFlag();
+                    FastDestroyableSingleton<RoleManager>.Instance.SetRole(SchrodingersCat.schrodingersCat, RoleTypes.Impostor);
+                    break;
+                case SchrodingersCat.Team.Jackal:
+                    SchrodingersCat.setJackalFlag();
+                    break;
+                case SchrodingersCat.Team.JekyllAndHyde:
+                    SchrodingersCat.setJekyllAndHydeFlag();
+                    break;
+                case SchrodingersCat.Team.Moriarty:
+                    SchrodingersCat.setMoriartyFlag();
+                    break;
+                default:
+                    SchrodingersCat.setCrewFlag();
+                    break;
+            }
         }
 
         public static void placeAssassinTrace(byte[] buff) {
@@ -2180,6 +2286,11 @@ namespace TheOtherRoles
         {
             var trapper = Helpers.playerById(trapperId);
             var target = Helpers.playerById(playerId);
+            if (CachedPlayer.LocalPlayer.PlayerControl == trapper)
+            {
+                Trapper.acTokenCommon ??= new("trapper.common1");
+                Trapper.acTokenChallenge.Value++;
+            }
             Trap.trapKill(trapId, trapper, target);
         }
 
@@ -2209,6 +2320,7 @@ namespace TheOtherRoles
                 if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
             }
             Moriarty.counter += 1;
+            Moriarty.hasKilled = true;
             if (Moriarty.numberToWin == Moriarty.counter) Moriarty.triggerMoriartyWin = true;
         }
 
@@ -2420,6 +2532,24 @@ namespace TheOtherRoles
             dyingTarget.Exiled();
             GameHistory.overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
 
+            if (CachedPlayer.LocalPlayer.PlayerControl == killer && dyingTarget != killer)
+            {
+                if (killer == Guesser.niceGuesser)
+                {
+                    Guesser.acTokenNiceGuesser.Value++;
+                    _ = new StaticAchievementToken("niceGuesser.common1");
+                    if (dyingTarget == Guesser.evilGuesser)
+                        _ = new StaticAchievementToken("niceGuesser.challenge2");
+                }
+                else if (killer == Guesser.evilGuesser)
+                {
+                    Guesser.acTokenEvilGuesser.Value++;
+                    _ = new StaticAchievementToken("evilGuesser.common1");
+                    if (dyingTarget == Guesser.niceGuesser)
+                        _ = new StaticAchievementToken("evilGuesser.challenge2");
+                }
+            }
+
             byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
             byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
             byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
@@ -2558,7 +2688,10 @@ namespace TheOtherRoles
             PlayerControl target = Helpers.playerById(playerId);
             PlayerControl thief = Thief.thief;
             if (target == null) return;
-            if (target == Sheriff.sheriff) Sheriff.sheriff = thief;
+            if (target == Sheriff.sheriff) {
+                Sheriff.sheriff = thief;
+                Sheriff.onAchievementActivate();
+            }
             if (target == Jackal.jackal) {
                 Jackal.jackal = thief;
                 Jackal.formerJackals.Add(target);
@@ -2577,37 +2710,103 @@ namespace TheOtherRoles
                 JekyllAndHyde.jekyllAndHyde = thief;
                 JekyllAndHyde.formerJekyllAndHyde = target;
             }
-            if (target == Guesser.evilGuesser) Guesser.evilGuesser = thief;
+            if (target == Guesser.evilGuesser)
+            {
+                Guesser.evilGuesser = thief;
+                Guesser.evilGuesserOnAchievementActivate();
+            }
             if (target == Watcher.evilwatcher) Watcher.evilwatcher = thief;
             if (target == Godfather.godfather) Godfather.godfather = thief;
             if (target == Mafioso.mafioso) Mafioso.mafioso = thief;
             if (target == Janitor.janitor) Janitor.janitor = thief;
-            if (target == Morphling.morphling) Morphling.morphling = thief;
-            if (target == Camouflager.camouflager) Camouflager.camouflager = thief;
-            if (target == Vampire.vampire) Vampire.vampire = thief;
-            if (target == Eraser.eraser) Eraser.eraser = thief;
-            if (target == Trickster.trickster) Trickster.trickster = thief;
-            if (target == Cleaner.cleaner) Cleaner.cleaner = thief;
-            if (target == Warlock.warlock) Warlock.warlock = thief;
-            if (target == BountyHunter.bountyHunter) BountyHunter.bountyHunter = thief;
-            if (target == Ninja.ninja) Ninja.ninja = thief;
+            if (target == Morphling.morphling)
+            {
+                Morphling.morphling = thief;
+                Morphling.onAchievementActivate();
+            }
+            if (target == Camouflager.camouflager)
+            {
+                Camouflager.camouflager = thief;
+                Camouflager.onAchievementActivate();
+            }
+            if (target == Vampire.vampire)
+            {
+                Vampire.vampire = thief;
+                Vampire.onAchievementActivate();
+            }
+            if (target == Eraser.eraser)
+            {
+                Eraser.eraser = thief;
+                Eraser.onAchievementActivate();
+            }
+            if (target == Trickster.trickster)
+            {
+                Trickster.trickster = thief;
+                Trickster.onAchievementActivate();
+            }
+            if (target == Cleaner.cleaner)
+            {
+                Cleaner.cleaner = thief;
+                Cleaner.onAchievementActivate();
+            }
+            if (target == Warlock.warlock)
+            {
+                Warlock.warlock = thief;
+                Warlock.onAchievementActivate();
+            }
+            if (target == BountyHunter.bountyHunter)
+            {
+                BountyHunter.bountyHunter = thief;
+                BountyHunter.onAchievementActivate();
+            }
+            if (target == Ninja.ninja)
+            {
+                Ninja.ninja = thief;
+                Ninja.onAchievementActivate();
+            }
             if (target == EvilTracker.evilTracker) EvilTracker.evilTracker = thief;
             if (target == NekoKabocha.nekoKabocha && !NekoKabocha.revengeNeutral) NekoKabocha.nekoKabocha = thief;
             if (target == SerialKiller.serialKiller) SerialKiller.serialKiller = thief;
-            if (target == Swapper.swapper && target.Data.Role.IsImpostor) Swapper.swapper = thief;
+            if (target == Swapper.swapper && target.Data.Role.IsImpostor)
+            {
+                Swapper.swapper = thief;
+                Swapper.evilSwapperOnAchievementActivate();
+            }
             if (target == Undertaker.undertaker) Undertaker.undertaker = thief;
-            if (target == EvilHacker.evilHacker) EvilHacker.evilHacker = thief;
-            if (target == Trapper.trapper) Trapper.trapper = thief;
-            if (target == Blackmailer.blackmailer) Blackmailer.blackmailer = thief;
+            if (target == EvilHacker.evilHacker)
+            {
+                EvilHacker.evilHacker = thief;
+                EvilHacker.onAchievementActivate();
+            }
+            if (target == Trapper.trapper)
+            {
+                Trapper.trapper = thief;
+                Trapper.onAchievementActivate();
+            }
+            if (target == Blackmailer.blackmailer)
+            {
+                Blackmailer.blackmailer = thief;
+                Blackmailer.onAchievementActivate();
+            }
+            if (target == Yasuna.yasuna)
+            {
+                Yasuna.yasuna = thief;
+                Yasuna.evilYasunaOnAcheivementActivate();
+            }
             if (target == Witch.witch) {
                 Witch.witch = thief;
+                Witch.onAchievementActivate();
                 if (MeetingHud.Instance) 
                     if (Witch.witchVoteSavesTargets)  // In a meeting, if the thief guesses the witch, all targets are saved or no target is saved.
                         Witch.futureSpelled = new();
                 else  // If thief kills witch during the round, remove the thief from the list of spelled people, keep the rest
                     Witch.futureSpelled.RemoveAll(x => x.PlayerId == thief.PlayerId);
             }
-            if (target == Assassin.assassin) Assassin.assassin = thief;
+            if (target == Assassin.assassin)
+            {
+                Assassin.assassin = thief;
+                Assassin.onAchievementActivate();
+            }
             //if (target == Bomber.bomber) Bomber.bomber = thief;
             if (target.Data.Role.IsImpostor) {
                 RoleManager.Instance.SetRole(Thief.thief, RoleTypes.Impostor);
@@ -3014,6 +3213,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.NoisemakerSetSounded:
                     RPCProcedure.noisemakerSetSounded(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.SchrodingersCatSetTeam:
+                    RPCProcedure.schrodingersCatSetTeam(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.UnlockMayorAcCommon:
                     RPCProcedure.unlockMayorAcCommon(reader.ReadByte());

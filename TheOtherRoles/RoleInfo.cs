@@ -115,6 +115,7 @@ namespace TheOtherRoles
         public static RoleInfo cupidLover = new RoleInfo("lover", Cupid.color, RoleId.Lover, false, true);
         public static RoleInfo fox = new RoleInfo("fox", Fox.color, RoleId.Fox, true);
         public static RoleInfo immoralist = new RoleInfo("immoralist", Immoralist.color, RoleId.Immoralist, true);
+        public static RoleInfo schrodingersCat = new RoleInfo("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
 
         public static RoleInfo hunter = new RoleInfo("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo("hunted", Color.white, RoleId.Crewmate);
@@ -186,6 +187,7 @@ namespace TheOtherRoles
             jekyllAndHyde,
             moriarty,
             cupid,
+            schrodingersCat,
             //prosecutor,
             crewmate,
             mayor,
@@ -324,6 +326,8 @@ namespace TheOtherRoles
                 else infos.Add(TaskMaster.isTaskComplete ? taskMaster : crewmate);
             }
             if (p == PlagueDoctor.plagueDoctor) infos.Add(plagueDoctor);
+            if (p == SchrodingersCat.schrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead
+                || SchrodingersCat.hasTeam() || SchrodingersCat.tasksComplete(CachedPlayer.LocalPlayer.PlayerControl) ? schrodingersCat : crewmate);
             if (p == Opportunist.opportunist) infos.Add(opportunist);
             if (p == Shifter.shifter) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
             if (p == Arsonist.arsonist) infos.Add(arsonist);

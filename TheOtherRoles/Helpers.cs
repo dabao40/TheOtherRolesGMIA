@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 using TheOtherRoles.MetaContext;
 using System.Text;
 using BepInEx.Unity.IL2CPP.UnityEngine;
+using BepInEx.Unity.IL2CPP.Utils;
 
 namespace TheOtherRoles {
 
@@ -330,10 +331,48 @@ namespace TheOtherRoles {
             return n != StringNames.ServerNA && n != StringNames.ServerEU && n != StringNames.ServerAS;
         }
 
+        static public int[] Sequential(int length)
+        {
+            var array = new int[length];
+            for (int i = 0; i < length; i++) array[i] = i;
+            return array;
+        }
+
+        static public IEnumerator Smooth(this Transform transform, Vector3 goalLocalPosition, float duration)
+        {
+            float p = 0f;
+            var origin = transform.localPosition;
+            while (p < 1f)
+            {
+                p += Time.deltaTime / duration;
+
+                float pp = (1f - p) * (1f - p);
+                pp *= pp * pp;
+                transform.localPosition = origin * pp + goalLocalPosition * (1f - pp);
+                yield return null;
+            }
+
+            transform.localPosition = goalLocalPosition;
+        }
+
+        public static Vector3 convertPos(int index, int arrangeType, (int x, int y)[] arrangement, Vector3 origin, Vector3[] originOffset, Vector3 contentsOffset, float[] scale, (float x, float y)[] contentAreaMultiplier)
+        {
+            int num1 = index % arrangement[arrangeType].x;
+            int num2 = index / arrangement[arrangeType].x;
+            return origin + originOffset[arrangeType] + new Vector3(contentsOffset.x * scale[arrangeType] * contentAreaMultiplier[arrangeType].x * num1, contentsOffset.y * scale[arrangeType] * contentAreaMultiplier[arrangeType].y * num2, (float)(-(double)num2 * 0.0099999997764825821));
+        }
+
+        public static int GetDisplayType(int players)
+        {
+            if (players <= 15)
+                return 0;
+            return players > 18 ? 2 : 1;
+        }
+
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid);
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole));
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -526,6 +565,44 @@ namespace TheOtherRoles {
                 val /= 26;
             }
             return builder.ToString();
+        }
+
+        public static void ModShow(this HideAndSeekDeathPopup __instance, PlayerControl player, int deathIndex)
+        {
+            __instance.nameplate.SetPlayer(player);
+            Vector3 localPosition = __instance.transform.localPosition;
+            localPosition.z -= deathIndex;
+            __instance.transform.localPosition = localPosition;
+            __instance.StartCoroutine(AnimateCoroutine(__instance));
+        }
+
+        private static IEnumerator AnimateCoroutine(HideAndSeekDeathPopup __instance)
+        {
+            HideAndSeekDeathPopup andSeekDeathPopup = __instance;
+            DateTime startTime = DateTime.UtcNow;
+            bool doNeedReduceSpeed = true;
+            bool doNeedIncrease = true;
+            while (true)
+            {
+                AnimatorStateInfo animatorStateInfo = andSeekDeathPopup.animator.GetCurrentAnimatorStateInfo(0);
+                if ((animatorStateInfo).IsName("Show"))
+                {
+                    if (doNeedReduceSpeed && DateTime.UtcNow.Subtract(startTime).TotalSeconds >= 0.5)
+                    {
+                        __instance.animator.speed *= 0.15f;
+                        doNeedReduceSpeed = false;
+                    }
+                    if (doNeedIncrease && DateTime.UtcNow.Subtract(startTime).TotalSeconds >= 6.8f)
+                    {
+                        __instance.animator.speed *= 6.66f;
+                        doNeedIncrease = false;
+                    }
+                    yield return null;
+                }
+                else
+                    break;
+            }
+            UnityEngine.Object.Destroy(andSeekDeathPopup.gameObject);
         }
 
         public static PassiveButton SetUpButton(this GameObject gameObject, bool withSound = false, SpriteRenderer buttonRenderer = null, Color? defaultColor = null, Color? selectedColor = null)
@@ -840,6 +917,28 @@ namespace TheOtherRoles {
             if (menuBackground != null) return menuBackground;
             menuBackground = loadSpriteFromResources("TheOtherRoles.Resources.LobbyRoleInfo.RoleListScreen.png", 110f);
             return menuBackground;
+        }
+
+        public static void ModRevive(this PlayerControl player, bool resetRoleIfGhost = true)
+        {
+            player.Data.IsDead = false;
+            player.gameObject.layer = LayerMask.NameToLayer("Players");
+            player.MyPhysics.ResetMoveState();
+            player.cosmetics.SetPetSource(player);
+            player.cosmetics.SetNameMask(true);
+            if (player.AmOwner)
+            {
+                DestroyableSingleton<HudManager>.Instance.ShadowQuad.gameObject.SetActive(true);
+                DestroyableSingleton<HudManager>.Instance.KillButton.ToggleVisible(player.Data.Role.IsImpostor);
+                DestroyableSingleton<HudManager>.Instance.AdminButton.ToggleVisible(player.Data.Role.IsImpostor);
+                DestroyableSingleton<HudManager>.Instance.SabotageButton.ToggleVisible(player.Data.Role.IsImpostor);
+                DestroyableSingleton<HudManager>.Instance.ImpostorVentButton.ToggleVisible(player.Data.Role.IsImpostor);
+                DestroyableSingleton<HudManager>.Instance.Chat.ForceClosed();
+                DestroyableSingleton<HudManager>.Instance.Chat.SetVisible(false);
+            }
+            if (!resetRoleIfGhost || !AmongUsClient.Instance.AmHost || !RoleManager.IsGhostRole(player.Data.Role.Role))
+                return;
+            player.RpcSetRole(RoleTypes.Crewmate);
         }
 
         public static GameObject CreateObject(string objName, Transform parent, Vector3 localPosition, int? layer = null)
@@ -1199,7 +1298,7 @@ namespace TheOtherRoles {
         }
 
         public static bool isNeutral(PlayerControl player) {
-            RoleInfo roleInfo = RoleInfo.getRoleInfoForPlayer(player, false).FirstOrDefault();
+            RoleInfo roleInfo = RoleInfo.getRoleInfoForPlayer(player, false, true).FirstOrDefault();
             if (roleInfo != null)
                 return roleInfo.isNeutral;
             return false;

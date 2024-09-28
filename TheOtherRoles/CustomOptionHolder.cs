@@ -400,10 +400,19 @@ namespace TheOtherRoles {
         public static CustomOption cupidTimeLimit;
         public static CustomOption cupidShield;
 
+        public static CustomOption schrodingersCatSpawnRate;
+        public static CustomOption schrodingersCatKillCooldown;
+        public static CustomOption schrodingersCatBecomesImpostor;
+        public static CustomOption schrodingersCatCantKillUntilLastOne;
+        public static CustomOption schrodingersCatJustDieOnKilledByCrew;
+        public static CustomOption schrodingersCatHideRole;
+        public static CustomOption schrodingersCatCanChooseImpostor;
+
         public static CustomOption moriartySpawnRate;
         public static CustomOption moriartyBrainwashTime;
         public static CustomOption moriartyBrainwashCooldown;
         public static CustomOption moriartyNumberToWin;
+        public static CustomOption moriartyKillIndicate;
 
         public static CustomOption akujoSpawnRate;
         public static CustomOption akujoTimeLimit;
@@ -613,14 +622,14 @@ namespace TheOtherRoles {
             if (Utilities.EventUtility.canBeEnabled) enableEventMode = CustomOption.Create(10423, Types.General, cs(Color.green, "enableEventMode"), true, null, true);
 
             // Using new id's for the options to not break compatibilty with older versions
-            crewmateRolesCountMin = CustomOption.Create(300, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesCountMin"), 15f, 0f, 15f, 1f, null, true, "unitPlayers", heading: "headingMinMax");
-            crewmateRolesCountMax = CustomOption.Create(301, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesCountMax"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            neutralRolesCountMin = CustomOption.Create(302, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "neutralRolesCountMin"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            neutralRolesCountMax = CustomOption.Create(303, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "neutralRolesCountMax"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            impostorRolesCountMin = CustomOption.Create(304, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "impostorRolesCountMin"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            impostorRolesCountMax = CustomOption.Create(305, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "impostorRolesCountMax"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            modifiersCountMin = CustomOption.Create(306, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "modifiersCountMin"), 15f, 0f, 15f, 1f, format: "unitPlayers");
-            modifiersCountMax = CustomOption.Create(307, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "modifiersCountMax"), 15f, 0f, 15f, 1f, format: "unitPlayers");
+            crewmateRolesCountMin = CustomOption.Create(300, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesCountMin"), 24f, 0f, 24f, 1f, null, true, "unitPlayers", heading: "headingMinMax");
+            crewmateRolesCountMax = CustomOption.Create(301, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesCountMax"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            neutralRolesCountMin = CustomOption.Create(302, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "neutralRolesCountMin"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            neutralRolesCountMax = CustomOption.Create(303, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "neutralRolesCountMax"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            impostorRolesCountMin = CustomOption.Create(304, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "impostorRolesCountMin"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            impostorRolesCountMax = CustomOption.Create(305, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "impostorRolesCountMax"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            modifiersCountMin = CustomOption.Create(306, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "modifiersCountMin"), 24f, 0f, 24f, 1f, format: "unitPlayers");
+            modifiersCountMax = CustomOption.Create(307, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "modifiersCountMax"), 24f, 0f, 24f, 1f, format: "unitPlayers");
             crewmateRolesFill = CustomOption.Create(308, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesFill"), false);
 
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "mafia"), rates, null, true);
@@ -759,7 +768,7 @@ namespace TheOtherRoles {
 
             guesserSpawnRate = CustomOption.Create(310, Types.Neutral, cs(Guesser.color, "guesser"), rates, null, true);
             guesserIsImpGuesserRate = CustomOption.Create(311, Types.Neutral, "guesserIsImpGuesserRate", rates, guesserSpawnRate);
-            guesserNumberOfShots = CustomOption.Create(312, Types.Neutral, "guesserNumberOfShots", 2f, 1f, 15f, 1f, guesserSpawnRate, false, "unitShots");
+            guesserNumberOfShots = CustomOption.Create(312, Types.Neutral, "guesserNumberOfShots", 2f, 1f, 24f, 1f, guesserSpawnRate, false, "unitShots");
             guesserHasMultipleShotsPerMeeting = CustomOption.Create(313, Types.Neutral, "guesserHasMultipleShotsPerMeeting", false, guesserSpawnRate);
             guesserKillsThroughShield  = CustomOption.Create(315, Types.Neutral, "guesserKillsThroughShield", true, guesserSpawnRate);
             guesserEvilCanKillSpy  = CustomOption.Create(316, Types.Neutral, "guesserEvilCanKillSpy", true, guesserSpawnRate);
@@ -839,6 +848,14 @@ namespace TheOtherRoles {
             plagueDoctorImmunityTime = CustomOption.Create(6005, Types.Neutral, "plagueDoctorImmunityTime", 10f, 1f, 30f, 1f, plagueDoctorSpawnRate, false, "unitSeconds");
             plagueDoctorInfectKiller = CustomOption.Create(6006, Types.Neutral, "plagueDoctorInfectKiller", true, plagueDoctorSpawnRate);
             plagueDoctorWinDead = CustomOption.Create(5999, Types.Neutral, "plagueDoctorWinDead", true, plagueDoctorSpawnRate);
+
+            schrodingersCatSpawnRate = CustomOption.Create(8400, Types.Neutral, cs(SchrodingersCat.color, "schrodingersCat"), rates, null, true);
+            schrodingersCatKillCooldown = CustomOption.Create(971, Types.Neutral, "schrodingersCatKillCooldown", 20f, 1f, 60f, 0.5f, schrodingersCatSpawnRate, format: "unitSeconds");
+            schrodingersCatBecomesImpostor = CustomOption.Create(972, Types.Neutral, "schrodingersCatBecomesImpostor", true, schrodingersCatSpawnRate);
+            schrodingersCatCantKillUntilLastOne = CustomOption.Create(974, Types.Neutral, "schrodingersCatCantKillUntilLastOne", false, schrodingersCatSpawnRate);
+            schrodingersCatJustDieOnKilledByCrew = CustomOption.Create(976, Types.Neutral, "schrodingersCatJustDieOnKilledByCrew", false, schrodingersCatSpawnRate);
+            schrodingersCatHideRole = CustomOption.Create(977, Types.Neutral, "schrodingersCatHideRole", false, schrodingersCatSpawnRate);
+            schrodingersCatCanChooseImpostor = CustomOption.Create(979, Types.Neutral, "schrodingersCatCanChooseTeam", false, schrodingersCatHideRole);
 
             akujoSpawnRate = CustomOption.Create(8100, Types.Neutral, cs(Akujo.color, "akujo"), rates, null, true);
             akujoTimeLimit = CustomOption.Create(8101, Types.Neutral, "akujoTimeLimit", 300f, 30f, 1200f, 30f, akujoSpawnRate, false, "unitSeconds");
@@ -1042,6 +1059,7 @@ namespace TheOtherRoles {
             moriartyBrainwashCooldown = CustomOption.Create(8031, Types.Neutral, "moriartyBrainwashCooldown", 30f, 10f, 60f, 1f, moriartySpawnRate, false, "unitSeconds");
             moriartyBrainwashTime = CustomOption.Create(8032, Types.Neutral, "moriartyBrainwashTime", 30f, 1f, 60f, 1f, moriartySpawnRate, false, "unitSeconds");
             moriartyNumberToWin = CustomOption.Create(8033, Types.Neutral, "moriartyNumberToWin", 3f, 1f, 10f, 1f, moriartySpawnRate, false, "unitScrews");
+            moriartyKillIndicate = CustomOption.Create(8044, Types.Neutral, "moriartyKillIndicate", false, moriartySpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);
@@ -1112,14 +1130,14 @@ namespace TheOtherRoles {
             //modifierShifter = CustomOption.Create(1100, Types.Modifier, cs(Color.yellow, "Shifter"), rates, null, true);
 
             // Guesser Gamemode (2000 - 2999)
-            guesserGamemodeCrewNumber = CustomOption.Create(2001, Types.Guesser, cs(Guesser.color, "guesserGamemodeCrewNumber"), 15f, 1f, 15f, 1f, null, true, "unitPlayers", heading: "headingAmountOfGuessers");
-            guesserGamemodeNeutralNumber = CustomOption.Create(2002, Types.Guesser, cs(Guesser.color, "guesserGamemodeNeutralNumber"), 15f, 1f, 15f, 1f, null, false, "unitPlayers");
-            guesserGamemodeImpNumber = CustomOption.Create(2003, Types.Guesser, cs(Guesser.color, "guesserGamemodeImpNumber"), 15f, 1f, 15f, 1f, null, false, "unitPlayers");
+            guesserGamemodeCrewNumber = CustomOption.Create(2001, Types.Guesser, cs(Guesser.color, "guesserGamemodeCrewNumber"), 24f, 1f, 24f, 1f, null, true, "unitPlayers", heading: "headingAmountOfGuessers");
+            guesserGamemodeNeutralNumber = CustomOption.Create(2002, Types.Guesser, cs(Guesser.color, "guesserGamemodeNeutralNumber"), 24f, 1f, 24f, 1f, null, false, "unitPlayers");
+            guesserGamemodeImpNumber = CustomOption.Create(2003, Types.Guesser, cs(Guesser.color, "guesserGamemodeImpNumber"), 24f, 1f, 24f, 1f, null, false, "unitPlayers");
             guesserForceJackalGuesser = CustomOption.Create(2007, Types.Guesser, "guesserForceJackalGuesser", false, null, true, heading: "headingForceGuesser");
             guesserGamemodeSidekickIsAlwaysGuesser = CustomOption.Create(2012, Types.Guesser, "guesserGamemodeSidekickIsAlwaysGuesser", false, null);
             guesserForceThiefGuesser = CustomOption.Create(2011, Types.Guesser, "guesserForceThiefGuesser", false, null, true);
             guesserGamemodeHaveModifier = CustomOption.Create(2004, Types.Guesser, "guesserGamemodeHaveModifier", true, null, true, heading: "headingGeneralGuesser");
-            guesserGamemodeNumberOfShots = CustomOption.Create(2005, Types.Guesser, "guesserGamemodeNumberOfShots", 3f, 1f, 15f, 1f, null, false, "unitShots");
+            guesserGamemodeNumberOfShots = CustomOption.Create(2005, Types.Guesser, "guesserGamemodeNumberOfShots", 3f, 1f, 24f, 1f, null, false, "unitShots");
             guesserGamemodeHasMultipleShotsPerMeeting = CustomOption.Create(2006, Types.Guesser, "guesserGamemodeHasMultipleShotsPerMeeting", false, null);
             guesserGamemodeKillsThroughShield = CustomOption.Create(2008, Types.Guesser, "guesserGamemodeKillsThroughShield", true, null);
             guesserGamemodeEvilCanKillSpy = CustomOption.Create(2009, Types.Guesser, "guesserGamemodeEvilCanKillSpy", true, null);

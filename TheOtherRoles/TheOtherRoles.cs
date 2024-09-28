@@ -10,13 +10,14 @@ using TheOtherRoles.CustomGameModes;
 using static TheOtherRoles.TheOtherRoles;
 using AmongUs.Data;
 using Hazel;
-using JetBrains.Annotations;
-using Steamworks;
 using TheOtherRoles.Patches;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.UIElements;
 using Reactor.Utilities.Extensions;
 using TheOtherRoles.Modules;
+using AmongUs.GameOptions;
+using Il2CppSystem.Runtime.Remoting.Messaging;
+using MonoMod.Cil;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace TheOtherRoles
 {
@@ -104,6 +105,7 @@ namespace TheOtherRoles
             Cupid.clearAndReload();
             Fox.clearAndReload();
             Immoralist.clearAndReload();
+            SchrodingersCat.clearAndReload();
 
             // Modifier
             //Bait.clearAndReload();
@@ -313,8 +315,11 @@ namespace TheOtherRoles
             public static PlayerControl mafioso;
             public static Color color = Palette.ImpostorRed;
 
+            public static StaticAchievementToken acTokenAnother = null;
+
             public static void clearAndReload() {
                 mafioso = null;
+                acTokenAnother = null;
             }
         }
 
@@ -332,9 +337,12 @@ namespace TheOtherRoles
                 return buttonSprite;
             }
 
+            public static StaticAchievementToken acTokenCommon = null;
+
             public static void clearAndReload() {
                 janitor = null;
                 cooldown = CustomOptionHolder.janitorCooldown.getFloat();
+                acTokenCommon = null;
             }
         }
 
@@ -641,10 +649,19 @@ namespace TheOtherRoles
         public static StaticAchievementToken acTokenCommon = null;
         public static AchievementToken<(byte swapped1, byte swapped2, bool cleared)> acTokenChallenge = null;
 
+        public static AchievementToken<(byte swapped1, byte swapped2, bool cleared)> evilSwapperAcTokenChallenge;
+        public static StaticAchievementToken evilSwapperAcTokenAnother;
+
         public static void niceSwapperOnAchievementActivate()
         {
             if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper || CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
             acTokenChallenge ??= new("niceSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+        }
+
+        public static void evilSwapperOnAchievementActivate()
+        {
+            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper || !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            evilSwapperAcTokenChallenge ??= new("evilSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static Sprite getCheckSprite() {
@@ -664,6 +681,8 @@ namespace TheOtherRoles
             rechargedTasks = Mathf.RoundToInt(CustomOptionHolder.swapperRechargeTasksNumber.getFloat());
             acTokenCommon = null;
             acTokenChallenge = null;
+            evilSwapperAcTokenChallenge = null;
+            evilSwapperAcTokenAnother = null;
         }
     }
 
@@ -773,11 +792,21 @@ namespace TheOtherRoles
         public static PlayerControl morphTarget;
         public static float morphTimer = 0f;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<(byte playerId, bool kill, bool cleared)> acTokenChallenge;
+
         public static void resetMorph() {
             morphTarget = null;
             morphTimer = 0f;
             if (morphling == null) return;
             morphling.setDefaultLook();
+        }
+
+        public static void onAchievementActivate()
+        {
+            if (morphling == null || CachedPlayer.LocalPlayer.PlayerControl != morphling) return;
+            acTokenChallenge ??= new("morphling.challenge", (byte.MaxValue, false, false), (val, _) => val.cleared);
         }
 
         public static void clearAndReload() {
@@ -789,6 +818,9 @@ namespace TheOtherRoles
             morphTimer = 0f;
             cooldown = CustomOptionHolder.morphlingCooldown.getFloat();
             duration = CustomOptionHolder.morphlingDuration.getFloat();
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
 
         public static Sprite getSampleSprite() {
@@ -812,11 +844,21 @@ namespace TheOtherRoles
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<(int kills, bool cleared)> acTokenChallenge = null;
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.CamoButton.png", 115f);
             return buttonSprite;
+        }
+
+        public static void onAchievementActivate()
+        {
+            if (camouflager == null || CachedPlayer.LocalPlayer.PlayerControl != camouflager) return;
+            acTokenChallenge ??= new("camouflager.challenge", (0, false), (val, _) => val.cleared);
         }
 
         public static void resetCamouflage() {
@@ -826,6 +868,8 @@ namespace TheOtherRoles
                     continue;*/
                 p.setDefaultLook();
             }
+            if (CachedPlayer.LocalPlayer.PlayerControl == camouflager)
+                acTokenChallenge.Value.kills = 0;
         }
 
         public static void clearAndReload() {
@@ -834,6 +878,9 @@ namespace TheOtherRoles
             camouflageTimer = 0f;
             cooldown = CustomOptionHolder.camouflagerCooldown.getFloat();
             duration = CustomOptionHolder.camouflagerDuration.getFloat();
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -1016,6 +1063,15 @@ namespace TheOtherRoles
         public static PlayerControl bitten; 
         public static bool targetNearGarlic = false;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<(DateTime deathTime, bool cleared)> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (vampire == null || CachedPlayer.LocalPlayer.PlayerControl != vampire) return;
+            acTokenChallenge ??= new("vampire.challenge", (DateTime.UtcNow, false), (val, _) => val.cleared);
+        }
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
@@ -1040,6 +1096,8 @@ namespace TheOtherRoles
             delay = CustomOptionHolder.vampireKillDelay.getFloat();
             cooldown = CustomOptionHolder.vampireCooldown.getFloat();
             canKillNearGarlics = CustomOptionHolder.vampireCanKillNearGarlics.getBool();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -1179,7 +1237,17 @@ namespace TheOtherRoles
         public static List<PlayerControl> futureErased = new List<PlayerControl>();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
-        public static bool canEraseAnyone = false; 
+        public static bool canEraseAnyone = false;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (eraser == null || CachedPlayer.LocalPlayer.PlayerControl != eraser) return;
+            acTokenChallenge ??= new("eraser.challenge", 0, (val, _) => val >= 3);
+        }
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -1195,6 +1263,9 @@ namespace TheOtherRoles
             cooldown = CustomOptionHolder.eraserCooldown.getFloat();
             canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
             alreadyErased = new List<byte>();
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
     }
     
@@ -1225,9 +1296,19 @@ namespace TheOtherRoles
         public static float lightsOutDuration = 10f;
         public static float lightsOutTimer = 0f;
 
+        public static StaticAchievementToken acTokenCommon1;
+        public static StaticAchievementToken acTokenCommon2;
+        public static AchievementToken<(int kills, bool cleared)> acTokenChallenge;
+
         private static Sprite placeBoxButtonSprite;
         private static Sprite lightOutButtonSprite;
         private static Sprite tricksterVentButtonSprite;
+
+        public static void onAchievementActivate()
+        {
+            if (trickster == null || CachedPlayer.LocalPlayer.PlayerControl != trickster) return;
+            acTokenChallenge ??= new("trickster.challenge", (0, false), (val, _) => val.cleared || val.kills >= 2);
+        }
 
         public static Sprite getPlaceBoxButtonSprite() {
             if (placeBoxButtonSprite) return placeBoxButtonSprite;
@@ -1254,6 +1335,9 @@ namespace TheOtherRoles
             lightsOutCooldown = CustomOptionHolder.tricksterLightsOutCooldown.getFloat();
             lightsOutDuration = CustomOptionHolder.tricksterLightsOutDuration.getFloat();
             JackInTheBox.UpdateStates(); // if the role is erased, we might have to update the state of the created objects
+            acTokenChallenge = null;
+            acTokenCommon1 = null;
+            acTokenCommon2 = null;
         }
 
     }
@@ -1263,6 +1347,15 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
 
         public static float cooldown = 30f;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (cleaner == null || CachedPlayer.LocalPlayer.PlayerControl != cleaner) return;
+            acTokenChallenge ??= new("cleaner.challenge", 0, (val, _) => val >= 3);
+        }
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -1274,6 +1367,8 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             cleaner = null;
             cooldown = CustomOptionHolder.cleanerCooldown.getFloat();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -1286,11 +1381,21 @@ namespace TheOtherRoles
         public static PlayerControl curseVictim;
         public static PlayerControl curseVictimTarget;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<int> acTokenChallenge;
+
         public static float cooldown = 30f;
         public static float rootTime = 5f;
 
         private static Sprite curseButtonSprite;
         private static Sprite curseKillButtonSprite;
+
+        public static void onAchievementActivate()
+        {
+            if (warlock == null || CachedPlayer.LocalPlayer.PlayerControl != warlock) return;
+            acTokenChallenge ??= new("warlock.challenge", 0, (val, _) => val >= 3);
+        }
 
         public static Sprite getCurseButtonSprite() {
             if (curseButtonSprite) return curseButtonSprite;
@@ -1311,6 +1416,9 @@ namespace TheOtherRoles
             curseVictimTarget = null;
             cooldown = CustomOptionHolder.warlockCooldown.getFloat();
             rootTime = CustomOptionHolder.warlockRootTime.getFloat();
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
 
         public static void resetCurse() {
@@ -1495,6 +1603,21 @@ namespace TheOtherRoles
         public static int remainingShotsEvilGuesser = 2;
         public static int remainingShotsNiceGuesser = 2;
 
+        public static AchievementToken<int> acTokenNiceGuesser;
+        public static AchievementToken<int> acTokenEvilGuesser;
+
+        public static void niceGuesserOnAchievementActivate()
+        {
+            if (niceGuesser == null || CachedPlayer.LocalPlayer.PlayerControl != niceGuesser) return;
+            acTokenNiceGuesser ??= new("niceGuesser.challenge1", 0, (val, _) => val >= 3);
+        }
+
+        public static void evilGuesserOnAchievementActivate()
+        {
+            if (evilGuesser == null || CachedPlayer.LocalPlayer.PlayerControl != evilGuesser) return;
+            acTokenEvilGuesser ??= new("evilGuesser.challenge1", 0, (val, _) => val >= 3);
+        }
+
         public static bool isGuesser (byte playerId) {
             if ((niceGuesser != null && niceGuesser.PlayerId == playerId) || (evilGuesser != null && evilGuesser.PlayerId == playerId)) return true;
             return false;
@@ -1521,6 +1644,8 @@ namespace TheOtherRoles
             evilGuesser = null;
             remainingShotsEvilGuesser = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
             remainingShotsNiceGuesser = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
+            acTokenNiceGuesser = null;
+            acTokenEvilGuesser = null;
         }
     }
 
@@ -1539,6 +1664,16 @@ namespace TheOtherRoles
         public static float bountyUpdateTimer = 0f;
         public static PlayerControl bounty;
         public static TMPro.TextMeshPro cooldownText;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<(DateTime history, int kills, bool cleared)> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (bountyHunter == null || CachedPlayer.LocalPlayer.PlayerControl != bountyHunter) return;
+            acTokenChallenge ??= new("bountyHunter.challenge", (DateTime.UtcNow, 0, false), (val, _) => val.cleared);
+        }
 
         public static void clearAndReload() {
             arrow = new Arrow(color);
@@ -1560,6 +1695,9 @@ namespace TheOtherRoles
             punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
             showArrow = CustomOptionHolder.bountyHunterShowArrow.getBool();
             arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -1781,6 +1919,8 @@ namespace TheOtherRoles
         public static PlayerControl meetingKiller = null;
         public static PlayerControl otherKiller;
 
+        public static StaticAchievementToken acTokenChallenge;
+
         public static void clearAndReload()
         {
             nekoKabocha = null;
@@ -1790,6 +1930,7 @@ namespace TheOtherRoles
             revengeImpostor = CustomOptionHolder.nekoKabochaRevengeImpostor.getBool();
             revengeNeutral = CustomOptionHolder.nekoKabochaRevengeNeutral.getBool();
             revengeExile = CustomOptionHolder.nekoKabochaRevengeExile.getBool();
+            acTokenChallenge = null;
         }
     }
 
@@ -2101,8 +2242,13 @@ namespace TheOtherRoles
         public static bool divinedFlag = false;
         public static int numUsed = 0;
 
+        private static Sprite leftButtonSprite;
+        private static Sprite rightButtonSprite;
+
         public static List<Arrow> arrows = new List<Arrow>();
         public static float updateTimer = 0f;
+
+        public static int pageIndex = 1;
 
         public static AchievementToken<(bool divined, bool cleared)> acTokenImpostor = null;
         public static StaticAchievementToken acTokenFox = null;
@@ -2111,6 +2257,20 @@ namespace TheOtherRoles
         {
             if (fortuneTeller == null || CachedPlayer.LocalPlayer.PlayerControl != fortuneTeller) return;
             acTokenImpostor ??= new("fortuneTeller.challenge", (false, false), (val, _) => val.cleared);
+        }
+
+        public static Sprite getLeftButtonSprite()
+        {
+            if (leftButtonSprite) return leftButtonSprite;
+            leftButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.FortuneTellerButtonLeft.png", 130f);
+            return leftButtonSprite;
+        }
+
+        public static Sprite getRightButtonSprite()
+        {
+            if (rightButtonSprite) return rightButtonSprite;
+            rightButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.FortuneTellerButtonRight.png", 130f);
+            return rightButtonSprite;
         }
 
         public static bool isCompletedNumTasks(PlayerControl p)
@@ -2206,7 +2366,7 @@ namespace TheOtherRoles
 
             else if (divineResult == DivineResults.Role)
             {
-                msg = $"{p.Data.PlayerName} was The {String.Join(" ", RoleInfo.getRoleInfoForPlayer(p, false).Select(x => Helpers.cs(x.color, x.name)))}";
+                msg = $"{p.Data.PlayerName} was The {String.Join(" ", RoleInfo.getRoleInfoForPlayer(p, false, true).Select(x => Helpers.cs(x.color, x.name)))}";
             }
 
             if (!string.IsNullOrWhiteSpace(msg))
@@ -2237,6 +2397,7 @@ namespace TheOtherRoles
             playerStatus = new Dictionary<byte, bool>();
             progress = new Dictionary<byte, float>();
             numUsed = 0;
+            pageIndex = 1;
             divinedFlag = false;
             divineTarget = null;
             acTokenFox = null;
@@ -2303,10 +2464,18 @@ namespace TheOtherRoles
         public static AchievementToken<(byte targetId, bool cleared)> yasunaAcTokenChallenge = null;
         public static StaticAchievementToken yasunaAcTokenAnother = null;
 
+        public static AchievementToken<(byte targetId, bool cleared)> evilYasunaAcTokenChallenge;
+
         public static void yasunaOnAchievementActivate()
         {
             if (yasuna != null && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor && CachedPlayer.LocalPlayer.PlayerControl == yasuna)
-                yasunaAcTokenChallenge ??= new("niceYasuna.another1", (byte.MaxValue, false), (val, _) => val.cleared);
+                yasunaAcTokenChallenge ??= new("niceYasuna.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
+        }
+
+        public static void evilYasunaOnAcheivementActivate()
+        {
+            if (yasuna == null || CachedPlayer.LocalPlayer.PlayerControl != yasuna || !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            evilYasunaAcTokenChallenge ??= new("evilYasuna.another1", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static void clearAndReload()
@@ -2316,6 +2485,7 @@ namespace TheOtherRoles
             specialVoteTargetPlayerId = byte.MaxValue;
             yasunaAcTokenChallenge = null;
             yasunaAcTokenAnother = null;
+            evilYasunaAcTokenChallenge = null;
         }
 
         public static Sprite getTargetSprite(bool isImpostor)
@@ -2361,6 +2531,15 @@ namespace TheOtherRoles
         public static Sprite trapButtonSprite;
         public static DateTime placedTime;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (trapper == null || CachedPlayer.LocalPlayer.PlayerControl != trapper) return;
+            acTokenChallenge ??= new("trapper.challenge", 0, (val, _) => val >= 3);
+        }
+
         public static Sprite getTrapButtonSprite()
         {
             if (trapButtonSprite) return trapButtonSprite;
@@ -2393,6 +2572,295 @@ namespace TheOtherRoles
             bonusTime = CustomOptionHolder.trapperBonusTime.getFloat();
             meetingFlag = false;
             Trap.clearAllTraps();
+            acTokenCommon = null;
+            acTokenChallenge = null;
+        }
+    }
+
+    public static class SchrodingersCat
+    {
+        public static Color color = Color.grey;
+        public static PlayerControl schrodingersCat;
+        public static Team team;
+        public static bool isTrueDead;
+
+        public static PoolablePlayer playerTemplate;
+        public static GameObject parent;
+        private static List<PoolablePlayer> teams;
+        private static bool shownMenu = false;
+        public static PlayerControl currentTarget;
+
+        public enum Team
+        {
+            None,
+            Impostor,
+            Crewmate,
+            Jackal,
+            JekyllAndHyde,
+            Moriarty
+        }
+
+        public static bool isTeamJackalAlive()
+        {
+            foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+            {
+                if (p == Jackal.jackal && !p.Data.IsDead)
+                {
+                    return true;
+                }
+                else if (p == Sidekick.sidekick && !p.Data.IsDead)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isLastImpostor()
+        {
+            foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+            {
+                if (CachedPlayer.LocalPlayer.PlayerControl != p && p.Data.Role.IsImpostor && !p.Data.IsDead) return false;
+            }
+            return true;
+        }
+
+        public static void setImpostorFlag()
+        {
+            RoleInfo.schrodingersCat.color = Palette.ImpostorRed;
+            RoleInfo.schrodingersCat.isNeutral = false;
+            team = Team.Impostor;
+        }
+
+        public static void setJackalFlag()
+        {
+            RoleInfo.schrodingersCat.color = Jackal.color;
+            team = Team.Jackal;
+        }
+
+        public static void setJekyllAndHydeFlag()
+        {
+            RoleInfo.schrodingersCat.color = JekyllAndHyde.color;
+            team = Team.JekyllAndHyde;
+        }
+
+        public static void setMoriartyFlag()
+        {
+            RoleInfo.schrodingersCat.color = Moriarty.color;
+            team = Team.Moriarty;
+        }
+
+        public static void setCrewFlag()
+        {
+            RoleInfo.schrodingersCat.color = Color.white;
+            RoleInfo.schrodingersCat.isNeutral = false;
+            team = Team.Crewmate;
+        }
+
+        public static bool tasksComplete(PlayerControl p)
+        {
+            int counter = 0;
+            var option = GameOptionsManager.Instance.currentNormalGameOptions;
+            int totalTasks = option.NumLongTasks + option.NumShortTasks + option.NumCommonTasks;
+            if (totalTasks == 0) return true;
+            foreach (var task in p.Data.Tasks)
+            {
+                if (task.Complete)
+                {
+                    counter++;
+                }
+            }
+            return counter == totalTasks;
+        }
+
+        public static float killCooldown;
+        public static bool becomesImpostor;
+        public static bool cantKillUntilLastOne;
+        public static bool justDieOnKilledByCrew;
+        public static bool hideRole;
+        public static bool canChooseImpostor;
+
+        public static bool hasTeam() => team != Team.None;
+
+        public static void showMenu()
+        {
+            if (!shownMenu)
+            {
+                if (teams.Count == 0)
+                {
+                    var colorBG = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.White.png", 100f);
+                    var hudManager = FastDestroyableSingleton<HudManager>.Instance;
+                    parent = new GameObject("PoolableParent");
+                    parent.transform.parent = hudManager.transform;
+                    parent.transform.localPosition = new Vector3(0, 0, 0);
+                    var impostor = createPoolable(parent, "impostor", 0, (UnityAction)((Action)(() =>
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                        writer.Write((byte)Team.Impostor);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.schrodingersCatSetTeam((byte)Team.Impostor);
+                        showMenu();
+                    })));
+                    teams.Add(impostor);
+                    if (Jackal.jackal != null || Sidekick.sidekick != null)
+                    {
+                        var jackal = createPoolable(parent, "jackal", 1, (UnityAction)((Action)(() =>
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            writer.Write((byte)Team.Jackal);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.schrodingersCatSetTeam((byte)Team.Jackal);
+                            showMenu();
+                        })));
+                        teams.Add(jackal);
+                    }
+                    if (Moriarty.moriarty != null)
+                    {
+                        var moriarty = createPoolable(parent, "moriarty", 2, (UnityAction)((Action)(() =>
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            writer.Write((byte)Team.Moriarty);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.schrodingersCatSetTeam((byte)Team.Moriarty);
+                            showMenu();
+                        })));
+                        teams.Add(moriarty);
+                    }
+                    if (JekyllAndHyde.jekyllAndHyde != null)
+                    {
+                        var jekyllAndHyde = createPoolable(parent, "jekyllAndHyde", 6, (UnityAction)((Action)(() =>
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            writer.Write((byte)Team.JekyllAndHyde);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.schrodingersCatSetTeam((byte)Team.JekyllAndHyde);
+                            showMenu();
+                        })));
+                        teams.Add(jekyllAndHyde);
+                    }
+                    var crewmate = createPoolable(parent, "crewmate", 10, (UnityAction)((Action)(() =>
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                        writer.Write((byte)Team.Crewmate);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.schrodingersCatSetTeam((byte)Team.Crewmate);
+                        showMenu();
+                    })));
+                    teams.Add(crewmate);
+                    layoutPoolable();
+                }
+                else
+                {
+                    teams.ForEach(x =>
+                    {
+                        x.gameObject.SetActive(true);
+                    });
+                    layoutPoolable();
+                }
+            }
+            else
+            {
+                teams.ForEach(x =>
+                {
+                    x.gameObject.SetActive(false);
+                });
+            }
+            shownMenu = !shownMenu;
+        }
+
+        public static bool isJackalButtonEnable()
+        {
+            if (team == Team.Jackal && CachedPlayer.LocalPlayer.PlayerControl == schrodingersCat && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                if (!isTeamJackalAlive() || !cantKillUntilLastOne)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isJekyllAndHydeButtonEnable()
+        {
+            if (team == Team.JekyllAndHyde && CachedPlayer.LocalPlayer.PlayerControl == schrodingersCat && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                if (JekyllAndHyde.jekyllAndHyde == null || JekyllAndHyde.jekyllAndHyde.Data.IsDead || !cantKillUntilLastOne)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isMoriartyButtonEnable()
+        {
+            if (team == Team.Moriarty && PlayerControl.LocalPlayer == schrodingersCat && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                if (Moriarty.moriarty == null || Moriarty.moriarty.Data.IsDead || !cantKillUntilLastOne)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static PoolablePlayer createPoolable(GameObject parent, string name, int color, UnityAction func)
+        {
+            var poolable = GameObject.Instantiate(playerTemplate, parent.transform);
+            var actionButton = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton, poolable.gameObject.transform);
+            SpriteRenderer spriteRenderer = actionButton.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = null;
+            actionButton.transform.localPosition = new Vector3(0, 0, 0);
+            actionButton.gameObject.SetActive(true);
+            actionButton.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
+            PassiveButton button = actionButton.GetComponent<PassiveButton>();
+            button.OnClick = new Button.ButtonClickedEvent();
+            button.OnClick.AddListener((UnityAction)func);
+            var texts = actionButton.GetComponentsInChildren<TMPro.TextMeshPro>();
+            texts.ForEach(x => x.gameObject.SetActive(false));
+            poolable.gameObject.SetActive(true);
+            poolable.SetBodyColor(color);
+            poolable.SetName(ModTranslation.getString(name));
+            return poolable;
+        }
+
+        public static void ForEach<T>(this IList<T> self, Action<T> todo)
+        {
+            for (int i = 0; i < self.Count; i++)
+            {
+                todo(self[i]);
+            }
+        }
+
+        public static void layoutPoolable()
+        {
+            float offset = 2f;
+            int center = teams.Count / 2;
+            for (int i = 0; i < teams.Count; i++)
+            {
+                float x = teams.Count % 2 != 0 ? (offset * (i - center)) : (offset * (i - center)) + (offset * 0.5f);
+                teams[i].transform.localPosition = new Vector3(x, 0, 0);
+                teams[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                teams[i].GetComponentInChildren<ActionButton>().transform.position = teams[i].transform.position;
+            }
+        }
+
+        public static void clearAndReload()
+        {
+            schrodingersCat = null;
+            currentTarget = null;
+            isTrueDead = false;
+            team = Team.None;
+            canChooseImpostor = CustomOptionHolder.schrodingersCatHideRole.getBool() && CustomOptionHolder.schrodingersCatCanChooseImpostor.getBool();
+            hideRole = CustomOptionHolder.schrodingersCatHideRole.getBool();
+            justDieOnKilledByCrew = CustomOptionHolder.schrodingersCatJustDieOnKilledByCrew.getBool();
+            cantKillUntilLastOne = CustomOptionHolder.schrodingersCatCantKillUntilLastOne.getBool();
+            becomesImpostor = CustomOptionHolder.schrodingersCatBecomesImpostor.getBool();
+            killCooldown = CustomOptionHolder.schrodingersCatKillCooldown.getFloat();
+            RoleInfo.schrodingersCat.color = color;
+            RoleInfo.schrodingersCat.isNeutral = true;
+            shownMenu = false;
+            teams = new List<PoolablePlayer>();
         }
     }
 
@@ -2804,6 +3272,15 @@ namespace TheOtherRoles
         public static PlayerControl fakeMadmate;
         public static PlayerControl currentTarget;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<(bool admin, bool cleared)> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (evilHacker == null || CachedPlayer.LocalPlayer.PlayerControl != evilHacker) return;
+            acTokenChallenge ??= new("evilHacker.challenge", (false, false), (val, _) => val.cleared);
+        }
+
         private static Sprite buttonSprite;
         private static Sprite madmateButtonSprite;
 
@@ -2841,6 +3318,8 @@ namespace TheOtherRoles
             canHasBetterAdmin = CustomOptionHolder.evilHackerCanHasBetterAdmin.getBool();
             canCreateMadmateFromJackal = CustomOptionHolder.evilHackerCanCreateMadmateFromJackal.getBool();
             canInheritAbility = CustomOptionHolder.evilHackerCanInheritAbility.getBool();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -2854,8 +3333,17 @@ namespace TheOtherRoles
         public static PlayerControl blackmailed;
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<(List<byte> witness, bool cleared)> acTokenChallenge;
         private static Sprite blackmailButtonSprite;
         private static Sprite overlaySprite;
+
+        public static void onAchievementActivate()
+        {
+            if (blackmailer == null || CachedPlayer.LocalPlayer.PlayerControl != blackmailer) return;
+            acTokenChallenge ??= new("blackmailer.challenge", (new List<byte>(), false), (val, _) => val.cleared);
+        }
 
         public static Sprite getBlackmailOverlaySprite()
         {
@@ -3017,6 +3505,15 @@ namespace TheOtherRoles
         public static PlayerControl currentTarget;
         public static PlayerControl target;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (noisemaker == null || CachedPlayer.LocalPlayer.PlayerControl != noisemaker) return;
+            acTokenChallenge ??= new("noisemaker.challenge", 0, (val, _) => val >= 3);
+        }
+
         public enum SoundTarget
         {
             Noisemaker,
@@ -3044,6 +3541,8 @@ namespace TheOtherRoles
             duration = CustomOptionHolder.noisemakerSoundDuration.getFloat();
             numSound = Mathf.RoundToInt(CustomOptionHolder.noisemakerSoundNumber.getFloat());
             soundTarget = (SoundTarget)CustomOptionHolder.noisemakerSoundTarget.getSelection();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -3133,6 +3632,9 @@ namespace TheOtherRoles
         public static float speedDecrease = -50f;
         public static bool disableVent = true;
 
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+
         public static Sprite dragButtonSprite;
         public static Sprite dropButtonSprite;
 
@@ -3194,6 +3696,8 @@ namespace TheOtherRoles
 
             speedDecrease = CustomOptionHolder.undertakerSpeedDecrease.getFloat();
             disableVent = CustomOptionHolder.undertakerDisableVent.getBool();
+            acTokenCommon = null;
+            acTokenAnother = null;
         }
     }
 
@@ -3207,6 +3711,9 @@ namespace TheOtherRoles
         public static bool resetTimer = true;
 
         public static bool isCountDown = false;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
@@ -3223,6 +3730,8 @@ namespace TheOtherRoles
             suicideTimer = Mathf.Max(CustomOptionHolder.serialKillerSuicideTimer.getFloat(), killCooldown + 2.5f);
             resetTimer = CustomOptionHolder.serialKillerResetTimer.getBool();
             isCountDown = false;
+            acTokenCommon = null;
+            acTokenAnother = null;
         }
     }
 
@@ -3384,6 +3893,9 @@ namespace TheOtherRoles
 
         public static float updateTimer = 0f;
         public static float arrowUpdateInterval = 0.5f;
+
+        public static StaticAchievementToken acTokenCommon1;
+        public static StaticAchievementToken acTokenCommon2;
 
         public static PlayerControl target;
         public static PlayerControl futureTarget;
@@ -3550,6 +4062,8 @@ namespace TheOtherRoles
             canSeeTargetPosition = CustomOptionHolder.evilTrackerCanSeeTargetPosition.getBool();
             canSeeTargetTasks = CustomOptionHolder.evilTrackerCanSeeTargetTask.getBool();
             canSetTargetOnMeeting = CustomOptionHolder.evilTrackerCanSetTargetOnMeeting.getBool();
+            acTokenCommon1 = null;
+            acTokenCommon2 = null;
         }
     }
 
@@ -3618,6 +4132,15 @@ namespace TheOtherRoles
         public static bool triggerBothCooldowns = true;
         public static bool witchVoteSavesTargets = true;
 
+        public static StaticAchievementToken acTokenCommon = null;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (witch == null || CachedPlayer.LocalPlayer.PlayerControl != witch) return;
+            acTokenChallenge ??= new("witch.challenge", 0, (val, _) => val >= 3);
+        }
+
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
@@ -3644,6 +4167,8 @@ namespace TheOtherRoles
             spellCastingDuration = CustomOptionHolder.witchSpellCastingDuration.getFloat();
             triggerBothCooldowns = CustomOptionHolder.witchTriggerBothCooldowns.getBool();
             witchVoteSavesTargets = CustomOptionHolder.witchVoteSavesTargets.getBool();
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -3678,6 +4203,7 @@ namespace TheOtherRoles
         public static bool showKillFlash = true;
 
         public static bool reported = false;
+        public static bool killed = false;
 
         public static StaticAchievementToken acTokenCommon = null;
         public static AchievementToken<(byte killerId, bool cleared)> acTokenChallenge = null;
@@ -3692,6 +4218,7 @@ namespace TheOtherRoles
         {
             bait = null;
             reported = false;
+            killed = false;
             highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
@@ -3716,6 +4243,16 @@ namespace TheOtherRoles
         private static Sprite markButtonSprite;
         private static Sprite killButtonSprite;
         public static Arrow arrow = new Arrow(Color.black);
+
+        public static StaticAchievementToken acTokenCommon;
+        public static AchievementToken<(bool markKill, bool cleared)> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (assassin == null || CachedPlayer.LocalPlayer.PlayerControl != assassin) return;
+            acTokenChallenge ??= new("assassin.challenge", (false, false), (val, _) => val.cleared);
+        }
+
         public static Sprite getMarkButtonSprite() {
             if (markButtonSprite) return markButtonSprite;
             markButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.AssassinMarkButton.png", 115f);
@@ -3740,6 +4277,8 @@ namespace TheOtherRoles
             if (arrow?.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             arrow = new Arrow(Color.black);
             if (arrow.arrow != null) arrow.arrow.SetActive(false);
+            acTokenCommon = null;
+            acTokenChallenge = null;
         }
     }
 
@@ -3760,6 +4299,8 @@ namespace TheOtherRoles
         public static float brainwashTime = 2f;
         public static float brainwashCooldown = 30f;
         public static int numberToWin = 3;
+        public static bool indicateKills = false;
+        public static bool hasKilled = false;
 
         public static Sprite brainwashIcon;
 
@@ -3862,9 +4403,11 @@ namespace TheOtherRoles
             brainwashed = new List<PlayerControl>();
             counter = 0;
             triggerMoriartyWin = false;
+            hasKilled = false;
             brainwashCooldown = CustomOptionHolder.moriartyBrainwashCooldown.getFloat();
             brainwashTime = CustomOptionHolder.moriartyBrainwashTime.getFloat();
             numberToWin = (int)CustomOptionHolder.moriartyNumberToWin.getFloat();
+            indicateKills = CustomOptionHolder.moriartyKillIndicate.getBool();
 
             if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText);
             targetPositionText = null;
@@ -4116,7 +4659,7 @@ namespace TheOtherRoles
                     if (p.Data.IsDead) continue;
                     Arrow arrow;
                     // float distance = Vector2.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
-                    if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == Sheriff.sheriff || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty || p == Thief.thief)
+                    if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == Sheriff.sheriff || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty || p == Thief.thief || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam()))
                     {
                         if (p.Data.Role.IsImpostor)
                         {
@@ -4137,6 +4680,10 @@ namespace TheOtherRoles
                         else if (p == Moriarty.moriarty)
                         {
                             arrow = new Arrow(Moriarty.color);
+                        }
+                        else if (p == SchrodingersCat.schrodingersCat)
+                        {
+                            arrow = new Arrow(SchrodingersCat.color);
                         }
                         else
                         {
@@ -4329,6 +4876,8 @@ namespace TheOtherRoles
 
         public static void updateDead()
         {
+            if (statusText != null) UnityEngine.Object.Destroy(statusText);
+            statusText = null; // Update positions!
             foreach (var pc in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
                 dead[pc.PlayerId] = pc.Data.IsDead;
@@ -4429,11 +4978,20 @@ namespace TheOtherRoles
         public static float fadeTime = 0.5f;
         public static bool canUseVents = false;
         public static bool canBeTargeted;
-        public static float addition = 0f;
 
         public static bool penalized = false;
         public static bool stealthed = false;
         public static DateTime stealthedAt = DateTime.UtcNow;
+
+        public static StaticAchievementToken acTokenCommon;
+        public static StaticAchievementToken acTokenAnother;
+        public static AchievementToken<int> acTokenChallenge;
+
+        public static void onAchievementActivate()
+        {
+            if (ninja == null || CachedPlayer.LocalPlayer.PlayerControl != ninja) return;
+            acTokenChallenge ??= new("ninja.challenge", 0, (val, _) => val >= 2);
+        }
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite()
@@ -4461,35 +5019,12 @@ namespace TheOtherRoles
             return 1.0f;
         }
 
-        public static bool isPenalized(PlayerControl player)
-        {
-            if (Ninja.ninja == player && !Ninja.ninja.Data.IsDead)
-            {
-                return Ninja.penalized;
-            }
-            return false;
-        }
-
         public static void setStealthed(PlayerControl player, bool stealthed = true)
         {
             if (Ninja.ninja == player && Ninja.ninja != null)
             {
                 Ninja.stealthed = stealthed;
                 Ninja.stealthedAt = DateTime.UtcNow;
-            }
-        }
-
-        public static void OnKill(PlayerControl target)
-        {
-            if (Ninja.stealthed)
-            {
-                Ninja.addition += Ninja.killPenalty;
-                if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja)
-                {
-                    Ninja.penalized = true;
-                    CachedPlayer.LocalPlayer.PlayerControl.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Ninja.addition);
-                    Helpers.checkMurderAttemptAndKill(Ninja.ninja, target, false, false);
-                }
             }
         }
 
@@ -4520,6 +5055,10 @@ namespace TheOtherRoles
             penalized = false;
             stealthed = false;
             stealthedAt = DateTime.UtcNow;
+
+            acTokenCommon = null;
+            acTokenAnother = null;
+            acTokenChallenge = null;
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
