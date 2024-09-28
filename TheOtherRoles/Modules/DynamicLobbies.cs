@@ -10,7 +10,7 @@ using TheOtherRoles.Utilities;
 namespace TheOtherRoles.Modules {
     [HarmonyPatch]
     public static class DynamicLobbies {
-        public static int LobbyLimit = 15;
+        public static int LobbyLimit = 24;
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch {
             static bool Prefix(ChatController __instance) {
@@ -23,7 +23,7 @@ namespace TheOtherRoles.Modules {
                                 if (!Int32.TryParse(text.Substring(6), out LobbyLimit)) {
                                     __instance.AddChat(CachedPlayer.LocalPlayer.PlayerControl, "Invalid Size\nUsage: /size {amount}");
                                 } else {
-                                    LobbyLimit = Math.Clamp(LobbyLimit, 4, 15);
+                                    LobbyLimit = Math.Clamp(LobbyLimit, 4, 24);
                                     if (LobbyLimit != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers) {
                                         GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = LobbyLimit;
                                         FastDestroyableSingleton<GameStartManager>.Instance.LastPlayerCount = LobbyLimit;
@@ -51,10 +51,10 @@ namespace TheOtherRoles.Modules {
                     maxPlayers = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
                 }
                 catch {
-                    maxPlayers = 15;
+                    maxPlayers = 24;
                 }
                 DynamicLobbies.LobbyLimit = maxPlayers;
-                settings.MaxPlayers = 15; // Force 15 Player Lobby on Server
+                settings.MaxPlayers = 24; // Force 24 Player Lobby on Server
                 DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
             }
             public static void Postfix(InnerNet.InnerNetClient __instance, [HarmonyArgument(0)] GameOptionsData settings) {

@@ -250,6 +250,25 @@ namespace TheOtherRoles.Modules
             Teleporter.onAchievementActivate();
             Prophet.onAchievementActivate();
             Busker.onAchievementActivate();
+            Morphling.onAchievementActivate();
+            Camouflager.onAchievementActivate();
+            Vampire.onAchievementActivate();
+            Eraser.onAchievementActivate();
+            Trickster.onAchievementActivate();
+            Cleaner.onAchievementActivate();
+            Warlock.onAchievementActivate();
+            BountyHunter.onAchievementActivate();
+            Witch.onAchievementActivate();
+            Assassin.onAchievementActivate();
+            Ninja.onAchievementActivate();
+            EvilHacker.onAchievementActivate();
+            Guesser.evilGuesserOnAchievementActivate();
+            Guesser.niceGuesserOnAchievementActivate();
+            Noisemaker.onAchievementActivate();
+            Swapper.evilSwapperOnAchievementActivate();
+            Trapper.onAchievementActivate();
+            Blackmailer.onAchievementActivate();
+            Yasuna.evilYasunaOnAcheivementActivate();
         }
 
         public bool IsHidden
@@ -484,7 +503,7 @@ namespace TheOtherRoles.Modules
                 var white = Helpers.CreateObject<SpriteRenderer>("White", animator.transform, new Vector3(0f, 0f, -2f));
                 var icon = Helpers.CreateObject<SpriteRenderer>("Icon", body.transform, new Vector3(-0.95f, 0f, 0f));
 
-                background.color = Color.yellow;
+                background.color = clearState == ClearState.FirstClear ? Color.yellow : new Color(0.7f, 0.7f, 0.7f);
                 billboard.AddComponent<SortingGroup>();
 
                 new MetaContextOld.Text(new(TextAttribute.BoldAttr) { Font = VanillaAsset.BrookFont, Size = new(2f, 0.4f), FontSize = 1.16f, FontMaxSize = 1.16f, FontMinSize = 1.16f }) { MyText = achievement.GetHeaderComponent() }.Generate(body, new Vector2(0.25f, 0.13f), out _);
