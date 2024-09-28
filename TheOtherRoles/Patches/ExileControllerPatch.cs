@@ -73,6 +73,8 @@ namespace TheOtherRoles.Patches {
             // Trickster boxes
             if (Trickster.trickster != null && JackInTheBox.hasJackInTheBoxLimitReached()) {
                 JackInTheBox.convertToVents();
+                if (CachedPlayer.LocalPlayer.PlayerControl == Trickster.trickster)
+                    Trickster.acTokenCommon1 ??= new("trickster.common1");
             }
 
             // Activate portals.
@@ -254,22 +256,35 @@ namespace TheOtherRoles.Patches {
                 if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
                     Swapper.acTokenChallenge.Value.cleared |= (Swapper.acTokenChallenge.Value.swapped1 == exiled.PlayerId || Swapper.acTokenChallenge.Value.swapped2 == exiled.PlayerId)
                         && exiled.Object.Data.Role.IsImpostor;
+                else
+                {
+                    bool swapped = Swapper.evilSwapperAcTokenChallenge.Value.swapped1 == exiled.PlayerId || Swapper.evilSwapperAcTokenChallenge.Value.swapped2 == exiled.PlayerId;
+                    Swapper.evilSwapperAcTokenChallenge.Value.cleared |= swapped && !exiled.Object.Data.Role.IsImpostor && (Helpers.playerById(Swapper.evilSwapperAcTokenChallenge.Value.swapped1).Data.Role.IsImpostor || Helpers.playerById(
+                        Swapper.evilSwapperAcTokenChallenge.Value.swapped2).Data.Role.IsImpostor);
+                    if (swapped && Jester.jester == exiled.Object)
+                        Swapper.evilSwapperAcTokenAnother ??= new("evilSwapper.another1");
+                }
             }
 
             if (Yasuna.yasuna != null && CachedPlayer.LocalPlayer.PlayerControl == Yasuna.yasuna && exiled != null)
             {
-                if (Yasuna.yasunaAcTokenChallenge.Value.targetId == exiled.PlayerId)
+                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
                 {
-                    PlayerControl exiledPlayer = Helpers.playerById(exiled.PlayerId);
-                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                    if (Yasuna.yasunaAcTokenChallenge.Value.targetId == exiled.PlayerId)
                     {
-                        Yasuna.yasunaAcTokenChallenge.Value.cleared |= Helpers.isEvil(exiledPlayer) && (((exiledPlayer == Lovers.lover1 && Lovers.lover2 != null) ||
-                            (exiledPlayer == Lovers.lover2 && Lovers.lover1 != null)) && Lovers.lover1 && Lovers.lover2
-                            && Helpers.isEvil(exiledPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1)) || (((exiledPlayer == Cupid.lovers1 && Cupid.lovers2 != null) || (exiledPlayer == Cupid.lovers2 && Cupid.lovers1 != null)) &&
-                            Cupid.lovers1 && Cupid.lovers2 && Helpers.isEvil(exiledPlayer == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1));
+                        PlayerControl exiledPlayer = Helpers.playerById(exiled.PlayerId);
+                        Yasuna.yasunaAcTokenChallenge.Value.cleared |= Helpers.isEvil(exiledPlayer) && (((exiledPlayer == Lovers.lover1 ||
+                                exiledPlayer == Lovers.lover2) && Lovers.lover1 && Lovers.lover2
+                                && Helpers.isEvil(exiledPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1)) || ((exiledPlayer == Cupid.lovers1 || exiledPlayer == Cupid.lovers2) &&
+                                Cupid.lovers1 && Cupid.lovers2 && Helpers.isEvil(exiledPlayer == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1)));
                         if (exiledPlayer == Jester.jester) Yasuna.yasunaAcTokenAnother ??= new("niceYasuna.another1");
                         Yasuna.yasunaAcTokenChallenge.Value.targetId = byte.MaxValue;
                     }
+                }
+                else
+                {
+                    Yasuna.evilYasunaAcTokenChallenge.Value.cleared |= Yasuna.evilYasunaAcTokenChallenge.Value.targetId == exiled.PlayerId && !exiled.Object.Data.Role.IsImpostor;
+                    Yasuna.evilYasunaAcTokenChallenge.Value.targetId = byte.MaxValue;
                 }
             }
 
@@ -296,6 +311,13 @@ namespace TheOtherRoles.Patches {
                     }
                 }
                 Seer.deadBodyPositions = new List<Vector3>();
+            }
+
+            if (Morphling.morphling != null && CachedPlayer.LocalPlayer.PlayerControl == Morphling.morphling)
+            {
+                Morphling.acTokenChallenge.Value.cleared |= exiled != null && Morphling.acTokenChallenge.Value.kill && Morphling.acTokenChallenge.Value.playerId == exiled.PlayerId;
+                Morphling.acTokenChallenge.Value.playerId = byte.MaxValue;
+                Morphling.acTokenChallenge.Value.kill = false;
             }
 
             // Fortune Teller reset MeetingFlag

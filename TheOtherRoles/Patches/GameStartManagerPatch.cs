@@ -16,6 +16,13 @@ namespace TheOtherRoles.Patches {
         public static void Prefix(GameStartManager __instance)
         {
             __instance.MinPlayers = 1;
+            string str = "<color=#FF0000FF>";
+            if (__instance.LastPlayerCount > __instance.MinPlayers)
+                str = "<color=#00FF00FF>";
+            if (__instance.LastPlayerCount == __instance.MinPlayers)
+                str = "<color=#FFFF00FF>";
+            if (AmongUsClient.Instance.NetworkMode == NetworkModes.LocalGame)
+                __instance.PlayerCounter.text = string.Format("{0}{1}/{2}", str, __instance.LastPlayerCount, 24);
         }
     }
 

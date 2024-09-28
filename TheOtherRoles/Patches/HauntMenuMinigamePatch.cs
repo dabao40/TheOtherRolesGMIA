@@ -31,7 +31,7 @@ namespace TheOtherRoles.Patches {
         public static void MatchesFilterPostfix(HauntMenuMinigame __instance, PlayerControl pc, ref bool __result) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
             if (__instance.filterMode == HauntMenuMinigame.HauntFilters.Impostor) {
-                var info = RoleInfo.getRoleInfoForPlayer(pc, false);
+                var info = RoleInfo.getRoleInfoForPlayer(pc, false, true);
                 __result = (pc.Data.Role.IsImpostor || info.Any(x => x.isNeutral)) && !pc.Data.IsDead;
             }
         }
@@ -73,6 +73,8 @@ namespace TheOtherRoles.Patches {
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance) {
             bool isHideNSeek = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek;
             if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && !(!Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead))
+                __instance.Hide();
+            if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && !SchrodingersCat.isTrueDead)
                 __instance.Hide();
             if (CachedPlayer.LocalPlayer.Data.IsDead && (CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool() || isHideNSeek)) {
                 // player has haunt button.

@@ -314,6 +314,14 @@ namespace TheOtherRoles.Patches {
             GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
             GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
+            SchrodingersCat.playerTemplate = UnityEngine.Object.Instantiate(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
+            SchrodingersCat.playerTemplate.UpdateFromPlayerOutfit(CachedPlayer.LocalPlayer.PlayerControl.Data.DefaultOutfit, PlayerMaterial.MaskType.ComplexUI, false, true);
+            SchrodingersCat.playerTemplate.SetFlipX(true);
+            SchrodingersCat.playerTemplate.gameObject.SetActive(false);
+            SchrodingersCat.playerTemplate.cosmetics.currentPet?.gameObject.SetActive(false);
+            SchrodingersCat.playerTemplate.cosmetics.nameText.text = "";
+            SchrodingersCat.playerTemplate.gameObject.SetActive(false);
+
             // Additional Vents
             AdditionalVents.AddAdditionalVents();
 
@@ -386,7 +394,7 @@ namespace TheOtherRoles.Patches {
     class IntroPatch {
         public static void setupIntroTeamIcons(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
             // Intro solo teams
-            if (Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl)) {
+            if (Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl) && !(CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
                 var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
                 soloTeam.Add(CachedPlayer.LocalPlayer.PlayerControl);
                 yourTeam = soloTeam;
@@ -409,7 +417,7 @@ namespace TheOtherRoles.Patches {
             List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl);
             RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
             if (roleInfo == null) return;
-            if (roleInfo.isNeutral) {
+            if (roleInfo.isNeutral && !(CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
                 var neutralColor = new Color32(76, 84, 78, 255);
                 __instance.BackgroundBar.material.color = neutralColor;
                 __instance.TeamTitle.text = ModTranslation.getString("roleIntroNeutral");

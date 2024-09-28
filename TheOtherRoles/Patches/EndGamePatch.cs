@@ -77,6 +77,7 @@ namespace TheOtherRoles.Patches {
         internal class PlayerRoleInfo {
             public string PlayerName { get; set; }
             public List<RoleInfo> Roles {get;set;}
+            public List<Color> RoleColors { get;set;}
             public string RoleNames { get; set; }
             public int TasksCompleted  {get;set;}
             public int TasksTotal  {get;set;}
@@ -125,6 +126,7 @@ namespace TheOtherRoles.Patches {
 
             foreach(var playerControl in CachedPlayer.AllPlayers) {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
+                var colors = roles.Select(x => x.color).ToList();
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
                 bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId) || playerControl.PlayerId == CreatedMadmate.createdMadmate?.PlayerId;
@@ -136,7 +138,7 @@ namespace TheOtherRoles.Patches {
                 bool isTaskMaster = TaskMaster.isTaskMaster(playerControl.PlayerId);
                 bool isTaskMasterExTasks = isTaskMaster && TaskMaster.isTaskComplete;
                 string roleString = RoleInfo.GetRolesString(playerControl, true, true, false, true);
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleNames = roleString ,TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, RoleColors = colors, RoleNames = roleString ,TasksTotal = tasksTotal, TasksCompleted = tasksCompleted,
                     ExTasksTotal = isTaskMasterExTasks ? TaskMaster.allExTasks : isTaskMaster ? TaskMasterTaskHelper.GetTaskMasterTasks() : 0,
                     ExTasksCompleted = isTaskMasterExTasks ? TaskMaster.clearExTasks : 0,
                     IsGuesser = isGuesser, Kills = killCount, PlayerId = playerId, IsAlive = !playerControl.Data.IsDead, IsMadmate = isMadmate });
@@ -165,6 +167,7 @@ namespace TheOtherRoles.Patches {
             if (Cupid.cupid != null) notWinners.Add(Cupid.cupid);
             if (Fox.fox != null) notWinners.Add(Fox.fox);
             if (Immoralist.immoralist != null) notWinners.Add(Immoralist.immoralist);
+            if (SchrodingersCat.schrodingersCat != null) notWinners.Add(SchrodingersCat.schrodingersCat);
 
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -229,6 +232,14 @@ namespace TheOtherRoles.Patches {
                         CachedPlayerData wpd = new(p.Data);
                         EndGameResult.CachedWinners.Add(wpd);
                     }
+                    else if (p == SchrodingersCat.schrodingersCat)
+                    {
+                        if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
+                        {
+                            CachedPlayerData wpd = new(p.Data);
+                            EndGameResult.CachedWinners.Add(wpd);
+                        }
+                    }
                 }
                 AdditionalTempData.winCondition = WinCondition.ImpostorWin;
             }
@@ -285,6 +296,12 @@ namespace TheOtherRoles.Patches {
                     CachedPlayerData wpdFormerJekyllAndHyde = new CachedPlayerData(JekyllAndHyde.formerJekyllAndHyde.Data);
                     EndGameResult.CachedWinners.Add(wpdFormerJekyllAndHyde);
                 }
+
+                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)
+                {
+                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
+                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                }
             }
 
             else if (moriartyWin)
@@ -298,6 +315,12 @@ namespace TheOtherRoles.Patches {
                 {
                     CachedPlayerData wpdFormerMoriarty = new CachedPlayerData(Moriarty.formerMoriarty.Data);
                     EndGameResult.CachedWinners.Add(wpdFormerMoriarty);
+                }
+
+                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Moriarty)
+                {
+                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
+                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
                 }
             }
 
@@ -380,6 +403,11 @@ namespace TheOtherRoles.Patches {
                     CachedPlayerData wpdFormerJackal = new CachedPlayerData(player.Data);
                     wpdFormerJackal.IsImpostor = false; 
                     EndGameResult.CachedWinners.Add(wpdFormerJackal);
+                }
+                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
+                {
+                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
+                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
                 }
             }
 
@@ -532,7 +560,7 @@ namespace TheOtherRoles.Patches {
                     if (data.PlayerName != CachedPlayerData2.PlayerName) continue;
                     var roles =
                     //poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs(x.color, x.name)))}";
-                    poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs((data.IsMadmate && !x.isModifier) ? Madmate.color : x.color, 
+                    poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs((data.IsMadmate && !x.isModifier) ? Madmate.color : data.RoleColors[data.Roles.IndexOf(x)], 
                     (data.IsMadmate && !x.isModifier) ? (x == RoleInfo.crewmate ? Madmate.fullName : (Madmate.prefix + x.name)) : x.name)))}";
                 }
             }
@@ -1037,6 +1065,10 @@ namespace TheOtherRoles.Patches {
                             numJackalAlive++;
                             if (lover || cupidLover || akujoHonmei) jackalLover = true;
                         }
+                        if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal && SchrodingersCat.schrodingersCat.PlayerId == playerInfo.PlayerId) {
+                            numJackalAlive++;
+                            if (lover || cupidLover || akujoHonmei) jackalLover = true;
+                        }
                         if (Sheriff.sheriff != null && Sheriff.sheriff.PlayerId == playerInfo.PlayerId && !Madmate.madmate.Contains(Sheriff.sheriff)) {
                             numSheriffAlive++;
                         }
@@ -1046,7 +1078,13 @@ namespace TheOtherRoles.Patches {
                         if (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == playerInfo.PlayerId) {
                             numMoriartyAlive++;
                         }
+                        if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Moriarty && SchrodingersCat.schrodingersCat.PlayerId == playerInfo.PlayerId) {
+                            numMoriartyAlive++;
+                        }
                         if (JekyllAndHyde.jekyllAndHyde != null && JekyllAndHyde.jekyllAndHyde.PlayerId == playerInfo.PlayerId) { 
+                            numJekyllAndHydeAlive++;
+                        }
+                        if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde && SchrodingersCat.schrodingersCat.PlayerId == playerInfo.PlayerId) {
                             numJekyllAndHydeAlive++;
                         }
                         if (Akujo.akujo != null && Akujo.akujo.PlayerId == playerInfo.PlayerId) { 

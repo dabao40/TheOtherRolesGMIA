@@ -4,6 +4,7 @@ using Reactor.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
@@ -67,6 +68,7 @@ namespace TheOtherRoles.Patches {
             if (CachedPlayer.LocalPlayer.PlayerControl != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
             if (EvilTracker.target == null) return true;
             if (realTasks[EvilTracker.target.PlayerId] == null) return false;
+            EvilTracker.acTokenCommon2 ??= new("evilTracker.common2");
             __instance.gameObject.SetActive(true);
             __instance.data.Clear();
             for (int i = 0; i < realTasks[EvilTracker.target.PlayerId].Count; i++)
@@ -208,6 +210,7 @@ namespace TheOtherRoles.Patches {
                 }
 			}
             HudManagerUpdate.CloseSettings();
+            CustomOverlay.hideInfoOverlay();
         }
     }
 }

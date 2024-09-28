@@ -132,6 +132,8 @@ namespace TheOtherRoles.Patches {
                 if (Jackal.fakeSidekick != null) {
                     setPlayerNameColor(Jackal.fakeSidekick, Jackal.color);
                 }
+                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
+                    setPlayerNameColor(SchrodingersCat.schrodingersCat, Jackal.color);
             }
             else if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == localPlayer && (FortuneTeller.isCompletedNumTasks(PlayerControl.LocalPlayer) || PlayerControl.LocalPlayer.Data.IsDead))
             {
@@ -189,6 +191,36 @@ namespace TheOtherRoles.Patches {
                 if (Jackal.jackal != null) {
                     setPlayerNameColor(Jackal.jackal, Jackal.color);
                 }
+                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
+                    setPlayerNameColor(SchrodingersCat.schrodingersCat, Jackal.color);
+            }
+
+            if (SchrodingersCat.schrodingersCat != null && localPlayer == SchrodingersCat.schrodingersCat)
+            {
+                if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
+                {
+                    foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                    {
+                        if (p.Data.Role.IsImpostor) setPlayerNameColor(p, Palette.ImpostorRed);
+                    }
+                }
+                else if (SchrodingersCat.team == SchrodingersCat.Team.Jackal)
+                {
+                    if (Jackal.jackal != null) setPlayerNameColor(Jackal.jackal, Jackal.color);
+                    if (Sidekick.sidekick != null) setPlayerNameColor(Sidekick.sidekick, Sidekick.color);
+                }
+                else if (SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde && JekyllAndHyde.jekyllAndHyde != null)
+                    setPlayerNameColor(JekyllAndHyde.jekyllAndHyde, JekyllAndHyde.color);
+                else if (SchrodingersCat.team == SchrodingersCat.Team.Moriarty && Moriarty.moriarty != null)
+                    setPlayerNameColor(Moriarty.moriarty, Moriarty.color);
+            }
+
+            if (SchrodingersCat.schrodingersCat != null)
+            {
+                if (localPlayer == JekyllAndHyde.jekyllAndHyde && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)
+                    setPlayerNameColor(SchrodingersCat.schrodingersCat, JekyllAndHyde.color);
+                if (localPlayer == Moriarty.moriarty && SchrodingersCat.team == SchrodingersCat.Team.Moriarty)
+                    setPlayerNameColor(SchrodingersCat.schrodingersCat, Moriarty.color);
             }
 
             // No else if here, as the Impostors need the Spy name to be colored

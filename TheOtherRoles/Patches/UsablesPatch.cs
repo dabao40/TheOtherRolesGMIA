@@ -363,8 +363,29 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
         class VitalsMinigameStartPatch {
+            private static float[] PanelAreaScale = { 1f, 0.95f, 0.76f };
+            private static (int x, int y)[] PanelAreaSize = { (3, 5), (3, 6), (4, 6) };
+            private static Vector3[] PanelAreaOffset = { new Vector3(0.0f, 0.0f, -1f), new Vector3(0.1f, 0.145f, -1f), new Vector3(-0.555f, 0.0f, -1f) };
+            private static (float x, float y)[] PanelAreaMultiplier = { (1f, 1f), (1f, 0.89f), (275f * (float)Math.PI / 887f, 1f) };
+
+            private static Vector3 ToVoteAreaPos(VitalsMinigame minigame, int index, int arrangeType) => Helpers.convertPos(index, arrangeType, PanelAreaSize, new Vector3(minigame.XStart, minigame.YStart, -1f), PanelAreaOffset, new Vector3(minigame.XOffset, minigame.YOffset), PanelAreaScale, PanelAreaMultiplier);
+
             static void Postfix(VitalsMinigame __instance) {
+                __instance.BatteryText.gameObject.SetActive(false);
                 VitalsMinigameUpdatePatch.UpdateVitals(__instance);
+                int index = 0;
+                int displayType = Helpers.GetDisplayType(__instance.vitals.Count);
+                foreach (VitalsPanel vital in (Il2CppArrayBase<VitalsPanel>)__instance.vitals)
+                {
+                    vital.PlayerIcon.cosmetics.SetSkin(vital.PlayerInfo.DefaultOutfit.SkinId, vital.PlayerInfo.DefaultOutfit.ColorId, (Action)null);
+                    vital.PlayerIcon.cosmetics.SetHatColor(Palette.White);
+                    vital.PlayerIcon.cosmetics.SetVisorAlpha(Palette.White.a);
+                    vital.transform.localPosition = ToVoteAreaPos(__instance, index, displayType);
+                    Transform transform = vital.transform;
+                    transform.localScale *= PanelAreaScale[displayType];
+                    ++index;
+                }
+
                 if (Hacker.hacker != null && CachedPlayer.LocalPlayer.PlayerControl == Hacker.hacker) {
                     hackerTexts = new List<TMPro.TextMeshPro>();
                     foreach (VitalsPanel panel in __instance.vitals) {
@@ -372,9 +393,8 @@ namespace TheOtherRoles.Patches {
                         hackerTexts.Add(text);
                         UnityEngine.Object.DestroyImmediate(text.GetComponent<AlphaBlink>());
                         text.gameObject.SetActive(false);
-                        text.transform.localScale = Vector3.one * 0.75f;
-                        text.transform.localPosition = new Vector3(-0.75f, -0.23f, 0f);
-                    
+                        text.transform.localScale = Vector3.one * 0.75f * PanelAreaScale[displayType];
+                        text.transform.localPosition = new Vector3(-0.75f, -0.23f, 0f) * PanelAreaScale[displayType];
                     }
                 }
 

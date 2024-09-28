@@ -15,6 +15,8 @@ using AmongUs.QuickChat;
 using Epic.OnlineServices.Presence;
 using TheOtherRoles.Modules;
 using Il2CppSystem.Reflection;
+using TheOtherRoles.MetaContext;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -30,6 +32,23 @@ namespace TheOtherRoles.Patches {
         private static PlayerVoteArea swapped2 = null;
         static TMPro.TextMeshPro[] meetingInfoText = new TMPro.TextMeshPro[4];
         static int meetingTextIndex = 0;
+
+        static private float[] VotingAreaScale = { 1f, 0.95f, 0.76f };
+        static private (int x, int y)[] VotingAreaSize = { (3, 5), (3, 6), (4, 6) };
+        static private Vector3[] VotingAreaOffset = { Vector3.zero, new(0.1f, 0.145f, 0f), new(-0.355f, 0f, 0f) };
+        static private (float x, float y)[] VotingAreaMultiplier = { (1f, 1f), (1f, 0.89f), (0.974f, 1f) };
+        static private int GetVotingAreaType(int players) => players <= 15 ? 0 : players <= 18 ? 1 : 2;
+        private static Vector3 ToVoteAreaPos(int index, int arrangeType)
+        {
+            int x = index % VotingAreaSize[arrangeType].x;
+            int y = index / VotingAreaSize[arrangeType].x;
+            return
+                MeetingHud.Instance.VoteOrigin + VotingAreaOffset[arrangeType] +
+                new Vector3(
+                    MeetingHud.Instance.VoteButtonOffsets.x * VotingAreaScale[arrangeType] * VotingAreaMultiplier[arrangeType].x * (float)x,
+                    MeetingHud.Instance.VoteButtonOffsets.y * VotingAreaScale[arrangeType] * VotingAreaMultiplier[arrangeType].y * (float)y,
+                    -0.9f - (float)y * 0.01f);
+        }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         class MeetingCalculateVotesPatch {
@@ -313,6 +332,18 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void SortVotingArea(MeetingHud __instance, Func<NetworkedPlayerInfo, int> rank, float speed = 1f)
+        {
+            int length = __instance.playerStates.Length;
+            int type = GetVotingAreaType(length);
+            __instance.playerStates.Do(p => p.transform.localScale = new(VotingAreaScale[type], VotingAreaScale[type], 1f));
+
+            var ordered = __instance.playerStates.OrderBy(p => p.TargetPlayerId + 32 * rank.Invoke(GameData.Instance.GetPlayerById(p.TargetPlayerId))).ToArray();
+
+            for (int i = 0; i < ordered.Length; i++)
+                __instance.StartCoroutine(ordered[i].transform.Smooth(ToVoteAreaPos(i, type), 1.6f / speed).WrapToIl2Cpp());
+        }
+
 
         static void swapperOnClick(int i, MeetingHud __instance) {
             if (__instance.state == MeetingHud.VoteStates.Results || Swapper.charges <= 0) return;
@@ -370,8 +401,16 @@ namespace TheOtherRoles.Patches {
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
-                Swapper.acTokenChallenge.Value.swapped1 = firstPlayer.TargetPlayerId;
-                Swapper.acTokenChallenge.Value.swapped2 = secondPlayer.TargetPlayerId;
+                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                {
+                    Swapper.acTokenChallenge.Value.swapped1 = firstPlayer.TargetPlayerId;
+                    Swapper.acTokenChallenge.Value.swapped2 = secondPlayer.TargetPlayerId;
+                }
+                else
+                {
+                    Swapper.evilSwapperAcTokenChallenge.Value.swapped1 = firstPlayer.TargetPlayerId;
+                    Swapper.evilSwapperAcTokenChallenge.Value.swapped2 = secondPlayer.TargetPlayerId;
+                }
                 meetingExtraButtonLabel.text = Helpers.cs(Color.green, ModTranslation.getString("swapperSwapping"));
                 Swapper.charges--;
                 meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
@@ -589,7 +628,8 @@ namespace TheOtherRoles.Patches {
             writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
             writer.Write(targetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            if (Yasuna.yasunaAcTokenChallenge != null) Yasuna.yasunaAcTokenChallenge.Value.targetId = targetId;
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) Yasuna.yasunaAcTokenChallenge.Value.targetId = targetId;
+            else Yasuna.evilYasunaAcTokenChallenge.Value.targetId = targetId;
 
             __instance.SkipVoteButton.gameObject.SetActive(false);
             for (int i = 0; i < __instance.playerStates.Length; i++)
@@ -646,7 +686,10 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((System.Action)(() => swapperOnClick(copiedIndex, __instance)));
-                    
+                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
+                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonSwap")))))));
+                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+
                     selections[i] = false;
                     renderers[i] = renderer;
                 }
@@ -749,6 +792,7 @@ namespace TheOtherRoles.Patches {
                     {
                         PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[copiedIndex].TargetPlayerId);
                         EvilTracker.futureTarget = EvilTracker.target = focusedTarget;
+                        EvilTracker.acTokenCommon1 ??= new("evilTracker.common1");
                         // Reset the GUI
                         __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("EvilTrackerButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("EvilTrackerButton").gameObject); });
                         GameObject targetMark = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
@@ -760,6 +804,9 @@ namespace TheOtherRoles.Patches {
                         renderer.sprite = EvilTracker.getArrowSprite();
                         renderer.color = Palette.CrewmateBlue;
                     }));
+                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
+                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonTrack")))))));
+                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                 }
             }
 
@@ -782,6 +829,9 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((System.Action)(() => guesserOnClick(copiedIndex, __instance)));
+                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
+                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonGuess")))))));
+                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                 }
             }
 
@@ -804,6 +854,9 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => yasunaOnClick(copiedIndex, __instance)));
+                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
+                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonForceExile")))))));
+                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                 }
             }
         }
@@ -903,6 +956,7 @@ namespace TheOtherRoles.Patches {
         class MeetingServerStartPatch {
             static void Postfix(MeetingHud __instance)
             {
+                SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1, 10f);
                 populateButtonsPostfix(__instance);
             }
         }
@@ -914,6 +968,7 @@ namespace TheOtherRoles.Patches {
                 // Add swapper buttons
                 if (initialState) {
                     populateButtonsPostfix(__instance);
+                    SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1, 10f);
                 }
             }
         }
@@ -990,6 +1045,11 @@ namespace TheOtherRoles.Patches {
                         Swapper.acTokenChallenge.Value.swapped1 = byte.MaxValue;
                         Swapper.acTokenChallenge.Value.swapped2 = byte.MaxValue;
                     }
+                    else
+                    {
+                        Swapper.evilSwapperAcTokenChallenge.Value.swapped1 = byte.MaxValue;
+                        Swapper.evilSwapperAcTokenChallenge.Value.swapped2 = byte.MaxValue;
+                    }
                 }
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer)
@@ -1000,6 +1060,9 @@ namespace TheOtherRoles.Patches {
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Snitch.snitch)
                     Snitch.acTokenChallenge.Value.cleared |= Snitch.acTokenChallenge.Value.taskComplete && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Vampire.vampire)
+                    Vampire.acTokenChallenge.Value.cleared |= DateTime.UtcNow.Subtract(Vampire.acTokenChallenge.Value.deathTime).TotalSeconds <= 3;
 
                 // Fortune Teller set MeetingFlag
                 FortuneTeller.meetingFlag = true;
@@ -1021,6 +1084,12 @@ namespace TheOtherRoles.Patches {
                 if (Blackmailer.blackmailed != null && Blackmailer.blackmailed == CachedPlayer.LocalPlayer.PlayerControl)
                 {
                     Coroutines.Start(Helpers.BlackmailShhh());
+                }
+
+                if (Moriarty.moriarty != null && Moriarty.hasKilled && FastDestroyableSingleton<HudManager>.Instance != null && AmongUsClient.Instance.AmClient && Moriarty.indicateKills)
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer.PlayerControl, ModTranslation.getString("moriartyIndicator"));
+                    Moriarty.hasKilled = false;
                 }
 
                 // Add Portal info into Portalmaker Chat:
