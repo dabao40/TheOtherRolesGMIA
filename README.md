@@ -2296,7 +2296,8 @@ Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottoma
 Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
 Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-Town-Of-Host-Enhanced - Gradient color (full code)
+Town-Of-Host-Enhanced - Gradient color (full code)  
+Nebula-On-The-Ship - Idea and partly code for the 24 players support
 
 # Translation
 
