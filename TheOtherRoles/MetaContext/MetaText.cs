@@ -108,6 +108,11 @@ public enum AttributeAsset
     /// Preset読み込み画面の各プリセットのボタンと同じ大きさです。
     /// </summary>
     StandardLargeWideMasked,
+
+    /// <summary>
+    /// 主にオーバーレイ向けの本文用可変サイズテキスト属性です。
+    /// </summary>
+    OverlayContent,
 }
 
 [Flags]

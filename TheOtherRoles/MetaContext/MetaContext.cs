@@ -476,6 +476,7 @@ namespace TheOtherRoles.MetaContext
                     AttributeAsset.OblongHeader => new TextAttributes(TextAlignment.Left, GetFont(FontAsset.Oblong), FontStyle.Normal, new(5.2f, false), new(0.45f, 3f), new(255, 255, 255), true),
                     AttributeAsset.StandardMediumMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.6f, 0.8f, 1.6f), new(1.45f, 0.3f), new(255, 255, 255), false),
                     AttributeAsset.StandardLargeWideMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.7f, 1f, 1.7f), new(2.9f, 0.45f), new(255, 255, 255), false),
+                    AttributeAsset.OverlayContent => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f, 1.1f, 1.5f), Size = new(5f, 6f) },
                     _ => null!
                 };
             }
