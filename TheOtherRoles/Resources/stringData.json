@@ -3938,6 +3938,26 @@
         "11": "\u624b\u9320\u3092\u304b\u3051\u3089\u308c\u3066\u3044\u308b\u9593\u306f\u80fd\u529b\u3092\u4f7f\u7528\u3067\u304d\u306a\u3044",
         "13": "\u88ab\u902e\u6355\u65f6\u4e0d\u80fd\u4f7f\u7528\u6280\u80fd"
     },
+    "buttonLeftClick": {
+        "0": "Left Click: {0}",
+        "13": "\u5de6\u952e: {0}"
+    },
+    "buttonGuess": {
+        "0": "Guess",
+        "13": "\u731c\u6d4b"
+    },
+    "buttonTrack": {
+        "0": "Track",
+        "13": "\u8ffd\u8e2a"
+    },
+    "buttonForceExile": {
+        "0": "Force Exile",
+        "13": "\u88c1\u51b3"
+    },
+    "buttonSwap": {
+        "0": "Swap",
+        "13": "\u6362\u7968"
+    },
     "eventKilled": {
         "0": "Kill",
         "11": "\u30ad\u30eb",
@@ -5556,6 +5576,14 @@
         "13": "\u83ab\u91cc\u4e9a\u8482\u9700\u8981\u51fb\u6740\u73a9\u5bb6\u6570\u91cf",
         "14": "\u83ab\u88cf\u4e9e\u8482\u9700\u8981\u64ca\u6bba\u73a9\u5bb6\u6578\u91cf"
     },
+    "moriartyKillIndicate": {
+        "0": "Indicate Moriarty Kills",
+        "13": "\u7279\u522b\u63d0\u793a\u83ab\u91cc\u4e9a\u8482\u51fb\u6740"
+    },
+    "moriartyIndicator": {
+        "0": "The Moriarty has killed someone!",
+        "13": "\u83ab\u91cc\u4e9a\u8482\u5f3a\u5927\u7684\u80fd\u529b\u8feb\u4f7f\u73a9\u5bb6\u6b7b\u4ea1\uff01"
+    },
     "akujo": {
         "0": "Akujo",
         "11": "\u60aa\u5973",
@@ -5999,6 +6027,42 @@
         "11": "\u5168\u54e1",
         "13": "\u6240\u6709\u4eba"
     },
+    "schrodingersCat": {
+        "0": "Schrodinger's Cat",
+        "13": "\u859b\u5b9a\u8c14\u7684\u732b"
+    },
+    "schrodingersCatIntroDesc": {
+        "0": "Get killed and join the killer's team",
+        "13": "\u901a\u8fc7\u88ab\u51fb\u6740\u52a0\u5165\u51f6\u624b\u9635\u8425"
+    },
+    "schrodingersCatShortDesc": {
+        "0": "Get killed and join the killer's team",
+        "13": "\u901a\u8fc7\u88ab\u51fb\u6740\u52a0\u5165\u51f6\u624b\u9635\u8425"
+    },
+    "schrodingersCatKillCooldown": {
+        "0": "Kill Cooldown",
+        "13": "\u859b\u5b9a\u8c14\u7684\u732b\u51fb\u6740\u51b7\u5374"
+    },
+    "schrodingersCatBecomesImpostor": {
+        "0": "Becomes Impostor Instead Of Madmate",
+        "13": "\u88ab\u5185\u9b3c\u51fb\u6740\u65f6\u6210\u4e3a\u5185\u9b3c\u800c\u5e76\u975e\u53db\u5f92"
+    },
+    "schrodingersCatCantKillUntilLastOne": {
+        "0": "Cant Kill Until Last One On Team",
+        "13": "\u76f4\u5230\u6210\u4e3a\u6240\u5728\u9635\u8425\u7684\u6700\u540e\u4e00\u4eba\u4e0d\u53ef\u51fb\u6740"
+    },
+    "schrodingersCatJustDieOnKilledByCrew": {
+        "0": "Just Dies If Killed By Crewmate",
+        "13": "\u88ab\u8239\u5458\u51fb\u6740\u65f6\u76f4\u63a5\u6b7b\u4ea1"
+    },
+    "schrodingersCatHideRole": {
+        "0": "Hide Schrodinger's Cat Role",
+        "13": "\u9690\u85cf\u859b\u5b9a\u8c14\u7684\u732b\u804c\u4e1a"
+    },
+    "schrodingersCatCanChooseTeam": {
+        "0": "Can Choose Which Team To Be On",
+        "13": "\u5b8c\u6210\u4efb\u52a1\u540e\u53ef\u81ea\u7531\u9009\u62e9\u9635\u8425"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -6100,6 +6164,34 @@
         "11": "\u30a2\u30a4\u30b9",
         "13": "\u51b0\u84dd\u8272",
         "14": "\u51b0\u85cd\u8272"
+    },
+    "colorFuchsia": {
+        "0": "Fuchsia",
+        "13": "\u7d2b\u7ea2\u8272"
+    },
+    "colorRoyalGreen": {
+        "0": "Royal Green",
+        "13": "\u7687\u5bb6\u7eff"
+    },
+    "colorSlime": {
+        "0": "Slime",
+        "13": "\u8367\u5149\u7eff"
+    },
+    "colorNavy": {
+        "0": "Navy",
+        "13": "\u85cf\u84dd\u8272"
+    },
+    "colorDarkness": {
+        "0": "Darkness",
+        "13": "\u6697\u9ed1\u8272"
+    },
+    "colorOcean": {
+        "0": "Ocean",
+        "13": "\u6d77\u84dd\u8272"
+    },
+    "colorSundown": {
+        "0": "Sundown",
+        "13": "\u65e5\u843d\u9ec4"
     },
     "CamoText": {
         "0": "[BLANK]",
@@ -6897,6 +6989,10 @@
         "13": "\u9884\u8a00\u5bb6\u662f\u4e00\u4e2a\u6709\u80fd\u529b\u8bed\u8a00\u51e0\u4e2a\u73a9\u5bb6\u804c\u4e1a\u7684\u8239\u5458\u8239\u5458\u3002\u5982\u679c\u8be5\u73a9\u5bb6\u5e26\u5200\n\uff08\u6216\u662f\u4e2d\u7acb\u804c\u4e1a\u6216\u662f\u5e26\u5200\u7684\u8239\u5458\u804c\u4e1a\uff09\uff0c\u8be5\u73a9\u5bb6\u7684\u540d\u5b57\u5c06\u5728\u9884\u8a00\u5bb6\u7684\n\u89c6\u91ce\u4e2d\u663e\u793a\u4e3a\u7ea2\u8272\u3002\u9884\u8a00\u5bb6\u53ef\u80fd\u65e0\u6cd5\u542f\u52a8\u7d27\u6025\u4f1a\u8bae\uff0c\u8fd9\u53d6\u51b3\u4e8e\u8bbe\u7f6e\uff0c\n\u5e76\u4e14\u53ef\u80fd\u4f1a\u5728\u51e0\u6b21\u9884\u8a00\u540e\u88ab\u5e26\u5200\u73a9\u5bb6\u53d1\u73b0\u3002",
         "14": "\u9810\u8a00\u5bb6\u662f\u4e00\u500b\u6709\u80fd\u529b\u8a9e\u8a00\u5e7e\u500b\u73a9\u5bb6\u8077\u696d\u7684\u8239\u54e1\u8239\u54e1\u3002\u5982\u679c\u8a72\u73a9\u5bb6\u5e36\u5200\n\uff08\u6216\u662f\u4e2d\u7acb\u8077\u696d\u6216\u662f\u5e36\u5200\u7684\u8239\u54e1\u8077\u696d\uff09\uff0c\u8a72\u73a9\u5bb6\u7684\u540d\u5b57\u5c07\u5728\u9810\u8a00\u5bb6\u7684\n\u8996\u91ce\u4e2d\u986f\u793a\u70ba\u7d05\u8272\u3002\u9810\u8a00\u5bb6\u53ef\u80fd\u7121\u6cd5\u555f\u52d5\u7dca\u6025\u6703\u8b70\uff0c\u9019\u53d6\u6c7a\u65bc\u8a2d\u7f6e\uff0c\n\u4f75\u4e14\u53ef\u80fd\u6703\u5728\u5e7e\u6b21\u8a9e\u8a00\u5f8c\u88ab\u5e36\u5200\u73a9\u5bb6\u767c\u73fe\u3002"
     },
+    "noisemakerFullDesc": {
+        "0": "The Noisemaker is a Crewmate who can select another player as their\ntarget. If their target is killed, a certain group of players will get notified\nof the target's death by an arrow similar to the original Noisemaker arrow\nin the Vanilla game. Depending on the options, the group of players\nmight be the Noisemaker themselves, all Crewmates or everyone.",
+        "13": "\u5e7f\u64ad\u5458\u662f\u4e00\u4e2a\u53ef\u4ee5\u9009\u62e9\u67d0\u4e2a\u73a9\u5bb6\u4e3a\u76ee\u6807\u7684\u8239\u5458\u804c\u4e1a\u3002\u5f53\u76ee\u6807\u73a9\u5bb6\u6b7b\u4ea1\u65f6\uff0c\u7279\u5b9a\n\u7684\u73a9\u5bb6\u4f1a\u6536\u5230\u7c7b\u4f3c\u4e8e\u539f\u7248\u5927\u55d3\u95e8\u804c\u4e1a\u88ab\u51fb\u6740\u65f6\u53d1\u51fa\u7684\u7ea2\u8272\u7bad\u5934\u8b66\u62a5\u3002\u6839\u636e\u8bbe\u7f6e\uff0c\n\u8fd9\u7fa4\u73a9\u5bb6\u53ef\u80fd\u662f\u5e7f\u64ad\u5458\u672c\u4eba\uff0c\u6240\u6709\u8239\u5458\u6216\u8005\u6240\u6709\u4eba"
+    },
     "foxFullDesc": {
         "0": "The Fox is a Neutral role whose goal is to keep themselves\nhidden from both the Crewmates and Impostors while\ncompleting their own tasks. The Fox is always aware of where any\nthreats are, and has numerous abilities to protect themselves.",
         "11": "\u30bf\u30b9\u30af\u3092\u5168\u3066\u5b8c\u4e86\u3055\u305b\u305f\u5f8c\u3001\u6700\u5f8c\u307e\u3067\u751f\u5b58\u3057\u3066\u3044\u305f\u3089\u30b2\u30fc\u30e0\u7d42\u4e86\u6642\u306b\u5358\u72ec\u52dd\u5229\u3068\u306a\u308b\n\u203b\u4ed6\u306e\u7b2c3\u9663\u55b6\u306e\u30bd\u30ed\u52dd\u5229\u306e\u5834\u5408\u306f\u9664\u304f\n\n\u30fb\u81ea\u8eab\u3092\u30ad\u30eb\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u4f4d\u7f6e\u3092\n\u3000\u77e2\u5370\u3067\u628a\u63e1\u3067\u304d\u308b\n\u30fb\u900f\u660e\u5316\u30dc\u30bf\u30f3\u3092\u62bc\u3059\u3053\u3068\u3067\u4e00\u5b9a\u6642\u9593\u900f\u660e\u306b\u306a\u308a\n\u3000\u30bf\u30fc\u30b2\u30c3\u30c8\u4e0d\u53ef\u306b\u306a\u308b\n\u30fb\u5996\u72d0\u306f\u30ea\u30a2\u30af\u30bf\u30fc\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5\u3092\u76f4\u3059\u3053\u3068\u304c\u3067\u304d\u306a\u3044\n\u30fb\u81ea\u8eab\u3092\u30ad\u30eb\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\u30d7\u30ec\u30a4\u30e4\u30fc\u4ee5\u5916\u3092\n\u3000\u80cc\u5fb3\u8005\u306b\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\n\u30fb\u5996\u72d0\u306f\u30af\u30eb\u30fc\u5074\u306e\u751f\u5b58\u4eba\u6570\u306b\u306f\u30ab\u30a6\u30f3\u30c8\u3055\u308c\u306a\u3044\n\u30fb\u5996\u72d0\u306e\u30bf\u30b9\u30af\u6570\u306f\u30af\u30eb\u30fc\u5074\u306e\u30bf\u30b9\u30af\u6570\u306b\u306f\u30ab\u30a6\u30f3\u30c8\u3055\u308c\u306a\u3044",
@@ -6930,6 +7026,10 @@
         "11": "\u30fb\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u6d17\u8133\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\n\u30fb\u6d17\u8133\u3057\u305f\u30d7\u30ec\u30a4\u30e4\u30fc\u306b\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u6bba\u3055\u305b\u308b\u3053\u3068\u304c\u3067\u304d\u308b\n\u30fb\u30e2\u30ea\u30a2\u30fc\u30c6\u30a3\u304c\u751f\u304d\u6b8b\u3063\u3066\u3044\u308b\u304b\u3064\u4ed6\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306b\u8a2d\u5b9a\u56de\u6570\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u6bba\u3055\u305b\u308c\u3070\u52dd\u5229",
         "13": "\u83ab\u91cc\u4e9a\u8482\u662f\u4e00\u4e2a\u4e2d\u7acb\u7684\u6740\u624b\u5c31\u50cf\u50cf\u8c7a\u72fc\u4e00\u6837\u3002\n\u83ab\u91cc\u4e9a\u8482\u53ef\u4ee5\u7ed9\u4e00\u540d\u73a9\u5bb6\u6d17\u8111\uff0c\u7136\u540e\u64cd\u63a7\u4ed6\u6740\u6b7b\u53e6\u4e00\u540d\u73a9\u5bb6\u3002\n\u4e00\u65e6\u83ab\u91cc\u4e9a\u8482\u6740\u6b7b\u4e86\u6709\u9650\u6570\u91cf\u7684\u73a9\u5bb6\uff0c\u5b83\u5c31\u4f1a\u72ec\u81ea\u83b7\u80dc\u3002",
         "14": "\u83ab\u88cf\u4e9e\u8482\u662f\u4e00\u500b\u4e2d\u7acb\u7684\u6bba\u624b\u5c31\u50cf\u50cf\u8c7a\u72fc\u4e00\u6a23\u3002\n\u83ab\u88cf\u4e9e\u8482\u53ef\u4ee5\u7d66\u4e00\u540d\u73a9\u5bb6\u6d17\u8166\uff0c\u7136\u5f8c\u64cd\u63a7\u4ed6\u6bba\u6b7b\u53e6\u4e00\u540d\u73a9\u5bb6\u3002\n\u4e00\u65e6\u83ab\u88cf\u4e9e\u8482\u6bba\u6b7b\u4e86\u6709\u9650\u6578\u91cf\u7684\u73a9\u5bb6\uff0c\u5b83\u5c31\u6703\u7368\u81ea\u7372\u52dd\u3002"
+    },
+    "schrodingersCatFullDesc": {
+        "0": "The Schrodinger's Cat is a Neutral role whom, when killed for the first time,\njoins the killer's team. The Schrodinger's Cat will just die if being killed for\nthe second time or killed by a Crewmate killer (depending on the options).\nThe Schrodinger's Cat may find themselves Crewmates at the beginning of the\ngame, only revealing their identity when all tasks have been completed. They may\nalso choose their teams freely when all tasks completed.",
+        "13": "\u859b\u5b9a\u8c14\u7684\u732b\u662f\u4e00\u4e2a\u53ef\u4ee5\u5728\u7b2c\u4e00\u6b21\u88ab\u51fb\u6740\u65f6\u52a0\u5165\u51f6\u624b\u9635\u8425\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\u5f53\u859b\u5b9a\u8c14\u7684\u732b\u88ab\u51fb\u6740\n\u7b2c\u4e8c\u6b21\u6216\uff0c\u6839\u636e\u8bbe\u7f6e\uff0c\u88ab\u8239\u5458\u804c\u4e1a\u51fb\u6740\u65f6\uff0c\u4ed6\u4eec\u5c06\u76f4\u63a5\u6b7b\u4ea1\u3002\u859b\u5b9a\u8c14\u7684\u732b\u5728\u521a\u5f00\u59cb\u53ef\u80fd\u4f1a\n\u8bef\u4ee5\u4e3a\u81ea\u5df1\u662f\u666e\u901a\u8239\u5458\uff0c\u53ea\u6709\u5728\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u65f6\u624d\u89c9\u9192\u53d1\u73b0\u81ea\u5df1\u771f\u5b9e\u8eab\u4efd\u3002\u6839\u636e\u8bbe\u7f6e\uff0c\n\u4ed6\u4eec\u8fd8\u53ef\u4ee5\u81ea\u7531\u9009\u62e9\u9635\u8425\u6765\u52a0\u5165\u3002"
     },
     "bloodyFullDesc": {
         "0": "If killed, the Bloody Modifier will leave a trail for x-seconds on\ntheir killer. The trail will have the color of the killed person.",
@@ -6978,6 +7078,14 @@
         "11": "\u30fb\u30b5\u30f3\u30b0\u30e9\u30b9\u3092\u304b\u3051\u308b\u3068\u3001\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u306e\u8996\u529b\u304c\u308f\u305a\u304b\u306b\u4f4e\u4e0b\u3059\u308b\n\u30fb\u505c\u96fb\u4e2d\u3082\u52b9\u679c\u3092\u53d7\u3051\u308b",
         "13": "\u5931\u660e\u8005\u4f1a\u4f7f\u73a9\u5bb6\u7684\u89c6\u91ce\u4e0b\u964d\u4e00\u5c0f\u90e8\u5206,\u767e\u5206\u6bd4\u53ef\u5728\u8bbe\u7f6e\u4e2d\u4e2d\u8bbe\u7f6e\u3002\n\u5f53\u706f\u7184\u706d\u65f6\uff0c\u5931\u660e\u8005\u7684\u89c6\u91ce\u4e5f\u4f1a\u53d7\u5230\u5f71\u54cd\u3002",
         "14": "\u5931\u660e\u8005\u6703\u4f7f\u73a9\u5bb6\u7684\u8996\u91ce\u4e0b\u964d\u4e00\u5c0f\u90e8\u5206,\u767e\u5206\u6bd4\u53ef\u5728\u8a2d\u7f6e\u4e2d\u4e2d\u8a2d\u7f6e\u3002\n\u7576\u71c8\u7184\u6ec5\u6642\uff0c\u5931\u660e\u8005\u7684\u8996\u91ce\u4e5f\u6703\u53d7\u5230\u5f71\u97ff\u3002"
+    },
+    "hunterFullDesc": {
+        "0": "The Hunter and Hunted player who are still alive are displayed to everyone\nin the bottom left corner (similar to the Arsonist display). When the game starts,\nthe Hunter's movement is disabled for x-seconds (depends on the settings).\nThe Hunter can enable arrows, use the mobile admin, or use the lighter ability\nto hunt down the Hunted. Each Hunter action will lower the timer by a configurable\namount of time.",
+        "13": "\u730e\u4eba\u4e0e\u5b58\u6d3b\u7684\u730e\u7269\u90fd\u4f1a\u88ab\u5c55\u793a\u5230\u7c7b\u4f3c\u4e8e\u7eb5\u706b\u72af\u73a9\u5bb6\u663e\u793a\u7684\u5de6\u4e0b\u89d2\u533a\u57df\u3002\u5f53\u6e38\u620f\u5f00\u59cb\u65f6\uff0c\n\u730e\u4eba\u4f1a\u88ab\u5f3a\u5236\u5728x\uff08\u6839\u636e\u8bbe\u7f6e\u53ef\u8c03\u63a7\uff09\u79d2\u949f\u5185\u7acb\u6b63\u7ad9\u597d\u3002\u730e\u4eba\u53ef\u4ee5\u901a\u8fc7\u663e\u793a\u6307\u5411\u730e\u7269\u7684\u7bad\u5934\uff0c\n\u4f7f\u7528\u79fb\u52a8\u7ba1\u7406\u5ba4\u5730\u56fe\u6216\u4f7f\u7528\u70b9\u706f\u6280\u80fd\u6765\u6293\u6355\u730e\u7269\u3002\u6bcf\u4e00\u4e2a\u730e\u4eba\u6240\u505a\u7684\u6293\u6355\u63aa\u65bd\u90fd\u4f1a\u8ba9\u5012\u8ba1\n\u65f6\u7f29\u77ed"
+    },
+    "huntedFullDesc": {
+        "0": "The Hunter and Hunted player who are still alive are displayed to everyone in\nthe bottom left corner (similar to the Arsonist display). There is a time-limit for each\nround, if the timer runs out and at least one Hunted is still alive, the Crew wins. The\nHunted players can also win, if Taskwin is enabled and the Crew completes all tasks.\nThe Hunted can activate the Timeshield (like Timemaster, depending on settings) to\nprevent the kill.",
+        "13": "\u730e\u4eba\u4e0e\u5b58\u6d3b\u7684\u730e\u7269\u90fd\u4f1a\u88ab\u5c55\u793a\u5230\u7c7b\u4f3c\u4e8e\u7eb5\u706b\u72af\u73a9\u5bb6\u663e\u793a\u7684\u5de6\u4e0b\u89d2\u533a\u57df\u3002\u6bcf\u6b21\u6e38\u620f\u90fd\u6709\u7279\u5b9a\u7684\n\u5012\u8ba1\u65f6\uff0c\u5f53\u5012\u8ba1\u65f6\u7ed3\u675f\u65f6\u5982\u679c\u81f3\u5c11\u6709\u4e00\u4e2a\u730e\u7269\u5b58\u6d3b\u5219\u730e\u7269\u80dc\u5229\u3002\u730e\u7269\u8fd8\u53ef\u4ee5\u901a\u8fc7\u505a\u5b8c\u6240\u6709\u4efb\u52a1\n\u6765\u83b7\u80dc\uff08\u4efb\u52a1\u80dc\u5229\u5df2\u5f00\u542f\u7684\u524d\u63d0\u4e0b\uff09\u3002\u730e\u7269\u53ef\u4ee5\u53d1\u52a8\u7c7b\u4f3c\u65f6\u95f4\u4e4b\u4e3b\u7684\u6280\u80fd\u6765\u963b\u6b62\u51fb\u6740"
     },
     "achievementAllAchievements": {
         "0": "Total",
@@ -7419,6 +7527,42 @@
         "0": "Swapping!",
         "11": "\u771f\u3092\u898b\u6975\u3081\u3057\u8005",
         "13": "\u6b63\u786e\u7684\u6362\u7968\u9009\u62e9\uff01"
+    },
+    "niceGuessercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "niceGuessercommon1AchievementGoal": {
+        "0": "Guess A Player",
+        "13": "\u8d4c\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "niceGuessercommon1AchievementTitle": {
+        "0": "Guess!",
+        "13": "\u731c\u6d4b\u8005\uff01"
+    },
+    "niceGuesserchallenge1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "niceGuesserchallenge1AchievementGoal": {
+        "0": "Guess 3 Players",
+        "13": "\u8d4c\u6740\u81f3\u5c113\u540d\u73a9\u5bb6"
+    },
+    "niceGuesserchallenge1AchievementTitle": {
+        "0": "Master Of Guesser",
+        "13": "\u8d4c\u795e\u9644\u4f53"
+    },
+    "niceGuesserchallenge2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "niceGuesserchallenge2AchievementGoal": {
+        "0": "Guess The Evil Guesser",
+        "13": "\u8d4c\u6740\u90aa\u6076\u7684\u8d4c\u602a"
+    },
+    "niceGuesserchallenge2AchievementTitle": {
+        "0": "Battle Of The Two",
+        "13": "\u72d9\u51fb\u624b\u7684\u5bf9\u51b3"
     },
     "seercommon1AchievementCond": {
         "0": "[BLANK]",
@@ -7898,5 +8042,629 @@
         "0": "That Was Close",
         "11": "\u624b\u306b\u6c57\u63e1\u308b\u77ac\u9593\u3092",
         "13": "\u5dee\u4e00\u70b9\u5c31\u53bb\u4e16\u4e86\uff01"
+    },
+    "noisemakercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "noisemakercommon1AchievementGoal": {
+        "0": "Make A Successful Alert",
+        "13": "\u5e7f\u64ad\u4e00\u6b21\u6210\u529f\u7684\u6b7b\u4ea1\u8b66\u544a"
+    },
+    "noisemakercommon1AchievementTitle": {
+        "0": "Alert Active",
+        "13": "\u5168\u4f53\u6ce8\u610f\uff01"
+    },
+    "noisemakerchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "noisemakerchallengeAchievementGoal": {
+        "0": "Make 3 Successful Alerts",
+        "13": "\u5e7f\u64ad\u81f3\u5c113\u6b21\u6210\u529f\u7684\u6b7b\u4ea1\u8b66\u544a"
+    },
+    "noisemakerchallengeAchievementTitle": {
+        "0": "Warn The Crew",
+        "13": "\u8b66\u60d5\u5427\uff0c\u8239\u5458\u4eec"
+    },
+    "mafiosoanother1AchievementCond": {
+        "0": "You Must Be Alive When The Godfather Is Killed",
+        "13": "\u4f60\u5fc5\u987b\u5728\u6559\u7236\u6b7b\u65f6\u5b58\u6d3b"
+    },
+    "mafiosoanother1AchievementGoal": {
+        "0": "Have The Godfather Killed",
+        "13": "\u5728\u6559\u7236\u6b7b\u540e\u83b7\u5f97\u51fb\u6740\u80fd\u529b"
+    },
+    "mafiosoanother1AchievementTitle": {
+        "0": "Boss Around!",
+        "13": "\u52a0\u5b98\u8fdb\u7235\uff01"
+    },
+    "janitorcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "janitorcommon1AchievementGoal": {
+        "0": "Clean A Dead Body",
+        "13": "\u6e05\u6d01\u4e00\u540d\u73a9\u5bb6\u7684\u5c38\u4f53"
+    },
+    "janitorcommon1AchievementTitle": {
+        "0": "Leave No Trace",
+        "13": "\u6beb\u65e0\u75d5\u8ff9"
+    },
+    "morphlingcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "morphlingcommon1AchievementGoal": {
+        "0": "Sample And Morph Into A Player",
+        "13": "\u53d6\u6837\u5e76\u5316\u5f62\u4e3a\u4e00\u540d\u73a9\u5bb6"
+    },
+    "morphlingcommon1AchievementTitle": {
+        "0": "Messed Up",
+        "13": "\u5f7b\u5e95\u6df7\u4e71"
+    },
+    "morphlinganother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "morphlinganother1AchievementGoal": {
+        "0": "Get Killed While In The Victim's Outfit",
+        "13": "\u5728\u5316\u5f62\u671f\u95f4\u88ab\u51fb\u6740"
+    },
+    "morphlinganother1AchievementTitle": {
+        "0": "Discovered...",
+        "13": "\u88ab\u53d1\u73b0\u4e86..."
+    },
+    "morphlingchallengeAchievementCond": {
+        "0": "You Must Kill Someone While Morphing",
+        "13": "\u4f60\u5fc5\u987b\u5728\u5316\u5f62\u671f\u95f4\u51fb\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "morphlingchallengeAchievementGoal": {
+        "0": "Exile Your Morph Target",
+        "13": "\u9a71\u9010\u88ab\u5316\u5f62\u7684\u5bf9\u8c61"
+    },
+    "morphlingchallengeAchievementTitle": {
+        "0": "You Are All Fooled!",
+        "13": "\u6df7\u6c8c\uff01"
+    },
+    "camouflagercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "camouflagercommon1AchievementGoal": {
+        "0": "Activate The Camouflage",
+        "13": "\u542f\u7528\u9690\u853d\u6280\u80fd"
+    },
+    "camouflagercommon1AchievementTitle": {
+        "0": "Black And White",
+        "13": "\u9ed1\u4e0e\u767d"
+    },
+    "camouflageranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "camouflageranother1AchievementGoal": {
+        "0": "Get Yourself Killed While Camouflage",
+        "13": "\u5728\u9690\u853d\u671f\u95f4\u88ab\u6740\u5bb3"
+    },
+    "camouflageranother1AchievementTitle": {
+        "0": "Eat Your Own Medicine",
+        "13": "\u4ee5\u5176\u4eba\u4e4b\u9053\u8fd8\u6cbb\u5176\u4eba\u4e4b\u8eab"
+    },
+    "camouflagerchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "camouflagerchallengeAchievementGoal": {
+        "0": "Have At Least 3 Players Killed During Camouflage",
+        "13": "\u5728\u9690\u853d\u671f\u95f4\u81f3\u5c11\u67093\u540d\u73a9\u5bb6\u88ab\u51fb\u6740"
+    },
+    "camouflagerchallengeAchievementTitle": {
+        "0": "Massacre",
+        "13": "\u5927\u5c60\u6740"
+    },
+    "vampirecommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "vampirecommon1AchievementGoal": {
+        "0": "Bite A Player",
+        "13": "\u54ac\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "vampirecommon1AchievementTitle": {
+        "0": "Blood Straining",
+        "13": "\u6591\u9a73\u8840\u8ff9"
+    },
+    "vampirechallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "vampirechallengeAchievementGoal": {
+        "0": "Report The Bitten Player's Body Within 3 Seconds After His Death",
+        "13": "\u5728\u88ab\u5438\u8840\u7684\u73a9\u5bb6\u6b7b\u4ea1\u540e3\u79d2\u4e4b\u5185\u62a5\u544a\u4ed6\u7684\u5c38\u4f53"
+    },
+    "vampirechallengeAchievementTitle": {
+        "0": "Flawless Crime",
+        "13": "\u5b8c\u7f8e\u7684\u72af\u7f6a"
+    },
+    "erasercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "erasercommon1AchievementGoal": {
+        "0": "Erase One Player's Role",
+        "13": "\u62b9\u9664\u4e00\u540d\u73a9\u5bb6\u7684\u804c\u4e1a"
+    },
+    "erasercommon1AchievementTitle": {
+        "0": "Say Goodbye To Your Role",
+        "13": "\u5bf9\u4f60\u7684\u804c\u4e1a\u8bf4\u518d\u89c1"
+    },
+    "eraseranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "eraseranother1AchievementGoal": {
+        "0": "Erase An Impostor's Role",
+        "13": "\u62b9\u9664\u4e00\u540d\u5185\u9b3c\u7684\u804c\u4e1a"
+    },
+    "eraseranother1AchievementTitle": {
+        "0": "I Didn't Mean It",
+        "13": "\u6211\u4e0d\u662f\u6545\u610f\u7684"
+    },
+    "eraserchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "eraserchallengeAchievementGoal": {
+        "0": "Erase 3 Players' Roles",
+        "13": "\u62b9\u96643\u540d\u73a9\u5bb6\u7684\u804c\u4e1a"
+    },
+    "eraserchallengeAchievementTitle": {
+        "0": "From Useful To Useless",
+        "13": "\u4ece\u6709\u7528\u5230\u65e0\u7528"
+    },
+    "trickstercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "trickstercommon1AchievementGoal": {
+        "0": "Have The Trickster Boxes Converted To Vents",
+        "13": "\u653e\u7f6e3\u4e2a\u9a97\u672f\u76d2\u5b50\u5e76\u8fde\u6210\u7ba1\u9053"
+    },
+    "trickstercommon1AchievementTitle": {
+        "0": "New Vents",
+        "13": "\u65b0\u7684\u901a\u98ce\u7ba1"
+    },
+    "trickstercommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "trickstercommon2AchievementGoal": {
+        "0": "Use Your Lights Out Ability",
+        "13": "\u7528\u4f60\u7684\u5173\u706f\u6280\u80fd"
+    },
+    "trickstercommon2AchievementTitle": {
+        "0": "Lights Out",
+        "13": "\u5f3a\u5236\u7184\u706f"
+    },
+    "tricksterchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "tricksterchallengeAchievementGoal": {
+        "0": "Have At Least 2 Players Killed During Your Lights Out",
+        "13": "\u5728\u5f3a\u5236\u5173\u706f\u671f\u95f4\u81f3\u5c11\u67092\u540d\u73a9\u5bb6\u88ab\u6740\u5bb3"
+    },
+    "tricksterchallengeAchievementTitle": {
+        "0": "Going Too Soon",
+        "13": "\u8d70\u5f97\u592a\u65e9\u4e86"
+    },
+    "cleanercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "cleanercommon1AchievementGoal": {
+        "0": "Clean A Dead Body",
+        "13": "\u6e05\u7406\u4e00\u540d\u73a9\u5bb6\u7684\u5c38\u4f53"
+    },
+    "cleanercommon1AchievementTitle": {
+        "0": "Clean Up",
+        "13": "\u6253\u626b\u5e72\u51c0"
+    },
+    "cleanerchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "cleanerchallengeAchievementGoal": {
+        "0": "Clean 3 Dead Bodies",
+        "13": "\u6e05\u7406\u81f3\u5c113\u540d\u73a9\u5bb6\u7684\u5c38\u4f53"
+    },
+    "cleanerchallengeAchievementTitle": {
+        "0": "No More Dead Bodies",
+        "13": "\u518d\u65e0\u5c38\u4f53\uff01"
+    },
+    "warlockcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "warlockcommon1AchievementGoal": {
+        "0": "Curse And Kill A Player",
+        "13": "\u8bc5\u5492\u5e76\u51fb\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "warlockcommon1AchievementTitle": {
+        "0": "I Curse You!",
+        "13": "\u6211\u8bc5\u5492\u4f60\uff01"
+    },
+    "warlockanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "warlockanother1AchievementGoal": {
+        "0": "Curse And Kill Yourself",
+        "13": "\u8bc5\u5492\u5e76\u5c06\u81ea\u5df1\u51fb\u6740"
+    },
+    "warlockanother1AchievementTitle": {
+        "0": "Be Careful!",
+        "13": "\u5c0f\u5fc3\u70b9\u5427"
+    },
+    "warlockchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "warlockchallengeAchievementGoal": {
+        "0": "Kill At Least 3 Players With Your Curse",
+        "13": "\u7528\u4f60\u7684\u5492\u6740\u81f3\u5c11\u51fb\u67403\u540d\u73a9\u5bb6"
+    },
+    "warlockchallengeAchievementTitle": {
+        "0": "Deadly Curse",
+        "13": "\u6b7b\u4ea1\u7684\u8bc5\u5492"
+    },
+    "bountyHuntercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "bountyHuntercommon1AchievementGoal": {
+        "0": "Kill Your Bounty",
+        "13": "\u51fb\u6740\u8d4f\u91d1\u76ee\u6807"
+    },
+    "bountyHuntercommon1AchievementTitle": {
+        "0": "Hunting Down",
+        "13": "\u72e9\u730e\u65f6\u523b\uff01"
+    },
+    "bountyHunteranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "bountyHunteranother1AchievementGoal": {
+        "0": "Kill A Non-Bounty Player",
+        "13": "\u51fb\u6740\u975e\u8d4f\u91d1\u76ee\u6807"
+    },
+    "bountyHunteranother1AchievementTitle": {
+        "0": "Wrong Prey",
+        "13": "\u6293\u9519\u4e86..."
+    },
+    "bountyHunterchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "bountyHunterchallengeAchievementGoal": {
+        "0": "Kill 3 Players Within 30 seconds",
+        "13": "\u572830\u79d2\u5185\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6"
+    },
+    "bountyHunterchallengeAchievementTitle": {
+        "0": "Killing Is Everything",
+        "13": "\u5feb\u5200\u65a9\u4e71\u9ebb"
+    },
+    "witchcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "witchcommon1AchievementGoal": {
+        "0": "Spell A Player",
+        "13": "\u7ed9\u4e00\u540d\u73a9\u5bb6\u4e0b\u5492"
+    },
+    "witchcommon1AchievementTitle": {
+        "0": "Murky Witch",
+        "13": "\u9634\u6697\u7684\u5973\u5deb"
+    },
+    "witchchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "witchchallengeAchievementGoal": {
+        "0": "Spell 3 Players",
+        "13": "\u7ed93\u540d\u73a9\u5bb6\u4e0b\u5492"
+    },
+    "witchchallengeAchievementTitle": {
+        "0": "Spell Master",
+        "13": "\u4e0b\u5492\u5927\u5e08"
+    },
+    "assassincommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "assassincommon1AchievementGoal": {
+        "0": "Assassinate A Player",
+        "13": "\u523a\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "assassincommon1AchievementTitle": {
+        "0": "Assassination Complete",
+        "13": "\u523a\u6740\u4efb\u52a1\u5b8c\u6210"
+    },
+    "assassinchallengeAchievementCond": {
+        "0": "You Must Be Seen By At Least 1 Player",
+        "13": "\u4f60\u9700\u8981\u81f3\u5c11\u88ab\u4e00\u540d\u73a9\u5bb6\u770b\u89c1"
+    },
+    "assassinchallengeAchievementGoal": {
+        "0": "Assassinate A Player And Be Caught Red-Handed",
+        "13": "\u523a\u6740\u65f6\u88ab\u6293\u6b63\u7740"
+    },
+    "assassinchallengeAchievementTitle": {
+        "0": "Not Afraid Of That",
+        "13": "\u52c7\u6562\u9762\u5200\uff01"
+    },
+    "ninjacommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "ninjacommon1AchievementGoal": {
+        "0": "Use Your Stealth Ability",
+        "13": "\u4f7f\u7528\u4f60\u7684\u9690\u8eab\u6280\u80fd"
+    },
+    "ninjacommon1AchievementTitle": {
+        "0": "Invisible!",
+        "13": "\u9690\u8eab\uff01"
+    },
+    "ninjaanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "ninjaanother1AchievementGoal": {
+        "0": "Get Killed While Invisible",
+        "13": "\u5728\u9690\u8eab\u671f\u95f4\u88ab\u6740\u5bb3"
+    },
+    "ninjaanother1AchievementTitle": {
+        "0": "How Did You Find Me",
+        "13": "\u4f60\u600e\u4e48\u770b\u89c1\u6211\u7684\uff1f"
+    },
+    "ninjachallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "ninjachallengeAchievementGoal": {
+        "0": "Stealth And Kill 2 Players",
+        "13": "\u9690\u8eab\u5e76\u51fb\u6740\u81f3\u5c112\u540d\u73a9\u5bb6"
+    },
+    "ninjachallengeAchievementTitle": {
+        "0": "Stalker",
+        "13": "\u6f5c\u4f0f\u8005"
+    },
+    "nekoKabochachallengeAchievementCond": {
+        "0": "You Must Be Killed",
+        "13": "\u4f60\u5fc5\u987b\u88ab\u51fb\u6740"
+    },
+    "nekoKabochachallengeAchievementGoal": {
+        "0": "Revenge On Your Killer",
+        "13": "\u5411\u4f60\u7684\u51f6\u624b\u590d\u4ec7"
+    },
+    "nekoKabochachallengeAchievementTitle": {
+        "0": "Revenge!",
+        "13": "\u590d\u4ec7\u7684\u6ecb\u5473"
+    },
+    "serialKillercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "serialKillercommon1AchievementGoal": {
+        "0": "Have The First Taste Of Blood",
+        "13": "\u51fb\u6740\u7b2c\u4e00\u540d\u73a9\u5bb6"
+    },
+    "serialKillercommon1AchievementTitle": {
+        "0": "Blood Thirsty",
+        "13": "\u9c9c\u8840\u7684\u6e34\u671b"
+    },
+    "serialKilleranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "serialKilleranother1AchievementGoal": {
+        "0": "Driven Crazy By The Thirst Of Blood",
+        "13": "\u56e0\u6e34\u671b\u9c9c\u8840\u800c\u81ea\u6740"
+    },
+    "serialKilleranother1AchievementTitle": {
+        "0": "Mad Or Not?",
+        "13": "\u5f7b\u5e95\u75af\u766b"
+    },
+    "evilGuessercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilGuessercommon1AchievementGoal": {
+        "0": "Guess A Player",
+        "13": "\u8d4c\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "evilGuessercommon1AchievementTitle": {
+        "0": "Shoot!",
+        "13": "\u72d9\u6740\uff01"
+    },
+    "evilGuesserchallenge1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilGuesserchallenge1AchievementGoal": {
+        "0": "Guess 3 Players",
+        "13": "\u8d4c\u6740\u81f3\u5c113\u540d\u73a9\u5bb6"
+    },
+    "evilGuesserchallenge1AchievementTitle": {
+        "0": "Gambling",
+        "13": "\u8d4c\u535a"
+    },
+    "evilGuesserchallenge2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilGuesserchallenge2AchievementGoal": {
+        "0": "Guess The Nice Guesser",
+        "13": "\u8d4c\u6740\u6b63\u4e49\u7684\u8d4c\u602a"
+    },
+    "evilGuesserchallenge2AchievementTitle": {
+        "0": "Once And For All",
+        "13": "\u4e00\u52b3\u6c38\u9038\uff01"
+    },
+    "evilTrackercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilTrackercommon1AchievementGoal": {
+        "0": "Track A Player",
+        "13": "\u8ffd\u8e2a\u4e00\u540d\u73a9\u5bb6"
+    },
+    "evilTrackercommon1AchievementTitle": {
+        "0": "Tracked",
+        "13": "\u8ffd\u8e2a\uff01"
+    },
+    "evilTrackercommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilTrackercommon2AchievementGoal": {
+        "0": "View The Tracked Target's Tasks",
+        "13": "\u89c2\u5bdf\u8ffd\u8e2a\u76ee\u6807\u7684\u4efb\u52a1"
+    },
+    "evilTrackercommon2AchievementTitle": {
+        "0": "Task Tracker",
+        "13": "\u4efb\u52a1\u8ffd\u8e2a\u5668"
+    },
+    "evilHackercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilHackercommon1AchievementGoal": {
+        "0": "Create A Madmate",
+        "13": "\u62db\u52df\u4e00\u540d\u73a9\u5bb6\u4e3a\u53db\u5f92"
+    },
+    "evilHackercommon1AchievementTitle": {
+        "0": "\"Impostor\" Pal",
+        "13": "\"\u5185\u9b3c\"\u4f19\u4f34"
+    },
+    "evilHackerchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilHackerchallengeAchievementGoal": {
+        "0": "View The Portable Admin And Make A Kill",
+        "13": "\u67e5\u770b\u4fbf\u643a\u5f0f\u7ba1\u7406\u5730\u56fe\u540e\u51fb\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "evilHackerchallengeAchievementTitle": {
+        "0": "Admin-ish",
+        "13": "\u79fb\u52a8\u7ba1\u7406\u5730\u56fe"
+    },
+    "evilSwapperchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilSwapperchallengeAchievementGoal": {
+        "0": "Swap Votes And Protect An Impostor",
+        "13": "\u901a\u8fc7\u6362\u7968\u5e87\u62a4\u4e00\u540d\u5185\u9b3c"
+    },
+    "evilSwapperchallengeAchievementTitle": {
+        "0": "Ally Protector",
+        "13": "\u540c\u76df\u4fdd\u62a4\u7740"
+    },
+    "evilSwapperanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilSwapperanother1AchievementGoal": {
+        "0": "Swap Votes And Exile A Jester",
+        "13": "\u6362\u7968\u9a71\u9010\u5c0f\u4e11"
+    },
+    "evilSwapperanother1AchievementTitle": {
+        "0": "Mistaken...",
+        "13": "\u770b\u9519\u4eba\u4e86"
+    },
+    "trappercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "trappercommon1AchievementGoal": {
+        "0": "Kill A Player With Your Trap",
+        "13": "\u7528\u9677\u9631\u51fb\u6740\u4e00\u540d\u73a9\u5bb6"
+    },
+    "trappercommon1AchievementTitle": {
+        "0": "Traps",
+        "13": "\u8bbe\u9677\uff01"
+    },
+    "trapperchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "trapperchallengeAchievementGoal": {
+        "0": "Kill 3 Players With Your Trap",
+        "13": "\u7528\u9677\u9631\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6"
+    },
+    "trapperchallengeAchievementTitle": {
+        "0": "Killing Traps",
+        "13": "\u6b7b\u4ea1\u7684\u9677\u9631"
+    },
+    "undertakercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "undertakercommon1AchievementGoal": {
+        "0": "Drag A Dead Body",
+        "13": "\u62d6\u62fd\u4e00\u4e2a\u5c38\u4f53"
+    },
+    "undertakercommon1AchievementTitle": {
+        "0": "Body Dragger",
+        "13": "\u4e27\u4e8b\u529e\u7406"
+    },
+    "undertakeranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "undertakeranother1AchievementGoal": {
+        "0": "Get Killed While Dragging The Body",
+        "13": "\u5728\u62d6\u62fd\u5c38\u4f53\u65f6\u88ab\u51fb\u6740"
+    },
+    "undertakeranother1AchievementTitle": {
+        "0": "Soul After Soul",
+        "13": "\u4e00\u4e2a\u63a5\u7740\u4e00\u4e2a"
+    },
+    "blackmailercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "blackmailercommon1AchievementGoal": {
+        "0": "Blackmail A Player",
+        "13": "\u52d2\u7d22\u4e00\u540d\u73a9\u5bb6"
+    },
+    "blackmailercommon1AchievementTitle": {
+        "0": "Shhh",
+        "13": "\u5618"
+    },
+    "blackmailerchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "blackmailerchallengeAchievementGoal": {
+        "0": "Blackmail One Of Those Who Have Seen You Kill",
+        "13": "\u5bf9\u4e00\u540d\u76ee\u7779\u4f60\u51fb\u6740\u7684\u73a9\u5bb6\u8fdb\u884c\u52d2\u7d22"
+    },
+    "blackmailerchallengeAchievementTitle": {
+        "0": "Silence!",
+        "13": "\u95ed\u5634\uff01"
+    },
+    "evilYasunaanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "evilYasunaanother1AchievementGoal": {
+        "0": "Force Exile A Non-Impostor",
+        "13": "\u5f3a\u5236\u9a71\u9010\u4e00\u540d\u975e\u5185\u9b3c\u73a9\u5bb6"
+    },
+    "evilYasunaanother1AchievementTitle": {
+        "0": "Retrive Your Votes!",
+        "13": "\u4f60\u4eec\u7684\u7968\u90fd\u4e0d\u7b97\u6570\uff01"
     }
 }
