@@ -16,7 +16,7 @@ namespace TheOtherRoles.Objects
 {
     public class Props
     {
-        public static List<Vector3> skeldSpawn = new List<Vector3>()
+        public static List<Vector3> skeldSpawn = new()
         {
             new Vector3(-1.1028f, 4.9466f, 0.0f), // cafeteria
             new Vector3(9.119f, 1.4038f, 0.0f), // weapons
@@ -33,7 +33,7 @@ namespace TheOtherRoles.Objects
             new Vector3(-8.946f, -3.6638f, 0.0f) // medbay
         };
 
-        public static List<Vector3> miraSpawn = new List<Vector3>()
+        public static List<Vector3> miraSpawn = new()
         {
             new Vector3(-4.5314f, 3.1964f, 0.0f), // launchpad
             new Vector3(15.3814f, -1.0567f, 0.0f), // medbay
@@ -49,7 +49,7 @@ namespace TheOtherRoles.Objects
             new Vector3(19.5687f, 2.1507f, 0.0f)
         };
 
-        public static List<Vector3> polusSpawn = new List<Vector3>()
+        public static List<Vector3> polusSpawn = new()
         {
             new Vector3(16.4563f, -6.9233f, 0.0f), // dropship
             new Vector3(5.4774f, -9.7978f, 0.0f), // electric
@@ -65,7 +65,7 @@ namespace TheOtherRoles.Objects
             new Vector3(21.9853f, -19.0738f, 0.0f)
         };
 
-        public static List<Vector3> airshipSpawn = new List<Vector3>()
+        public static List<Vector3> airshipSpawn = new()
         {
             new Vector3(-13.5475f, -12.1318f, 0.0f),
             new Vector3(1.9533f, -12.1844f, 0.0f),
@@ -80,7 +80,7 @@ namespace TheOtherRoles.Objects
             new Vector3(-3.5572f, -1.0386f, 0.0f)
         };
 
-        public static List<Vector3> fungleSpawn = new List<Vector3>()
+        public static List<Vector3> fungleSpawn = new()
         {
                 new Vector3(-7.4664f, 8.8714f, 0.0f),
                 new Vector3(21.3894f, 13.616f, 0.0f),
@@ -93,7 +93,7 @@ namespace TheOtherRoles.Objects
                 new Vector3(20.5093f, -8.3817f, 0.0f)
         };
 
-        public static List<Vector3> miraDoorway = new List<Vector3>()
+        public static List<Vector3> miraDoorway = new()
         {
             new Vector3(7.2639f, 14.1907f, 0.0f),
             new Vector3(6.2961f, 3.7184f, 0.0f),
@@ -108,15 +108,15 @@ namespace TheOtherRoles.Objects
             new Vector3(17.8747f, 15.9618f, 0.0f)
         };
 
-        public static List<Vector3> propPos = new List<Vector3>();
+        public static List<Vector3> propPos = new();
 
         public class AccelTrap
         {
             private static Sprite accelTrapSprite;
             public GameObject accelTrap;
-            public static Dictionary<PlayerControl, DateTime> acceled = new Dictionary<PlayerControl, DateTime>();
+            public static Dictionary<PlayerControl, DateTime> acceled = new();
 
-            public static List<AccelTrap> accels = new List<AccelTrap>();
+            public static List<AccelTrap> accels = new();
 
             public static Sprite getAccelSprite()
             {
@@ -128,7 +128,7 @@ namespace TheOtherRoles.Objects
             public AccelTrap(Vector2 p)
             {
                 accelTrap = new GameObject("AccelTrap");
-                Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
+                Vector3 position = new(p.x, p.y, p.y / 1000f + 0.01f);
                 accelTrap.transform.position = position;
                 accelTrap.transform.localPosition = position;
                 var accelRenderer = accelTrap.AddComponent<SpriteRenderer>();
@@ -142,11 +142,22 @@ namespace TheOtherRoles.Objects
             {
                 foreach (AccelTrap acce in accels)
                 {
+                    if (acce.accelTrap == null) continue;
                     acce.accelTrap.SetActive(false);
                     UnityEngine.Object.Destroy(acce.accelTrap);
                 }
                 accels = new List<AccelTrap>();
                 acceled = new Dictionary<PlayerControl, DateTime>();
+            }
+
+            public static List<Vector3> findAccelPos()
+            {
+                if (Helpers.isSkeld()) propPos = skeldSpawn;
+                else if (Helpers.isMira()) propPos = miraSpawn;
+                else if (Helpers.isPolus()) propPos = polusSpawn;
+                else if (Helpers.isAirship()) propPos = airshipSpawn;
+                else propPos = fungleSpawn;
+                return propPos;
             }
 
             public static void placeAccelTrap()
@@ -158,7 +169,7 @@ namespace TheOtherRoles.Objects
                     while (count < (int)CustomOptionHolder.numAccelTraps.getFloat())
                     {
                         bool isDuplicated = false;
-                        byte id = (byte)rnd.Next(propPos.Count);
+                        byte id = (byte)rnd.Next(findAccelPos().Count);
 
                         for (int i = 0; i < buff.Length; i++)
                         {
@@ -191,18 +202,18 @@ namespace TheOtherRoles.Objects
         {
             private static Sprite decelTrapSprite;
             public GameObject decelTrap;
-            public static List<DecelTrap> decels = new List<DecelTrap>();
+            public static List<DecelTrap> decels = new();
             public static List<Vector3> decelPos;
             public bool isTriggered = false;
             public DateTime activateTime = DateTime.UtcNow;
 
-            public static Dictionary<PlayerControl, DateTime> deceled = new Dictionary<PlayerControl, DateTime>();
+            public static Dictionary<PlayerControl, DateTime> deceled = new();
 
             public DecelTrap(Vector2 p)
             {
                 decelTrap = new GameObject("DecelTrap");
 
-                Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
+                Vector3 position = new(p.x, p.y, p.y / 1000f + 0.01f);
                 decelTrap.transform.position = position;
                 decelTrap.transform.localPosition = position;
                 var decelRenderer = decelTrap.AddComponent<SpriteRenderer>();
@@ -223,6 +234,7 @@ namespace TheOtherRoles.Objects
             {
                 foreach (DecelTrap decel in decels)
                 {
+                    if (decel.decelTrap == null) continue;
                     decel.isTriggered = false;
                     decel.activateTime = DateTime.UtcNow;
                     decel.decelTrap.SetActive(false);
@@ -296,11 +308,6 @@ namespace TheOtherRoles.Objects
 
         public static void placeProps()
         {
-            if (Helpers.isSkeld()) propPos = skeldSpawn;
-            else if (Helpers.isMira()) propPos = miraSpawn;
-            else if (Helpers.isPolus()) propPos = polusSpawn;
-            else if (Helpers.isAirship()) propPos = airshipSpawn;
-            else propPos = fungleSpawn;
             AccelTrap.placeAccelTrap();
             DecelTrap.placeDecelTrap();
         }
@@ -309,6 +316,12 @@ namespace TheOtherRoles.Objects
         {
             AccelTrap.clearAccelTrap();
             DecelTrap.clearDecelTrap();
+        }
+
+        public static void clearAndReload()
+        {
+            clearProps();
+            propPos = new();
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]

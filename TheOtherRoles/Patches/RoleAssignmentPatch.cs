@@ -44,7 +44,7 @@ namespace TheOtherRoles.Patches {
         private static int impValues;
         private static bool isEvilGuesser;
         private static bool isEvilWatcher;
-        private static List<Tuple<byte, byte>> playerRoleMap = new List<Tuple<byte, byte>>();
+        private static List<Tuple<byte, byte>> playerRoleMap = new();
         public static bool isGuesserGamemode { get { return TORMapOptions.gameMode == CustomGamemodes.Guesser; } }
         public static void Postfix() {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ResetVaribles, Hazel.SendOption.Reliable, -1);
@@ -106,9 +106,9 @@ namespace TheOtherRoles.Patches {
             int maxImpostorRoles = Mathf.Min(impostors.Count, impCountSettings);
 
             // Fill in the lists with the roles that should be assigned to players. Note that the special roles (like Mafia or Lovers) are NOT included in these lists
-            Dictionary<byte, int> impSettings = new Dictionary<byte, int>();
-            Dictionary<byte, int> neutralSettings = new Dictionary<byte, int>();
-            Dictionary<byte, int> crewSettings = new Dictionary<byte, int>();
+            Dictionary<byte, int> impSettings = new();
+            Dictionary<byte, int> neutralSettings = new();
+            Dictionary<byte, int> crewSettings = new();
             
             impSettings.Add((byte)RoleId.Morphling, CustomOptionHolder.morphlingSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Camouflager, CustomOptionHolder.camouflagerSpawnRate.getSelection());
@@ -299,7 +299,7 @@ namespace TheOtherRoles.Patches {
                     (data.maxNeutralRoles > 0 && ensuredNeutralRoles.Count > 0)
                 ))) {
                     
-                Dictionary<RoleType, List<byte>> rolesToAssign = new Dictionary<RoleType, List<byte>>();
+                Dictionary<RoleType, List<byte>> rolesToAssign = new();
                 if (data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && ensuredCrewmateRoles.Count > 0) rolesToAssign.Add(RoleType.Crewmate, ensuredCrewmateRoles);
                 if (data.crewmates.Count > 0 && data.maxNeutralRoles > 0 && ensuredNeutralRoles.Count > 0) rolesToAssign.Add(RoleType.Neutral, ensuredNeutralRoles);
                 if (data.impostors.Count > 0 && data.maxImpostorRoles > 0 && ensuredImpostorRoles.Count > 0) rolesToAssign.Add(RoleType.Impostor, ensuredImpostorRoles);
@@ -474,7 +474,7 @@ namespace TheOtherRoles.Patches {
                     (data.maxNeutralRoles > 0 && neutralTickets.Count > 0)
                 ))) {
                 
-                Dictionary<RoleType, List<byte>> rolesToAssign = new Dictionary<RoleType, List<byte>>();
+                Dictionary<RoleType, List<byte>> rolesToAssign = new();
                 if (data.crewmates.Count > 0 && data.maxCrewmateRoles > 0 && crewmateTickets.Count > 0) rolesToAssign.Add(RoleType.Crewmate, crewmateTickets);
                 if (data.crewmates.Count > 0 && data.maxNeutralRoles > 0 && neutralTickets.Count > 0) rolesToAssign.Add(RoleType.Neutral, neutralTickets);
                 if (data.impostors.Count > 0 && data.maxImpostorRoles > 0 && impostorTickets.Count > 0) rolesToAssign.Add(RoleType.Impostor, impostorTickets);
@@ -550,9 +550,9 @@ namespace TheOtherRoles.Patches {
 
             if (modifierCount == 0) return;
 
-            List<RoleId> allModifiers = new List<RoleId>();
-            List<RoleId> ensuredModifiers = new List<RoleId>();
-            List<RoleId> chanceModifiers = new List<RoleId>();
+            List<RoleId> allModifiers = new();
+            List<RoleId> ensuredModifiers = new();
+            List<RoleId> chanceModifiers = new();
             allModifiers.AddRange(new List<RoleId> {
                 RoleId.Tiebreaker,
                 RoleId.Mini,
@@ -570,8 +570,8 @@ namespace TheOtherRoles.Patches {
             if (rnd.Next(1, 101) <= CustomOptionHolder.modifierLover.getSelection() * 10) { // Assign lover
                 bool isEvilLover = rnd.Next(1, 101) <= CustomOptionHolder.modifierLoverImpLoverRate.getSelection() * 10;
                 byte firstLoverId;
-                List<PlayerControl> impPlayer = new List<PlayerControl>(players);
-                List<PlayerControl> crewPlayer = new List<PlayerControl>(players);
+                List<PlayerControl> impPlayer = new(players);
+                List<PlayerControl> crewPlayer = new(players);
                 impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor || x == NekoKabocha.nekoKabocha);
                 if (MimicK.ifOneDiesBothDie) impPlayer.RemoveAll(y => y == MimicK.mimicK || y == MimicA.mimicA);
                 if (BomberA.ifOneDiesBothDie) impPlayer.RemoveAll(z => z == BomberA.bomberA || z == BomberB.bomberB);
@@ -595,7 +595,7 @@ namespace TheOtherRoles.Patches {
             modifierCount -= ensuredModifiers.Count;
             if (modifierCount <= 0) return;
             int chanceModifierCount = Mathf.Min(modifierCount, chanceModifiers.Count);
-            List<RoleId> chanceModifierToAssign = new List<RoleId>();
+            List<RoleId> chanceModifierToAssign = new();
             while (chanceModifierCount > 0 && chanceModifiers.Count > 0) {
                 var index = rnd.Next(0, chanceModifiers.Count);
                 RoleId modifierId = chanceModifiers[index];
@@ -687,7 +687,7 @@ namespace TheOtherRoles.Patches {
 
             byte playerId;
 
-            List<PlayerControl> crewPlayer = new List<PlayerControl>(playerList);
+            List<PlayerControl> crewPlayer = new(playerList);
             crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || RoleInfo.getRoleInfoForPlayer(x).Any(r => r.isNeutral));
             /*if (modifiers.Contains(RoleId.Shifter)) {
                 var crewPlayerShifter = new List<PlayerControl>(crewPlayer);
@@ -805,9 +805,9 @@ namespace TheOtherRoles.Patches {
         public class RoleAssignmentData {
             public List<PlayerControl> crewmates {get;set;}
             public List<PlayerControl> impostors {get;set;}
-            public Dictionary<byte, int> impSettings = new Dictionary<byte, int>();
-            public Dictionary<byte, int> neutralSettings = new Dictionary<byte, int>();
-            public Dictionary<byte, int> crewSettings = new Dictionary<byte, int>();
+            public Dictionary<byte, int> impSettings = new();
+            public Dictionary<byte, int> neutralSettings = new();
+            public Dictionary<byte, int> crewSettings = new();
             public int maxCrewmateRoles {get;set;}
             public int maxNeutralRoles {get;set;}
             public int maxImpostorRoles {get;set;}

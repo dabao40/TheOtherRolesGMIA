@@ -31,7 +31,7 @@ namespace TheOtherRoles {
             HideNSeekRoles
         }
 
-        public static List<CustomOption> options = new List<CustomOption>();
+        public static List<CustomOption> options = new();
         public static int preset = 0;
         public static ConfigEntry<string> vanillaSettings;
 
@@ -248,8 +248,8 @@ namespace TheOtherRoles {
         }
 
         public static byte[] serializeOptions() {
-            using (MemoryStream memoryStream = new MemoryStream()) {
-                using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream)) {
+            using (MemoryStream memoryStream = new()) {
+                using (BinaryWriter binaryWriter = new(memoryStream)) {
                     int lastId = -1;
                     foreach (var option in CustomOption.options.OrderBy(x => x.id)) {
                         if (option.id == 0) continue;
@@ -267,7 +267,7 @@ namespace TheOtherRoles {
         }
 
         public static int deserializeOptions(byte[] inputValues) {
-            BinaryReader reader = new BinaryReader(new MemoryStream(inputValues));
+            BinaryReader reader = new(new MemoryStream(inputValues));
             int lastId = -1;
             bool somethingApplied = false;
             int errors = 0;
@@ -696,7 +696,7 @@ namespace TheOtherRoles {
 
             if (MyPicker.MaxPlayersRoot)
             {
-                //ÒÔÇ°¤Î¥Ü¥¿¥ó¤òÏ÷³ı¤¹¤ë
+                //ä»¥å‰ã®ãƒœã‚¿ãƒ³ã‚’å‰Šé™¤ã™ã‚‹
                 MyPicker.optionsMenu.ControllerSelectable.Clear();
                 MyPicker.MaxPlayerButtons.Clear();
 
@@ -720,7 +720,7 @@ namespace TheOtherRoles {
             subMenu.transform.localPosition = new(1.11f, isCustomServer ? -0.4f : 0f, 0f);
             subMenu.GetComponent<ShiftButtonsCrossplayEnabled>().enabled = false;
 
-            //4ÈËÒÔÉÏ¤Î¥ª¥×¥·¥ç¥ó¤Ï¥«¥¹¥¿¥à¥µ©`¥Ğ©`¤Î¤ßÊ¹ÓÃ¿ÉÄÜ
+            //4äººä»¥ä¸Šã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã‚«ã‚¹ã‚¿ãƒ ã‚µãƒ¼ãƒãƒ¼ã®ã¿ä½¿ç”¨å¯èƒ½
             for (int i = 4; i <= 6; i++) MyPicker.ImpostorButtons[i - 1].gameObject.SetActive(isCustomServer);
 
             var options = MyPicker.GetTargetOptions();
@@ -739,7 +739,7 @@ namespace TheOtherRoles {
     {
         public static bool Prefix(CreateOptionsPicker __instance)
         {
-            //¸÷·NÔO¶¨¤ÎÅäÁĞéL¤ò24ÈË·Ö¤Ş¤ÇÉì¤Ğ¤¹
+            //å„ç¨®è¨­å®šã®é…åˆ—é•·ã‚’24äººåˆ†ã¾ã§ä¼¸ã°ã™
             NormalGameOptionsV07.MaxImpostors = NormalGameOptionsV08.MaxImpostors = new int[] {
             0,
             0, 0, 0, 1, 1,
@@ -768,7 +768,7 @@ namespace TheOtherRoles {
             4, 4, 7, 9, 13, 15, 18
             };
 
-            //¥²©`¥à¥â©`¥É¤Ï¥Î©`¥Ş¥ë¹Ì¶¨
+            //ã‚²ãƒ¼ãƒ ãƒ¢ãƒ¼ãƒ‰ã¯ãƒãƒ¼ãƒãƒ«å›ºå®š
             DataManager.Settings.Multiplayer.LastPlayedGameMode = AmongUs.GameOptions.GameModes.Normal;
             DataManager.Settings.Save();
             GameOptionsManager.Instance.SwitchGameMode(AmongUs.GameOptions.GameModes.Normal);
@@ -1110,12 +1110,12 @@ namespace TheOtherRoles {
         }
 
         private static string buildOptionsOfType(CustomOption.CustomOptionType type, bool headerOnly) {
-            StringBuilder sb = new StringBuilder("\n");
+            StringBuilder sb = new("\n");
             var options = CustomOption.options.Where(o => o.type == type);
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) {
                 if (type == CustomOption.CustomOptionType.General)
                     options = CustomOption.options.Where(o => o.type == type || o.type == CustomOption.CustomOptionType.Guesser);
-                List<int> remove = new List<int>{ 308, 310, 311, 312, 313, 314, 315, 316, 317, 318 };
+                List<int> remove = new() { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318 };
                 options = options.Where(x => !remove.Contains(x.id));
             } else if (TORMapOptions.gameMode == CustomGamemodes.Classic) 
                 options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
@@ -1403,13 +1403,16 @@ namespace TheOtherRoles {
                 toggleZoomButton.OnClick.RemoveAllListeners();
                 toggleZoomButton.OnClick.AddListener((Action)(() => Helpers.toggleZoom()));
             }
-            var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data);
-            int numberOfLeftTasks = playerTotal - playerCompleted;
-            bool zoomButtonActive = !(CachedPlayer.LocalPlayer.PlayerControl == null || !CachedPlayer.LocalPlayer.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag));
-            zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
-            toggleZoomButtonObject.SetActive(zoomButtonActive);
-            var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);
-            toggleZoomButtonObject.transform.localPosition = HudManager.Instance.MapButton.transform.localPosition + posOffset;
+            if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl != null)
+            {
+                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data);
+                int numberOfLeftTasks = playerTotal - playerCompleted;
+                bool zoomButtonActive = !(CachedPlayer.LocalPlayer.PlayerControl == null || !CachedPlayer.LocalPlayer.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag));
+                zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
+                toggleZoomButtonObject.SetActive(zoomButtonActive);
+                var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);
+                toggleZoomButtonObject.transform.localPosition = HudManager.Instance.MapButton.transform.localPosition + posOffset;
+            }
         }
     }
 }

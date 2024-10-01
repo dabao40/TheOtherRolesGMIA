@@ -601,7 +601,7 @@ namespace TheOtherRoles {
         public static CustomOption huntedShieldRewindTime;
         public static CustomOption huntedShieldNumber;
 
-        internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
+        internal static Dictionary<byte, byte[]> blockedRolePairings = new();
 
         public static string cs(Color c, string s) {
             return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), s);

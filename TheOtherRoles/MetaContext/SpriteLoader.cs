@@ -27,7 +27,7 @@ namespace TheOtherRoles.MetaContext
             return sprite;
         }
 
-        static public SpriteLoader FromResource(string address, float pixelsPerUnit) => new SpriteLoader(new ResourceTextureLoader(address), pixelsPerUnit);
+        static public SpriteLoader FromResource(string address, float pixelsPerUnit) => new(new ResourceTextureLoader(address), pixelsPerUnit);
     }
 
     public interface ITextureLoader
@@ -62,7 +62,7 @@ namespace TheOtherRoles.MetaContext
             {
                 if (File.Exists(path))
                 {
-                    Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
+                    Texture2D texture = new(2, 2, TextureFormat.ARGB32, true);
                     byte[] byteTexture = File.ReadAllBytes(path);
                     LoadImage(texture, byteTexture, false);
                     return texture;
@@ -77,7 +77,7 @@ namespace TheOtherRoles.MetaContext
 
         public static Texture2D LoadTextureFromResources(string path)
         {
-            Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
+            Texture2D texture = new(2, 2, TextureFormat.ARGB32, true);
             Assembly assembly = Assembly.GetExecutingAssembly();
             Stream stream = assembly.GetManifestResourceStream(path);
             if (stream == null) return null!;
@@ -145,7 +145,7 @@ namespace TheOtherRoles.MetaContext
         Sprite[] sprites;
         ITextureLoader texture;
         Tuple<int, int> division, size;
-        public Vector2 Pivot = new Vector2(0.5f, 0.5f);
+        public Vector2 Pivot = new(0.5f, 0.5f);
 
         public DividedSpriteLoader(ITextureLoader textureLoader, float pixelsPerUnit, int x, int y, bool isSize = false)
         {
@@ -202,8 +202,8 @@ namespace TheOtherRoles.MetaContext
         }
 
         static public DividedSpriteLoader FromResource(string address, float pixelsPerUnit, int x, int y, bool isSize = false)
-             => new DividedSpriteLoader(new ResourceTextureLoader(address), pixelsPerUnit, x, y, isSize);
+             => new(new ResourceTextureLoader(address), pixelsPerUnit, x, y, isSize);
         static public DividedSpriteLoader FromDisk(string address, float pixelsPerUnit, int x, int y, bool isSize = false)
-             => new DividedSpriteLoader(new DiskTextureLoader(address), pixelsPerUnit, x, y, isSize);
+             => new(new DiskTextureLoader(address), pixelsPerUnit, x, y, isSize);
     }
 }

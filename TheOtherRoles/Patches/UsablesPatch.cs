@@ -359,7 +359,7 @@ namespace TheOtherRoles.Patches {
 
     [HarmonyPatch]
     class VitalsMinigamePatch {
-        private static List<TMPro.TextMeshPro> hackerTexts = new List<TMPro.TextMeshPro>();
+        private static List<TMPro.TextMeshPro> hackerTexts = new();
 
         [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
         class VitalsMinigameStartPatch {
@@ -504,7 +504,7 @@ namespace TheOtherRoles.Patches {
 
     [HarmonyPatch]
     class AdminPanelPatch {
-        static Dictionary<SystemTypes, List<Color>> players = new Dictionary<SystemTypes, System.Collections.Generic.List<Color>>();
+        static Dictionary<SystemTypes, List<Color>> players = new();
         static TMPro.TextMeshPro restrictInfo = null;
         [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
         class MapCountOverlayUpdatePatch {
@@ -560,7 +560,7 @@ namespace TheOtherRoles.Patches {
                 for (int i = 0; i < __instance.CountAreas.Length; i++)
                 {
                     CounterArea counterArea = __instance.CountAreas[i];
-                    List<Color> roomColors = new List<Color>();
+                    List<Color> roomColors = new();
                     players.Add(counterArea.RoomType, roomColors);
 
                     if (!commsActive)
@@ -570,7 +570,7 @@ namespace TheOtherRoles.Patches {
                         if (plainShipRoom != null && plainShipRoom.roomArea) {
 
 
-                            HashSet<int> hashSet = new HashSet<int>();
+                            HashSet<int> hashSet = new();
                             int num = plainShipRoom.roomArea.OverlapCollider(__instance.filter, __instance.buffer);
                             int num2 = 0;
                             for (int j = 0; j < num; j++) {

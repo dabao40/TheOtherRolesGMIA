@@ -9,7 +9,7 @@ namespace TheOtherRoles.MetaContext
 {
     public class TextAttribute
     {
-        static public readonly TextAttribute TitleAttr = new TextAttribute()
+        static public readonly TextAttribute TitleAttr = new()
         {
             Alignment = TMPro.TextAlignmentOptions.Left,
             Styles = TMPro.FontStyles.Bold,
@@ -17,7 +17,7 @@ namespace TheOtherRoles.MetaContext
             FontMinSize = 1f,
             FontSize = 3f
         };
-        static public readonly TextAttribute ContentAttr = new TextAttribute()
+        static public readonly TextAttribute ContentAttr = new()
         {
             Alignment = TMPro.TextAlignmentOptions.TopLeft,
             Styles = TMPro.FontStyles.Normal,
@@ -26,7 +26,7 @@ namespace TheOtherRoles.MetaContext
             FontSize = 1.5f,
             Size = new Vector2(8f, 2f)
         };
-        static public readonly TextAttribute NormalAttr = new TextAttribute()
+        static public readonly TextAttribute NormalAttr = new()
         {
             Alignment = TMPro.TextAlignmentOptions.Center,
             Styles = TMPro.FontStyles.Normal,
@@ -37,7 +37,7 @@ namespace TheOtherRoles.MetaContext
         };
         static public readonly TextAttribute NormalAttrLeft = new(NormalAttr) { Alignment = TMPro.TextAlignmentOptions.Left };
 
-        static public readonly TextAttribute BoldAttr = new TextAttribute()
+        static public readonly TextAttribute BoldAttr = new()
         {
             Alignment = TMPro.TextAlignmentOptions.Center,
             Styles = TMPro.FontStyles.Bold,

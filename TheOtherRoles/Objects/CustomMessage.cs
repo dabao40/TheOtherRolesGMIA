@@ -8,7 +8,7 @@ namespace TheOtherRoles.Objects {
     public class CustomMessage {
 
         private TMPro.TMP_Text text;
-        private static List<CustomMessage> customMessages = new List<CustomMessage>();
+        private static List<CustomMessage> customMessages = new();
 
         public CustomMessage(string message, float duration) {
             RoomTracker roomTracker =  FastDestroyableSingleton<HudManager>.Instance?.roomTracker;

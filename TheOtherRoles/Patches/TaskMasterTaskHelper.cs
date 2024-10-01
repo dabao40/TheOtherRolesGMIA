@@ -25,7 +25,7 @@ namespace TheOtherRoles.Patches {
             if (!TaskMaster.isTaskMaster(pc.PlayerId))
                 return null;
 
-            List<byte> list = new List<byte>(10);
+            List<byte> list = new(10);
             taskMasterAddCommonTasks = SetTasksToList(
                 ref list,
                 MapUtilities.CachedShipStatus.CommonTasks.ToList(),
@@ -49,7 +49,7 @@ namespace TheOtherRoles.Patches {
         {
             if (numConfiguredTasks == 0)
                 return 0;
-            List<TaskTypes> taskTypesList = new List<TaskTypes>();
+            List<TaskTypes> taskTypesList = new();
             playerTasks.Shuffle();
             int count = 0;
             int numTasks = Math.Min(playerTasks.Count, numConfiguredTasks);

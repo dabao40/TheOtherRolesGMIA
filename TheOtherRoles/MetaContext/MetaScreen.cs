@@ -787,7 +787,7 @@ namespace TheOtherRoles.MetaContext
 
             static public MetaContextOld GetTwoWayButton(Action<bool> buttonAction)
             {
-                MetaContextOld context = new MetaContextOld();
+                MetaContextOld context = new();
 
                 for (int i = 0; i < 2; i++)
                 {

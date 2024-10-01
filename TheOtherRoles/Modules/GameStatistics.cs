@@ -477,7 +477,7 @@ namespace TheOtherRoles.Modules
         }
 
         private const float LineHalfWidth = 2.5f;
-        public static readonly Color MainColor = new Color(0f, 242f / 255f, 156f / 255f);
+        public static readonly Color MainColor = new(0f, 242f / 255f, 156f / 255f);
         private const float BackColorRate = 0.4f;
 
         private IEnumerator CoShowCriticalMoment(float p, int indexMin, int indexMax)

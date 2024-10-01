@@ -50,10 +50,10 @@ namespace TheOtherRoles {
         public static Vector2 down = Vector2.down;
         public static Vector2 left = Vector2.left;
         public static Vector2 right = Vector2.right;
-        public static Vector2 upleft = new Vector2(-0.70710677f, 0.70710677f);
-        public static Vector2 upright = new Vector2(0.70710677f, 0.70710677f);
-        public static Vector2 downleft = new Vector2(-0.70710677f, -0.70710677f);
-        public static Vector2 downright = new Vector2(0.70710677f, -0.70710677f);
+        public static Vector2 upleft = new(-0.70710677f, 0.70710677f);
+        public static Vector2 upright = new(0.70710677f, 0.70710677f);
+        public static Vector2 downleft = new(-0.70710677f, -0.70710677f);
+        public static Vector2 downright = new(0.70710677f, -0.70710677f);
     }
 
     public static class Helpers
@@ -82,7 +82,7 @@ namespace TheOtherRoles {
 
         public static unsafe Texture2D loadTextureFromResources(string path) {
             try {
-                Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
+                Texture2D texture = new(2, 2, TextureFormat.ARGB32, true);
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 Stream stream = assembly.GetManifestResourceStream(path);
                 var length = stream.Length;
@@ -102,7 +102,7 @@ namespace TheOtherRoles {
         public static Texture2D loadTextureFromDisk(string path) {
             try {          
                 if (File.Exists(path))     {
-                    Texture2D texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
+                    Texture2D texture = new(2, 2, TextureFormat.ARGB32, true);
                     var byteTexture = Il2CppSystem.IO.File.ReadAllBytes(path);
                     ImageConversion.LoadImage(texture, byteTexture, false);
                     return texture;
@@ -151,7 +151,7 @@ namespace TheOtherRoles {
         
         public static Dictionary<byte, PlayerControl> allPlayersById()
         {
-            Dictionary<byte, PlayerControl> res = new Dictionary<byte, PlayerControl>();
+            Dictionary<byte, PlayerControl> res = new();
             foreach (PlayerControl player in CachedPlayer.AllPlayers)
                 res.Add(player.PlayerId, player);
             return res;
@@ -558,7 +558,7 @@ namespace TheOtherRoles {
         public static string ComputeConstantHashAsString(this string str)
         {
             var val = str.ComputeConstantHash();
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             while (val > 0)
             {
                 builder.Append((char)('a' + (val % 26)));
@@ -661,7 +661,7 @@ namespace TheOtherRoles {
 
         public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie) {
             tie = true;
-            KeyValuePair<byte, int> result = new KeyValuePair<byte, int>(byte.MaxValue, int.MinValue);
+            KeyValuePair<byte, int> result = new(byte.MaxValue, int.MinValue);
             foreach (KeyValuePair<byte, int> keyValuePair in self)
             {
                 if (keyValuePair.Value > result.Value)
@@ -1116,6 +1116,8 @@ namespace TheOtherRoles {
                 roleCouldUse = true;
             else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
+            else if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat == player && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
+                roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
                 if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
                     roleCouldUse = false;
@@ -1287,7 +1289,7 @@ namespace TheOtherRoles {
         }
 
         public static List<PlayerControl> getKillerTeamMembers(PlayerControl player) {
-            List<PlayerControl> team = new List<PlayerControl>();
+            List<PlayerControl> team = new();
             foreach(PlayerControl p in CachedPlayer.AllPlayers) {
                 if (player.Data.Role.IsImpostor && p.Data.Role.IsImpostor && player.PlayerId != p.PlayerId && team.All(x => x.PlayerId != p.PlayerId)) team.Add(p);
                 else if (player == Jackal.jackal && p == Sidekick.sidekick) team.Add(p); 
@@ -1404,7 +1406,8 @@ namespace TheOtherRoles {
                 || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision)
                 || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId)
                 || (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde.PlayerId == player.PlayerId)
-                || (Fox.fox != null && Fox.fox.PlayerId == player.PlayerId);
+                || (Fox.fox != null && Fox.fox.PlayerId == player.PlayerId)
+                || (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat.PlayerId == player.PlayerId && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)

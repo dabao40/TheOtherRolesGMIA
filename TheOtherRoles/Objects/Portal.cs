@@ -87,7 +87,7 @@ namespace TheOtherRoles.Objects {
         {
             portalGameObject = new GameObject("Portal"){ layer = 11 };
             //Vector3 position = new Vector3(p.x, p.y, CachedPlayer.LocalPlayer.transform.position.z + 1f);
-            Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
+            Vector3 position = new(p.x, p.y, p.y / 1000f + 0.01f);
 
             // Create the portal            
             portalGameObject.transform.position = position;
@@ -95,7 +95,7 @@ namespace TheOtherRoles.Objects {
             portalRenderer = portalGameObject.AddComponent<SpriteRenderer>();
             portalRenderer.sprite = portalSprite;
 
-            Vector3 fgPosition = new Vector3(0, 0, -1f);
+            Vector3 fgPosition = new(0, 0, -1f);
             portalFgAnimationGameObject = new GameObject("PortalAnimationFG");
             portalFgAnimationGameObject.transform.SetParent(portalGameObject.transform);
             portalFgAnimationGameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
@@ -149,10 +149,19 @@ namespace TheOtherRoles.Objects {
                 secondPortal.portalGameObject.SetActive(true);
                 bothPlacedAndEnabled = true;
                 HudManagerStartPatch.portalmakerButtonText2.text = "2. " + secondPortal.room;
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker)
+                    Portalmaker.acTokenCommon ??= new("portalmaker.common1");
             }
 
             // reset teleported players
             teleportedPlayers = new List<tpLogEntry>();
+
+            if (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker)
+            {
+                if (Portalmaker.acTokenChallenge != null)
+                    Portalmaker.acTokenChallenge.Value.portal = 0;
+            }
         }
 
         private static void preloadSprites() {

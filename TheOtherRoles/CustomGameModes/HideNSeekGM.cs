@@ -26,7 +26,7 @@ namespace TheOtherRoles.CustomGameModes {
         }
 
         public static List<CachedPlayer> getHunters() {
-            List<CachedPlayer> hunters = new List<CachedPlayer>(CachedPlayer.AllPlayers);
+            List<CachedPlayer> hunters = new(CachedPlayer.AllPlayers);
             hunters.RemoveAll(x => !x.Data.Role.IsImpostor);
             return hunters;
         }
@@ -60,10 +60,10 @@ namespace TheOtherRoles.CustomGameModes {
     }
 
     public static class Hunter {
-        public static List<Arrow> localArrows = new List<Arrow>();
-        public static List<byte> lightActive = new List<byte>();
+        public static List<Arrow> localArrows = new();
+        public static List<byte> lightActive = new();
         public static bool arrowActive = false;
-        public static Dictionary<byte, int> playerKillCountMap = new Dictionary<byte, int>();
+        public static Dictionary<byte, int> playerKillCountMap = new();
 
         public static float lightCooldown = 30f;
         public static float lightDuration = 5f;
@@ -118,7 +118,7 @@ namespace TheOtherRoles.CustomGameModes {
     }
 
     public static class Hunted {
-        public static List<byte> timeshieldActive = new List<byte>();
+        public static List<byte> timeshieldActive = new();
         public static int shieldCount = 3;
 
         public static float shieldCooldown = 30f;

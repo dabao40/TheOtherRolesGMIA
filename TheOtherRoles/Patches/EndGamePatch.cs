@@ -61,11 +61,11 @@ namespace TheOtherRoles.Patches {
     static class AdditionalTempData {
         // Should be implemented using a proper GameOverReason in the future
         public static WinCondition winCondition = WinCondition.Default;
-        public static List<WinCondition> additionalWinConditions = new List<WinCondition>();
-        public static List<PlayerRoleInfo> playerRoles = new List<PlayerRoleInfo>();
+        public static List<WinCondition> additionalWinConditions = new();
+        public static List<PlayerRoleInfo> playerRoles = new();
         public static float timer = 0;
-        public static Dictionary<int, PlayerControl> plagueDoctorInfected = new Dictionary<int, PlayerControl>();
-        public static Dictionary<int, float> plagueDoctorProgress = new Dictionary<int, float>();
+        public static Dictionary<int, PlayerControl> plagueDoctorInfected = new();
+        public static Dictionary<int, float> plagueDoctorProgress = new();
 
         public static void clear() {
             playerRoles.Clear();
@@ -147,7 +147,7 @@ namespace TheOtherRoles.Patches {
             AdditionalTempData.plagueDoctorProgress = PlagueDoctor.progress;
 
             // Remove Jester, Opportunist, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
-            List<PlayerControl> notWinners = new List<PlayerControl>();
+            List<PlayerControl> notWinners = new();
             if (Jester.jester != null) notWinners.Add(Jester.jester);
             if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
             if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
@@ -168,10 +168,11 @@ namespace TheOtherRoles.Patches {
             if (Fox.fox != null) notWinners.Add(Fox.fox);
             if (Immoralist.immoralist != null) notWinners.Add(Immoralist.immoralist);
             if (SchrodingersCat.schrodingersCat != null) notWinners.Add(SchrodingersCat.schrodingersCat);
+            if (SchrodingersCat.formerSchrodingersCat != null) notWinners.Add(SchrodingersCat.formerSchrodingersCat);
 
             notWinners.AddRange(Jackal.formerJackals);
 
-            List<CachedPlayerData> winnersToRemove = new List<CachedPlayerData>();
+            List<CachedPlayerData> winnersToRemove = new();
             foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator()) {
                 if (notWinners.Any(x => x.Data.PlayerName == winner.PlayerName)) winnersToRemove.Add(winner);
             }
@@ -240,6 +241,14 @@ namespace TheOtherRoles.Patches {
                             EndGameResult.CachedWinners.Add(wpd);
                         }
                     }
+                    else if (p == SchrodingersCat.formerSchrodingersCat)
+                    {
+                        if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
+                        {
+                            CachedPlayerData wpd = new(p.Data);
+                            EndGameResult.CachedWinners.Add(wpd);
+                        }
+                    }
                 }
                 AdditionalTempData.winCondition = WinCondition.ImpostorWin;
             }
@@ -247,7 +256,7 @@ namespace TheOtherRoles.Patches {
             // Mini lose
             if (miniLose) {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Mini.mini.Data);
+                CachedPlayerData wpd = new(Mini.mini.Data);
                 wpd.IsYou = false; // If "no one is the Mini", it will display the Mini, but also show defeat to everyone
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.MiniLose;  
@@ -256,7 +265,7 @@ namespace TheOtherRoles.Patches {
             // Jester win
             else if (jesterWin) {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Jester.jester.Data);
+                CachedPlayerData wpd = new(Jester.jester.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.JesterWin;
             }
@@ -264,7 +273,7 @@ namespace TheOtherRoles.Patches {
             // Arsonist win
             else if (arsonistWin) {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Arsonist.arsonist.Data);
+                CachedPlayerData wpd = new(Arsonist.arsonist.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.ArsonistWin;
             }
@@ -272,7 +281,7 @@ namespace TheOtherRoles.Patches {
             else if (plagueDoctorWin)
             {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(PlagueDoctor.plagueDoctor.Data);
+                CachedPlayerData wpd = new(PlagueDoctor.plagueDoctor.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.PlagueDoctorWin;
             }
@@ -287,47 +296,63 @@ namespace TheOtherRoles.Patches {
             else if (jekyllAndHydeWin)
             {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(JekyllAndHyde.jekyllAndHyde.Data);
+                CachedPlayerData wpd = new(JekyllAndHyde.jekyllAndHyde.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.JekyllAndHydeWin;
 
                 if (JekyllAndHyde.formerJekyllAndHyde != null)
                 {
-                    CachedPlayerData wpdFormerJekyllAndHyde = new CachedPlayerData(JekyllAndHyde.formerJekyllAndHyde.Data);
+                    CachedPlayerData wpdFormerJekyllAndHyde = new(JekyllAndHyde.formerJekyllAndHyde.Data);
                     EndGameResult.CachedWinners.Add(wpdFormerJekyllAndHyde);
                 }
 
-                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)
+                if (SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)
                 {
-                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
-                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    if (SchrodingersCat.schrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.schrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
+                    if (SchrodingersCat.formerSchrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.formerSchrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
                 }
             }
 
             else if (moriartyWin)
             {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Moriarty.moriarty.Data);
+                CachedPlayerData wpd = new(Moriarty.moriarty.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.MoriartyWin;
 
                 if (Moriarty.formerMoriarty != null)
                 {
-                    CachedPlayerData wpdFormerMoriarty = new CachedPlayerData(Moriarty.formerMoriarty.Data);
+                    CachedPlayerData wpdFormerMoriarty = new(Moriarty.formerMoriarty.Data);
                     EndGameResult.CachedWinners.Add(wpdFormerMoriarty);
                 }
 
-                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Moriarty)
+                if (SchrodingersCat.team == SchrodingersCat.Team.Moriarty)
                 {
-                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
-                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    if (SchrodingersCat.schrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.schrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
+                    if (SchrodingersCat.formerSchrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.formerSchrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
                 }
             }
 
             // Vulture win
             else if (vultureWin) {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Vulture.vulture.Data);
+                CachedPlayerData wpd = new(Vulture.vulture.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.VultureWin;
             }
@@ -390,24 +415,32 @@ namespace TheOtherRoles.Patches {
                 // Jackal wins if nobody except jackal is alive
                 AdditionalTempData.winCondition = WinCondition.JackalWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new CachedPlayerData(Jackal.jackal.Data);
+                CachedPlayerData wpd = new(Jackal.jackal.Data);
                 wpd.IsImpostor = false; 
                 EndGameResult.CachedWinners.Add(wpd);
                 // If there is a sidekick. The sidekick also wins
                 if (Sidekick.sidekick != null) {
-                    CachedPlayerData wpdSidekick = new CachedPlayerData(Sidekick.sidekick.Data);
+                    CachedPlayerData wpdSidekick = new(Sidekick.sidekick.Data);
                     wpdSidekick.IsImpostor = false; 
                     EndGameResult.CachedWinners.Add(wpdSidekick);
                 }
                 foreach(var player in Jackal.formerJackals) {
-                    CachedPlayerData wpdFormerJackal = new CachedPlayerData(player.Data);
+                    CachedPlayerData wpdFormerJackal = new(player.Data);
                     wpdFormerJackal.IsImpostor = false; 
                     EndGameResult.CachedWinners.Add(wpdFormerJackal);
                 }
-                if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
+                if (SchrodingersCat.team == SchrodingersCat.Team.Jackal)
                 {
-                    CachedPlayerData wpdSchrodingersCat = new CachedPlayerData(SchrodingersCat.schrodingersCat.Data);
-                    EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    if (SchrodingersCat.schrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.schrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
+                    if (SchrodingersCat.formerSchrodingersCat != null)
+                    {
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.formerSchrodingersCat.Data);
+                        EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
+                    }
                 }
             }
 
@@ -440,13 +473,13 @@ namespace TheOtherRoles.Patches {
                 {
                     foreach (var p in Madmate.madmate)
                     {
-                        CachedPlayerData wpd = new CachedPlayerData(p.Data);
+                        CachedPlayerData wpd = new(p.Data);
                         EndGameResult.CachedWinners.Add(wpd);
                     }
                 }
                 if (CreatedMadmate.createdMadmate != null)
                 {
-                    CachedPlayerData wpd = new CachedPlayerData(CreatedMadmate.createdMadmate.Data);
+                    CachedPlayerData wpd = new(CreatedMadmate.createdMadmate.Data);
                     EndGameResult.CachedWinners.Add(wpd);
                 }
             }
@@ -538,7 +571,7 @@ namespace TheOtherRoles.Patches {
                 PoolablePlayer poolablePlayer = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, __instance.transform);
                 poolablePlayer.transform.localPosition = new Vector3(1f * (float)num2 * (float)num3 * num5, FloatRange.SpreadToEdges(-1.125f, 0f, num3, num), num6 + (float)num3 * 0.01f) * 0.9f;
                 float num7 = Mathf.Lerp(1f, 0.65f, num4) * 0.9f;
-                Vector3 vector = new Vector3(num7, num7, 1f);
+                Vector3 vector = new(num7, num7, 1f);
                 poolablePlayer.transform.localScale = vector;
                 if (CachedPlayerData2.IsDead)
                 {

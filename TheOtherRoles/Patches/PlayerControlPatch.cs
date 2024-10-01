@@ -257,6 +257,7 @@ namespace TheOtherRoles.Patches {
                 // Only exclude sidekick from beeing targeted if the jackal can create sidekicks from impostors
                 if (Sidekick.sidekick != null) untargetablePlayers.Add(Sidekick.sidekick);
             }
+            if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal) untargetablePlayers.Add(SchrodingersCat.schrodingersCat);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
             Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             setPlayerOutline(Jackal.currentTarget, Palette.ImpostorRed);
@@ -267,6 +268,7 @@ namespace TheOtherRoles.Patches {
             var untargetablePlayers = new List<PlayerControl>();
             if (Jackal.jackal != null) untargetablePlayers.Add(Jackal.jackal);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Sidekick from targeting the Mini unless it has grown up
+            if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal) untargetablePlayers.Add(SchrodingersCat.schrodingersCat);
             Sidekick.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             if (Sidekick.canKill) setPlayerOutline(Sidekick.currentTarget, Palette.ImpostorRed);
         }
@@ -285,7 +287,7 @@ namespace TheOtherRoles.Patches {
         static void eraserSetTarget() {
             if (Eraser.eraser == null || Eraser.eraser != CachedPlayer.LocalPlayer.PlayerControl) return;
 
-            List<PlayerControl> untargetables = new List<PlayerControl>();
+            List<PlayerControl> untargetables = new();
             if (Spy.spy != null) untargetables.Add(Spy.spy);
             if (Sidekick.wasTeamRed) untargetables.Add(Sidekick.sidekick);
             if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
@@ -416,7 +418,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer && Engineer.acTokenChallenge != null)
+            if (Engineer.engineer != null && CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer && MapUtilities.CachedShipStatus?.AllVents != null && Engineer.acTokenChallenge != null)
             {
                 if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
                 {
@@ -457,11 +459,14 @@ namespace TheOtherRoles.Patches {
 
         static void schrodingersCatSetTarget()
         {
+            var untargetables = new List<PlayerControl>();
             if (SchrodingersCat.schrodingersCat == CachedPlayer.LocalPlayer.PlayerControl && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
             {
                 if (!SchrodingersCat.isTeamJackalAlive() || !SchrodingersCat.cantKillUntilLastOne)
                 {
-                    SchrodingersCat.currentTarget = setTarget();
+                    if (Jackal.jackal != null) untargetables.Add(Jackal.jackal);
+                    if (Sidekick.sidekick != null) untargetables.Add(Sidekick.sidekick);
+                    SchrodingersCat.currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(SchrodingersCat.currentTarget, Jackal.color);
                 }
             }
@@ -469,7 +474,8 @@ namespace TheOtherRoles.Patches {
             {
                 if (JekyllAndHyde.jekyllAndHyde == null || JekyllAndHyde.jekyllAndHyde.Data.IsDead || !SchrodingersCat.cantKillUntilLastOne)
                 {
-                    SchrodingersCat.currentTarget = setTarget();
+                    if (JekyllAndHyde.jekyllAndHyde != null) untargetables.Add(JekyllAndHyde.jekyllAndHyde);
+                    SchrodingersCat.currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(SchrodingersCat.currentTarget, JekyllAndHyde.color);
                 }
             }
@@ -477,7 +483,8 @@ namespace TheOtherRoles.Patches {
             {
                 if (Moriarty.moriarty == null || Moriarty.moriarty.Data.IsDead || !SchrodingersCat.cantKillUntilLastOne)
                 {
-                    SchrodingersCat.currentTarget = setTarget();
+                    if (Moriarty.moriarty != null) untargetables.Add(Moriarty.moriarty);
+                    SchrodingersCat.currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(SchrodingersCat.currentTarget, Moriarty.color);
                 }
             }
@@ -559,7 +566,9 @@ namespace TheOtherRoles.Patches {
         {
             if (Moriarty.moriarty == null || Moriarty.moriarty != CachedPlayer.LocalPlayer.PlayerControl) return;
             Moriarty.currentTarget = setTarget();
-            if (Moriarty.target != null) Moriarty.killTarget = setTarget(targetingPlayer: Moriarty.target);
+            var untargetablePlayers = new List<PlayerControl>();
+            if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Moriarty) untargetablePlayers.Add(SchrodingersCat.schrodingersCat);
+            if (Moriarty.target != null) Moriarty.killTarget = setTarget(untargetablePlayers: untargetablePlayers, targetingPlayer: Moriarty.target);
             else Moriarty.killTarget = null;
             setPlayerOutline(Moriarty.currentTarget, Moriarty.color);
         }
@@ -717,7 +726,7 @@ namespace TheOtherRoles.Patches {
             {
                 if (!PlagueDoctor.meetingFlag && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead))
                 {
-                    List<PlayerControl> newInfected = new List<PlayerControl>();
+                    List<PlayerControl> newInfected = new();
                     foreach (PlayerControl target in CachedPlayer.AllPlayers)
                     {
                         if (target == PlagueDoctor.plagueDoctor || target.Data.IsDead || PlagueDoctor.infected.ContainsKey(target.PlayerId) || target.inVent) continue;
@@ -830,6 +839,7 @@ namespace TheOtherRoles.Patches {
                 {
                     Tracker.DangerMeterParent?.SetActive(false);
                     Tracker.Meter?.gameObject.SetActive(false);
+                    if (Tracker.arrow?.arrow != null) Tracker.arrow.arrow.SetActive(false);
                 }
             }
 
@@ -874,7 +884,8 @@ namespace TheOtherRoles.Patches {
             List<PlayerControl> untargetablePlayers = new();
             foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
-                if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty)
+                if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty
+                    || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate))
                 {
                     untargetablePlayers.Add(p);
                 }
@@ -910,8 +921,8 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void updatePlayerInfo() {
-            Vector3 colorBlindTextMeetingInitialLocalPos = new Vector3(0.3384f, -0.16666f, -0.01f);
-            Vector3 colorBlindTextMeetingInitialLocalScale = new Vector3(0.9f, 1f, 1f);
+            Vector3 colorBlindTextMeetingInitialLocalPos = new(0.3384f, -0.16666f, -0.01f);
+            Vector3 colorBlindTextMeetingInitialLocalScale = new(0.9f, 1f, 1f);
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
                 
                 // Colorblind Text in Meeting
@@ -1097,7 +1108,7 @@ namespace TheOtherRoles.Patches {
             if (BountyHunter.bountyHunter == null || CachedPlayer.LocalPlayer.PlayerControl != BountyHunter.bountyHunter) return;
 
             if (BountyHunter.bountyHunter.Data.IsDead) {
-                if (BountyHunter.arrow != null || BountyHunter.arrow.arrow != null) UnityEngine.Object.Destroy(BountyHunter.arrow.arrow);
+                if (BountyHunter.arrow != null) UnityEngine.Object.Destroy(BountyHunter.arrow.arrow);
                 BountyHunter.arrow = null;
                 if (BountyHunter.cooldownText != null && BountyHunter.cooldownText.gameObject != null) UnityEngine.Object.Destroy(BountyHunter.cooldownText.gameObject);
                 BountyHunter.cooldownText = null;
@@ -1162,7 +1173,9 @@ namespace TheOtherRoles.Patches {
         static void jekyllAndHydeSetTarget()
         {
             if (JekyllAndHyde.jekyllAndHyde == null || CachedPlayer.LocalPlayer.PlayerControl != JekyllAndHyde.jekyllAndHyde || JekyllAndHyde.jekyllAndHyde.Data.IsDead || JekyllAndHyde.isJekyll()) return;
-            JekyllAndHyde.currentTarget = setTarget();
+            var untargetables = new List<PlayerControl>();
+            if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde) untargetables.Add(SchrodingersCat.schrodingersCat);
+            JekyllAndHyde.currentTarget = setTarget(untargetablePlayers : untargetables);
             setPlayerOutline(JekyllAndHyde.currentTarget, JekyllAndHyde.color);
         }
 
@@ -1731,7 +1744,7 @@ namespace TheOtherRoles.Patches {
                         return;
                     }
 
-                    Arrow arrow = new Arrow(FortuneTeller.color);
+                    Arrow arrow = new(FortuneTeller.color);
                     arrow.arrow.SetActive(true);
                     arrow.Update(FortuneTeller.fortuneTeller.transform.position);
                     FortuneTeller.arrows.Add(arrow);
@@ -1839,7 +1852,7 @@ namespace TheOtherRoles.Patches {
         static void assassinSetTarget()
         {
             if (Assassin.assassin == null || Assassin.assassin != CachedPlayer.LocalPlayer.PlayerControl) return;
-            List<PlayerControl> untargetables = new List<PlayerControl>();
+            List<PlayerControl> untargetables = new();
             if (Spy.spy != null && !Spy.impostorsCanKillAnyone) untargetables.Add(Spy.spy);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
             if (Sidekick.wasTeamRed && !Spy.impostorsCanKillAnyone) untargetables.Add(Sidekick.sidekick);
@@ -1852,7 +1865,7 @@ namespace TheOtherRoles.Patches {
 
         static void thiefSetTarget() {
             if (Thief.thief == null || Thief.thief != CachedPlayer.LocalPlayer.PlayerControl) return;
-            List<PlayerControl> untargetables = new List<PlayerControl>();
+            List<PlayerControl> untargetables = new();
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
             //if (Ninja.ninja != null && Ninja.stealthed && !Ninja.canBeTargeted) untargetables.Add(Ninja.ninja);
             //if (Sprinter.sprinter != null && Sprinter.sprinting) untargetables.Add(Sprinter.sprinter);
@@ -2285,7 +2298,7 @@ namespace TheOtherRoles.Patches {
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]PlayerControl target)
         {
             // Collect dead player info
-            DeadPlayer deadPlayer = new DeadPlayer(target, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Kill, __instance);
+            DeadPlayer deadPlayer = new(target, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Kill, __instance);
             GameHistory.deadPlayers.Add(deadPlayer);
 
             // Reset killer to crewmate if resetToCrewmate
@@ -2963,7 +2976,7 @@ namespace TheOtherRoles.Patches {
         public static void Postfix(PlayerControl __instance)
         {
             // Collect dead player info
-            DeadPlayer deadPlayer = new DeadPlayer(__instance, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Exile, null);
+            DeadPlayer deadPlayer = new(__instance, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Exile, null);
             GameHistory.deadPlayers.Add(deadPlayer);
 
 

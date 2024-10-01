@@ -15,7 +15,7 @@ namespace TheOtherRoles.Patches {
 
 	[HarmonyPatch(typeof(MapBehaviour))]
 	class MapBehaviourPatch {
-		public static Dictionary<PlayerControl, SpriteRenderer> herePoints = new Dictionary<PlayerControl, SpriteRenderer>();
+		public static Dictionary<PlayerControl, SpriteRenderer> herePoints = new();
 
         public static SpriteRenderer targetHerePoint;
         public static Dictionary<byte, SpriteRenderer> impostorHerePoint;
@@ -143,7 +143,7 @@ namespace TheOtherRoles.Patches {
                     targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead);
                     NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
                     PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
-                    Vector3 pos = new Vector3(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
+                    Vector3 pos = new(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
                     pos /= MapUtilities.CachedShipStatus.MapScale;
                     pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
                     pos.z = -10;
@@ -165,7 +165,7 @@ namespace TheOtherRoles.Patches {
                         impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null);
                         NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
                         PlayerMaterial.SetColors(0, impostorHerePoint[p.PlayerId]);
-                        Vector3 pos = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
+                        Vector3 pos = new(p.transform.position.x, p.transform.position.y, p.transform.position.z);
                         pos /= MapUtilities.CachedShipStatus.MapScale;
                         pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
                         pos.z = -10;

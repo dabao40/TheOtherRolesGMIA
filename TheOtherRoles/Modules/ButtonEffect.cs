@@ -78,7 +78,7 @@ namespace TheOtherRoles.Modules
             if (KeyCodeInfo.AllKeyInfo.ContainsKey(key)) numSprite = KeyCodeInfo.AllKeyInfo[key].Sprite;
             if (numSprite == null) return null;
 
-            GameObject obj = new GameObject();
+            GameObject obj = new();
             obj.name = "HotKeyGuide";
             obj.transform.SetParent(button.transform);
             obj.layer = button.layer;
@@ -86,7 +86,7 @@ namespace TheOtherRoles.Modules
             renderer.transform.localPosition = (UnityEngine.Vector3)pos + new UnityEngine.Vector3(0f, 0f, -10f);
             renderer.sprite = keyBindBackgroundSprite.GetSprite();
 
-            GameObject numObj = new GameObject();
+            GameObject numObj = new();
             numObj.name = "HotKeyText";
             numObj.transform.SetParent(obj.transform);
             numObj.layer = button.layer;
@@ -126,7 +126,7 @@ namespace TheOtherRoles.Modules
             }
             else
             {
-                GameObject obj = new GameObject();
+                GameObject obj = new();
                 obj.name = "MouseAction";
                 obj.transform.SetParent(button.transform);
                 obj.layer = button.layer;

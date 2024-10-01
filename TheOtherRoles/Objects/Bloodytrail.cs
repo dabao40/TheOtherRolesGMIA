@@ -6,8 +6,8 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Objects {
     class Bloodytrail {
-        private static List<Bloodytrail> bloodytrail = new List<Bloodytrail>();
-        private static List<Sprite> sprites = new List<Sprite>();
+        private static List<Bloodytrail> bloodytrail = new();
+        private static List<Sprite> sprites = new();
         private Color color;
         private GameObject blood;
         private SpriteRenderer spriteRenderer;
@@ -27,7 +27,7 @@ namespace TheOtherRoles.Objects {
 
 
             blood = new GameObject("Blood" + index);
-            Vector3 position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.y / 1000 + 0.001f);
+            Vector3 position = new(player.transform.position.x, player.transform.position.y, player.transform.position.y / 1000 + 0.001f);
             blood.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
             blood.transform.position = position;
             blood.transform.localPosition = position;

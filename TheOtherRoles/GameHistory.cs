@@ -45,8 +45,8 @@ namespace TheOtherRoles {
     }
 
     static class GameHistory {
-        public static List<Tuple<Vector3, bool>> localPlayerPositions = new List<Tuple<Vector3, bool>>();
-        public static List<DeadPlayer> deadPlayers = new List<DeadPlayer>();
+        public static List<Tuple<Vector3, bool>> localPlayerPositions = new();
+        public static List<DeadPlayer> deadPlayers = new();
 
         public static void clearGameHistory() {
             localPlayerPositions = new List<Tuple<Vector3, bool>>();

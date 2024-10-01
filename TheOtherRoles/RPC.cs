@@ -664,7 +664,7 @@ namespace TheOtherRoles
             PlayerControl player = Helpers.playerById(playerId);
             if (player == null) return;
             // Fill dummy MessageReader and call MyPhysics.HandleRpc as the corountines cannot be accessed
-            MessageReader reader = new MessageReader();
+            MessageReader reader = new();
             byte[] bytes = BitConverter.GetBytes(ventId);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
@@ -1143,6 +1143,7 @@ namespace TheOtherRoles
             if (player == Moriarty.formerMoriarty) Moriarty.formerMoriarty = oldShifter;
             if (player == JekyllAndHyde.formerJekyllAndHyde) JekyllAndHyde.formerJekyllAndHyde = oldShifter;
             if (player == SchrodingersCat.schrodingersCat) SchrodingersCat.schrodingersCat = oldShifter;
+            if (player == SchrodingersCat.formerSchrodingersCat) SchrodingersCat.formerSchrodingersCat = oldShifter;
 
             if (Lawyer.lawyer != null && Lawyer.target == player)
             {
@@ -1318,10 +1319,10 @@ namespace TheOtherRoles
                 if (CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker)
                     EvilHacker.acTokenCommon ??= new("evilHacker.common1");
 
-                // Jackal¥Ğ¥°Œê
+                // Jackalãƒã‚°å¯¾å¿œ
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
-                // ¥¿¥¹¥¯¤¬¤Ê¤¤¥×¥ì¥¤¥ä©`¤¬Madmate¤Ë¤Ê¤Ã¤¿ˆöºÏ¤Ï¥·¥ç©`¥È¥¿¥¹¥¯¤ò±ØÒªÊı¸î¤êµ±¤Æ¤ë
+                // ã‚¿ã‚¹ã‚¯ãŒãªã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒMadmateã«ãªã£ãŸå ´åˆã¯ã‚·ãƒ§ãƒ¼ãƒˆã‚¿ã‚¹ã‚¯ã‚’å¿…è¦æ•°å‰²ã‚Šå½“ã¦ã‚‹
                 if (Helpers.hasFakeTasks(player))
                 {
                     if (CreatedMadmate.hasTasks)
@@ -1332,7 +1333,7 @@ namespace TheOtherRoles
                 }
                 erasePlayerRoles(player.PlayerId, true, true);
 
-                // Jackal¥Ğ¥°Œê
+                // Jackalãƒã‚°å¯¾å¿œ
                 Jackal.formerJackals = tmpFormerJackals;
 
                 CreatedMadmate.createdMadmate = player;
@@ -1362,7 +1363,7 @@ namespace TheOtherRoles
                 float x = System.BitConverter.ToSingle(taskTmp, 0);
                 taskTmp = reader.ReadBytes(4);
                 float y = System.BitConverter.ToSingle(taskTmp, 0);
-                Vector2 pos = new Vector2(x, y);
+                Vector2 pos = new(x, y);
                 if (!MapBehaviourPatch.realTasks.ContainsKey(playerId)) MapBehaviourPatch.realTasks[playerId] = new Il2CppSystem.Collections.Generic.List<Vector2>();
                 MapBehaviourPatch.realTasks[playerId].Add(pos);
             }
@@ -1393,7 +1394,7 @@ namespace TheOtherRoles
                 GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.Divined, fortuneTeller);
             }
 
-            // ¥¤¥ó¥İ¥¹¥¿©`¤ÎˆöºÏ¤ÏÕ¼¤¤Ÿ¤ÎÎ»ÖÃ¤ËÊ¸Ó¡¤ò±íÊ¾
+            // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®å ´åˆã¯å ã„å¸«ã®ä½ç½®ã«çŸ¢å°ã‚’è¡¨ç¤º
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
@@ -2333,7 +2334,7 @@ namespace TheOtherRoles
 
         public static void releaseBomb(byte killer, byte target)
         {
-            // Í¬•rÑº¤·¤Ç¥À¥Ö¥ë¥­¥ë¤¬°kÉú¤¹¤ë¤Î¤ò·ÀÖ¹¤¹¤ë¤¿¤á¤ËBomberA¤ÇÒ»¶ÈÊÜ¤±È¡¤Ã¤Æ¤«¤éŒgĞĞ¤¹¤ë
+            // åŒæ™‚æŠ¼ã—ã§ãƒ€ãƒ–ãƒ«ã‚­ãƒ«ãŒç™ºç”Ÿã™ã‚‹ã®ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚ã«BomberAã§ä¸€åº¦å—ã‘å–ã£ã¦ã‹ã‚‰å®Ÿè¡Œã™ã‚‹
             if (CachedPlayer.LocalPlayer.PlayerControl == BomberA.bomberA)
             {
                 if (BomberA.bombTarget != null && BomberB.bombTarget != null)
@@ -2709,6 +2710,11 @@ namespace TheOtherRoles
             {
                 JekyllAndHyde.jekyllAndHyde = thief;
                 JekyllAndHyde.formerJekyllAndHyde = target;
+            }
+            if (target == SchrodingersCat.schrodingersCat)
+            {
+                SchrodingersCat.schrodingersCat = thief;
+                SchrodingersCat.formerSchrodingersCat = target;
             }
             if (target == Guesser.evilGuesser)
             {

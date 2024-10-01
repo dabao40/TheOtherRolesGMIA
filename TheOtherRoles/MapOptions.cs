@@ -24,9 +24,9 @@ namespace TheOtherRoles{
 
         // Updating values
         public static int meetingsCount = 0;
-        public static List<SurvCamera> camerasToAdd = new List<SurvCamera>();
-        public static List<Vent> ventsToSeal = new List<Vent>();
-        public static Dictionary<byte, PoolablePlayer> playerIcons = new Dictionary<byte, PoolablePlayer>();
+        public static List<SurvCamera> camerasToAdd = new();
+        public static List<Vent> ventsToSeal = new();
+        public static Dictionary<byte, PoolablePlayer> playerIcons = new();
         public static string firstKillName;
         public static PlayerControl firstKillPlayer;
 

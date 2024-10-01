@@ -285,7 +285,7 @@ public static class CustomHatManager
         Assembly assembly = Assembly.GetExecutingAssembly();
         string[] resourceNames = assembly.GetManifestResourceNames();
         List<string> hatFiles = new();
-        Dictionary<string, List<string>> hatFilesSorted = new Dictionary<string, List<string>>();
+        Dictionary<string, List<string>> hatFilesSorted = new();
         foreach (string resourceName in resourceNames)
         {
             if (resourceName.Contains("TheOtherRoles.Resources.HorseHats.") && resourceName.Contains(".png"))
@@ -304,7 +304,7 @@ public static class CustomHatManager
         int i = 0;
         foreach (var item in hatFilesSorted)
         {
-            CustomHat info = new CustomHat();
+            CustomHat info = new();
             info.Name = $"April Hat {i++:D2}";
             info.Author = "A Fool";
             info.Resource = item.Value.FirstOrDefault(x => !x.Contains("back"));

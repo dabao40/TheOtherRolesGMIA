@@ -214,7 +214,8 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
         public static Sprite discordSprite;
         public static GameObject modScreen = null;
         public static GameObject aboutScreen = null;
-        public static Dictionary<string, string> contributors = new Dictionary<string, string> { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" }, 
+        public static Dictionary<string, string> contributors = new()
+        { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" }, 
             { "Fangkuai", "mainMenuArtist" }, { "Yuunozikkyou" , "mainMenuTranslator"} };
 
         public static void Postfix(MainMenuManager __instance)
@@ -319,7 +320,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                 aboutScreen = Helpers.CreateObject("About", __instance.accountButtons.transform.parent, new Vector3(0, 0, -1f));
                 aboutScreen.transform.localScale = modScreen!.transform.localScale;
                 var screen = MetaScreen.GenerateScreen(new Vector2(6.2f, 4.1f), aboutScreen.transform, new Vector3(-0.1f, 0, 0f), false, false, false);
-                TextAttribute detailAttribute = new TextAttribute(TextAttribute.BoldAttr)
+                TextAttribute detailAttribute = new(TextAttribute.BoldAttr)
                 {
                     FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
                     Size = new Vector2(5.8f, 0.4f),
@@ -328,7 +329,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                     FontMaxSize = 2f,
                     FontMinSize = 1.7f
                 };
-                TextAttribute descriptionAttribute = new TextAttribute(TextAttribute.ContentAttr)
+                TextAttribute descriptionAttribute = new(TextAttribute.ContentAttr)
                 {
                     FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
                     Size = new Vector2(5.8f, 0.4f),
@@ -337,7 +338,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                     FontMaxSize = 1.7f,
                     FontMinSize = 1.3f
                 };
-                TextAttribute titleAttribute = new TextAttribute(TextAttribute.NormalAttr)
+                TextAttribute titleAttribute = new(TextAttribute.NormalAttr)
                 {
                     FontMaterial = VanillaAsset.StandardMaskedFontMaterial,
                     Size = new Vector2(3.4f, 0.3f),

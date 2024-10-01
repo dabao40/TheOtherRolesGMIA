@@ -9,7 +9,7 @@ using Reactor.Utilities.Extensions;
 namespace TheOtherRoles.Objects {
 
     public class JackInTheBox {
-        public static System.Collections.Generic.List<JackInTheBox> AllJackInTheBoxes = new System.Collections.Generic.List<JackInTheBox>();
+        public static System.Collections.Generic.List<JackInTheBox> AllJackInTheBoxes = new();
         public static int JackInTheBoxLimit = 3;
         public static bool boxesConvertedToVents = false;
         public static Sprite[] boxAnimationSprites = new Sprite[18];
@@ -42,7 +42,7 @@ namespace TheOtherRoles.Objects {
         public JackInTheBox(Vector2 p) {
             gameObject = new GameObject("JackInTheBox"){layer = 11};
             gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-            Vector3 position = new Vector3(p.x, p.y,  p.y/1000f + 0.01f);
+            Vector3 position = new(p.x, p.y,  p.y/1000f + 0.01f);
             position += (Vector3)CachedPlayer.LocalPlayer.PlayerControl.Collider.offset; // Add collider offset that DoMove moves the player up at a valid position
             // Create the marker
             gameObject.transform.position = position;

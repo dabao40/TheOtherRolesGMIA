@@ -359,7 +359,7 @@ namespace TheOtherRoles.Modules
 
         static private Dictionary<string, Achievement> achievements = new();
         public static IEnumerable<Achievement> allAchievements => achievements.Values;
-        public static List<AchievementTokenBase> allAchievementTokens = new List<AchievementTokenBase>();
+        public static List<AchievementTokenBase> allAchievementTokens = new();
         static public DataSaver AchievementDataSaver = new("Progress");
         public enum ClearState
         {

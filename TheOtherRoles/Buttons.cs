@@ -303,7 +303,7 @@ namespace TheOtherRoles
             Vector3 positionOffsetValue = positionOffset ?? button.PositionOffset;  // For non custom buttons, we can set these manually.
             positionOffsetValue.z = -0.1f;
             couldUse = couldUse ?? button.CouldUse;
-            CustomButton replacementHandcuffedButton = new CustomButton(() => { }, () => { return true; }, couldUse, () => { }, Deputy.getHandcuffedButtonSprite(), positionOffsetValue, button.hudManager, button.hotkey,
+            CustomButton replacementHandcuffedButton = new(() => { }, () => { return true; }, couldUse, () => { }, Deputy.getHandcuffedButtonSprite(), positionOffsetValue, button.hudManager, button.hotkey,
                 true, Deputy.handcuffDuration, () => { }, button.mirror);
             replacementHandcuffedButton.actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
             ButtonEffect.SetMouseActionIcon(replacementHandcuffedButton.actionButtonGameObject, true, ModTranslation.getString("buttonsHandcuffed"), false);
@@ -3539,7 +3539,7 @@ namespace TheOtherRoles
             void setButtonPos(byte index)
             {
                 Vector3 pos = fortuneTellerCalcPos(index);
-                Vector3 scale = new Vector3(0.4f, 0.5f, 1.0f);
+                Vector3 scale = new(0.4f, 0.5f, 1.0f);
 
                 Vector3 iconBase = new Vector3(-0.82f, 0.19f, 0) + IntroCutsceneOnDestroyPatch.bottomLeft;
 

@@ -115,7 +115,7 @@ namespace TheOtherRoles.Patches {
                     NetworkedPlayerInfo exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == max.Key && !v.IsDead);
 
                     // TieBreaker 
-                    List<NetworkedPlayerInfo> potentialExiled = new List<NetworkedPlayerInfo>();
+                    List<NetworkedPlayerInfo> potentialExiled = new();
                     bool skipIsTie = false;
                     if (self.Count > 0) {
                         Tiebreaker.isTiebreak = false;
@@ -514,7 +514,7 @@ namespace TheOtherRoles.Patches {
                 UnityEngine.Object.Destroy(container.gameObject);
             }));
 
-            List<Transform> buttons = new List<Transform>();
+            List<Transform> buttons = new();
             Transform selectedButton = null;
 
             foreach (RoleInfo roleInfo in RoleInfo.allRoleInfos) {

@@ -294,7 +294,7 @@ namespace TheOtherRoles.MetaContext
         }
 
         private TextAttribute GenerateAttribute(Vector2 size, float fontSize, TextAlignmentOptions alignment)
-        => new TextAttribute()
+        => new()
         {
             Alignment = alignment,
             AllowAutoSizing = false,

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TheOtherRoles.Objects {
     class Garlic {
-        public static List<Garlic> garlics = new List<Garlic>();
+        public static List<Garlic> garlics = new();
 
         public GameObject garlic;
         private GameObject background;
@@ -27,7 +27,7 @@ namespace TheOtherRoles.Objects {
             garlic.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
             background = new GameObject("Background"){layer = 11};
             background.transform.SetParent(garlic.transform);
-            Vector3 position = new Vector3(p.x, p.y, p.y / 1000 + 0.001f); // just behind player
+            Vector3 position = new(p.x, p.y, p.y / 1000 + 0.001f); // just behind player
             garlic.transform.position = position;
             background.transform.localPosition = new Vector3(0 , 0, -1f); // before player
 

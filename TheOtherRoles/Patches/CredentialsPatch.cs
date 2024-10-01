@@ -137,7 +137,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
         public static class MOTD
         {
-            public static List<string> motds = new List<string>();
+            public static List<string> motds = new();
             private static float timer = 0f;
             private static float maxTimer = 5f;
             private static int currentIndex = 0;
@@ -167,7 +167,7 @@ namespace TheOtherRoles.Patches {
 
             public static async Task loadMOTDs()
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new();
                 HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt".getGithubUrl());
                 response.EnsureSuccessStatusCode();
                 string motds = await response.Content.ReadAsStringAsync();

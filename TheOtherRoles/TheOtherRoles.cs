@@ -24,7 +24,7 @@ namespace TheOtherRoles
     [HarmonyPatch]
     public static class TheOtherRoles
     {
-        public static System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
+        public static System.Random rnd = new((int)DateTime.Now.Ticks);
 
         public static void clearAndReloadRoles() {
             Jester.clearAndReload();
@@ -397,7 +397,7 @@ namespace TheOtherRoles
             public static Color color = Sheriff.color;
 
             public static PlayerControl currentTarget;
-            public static List<byte> handcuffedPlayers = new List<byte>();
+            public static List<byte> handcuffedPlayers = new();
             public static int promotesToSheriff; // No: 0, Immediately: 1, After Meeting: 2
             public static bool keepsHandcuffsOnPromotion;
             public static float handcuffDuration;
@@ -405,7 +405,7 @@ namespace TheOtherRoles
             public static float handcuffCooldown;
             public static bool knowsSheriff;
             public static bool stopsGameEnd;
-            public static Dictionary<byte, float> handcuffedKnows = new Dictionary<byte, float>();
+            public static Dictionary<byte, float> handcuffedKnows = new();
 
             private static Sprite buttonSprite;
             private static Sprite handcuffedSprite;
@@ -745,7 +745,7 @@ namespace TheOtherRoles
     public static class Seer {
         public static PlayerControl seer;
         public static Color color = new Color32(97, 178, 108, byte.MaxValue);
-        public static List<Vector3> deadBodyPositions = new List<Vector3>();
+        public static List<Vector3> deadBodyPositions = new();
 
         public static float soulDuration = 15f;
         public static bool limitSoulDuration = false;
@@ -961,7 +961,7 @@ namespace TheOtherRoles
     public static class Tracker {
         public static PlayerControl tracker;
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
-        public static List<Arrow> localArrows = new List<Arrow>();
+        public static List<Arrow> localArrows = new();
 
         public static float updateIntervall = 5f;
         public static bool resetTargetAfterMeeting = false;
@@ -970,13 +970,13 @@ namespace TheOtherRoles
         public static float corpsesTrackingDuration = 5f;
         public static float corpsesTrackingTimer = 0f;
         public static int trackingMode = 0;
-        public static List<Vector3> deadBodyPositions = new List<Vector3>();
+        public static List<Vector3> deadBodyPositions = new();
 
         public static PlayerControl currentTarget;
         public static PlayerControl tracked;
         public static bool usedTracker = false;
         public static float timeUntilUpdate = 0f;
-        public static Arrow arrow = new Arrow(Color.blue);
+        public static Arrow arrow = new(Color.blue);
 
         public static GameObject DangerMeterParent;
         public static DangerMeter Meter;
@@ -1127,7 +1127,7 @@ namespace TheOtherRoles
         public static int taskCountForReveal = 1;
 
         public static bool isRevealed = false;
-        public static Dictionary<byte, byte> playerRoomMap = new Dictionary<byte, byte>();
+        public static Dictionary<byte, byte> playerRoomMap = new();
         public static TMPro.TextMeshPro text = null;
         public static bool needsUpdate = true;
 
@@ -1150,7 +1150,7 @@ namespace TheOtherRoles
         public static Color color = new Color32(0, 180, 235, byte.MaxValue);
         public static PlayerControl fakeSidekick;
         public static PlayerControl currentTarget;
-        public static List<PlayerControl> formerJackals = new List<PlayerControl>();
+        public static List<PlayerControl> formerJackals = new();
         
         public static float cooldown = 30f;
         public static float createSidekickCooldown = 30f;
@@ -1232,9 +1232,9 @@ namespace TheOtherRoles
         public static PlayerControl eraser;
         public static Color color = Palette.ImpostorRed;
 
-        public static List<byte> alreadyErased = new List<byte>();
+        public static List<byte> alreadyErased = new();
 
-        public static List<PlayerControl> futureErased = new List<PlayerControl>();
+        public static List<PlayerControl> futureErased = new();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
         public static bool canEraseAnyone = false;
@@ -1561,7 +1561,7 @@ namespace TheOtherRoles
 
         public static PlayerControl currentTarget;
         public static PlayerControl douseTarget;
-        public static List<PlayerControl> dousedPlayers = new List<PlayerControl>();
+        public static List<PlayerControl> dousedPlayers = new();
 
         private static Sprite douseSprite;
         public static Sprite getDouseSprite() {
@@ -1704,7 +1704,7 @@ namespace TheOtherRoles
     public static class Vulture {
         public static PlayerControl vulture;
         public static Color color = new Color32(139, 69, 19, byte.MaxValue);
-        public static List<Arrow> localArrows = new List<Arrow>();
+        public static List<Arrow> localArrows = new();
         public static float cooldown = 30f;
         public static int vultureNumberToWin = 4;
         public static int eatenBodies = 0;
@@ -1741,9 +1741,9 @@ namespace TheOtherRoles
         public static DeadPlayer target;
         public static DeadPlayer soulTarget;
         public static Color color = new Color32(98, 120, 115, byte.MaxValue);
-        public static List<Tuple<DeadPlayer, Vector3>> deadBodies = new List<Tuple<DeadPlayer, Vector3>>();
-        public static List<Tuple<DeadPlayer, Vector3>> futureDeadBodies = new List<Tuple<DeadPlayer, Vector3>>();
-        public static List<SpriteRenderer> souls = new List<SpriteRenderer>();
+        public static List<Tuple<DeadPlayer, Vector3>> deadBodies = new();
+        public static List<Tuple<DeadPlayer, Vector3>> futureDeadBodies = new();
+        public static List<SpriteRenderer> souls = new();
         public static DateTime meetingStartTime = DateTime.UtcNow;
 
         public static float cooldown = 30f;
@@ -1809,7 +1809,7 @@ namespace TheOtherRoles
         public static string getInfo(PlayerControl target, PlayerControl killer) {
             string msg = "";
 
-            List<SpecialMediumInfo> infos = new List<SpecialMediumInfo>();
+            List<SpecialMediumInfo> infos = new();
             // collect fitting death info types.
             // suicides:
             if (killer == target) {
@@ -1983,7 +1983,7 @@ namespace TheOtherRoles
         public static PlayerControl pursuer;
         public static PlayerControl target;
         public static Color color = Lawyer.color;
-        public static List<PlayerControl> blankedList = new List<PlayerControl>();
+        public static List<PlayerControl> blankedList = new();
         public static int blanks = 0;
         public static Sprite blank;
         public static bool notAckedExiled = false;
@@ -2043,14 +2043,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -2062,10 +2062,10 @@ namespace TheOtherRoles
 
                 //if (MimicK.mimicK == null) return;
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
 
-                // ¥¤¥ó¥İ¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®ä½ç½®ã‚’ç¤ºã™Arrowsã‚’æç”»
                 /*foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -2086,7 +2086,7 @@ namespace TheOtherRoles
                 arrow.Update(MimicA.mimicA.transform.position);
                 arrows.Add(arrow);
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2169,14 +2169,14 @@ namespace TheOtherRoles
                 return;
             }
 
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow1 in arrows)
                 {
                     if (arrow1 != null && arrow1.arrow != null)
@@ -2188,15 +2188,15 @@ namespace TheOtherRoles
 
                 //if (MimicA.mimicA == null) return;
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
                 if (MimicK.mimicK.Data.IsDead || MimicK.mimicK == null) return;
-                Arrow arrow = new Arrow(Palette.ImpostorRed);
+                Arrow arrow = new(Palette.ImpostorRed);
                 arrow.arrow.SetActive(true);
                 arrow.Update(MimicK.mimicK.transform.position);
                 arrows.Add(arrow);
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2237,15 +2237,15 @@ namespace TheOtherRoles
         public static bool endGameFlag = false;
         public static bool meetingFlag = false;
 
-        public static Dictionary<byte, float> progress = new Dictionary<byte, float>();
-        public static Dictionary<byte, bool> playerStatus = new Dictionary<byte, bool>();
+        public static Dictionary<byte, float> progress = new();
+        public static Dictionary<byte, bool> playerStatus = new();
         public static bool divinedFlag = false;
         public static int numUsed = 0;
 
         private static Sprite leftButtonSprite;
         private static Sprite rightButtonSprite;
 
-        public static List<Arrow> arrows = new List<Arrow>();
+        public static List<Arrow> arrows = new();
         public static float updateTimer = 0f;
 
         public static int pageIndex = 1;
@@ -2377,7 +2377,7 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(DestroyableSingleton<HudManager>.Instance.TaskCompleteSound, false, 0.8f);
             numUsed += 1;
 
-            // Õ¼¤¤¤òŒgĞĞ¤·¤¿¤³¤È¤Ç°k»ğ¤µ¤ì¤ë„IÀí¤òËû¥¯¥é¥¤¥¢¥ó¥È¤ËÍ¨Öª
+            // å ã„ã‚’å®Ÿè¡Œã—ãŸã“ã¨ã§ç™ºç«ã•ã‚Œã‚‹å‡¦ç†ã‚’ä»–ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€šçŸ¥
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
@@ -2389,7 +2389,7 @@ namespace TheOtherRoles
         {
             meetingFlag = true;
             duration = CustomOptionHolder.fortuneTellerDuration.getFloat();
-            List<Arrow> arrows = new List<Arrow>();
+            List<Arrow> arrows = new();
             numTasks = (int)CustomOptionHolder.fortuneTellerNumTasks.getFloat();
             distance = CustomOptionHolder.fortuneTellerDistance.getFloat();
             divineResult = (DivineResults)CustomOptionHolder.fortuneTellerResults.getSelection();
@@ -2581,6 +2581,7 @@ namespace TheOtherRoles
     {
         public static Color color = Color.grey;
         public static PlayerControl schrodingersCat;
+        public static PlayerControl formerSchrodingersCat;
         public static Team team;
         public static bool isTrueDead;
 
@@ -2848,6 +2849,7 @@ namespace TheOtherRoles
         public static void clearAndReload()
         {
             schrodingersCat = null;
+            formerSchrodingersCat = null;
             currentTarget = null;
             isTrueDead = false;
             team = Team.None;
@@ -2912,14 +2914,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -2929,10 +2931,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
                 /*if (BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ç›¸æ–¹ã®ä½ç½®ã‚’ç¤ºã™Arrowsã‚’æç”»
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberB.bomberB.transform.position);
@@ -2950,7 +2952,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -2979,7 +2981,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
+                // ç›¸æ–¹ã®è¨­ç½®ã—ãŸã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¡¨ç¤ºã™ã‚‹
                 if (BomberB.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberB.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberB.bombTarget.PlayerId];
@@ -3071,7 +3073,7 @@ namespace TheOtherRoles
                     targetText.gameObject.SetActive(true);
                     targetText.transform.parent = icon.gameObject.transform;
                 }
-                // Ïà·½¤ÎÔOÖÃ¤·¤¿¥¿©`¥²¥Ã¥È¤ò±íÊ¾¤¹¤ë
+                // ç›¸æ–¹ã®è¨­ç½®ã—ãŸã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¡¨ç¤ºã™ã‚‹
                 if (BomberA.bombTarget != null && TORMapOptions.playerIcons.ContainsKey(BomberA.bombTarget.PlayerId) && TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId].gameObject != null)
                 {
                     var icon = TORMapOptions.playerIcons[BomberA.bombTarget.PlayerId];
@@ -3101,14 +3103,14 @@ namespace TheOtherRoles
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null)
@@ -3118,10 +3120,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
                 /*if (BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-                // Ïà·½¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ç›¸æ–¹ã®ä½ç½®ã‚’ç¤ºã™Arrowsã‚’æç”»
                 Arrow arrow = new Arrow(Palette.ImpostorRed);
                 
                 arrow.arrow.SetActive(true);
@@ -3139,7 +3141,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -3500,7 +3502,7 @@ namespace TheOtherRoles
 
     public static class Noisemaker
     {
-        public static Color32 color = new Color32(160, 131, 187, byte.MaxValue);
+        public static Color32 color = new(160, 131, 187, byte.MaxValue);
         public static PlayerControl noisemaker;
         public static PlayerControl currentTarget;
         public static PlayerControl target;
@@ -3739,7 +3741,7 @@ namespace TheOtherRoles
     {
         public static PlayerControl busker;
         public static List<byte> buskerList;
-        public static Color color = new Color(255f / 255f, 172f / 255f, 117f / 255f);
+        public static Color color = new(255f / 255f, 172f / 255f, 117f / 255f);
 
         public static float cooldown = 30f;
         public static float duration = 10f;
@@ -3747,7 +3749,7 @@ namespace TheOtherRoles
         public static bool buttonInterrupted = false;
         public static bool pseudocideComplete = false;
         public static bool restrictInformation = true;
-        public static Vector3 deathPosition = new Vector3();
+        public static Vector3 deathPosition = new();
 
         public static StaticAchievementToken acTokenCommon = null;
         public static StaticAchievementToken acTokenAnother = null;
@@ -3814,7 +3816,7 @@ namespace TheOtherRoles
     public static class Prophet
     {
         public static PlayerControl prophet;
-        public static Color32 color = new Color32(255, 204, 127, byte.MaxValue);
+        public static Color32 color = new(255, 204, 127, byte.MaxValue);
 
         public static float cooldown = 30f;
         public static bool powerCrewAsRed = false;
@@ -3825,9 +3827,9 @@ namespace TheOtherRoles
         public static int examinesLeft;
         public static bool revealProphet = true;
         public static bool isRevealed = false;
-        public static List<Arrow> arrows = new List<Arrow>();
+        public static List<Arrow> arrows = new();
 
-        public static Dictionary<PlayerControl, bool> examined = new Dictionary<PlayerControl, bool>();
+        public static Dictionary<PlayerControl, bool> examined = new();
         public static PlayerControl currentTarget;
 
         public static StaticAchievementToken acTokenUse = null;
@@ -3922,14 +3924,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -3939,10 +3941,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
 
-                // ¥¤¥ó¥İ¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®ä½ç½®ã‚’ç¤ºã™Arrowsã‚’æç”»
                 int count = 0;
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
@@ -3990,7 +3992,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
+                // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä½ç½®ã‚’ç¤ºã™Arrowã‚’æç”»
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -4028,7 +4030,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -4070,7 +4072,7 @@ namespace TheOtherRoles
     public static class Shifter
     {
         public static PlayerControl shifter;
-        public static List<int> pastShifters = new List<int>();
+        public static List<int> pastShifters = new();
         public static Color color = new Color32(102, 102, 102, byte.MaxValue);
 
         public static PlayerControl futureShift;
@@ -4121,7 +4123,7 @@ namespace TheOtherRoles
         public static PlayerControl witch;
         public static Color color = Palette.ImpostorRed;
 
-        public static List<PlayerControl> futureSpelled = new List<PlayerControl>();
+        public static List<PlayerControl> futureSpelled = new();
         public static PlayerControl currentTarget;
         public static PlayerControl spellCastingTarget;
         public static float cooldown = 30f;
@@ -4242,7 +4244,7 @@ namespace TheOtherRoles
         //public static bool isInvisble = false;
         private static Sprite markButtonSprite;
         private static Sprite killButtonSprite;
-        public static Arrow arrow = new Arrow(Color.black);
+        public static Arrow arrow = new(Color.black);
 
         public static StaticAchievementToken acTokenCommon;
         public static AchievementToken<(bool markKill, bool cleared)> acTokenChallenge;
@@ -4321,14 +4323,14 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {
 
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow != null && arrow.arrow != null)
@@ -4338,9 +4340,9 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
-                // ¥¿©`¥²¥Ã¥È¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
+                // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä½ç½®ã‚’ç¤ºã™Arrowã‚’æç”»
                 if (target != null && !target.Data.IsDead)
                 {
                     Arrow arrow = new(Palette.CrewmateBlue);
@@ -4387,7 +4389,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
         }
@@ -4633,14 +4635,14 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
 
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow?.arrow != null)
@@ -4650,10 +4652,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowsÒ»ÓE
+                // Arrowsä¸€è¦§
                 arrows = new List<Arrow>();
 
-                // ¥¤¥ó¥İ¥¹¥¿©`¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrows¤òÃè»­
+                // ã‚¤ãƒ³ãƒã‚¹ã‚¿ãƒ¼ã®ä½ç½®ã‚’ç¤ºã™Arrowsã‚’æç”»
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -4681,9 +4683,9 @@ namespace TheOtherRoles
                         {
                             arrow = new Arrow(Moriarty.color);
                         }
-                        else if (p == SchrodingersCat.schrodingersCat)
+                        else if (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                         {
-                            arrow = new Arrow(SchrodingersCat.color);
+                            arrow = new Arrow(RoleInfo.schrodingersCat.color);
                         }
                         else
                         {
@@ -4695,7 +4697,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
             else
@@ -4786,13 +4788,13 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            // Ç°¥Õ¥ì©`¥à¤«¤é¤Î½Uß^•rég¤ò¥Ş¥¤¥Ê¥¹¤¹¤ë
+            // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’ãƒã‚¤ãƒŠã‚¹ã™ã‚‹
             updateTimer -= Time.fixedDeltaTime;
 
-            // 1Ãë½Uß^¤·¤¿¤éArrow¤ò¸üĞÂ
+            // 1ç§’çµŒéã—ãŸã‚‰Arrowã‚’æ›´æ–°
             if (updateTimer <= 0.0f)
             {
-                // Ç°»Ø¤ÎArrow¤ò¤¹¤Ù¤ÆÆÆ—‰¤¹¤ë
+                // å‰å›ã®Arrowã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
                 foreach (Arrow arrow in arrows)
                 {
                     if (arrow?.arrow != null)
@@ -4802,10 +4804,10 @@ namespace TheOtherRoles
                     }
                 }
 
-                // ArrowÒ»ÓE
+                // Arrowä¸€è¦§
                 arrows = new List<Arrow>();
 
-                // ºü¤ÎÎ»ÖÃ¤òÊ¾¤¹Arrow¤òÃè»­
+                // ç‹ã®ä½ç½®ã‚’ç¤ºã™Arrowã‚’æç”»
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if (p.Data.IsDead) continue;
@@ -4818,7 +4820,7 @@ namespace TheOtherRoles
                         arrows.Add(arrow);
                     }
                 }
-                // ¥¿¥¤¥Ş©`¤Ë•rég¤ò¥»¥Ã¥È
+                // ã‚¿ã‚¤ãƒãƒ¼ã«æ™‚é–“ã‚’ã‚»ãƒƒãƒˆ
                 updateTimer = arrowUpdateInterval;
             }
             else
@@ -5245,7 +5247,8 @@ namespace TheOtherRoles
         }
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
-            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde }.Contains(targetRole);
+            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : 
+                null}.Contains(targetRole);
         }
     }
 
@@ -5357,9 +5360,9 @@ namespace TheOtherRoles
     }*/
 
     public static class Bloody {
-        public static List<PlayerControl> bloody = new List<PlayerControl>();
-        public static Dictionary<byte, float> active = new Dictionary<byte, float>();
-        public static Dictionary<byte, byte> bloodyKillerMap = new Dictionary<byte, byte>();
+        public static List<PlayerControl> bloody = new();
+        public static Dictionary<byte, float> active = new();
+        public static Dictionary<byte, byte> bloodyKillerMap = new();
 
         public static float duration = 5f;
 
@@ -5372,7 +5375,7 @@ namespace TheOtherRoles
     }
 
     public static class AntiTeleport {
-        public static List<PlayerControl> antiTeleport = new List<PlayerControl>();
+        public static List<PlayerControl> antiTeleport = new();
         public static Vector3 position;
 
         public static void clearAndReload() {
@@ -5403,7 +5406,7 @@ namespace TheOtherRoles
     }
 
     public static class Sunglasses {
-        public static List<PlayerControl> sunglasses = new List<PlayerControl>();
+        public static List<PlayerControl> sunglasses = new();
         public static int vision = 1;
 
         public static void clearAndReload() {
@@ -5443,7 +5446,7 @@ namespace TheOtherRoles
 
     }
     public static class Vip {
-        public static List<PlayerControl> vip = new List<PlayerControl>();
+        public static List<PlayerControl> vip = new();
         public static bool showColor = true;
 
         public static void clearAndReload() {
@@ -5453,7 +5456,7 @@ namespace TheOtherRoles
     }
 
     public static class Invert {
-        public static List<PlayerControl> invert = new List<PlayerControl>();
+        public static List<PlayerControl> invert = new();
         public static int meetings = 3;
 
         public static void clearAndReload() {
@@ -5465,7 +5468,7 @@ namespace TheOtherRoles
     public static class Madmate
     {
         public static Color color = Palette.ImpostorRed;
-        public static List<PlayerControl> madmate = new List<PlayerControl>();
+        public static List<PlayerControl> madmate = new();
         public static bool hasTasks;
         public static bool canDieToSheriff;
         public static bool canVent;
@@ -5512,7 +5515,7 @@ namespace TheOtherRoles
     }
 
     public static class Chameleon {
-        public static List<PlayerControl> chameleon = new List<PlayerControl>();
+        public static List<PlayerControl> chameleon = new();
         public static float minVisibility = 0.2f;
         public static float holdDuration = 1f;
         public static float fadeDuration = 0.5f;

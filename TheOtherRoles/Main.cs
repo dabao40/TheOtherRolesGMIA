@@ -179,13 +179,13 @@ namespace TheOtherRoles
     public static class DebugManager
     {
         private static readonly string passwordHash = "d1f51dfdfd8d38027fd2ca9dfeb299399b5bdee58e6c0b3b5e9a45cd4e502848";
-        private static readonly System.Random random = new System.Random((int)DateTime.Now.Ticks);
-        private static List<PlayerControl> bots = new List<PlayerControl>();
+        private static readonly System.Random random = new((int)DateTime.Now.Ticks);
+        private static List<PlayerControl> bots = new();
 
         public static void Postfix(KeyboardJoystick __instance)
         {
             // Check if debug mode is active.
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             SHA256 sha = SHA256Managed.Create();
             Byte[] hashed = sha.ComputeHash(Encoding.UTF8.GetBytes(TheOtherRolesPlugin.DebugMode.Value));
             foreach (var b in hashed) {

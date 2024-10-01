@@ -1,6 +1,7 @@
 using Il2CppSystem.Runtime.ExceptionServices;
 using System;
 using System.Collections.Generic;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Players;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Objects {
     public class CustomButton {
-        public static List<CustomButton> buttons = new List<CustomButton>();
+        public static List<CustomButton> buttons = new();
         public ActionButton actionButton;
         public Vector3 LocalScale = Vector3.one;
         public GameObject actionButtonGameObject;
@@ -36,20 +37,22 @@ namespace TheOtherRoles.Objects {
         public bool mirror;
         public KeyCode? hotkey;
         public string buttonText = "";
+        public string actionName = "";
+        public bool shakeOnEnd = true;
         public bool isHandcuffed = false;
         private static readonly int Desat = Shader.PropertyToID("_Desat");
 
         public static class ButtonPositions {
-            public static readonly Vector3 lowerRowRight = new Vector3(-2f, -0.06f, 0);  // Not usable for imps beacuse of new button positions!
-            public static readonly Vector3 lowerRowCenter = new Vector3(-3f, -0.06f, 0);
-            public static readonly Vector3 lowerRowLeft = new Vector3(-4f, -0.06f, 0);
-            public static readonly Vector3 upperRowRight = new Vector3(0f, 1f, 0f);  // Not usable for imps beacuse of new button positions!
-            public static readonly Vector3 upperRowCenter = new Vector3(-1f, 1f, 0f);  // Not usable for imps beacuse of new button positions!
-            public static readonly Vector3 upperRowLeft = new Vector3(-2f, 1f, 0f);
-            public static readonly Vector3 upperRowFarLeft = new Vector3(-3f, 1f, 0f);
+            public static readonly Vector3 lowerRowRight = new(-2f, -0.06f, 0);  // Not usable for imps beacuse of new button positions!
+            public static readonly Vector3 lowerRowCenter = new(-3f, -0.06f, 0);
+            public static readonly Vector3 lowerRowLeft = new(-4f, -0.06f, 0);
+            public static readonly Vector3 upperRowRight = new(0f, 1f, 0f);  // Not usable for imps beacuse of new button positions!
+            public static readonly Vector3 upperRowCenter = new(-1f, 1f, 0f);  // Not usable for imps beacuse of new button positions!
+            public static readonly Vector3 upperRowLeft = new(-2f, 1f, 0f);
+            public static readonly Vector3 upperRowFarLeft = new(-3f, 1f, 0f);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", bool abilityTexture = false)
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", bool abilityTexture = false, string actionName = "", bool shakeOnEnd = true)
         {
             this.hudManager = hudManager;
             this.OnClick = OnClick;
@@ -65,6 +68,8 @@ namespace TheOtherRoles.Objects {
             this.mirror = mirror;
             this.hotkey = hotkey;
             this.buttonText = buttonText;
+            this.actionName = actionName;
+            this.shakeOnEnd = shakeOnEnd;
             Timer = 16.2f;
             buttons.Add(this);
             actionButton = UnityEngine.Object.Instantiate(hudManager.KillButton, hudManager.KillButton.transform.parent);
@@ -81,16 +86,16 @@ namespace TheOtherRoles.Objects {
             this.showButtonText = (actionButtonRenderer.sprite == Sprite || buttonText != "");
             button.OnClick = new Button.ButtonClickedEvent();
             button.OnClick.AddListener((UnityEngine.Events.UnityAction)onClickEvent);
-
+            setKeyBind();
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", bool abilityTexture = false)
-        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture) { }
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", bool abilityTexture = false, string actionName = "", bool shakeOnEnd = true)
+        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd) { }
 
         public void onClickEvent()
         {
-            if ((this.Timer < 0f && HasButton() && CouldUse()) || ((this.HasEffect && this.isEffectActive && this.effectCancellable)))
+            if ((this.Timer < 0f && HasButton() && CouldUse()) || (this.HasEffect && this.isEffectActive && this.effectCancellable && CouldUse()))
             {
                 actionButtonRenderer.color = new Color(1f, 1f, 1f, 0.3f);
                 this.OnClick();
@@ -219,8 +224,11 @@ namespace TheOtherRoles.Objects {
             }
         
             if (Timer >= 0) {
-                if (HasEffect && isEffectActive)
+                if (HasEffect && isEffectActive) {
                     Timer -= Time.deltaTime;
+                    if (Timer <= 3f && Timer > 0f && shakeOnEnd)
+                        actionButton.graphic.transform.localPosition = actionButton.transform.localPosition + (Vector3)UnityEngine.Random.insideUnitCircle * 0.05f;
+                }
                 else if (!localPlayer.PlayerControl.inVent && moveable)
                     Timer -= Time.deltaTime;
             }
@@ -245,6 +253,26 @@ namespace TheOtherRoles.Objects {
             {
                 OnClick = InitialOnClick;
             }
+        }
+
+        public void setKeyBind()
+        {
+            if (hotkey != null && hotkey != KeyCode.None && hotkey != KeyCode.KeypadPlus)
+            {
+                actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
+                ButtonEffect.SetKeyGuide(actionButtonGameObject, (KeyCode)hotkey, action: actionName != "" ? actionName : (showButtonText && buttonText != "" ? buttonText : ModTranslation.getString("buttonsActionButton")));
+            }
+        }
+
+        public void resetKeyBind()
+        {
+            bool isVampire = Sprite == Vampire.getButtonSprite();
+            if (buttonText == "" && !isVampire) return; // English or something that doesn't require an update, return
+            // Specify vampire as not to override things with English language
+            if (actionName == buttonText.camelString() && (buttonText != "" || isVampire)) return;
+            actionName = buttonText.camelString();
+            actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
+            setKeyBind();
         }
     }
 }

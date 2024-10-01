@@ -7,6 +7,7 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
+using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Objects
 {
@@ -287,7 +288,8 @@ namespace TheOtherRoles.Objects
                         trap.isActive ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || 
-                        CachedPlayer.LocalPlayer.PlayerControl == TheOtherRoles.Lighter.lighter;
+                        CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter ||
+                        CachedPlayer.LocalPlayer.PlayerControl == Fox.fox;
                     var opacity = canSee ? 1.0f : 0.0f;
                     if (trap.trap != null)
                         trap.trap.GetComponent<SpriteRenderer>().material.color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);

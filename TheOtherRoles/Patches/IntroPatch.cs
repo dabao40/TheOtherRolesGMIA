@@ -100,7 +100,7 @@ namespace TheOtherRoles.Patches {
             if (CustomOptionHolder.randomGameStartPosition.getBool())
             { //Random spawn on game start
 
-                List<Vector3> skeldSpawn = new List<Vector3>() {
+                List<Vector3> skeldSpawn = new() {
                 new Vector3(-2.2f, 2.2f, 0.0f), //cafeteria. botton. top left.
                 new Vector3(0.7f, 2.2f, 0.0f), //caffeteria. button. top right.
                 new Vector3(-2.2f, -0.2f, 0.0f), //caffeteria. button. bottom left.
@@ -141,7 +141,7 @@ namespace TheOtherRoles.Patches {
                 new Vector3(-6.5f, -4.5f, 0.0f) //medbay bottom
                 };
 
-                List<Vector3> miraSpawn = new List<Vector3>() {
+                List<Vector3> miraSpawn = new() {
                 new Vector3(-4.5f, 3.5f, 0.0f), //launchpad top
                 new Vector3(-4.5f, -1.4f, 0.0f), //launchpad bottom
                 new Vector3(8.5f, -1f, 0.0f), //launchpad- med hall
@@ -165,7 +165,7 @@ namespace TheOtherRoles.Patches {
                 new Vector3(22f, -2f, 0.0f), //balcony
                 };
 
-                List<Vector3> polusSpawn = new List<Vector3>() {
+                List<Vector3> polusSpawn = new() {
                 new Vector3(16.6f, -1f, 0.0f), //dropship top
                 new Vector3(16.6f, -5f, 0.0f), //dropship bottom
                 new Vector3(20f, -9f, 0.0f), //above storrage
@@ -212,7 +212,7 @@ namespace TheOtherRoles.Patches {
                 new Vector3(17.5f, -25.7f, 0.0f), //snowman under office
                 };
 
-                List<Vector3> dleksSpawn = new List<Vector3>() {
+                List<Vector3> dleksSpawn = new() {
                 new Vector3(2.2f, 2.2f, 0.0f), //cafeteria. botton. top left.
                 new Vector3(-0.7f, 2.2f, 0.0f), //caffeteria. button. top right.
                 new Vector3(2.2f, -0.2f, 0.0f), //caffeteria. button. bottom left.
@@ -253,7 +253,7 @@ namespace TheOtherRoles.Patches {
                 new Vector3(6.5f, -4.5f, 0.0f) //medbay bottom
                 };
 
-                List<Vector3> fungleSpawn = new List<Vector3>() {
+                List<Vector3> fungleSpawn = new() {
                 new Vector3(-10.0842f, 13.0026f, 0.013f),
                 new Vector3(0.9815f, 6.7968f, 0.0068f),
                 new Vector3(22.5621f, 3.2779f, 0.0033f),

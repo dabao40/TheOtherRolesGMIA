@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Objects
 {
@@ -94,7 +95,7 @@ namespace TheOtherRoles.Objects
         }
     }
 
-    [HarmonyPatch(typeof(AmongUsClient), "Awake")]
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.Awake))]
     public static class AmongUsClientAwakePatch
     {
         private static bool Loaded;
@@ -105,6 +106,7 @@ namespace TheOtherRoles.Objects
                 return;
             Loaded = true;
             __instance.StartCoroutine(BepInEx.Unity.IL2CPP.Utils.Collections.CollectionExtensions.WrapToIl2Cpp(MapLoader.LoadMaps()));
+            VanillaAsset.LoadAssetsOnTitle();
         }
     }
 }
