@@ -377,9 +377,10 @@ namespace TheOtherRoles.Patches {
                 int displayType = Helpers.GetDisplayType(__instance.vitals.Count);
                 foreach (VitalsPanel vital in (Il2CppArrayBase<VitalsPanel>)__instance.vitals)
                 {
+                    var color = vital.PlayerInfo.IsDead && !Busker.buskerList.Any(x => x == vital.PlayerInfo.PlayerId) ? Palette.HalfWhite : Palette.White;
                     vital.PlayerIcon.cosmetics.SetSkin(vital.PlayerInfo.DefaultOutfit.SkinId, vital.PlayerInfo.DefaultOutfit.ColorId, (Action)null);
-                    vital.PlayerIcon.cosmetics.SetHatColor(Palette.White);
-                    vital.PlayerIcon.cosmetics.SetVisorAlpha(Palette.White.a);
+                    vital.PlayerIcon.cosmetics.SetHatColor(color);
+                    vital.PlayerIcon.cosmetics.SetVisorAlpha(color.a);
                     vital.transform.localPosition = ToVoteAreaPos(__instance, index, displayType);
                     Transform transform = vital.transform;
                     transform.localScale *= PanelAreaScale[displayType];

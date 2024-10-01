@@ -1999,7 +1999,7 @@ namespace TheOtherRoles
                 else if (Akujo.akujo != null && Busker.busker == Akujo.honmei)
                     otherLover = Akujo.akujo;
 
-                if (!otherLover.Data.IsDead)
+                if (otherLover != null && !otherLover.Data.IsDead)
                 {
                     otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
