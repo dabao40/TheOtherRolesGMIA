@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -189,9 +189,21 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
                     template.OnClick();
                 }));
 
+                var FreePlayButton = GameObject.Instantiate<Transform>(gameButton, gameButton.parent);
+                FreePlayButton.transform.localPosition += new Vector3(3.4f, -0.5f);
+                var FreePlaytButtonText = FreePlayButton.GetComponentInChildren<TMPro.TextMeshPro>();
+                var FreePlayButtonPassiveButton = FreePlayButton.GetComponentInChildren<PassiveButton>();
+
+                FreePlayButtonPassiveButton.OnClick = new Button.ButtonClickedEvent();
+                FreePlayButtonPassiveButton.OnClick.AddListener((System.Action)(() => {
+                    TORMapOptions.gameMode = CustomGamemodes.FreePlay;
+                    template.OnClick();
+                }));
+
                 template.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {
                     guesserButtonText.SetText(ModTranslation.getString("torGuesser"));
                     HideNSeekButtonText.SetText(ModTranslation.getString("torHideNSeek"));
+                    FreePlaytButtonText.SetText(ModTranslation.getString("torFreePlay"));
                  })));
             }));
         }

@@ -1,4 +1,4 @@
-﻿using AmongUs.GameOptions;
+using AmongUs.GameOptions;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,7 @@ namespace TheOtherRoles.Patches {
                     string gameModeText = $"";
                     if (HideNSeek.isHideNSeekGM) gameModeText = ModTranslation.getString("gamemodeHideNSeek");
                     else if (HandleGuesser.isGuesserGm) gameModeText = ModTranslation.getString("gamemodeGuesser");
+                    else if (FreePlayGM.isFreePlayGM) gameModeText = ModTranslation.getString("gamemodeFreePlay");
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
                     __instance.text.text = $"<size=130%>{Helpers.GradientColorText("FFD700", "FF0000", $"TheOtherRoles GM IA")}</size>" + $" v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}\n{gameModeText}" + __instance.text.text;
                     position.DistanceFromEdge = new Vector3(1.5f, 0.11f, 0);
@@ -41,6 +42,7 @@ namespace TheOtherRoles.Patches {
                     string gameModeText = $"";
                     if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) gameModeText = ModTranslation.getString("gamemodeHideNSeek");
                     else if (TORMapOptions.gameMode == CustomGamemodes.Guesser) gameModeText = ModTranslation.getString("gamemodeGuesser");
+                    else if (TORMapOptions.gameMode == CustomGamemodes.FreePlay) gameModeText = ModTranslation.getString("gamemodeFreePlay");
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText);
 
                     __instance.text.text = $"{ModTranslation.getString(fullCredentialsVersion)}\n{ModTranslation.getString(fullCredentials)}\n {__instance.text.text}";

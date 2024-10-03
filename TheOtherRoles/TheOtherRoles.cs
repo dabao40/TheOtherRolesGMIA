@@ -121,7 +121,7 @@ namespace TheOtherRoles
             // Gamemodes
             HandleGuesser.clearAndReload();
             HideNSeek.clearAndReload();
-
+            FreePlayGM.clearAndReload();
         }
 
         public static class Jester {
@@ -654,14 +654,15 @@ namespace TheOtherRoles
 
         public static void niceSwapperOnAchievementActivate()
         {
-            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper || CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper) return;
             acTokenChallenge ??= new("niceSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static void evilSwapperOnAchievementActivate()
         {
-            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper || !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
-            evilSwapperAcTokenChallenge ??= new("evilSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+            if (swapper != null && CachedPlayer.LocalPlayer.PlayerControl == swapper) {
+                evilSwapperAcTokenChallenge ??= new("evilSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
+            }
         }
 
         public static Sprite getCheckSprite() {
@@ -2468,13 +2469,13 @@ namespace TheOtherRoles
 
         public static void yasunaOnAchievementActivate()
         {
-            if (yasuna != null && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor && CachedPlayer.LocalPlayer.PlayerControl == yasuna)
+            if (yasuna != null && CachedPlayer.LocalPlayer.PlayerControl == yasuna)
                 yasunaAcTokenChallenge ??= new("niceYasuna.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static void evilYasunaOnAcheivementActivate()
         {
-            if (yasuna == null || CachedPlayer.LocalPlayer.PlayerControl != yasuna || !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            if (yasuna == null || CachedPlayer.LocalPlayer.PlayerControl != yasuna) return;
             evilYasunaAcTokenChallenge ??= new("evilYasuna.another1", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 

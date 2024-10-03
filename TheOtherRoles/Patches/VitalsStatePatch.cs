@@ -1,4 +1,4 @@
-﻿using Il2CppSystem;
+using Il2CppSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace TheOtherRoles.Patches
             get
             {
                 List<FakeVitalsParam> param = new();
-                var deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>(); ;
+                var deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
                 foreach (var p in GameData.Instance.AllPlayers.GetFastEnumerator())
                 {
                     VitalsState state = VitalsState.Alive;

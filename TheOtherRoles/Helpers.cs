@@ -41,7 +41,8 @@ namespace TheOtherRoles {
     public enum CustomGamemodes {
         Classic,
         Guesser,
-        HideNSeek
+        HideNSeek,
+        FreePlay
     }
 
     public static class Direction

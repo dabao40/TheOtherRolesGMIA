@@ -84,7 +84,7 @@ namespace TheOtherRoles.Patches {
             SoundEffectsManager.Load();
 
             // Place props
-            if (CustomOptionHolder.activateProps.getBool())
+            if (CustomOptionHolder.activateProps.getBool() && !FreePlayGM.isFreePlayGM)
             {
                 Props.placeProps();
             }

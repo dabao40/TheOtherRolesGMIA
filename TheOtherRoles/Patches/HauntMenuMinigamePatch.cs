@@ -1,9 +1,10 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using AmongUs.GameOptions;
 using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Players;
 using System;
+using TheOtherRoles.CustomGameModes;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -72,6 +73,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance) {
             bool isHideNSeek = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek;
+            if (FreePlayGM.isFreePlayGM) return;
             if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && !(!Busker.pseudocideFlag && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead))
                 __instance.Hide();
             if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && !SchrodingersCat.isTrueDead)

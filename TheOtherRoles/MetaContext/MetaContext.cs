@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -477,11 +477,32 @@ namespace TheOtherRoles.MetaContext
                     AttributeAsset.StandardMediumMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.6f, 0.8f, 1.6f), new(1.45f, 0.3f), new(255, 255, 255), false),
                     AttributeAsset.StandardLargeWideMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.7f, 1f, 1.7f), new(2.9f, 0.45f), new(255, 255, 255), false),
                     AttributeAsset.OverlayContent => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f, 1.1f, 1.5f), Size = new(5f, 6f) },
+                    AttributeAsset.MetaRoleButton => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.GothicMasked), FontStyle.Bold, new(1.8f, 1f, 2f), new(1.4f, 0.26f), new(255, 255, 255), false),
                     _ => null!
                 };
             }
 
             return allAttrAsset[attribute];
+        }
+
+        public GUIContext Arrange(GUIAlignment alignment, IEnumerable<GUIContext> inner, int perLine)
+        {
+            List<GUIContext> widgets = new();
+            List<GUIContext> horizontalWidgets = new();
+            foreach (var widget in inner)
+            {
+                if (widget == null) continue;
+
+                horizontalWidgets.Add(widget);
+                if (horizontalWidgets.Count == perLine)
+                {
+                    widgets.Add(HorizontalHolder(alignment, horizontalWidgets.ToArray()));
+                    horizontalWidgets.Clear();
+                }
+            }
+            if (horizontalWidgets.Count > 0) widgets.Add(HorizontalHolder(alignment, horizontalWidgets));
+
+            return VerticalHolder(alignment, widgets);
         }
 
         public TextAttributes GenerateAttribute(AttributeParams attribute, Color color, FontSize fontSize, Size size)
@@ -559,6 +580,21 @@ namespace TheOtherRoles.MetaContext
         public TextComponent LocalizedTextComponent(string translationKey) => new TranslateTextComponent(translationKey);
         public TextComponent ColorTextComponent(Color color, TextComponent component) => new ColorTextComponent(color, component);
 
+    }
+
+    public class GUIEmptyWidget : AbstractGUIContext
+    {
+        static public GUIEmptyWidget Default = new();
+
+        public GUIEmptyWidget(GUIAlignment alignment = GUIAlignment.Left) : base(alignment)
+        {
+        }
+
+        public override GameObject Instantiate(Size size, out Size actualSize)
+        {
+            actualSize = new(0f, 0f);
+            return null;
+        }
     }
 
     public class TORGUIImage : AbstractGUIContext

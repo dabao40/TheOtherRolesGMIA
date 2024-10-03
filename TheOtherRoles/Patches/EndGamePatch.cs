@@ -256,8 +256,10 @@ namespace TheOtherRoles.Patches {
             // Mini lose
             if (miniLose) {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new(Mini.mini.Data);
-                wpd.IsYou = false; // If "no one is the Mini", it will display the Mini, but also show defeat to everyone
+                CachedPlayerData wpd = new(Mini.mini.Data)
+                {
+                    IsYou = false // If "no one is the Mini", it will display the Mini, but also show defeat to everyone
+                };
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.MiniLose;  
             }
@@ -415,30 +417,40 @@ namespace TheOtherRoles.Patches {
                 // Jackal wins if nobody except jackal is alive
                 AdditionalTempData.winCondition = WinCondition.JackalWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new(Jackal.jackal.Data);
-                wpd.IsImpostor = false; 
+                CachedPlayerData wpd = new(Jackal.jackal.Data)
+                {
+                    IsImpostor = false
+                };
                 EndGameResult.CachedWinners.Add(wpd);
                 // If there is a sidekick. The sidekick also wins
                 if (Sidekick.sidekick != null) {
-                    CachedPlayerData wpdSidekick = new(Sidekick.sidekick.Data);
-                    wpdSidekick.IsImpostor = false; 
+                    CachedPlayerData wpdSidekick = new(Sidekick.sidekick.Data)
+                    {
+                        IsImpostor = false
+                    };
                     EndGameResult.CachedWinners.Add(wpdSidekick);
                 }
                 foreach(var player in Jackal.formerJackals) {
-                    CachedPlayerData wpdFormerJackal = new(player.Data);
-                    wpdFormerJackal.IsImpostor = false; 
+                    CachedPlayerData wpdFormerJackal = new(player.Data)
+                    {
+                        IsImpostor = false
+                    };
                     EndGameResult.CachedWinners.Add(wpdFormerJackal);
                 }
                 if (SchrodingersCat.team == SchrodingersCat.Team.Jackal)
                 {
                     if (SchrodingersCat.schrodingersCat != null)
                     {
-                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.schrodingersCat.Data);
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.schrodingersCat.Data) {
+                            IsImpostor = false
+                        };
                         EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
                     }
                     if (SchrodingersCat.formerSchrodingersCat != null)
                     {
-                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.formerSchrodingersCat.Data);
+                        CachedPlayerData wpdSchrodingersCat = new(SchrodingersCat.formerSchrodingersCat.Data) {
+                            IsImpostor = false
+                        };
                         EndGameResult.CachedWinners.Add(wpdSchrodingersCat);
                     }
                 }
@@ -802,6 +814,7 @@ namespace TheOtherRoles.Patches {
             if (!GameData.Instance) return false;
             if (DestroyableSingleton<TutorialManager>.InstanceExists) // InstanceExists | Don't check Custom Criteria when in Tutorial
                 return true;
+            if (FreePlayGM.isFreePlayGM) return false;
             var statistics = new PlayerStatistics(__instance);
             if (CheckAndEndGameForMiniLose(__instance)) return false;
             if (CheckAndEndGameForJesterWin(__instance)) return false;

@@ -1,4 +1,4 @@
-﻿global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;

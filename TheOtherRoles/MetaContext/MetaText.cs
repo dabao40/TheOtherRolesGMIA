@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -113,6 +113,11 @@ public enum AttributeAsset
     /// 主にオーバーレイ向けの本文用可変サイズテキスト属性です。
     /// </summary>
     OverlayContent,
+
+    /// <summary>
+    /// フリープレイの役職選択ボタンで使用されているテキスト属性です。
+    /// </summary>
+    MetaRoleButton,
 }
 
 [Flags]

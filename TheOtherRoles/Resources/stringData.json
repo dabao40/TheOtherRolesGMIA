@@ -89,6 +89,10 @@
         "13": "\u603b\u7d27\u6025\u4f1a\u8bae\u6570\uff08\u4e0d\u5305\u62ec\u5e02\u957f\u4f1a\u8bae\uff09",
         "14": "\u7e3d\u7dca\u6025\u6703\u8b70\u6578\uff08\u4e0d\u5305\u62ec\u5e02\u9577\u6703\u8b70\uff09"
     },
+    "freePlayGameModeNumDummies": {
+        "0": "Free Play Number Of Dummies",
+        "13": "\u81ea\u7531\u6a21\u5f0f\u5047\u4eba\u6570\u91cf"
+    },
     "blockSkippingInEmergencyMeetings": {
         "0": "Block Skipping In Emergency Meetings",
         "11": "\u7dca\u6025\u4f1a\u8b70\u306e\u30b9\u30ad\u30c3\u30d7\u3092\u3067\u304d\u306a\u304f\u3059\u308b",
@@ -4082,6 +4086,10 @@
         "11": "\u304b\u304f\u308c\u3093\u307c",
         "13": "\u8fdb\u9636\u6349\u8ff7\u85cf"
     },
+    "gamemodeFreePlay": {
+        "0": "Free Play",
+        "13": "\u81ea\u7531\u6a21\u5f0f"
+    },
     "torGuesser": {
         "0": "TOR Guesser",
         "11": "TOR\u30b2\u30c3\u30b5\u30fc",
@@ -4091,6 +4099,26 @@
         "0": "TOR Hide N Seek",
         "11": "TOR\u304b\u304f\u308c\u3093\u307c",
         "13": "TOR\u6349\u8ff7\u85cf"
+    },
+    "torFreePlay": {
+        "0": "TOR Free Play",
+        "13": "TOR\u81ea\u7531\u6a21\u5f0f"
+    },
+    "freePlayRoles": {
+        "0": "Roles",
+        "13": "\u804c\u4e1a"
+    },
+    "freePlayModifiers": {
+        "0": "Modifiers",
+        "13": "\u526f\u804c\u4e1a"
+    },
+    "freePlayModifiersEquipped": {
+        "0": "Equipped",
+        "13": "\u5df2\u88c5\u5907"
+    },
+    "freePlayModifiersUnequipped": {
+        "0": "Unequipped",
+        "13": "\u672a\u88c5\u5907"
     },
     "roleInfoErased": {
         "0": "(erased) ",
@@ -6595,6 +6623,18 @@
         "0": "[BLANK]",
         "11": "\u30ce\u30a4\u30ba",
         "13": "\u5e7f\u64ad"
+    },
+    "FreePlaySuicideText": {
+        "0": "Suicide",
+        "13": "\u81ea\u6740"
+    },
+    "FreePlayReviveText": {
+        "0": "Revive",
+        "13": "\u590d\u6d3b"
+    },
+    "FreePlayOperateText": {
+        "0": "Operate",
+        "13": "\u64cd\u4f5c"
     },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",

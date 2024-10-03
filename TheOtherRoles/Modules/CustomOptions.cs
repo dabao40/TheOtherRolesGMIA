@@ -588,7 +588,7 @@ namespace TheOtherRoles {
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic || TORMapOptions.gameMode == CustomGamemodes.FreePlay)
             {
 
                 // create TOR settings
@@ -974,6 +974,8 @@ namespace TheOtherRoles {
             var relevantOptions = options.Where(x => x.type == optionType).ToList();
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
                 relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
+            if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
+                relevantOptions = relevantOptions.Where(x => x.id != 10424).ToList();
             createSettings(torSettingsGOM, relevantOptions);
 
             currentTabs.Add(torSettingsTab);
@@ -984,7 +986,7 @@ namespace TheOtherRoles {
         {
             // Handle different gamemodes and tabs needed therein.
             int next = 3;
-            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic)
+            if (TORMapOptions.gameMode == CustomGamemodes.Guesser || TORMapOptions.gameMode == CustomGamemodes.Classic || TORMapOptions.gameMode == CustomGamemodes.FreePlay)
             {
 
                 // create TOR settings
@@ -1121,7 +1123,8 @@ namespace TheOtherRoles {
                 options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
             else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
                 options = options.Where(x => (x.type == CustomOption.CustomOptionType.HideNSeekMain || x.type == CustomOption.CustomOptionType.HideNSeekRoles));
-
+            if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
+                options = options.Where(x => x.id != 10424);
             foreach (var option in options) {
                 if (option.parent == null) {
                     string line = $"{option.getName()}: {option.getString()}";

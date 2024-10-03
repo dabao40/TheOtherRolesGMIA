@@ -1,9 +1,10 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Hazel;
 using Reactor.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Players;
@@ -64,6 +65,7 @@ namespace TheOtherRoles.Patches {
 
         private static bool evilTrackerShowTask(MapTaskOverlay __instance)
         {
+            if (FreePlayGM.isFreePlayGM) return true;
             if (!MeetingHud.Instance) return true;  // Only run in meetings, and then set the Position of the HerePoint to the Position before the Meeting!
             if (CachedPlayer.LocalPlayer.PlayerControl != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
             if (EvilTracker.target == null) return true;

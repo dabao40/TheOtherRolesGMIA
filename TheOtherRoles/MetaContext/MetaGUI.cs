@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -283,6 +283,15 @@ namespace TheOtherRoles.MetaContext
         /// <param name="inner">並べるコンテキスト</param>
         /// <returns>生成されたコンテキスト定義</returns>
         GUIContext HorizontalHolder(GUIAlignment alignment, params GUIContext[] inner) => HorizontalHolder(alignment, inner, null);
+
+        /// <summary>
+        /// ウィジットを指定の個数ずつ縦方向に伸ばしながら配置します。
+        /// </summary>
+        /// <param name="alignment"></param>
+        /// <param name="inner"></param>
+        /// <param name="perLine"></param>
+        /// <returns></returns>
+        GUIContext Arrange(GUIAlignment alignment, IEnumerable<GUIContext> inner, int perLine);
 
         /// <summary>
         /// 余白を表すコンテキストです。見た目を整えるために使用します。
