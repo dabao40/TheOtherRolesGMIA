@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.nuget/packages
@@ -18,12 +18,13 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v2
         with:
           submodules: true
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.x
 
@@ -31,7 +32,8 @@ jobs:
         run: dotnet build TheOtherRoles/TheOtherRoles.csproj --configuration Release
 
       - name: Upload TheOtherRoles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: TheOtherRoles.dll
           path: TheOtherRoles/bin/Release/net6.0/TheOtherRoles.dll
+
