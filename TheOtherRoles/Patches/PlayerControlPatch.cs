@@ -2429,6 +2429,8 @@ namespace TheOtherRoles.Patches {
                             array[i].gameObject.active = false;
                         }
                     }
+                    DeadPlayer deadPlayerEntry = deadPlayers.Where(x => x.player.PlayerId == target.PlayerId).FirstOrDefault();
+                    if (deadPlayerEntry != null) deadPlayers.Remove(deadPlayerEntry);
                 }
                 else
                 {
@@ -2911,7 +2913,8 @@ namespace TheOtherRoles.Patches {
                 DestroyableSingleton<HudManager>.Instance.Chat.ForceClosed();
                 DestroyableSingleton<HudManager>.Instance.Chat.SetVisible(false);
             }
-
+            DeadPlayer deadPlayerEntry = deadPlayers.Where(x => x.player.PlayerId == __instance.PlayerId).FirstOrDefault();
+            if (deadPlayerEntry != null) deadPlayers.Remove(deadPlayerEntry);
             return false;
         }
     }

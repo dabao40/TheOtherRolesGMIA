@@ -779,7 +779,7 @@ namespace TheOtherRoles {
         public static string getGithubUrl(this string url)
         {
             if (!isChinese()) return url;
-            return url.Replace("https://", "https://mirror.ghproxy.com/");
+            return url.Replace("https://", "https://ghp.ci/");
         }
 
         public static T FindAsset<T>(string name) where T : Il2CppObjectBase

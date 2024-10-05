@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +15,7 @@ public static class CustomHatManager
     public const string InnerslothPackageName = "Innersloth Hats";
     public const string DeveloperPackageName = "Developer Hats";
 
-    internal static readonly Tuple<string, string> Repository = new("TheOtherRolesAU", "TheOtherHats");
+    internal static readonly Tuple<string, string> Repository = new("dabao40", "TheOtherHats");
     internal static string RepositoryUrl
     {
         get
@@ -304,11 +304,13 @@ public static class CustomHatManager
         int i = 0;
         foreach (var item in hatFilesSorted)
         {
-            CustomHat info = new();
-            info.Name = $"April Hat {i++:D2}";
-            info.Author = "A Fool";
-            info.Resource = item.Value.FirstOrDefault(x => !x.Contains("back"));
-            info.BackResource = item.Value.FirstOrDefault(x => x.Contains("back"));
+            CustomHat info = new()
+            {
+                Name = $"April Hat {i++:D2}",
+                Author = "A Fool",
+                Resource = item.Value.FirstOrDefault(x => !x.Contains("back")),
+                BackResource = item.Value.FirstOrDefault(x => x.Contains("back"))
+            };
             info.Adaptive = info.Resource != null && info.Resource.Contains("adaptive");
             info.FlipResource = item.Value.FirstOrDefault(x => x.Contains("flip"));
             info.ClimbResource = item.Value.FirstOrDefault(x => x.Contains("climb"));

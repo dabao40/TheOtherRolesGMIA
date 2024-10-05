@@ -449,7 +449,7 @@ namespace TheOtherRoles.Patches {
                 // Don't override the intro of the vanilla roles
                 List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl);
                 RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
-                RoleInfo modifierInfo = infos.Where(info => info.isModifier).FirstOrDefault();
+                List<RoleInfo> modifierInfo = infos.Where(info => info.isModifier).ToList();
 
                 if (roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0)
                 {
@@ -466,6 +466,9 @@ namespace TheOtherRoles.Patches {
                 }
 
                 __instance.RoleBlurbText.text = "";
+                __instance.RoleBlurbText.transform.localPosition = new(0.0965f, -2.12f, -36f);
+                __instance.RoleBlurbText.rectTransform.sizeDelta = new(12.8673f, 0.7f);
+                __instance.RoleBlurbText.alignment = TMPro.TextAlignmentOptions.Top;
                 if (roleInfo != null) {
                     __instance.YouAreText.color = roleInfo.color;
                     __instance.RoleText.text = roleInfo.name;
@@ -486,11 +489,13 @@ namespace TheOtherRoles.Patches {
                 }
 
                 if (modifierInfo != null) {
-                    if (modifierInfo.roleId != RoleId.Lover)
-                        __instance.RoleBlurbText.text += Helpers.cs(modifierInfo.color, $"\n{modifierInfo.introDescription}");
-                    else {
-                        PlayerControl otherLover = CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-                        __instance.RoleBlurbText.text += "\n" + Helpers.cs(Lovers.color, String.Format(ModTranslation.getString("loversFlavor"), otherLover?.Data?.PlayerName ?? ""));
+                    foreach (var info in modifierInfo) {
+                        if (info.roleId != RoleId.Lover)
+                            __instance.RoleBlurbText.text += Helpers.cs(info.color, $"\n{info.introDescription}");
+                        else {
+                            PlayerControl otherLover = CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
+                            __instance.RoleBlurbText.text += "\n" + Helpers.cs(Lovers.color, String.Format(ModTranslation.getString("loversFlavor"), otherLover?.Data?.PlayerName ?? ""));
+                        }
                     }
                 }
                 if (Deputy.knowsSheriff && Deputy.deputy != null && Sheriff.sheriff != null) {

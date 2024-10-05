@@ -228,7 +228,7 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
         public static GameObject aboutScreen = null;
         public static Dictionary<string, string> contributors = new()
         { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" }, 
-            { "Fangkuai", "mainMenuArtist" }, { "Yuunozikkyou" , "mainMenuTranslator"} };
+            { "Fangkuai", "mainMenuArtist" }, { "Yuunozikkyou" , "mainMenuTranslator"}, { "TAIK", "mainMenuTranslator"} };
 
         public static void Postfix(MainMenuManager __instance)
         {

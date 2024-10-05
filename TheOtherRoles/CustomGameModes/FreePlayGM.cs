@@ -19,6 +19,7 @@ namespace TheOtherRoles.CustomGameModes
         public static bool isFreePlayGM = false;
         public static Sprite operateButtonSprite;
         public static Sprite reviveSprite;
+        public static MetaScreen roleScreen;
 
         public static Sprite getOperateButtonSprite()
         {
@@ -36,7 +37,7 @@ namespace TheOtherRoles.CustomGameModes
 
         public static void OpenRoleWindow()
         {
-            var window = MetaScreen.GenerateWindow(new Vector2(7.5f, 4.5f), HudManager.Instance.transform, new Vector3(0, 0, -400f), true, false);
+            roleScreen = MetaScreen.GenerateWindow(new Vector2(7.5f, 4.5f), HudManager.Instance.transform, new Vector3(0, 0, -400f), true, false);
 
             var gui = TORGUIContextEngine.Instance;
             var roleMaskedTittleAttr = gui.GetAttribute(AttributeAsset.MetaRoleButton);
@@ -58,11 +59,12 @@ namespace TheOtherRoles.CustomGameModes
                     inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bomberA && x != RoleInfo.jackal
                     && x != RoleInfo.sidekick && x != RoleInfo.mimicA && x != RoleInfo.mimicK && x != RoleInfo.arsonist && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
                     {
+                        bool isImpostorFormer = PlayerControl.LocalPlayer.Data.Role.IsImpostor;
                         var formerRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false).FirstOrDefault();
                         if (formerRole == r) return; // Do nothing if the same role was given
                         RPCProcedure.erasePlayerRoles(PlayerControl.LocalPlayer.PlayerId);
-                        if (r.isImpostor() && !formerRole.isImpostor()) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
-                        else if (!r.isImpostor() && formerRole.isImpostor()) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
+                        if (r.isImpostor() && !isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
+                        else if (!r.isImpostor() && isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
 
                         if (r == RoleInfo.chainshifter) Shifter.isNeutral = true;
                         else if (r == RoleInfo.niceshifter) Shifter.isNeutral = false;
@@ -70,7 +72,7 @@ namespace TheOtherRoles.CustomGameModes
 
                         if (r.roleId == RoleId.Fox) {
                             if (Shrine.allShrine?.FirstOrDefault() == null){
-                                Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);System.Console.WriteLine("1");
+                                Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
                             }
                             List<Byte> taskIdList = new();
                             Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
@@ -84,7 +86,7 @@ namespace TheOtherRoles.CustomGameModes
                             PlayerControl.LocalPlayer.generateAndAssignTasks(options.NumCommonTasks, options.NumShortTasks, options.NumLongTasks);
                         }
                         RPCProcedure.resetAchievement();
-                        window.CloseScreen();
+                        roleScreen.CloseScreen();
                     })), 4);
                 }
                 else if (tab == 1)
@@ -104,7 +106,7 @@ namespace TheOtherRoles.CustomGameModes
                         })), 4)}
                         );
                 }
-                window.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
+                roleScreen.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
             }
 
             SetWidget(0);
@@ -185,6 +187,7 @@ namespace TheOtherRoles.CustomGameModes
         public static void clearAndReload()
         {
             isFreePlayGM = TORMapOptions.gameMode == CustomGamemodes.FreePlay;
+            roleScreen = null;
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]

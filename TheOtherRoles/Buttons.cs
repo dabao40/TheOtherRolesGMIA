@@ -248,8 +248,11 @@ namespace TheOtherRoles
             foxImmoralistButton.MaxTimer = 20f;
             immoralistButton.MaxTimer = 20f;
             buskerButton.MaxTimer = Busker.cooldown;
+            operateButton.MaxTimer = 0f;
             operateButton.Timer = 0f;
+            freePlayReviveButton.MaxTimer = 0f;
             freePlayReviveButton.Timer = 0f;
+            freePlaySuicideButton.MaxTimer = 0f;
             freePlaySuicideButton.Timer = 0f;
             //trapperButton.MaxTimer = Trapper.cooldown;
             //bomberButton.MaxTimer = Bomber.bombCooldown;
@@ -4118,8 +4121,8 @@ namespace TheOtherRoles
             operateButton = new CustomButton(
                 () => { FreePlayGM.OpenRoleWindow(); },
                 () => { return FreePlayGM.isFreePlayGM; },
-                () => { return true; },
-                () => { },
+                () => { return FreePlayGM.roleScreen == null; },
+                () => { operateButton.Timer = operateButton.MaxTimer = 0f; },
                 FreePlayGM.getOperateButtonSprite(),
                 new Vector3(0f, 1f, 0f),
                 __instance,
@@ -4147,11 +4150,11 @@ namespace TheOtherRoles
                 {
                     return true;
                 },
-                () => { },
+                () => { freePlayReviveButton.Timer = freePlayReviveButton.MaxTimer = 0f; },
                 FreePlayGM.getReviveButtonSprite(),
                 new Vector3(1f, 1f, 0f),
                 __instance,
-                KeyCode.X,
+                KeyCode.Y,
                 true,
                 buttonText: ModTranslation.getString("FreePlayReviveText"),
                 abilityTexture: true
@@ -4176,7 +4179,7 @@ namespace TheOtherRoles
                 {
                     return true;
                 },
-                () => { },
+                () => { freePlaySuicideButton.Timer = freePlaySuicideButton.MaxTimer = 0f; },
                 __instance.KillButton.graphic.sprite,
                 new Vector3(1f, 1f, 0f),
                 __instance,
@@ -4204,7 +4207,7 @@ namespace TheOtherRoles
                         writer2.Write(0);
                         RPCProcedure.uncheckedMurderPlayer(thief.PlayerId, thief.PlayerId, 0);
                         AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                        Thief.thief.clearAllTasks();
+                        if (!FreePlayGM.isFreePlayGM) Thief.thief.clearAllTasks();
                     }
 
                     // Steal role if survived.

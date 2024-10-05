@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +44,6 @@ public class CustomOverlay
         if (infoOverlayRoles == null)
         {
             infoOverlayRoles = UnityEngine.Object.Instantiate(hudManager.TaskPanel.taskText, hudManager.transform);
-            infoOverlayRoles.maxVisibleLines = 28;
             infoOverlayRoles.fontSize = infoOverlayRoles.fontSizeMin = infoOverlayRoles.fontSizeMax = 1.15f;
             infoOverlayRoles.outlineWidth += 0.02f;
             infoOverlayRoles.autoSizeTextContainer = false;
@@ -162,7 +161,7 @@ public class CustomOverlay
         var underlayTransparent = new Color(0.1f, 0.1f, 0.1f, 0.0f);
         var underlayOpaque = new Color(0.1f, 0.1f, 0.1f, 0.88f);
 
-        scroller.enabled = false;
+        if (scroller != null) scroller.enabled = false;
 
         FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(0.2f, new Action<float>(t =>
         {
@@ -196,6 +195,7 @@ public class CustomOverlay
         UnityEngine.Object.Destroy(infoUnderlay);
         UnityEngine.Object.Destroy(infoOverlayRoles);
         UnityEngine.Object.Destroy(roleUnderlay);
+        UnityEngine.Object.Destroy(scroller);
 
         overlayShown = false;
         roleUnderlay = null;

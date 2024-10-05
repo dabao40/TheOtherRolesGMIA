@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,8 +41,10 @@ namespace TheOtherRoles.MetaContext
             {
                 if (borderLine == null && value)
                 {
-                    var lineObj = new GameObject("BorderLine");
-                    lineObj.layer = LayerMask.NameToLayer("UI");
+                    var lineObj = new GameObject("BorderLine")
+                    {
+                        layer = LayerMask.NameToLayer("UI")
+                    };
                     lineObj.transform.SetParent(transform);
                     lineObj.transform.localPosition = new Vector3(0, 0, 0);
                     borderLine = lineObj.AddComponent<LineRenderer>();
