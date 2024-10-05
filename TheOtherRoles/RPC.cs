@@ -1486,6 +1486,7 @@ namespace TheOtherRoles
         }
 
         public static void sidekickPromotes() {
+            if (FreePlayGM.isFreePlayGM) return;
             Jackal.removeCurrentJackal();
             Jackal.jackal = Sidekick.sidekick;
             Jackal.canCreateSidekick = Jackal.jackalPromotedFromSidekickCanCreateSidekick;
@@ -2467,7 +2468,15 @@ namespace TheOtherRoles
             Lawyer.triggerLawyerWin = true;
         }
 
-        public static void guesserShoot(byte killerId, byte dyingTargetId, byte guessedTargetId, byte guessedRoleId) {
+        /// <summary>
+        /// Shoots the dying target during the meeting
+        /// </summary>
+        /// <param name="killerId">PlayerId of the Guesser</param>
+        /// <param name="dyingTargetId">PlayerId of the dying target (i.e. wrong guess = Guesser, right guess = target)</param>
+        /// <param name="guessedTargetId">The PlayerId the dying target has guessed</param>
+        /// <param name="guessedRoleId">The RoleId the Guesser has guessed (2 same RoleIds for Swapper and Shifter)</param>
+        /// <param name="isSpecialRole">Whether or not this is a Nice Shifter or a Nice Swapper etc.</param>
+        public static void guesserShoot(byte killerId, byte dyingTargetId, byte guessedTargetId, byte guessedRoleId, bool isSpecialRole) {
             GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, killerId, 1 << dyingTargetId) { RelatedTag = killerId == dyingTargetId ? EventDetail.MisGuess : EventDetail.Guessed});
 
             PlayerControl killer = Helpers.playerById(killerId);
@@ -2645,6 +2654,10 @@ namespace TheOtherRoles
                 PlayerControl guessedTarget = Helpers.playerById(guessedTargetId);
                 PlayerControl sender = CachedPlayer.LocalPlayer.PlayerControl;
                 RoleInfo guessedRoleInfo = RoleInfo.allRoleInfos.FirstOrDefault(x => (byte)x.roleId == guessedRoleId);
+                if (isSpecialRole) {
+                    if ((RoleId)guessedRoleId == RoleId.Swapper) guessedRoleInfo = RoleInfo.niceSwapper;
+                    else if ((RoleId)guessedRoleId == RoleId.Shifter) guessedRoleInfo = RoleInfo.niceshifter;
+                }
                 string msg = "";
                 if (CachedPlayer.LocalPlayer.Data.IsDead && guessedTarget != null && guesser != null)
                 {
@@ -3385,7 +3398,8 @@ namespace TheOtherRoles
                     byte dyingTarget = reader.ReadByte();
                     byte guessedTarget = reader.ReadByte();
                     byte guessedRoleId = reader.ReadByte();
-                    RPCProcedure.guesserShoot(killerId, dyingTarget, guessedTarget, guessedRoleId);
+                    bool isSpecialRole = reader.ReadBoolean();
+                    RPCProcedure.guesserShoot(killerId, dyingTarget, guessedTarget, guessedRoleId, isSpecialRole);
                     break;
                 case (byte)CustomRPC.LawyerSetTarget:
                     RPCProcedure.lawyerSetTarget(reader.ReadByte()); 

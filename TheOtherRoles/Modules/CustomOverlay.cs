@@ -134,7 +134,7 @@ public class CustomOverlay
         }
 
         var rows = rolesText.Count(c => c == '\n');
-        var maxY = Mathf.Max(1.15f, (2 * rows - 33) * 0.06f);
+        var maxY = Mathf.Max(1.15f, (2 * rows - 24) * 0.04f + 1.16f);
         scroller.enabled = true;
         scroller.ContentYBounds = new FloatRange(1.15f, maxY);
         scroller.ScrollToTop();

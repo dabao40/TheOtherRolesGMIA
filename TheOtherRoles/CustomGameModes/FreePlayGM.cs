@@ -56,12 +56,13 @@ namespace TheOtherRoles.CustomGameModes
 
                 if (tab == 0)
                 {
-                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bomberA && x != RoleInfo.jackal
-                    && x != RoleInfo.sidekick && x != RoleInfo.mimicA && x != RoleInfo.mimicK && x != RoleInfo.arsonist && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
+                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bomberA && x != RoleInfo.mimicA && x != RoleInfo.mimicK && x != RoleInfo.arsonist && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
                     {
                         bool isImpostorFormer = PlayerControl.LocalPlayer.Data.Role.IsImpostor;
                         var formerRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false).FirstOrDefault();
                         if (formerRole == r) return; // Do nothing if the same role was given
+                        if (formerRole.roleId == RoleId.Jackal) Jackal.clearAndReload();
+                        else if (formerRole.roleId == RoleId.Sidekick) Sidekick.clearAndReload();
                         RPCProcedure.erasePlayerRoles(PlayerControl.LocalPlayer.PlayerId);
                         if (r.isImpostor() && !isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
                         else if (!r.isImpostor() && isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
@@ -81,7 +82,7 @@ namespace TheOtherRoles.CustomGameModes
                             cpt.addTaskToPlayer(CachedPlayer.LocalPlayer.PlayerId);
                         } else if (r.roleId == RoleId.JekyllAndHyde) {
                             CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
-                        } else if (formerRole.roleId == RoleId.Fox || formerRole.roleId == RoleId.JekyllAndHyde || formerRole.roleId == RoleId.TaskMaster) {
+                        } else if (formerRole.roleId is RoleId.Fox or RoleId.JekyllAndHyde or RoleId.TaskMaster) {
                             var options = GameOptionsManager.Instance.currentNormalGameOptions;
                             PlayerControl.LocalPlayer.generateAndAssignTasks(options.NumCommonTasks, options.NumShortTasks, options.NumLongTasks);
                         }
@@ -119,7 +120,7 @@ namespace TheOtherRoles.CustomGameModes
             roleBehaviour.Initialize(targetPlayer);
             targetPlayer.Data.Role = roleBehaviour;
             targetPlayer.Data.RoleType = roleType;
-            if (roleType != RoleTypes.ImpostorGhost && roleType != RoleTypes.CrewmateGhost)
+            if (roleType is not RoleTypes.ImpostorGhost and not RoleTypes.CrewmateGhost)
                 targetPlayer.Data.RoleWhenAlive = new Il2CppSystem.Nullable<RoleTypes>(roleType);
             roleBehaviour.AdjustTasks(targetPlayer);
         }
