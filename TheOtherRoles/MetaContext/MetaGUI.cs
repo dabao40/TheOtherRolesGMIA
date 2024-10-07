@@ -117,14 +117,18 @@ namespace TheOtherRoles.MetaContext
         IEnumerator IEnumerable.GetEnumerator() => Inner.Select(v => v as T).GetEnumerator();
     }
 
+    public delegate GUIContext GUIContextSupplier();
+
     /// <summary>
     /// GUI上に表示できるオブジェクトの定義を表します。
     /// </summary>
-    public interface GUIContext
+    public abstract class GUIContext
     {
-        internal GUIAlignment Alignment { get; }
-        internal GameObject Instantiate(Size size, out Size actualSize);
-        internal GameObject Instantiate(Anchor anchor, Size size, out Size actualSize);
+        internal abstract GUIAlignment Alignment { get; init; }
+        internal abstract GameObject Instantiate(Size size, out Size actualSize);
+        internal abstract GameObject Instantiate(Anchor anchor, Size size, out Size actualSize);
+
+        public static implicit operator GUIContextSupplier(GUIContext widget) => () => widget ?? TORGUIContextEngine.Instance.EmptyContext;
     }
 
     /// <summary>
@@ -132,6 +136,11 @@ namespace TheOtherRoles.MetaContext
     /// </summary>
     public interface GUI
     {
+        /// <summary>
+        /// 何も表示しないウィジェットです。
+        /// </summary>
+        GUIContext EmptyContext { get; }
+
         /// <summary>
         /// 生文字列のコンテキストです。
         /// Textメソッドの呼び出しを簡素化した冗長なメソッドです。

@@ -8,6 +8,8 @@ using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using System.Linq;
 using Reactor.Utilities.Extensions;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
@@ -33,6 +35,41 @@ namespace TheOtherRoles.Patches {
                     Helpers.shareGameVersion();
                 }
                 GameStartManagerUpdatePatch.sendGamemode = true;
+            }
+        }
+
+        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoJoinOnlineGameFromCode))]
+        public class JoinGameLoadingPatch
+        {
+            public static void Postfix(AmongUsClient __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+            {
+                var overlay = GameObject.Instantiate(TransitionFade.Instance.overlay, null);
+                overlay.transform.position = TransitionFade.Instance.overlay.transform.position;
+
+                System.Collections.IEnumerator CoFadeInIf()
+                {
+                    if (AmongUsClient.Instance.ClientId < 0)
+                    {
+                        yield return Effects.ColorFade(overlay, Color.black, Color.clear, 0.2f);
+                        GameObject.Destroy(overlay.gameObject);
+                    }
+                }
+
+                __result = Effects.Sequence(
+                    Effects.ColorFade(overlay, Color.clear, Color.black, 0.2f),
+                    Helpers.Action(() => TORGUIManager.Instance.StartCoroutine(HintManager.CoShowHint(0.6f).WrapToIl2Cpp())).WrapToIl2Cpp(),
+                    __result,
+                    CoFadeInIf().WrapToIl2Cpp()
+                );
+            }
+        }
+
+        [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Confirm))]
+        public class CreateGameOptionsLoadingPatch
+        {
+            public static void Postfix(CreateGameOptions __instance)
+            {
+                TORGUIManager.Instance.StartCoroutine(HintManager.CoShowHint(0.6f + 0.2f).WrapToIl2Cpp());
             }
         }
 

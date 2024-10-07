@@ -1134,6 +1134,11 @@ namespace TheOtherRoles
             if (player == Vulture.vulture) Vulture.vulture = oldShifter;
             if (player == Jackal.jackal) Jackal.jackal = oldShifter;
             if (player == Sidekick.sidekick) Sidekick.sidekick = oldShifter;
+            if (Jackal.formerJackals.Contains(player))
+            {
+                Jackal.formerJackals.Add(oldShifter);
+                Jackal.formerJackals.RemoveAll(x => x.PlayerId == targetId);
+            }
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
             if (player == Fox.fox) Fox.fox = oldShifter;
             if (player == Immoralist.immoralist) Immoralist.immoralist = oldShifter;

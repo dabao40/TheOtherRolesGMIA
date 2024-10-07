@@ -502,6 +502,8 @@ namespace TheOtherRoles {
 
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
                 relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
+            if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
+                relevantOptions = relevantOptions.Where(x => x.id != 10424).ToList();
 
             for (int j = 0; j < __instance.settingsInfo.Count; j++)
             {

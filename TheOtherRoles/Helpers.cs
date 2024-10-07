@@ -441,6 +441,9 @@ namespace TheOtherRoles {
             return firstLetter + remainingLetters;
         }
 
+        public static string HeadLower(this string text) => char.ToLower(text[0]) + text[1..];
+        public static string HeadUpper(this string text) => char.ToUpper(text[0]) + text[1..];
+
         public static IEnumerator CoGush(this PlayerControl player)
         {
 
@@ -604,6 +607,12 @@ namespace TheOtherRoles {
                     break;
             }
             UnityEngine.Object.Destroy(andSeekDeathPopup.gameObject);
+        }
+
+        static public IEnumerator Action(Action action)
+        {
+            action.Invoke();
+            yield break;
         }
 
         public static PassiveButton SetUpButton(this GameObject gameObject, bool withSound = false, SpriteRenderer buttonRenderer = null, Color? defaultColor = null, Color? selectedColor = null)

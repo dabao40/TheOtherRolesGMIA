@@ -52,7 +52,7 @@ namespace TheOtherRoles.CustomGameModes
                     guis
                     );
 
-                GUIContext inner = GUIEmptyWidget.Default;
+                GUIContext inner = GUIEmptyContext.Default;
 
                 if (tab == 0)
                 {
@@ -107,7 +107,7 @@ namespace TheOtherRoles.CustomGameModes
                         })), 4)}
                         );
                 }
-                roleScreen.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
+                roleScreen.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, TORGUIContextEngine.API.VerticalMargin(0.15f), gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
             }
 
             SetWidget(0);

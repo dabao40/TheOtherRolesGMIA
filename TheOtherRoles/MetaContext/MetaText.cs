@@ -118,6 +118,16 @@ public enum AttributeAsset
     /// フリープレイの役職選択ボタンで使用されているテキスト属性です。
     /// </summary>
     MetaRoleButton,
+
+    /// <summary>
+    /// SerializableDocumentのTextStyle"Title"で提供されているテキスト属性です。
+    /// </summary>
+    DocumentTitle,
+
+    /// <summary>
+    /// SerializableDocumentのTextStyle"Standard"で提供されているテキスト属性です。
+    /// </summary>
+    DocumentStandard,
 }
 
 [Flags]

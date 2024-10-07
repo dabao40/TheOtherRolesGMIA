@@ -179,8 +179,8 @@ namespace TheOtherRoles.MetaContext
 
     public abstract class AbstractGUIContext : GUIContext
     {
-        public GUIAlignment Alignment { get; private init; }
-        public GameObject Instantiate(Anchor anchor, Size size, out Size actualSize)
+        internal override GUIAlignment Alignment { get; init; }
+        internal override GameObject Instantiate(Anchor anchor, Size size, out Size actualSize)
         {
             var obj = Instantiate(size, out actualSize);
 
@@ -197,8 +197,6 @@ namespace TheOtherRoles.MetaContext
 
             return obj;
         }
-
-        public abstract GameObject Instantiate(Size size, out Size actualSize);
 
         public AbstractGUIContext(GUIAlignment alignment)
         {
@@ -299,7 +297,7 @@ namespace TheOtherRoles.MetaContext
         }
 
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             var view = Helpers.CreateObject("ScrollView", null, new UnityEngine.Vector3(0f, 0f, 0f), LayerMask.NameToLayer("UI"));
             var inner = Helpers.CreateObject("Inner", view.transform, new UnityEngine.Vector3(-0.2f, 0f, -0.1f));
@@ -351,7 +349,7 @@ namespace TheOtherRoles.MetaContext
         public VerticalContextsHolder(GUIAlignment alignment, IEnumerable<GUIContext> contexts) : base(alignment, contexts) { }
         public VerticalContextsHolder(GUIAlignment alignment, params GUIContext[] contexts) : base(alignment, contexts) { }
         public float? FixedWidth { get; init; } = null;
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             var results = contexts.Select(c => (c.Instantiate(size, out var acSize), acSize, c)).ToArray();
             (float maxWidth, float sumHeight) = results.Aggregate((0f, 0f), (r, current) => (Math.Max(r.Item1, current.acSize.Width), r.Item2 + current.acSize.Height));
@@ -383,7 +381,7 @@ namespace TheOtherRoles.MetaContext
         public HorizontalContextsHolder(GUIAlignment alignment, params GUIContext[] contexts) : base(alignment, contexts) { }
         public float? FixedHeight { get; init; } = null;
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             var results = contexts.Select(c => (c.Instantiate(size, out var acSize), acSize, c)).ToArray();
             (float sumWidth, float maxHeight) = results.Aggregate((0f, 0f), (r, current) => (r.Item1 + current.acSize.Width, Math.Max(r.Item2, current.acSize.Height)));
@@ -448,9 +446,12 @@ namespace TheOtherRoles.MetaContext
     public class TORGUIContextEngine : GUI
     {
         public static TORGUIContextEngine Instance { get; private set; } = new();
+        public static GUI API => Instance;
 
         private Dictionary<AttributeParams, TextAttributes> allAttr = new();
         private Dictionary<AttributeAsset, TextAttributes> allAttrAsset = new();
+
+        public GUIContext EmptyContext => GUIEmptyContext.Default;
 
         public TextAttributes GetAttribute(AttributeParams attribute)
         {
@@ -478,6 +479,8 @@ namespace TheOtherRoles.MetaContext
                     AttributeAsset.StandardLargeWideMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.7f, 1f, 1.7f), new(2.9f, 0.45f), new(255, 255, 255), false),
                     AttributeAsset.OverlayContent => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f, 1.1f, 1.5f), Size = new(5f, 6f) },
                     AttributeAsset.MetaRoleButton => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.GothicMasked), FontStyle.Bold, new(1.8f, 1f, 2f), new(1.4f, 0.26f), new(255, 255, 255), false),
+                    AttributeAsset.DocumentTitle => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(2.2f, 0.6f, 2.2f), Size = new(5f, 6f) },
+                    AttributeAsset.DocumentStandard => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardLeft)) { FontSize = new(1.2f, 0.6f, 1.2f), Size = new(7f, 6f) },
                     _ => null!
                 };
             }
@@ -582,15 +585,15 @@ namespace TheOtherRoles.MetaContext
 
     }
 
-    public class GUIEmptyWidget : AbstractGUIContext
+    public class GUIEmptyContext : AbstractGUIContext
     {
-        static public GUIEmptyWidget Default = new();
+        static public GUIEmptyContext Default = new();
 
-        public GUIEmptyWidget(GUIAlignment alignment = GUIAlignment.Left) : base(alignment)
+        public GUIEmptyContext(GUIAlignment alignment = GUIAlignment.Left) : base(alignment)
         {
         }
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             actualSize = new(0f, 0f);
             return null;
@@ -611,7 +614,7 @@ namespace TheOtherRoles.MetaContext
             this.Color = color;
         }
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             var renderer = Helpers.CreateObject<SpriteRenderer>("Image", null, UnityEngine.Vector3.zero, LayerMask.NameToLayer("UI"));
             renderer.sprite = Image.GetSprite();
@@ -654,7 +657,7 @@ namespace TheOtherRoles.MetaContext
         }
 
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             var inner = base.Instantiate(size, out actualSize)!;
 
@@ -720,7 +723,7 @@ namespace TheOtherRoles.MetaContext
             this.margin = margin;
         }
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             actualSize = new(margin);
             return null;
@@ -758,7 +761,7 @@ namespace TheOtherRoles.MetaContext
             }
         }
 
-        public override GameObject Instantiate(Size size, out Size actualSize)
+        internal override GameObject Instantiate(Size size, out Size actualSize)
         {
             if (Text == null)
             {

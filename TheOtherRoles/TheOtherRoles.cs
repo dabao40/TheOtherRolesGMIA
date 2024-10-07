@@ -4507,6 +4507,15 @@ namespace TheOtherRoles
             return arrowSprite;
         }
 
+        public static bool isCupidLover(this PlayerControl p) => (p == lovers1 && lovers2 != null) || (p == lovers2 && lovers1 != null);
+        public static PlayerControl getCupidLover(this PlayerControl p)
+        {
+            if (p == null) return null;
+            if (p == lovers1) return lovers2;
+            if (p == lovers2) return lovers1;
+            return null;
+        }
+
         public static void breakLovers(PlayerControl lover)
         {
             if ((Lovers.lover1 != null && lover == Lovers.lover1) || (Lovers.lover2 != null && lover == Lovers.lover2))

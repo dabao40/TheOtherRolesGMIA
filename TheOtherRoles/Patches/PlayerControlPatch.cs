@@ -3142,8 +3142,9 @@ namespace TheOtherRoles.Patches {
                 PlayerControl akujoPartner = __instance == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
                 if (akujoPartner != null && !akujoPartner.Data.IsDead)
                 {
+                    if (NekoKabocha.nekoKabocha != null && akujoPartner == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = akujoPartner;
                     akujoPartner.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.Suicide);
+                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
 
                 if (MeetingHud.Instance && akujoPartner != null)
