@@ -14,6 +14,7 @@ using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
 using TheOtherRoles.Modules;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -37,6 +38,9 @@ namespace TheOtherRoles.Patches {
             }
             if (Fox.fox != null && Fox.stealthed) {
                 untargetablePlayers.Add(Fox.fox);
+            }
+            if (Kataomoi.kataomoi != null && Kataomoi.target != null && Kataomoi.isStalking()) {
+                untargetablePlayers.Add(Kataomoi.kataomoi);
             }
 
             Vector2 truePosition = targetingPlayer.GetTruePosition();
@@ -494,6 +498,57 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        public static void kataomoiSetTarget()
+        {
+            if (Kataomoi.kataomoi == null || Kataomoi.kataomoi != CachedPlayer.LocalPlayer.PlayerControl) return;
+            if (Kataomoi.target == null) return;
+
+            var untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != Kataomoi.target.PlayerId).ToList();
+            Kataomoi.currentTarget = setTarget(untargetablePlayers: untargetables);
+            if (Kataomoi.currentTarget != null) setPlayerOutline(Kataomoi.currentTarget, Kataomoi.color);
+        }
+
+        static void kataomoiUpdate()
+        {
+            if (Kataomoi.kataomoi != CachedPlayer.LocalPlayer.PlayerControl) return;
+
+            if (Kataomoi.kataomoi.Data.IsDead)
+            {
+                if (Kataomoi.arrow != null) UnityEngine.Object.Destroy(Kataomoi.arrow.arrow);
+                Kataomoi.arrow = null;
+                if (Kataomoi.stareText != null && Kataomoi.stareText.gameObject != null) UnityEngine.Object.Destroy(Kataomoi.stareText.gameObject);
+                Kataomoi.stareText = null;
+                foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
+                    if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+                }
+                for (int i = 0; i < Kataomoi.gaugeRenderer.Length; ++i) {
+                    if (Kataomoi.gaugeRenderer[i] != null)
+                    {
+                        UnityEngine.Object.Destroy(Kataomoi.gaugeRenderer[i].gameObject);
+                        Kataomoi.gaugeRenderer[i] = null;
+                    }
+                }
+                return;
+            }
+
+            // Update Stare Count Text
+            if (Kataomoi.stareText != null)
+            {
+                if (Kataomoi.stareCount > 0)
+                    Kataomoi.stareText.text = $"{Kataomoi.stareCount}";
+                else
+                    Kataomoi.stareText.text = "";
+            }
+
+            // Update Arrow
+            if (Kataomoi.arrow == null) Kataomoi.arrow = new Arrow(Kataomoi.color);
+            Kataomoi.arrow.arrow.SetActive(Kataomoi.isSearch);
+            if (Kataomoi.isSearch && Kataomoi.target != null)
+            {
+                Kataomoi.arrow.Update(Kataomoi.target.transform.position);
+            }
+        }
+
         static void baitUpdate()
         {
             if (Bait.bait == null || Bait.bait != CachedPlayer.LocalPlayer.PlayerControl) return;
@@ -505,7 +560,7 @@ namespace TheOtherRoles.Patches {
                 DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == Bait.bait.PlayerId)?.FirstOrDefault();
                 if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f)
                 {
-                    Bait.acTokenCommon ??= new("bait.common1");
+                    _ = new StaticAchievementToken("bait.common1");
 
                     Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
                     Helpers.HandleUndertakerDropOnBodyReport();
@@ -653,16 +708,6 @@ namespace TheOtherRoles.Patches {
                 PlagueDoctor.currentTarget = setTarget(untargetablePlayers: PlagueDoctor.infected.Values.ToList());
                 setPlayerOutline(PlagueDoctor.currentTarget, PlagueDoctor.color);
             }
-        }
-
-        static void teleporterSetTarget()
-        {
-            if (Teleporter.teleporter == null || Teleporter.teleporter != CachedPlayer.LocalPlayer.PlayerControl) return;
-            var untargetables = new List<PlayerControl>();
-            if (Teleporter.target1 != null) untargetables.Add(Teleporter.target1);
-            if (Teleporter.target2 != null) untargetables.Add(Teleporter.target2);
-            Teleporter.currentTarget = setTarget(untargetablePlayers: untargetables);
-            if ((Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0) setPlayerOutline(Teleporter.currentTarget, Teleporter.color);
         }
 
         public static void plagueDoctorUpdate()
@@ -838,7 +883,7 @@ namespace TheOtherRoles.Patches {
                 else if (Tracker.tracker.Data.IsDead)
                 {
                     Tracker.DangerMeterParent?.SetActive(false);
-                    Tracker.Meter?.gameObject.SetActive(false);
+                    Tracker.Meter?.gameObject?.SetActive(false);
                     if (Tracker.arrow?.arrow != null) Tracker.arrow.arrow.SetActive(false);
                 }
             }
@@ -921,6 +966,16 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void updatePlayerInfo() {
+            bool commsActive = false;
+            foreach (PlayerTask t in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+            {
+                if (t.TaskType == TaskTypes.FixComms)
+                {
+                    commsActive = true;
+                    break;
+                }
+            }
+
             Vector3 colorBlindTextMeetingInitialLocalPos = new(0.3384f, -0.16666f, -0.01f);
             Vector3 colorBlindTextMeetingInitialLocalScale = new(0.9f, 1f, 1f);
             foreach (PlayerControl p in CachedPlayer.AllPlayers) {
@@ -971,7 +1026,7 @@ namespace TheOtherRoles.Patches {
                     var (exTasksCompleted, exTasksTotal) = TasksHandler.taskInfo(p.Data, true);
                     string roleNames = RoleInfo.GetRolesString(p, true, false);
                     string roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeModifier, false, true);
-                    string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
+                    string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({(commsActive ? "?" : tasksCompleted)}/{tasksTotal})</color>" : "";
                     string exTaskInfo = exTasksTotal > 0 ? $"<color=#E1564BFF>({exTasksCompleted}/{exTasksTotal})</color>" : "";
 
                     string playerInfoText = "";
@@ -1131,6 +1186,7 @@ namespace TheOtherRoles.Patches {
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
                     if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
                 }
+                if (possibleTargets.Count == 0) return;
                 BountyHunter.bounty = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
                 if (BountyHunter.bounty == null) return;
 
@@ -1198,14 +1254,12 @@ namespace TheOtherRoles.Patches {
                             if (distance < Trapper.trapRange)
                             {
                                 TMPro.TMP_Text text;
-                                RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
-                                GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-                                UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-                                gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                                gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
-                                gameObject.transform.localScale = Vector3.one * 2f;
-                                text = gameObject.GetComponent<TMPro.TMP_Text>();
+                                text = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
+                                text.transform.localScale = Vector3.one;
+                                text.transform.localPosition = new Vector3(0, -1.8f, -69f);
+                                text.enableWordWrapping = false;
                                 text.text = string.Format(ModTranslation.getString("trapperGotTrapText"), p.Data.PlayerName);
+                                text.gameObject.SetActive(true);
                                 FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(3f, new Action<float>((p) =>
                                 {
                                     if (p == 1f && text != null && text.gameObject != null)
@@ -1776,7 +1830,7 @@ namespace TheOtherRoles.Patches {
             if (playerCompleted == Swapper.rechargedTasks) {
                 Swapper.rechargedTasks += Swapper.rechargeTasksNumber;
                 Swapper.charges++;
-                Swapper.acTokenCommon ??= new("niceSwapper.common1");
+                _ = new StaticAchievementToken("niceSwapper.common1");
             }
         }
 
@@ -1801,52 +1855,6 @@ namespace TheOtherRoles.Patches {
             }
             Witch.currentTarget = setTarget(onlyCrewmates: !Witch.canSpellAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(Witch.currentTarget, Witch.color);
-        }
-
-        static void madmateUpdate(PlayerControl player)
-        {
-            if (!Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) return;
-            if (player.AmOwner && 
-                !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                !MeetingHud.Instance &&
-                !ExileController.Instance)
-            {
-                FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Hide();
-                if (!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                !MeetingHud.Instance &&
-                !ExileController.Instance)
-                {
-                    if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.canSabotage)
-                    {
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + FastDestroyableSingleton<HudManager>.Instance.UseButton.transform.localPosition;
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Show();
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(true);
-                    }
-                }
-            }
-        }
-
-        static void createdMadmateUpdate(PlayerControl player)
-        {
-            if (CreatedMadmate.createdMadmate == null || CachedPlayer.LocalPlayer.PlayerControl != CreatedMadmate.createdMadmate) return;
-            if (player.AmOwner &&
-                !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                !MeetingHud.Instance &&
-                !ExileController.Instance)
-            {
-                FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Hide();
-                if (!(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                !MeetingHud.Instance &&
-                !ExileController.Instance)
-                {
-                    if (CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
-                    {
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + FastDestroyableSingleton<HudManager>.Instance.UseButton.transform.localPosition;
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.Show();
-                        FastDestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(true);
-                    }
-                }
-            }
         }
 
         static void assassinSetTarget()
@@ -2079,8 +2087,9 @@ namespace TheOtherRoles.Patches {
                 morphlingAndCamouflagerUpdate();
                 // Lawyer
                 lawyerUpdate();
-                // Teleporter
-                teleporterSetTarget();
+                // Kataomoi
+                kataomoiSetTarget();
+                kataomoiUpdate();
                 // Pursuer
                 pursuerSetTarget();
                 // Bomber
@@ -2110,9 +2119,6 @@ namespace TheOtherRoles.Patches {
                 MimicA.arrowUpdate();
                 // Trapper
                 trapperUpdate();
-                // Madmate
-                madmateUpdate(__instance);
-                createdMadmateUpdate(__instance);
                 // Moriarty
                 moriartySetTarget();
                 moriartyUpdate();
@@ -2246,6 +2252,11 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
+                    MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
+                    new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent(isDetectiveReport ? "detectiveReportInfo" : "medicReportInfo")),
+                    new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent($"{deadPlayer.player?.Data?.PlayerName}:\n" + msg)))
+                    , MeetingOverlayHolder.IconsSprite[isMedicReport ? 3 : 1], isMedicReport ? Medic.color : Detective.color);
+
                     if (!string.IsNullOrWhiteSpace(msg))
                     {   
                         if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
@@ -2274,7 +2285,7 @@ namespace TheOtherRoles.Patches {
     {
         public static bool Prefix([HarmonyArgument(0)] PlayerControl player, bool specialRolesAllowed)
         {
-            if ((player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()) || FreePlayGM.isFreePlayGM)
+            if ((player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()) || (player == Busker.busker && Busker.pseudocideFlag) || FreePlayGM.isFreePlayGM)
                 return false;
             return true;
         }
@@ -2347,6 +2358,12 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Kataomoi suicide trigger on murder
+            if (Kataomoi.kataomoi != null && !Kataomoi.kataomoi.Data.IsDead && Kataomoi.kataomoi != __instance && Kataomoi.target == target) {
+                Kataomoi.kataomoi.MurderPlayer(Kataomoi.kataomoi, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(Kataomoi.kataomoi, DeadPlayer.CustomDeathReason.Suicide);
+            }
+
             // Sidekick promotion trigger on murder
             if (Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead && target == Jackal.jackal && Jackal.jackal == CachedPlayer.LocalPlayer.PlayerControl) {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SidekickPromotes, Hazel.SendOption.Reliable, -1);
@@ -2366,7 +2383,7 @@ namespace TheOtherRoles.Patches {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message : ModTranslation.getString("seerInfo"));
                 if (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer)
                 {
-                    Seer.acTokenCommon ??= new("seer.common1");
+                    _ = new StaticAchievementToken("seer.common1");
                     Seer.acTokenChallenge.Value.flash++;
                 }
             }
@@ -2431,12 +2448,7 @@ namespace TheOtherRoles.Patches {
                     }
                     DeadPlayer deadPlayerEntry = deadPlayers.Where(x => x.player.PlayerId == target.PlayerId).FirstOrDefault();
                     if (deadPlayerEntry != null) deadPlayers.Remove(deadPlayerEntry);
-                }
-                else
-                {
-                    SchrodingersCat.isTrueDead = true;
-                    if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat)
-                        FastDestroyableSingleton<HudManager>.Instance.AbilityButton.Show();
+                    GameStatistics.recordRoleHistory(target);
                 }
             }
 
@@ -2472,12 +2484,12 @@ namespace TheOtherRoles.Patches {
             }
 
             if (Godfather.godfather != null && target == Godfather.godfather && Mafioso.mafioso != null && CachedPlayer.LocalPlayer.PlayerControl == Mafioso.mafioso && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
-                Mafioso.acTokenAnother ??= new("mafioso.another1");
+                _ = new StaticAchievementToken("mafioso.another1");
 
             if (Morphling.morphling != null && CachedPlayer.LocalPlayer.PlayerControl == Morphling.morphling && Morphling.morphTimer > 0f)
             {
                 if (target == Morphling.morphling)
-                    Morphling.acTokenAnother ??= new("morphling.another1");
+                    _ = new StaticAchievementToken("morphling.another1");
                 else
                     Morphling.acTokenChallenge.Value.kill = true;
             }
@@ -2487,14 +2499,14 @@ namespace TheOtherRoles.Patches {
                 Camouflager.acTokenChallenge.Value.kills++;
                 Camouflager.acTokenChallenge.Value.cleared |= Camouflager.acTokenChallenge.Value.kills >= 3;
                 if (target == Camouflager.camouflager)
-                    Camouflager.acTokenAnother ??= new("camouflager.another1");
+                    _ = new StaticAchievementToken("camouflager.another1");
             }
 
             if (TaskMaster.taskMaster != null && CachedPlayer.LocalPlayer.PlayerControl == TaskMaster.taskMaster && target == TaskMaster.taskMaster)
             {
                 var (taskComplete, total) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data);
                 if (taskComplete == 0 && total > 0)
-                    TaskMaster.acTokenSecret ??= new("taskMaster.another1");
+                    _ = new StaticAchievementToken("taskMaster.another1");
             }
 
             if (Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter)
@@ -2522,12 +2534,10 @@ namespace TheOtherRoles.Patches {
             // Serial Killer set suicide timer
             if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller && target != SerialKiller.serialKiller)
             {
-                SerialKiller.acTokenCommon ??= new("serialKiller.common1");
-                //HudManagerStartPatch.serialKillerButton.isEffectActive = false;
+                _ = new StaticAchievementToken("serialKiller.common1");
                 SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
                 HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
                 SerialKiller.isCountDown = true;
-                //HudManagerStartPatch.serialKillerButton.isEffectActive = true;
             }
 
             if (EvilHacker.evilHacker != null && CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker && __instance == EvilHacker.evilHacker)
@@ -2542,11 +2552,7 @@ namespace TheOtherRoles.Patches {
                 if (JekyllAndHyde.counter >= JekyllAndHyde.numberToWin) JekyllAndHyde.triggerWin = true;
                 HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
             }
-
-            // Triggers Show, and if disabled, goes to HauntMenuMinigamePatch
-            if (Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && target == Busker.busker)
-                FastDestroyableSingleton<HudManager>.Instance.AbilityButton.Show();
-
+             
             // Trapper peforms kills
             if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper && __instance == Trapper.trapper)
             {
@@ -2557,12 +2563,12 @@ namespace TheOtherRoles.Patches {
                 }
                 else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // トラップキルした場合のペナルティ
                 {
-                    Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                    CachedPlayer.LocalPlayer.PlayerControl.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown;
                 }
                 else // トラップにかかっていない対象を通常キルした場合はペナルティーを受ける
                 {
-                    Trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
+                    CachedPlayer.LocalPlayer.PlayerControl.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
                     HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
                 }
                 if (!Trapper.isTrapKill)
@@ -2584,7 +2590,7 @@ namespace TheOtherRoles.Patches {
                         || (Helpers.isNeutral(__instance) && NekoKabocha.revengeNeutral)
                         || (NekoKabocha.revengeCrew && !Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor))
                     {
-                        if (CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.nekoKabocha) NekoKabocha.acTokenChallenge ??= new("nekoKabocha.challenge");
+                        if (CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.nekoKabocha) _ = new StaticAchievementToken("nekoKabocha.challenge");
                         NekoKabocha.nekoKabocha.MurderPlayer(__instance, MurderResultFlags.Succeeded);
                         GameHistory.overrideDeathReasonAndKiller(__instance, DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
                     }
@@ -2660,12 +2666,12 @@ namespace TheOtherRoles.Patches {
 
             if (__instance.Data.Role.IsImpostor && Spy.spy != null && CachedPlayer.LocalPlayer.PlayerControl == Spy.spy)
             {
-                if (target == Spy.spy) Spy.acTokenAnother ??= new("spy.another1");
+                if (target == Spy.spy)  _ = new StaticAchievementToken("spy.another1");
                 else
                 {
                     if (!Helpers.AnyNonTriggersBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), target.GetTruePosition(), out var vec)
                         && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerControl.PlayerId)) * 0.75f)
-                        Spy.acTokenChallenge ??= new("spy.challenge");
+                        _ = new StaticAchievementToken("spy.challenge");
                 }
             }
 
@@ -2678,15 +2684,18 @@ namespace TheOtherRoles.Patches {
                 Noisemaker.target = null;
                 if (CachedPlayer.LocalPlayer.PlayerControl == Noisemaker.noisemaker)
                 {
-                    Noisemaker.acTokenCommon ??= new("noisemaker.common1");
+                    _ = new StaticAchievementToken("noisemaker.common1");
                     Noisemaker.acTokenChallenge.Value++;
                 }
             }
 
             if (Undertaker.undertaker != null && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && target == Undertaker.undertaker && Undertaker.DraggedBody != null)
             {
-                Undertaker.acTokenAnother ??= new("undertaker.another1");
+                _ = new StaticAchievementToken("undertaker.another1");
             }
+
+            if (Lawyer.lawyer != null && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && target == Lawyer.lawyer && __instance == Lawyer.target)
+                _ = new StaticAchievementToken("lawyer.another1");
 
             if (Blackmailer.blackmailer != null && CachedPlayer.LocalPlayer.PlayerControl == Blackmailer.blackmailer && __instance == Blackmailer.blackmailer)
             {
@@ -2758,11 +2767,14 @@ namespace TheOtherRoles.Patches {
                 MimicA.isMorph = false;
             }
 
+            if (__instance == CachedPlayer.LocalPlayer.PlayerControl && target == Shifter.shifter && Shifter.isNeutral && Shifter.pastShifters.Contains(CachedPlayer.LocalPlayer.PlayerId))
+                _ = new StaticAchievementToken("corruptedShifter.challenge");
+
             // Set the correct opacity to the Ninja and Sprinter
             if (Ninja.ninja != null && target == Ninja.ninja)
             {
                 if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && Ninja.stealthed)
-                    Ninja.acTokenAnother ??= new("ninja.another1");
+                    _ = new StaticAchievementToken("ninja.another1");
                 Ninja.stealthed = false;
                 Ninja.setOpacity(Ninja.ninja, 1.0f);
             }
@@ -2783,7 +2795,7 @@ namespace TheOtherRoles.Patches {
                 {
                     if (!Helpers.AnyNonTriggersBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), target.GetTruePosition(), out var vec) &&
                     vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerControl.PlayerId)) * 0.75f)
-                        Sprinter.acTokenChallenge ??= new("sprinter.challenge");
+                        _ = new StaticAchievementToken("sprinter.challenge");
                 }
             }
 
@@ -2806,12 +2818,12 @@ namespace TheOtherRoles.Patches {
                     BountyHunter.acTokenChallenge.Value.kills = 0;
                 }
                 if (target == BountyHunter.bounty) {
-                    BountyHunter.acTokenCommon ??= new("bountyHunter.common1");
+                    _ = new StaticAchievementToken("bountyHunter.common1");
                     BountyHunter.bountyHunter.SetKillTimer(BountyHunter.bountyKillCooldown);
                     BountyHunter.bountyUpdateTimer = 0f; // Force bounty update
                 }
                 else {
-                    BountyHunter.acTokenAnother ??= new("bountyHunter.another1");
+                    _ = new StaticAchievementToken("bountyHunter.another1");
                     BountyHunter.bountyHunter.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + BountyHunter.punishmentTime);
                 }
             }
@@ -3173,6 +3185,12 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Kataomoi suicide trigger on murder
+            if (Kataomoi.kataomoi != null && !Kataomoi.kataomoi.Data.IsDead && Kataomoi.target == __instance) {
+                Kataomoi.kataomoi.Exiled();
+                overrideDeathReasonAndKiller(Kataomoi.kataomoi, DeadPlayer.CustomDeathReason.Suicide);
+            }
+
             // Check Plague Doctor status
             if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
 
@@ -3236,6 +3254,8 @@ namespace TheOtherRoles.Patches {
             {
                 __instance.body.velocity *= 1f + Undertaker.speedDecrease / 100f;
             }
+
+            Kataomoi.fixedUpdate(__instance);
         }
     }
 

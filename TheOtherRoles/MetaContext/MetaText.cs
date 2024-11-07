@@ -120,6 +120,11 @@ public enum AttributeAsset
     MetaRoleButton,
 
     /// <summary>
+    /// 主にオーバーレイ向けの見出し用可変サイズテキスト属性です。
+    /// </summary>
+    OverlayTitle,
+
+    /// <summary>
     /// SerializableDocumentのTextStyle"Title"で提供されているテキスト属性です。
     /// </summary>
     DocumentTitle,

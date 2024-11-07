@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,6 +69,13 @@ namespace TheOtherRoles.Modules
 
         static Image keyBindBackgroundSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.KeyBindBackground.png", 100f);
         static Image mouseDisableActionSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.MouseActionDisableIcon.png", 100f);
+        static Image infoActionSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.ButtonInfoIcon.png", 100f);
+
+        public enum ActionIconType
+        {
+            NonClickAction,
+            InfoAction
+        }
 
         static public GameObject AddKeyGuide(GameObject button, KeyCode key, UnityEngine.Vector2 pos, bool removeExistingGuide, string action = null)
         {
@@ -78,16 +85,20 @@ namespace TheOtherRoles.Modules
             if (KeyCodeInfo.AllKeyInfo.ContainsKey(key)) numSprite = KeyCodeInfo.AllKeyInfo[key].Sprite;
             if (numSprite == null) return null;
 
-            GameObject obj = new();
-            obj.name = "HotKeyGuide";
+            GameObject obj = new()
+            {
+                name = "HotKeyGuide"
+            };
             obj.transform.SetParent(button.transform);
             obj.layer = button.layer;
             SpriteRenderer renderer = obj.AddComponent<SpriteRenderer>();
             renderer.transform.localPosition = (UnityEngine.Vector3)pos + new UnityEngine.Vector3(0f, 0f, -10f);
             renderer.sprite = keyBindBackgroundSprite.GetSprite();
 
-            GameObject numObj = new();
-            numObj.name = "HotKeyText";
+            GameObject numObj = new()
+            {
+                name = "HotKeyText"
+            };
             numObj.transform.SetParent(obj.transform);
             numObj.layer = button.layer;
             renderer = numObj.AddComponent<SpriteRenderer>();
@@ -117,7 +128,7 @@ namespace TheOtherRoles.Modules
             button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
         }
 
-        static public GameObject SetMouseActionIcon(GameObject button, bool show, string action = "mouseClick", bool atBottom = true)
+        static public GameObject SetMouseActionIcon(GameObject button, bool show, string action = "mouseClick", bool atBottom = true, ActionIconType actionType = ActionIconType.NonClickAction)
         {
             if (!show)
             {
@@ -126,18 +137,40 @@ namespace TheOtherRoles.Modules
             }
             else
             {
-                GameObject obj = new();
-                obj.name = "MouseAction";
+                GameObject obj = new()
+                {
+                    name = "MouseAction"
+                };
                 obj.transform.SetParent(button.transform);
                 obj.layer = button.layer;
                 SpriteRenderer renderer = obj.AddComponent<SpriteRenderer>();
                 renderer.transform.localPosition = new(0.48f, atBottom ? -0.29f : 0.48f, -10f);
-                renderer.sprite = mouseDisableActionSprite.GetSprite();
+                renderer.sprite = actionType == ActionIconType.NonClickAction ? mouseDisableActionSprite.GetSprite() : infoActionSprite.GetSprite();
 
                 if (action != null) SetHintOverlay(obj, KeyCode.None, action);
 
                 return obj;
             }
+        }
+
+        private static IDividedSpriteLoader textureUsesIconsSprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.UsesIcon.png", 120f, 10);
+        static public GameObject ShowUsesIcon(this ActionButton button)
+        {
+            Transform template = HudManager.Instance.AbilityButton.transform.GetChild(2);
+            var usesObject = GameObject.Instantiate(template.gameObject);
+            usesObject.transform.SetParent(button.gameObject.transform);
+            usesObject.transform.localScale = template.localScale;
+            usesObject.transform.localPosition = template.localPosition * 1.2f;
+            return usesObject;
+        }
+
+        static public GameObject ShowUsesIcon(this ActionButton button, int iconVariation, out TMPro.TextMeshPro text)
+        {
+            GameObject result = ShowUsesIcon(button);
+            var renderer = result.GetComponent<SpriteRenderer>();
+            renderer.sprite = textureUsesIconsSprite.GetSprite(iconVariation);
+            text = result.transform.GetChild(0).GetComponent<TMPro.TextMeshPro>();
+            return result;
         }
 
         static public void ShowVanillaKeyGuide(this HudManager manager)

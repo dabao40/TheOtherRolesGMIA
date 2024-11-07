@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +6,7 @@ using TMPro;
 using TheOtherRoles.Modules;
 using TheOtherRoles;
 using static TheOtherRoles.TheOtherRoles;
-
+using System;
 
 namespace TheOtherRoles.Objects
 {
@@ -23,20 +23,19 @@ namespace TheOtherRoles.Objects
 
         public void Awake()
         {
-            if (obj != null)
-            {
-                GameObject.Destroy(obj);
+            if (obj != null) {
+                Destroy(obj);
             }
-            obj = GameObject.Instantiate(prefab, this.transform);
+            obj = Instantiate(prefab, transform);
             List<TextMeshProUGUI> texts = obj.GetComponentsInChildren<TextMeshProUGUI>().ToList();
             RemainingTime = texts.FirstOrDefault(x => x.name == "RemainingTime");
             TaskText = texts.FirstOrDefault(x => x.name == "TaskText");
             TaskText.text = ModTranslation.getString("foxTaskPray");
             closeButton = obj.GetComponentsInChildren<Button>().ToList().FirstOrDefault(x => x.name == "CloseButton");
             closeButton.onClick = new Button.ButtonClickedEvent();
-            closeButton.onClick.AddListener((UnityEngine.Events.UnityAction)onClick);
+            closeButton.onClick.AddListener((Action)(() => onClick()));
             obj.SetActive(true);
-            this.enabled = true;
+            enabled = true;
         }
 
         private void FixedUpdate()
@@ -50,20 +49,20 @@ namespace TheOtherRoles.Objects
             {
                 completed = true;
                 obj.SetActive(false);
-                this.MyNormTask.NextStep();
-                CustomNormalPlayerTask.completedConsoles.Add(this.ConsoleId);
-                if (this.MyNormTask.taskStep < this.MyNormTask.MaxStep)
+                MyNormTask.NextStep();
+                CustomNormalPlayerTask.completedConsoles.Add(ConsoleId);
+                if (MyNormTask.taskStep < MyNormTask.MaxStep)
                 {
-                    var console = ShipStatus.Instance.AllConsoles.FirstOrDefault(x => x.ConsoleId == this.MyNormTask.Data[this.MyNormTask.taskStep]);
-                    this.MyNormTask.StartAt = console.Room;
+                    var console = ShipStatus.Instance.AllConsoles.FirstOrDefault(x => x.ConsoleId == MyNormTask.Data[MyNormTask.taskStep]);
+                    MyNormTask.StartAt = console.Room;
                 }
-                base.StartCoroutine(base.CoStartClose(0.5f));
+                StartCoroutine(CoStartClose(0.5f));
             }
         }
 
         public void OnEnable()
         {
-            this.enabled = true;
+            enabled = true;
             completed = false;
             timer = Fox.stayTime;
         }
@@ -73,12 +72,9 @@ namespace TheOtherRoles.Objects
             obj.SetActive(false);
         }
 
-        public void OnDestroy()
-        {
-        }
         void onClick()
         {
-            this.Close();
+            Close();
         }
     }
 }

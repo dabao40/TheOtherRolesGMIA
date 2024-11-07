@@ -268,7 +268,7 @@ namespace TheOtherRoles {
 
             foreach (var roleInfo in infos)
             {
-                taskTexts.Add(getRoleString(roleInfo));
+                taskTexts.Add(getRoleString(roleInfo, Husk.husk.Any(x => x.PlayerId == player.PlayerId)));
             }
             
             var toRemove = new List<PlayerTask>();
@@ -306,12 +306,13 @@ namespace TheOtherRoles {
             }
         }
 
-        internal static string getRoleString(RoleInfo roleInfo)
+        internal static string getRoleString(RoleInfo roleInfo, bool isHusk)
         {
+            bool addHusk = isHusk && !roleInfo.isModifier;
             if (roleInfo.roleId == RoleId.Jackal) 
             {
                 var getSidekickText = Jackal.canCreateSidekick ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
-                return cs(roleInfo.color, $"{roleInfo.name}: {getSidekickText}");  
+                return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {getSidekickText}");  
             }
 
             if (roleInfo.roleId == RoleId.Invert) 
@@ -319,7 +320,7 @@ namespace TheOtherRoles {
                 return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription} ({Invert.meetings})");
             }
             
-            return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription}");
+            return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {roleInfo.shortDescription}");
         }
         
         public static bool isLighterColor(int colorId) {
@@ -373,7 +374,7 @@ namespace TheOtherRoles {
         public static bool hasFakeTasks(this PlayerControl player) {
             return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole));
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole));
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -423,6 +424,16 @@ namespace TheOtherRoles {
         public static bool MushroomSabotageActive()
         {
             return CachedPlayer.LocalPlayer.PlayerControl.myTasks.ToArray().Any((x) => x.TaskType == TaskTypes.MushroomMixupSabotage);
+        }
+
+        public static bool ShowButtons
+        {
+            get
+            {
+                return !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
+                !MeetingHud.Instance &&
+                !ExileController.Instance;
+            }
         }
 
         public static List<string> removeLineFeed(string line)
@@ -645,6 +656,113 @@ namespace TheOtherRoles {
             return PhysicsHelpers.AnyNonTriggersBetween(pos1, vector.normalized, vector.magnitude, layerMask!.Value);
         }
 
+        public static bool destroyGameObjects(GameObject root, DestroyInfo[] excludeInfos = null, GameObject obj = null)
+        {
+            if (obj == null)
+                obj = root;
+
+            DestroyInfo findInfo = null;
+            if (excludeInfos != null)
+                findInfo = Array.Find(excludeInfos, (info) => info.searchName == obj.name);
+            if (obj != root && findInfo == null)
+            {
+                UnityEngine.Object.DestroyImmediate(obj);
+                return true;
+            }
+
+            if (findInfo == null || findInfo.isDestroyChild)
+            {
+                for (int i = 0; i < obj.transform.GetChildCount(); ++i)
+                {
+                    if (destroyGameObjects(root, excludeInfos, obj.transform.GetChild(i).gameObject))
+                        --i;
+                }
+            }
+            return false;
+        }
+
+        public class DestroyInfo
+        {
+            public DestroyInfo(string searchName, bool isFindChild = true)
+            {
+                this.searchName = searchName;
+                this.isDestroyChild = isFindChild;
+            }
+
+            public string searchName = "";
+            public bool isDestroyChild = true;
+        }
+
+        public static bool hideGameObjects(GameObject root, DestroyInfo[] excludeInfos = null, GameObject obj = null)
+        {
+            if (obj == null)
+                obj = root;
+
+            DestroyInfo findInfo = null;
+            if (excludeInfos != null)
+                findInfo = Array.Find(excludeInfos, (info) => info.searchName == obj.name);
+            if (obj != root && findInfo == null)
+            {
+                obj.SetActive(false);
+                return true;
+            }
+
+            if (findInfo == null || findInfo.isDestroyChild)
+            {
+                for (int i = 0; i < obj.transform.GetChildCount(); ++i)
+                {
+                    if (destroyGameObjects(root, excludeInfos, obj.transform.GetChild(i).gameObject))
+                        --i;
+                }
+            }
+            return false;
+        }
+
+        public static PlayerControl getPlayerById(byte playerId)
+        {
+            return PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(p => p.PlayerId == playerId).FirstOrDefault();
+        }
+
+        public static MeshFilter CreateRectMesh(this MeshFilter filter, Vector2 size, Vector3? center = null)
+        {
+            center ??= Vector3.zero;
+
+            var mesh = filter.mesh;
+
+            float x = size.x * 0.5f;
+            float y = size.y * 0.5f;
+            mesh.SetVertices(new Vector3[] {
+                new Vector3(-x, -y) + center.Value,
+                new Vector3(x, -y) + center.Value,
+                new Vector3(-x, y) + center.Value,
+                new Vector3(x, y) + center.Value});
+            mesh.SetTriangles(new int[] { 0, 2, 1, 2, 3, 1 }, 0);
+            mesh.SetUVs(0, new Vector2[] { new(0, 0), new(1, 0), new(0, 1), new(1, 1) });
+            var color = new Color32(255, 255, 255, 255);
+            mesh.SetColors(new Color32[] { color, color, color, color });
+
+            return filter;
+        }
+
+        public static RenderTexture SetCameraRenderTexture(this Camera camera, int textureX, int textureY)
+        {
+            if (camera.targetTexture) GameObject.Destroy(camera.targetTexture);
+            camera.targetTexture = new RenderTexture(textureX, textureY, 32, RenderTextureFormat.ARGB32);
+
+            return camera.targetTexture;
+        }
+
+        public static (MeshRenderer renderer, MeshFilter filter) CreateMeshRenderer(string objName, Transform parent, Vector3 localPosition, int? layer, Color? color = null)
+        {
+            var meshFilter = CreateObject<MeshFilter>("mesh", parent, localPosition, layer);
+            var meshRenderer = meshFilter.gameObject.AddComponent<MeshRenderer>();
+            meshRenderer.material = new Material(Shader.Find(color.HasValue ? "Unlit/Color" : "Unlit/Texture"));
+            if (color.HasValue) meshRenderer.sharedMaterial.color = color.Value;
+            meshFilter.mesh = new Mesh();
+
+            return (meshRenderer, meshFilter);
+        }
+
         public static void setSemiTransparent(this PoolablePlayer player, bool value) {
             float alpha = value ? 0.25f : 1f;
             foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())
@@ -826,6 +944,7 @@ namespace TheOtherRoles {
             if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide Ninja nametags from non-impostors
             if (Sprinter.sprinting && Sprinter.sprinter == target && source != Sprinter.sprinter) return true; // Hide Sprinter nametags
             if (Fox.stealthed && Fox.fox == target && source != Fox.fox) return true; // Hide Fox nametags
+            if (source != target && Kataomoi.isStalking(target)) return true; // Hide Kataomoi nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
             //else if (Assassin.isInvisble && Assassin.assassin == target) return true;
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
@@ -1102,6 +1221,21 @@ namespace TheOtherRoles {
             return null;
         }
 
+        public static bool roleCanUseSabotage(this PlayerControl player) {
+            bool roleCouldUse = false;
+            if (Madmate.madmate.Any(x => x.PlayerId == player?.PlayerId) && Madmate.canSabotage)
+                roleCouldUse = true;
+            else if (CreatedMadmate.createdMadmate != null && CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
+                roleCouldUse = true;
+            else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
+                roleCouldUse = false;
+            else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+                roleCouldUse = false;
+            else if (player?.Data?.Role?.IsImpostor == true)
+                roleCouldUse = true;
+            return roleCouldUse;
+        }
+
         public static bool roleCanUseVents(this PlayerControl player) {
             bool roleCouldUse = false;            
             if (Engineer.engineer != null && Engineer.engineer == player)
@@ -1134,13 +1268,9 @@ namespace TheOtherRoles {
                 else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
                     roleCouldUse = false;
                 else if (Ninja.ninja != null && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl && Ninja.canUseVents == false)
-                {
                     roleCouldUse = false;
-                }
                 else if (Undertaker.undertaker != null && Undertaker.undertaker == CachedPlayer.LocalPlayer.PlayerControl && Undertaker.DraggedBody != null && Undertaker.disableVent)
-                {
                     roleCouldUse = false;
-                }
                 else
                     roleCouldUse = true;
             }
@@ -1350,12 +1480,24 @@ namespace TheOtherRoles {
             {
                 var rend = tzGO.transform.Find("Inactive").GetComponent<SpriteRenderer>();
                 var rendActive = tzGO.transform.Find("Active").GetComponent<SpriteRenderer>();
-                rend.sprite = zoomOutStatus ? Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Plus_Button.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_Button.png", 100f);
-                rendActive.sprite = zoomOutStatus ? Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Plus_ButtonActive.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_ButtonActive.png", 100f);
+                rend.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_Button.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_Button.png", 100f);
+                rendActive.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_ButtonActive.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_ButtonActive.png", 100f);
                 tzGO.transform.localScale = new Vector3(1.2f, 1.2f, 1f) * (zoomOutStatus ? 4 : 1);
             }
 
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen); // This will move button positions to the correct position.
+        }
+
+        public static float GetShadowSize()
+        {
+            var shadowCollab = Camera.main.GetComponentInChildren<ShadowCollab>();
+            return shadowCollab.ShadowCamera.orthographicSize;
+        }
+        public static void ChangeShadowSize(float orthographicSize = 3f)
+        {
+            var shadowCollab = Camera.main.GetComponentInChildren<ShadowCollab>();
+            shadowCollab.ShadowCamera.orthographicSize = orthographicSize;
+            shadowCollab.ShadowQuad.transform.localScale = new Vector3(orthographicSize * Camera.main.aspect, orthographicSize) * 2f;
         }
 
         public static void AddModSettingsChangeMessage(this NotificationPopper popper, StringNames key, string value, string option, bool playSound = true)

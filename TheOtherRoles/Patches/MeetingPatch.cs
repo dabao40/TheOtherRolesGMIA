@@ -73,6 +73,8 @@ namespace TheOtherRoles.Patches {
                         Mayor.unlockAch(playerState.VotedFor);
                     if (Detective.detective != null && Detective.detective.PlayerId == playerState.TargetPlayerId)
                         Detective.unlockAch(playerState.VotedFor);
+                    if (Jester.jester != null && Jester.jester.PlayerId != playerState.TargetPlayerId && playerState.VotedFor == Jester.jester.PlayerId)
+                        Jester.unlockAch();
                     var voteCount = amMayorEnabled ? 2 : 1;
                     votes[playerState.VotedFor] =
                         !votes.TryGetValue(playerState.VotedFor, out var num) ? voteCount : num + voteCount;
@@ -794,7 +796,7 @@ namespace TheOtherRoles.Patches {
                     {
                         PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[copiedIndex].TargetPlayerId);
                         EvilTracker.futureTarget = EvilTracker.target = focusedTarget;
-                        EvilTracker.acTokenCommon1 ??= new("evilTracker.common1");
+                        _ = new StaticAchievementToken("evilTracker.common1");
                         // Reset the GUI
                         __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("EvilTrackerButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("EvilTrackerButton").gameObject); });
                         GameObject targetMark = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
@@ -975,6 +977,39 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.CoRun))]
+        class MeetingIntroStartPatch
+        {
+            public static void Postfix(MeetingIntroAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+            {
+                __result = Effects.Sequence(
+                    Effects.Action((Il2CppSystem.Action)(() =>
+                    {
+                        MeetingOverlayHolder.OnMeetingStart();
+                    })),
+                    __result
+                    );
+            }
+        }
+
+        [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.Init))]
+        public static class MeetingIntroAnimationInitPatch
+        {
+            private static Sprite MoriartyIndicator => Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MoriartyIndicator.png", 75f);
+            public static void Postfix(MeetingIntroAnimation __instance)
+            {
+                __instance.ProtectedRecently.SetActive(false);
+                SoundManager.Instance.StopSound(__instance.ProtectedRecentlySound);
+                if (Moriarty.hasKilled && Moriarty.indicateKills) {
+                    __instance.ProtectedRecently.GetComponentInChildren<TMPro.TextMeshPro>().text = ModTranslation.getString("moriartyIndicator");
+                    __instance.ProtectedRecently.GetComponentInChildren<SpriteRenderer>().sprite = MoriartyIndicator;
+                    SoundManager.Instance.PlaySound(__instance.ProtectedRecentlySound, false, 1f);
+                    __instance.ProtectedRecently.SetActive(true);
+                    Moriarty.hasKilled = false;
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch {
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]NetworkedPlayerInfo meetingTarget) {
@@ -1088,12 +1123,6 @@ namespace TheOtherRoles.Patches {
                     Coroutines.Start(Helpers.BlackmailShhh());
                 }
 
-                if (Moriarty.moriarty != null && Moriarty.hasKilled && FastDestroyableSingleton<HudManager>.Instance != null && AmongUsClient.Instance.AmClient && Moriarty.indicateKills)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer.PlayerControl, ModTranslation.getString("moriartyIndicator"));
-                    Moriarty.hasKilled = false;
-                }
-
                 // Add Portal info into Portalmaker Chat:
                 if (Portalmaker.portalmaker != null && (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker || Helpers.shouldShowGhostInfo()) && !Portalmaker.portalmaker.Data.IsDead) {
                     if (Portal.teleportedPlayers.Count > 0) {
@@ -1108,13 +1137,6 @@ namespace TheOtherRoles.Patches {
                 }
 
                 NekoKabocha.meetingKiller = null;
-
-                if (Shifter.shifter != null && Shifter.isNeutral && Shifter.shifter.Data.IsDead && Shifter.futureShift != null && Shifter.futureShift.Data.Role.IsImpostor)
-                {
-                    var dp = GameHistory.deadPlayers.FirstOrDefault(x => x.player.PlayerId == Shifter.shifter.PlayerId);
-                    Shifter.killer = dp.killerIfExisting;
-                    Shifter.deathReason = dp.deathReason;
-                }
 
                 // Add trapped Info into Trapper chat
                 /*if (Trapper.trapper != null && (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper || Helpers.shouldShowGhostInfo()) && !Trapper.trapper.Data.IsDead) {

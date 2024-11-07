@@ -10,6 +10,9 @@ using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Modules;
+using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -46,6 +49,10 @@ namespace TheOtherRoles.Patches {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
+                        player.gameObject.SetActive(true);
+                    } else if (CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi && p == Kataomoi.target) {
+                        player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
+                        player.transform.localScale = Vector3.one * 0.4f;
                         player.gameObject.SetActive(true);
                     } else if (HideNSeek.isHideNSeekGM) {
                         if (HideNSeek.isHunted() && p.Data.Role.IsImpostor) {
@@ -314,6 +321,54 @@ namespace TheOtherRoles.Patches {
             GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
             GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
+            if (Kataomoi.kataomoi != null && CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi)
+            {
+                if (FastDestroyableSingleton<HudManager>.Instance != null)
+                {
+                    Kataomoi.stareText = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
+                    Kataomoi.stareText.alignment = TMPro.TextAlignmentOptions.Center;
+                    Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.35f, -62f);
+                    Kataomoi.stareText.transform.localScale = Vector3.one * 0.5f;
+                    Kataomoi.stareText.gameObject.SetActive(true);
+
+                    Kataomoi.gaugeRenderer[0] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.graphic, FastDestroyableSingleton<HudManager>.Instance.transform);
+                    var killButton = Kataomoi.gaugeRenderer[0].GetComponent<KillButton>();
+                    killButton.SetCoolDown(0.00000001f, 0.00000001f);
+                    killButton.SetFillUp(0.00000001f, 0.00000001f);
+                    killButton.SetDisabled();
+                    Helpers.hideGameObjects(Kataomoi.gaugeRenderer[0].gameObject);
+                    var components = killButton.GetComponents<Component>();
+                    foreach (var c in components)
+                    {
+                        if ((c as KillButton) == null && (c as SpriteRenderer) == null)
+                            GameObject.Destroy(c.gameObject);
+                    }
+
+                    Kataomoi.gaugeRenderer[0].sprite = Kataomoi.getLoveGaugeSprite(0);
+                    Kataomoi.gaugeRenderer[0].color = new Color32(175, 175, 176, 255);
+                    Kataomoi.gaugeRenderer[0].size = new Vector2(300f, 64f);
+                    Kataomoi.gaugeRenderer[0].gameObject.SetActive(true);
+                    Kataomoi.gaugeRenderer[0].transform.localPosition = new Vector3(-3.354069f + 1f, -2.429999f, -8f);
+                    Kataomoi.gaugeRenderer[0].transform.localScale = Vector3.one;
+
+                    Kataomoi.gaugeRenderer[1] = UnityEngine.Object.Instantiate(Kataomoi.gaugeRenderer[0], FastDestroyableSingleton<HudManager>.Instance.transform);
+                    Kataomoi.gaugeRenderer[1].sprite = Kataomoi.getLoveGaugeSprite(1);
+                    Kataomoi.gaugeRenderer[1].size = new Vector2(261f, 7f);
+                    Kataomoi.gaugeRenderer[1].color = Kataomoi.color;
+                    Kataomoi.gaugeRenderer[1].transform.localPosition = new Vector3(-3.482069f + 1f, -2.626999f, -8.1f);
+                    Kataomoi.gaugeRenderer[1].transform.localScale = Vector3.one;
+
+                    Kataomoi.gaugeRenderer[2] = UnityEngine.Object.Instantiate(Kataomoi.gaugeRenderer[0], FastDestroyableSingleton<HudManager>.Instance.transform);
+                    Kataomoi.gaugeRenderer[2].sprite = Kataomoi.getLoveGaugeSprite(2);
+                    Kataomoi.gaugeRenderer[2].color = Kataomoi.gaugeRenderer[0].color;
+                    Kataomoi.gaugeRenderer[2].size = new Vector2(300f, 64f);
+                    Kataomoi.gaugeRenderer[2].transform.localPosition = new Vector3(-3.354069f + 1f, -2.429999f, -8.2f);
+                    Kataomoi.gaugeRenderer[2].transform.localScale = Vector3.one;
+
+                    Kataomoi.gaugeTimer = 1.0f;
+                }
+            }
+
             SchrodingersCat.playerTemplate = UnityEngine.Object.Instantiate(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
             SchrodingersCat.playerTemplate.UpdateFromPlayerOutfit(CachedPlayer.LocalPlayer.PlayerControl.Data.DefaultOutfit, PlayerMaterial.MaskType.ComplexUI, false, true);
             SchrodingersCat.playerTemplate.SetFlipX(true);
@@ -338,7 +393,14 @@ namespace TheOtherRoles.Patches {
                 Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
                 taskIdList.Shuffle();
                 var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
-                if (CachedPlayer.LocalPlayer.PlayerControl == Fox.fox) cpt.addTaskToPlayer(CachedPlayer.LocalPlayer.PlayerId);
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (p == Fox.fox)
+                    {
+                        p.clearAllTasks();
+                        cpt.addTaskToPlayer(p.PlayerId);
+                    }
+                }
             }
 
             EventUtility.gameStartsUpdate();
@@ -445,7 +507,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.ShowRole))]
         class SetUpRoleTextPatch {
             static int seed = 0;
-            static public void SetRoleTexts(IntroCutscene __instance) {
+            static public IEnumerator SetRoleTexts(IntroCutscene __instance) {
                 // Don't override the intro of the vanilla roles
                 List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl);
                 RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
@@ -504,13 +566,35 @@ namespace TheOtherRoles.Patches {
                     else if (infos.Any(info => info.roleId == RoleId.Deputy))
                         __instance.RoleBlurbText.text += Helpers.cs(Sheriff.color, string.Format(ModTranslation.getString("sheriffIntroLine"), Sheriff.sheriff?.Data?.PlayerName ?? ""));
                 }
+                if (infos.Any(info => info.roleId == RoleId.Kataomoi)) {
+                    __instance.RoleBlurbText.text += Helpers.cs(Kataomoi.color, string.Format(ModTranslation.getString("kataomoiIntroLine"), Kataomoi.target?.Data?.PlayerName ?? ""));
+                }
+
+                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.Data.Role.IntroSound, false, 1f, null);
+                __instance.YouAreText.gameObject.SetActive(true);
+                __instance.RoleText.gameObject.SetActive(true);
+                __instance.RoleBlurbText.gameObject.SetActive(true);
+                if (__instance.ourCrewmate == null)
+                {
+                    __instance.ourCrewmate = __instance.CreatePlayer(0, 1, PlayerControl.LocalPlayer.Data, false);
+                    __instance.ourCrewmate.gameObject.SetActive(false);
+                }
+                __instance.ourCrewmate.gameObject.SetActive(true);
+                __instance.ourCrewmate.transform.localPosition = new Vector3(0f, -1.05f, -18f);
+                __instance.ourCrewmate.transform.localScale = new Vector3(1f, 1f, 1f);
+                __instance.ourCrewmate.ToggleName(false);
+                yield return new WaitForSeconds(2.5f);
+                __instance.YouAreText.gameObject.SetActive(false);
+                __instance.RoleText.gameObject.SetActive(false);
+                __instance.RoleBlurbText.gameObject.SetActive(false);
+                __instance.ourCrewmate.gameObject.SetActive(false);
+                yield break;
             }
-            public static bool Prefix(IntroCutscene __instance) {
+
+            public static bool Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.IEnumerator __result) {
                 seed = rnd.Next(5000);
-                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(1f, new Action<float>((p) => {
-                    SetRoleTexts(__instance);
-                })));
-                return true;
+                __result = SetRoleTexts(__instance).WrapToIl2Cpp();
+                return false;
             }
         }
 
@@ -522,22 +606,6 @@ namespace TheOtherRoles.Patches {
 
             public static void Postfix(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> teamToDisplay) {
                 setupIntroTeam(__instance, ref teamToDisplay);
-
-                if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
-                {
-                    CachedPlayer.LocalPlayer.PlayerControl.clearAllTasks();
-                    CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(Madmate.commonTasks, Madmate.shortTasks, Madmate.longTasks);
-                }
-                if (JekyllAndHyde.jekyllAndHyde != null && CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde)
-                {
-                    PlayerControl.LocalPlayer.clearAllTasks();
-                    CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
-                    JekyllAndHyde.oddIsJekyll = rnd.Next(0, 2) == 1;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetOddIsJekyll, Hazel.SendOption.Reliable, -1);
-                    writer.Write(JekyllAndHyde.oddIsJekyll);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    HudManagerStartPatch.jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
-                }
             }
         }
 

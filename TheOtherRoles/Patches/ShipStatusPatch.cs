@@ -7,6 +7,7 @@ using UnityEngine;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
 using TheOtherRoles.Players;
+using Hazel;
 
 namespace TheOtherRoles.Patches {
 
@@ -128,6 +129,10 @@ namespace TheOtherRoles.Patches {
             GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = originalNumCommonTasksOption;
             GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = originalNumShortTasksOption;
             GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = originalNumLongTasksOption;
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FinishShipStatusBegin, Hazel.SendOption.Reliable, -1);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.finishShipStatusBegin();
         }
 
         public static void resetVanillaSettings() {

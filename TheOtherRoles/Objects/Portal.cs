@@ -151,7 +151,7 @@ namespace TheOtherRoles.Objects {
                 HudManagerStartPatch.portalmakerButtonText2.text = "2. " + secondPortal.room;
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker)
-                    Portalmaker.acTokenCommon ??= new("portalmaker.common1");
+                    _ = new Modules.StaticAchievementToken("portalmaker.common1");
             }
 
             // reset teleported players

@@ -7,7 +7,7 @@ using Types = TheOtherRoles.CustomOption.CustomOptionType;
 namespace TheOtherRoles {
     public class CustomOptionHolder {
         public static string[] rates = new string[]{"0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"};
-        public static string[] ratesModifier = new string[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
+        public static string[] ratesModifier = new string[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" };
         public static string[] presets = new string[]{ "preset1", "preset2", "Random Preset Skeld", "Random Preset Mira HQ", "Random Preset Polus", "Random Preset Airship", "Random Preset Submerged" };
 
         public static CustomOption presetSelection;
@@ -305,7 +305,6 @@ namespace TheOtherRoles {
 
         public static CustomOption teleporterSpawnRate;
         public static CustomOption teleporterCooldown;
-        public static CustomOption teleporterSampleCooldown;
         public static CustomOption teleporterTeleportNumber;
 
         public static CustomOption tricksterSpawnRate;
@@ -408,6 +407,16 @@ namespace TheOtherRoles {
         public static CustomOption schrodingersCatJustDieOnKilledByCrew;
         public static CustomOption schrodingersCatHideRole;
         public static CustomOption schrodingersCatCanChooseImpostor;
+
+        public static CustomOption kataomoiSpawnRate;
+        public static CustomOption kataomoiStareCooldown;
+        public static CustomOption kataomoiStareDuration;
+        public static CustomOption kataomoiStareCount;
+        public static CustomOption kataomoiStalkingCooldown;
+        public static CustomOption kataomoiStalkingDuration;
+        public static CustomOption kataomoiStalkingFadeTime;
+        public static CustomOption kataomoiSearchCooldown;
+        public static CustomOption kataomoiSearchDuration;
 
         public static CustomOption moriartySpawnRate;
         public static CustomOption moriartyBrainwashTime;
@@ -850,6 +859,16 @@ namespace TheOtherRoles {
             plagueDoctorInfectKiller = CustomOption.Create(6006, Types.Neutral, "plagueDoctorInfectKiller", true, plagueDoctorSpawnRate);
             plagueDoctorWinDead = CustomOption.Create(5999, Types.Neutral, "plagueDoctorWinDead", true, plagueDoctorSpawnRate);
 
+            kataomoiSpawnRate = CustomOption.Create(8300, Types.Neutral, cs(Kataomoi.color, "kataomoi"), rates, null, true);
+            kataomoiStareCooldown = CustomOption.Create(8301, Types.Neutral, "kataomoiStareCooldown", 20f, 2.5f, 60f, 2.5f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiStareDuration = CustomOption.Create(8302, Types.Neutral, "kataomoiStareDuration", 3f, 1f, 10f, 1f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiStareCount = CustomOption.Create(8303, Types.Neutral, "kataomoiStareCount", 5f, 1f, 100f, 1f, kataomoiSpawnRate, false, "unitShots");
+            kataomoiStalkingCooldown = CustomOption.Create(8304, Types.Neutral, "kataomoiStalkingCooldown", 20f, 2.5f, 60f, 2.5f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiStalkingDuration = CustomOption.Create(8305, Types.Neutral, "kataomoiStalkingDuration", 10f, 1f, 30f, 1f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiStalkingFadeTime = CustomOption.Create(8306, Types.Neutral, "kataomoiStalkingFadeTime", 0.5f, 0.0f, 2.5f, 0.5f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiSearchCooldown = CustomOption.Create(8307, Types.Neutral, "kataomoiSearchCooldown", 10f, 2.5f, 60f, 2.5f, kataomoiSpawnRate, false, "unitSeconds");
+            kataomoiSearchDuration = CustomOption.Create(8308, Types.Neutral, "kataomoiSearchDuration", 10f, 1f, 30f, 1f, kataomoiSpawnRate, false, "unitSeconds");
+
             schrodingersCatSpawnRate = CustomOption.Create(8400, Types.Neutral, cs(SchrodingersCat.color, "schrodingersCat"), rates, null, true);
             schrodingersCatKillCooldown = CustomOption.Create(971, Types.Neutral, "schrodingersCatKillCooldown", 20f, 1f, 60f, 0.5f, schrodingersCatSpawnRate, format: "unitSeconds");
             schrodingersCatBecomesImpostor = CustomOption.Create(972, Types.Neutral, "schrodingersCatBecomesImpostor", true, schrodingersCatSpawnRate);
@@ -992,7 +1011,6 @@ namespace TheOtherRoles {
             prophetPowerCrewAsRed = CustomOption.Create(9010, Types.Crewmate, "prophetPowerCrewAsRed", false, prophetSpawnRate);
 
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, "teleporter"), rates, null, true);
-            teleporterSampleCooldown = CustomOption.Create(9004, Types.Crewmate, "teleporterSampleCooldown", 30f, 5f, 60f, 5f, teleporterSpawnRate, false, "unitSeconds");
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, "teleporterCooldown", 30f, 5f, 120f, 5f, teleporterSpawnRate, false, "unitSeconds");
             teleporterTeleportNumber = CustomOption.Create(9003, Types.Crewmate, "teleporterTeleportNumber", 3f, 1f, 10f, 1f, teleporterSpawnRate, false, "unitScrews");
 

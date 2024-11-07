@@ -72,6 +72,7 @@ namespace TheOtherRoles.CustomGameModes
                         RPCProcedure.setRole((byte)r.roleId, PlayerControl.LocalPlayer.PlayerId);
 
                         if (r.roleId == RoleId.Fox) {
+                            CachedPlayer.LocalPlayer.PlayerControl.clearAllTasks();
                             if (Shrine.allShrine?.FirstOrDefault() == null){
                                 Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
                             }
@@ -113,7 +114,7 @@ namespace TheOtherRoles.CustomGameModes
             SetWidget(0);
         }
 
-        private static void FastSetRole(this PlayerControl targetPlayer, RoleTypes roleType)
+        public static void FastSetRole(this PlayerControl targetPlayer, RoleTypes roleType)
         {
             NetworkedPlayerInfo data = targetPlayer.Data;
             RoleBehaviour roleBehaviour = UnityEngine.Object.Instantiate(RoleManager.Instance.AllRoles.First(r => r.Role == roleType), data.gameObject.transform);

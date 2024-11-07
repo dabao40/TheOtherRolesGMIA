@@ -1,4 +1,4 @@
-﻿using BepInEx.Unity.IL2CPP.Utils.Collections;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using System;
@@ -105,23 +105,26 @@ namespace TheOtherRoles.Modules
             public float historyTime = 0f;
             public NetworkedPlayerInfo.PlayerOutfit playerOutfit = null;
             public bool isMadmate = false;
+            public Color32 defaultColor = default;
 
-            public RoleHistory(string playerName, RoleInfo roleInfo, float historyTime, NetworkedPlayerInfo.PlayerOutfit playerOutfit, bool isMadmate)
+            public RoleHistory(string playerName, RoleInfo roleInfo, float historyTime, NetworkedPlayerInfo.PlayerOutfit playerOutfit, bool isMadmate, Color32 color)
             {
                 this.playerName = playerName;
                 this.roleInfo = roleInfo;
                 this.historyTime = historyTime;
                 this.playerOutfit = playerOutfit;
                 this.isMadmate = isMadmate;
+                defaultColor = color;
             }
         }
 
         public static void recordRoleHistory(PlayerControl player)
         {
             if (player == null) return;
+            var info = RoleInfo.getRoleInfoForPlayer(player, false, true).FirstOrDefault();
             if (roleHistory.ContainsKey(player.PlayerId))
-                roleHistory[player.PlayerId].Add(new(player.Data.PlayerName, RoleInfo.getRoleInfoForPlayer(player, false, true).FirstOrDefault(), currentTime, player.Data.DefaultOutfit, Madmate.madmate.Any(x =>
-                x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate == player));
+                roleHistory[player.PlayerId].Add(new(player.Data.PlayerName, info, currentTime, player.Data.DefaultOutfit, Madmate.madmate.Any(x =>
+                x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate == player, info.color));
         }
 
         public class StatisticsEvent
@@ -621,10 +624,9 @@ namespace TheOtherRoles.Modules
                         var history = GameStatistics.roleHistory[near.Item1].Where(x => x.historyTime <= statisticsEvent.Time).LastOrDefault();
                         var role = history.roleInfo;
                         bool isMadmate = history.isMadmate;
-                        var roleText = Helpers.cs(isMadmate ? Madmate.color : role.color, isMadmate ? (role == RoleInfo.crewmate ? Madmate.fullName : Madmate.prefix + role.name) : role.name);
+                        var roleText = Helpers.cs(isMadmate ? Madmate.color : history.defaultColor, isMadmate ? (role == RoleInfo.crewmate ? Madmate.fullName : Madmate.prefix + role.name) : role.name);
                         context.Append(new MetaContextOld.Text(TextAttribute.BoldAttrLeft) { RawText = GameStatistics.roleHistory[near.Item1].FirstOrDefault().playerName });
                         context.Append(new MetaContextOld.VariableText(new TextAttribute(TextAttribute.BoldAttrLeft) { Alignment = TMPro.TextAlignmentOptions.TopLeft }.EditFontSize(1.35f)) { RawText = roleText });
-
                     }
 
                     TORGUIManager.Instance.SetHelpContext(button, context);

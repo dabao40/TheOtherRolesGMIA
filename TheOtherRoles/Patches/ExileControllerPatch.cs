@@ -74,7 +74,7 @@ namespace TheOtherRoles.Patches {
             if (Trickster.trickster != null && JackInTheBox.hasJackInTheBoxLimitReached()) {
                 JackInTheBox.convertToVents();
                 if (CachedPlayer.LocalPlayer.PlayerControl == Trickster.trickster)
-                    Trickster.acTokenCommon1 ??= new("trickster.common1");
+                    _ = new StaticAchievementToken("trickster.common1");
             }
 
             // Activate portals.
@@ -262,7 +262,7 @@ namespace TheOtherRoles.Patches {
                     Swapper.evilSwapperAcTokenChallenge.Value.cleared |= swapped && !exiled.Object.Data.Role.IsImpostor && (Helpers.playerById(Swapper.evilSwapperAcTokenChallenge.Value.swapped1).Data.Role.IsImpostor || Helpers.playerById(
                         Swapper.evilSwapperAcTokenChallenge.Value.swapped2).Data.Role.IsImpostor);
                     if (swapped && Jester.jester == exiled.Object)
-                        Swapper.evilSwapperAcTokenAnother ??= new("evilSwapper.another1");
+                        _ = new StaticAchievementToken("evilSwapper.another1");
                 }
             }
 
@@ -277,7 +277,7 @@ namespace TheOtherRoles.Patches {
                                 exiledPlayer == Lovers.lover2) && Lovers.lover1 && Lovers.lover2
                                 && Helpers.isEvil(exiledPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1)) || ((exiledPlayer == Cupid.lovers1 || exiledPlayer == Cupid.lovers2) &&
                                 Cupid.lovers1 && Cupid.lovers2 && Helpers.isEvil(exiledPlayer == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1)));
-                        if (exiledPlayer == Jester.jester) Yasuna.yasunaAcTokenAnother ??= new("niceYasuna.another1");
+                        if (exiledPlayer == Jester.jester) _ = new StaticAchievementToken("niceYasuna.another1");
                         Yasuna.yasunaAcTokenChallenge.Value.targetId = byte.MaxValue;
                     }
                 }
@@ -375,10 +375,13 @@ namespace TheOtherRoles.Patches {
 
             // Arsonist deactivate dead poolable players
             if (Arsonist.arsonist != null && Arsonist.arsonist == CachedPlayer.LocalPlayer.PlayerControl) {
+                var notDoused = new List<PlayerControl>();
+
                 int visibleCounter = 0;
                 Vector3 newBottomLeft = IntroCutsceneOnDestroyPatch.bottomLeft;
                 var BottomLeft = newBottomLeft + new Vector3(-0.25f, -0.25f, 0);
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
+                    if (((!p.Data.IsDead && !p.Data.Disconnected) || (exiled != null && exiled.PlayerId == p.PlayerId)) && !Arsonist.dousedPlayers.Contains(p) && Arsonist.arsonist != p) notDoused.Add(p);
                     if (!TORMapOptions.playerIcons.ContainsKey(p.PlayerId)) continue;
                     if (p.Data.IsDead || p.Data.Disconnected) {
                         TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(false);
@@ -387,6 +390,9 @@ namespace TheOtherRoles.Patches {
                         visibleCounter++;
                     }
                 }
+
+                if (notDoused.Count == 1 && exiled != null && notDoused[0].PlayerId == exiled.PlayerId)
+                    _ = new StaticAchievementToken("arsonist.another1");
             }
 
             // Deputy check Promotion, see if the sheriff still exists. The promotion will be after the meeting.
@@ -627,7 +633,7 @@ namespace TheOtherRoles.Patches {
 
             }
 
-            if (CustomOptionHolder.activateProps.getBool()) Props.placeProps();
+            if (CustomOptionHolder.activateProps.getBool() && !CustomGameModes.FreePlayGM.isFreePlayGM) Props.placeProps();
 
             // Invert add meeting
             if (Invert.meetings > 0) Invert.meetings--;
@@ -657,11 +663,11 @@ namespace TheOtherRoles.Patches {
                     PlayerControl player = Helpers.playerById(ExileController.Instance.exiled.Object.PlayerId);
                     if (player == null) return;
                     // Exile role text
-                    if (id == StringNames.ExileTextPN || id == StringNames.ExileTextSN || id == StringNames.ExileTextPP || id == StringNames.ExileTextSP) {
+                    if (id is StringNames.ExileTextPN or StringNames.ExileTextSN or StringNames.ExileTextPP or StringNames.ExileTextSP) {
                         __result = player.Data.PlayerName + " was The " + String.Join(" ", RoleInfo.getRoleInfoForPlayer(player, false, includeHidden: true).Select(x => x.name).ToArray());
                     }
                     // Hide number of remaining impostors on Jester win
-                    if (id == StringNames.ImpostorsRemainP || id == StringNames.ImpostorsRemainS) {
+                    if (id is StringNames.ImpostorsRemainP or StringNames.ImpostorsRemainS) {
                         if (Jester.jester != null && player.PlayerId == Jester.jester.PlayerId) __result = "";
                     }
                     if (Yasuna.specialVoteTargetPlayerId != byte.MaxValue)

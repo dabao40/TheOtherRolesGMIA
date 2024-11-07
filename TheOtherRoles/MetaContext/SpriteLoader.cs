@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -138,6 +138,69 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
+    public class XOnlyDividedSpriteLoader : Image, IDividedSpriteLoader
+    {
+        float pixelsPerUnit;
+        Sprite[] sprites;
+        ITextureLoader texture;
+        int? division, size;
+        public Vector2 Pivot = new(0.5f, 0.5f);
+
+        public XOnlyDividedSpriteLoader(ITextureLoader textureLoader, float pixelsPerUnit, int x, bool isSize = false)
+        {
+            this.pixelsPerUnit = pixelsPerUnit;
+            if (isSize)
+            {
+                this.size = x;
+                this.division = null;
+            }
+            else
+            {
+                this.division = x;
+                this.size = null;
+            }
+            sprites = null!;
+            texture = textureLoader;
+        }
+
+        public Sprite GetSprite(int index)
+        {
+            if (!size.HasValue || !division.HasValue || sprites == null)
+            {
+                var texture2D = texture.GetTexture();
+                if (size == null)
+                    size = texture2D.width / division;
+                else if (division == null)
+                    division = texture2D.width / size!;
+                sprites = new Sprite[division!.Value];
+            }
+
+            if (!sprites[index])
+            {
+                var texture2D = texture.GetTexture();
+                sprites[index] = texture2D.ToSprite(new Rect(index * size!.Value, 0, size!.Value, texture2D.height), Pivot, pixelsPerUnit);
+            }
+            return sprites[index];
+        }
+
+        public Sprite GetSprite() => GetSprite(0);
+
+        public int Length
+        {
+            get
+            {
+                if (!division.HasValue) GetSprite(0);
+                return division!.Value;
+            }
+        }
+
+        public Image WrapLoader(int index) => new WrapSpriteLoader(() => GetSprite(index));
+
+        static public XOnlyDividedSpriteLoader FromResource(string address, float pixelsPerUnit, int x, bool isSize = false)
+             => new(new ResourceTextureLoader(address), pixelsPerUnit, x, isSize);
+        static public XOnlyDividedSpriteLoader FromDisk(string address, float pixelsPerUnit, int x, bool isSize = false)
+             => new(new DiskTextureLoader(address), pixelsPerUnit, x, isSize);
+    }
 
     public class DividedSpriteLoader : Image, IDividedSpriteLoader
     {

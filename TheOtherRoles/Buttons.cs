@@ -11,6 +11,8 @@ using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Modules;
+using TheOtherRoles.MetaContext;
+using Reactor.Utilities;
 
 namespace TheOtherRoles
 {
@@ -88,7 +90,9 @@ namespace TheOtherRoles
         public static CustomButton jekyllAndHydeDrugButton;
         public static CustomButton jekyllAndHydeSuicideButton;
         public static CustomButton teleporterTeleportButton;
-        public static CustomButton teleporterSampleButton;
+        public static CustomButton kataomoiButton;
+        public static CustomButton kataomoiStalkingButton;
+        public static CustomButton kataomoiSearchButton;
         public static CustomButton cupidArrowButton;
         public static CustomButton cupidShieldButton;
         public static CustomButton foxStealthButton;
@@ -120,6 +124,10 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text securityGuardButtonScrewsText;
         public static TMPro.TMP_Text securityGuardChargesText;
         public static TMPro.TMP_Text deputyButtonHandcuffsText;
+        public static TMPro.TMP_Text tricksterBoxesText;
+        public static TMPro.TMP_Text engineerRepairText;
+        public static TMPro.TMP_Text foxRepairText;
+        public static TMPro.TMP_Text vultureRemainingText;
         public static TMPro.TMP_Text pursuerButtonBlanksText;
         public static TMPro.TMP_Text veteranButtonAlertText;
         public static TMPro.TMP_Text hackerAdminTableChargesText;
@@ -130,17 +138,18 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text jekyllAndHydeKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
+        public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
         public static TMPro.TMP_Text cupidTimeRemainingText;
+        public static TMPro.TMP_Text cupidLoversText;
         public static TMPro.TMP_Text plagueDoctornumInfectionsText;
         public static TMPro.TMP_Text teleporterNumLeftText;
-        public static TMPro.TMP_Text teleporterTarget1Text; 
-        public static TMPro.TMP_Text teleporterTarget2Text;
         public static TMPro.TMP_Text prophetButtonText;
         public static TMPro.TMP_Text noisemakerButtonText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
+        public static TMPro.TMP_Text portalmakerButtonNumText;
         public static TMPro.TMP_Text huntedShieldCountText;
 
         public static Props.Proptip accelAttributePropTip;
@@ -185,6 +194,9 @@ namespace TheOtherRoles
             securityGuardButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
             arsonistButton.MaxTimer = Arsonist.cooldown;
+            kataomoiButton.MaxTimer = Kataomoi.stareCooldown;
+            kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
+            kataomoiSearchButton.MaxTimer = Kataomoi.searchCooldown;
             vultureEatButton.MaxTimer = Vulture.cooldown;
             mediumButton.MaxTimer = Medium.cooldown;
             pursuerButton.MaxTimer = Pursuer.cooldown;
@@ -210,7 +222,6 @@ namespace TheOtherRoles
             sprintButton.MaxTimer = Sprinter.sprintCooldown;
             veteranAlertButton.MaxTimer = Veteran.cooldown;
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
-            teleporterSampleButton.MaxTimer = Teleporter.sampleCooldown;
             teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             undertakerDragButton.MaxTimer = 0f;
             mimicAAdminButton.MaxTimer = 0f;
@@ -277,6 +288,10 @@ namespace TheOtherRoles
             witchSpellButton.EffectDuration = Witch.spellCastingDuration;
             securityGuardCamButton.EffectDuration = SecurityGuard.duration;
             ninjaButton.EffectDuration = Ninja.stealthDuration;
+            sprintButton.EffectDuration = Sprinter.sprintDuration;
+            kataomoiButton.EffectDuration = Kataomoi.stareDuration;
+            kataomoiStalkingButton.EffectDuration = Kataomoi.stalkingDuration;
+            kataomoiSearchButton.EffectDuration = Kataomoi.searchDuration;
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
@@ -449,7 +464,7 @@ namespace TheOtherRoles
             engineerRepairButton = new CustomButton(
                 () => {
                     engineerRepairButton.Timer = 0f;
-                    Engineer.acTokenCommon ??= new("engineer.common1");
+                    _ = new StaticAchievementToken("engineer.common1");
                     MessageWriter usedRepairWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EngineerUsedRepair, Hazel.SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(usedRepairWriter);
                     RPCProcedure.engineerUsedRepair();
@@ -482,6 +497,7 @@ namespace TheOtherRoles
                 },
                 () => { return Engineer.engineer != null && Engineer.engineer == CachedPlayer.LocalPlayer.PlayerControl && Engineer.remainingFixes > 0 && !CachedPlayer.LocalPlayer.Data.IsDead; },
                 () => {
+                    if (engineerRepairText != null) engineerRepairText.text = Engineer.remainingFixes.ToString();
                     bool sabotageActive = false;
                     foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks.GetFastEnumerator())
                         if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles
@@ -495,8 +511,9 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("RepairText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+            engineerRepairText = engineerRepairButton.ShowUsesIcon(3);
 
             // Janitor Clean
             janitorCleanButton = new CustomButton(
@@ -513,7 +530,7 @@ namespace TheOtherRoles
                                 {
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
-                                    Janitor.acTokenCommon ??= new("janitor.common1");
+                                    _ = new StaticAchievementToken("janitor.common1");
                                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
                                     writer.Write(playerInfo.PlayerId);
                                     writer.Write(Janitor.janitor.PlayerId);
@@ -541,31 +558,24 @@ namespace TheOtherRoles
             // Sheriff Kill
             sheriffKillButton = new CustomButton(
                 () => {
-                    if (Sheriff.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Sheriff.acTokenAnother ??= new("sheriff.another1");
-                        Helpers.checkMurderAttemptAndKill(Sheriff.sheriff, Sheriff.sheriff);
-                        return;
-                    }
-
                     MurderAttemptResult murderAttemptResult = Helpers.checkMuderAttempt(Sheriff.sheriff, Sheriff.currentTarget);
                     if (murderAttemptResult == MurderAttemptResult.SuppressKill) return;
 
-                    if (murderAttemptResult == MurderAttemptResult.PerformKill) {
+                    if (murderAttemptResult is MurderAttemptResult.PerformKill or MurderAttemptResult.ReverseKill) {
                         byte targetId = 0;
                         if (((Sheriff.currentTarget.Data.Role.IsImpostor && (Sheriff.currentTarget != Mini.mini || Mini.isGrownUp())) ||
                             (Sheriff.spyCanDieToSheriff && Spy.spy == Sheriff.currentTarget) ||
                             (Sheriff.canKillNeutrals && Helpers.isNeutral(Sheriff.currentTarget)) ||
-                            (Jackal.jackal == Sheriff.currentTarget || Sidekick.sidekick == Sheriff.currentTarget) ||
+                            Jackal.jackal == Sheriff.currentTarget || Sidekick.sidekick == Sheriff.currentTarget ||
                             (CreatedMadmate.createdMadmate == Sheriff.currentTarget && CreatedMadmate.canDieToSheriff) ||
                             (Madmate.canDieToSheriff && Madmate.madmate.Any(x => x.PlayerId == Sheriff.currentTarget.PlayerId))) &&
                             !Madmate.madmate.Any(y => y.PlayerId == Sheriff.sheriff.PlayerId)) 
                         {
-                            Sheriff.acTokenCommon ??= new("sheriff.common1");
+                            _ = new StaticAchievementToken("sheriff.common1");
                             targetId = Sheriff.currentTarget.PlayerId;
                         }
                         else {
-                            Sheriff.acTokenAnother ??= new("sheriff.another1");
+                            _= new StaticAchievementToken("sheriff.another1");
                             targetId = CachedPlayer.LocalPlayer.PlayerId;
                         }
 
@@ -597,7 +607,7 @@ namespace TheOtherRoles
                     targetId = Sheriff.sheriff == CachedPlayer.LocalPlayer.PlayerControl ? Sheriff.currentTarget.PlayerId : Deputy.currentTarget.PlayerId;  // If the deputy is now the sheriff, sheriffs target, else deputies target
 
                     if (Helpers.isEvil(Helpers.playerById(targetId)))
-                        Deputy.acTokenCommon ??= new("deputy.common1");
+                        _ = new StaticAchievementToken("deputy.common1");
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DeputyUsedHandcuffs, Hazel.SendOption.Reliable, -1);
                     writer.Write(targetId);
@@ -619,14 +629,10 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("HandcuffText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             // Deputy Handcuff button handcuff counter
-            deputyButtonHandcuffsText = GameObject.Instantiate(deputyHandcuffButton.actionButton.cooldownTimerText, deputyHandcuffButton.actionButton.cooldownTimerText.transform.parent);
-            deputyButtonHandcuffsText.text = "";
-            deputyButtonHandcuffsText.enableWordWrapping = false;
-            deputyButtonHandcuffsText.transform.localScale = Vector3.one * 0.5f;
-            deputyButtonHandcuffsText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            deputyButtonHandcuffsText = deputyHandcuffButton.ShowUsesIcon(3);
 
             jackalAndSidekickSabotageLightsButton = new CustomButton(
                 () => {
@@ -679,7 +685,7 @@ namespace TheOtherRoles
 
                 },
                 buttonText: ModTranslation.getString("TimeShieldText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Medic Shield
@@ -688,7 +694,7 @@ namespace TheOtherRoles
                     medicShieldButton.Timer = 0f;
 
                     if (!Helpers.isEvil(Medic.currentTarget))
-                        Medic.acTokenCommon ??= new("medic.common1");
+                        _ = new StaticAchievementToken("medic.common1");
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, Medic.setShieldAfterMeeting ? (byte)CustomRPC.SetFutureShielded : (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
                     writer.Write(Medic.currentTarget.PlayerId);
@@ -709,7 +715,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("ShieldText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
 
@@ -736,7 +742,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("ShiftText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Morphling morph
@@ -744,7 +750,7 @@ namespace TheOtherRoles
             morphlingButton = new CustomButton(
                 () => {
                     if (Morphling.sampledTarget != null) {
-                        Morphling.acTokenCommon ??= new("morphling.common1");
+                         _ = new StaticAchievementToken("morphling.common1");
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
                         writer.Write(Morphling.sampledTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -809,7 +815,7 @@ namespace TheOtherRoles
             // Camouflager camouflage
             camouflagerButton = new CustomButton(
                 () => {
-                    Camouflager.acTokenCommon ??= new("camouflager.common1");
+                    _ = new StaticAchievementToken("camouflager.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CamouflagerCamouflage, Hazel.SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.camouflagerCamouflage();
@@ -856,12 +862,12 @@ namespace TheOtherRoles
                 0f,
                 () => { hackerButton.Timer = hackerButton.MaxTimer;},
                 buttonText: ModTranslation.getString("HackerText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             hackerAdminTableButton = new CustomButton(
                () => {
-                   Hacker.acTokenAdmin ??= new("hacker.common1");
+                   _ = new StaticAchievementToken("hacker.common1");
                    if (!MapBehaviour.Instance || !MapBehaviour.Instance.isActiveAndEnabled) {
                        HudManager __instance = FastDestroyableSingleton<HudManager>.Instance;
                        __instance.InitMap();
@@ -894,7 +900,7 @@ namespace TheOtherRoles
                },
                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
                FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-               abilityTexture: true,
+               abilityTexture: CustomButton.ButtonLabelType.AdminButton,
                FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
            );
 
@@ -908,7 +914,7 @@ namespace TheOtherRoles
             hackerVitalsButton = new CustomButton(
                () => {
                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId != 1) {
-                       Hacker.acTokenVitals ??= new("hacker.common2");
+                       _ = new StaticAchievementToken("hacker.common2");
                        if (Hacker.vitals == null) {
                            var e = UnityEngine.Object.FindObjectsOfType<SystemConsole>().FirstOrDefault(x => x.gameObject.name.Contains("panel_vitals") || x.gameObject.name.Contains("Vitals"));
                            if (e == null || Camera.main == null) return;
@@ -965,7 +971,7 @@ namespace TheOtherRoles
               Helpers.isMira() ?
               TranslationController.Instance.GetString(StringNames.DoorlogLabel) :
               TranslationController.Instance.GetString(StringNames.VitalsLabel),
-              abilityTexture: true,
+              abilityTexture: CustomButton.ButtonLabelType.AdminButton,
               Helpers.isMira() ?
               TranslationController.Instance.GetString(StringNames.DoorlogLabel).camelString() :
               TranslationController.Instance.GetString(StringNames.VitalsLabel).camelString()
@@ -982,7 +988,7 @@ namespace TheOtherRoles
             trackerTrackPlayerButton = new CustomButton(
                 () => {
                     if (Tracker.currentTarget.Data.Role.IsImpostor)
-                        Tracker.acTokenCommon ??= new("tracker.common1");
+                        _ = new StaticAchievementToken("tracker.common1");
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TrackerUsedTracker, Hazel.SendOption.Reliable, -1);
                     writer.Write(Tracker.currentTarget.PlayerId);
@@ -998,7 +1004,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("TrackerText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             trackerTrackCorpsesButton = new CustomButton(
@@ -1021,7 +1027,7 @@ namespace TheOtherRoles
                     trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
                 },
                 buttonText: ModTranslation.getString("PathfindText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
     
             vampireKillButton = new CustomButton(
@@ -1044,7 +1050,7 @@ namespace TheOtherRoles
                             vampireKillButton.HasEffect = false; // Block effect on this click
                             vampireKillButton.Timer = vampireKillButton.MaxTimer;
                         } else {
-                            Vampire.acTokenCommon ??= new("vampire.common1");
+                            _ = new StaticAchievementToken("vampire.common1");
                             Vampire.bitten = Vampire.currentTarget;
                             // Notify players about bitten
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
@@ -1147,7 +1153,7 @@ namespace TheOtherRoles
                 null,
                 true,
                 ModTranslation.getString("GarlicText"),
-                true
+                CustomButton.ButtonLabelType.UseButton
             );
 
             portalmakerPlacePortalButton = new CustomButton(
@@ -1166,15 +1172,20 @@ namespace TheOtherRoles
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
                 () => { return Portalmaker.portalmaker != null && Portalmaker.portalmaker == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && Portal.secondPortal == null; },
-                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Portal.secondPortal == null; },
+                () =>
+                {
+                    if (portalmakerButtonNumText != null) portalmakerButtonNumText.text = $"{(Portal.firstPortal == null ? 2 : 1)}";
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Portal.secondPortal == null;
+                },
                 () => { portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer; },
                 Portalmaker.getPlacePortalButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("PlacePortalText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+            portalmakerButtonNumText = portalmakerPlacePortalButton.ShowUsesIcon(3);
 
             usePortalButton = new CustomButton(
                 () => {
@@ -1184,7 +1195,7 @@ namespace TheOtherRoles
 
                     bool portalMakerSoloTeleport = !Portal.locationNearEntry(CachedPlayer.LocalPlayer.transform.position);
                     if (portalMakerSoloTeleport) {
-                        Portalmaker.acTokenAnother ??= new("portalmaker.another1");
+                        _ = new StaticAchievementToken("portalmaker.another1");
                         exit = Portal.firstPortal.portalGameObject.transform.position;
                         entry = CachedPlayer.LocalPlayer.transform.position;
                     }
@@ -1228,12 +1239,12 @@ namespace TheOtherRoles
                 KeyCode.H,
                 mirror: true,
                 ModTranslation.getString("PortalTeleportText"),
-                true
+                CustomButton.ButtonLabelType.UseButton
             );
 
             portalmakerMoveToPortalButton = new CustomButton(
                 () => {
-                    Portalmaker.acTokenAnother ??= new("portalmaker.another1");
+                    _ = new StaticAchievementToken("portalmaker.another1");
 
                     bool didTeleport = false;
                     Vector3 exit = Portal.secondPortal.portalGameObject.transform.position;
@@ -1272,7 +1283,7 @@ namespace TheOtherRoles
                 KeyCode.J,
                 mirror: true,
                 ModTranslation.getString("PortalTeleportText"),
-                true
+                CustomButton.ButtonLabelType.UseButton
             );
 
 
@@ -1298,6 +1309,7 @@ namespace TheOtherRoles
                         Helpers.checkMurderAttemptAndKill(Veteran.veteran, Jackal.jackal);
                         return;
                     }
+                    _ = new StaticAchievementToken("jackal.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.JackalCreatesSidekick, Hazel.SendOption.Reliable, -1);
                     writer.Write(Jackal.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1392,13 +1404,14 @@ namespace TheOtherRoles
                     AmongUsClient.Instance.FinishRpcImmediately(killWriter);
                     RPCProcedure.serialKillerSuicide(targetId);
                 },
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             )
             {
                 showButtonText = true,
                 buttonText = ModTranslation.getString("serialKillerSuicideText"),
                 isEffectActive = true
             };
+            ButtonEffect.SetMouseActionIcon(jekyllAndHydeSuicideButton.actionButtonGameObject, true, ModTranslation.getString("buttonsNormalSuicide"), false, ButtonEffect.ActionIconType.InfoAction);
 
             jekyllAndHydeDrugButton = new CustomButton(
                 // OnClick
@@ -1435,7 +1448,7 @@ namespace TheOtherRoles
                 KeyCode.F,
                 false,
                 ModTranslation.getString("DrugText"),
-                true
+                CustomButton.ButtonLabelType.UseButton
             );
             jekyllAndHydeDrugText = GameObject.Instantiate(jekyllAndHydeDrugButton.actionButton.cooldownTimerText, jekyllAndHydeDrugButton.actionButton.cooldownTimerText.transform.parent); 
             jekyllAndHydeDrugText.text = "";
@@ -1443,69 +1456,35 @@ namespace TheOtherRoles
             jekyllAndHydeDrugText.transform.localScale = Vector3.one * 0.5f;
             jekyllAndHydeDrugText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
 
-            teleporterSampleButton = new CustomButton(
-                () =>
-                {
-                    if (Teleporter.target1 == null) Teleporter.target1 = Teleporter.currentTarget;
-                    else Teleporter.target2 = Teleporter.currentTarget;
-                    Teleporter.currentTarget = null;
-                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
-                    SoundEffectsManager.play("teleporterSample");
-                },
-                () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
-                () =>
-                {
-                    if (teleporterTarget1Text != null) teleporterTarget1Text.text = Teleporter.target1 != null ? $"1. {Teleporter.target1.Data.PlayerName}" : "";
-                    if (teleporterTarget2Text != null) teleporterTarget2Text.text = Teleporter.target2 != null ? $"2. {Teleporter.target2.Data.PlayerName}" : "";
-                    return Teleporter.currentTarget != null && (Teleporter.target1 == null || Teleporter.target2 == null) && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
-                },
-                () =>
-                {
-                    Teleporter.target1 = null;
-                    Teleporter.target2 = null;
-                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
-                },
-                Morphling.getSampleSprite(),
-                CustomButton.ButtonPositions.lowerRowRight,
-                __instance,
-                KeyCode.K,
-                buttonText: ModTranslation.getString("TeleporterSampleText"),
-                abilityTexture: true
-            );
-            teleporterTarget1Text = GameObject.Instantiate(teleporterSampleButton.actionButton.cooldownTimerText, teleporterSampleButton.actionButton.cooldownTimerText.transform.parent);
-            teleporterTarget1Text.text = "";
-            teleporterTarget1Text.enableWordWrapping = false;
-            teleporterTarget1Text.transform.localScale = Vector3.one * 0.5f;
-            teleporterTarget1Text.transform.localPosition += new Vector3(-0.05f, 1.0f, 0);
-
-            teleporterTarget2Text = GameObject.Instantiate(teleporterSampleButton.actionButton.cooldownTimerText, teleporterSampleButton.actionButton.cooldownTimerText.transform.parent);
-            teleporterTarget2Text.text = "";
-            teleporterTarget2Text.enableWordWrapping = false;
-            teleporterTarget2Text.transform.localScale = Vector3.one * 0.5f;
-            teleporterTarget2Text.transform.localPosition += new Vector3(-0.05f, 0.7f, 0) ;
-
             teleporterTeleportButton = new CustomButton(
                 () =>
                 {
-                    if (Teleporter.target1 != null && Teleporter.target2 != null && !Teleporter.target1.Data.IsDead && !Teleporter.target2.Data.IsDead &&
-                    Teleporter.target1.CanMove && Teleporter.target2.CanMove)
+                    List<byte> transportTargets = new();
+                    foreach (var player in PlayerControl.AllPlayerControls)
                     {
-                        Teleporter.acTokenCommon ??= new("teleporter.common1");
-                        Teleporter.acTokenChallenge.Value.swapTime = DateTime.UtcNow;
-                        Teleporter.acTokenChallenge.Value.target1 = Teleporter.target1.PlayerId;
-                        Teleporter.acTokenChallenge.Value.target2 = Teleporter.target2.PlayerId;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TeleporterTeleport, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Teleporter.target1.PlayerId);
-                        writer.Write(Teleporter.target2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.teleporterTeleport(Teleporter.target1.PlayerId, Teleporter.target2.PlayerId);
+                        if (!player.Data.Disconnected)
+                        {
+                            if (!player.Data.IsDead) transportTargets.Add(player.PlayerId);
+                            else
+                            {
+                                foreach (var body in UnityEngine.Object.FindObjectsOfType<DeadBody>())
+                                {
+                                    if (body.ParentId == player.PlayerId) transportTargets.Add(player.PlayerId);
+                                }
+                            }
+                        }
                     }
-                    Teleporter.target1 = null;
-                    Teleporter.target2 = null;
-                    teleporterSampleButton.Timer = teleporterSampleButton.MaxTimer;
-                    teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer;
-                    Teleporter.teleportNumber--;
-                    SoundEffectsManager.play("teleporterTeleport");
+                    byte[] transporttargetIDs = transportTargets.ToArray();
+                    var pk = new Teleporter.PlayerMenu((x) =>
+                    {
+                        Teleporter.target1 = x;
+                        Teleporter.SwappingMenus = true;
+                        Coroutines.Start(Teleporter.OpenSecondMenu());
+                    }, (y) =>
+                    {
+                        return transporttargetIDs.Contains(y.PlayerId);
+                    });
+                    Coroutines.Start(pk.Open(0f, true));
                 },
                 () => { return Teleporter.teleporter != null && CachedPlayer.LocalPlayer.PlayerControl == Teleporter.teleporter && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
                 () =>
@@ -1514,23 +1493,18 @@ namespace TheOtherRoles
                     {
                         teleporterNumLeftText.text = $"{Teleporter.teleportNumber}";
                     }
-                    return Teleporter.target1 != null && Teleporter.target2 != null && Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove && !TransportationToolPatches.isUsingTransportation(Teleporter.target1)
-                    && !TransportationToolPatches.isUsingTransportation(Teleporter.target2);
+                    return Teleporter.teleportNumber > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove && !Teleporter.SwappingMenus;
                 },
                 () => { teleporterTeleportButton.Timer = teleporterTeleportButton.MaxTimer; },
                 Teleporter.getButtonSprite(),
-                CustomButton.ButtonPositions.upperRowRight,
+                CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
                 KeyCode.F,
                 false,
                 ModTranslation.getString("TeleporterTeleportText"),
-                true
+                CustomButton.ButtonLabelType.UseButton
             );
-            teleporterNumLeftText = GameObject.Instantiate(teleporterTeleportButton.actionButton.cooldownTimerText, teleporterTeleportButton.actionButton.cooldownTimerText.transform.parent);
-            teleporterNumLeftText.text = "";
-            teleporterNumLeftText.enableWordWrapping = false;
-            teleporterNumLeftText.transform.localScale = Vector3.one * 0.5f;
-            teleporterNumLeftText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            teleporterNumLeftText = teleporterTeleportButton.ShowUsesIcon(3);
 
             plagueDoctorButton = new CustomButton(
                 () =>
@@ -1570,14 +1544,9 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("InfectText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-
-            plagueDoctornumInfectionsText = GameObject.Instantiate(plagueDoctorButton.actionButton.cooldownTimerText, plagueDoctorButton.actionButton.cooldownTimerText.transform.parent);
-            plagueDoctornumInfectionsText.text = "";
-            plagueDoctornumInfectionsText.enableWordWrapping = false;
-            plagueDoctornumInfectionsText.transform.localScale = Vector3.one * 0.5f;
-            plagueDoctornumInfectionsText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            plagueDoctornumInfectionsText = plagueDoctorButton.ShowUsesIcon(2);
 
             // EvilHacker creates madmate button
             evilHackerCreatesMadmateButton = new CustomButton(
@@ -1624,7 +1593,7 @@ namespace TheOtherRoles
                         writer.Write(Prophet.currentTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.prophetExamine(Prophet.currentTarget.PlayerId);
-                        if (Prophet.examinesLeft == 0) Prophet.acTokenUse ??= new("prophet.challenge1");
+                        if (Prophet.examinesLeft == 0) _ = new StaticAchievementToken("prophet.challenge1");
                         prophetButton.Timer = prophetButton.MaxTimer;
                     }
                 },
@@ -1646,14 +1615,9 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("ProphetText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-
-            prophetButtonText = GameObject.Instantiate(prophetButton.actionButton.cooldownTimerText, prophetButton.actionButton.cooldownTimerText.transform.parent);
-            prophetButtonText.text = "";
-            prophetButtonText.enableWordWrapping = false;
-            prophetButtonText.transform.localScale = Vector3.one * 0.5f;
-            prophetButtonText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            prophetButtonText = prophetButton.ShowUsesIcon(3);
 
             blackmailerButton = new CustomButton(
                () => { // Action when Pressed
@@ -1665,7 +1629,7 @@ namespace TheOtherRoles
                            return;
                        }
 
-                       Blackmailer.acTokenCommon ??= new("blackmailer.common1");
+                       _ = new StaticAchievementToken("blackmailer.common1");
                        Blackmailer.acTokenChallenge.Value.cleared |= Blackmailer.acTokenChallenge.Value.witness.Any(x => x == Blackmailer.currentTarget.PlayerId);
 
                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BlackmailPlayer, Hazel.SendOption.Reliable, -1);
@@ -1718,8 +1682,8 @@ namespace TheOtherRoles
                     eraserButton.MaxTimer += 10;
                     eraserButton.Timer = eraserButton.MaxTimer;
 
-                    Eraser.acTokenCommon ??= new("eraser.common1");
-                    if (Eraser.currentTarget.Data.Role.IsImpostor) Eraser.acTokenAnother ??= new("eraser.another1");
+                    _ = new StaticAchievementToken("eraser.common1");
+                    if (Eraser.currentTarget.Data.Role.IsImpostor) _ = new StaticAchievementToken("eraser.another1");
                     Eraser.acTokenChallenge.Value++;
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetFutureErased, Hazel.SendOption.Reliable, -1);
@@ -1762,7 +1726,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("PlaceTrapText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             moriartyBrainwashButton = new CustomButton(
@@ -1829,7 +1793,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("BrainwashText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             moriartyKillButton = new CustomButton(
@@ -1837,7 +1801,7 @@ namespace TheOtherRoles
                 {
 
                     MurderAttemptResult murder = Helpers.checkMurderAttemptAndKill(CachedPlayer.LocalPlayer.PlayerControl, Moriarty.killTarget, showAnimation: false);
-                    if (murder != MurderAttemptResult.BlankKill)
+                    if (murder == MurderAttemptResult.PerformKill)
                     {
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MoriartyKill, Hazel.SendOption.Reliable, -1);
                         writer.Write(Moriarty.killTarget.PlayerId);
@@ -1893,7 +1857,11 @@ namespace TheOtherRoles
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
                 () => { return Trickster.trickster != null && Trickster.trickster == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && !JackInTheBox.hasJackInTheBoxLimitReached(); },
-                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !JackInTheBox.hasJackInTheBoxLimitReached(); },
+                () =>
+                {
+                    if (tricksterBoxesText != null) tricksterBoxesText.text = (JackInTheBox.JackInTheBoxLimit - JackInTheBox.AllJackInTheBoxes.Count).ToString();
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !JackInTheBox.hasJackInTheBoxLimitReached();
+                },
                 () => { placeJackInTheBoxButton.Timer = placeJackInTheBoxButton.MaxTimer;},
                 Trickster.getPlaceBoxButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
@@ -1901,10 +1869,11 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("PlaceJackInTheBoxText")
             );
+            tricksterBoxesText = placeJackInTheBoxButton.ShowUsesIcon(0);
 
             lightsOutButton = new CustomButton(
                 () => {
-                    Trickster.acTokenCommon2 ??= new("trickster.common2");
+                    _ = new StaticAchievementToken("trickster.common2");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LightsOut, Hazel.SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.lightsOut();
@@ -1945,7 +1914,7 @@ namespace TheOtherRoles
                                 Vector2 truePosition2 = component.TruePosition;
                                 if (Vector2.Distance(truePosition2, truePosition) <= CachedPlayer.LocalPlayer.PlayerControl.MaxReportDistance && CachedPlayer.LocalPlayer.PlayerControl.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
                                 {
-                                    Cleaner.acTokenCommon ??= new("cleaner.common1");
+                                    _ = new StaticAchievementToken("cleaner.common1");
                                     Cleaner.acTokenChallenge.Value++;
 
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
@@ -2003,10 +1972,10 @@ namespace TheOtherRoles
                         MurderAttemptResult murder = Helpers.checkMurderAttemptAndKill(Warlock.warlock, Warlock.curseVictimTarget, showAnimation: false);
                         if (murder == MurderAttemptResult.SuppressKill) return;
                         if (murder == MurderAttemptResult.PerformKill) {
-                            Warlock.acTokenCommon ??= new("warlock.common1");
+                            _ = new StaticAchievementToken("warlock.common1");
                             Warlock.acTokenChallenge.Value++;
                             if (Warlock.curseVictimTarget == CachedPlayer.LocalPlayer.PlayerControl)
-                                Warlock.acTokenAnother ??= new("warlock.another1");
+                                _ = new StaticAchievementToken("warlock.another1");
                         }
 
                         warlockCurseButton.buttonText = ModTranslation.getString("CurseText");
@@ -2105,7 +2074,7 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
                 KeyCode.F,
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 buttonText: ModTranslation.getString("PlaceCameraText")
             );
 
@@ -2180,7 +2149,7 @@ namespace TheOtherRoles
                 Helpers.isMira() ?
                 TranslationController.Instance.GetString(StringNames.SecurityLogsSystem) :
                 ModTranslation.getString("securityGuardCamButton"),
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton,
                 Helpers.isMira() ?
                 TranslationController.Instance.GetString(StringNames.SecurityLogsSystem).camelString() :
                 ModTranslation.getString("securityGuardCamButton").camelString()
@@ -2198,6 +2167,7 @@ namespace TheOtherRoles
                 () => {
                     bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
                     if (dousedEveryoneAlive) {
+                        _ = new StaticAchievementToken("arsonist.challenge");
                         MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ArsonistWin, Hazel.SendOption.Reliable, -1);
                         AmongUsClient.Instance.FinishRpcImmediately(winWriter);
                         RPCProcedure.arsonistWin();
@@ -2244,7 +2214,7 @@ namespace TheOtherRoles
                 Arsonist.duration,
                 () => {
                     if (Arsonist.douseTarget != null) Arsonist.dousedPlayers.Add(Arsonist.douseTarget);
-                    
+                    _ = new StaticAchievementToken("arsonist.common1");
                     arsonistButton.Timer = Arsonist.dousedEveryoneAlive() ? 0 : arsonistButton.MaxTimer;
 
                     foreach (PlayerControl p in Arsonist.dousedPlayers) {
@@ -2294,14 +2264,9 @@ namespace TheOtherRoles
                 Veteran.alertDuration,
                 () => { veteranAlertButton.Timer = veteranAlertButton.MaxTimer; },
                 buttonText: ModTranslation.getString("AlertText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-
-            veteranButtonAlertText = GameObject.Instantiate(veteranAlertButton.actionButton.cooldownTimerText, veteranAlertButton.actionButton.cooldownTimerText.transform.parent);
-            veteranButtonAlertText.text = "";
-            veteranButtonAlertText.enableWordWrapping = false;
-            veteranButtonAlertText.transform.localScale = Vector3.one * 0.5f;
-            veteranButtonAlertText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            veteranButtonAlertText = veteranAlertButton.ShowUsesIcon(3);
 
             //createRoleSummaryButton(__instance);
 
@@ -2596,7 +2561,7 @@ namespace TheOtherRoles
             undertakerDragButton = new CustomButton(
                 () =>
                 {
-                    Undertaker.acTokenCommon ??= new("undertaker.common1");
+                    _ = new StaticAchievementToken("undertaker.common1");
                     var bodyComponent = Undertaker.TargetBody;
                     if (Undertaker.DraggedBody == null && bodyComponent != null)
                     {
@@ -2656,9 +2621,8 @@ namespace TheOtherRoles
                     writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
                     writer.Write(false);
                     writer.Write(false);
-                    RPCProcedure.buskerPseudocide(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, false, false);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Busker.pseudocideFlag = true;
+                    RPCProcedure.buskerPseudocide(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, false, false);
                 },
                 () => { return Busker.busker != null && CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || Busker.checkPseudocide()); },
                 () =>
@@ -2689,24 +2653,23 @@ namespace TheOtherRoles
                 {
                     if (Busker.buttonInterrupted)
                     {
-                        Busker.acTokenCommon ??= new("busker.common1");
+                        Busker.buttonInterrupted = false;
+                        _ = new StaticAchievementToken("busker.common1");
                         Busker.acTokenChallenge.Value.pseudocide = DateTime.UtcNow;
-                        buskerButton.Timer = buskerButton.MaxTimer = Busker.cooldown;
                         MessageWriter writer1 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BuskerRevive, SendOption.Reliable, -1);
                         writer1.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
-                        RPCProcedure.buskerRevive(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer1);
-                        Busker.pseudocideFlag = false;
-                        Busker.buttonInterrupted = false;
+                        RPCProcedure.buskerRevive(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                        buskerButton.Timer = buskerButton.MaxTimer = Busker.cooldown;
                     }
                     else
                     {
-                        Busker.acTokenAnother ??= new("busker.another1");
+                        _ = new StaticAchievementToken("busker.another1");
                         Busker.dieBusker();
                     }
                 },
                 buttonText: ModTranslation.getString("PseudocideText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             )
             {
                 effectCancellable = true
@@ -2739,14 +2702,9 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("NoisemakerText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-
-            noisemakerButtonText = GameObject.Instantiate(noisemakerButton.actionButton.cooldownTimerText, noisemakerButton.actionButton.cooldownTimerText.transform.parent);
-            noisemakerButtonText.text = "";
-            noisemakerButtonText.enableWordWrapping = false;
-            noisemakerButtonText.transform.localScale = Vector3.one * 0.5f;
-            noisemakerButtonText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            noisemakerButtonText = noisemakerButton.ShowUsesIcon(3);
 
             schrodingersCatKillButton = new CustomButton(
                 () =>
@@ -2786,28 +2744,38 @@ namespace TheOtherRoles
                 {
                     if (Sherlock.killPopup == null) Sherlock.killPopup = GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab;
                     int count = 0;
+                    string msg = "";
                     foreach (var item in Sherlock.killLog)
                     {
                         float distance = Vector3.Distance(item.Item2.Item2, CachedPlayer.LocalPlayer.PlayerControl.transform.position);
                         if (distance < Sherlock.investigateDistance)
                         {
                             var newPopUp = UnityEngine.Object.Instantiate(Sherlock.killPopup, __instance.transform.parent);
-                            PlayerControl killer = Helpers.playerById(item.Item1);
-                            PlayerControl target = Helpers.playerById(item.Item2.Item1);
+                            PlayerControl killer = Helpers.getPlayerById(item.Item1);
+                            PlayerControl target = Helpers.getPlayerById(item.Item2.Item1);
                             string killerTeam = RoleInfo.GetRolesString(killer, useColors: true, showModifier: false, includeHidden: true);
                             newPopUp.gameObject.transform.GetChild(0).GetComponent<TextTranslatorTMP>().enabled = false;
                             newPopUp.gameObject.transform.GetChild(0).GetComponent<TMPro.TextMeshPro>().text = string.Format(ModTranslation.getString("sherlockMessage2"), killerTeam);
                             newPopUp.gameObject.transform.position += (count % 4) * new Vector3(0, -1.2f, 0) + new Vector3(3f - (int)(count / 4) * 3.8f, -0.25f, __instance.MapButton.transform.localPosition.z - 600f);
                             newPopUp.ModShow(target, 0);
                             count++;
+                            msg += $"{string.Format(ModTranslation.getString("sherlockMeeting"), target?.Data?.PlayerName, killerTeam)}\n";
                         }
+                    }
+                    if (!string.IsNullOrEmpty(msg))
+                    {
+                        msg = msg.TrimEnd('\n');
+                        MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent("sherlockInfo")),
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(msg)))
+                        , MeetingOverlayHolder.IconsSprite[2], Sherlock.color);
                     }
                     if (count == 0)
                     {
                         Sherlock.investigateMessage(ModTranslation.getString("sherlockMessage1"), 7f, Color.white);
                     }
                     if (count >= 3)
-                        Sherlock.acTokenCommon ??= new("sherlock.common1");
+                        _ = new StaticAchievementToken("sherlock.common1");
                     Sherlock.numUsed += 1;
                     sherlockInvestigateButton.Timer = sherlockInvestigateButton.MaxTimer;
                     SoundEffectsManager.play("sherlockInvestigate");
@@ -2828,7 +2796,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("InvestigateText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             sherlockNumInvestigateText = GameObject.Instantiate(sherlockInvestigateButton.actionButton.cooldownTimerText, sherlockInvestigateButton.actionButton.cooldownTimerText.transform.parent);
             sherlockNumInvestigateText.text = "";
@@ -2900,20 +2868,26 @@ namespace TheOtherRoles
                     }
                 },
                 () => { return Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
-                () => { return Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Cupid.currentTarget != null && Cupid.lovers2 == null && Cupid.timeLeft > 0; },
+                () =>
+                {
+                    if (cupidLoversText != null) cupidLoversText.text = Cupid.lovers1 == null ? "2" : "1";
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Cupid.currentTarget != null;
+                },
                 () => { cupidArrowButton.Timer = cupidArrowButton.MaxTimer; },
                 Cupid.getArrowSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("CupidArrowText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             cupidTimeRemainingText = GameObject.Instantiate(cupidArrowButton.actionButton.cooldownTimerText, __instance.transform);
             cupidTimeRemainingText.text = "";
             cupidTimeRemainingText.enableWordWrapping = false;
             cupidTimeRemainingText.transform.localScale = Vector3.one * 0.45f;
             cupidTimeRemainingText.transform.localPosition = cupidArrowButton.actionButton.cooldownTimerText.transform.parent.localPosition + new Vector3(-0.1f, 0.35f, 0f);
+            ButtonEffect.SetMouseActionIcon(cupidArrowButton.actionButtonGameObject, true, ModTranslation.getString("buttonsCupidSuicide"), true, ButtonEffect.ActionIconType.InfoAction);
+            cupidLoversText = cupidArrowButton.ShowUsesIcon(4);
 
             cupidShieldButton = new CustomButton(
                 () =>
@@ -2938,7 +2912,7 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.G,
                 buttonText: ModTranslation.getString("ShieldText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Akujo Honmei
@@ -2968,13 +2942,16 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("AkujoHonmeiText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+            akujoHonmeiText = akujoHonmeiButton.ShowUsesIcon(4);
+            akujoHonmeiText.text = "1";
             akujoTimeRemainingText = GameObject.Instantiate(akujoHonmeiButton.actionButton.cooldownTimerText, __instance.transform);
             akujoTimeRemainingText.text = "";
             akujoTimeRemainingText.enableWordWrapping = false;
             akujoTimeRemainingText.transform.localScale = Vector3.one * 0.45f;
             akujoTimeRemainingText.transform.localPosition = akujoHonmeiButton.actionButton.cooldownTimerText.transform.parent.localPosition + new Vector3(-0.1f, 0.35f, 0f);
+            ButtonEffect.SetMouseActionIcon(akujoHonmeiButton.actionButtonGameObject, true, ModTranslation.getString("buttonsAkujoSuicide"), true, ButtonEffect.ActionIconType.InfoAction);
 
             // Akujo Keep
             akujoBackupButton = new CustomButton(
@@ -3010,13 +2987,9 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.K,
                 buttonText: ModTranslation.getString("AkujoBackupText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-            akujoBackupLeftText = GameObject.Instantiate(akujoBackupButton.actionButton.cooldownTimerText, akujoBackupButton.actionButton.cooldownTimerText.transform.parent);
-            akujoBackupLeftText.text = "";
-            akujoBackupLeftText.enableWordWrapping = false;
-            akujoBackupLeftText.transform.localScale = Vector3.one * 0.5f;
-            akujoBackupLeftText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            akujoBackupLeftText = akujoBackupButton.ShowUsesIcon(4);
 
             // Mimic(Assistant) Morph
             mimicAMorphButton = new CustomButton(
@@ -3085,7 +3058,7 @@ namespace TheOtherRoles
                         return;
                     }
 
-                    Ninja.acTokenCommon ??= new("ninja.common1");
+                    _ = new StaticAchievementToken("ninja.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
                     writer.Write(CachedPlayer.LocalPlayer.PlayerId);
                     writer.Write(true);
@@ -3141,6 +3114,135 @@ namespace TheOtherRoles
                 effectCancellable = true
             };
 
+            // Kataomoi button
+            kataomoiButton = new CustomButton(
+                () => {
+                    if (Kataomoi.canLove())
+                    {
+                        var murderAttemptResult = Helpers.checkMuderAttempt(Kataomoi.kataomoi, Kataomoi.currentTarget);
+                        if (murderAttemptResult == MurderAttemptResult.SuppressKill) return;
+
+                        MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.KataomoiWin, Hazel.SendOption.Reliable, -1);
+                        AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                        RPCProcedure.kataomoiWin();
+
+                        if (murderAttemptResult == MurderAttemptResult.PerformKill)
+                        {
+                            byte targetId = Kataomoi.currentTarget.PlayerId;
+                            MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
+                            killWriter.Write(Kataomoi.kataomoi.Data.PlayerId);
+                            killWriter.Write(targetId);
+                            killWriter.Write(byte.MaxValue);
+                            AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                            RPCProcedure.uncheckedMurderPlayer(Kataomoi.kataomoi.Data.PlayerId, targetId, Byte.MaxValue);
+                        }
+
+                        kataomoiButton.HasEffect = false;
+                    }
+                    else if (Kataomoi.currentTarget != null)
+                    {
+                        kataomoiButton.HasEffect = true;
+                    }
+                },
+                () => { return Kataomoi.kataomoi != null && Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => {
+                    if (Kataomoi.canLove()) {
+                        kataomoiButton.actionButton.graphic.sprite = Kataomoi.getLoveSprite();
+                        kataomoiButton.buttonText = ModTranslation.getString("KataomoiLoveText");
+                        kataomoiButton.resetKeyBind();
+                    }
+
+                    if (kataomoiButton.isEffectActive && Kataomoi.target != null && Kataomoi.target != Kataomoi.currentTarget)
+                    {
+                        kataomoiButton.Timer = 0f;
+                        kataomoiButton.isEffectActive = false;
+                    }
+
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove && Kataomoi.currentTarget != null;
+                },
+                () => {
+                    kataomoiButton.Timer = kataomoiButton.MaxTimer;
+                    kataomoiButton.isEffectActive = false;
+                    kataomoiButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                },
+                Kataomoi.getStareSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.H,
+                true,
+                Kataomoi.stareDuration,
+                () => {
+                    Kataomoi.doStare();
+                    kataomoiButton.Timer = Kataomoi.canLove() ? 0 : kataomoiButton.MaxTimer;
+                },
+                buttonText: ModTranslation.getString("KataomoiStareText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
+                shakeOnEnd: false
+            );
+
+            // Kataomoi search button
+            kataomoiSearchButton = new CustomButton(
+                () => {
+                    if (Kataomoi.kataomoi == null) return;
+                    Kataomoi.doSearch();
+                },
+                () => { return Kataomoi.kataomoi != null && Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => {
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () => {
+                    kataomoiSearchButton.Timer = kataomoiSearchButton.MaxTimer;
+                    kataomoiSearchButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                    kataomoiSearchButton.isEffectActive = false;
+                    Kataomoi.resetSearch();
+                },
+                Kataomoi.getSearchSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.G,
+                true,
+                Kataomoi.searchDuration,
+                () => {
+                    kataomoiSearchButton.Timer = kataomoiSearchButton.MaxTimer;
+                    Kataomoi.resetSearch();
+                },
+                buttonText: ModTranslation.getString("KataomoiSearchText")
+            );
+
+            // Kataomoi stalking button
+            kataomoiStalkingButton = new CustomButton(
+                () => {
+                    if (Kataomoi.kataomoi == null) return;
+
+                    byte playerId = Kataomoi.kataomoi.Data.PlayerId;
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.KataomoiStalking, Hazel.SendOption.Reliable, -1);
+                    writer.Write(playerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    RPCProcedure.kataomoiStalking(playerId);
+                },
+                () => { return Kataomoi.kataomoi != null && Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
+                () => {
+                    return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
+                () => {
+                    kataomoiStalkingButton.Timer = kataomoiStalkingButton.MaxTimer;
+                    kataomoiStalkingButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                    kataomoiStalkingButton.isEffectActive = false;
+                },
+                Kataomoi.getStalkingSprite(),
+                CustomButton.ButtonPositions.upperRowCenter,
+                __instance,
+                KeyCode.F,
+                true,
+                Kataomoi.stalkingDuration,
+                () => {
+                    kataomoiStalkingButton.Timer = kataomoiStalkingButton.MaxTimer;
+                },
+                buttonText: ModTranslation.getString("KataomoiStalkText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+
             foxStealthButton = new CustomButton(
                 () =>
                 {
@@ -3192,7 +3294,7 @@ namespace TheOtherRoles
                     RPCProcedure.foxStealth(false);
                 },
                 buttonText: ModTranslation.getString("FoxStealthText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             )
             {
                 effectCancellable = true
@@ -3244,6 +3346,7 @@ namespace TheOtherRoles
                 () => { return CachedPlayer.LocalPlayer.PlayerControl == Fox.fox && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Fox.numRepair > 0; },
                 () =>
                 {
+                    if (foxRepairText != null) foxRepairText.text = Fox.numRepair.ToString();
                     bool sabotageActive = false;
                     foreach (PlayerTask task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
                         if (task.TaskType is TaskTypes.FixLights or TaskTypes.RestoreOxy or TaskTypes.ResetReactor or TaskTypes.ResetSeismic or TaskTypes.FixComms or TaskTypes.StopCharles)
@@ -3255,9 +3358,10 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.G,
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 buttonText: ModTranslation.getString("RepairText")
             );
+            foxRepairText = foxRepairButton.ShowUsesIcon(4);
 
             foxImmoralistButton = new CustomButton(
                 () =>
@@ -3279,7 +3383,7 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
                 KeyCode.I,
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 buttonText: ModTranslation.getString("FoxImmoralistText")
             );
 
@@ -3328,14 +3432,14 @@ namespace TheOtherRoles
                 SerialKiller.suicideTimer,
                 () =>
                 {
-                    SerialKiller.acTokenAnother ??= new("serialKiller.another1");
+                    _ = new StaticAchievementToken("serialKiller.another1");
                     byte targetId = SerialKiller.serialKiller.PlayerId;
                     MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SerialKillerSuicide, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
                     killWriter.Write(targetId);
                     AmongUsClient.Instance.FinishRpcImmediately(killWriter);
                     RPCProcedure.serialKillerSuicide(targetId);
                 },
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             )
             {
                 //UnityEngine.Object.Destroy(serialKillerButton.actionButton.buttonLabelText);
@@ -3344,6 +3448,7 @@ namespace TheOtherRoles
                 buttonText = ModTranslation.getString("serialKillerSuicideText"),
                 isEffectActive = true
             };
+            ButtonEffect.SetMouseActionIcon(serialKillerButton.actionButtonGameObject, true, ModTranslation.getString("buttonsNormalSuicide"), false, ButtonEffect.ActionIconType.InfoAction);
 
             // Evil Tracker track
             evilTrackerButton = new CustomButton(
@@ -3353,7 +3458,7 @@ namespace TheOtherRoles
                         Helpers.checkMurderAttemptAndKill(Veteran.veteran, EvilTracker.evilTracker);
                         return;
                     }
-                    EvilTracker.acTokenCommon1 ??= new("evilTracker.common1");
+                    _ = new StaticAchievementToken("evilTracker.common1");
                     EvilTracker.target = EvilTracker.currentTarget;
                 },
                 () => { return EvilTracker.target == null && CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead; },
@@ -3383,7 +3488,7 @@ namespace TheOtherRoles
                                 Vector2 truePosition2 = component.TruePosition;
                                 if (Vector2.Distance(truePosition2, truePosition) <= CachedPlayer.LocalPlayer.PlayerControl.MaxReportDistance && CachedPlayer.LocalPlayer.PlayerControl.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false)) {
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
-
+                                    _ = new StaticAchievementToken("vulture.common1");
                                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
                                     writer.Write(playerInfo.PlayerId);
                                     writer.Write(Vulture.vulture.PlayerId);
@@ -3399,7 +3504,11 @@ namespace TheOtherRoles
                     }
                 },
                 () => { return Vulture.vulture != null && Vulture.vulture == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
-                () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () =>
+                {
+                    if (vultureRemainingText != null) vultureRemainingText.text = (Vulture.vultureNumberToWin - Vulture.eatenBodies).ToString();
+                    return __instance.ReportButton.graphic.color == Palette.EnabledColor && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
+                },
                 () => { vultureEatButton.Timer = vultureEatButton.MaxTimer; },
                 Vulture.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowCenter,
@@ -3407,6 +3516,7 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("VultureText")
             );
+            vultureRemainingText = vultureEatButton.ShowUsesIcon(2);
 
             // EvilHacker button
             evilHackerButton = new CustomButton(
@@ -3441,6 +3551,7 @@ namespace TheOtherRoles
                 KeyCode.H,
                 false,
                 FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton,
                 actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
             );
 
@@ -3522,7 +3633,7 @@ namespace TheOtherRoles
                     SoundEffectsManager.stop("mediumAsk");
                 },
                 buttonText: ModTranslation.getString("MediumText"),
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 shakeOnEnd: false
             );
 
@@ -3649,7 +3760,7 @@ namespace TheOtherRoles
                     // keyboard shortcut
                     KeyCode.None,
                     true,
-                    abilityTexture: true
+                    abilityTexture: CustomButton.ButtonLabelType.UseButton
                 )
                 {
                     Timer = 0.0f,
@@ -3712,6 +3823,7 @@ namespace TheOtherRoles
                             Helpers.checkMurderAttemptAndKill(Veteran.veteran, Pursuer.pursuer);
                             return;
                         }
+                        if (Pursuer.target.Data.Role.IsImpostor) _ = new StaticAchievementToken("pursuer.common1");
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetBlanked, Hazel.SendOption.Reliable, -1);
                         writer.Write(Pursuer.target.PlayerId);
                         writer.Write(Byte.MaxValue);
@@ -3738,15 +3850,11 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 buttonText: ModTranslation.getString("PursuerText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Pursuer button blanks left
-            pursuerButtonBlanksText = GameObject.Instantiate(pursuerButton.actionButton.cooldownTimerText, pursuerButton.actionButton.cooldownTimerText.transform.parent);
-            pursuerButtonBlanksText.text = "";
-            pursuerButtonBlanksText.enableWordWrapping = false;
-            pursuerButtonBlanksText.transform.localScale = Vector3.one * 0.5f;
-            pursuerButtonBlanksText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            pursuerButtonBlanksText = pursuerButton.ShowUsesIcon(1);
 
 
             // Witch Spell button
@@ -3786,7 +3894,7 @@ namespace TheOtherRoles
                     if (Witch.spellCastingTarget == null) return;
                     MurderAttemptResult attempt = Helpers.checkMuderAttempt(Witch.witch, Witch.spellCastingTarget);
                     if (attempt == MurderAttemptResult.PerformKill) {
-                        Witch.acTokenCommon ??= new("witch.common1");
+                        _ = new StaticAchievementToken("witch.common1");
                         Witch.acTokenChallenge.Value++;
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetFutureSpelled, Hazel.SendOption.Reliable, -1);
                         writer.Write(Witch.currentTarget.PlayerId);
@@ -3820,7 +3928,7 @@ namespace TheOtherRoles
                         return;
                     }
 
-                    Sprinter.acTokenSprint ??= new("sprinter.common1");
+                    _ = new StaticAchievementToken("sprinter.common1");
                     if (Sprinter.acTokenMove != null) Sprinter.acTokenMove.Value.pos = CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition();
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
@@ -3868,7 +3976,7 @@ namespace TheOtherRoles
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.sprinterSprint(PlayerControl.LocalPlayer.PlayerId, false);
                 },
-                abilityTexture: true,
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 buttonText: ModTranslation.getString("SprintText")
             )
             {
@@ -3888,7 +3996,7 @@ namespace TheOtherRoles
                             return;
                         }
                         if (attempt == MurderAttemptResult.PerformKill) {
-                            Assassin.acTokenCommon ??= new("assassin.common1");
+                            _ = new StaticAchievementToken("assassin.common1");
                             Assassin.acTokenChallenge.Value.markKill = true;
                             // Create first trace before killing
                             var pos = CachedPlayer.LocalPlayer.transform.position;
@@ -3979,7 +4087,7 @@ namespace TheOtherRoles
                    Mayor.remoteMeetingsLeft--;
 
                    if (Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat()) - Mayor.remoteMeetingsLeft >= 3)
-                       Mayor.acTokenAnother ??= new("mayor.another1");
+                       _ = new StaticAchievementToken("mayor.another1");
 
 	               Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
                    Helpers.HandleUndertakerDropOnBodyReport();
@@ -4129,7 +4237,7 @@ namespace TheOtherRoles
                 KeyCode.Z,
                 true,
                 buttonText: ModTranslation.getString("FreePlayOperateText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             freePlayReviveButton = new CustomButton(
@@ -4157,7 +4265,7 @@ namespace TheOtherRoles
                 KeyCode.Y,
                 true,
                 buttonText: ModTranslation.getString("FreePlayReviveText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             freePlaySuicideButton = new CustomButton(
@@ -4186,7 +4294,7 @@ namespace TheOtherRoles
                 KeyCode.X,
                 true,
                 buttonText: ModTranslation.getString("FreePlaySuicideText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             thiefKillButton = new CustomButton(
@@ -4297,7 +4405,7 @@ namespace TheOtherRoles
                     SoundEffectsManager.play("lighterLight");
                 },
                 buttonText: ModTranslation.getString("LighterText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             hunterAdminTableButton = new CustomButton(
@@ -4366,7 +4474,7 @@ namespace TheOtherRoles
                     SoundEffectsManager.play("trackerTrackPlayer");
                 },
                 buttonText: ModTranslation.getString("HunterArrowText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             huntedShieldButton = new CustomButton(
@@ -4401,14 +4509,9 @@ namespace TheOtherRoles
 
                 },
                 buttonText: ModTranslation.getString("TimeShieldText"),
-                abilityTexture: true
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
-
-            huntedShieldCountText = GameObject.Instantiate(huntedShieldButton.actionButton.cooldownTimerText, huntedShieldButton.actionButton.cooldownTimerText.transform.parent);
-            huntedShieldCountText.text = "";
-            huntedShieldCountText.enableWordWrapping = false;
-            huntedShieldCountText.transform.localScale = Vector3.one * 0.5f;
-            huntedShieldCountText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+            huntedShieldCountText = huntedShieldButton.ShowUsesIcon(3);
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons
             initialized = true;

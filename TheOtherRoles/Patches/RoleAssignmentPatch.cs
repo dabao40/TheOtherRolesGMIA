@@ -147,6 +147,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Cupid, CustomOptionHolder.cupidSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Fox, CustomOptionHolder.foxSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.SchrodingersCat, CustomOptionHolder.schrodingersCatSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Kataomoi, CustomOptionHolder.kataomoiSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -540,6 +541,25 @@ namespace TheOtherRoles.Patches {
                     RPCProcedure.lawyerSetTarget(target.PlayerId);
                 }
             }
+
+            // Set Kataomoi target
+            if (Kataomoi.kataomoi != null)
+            {
+                var possibleTargets = new List<PlayerControl>();
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    if (!p.Data.IsDead && p != Kataomoi.kataomoi)
+                        possibleTargets.Add(p);
+                }
+                if (possibleTargets.Count > 0)
+                {
+                    var target = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.KataomoiSetTarget, Hazel.SendOption.Reliable, -1);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.kataomoiSetTarget(target.PlayerId);
+                }
+            }
         }
 
         private static void assignModifiers() {
@@ -579,7 +599,8 @@ namespace TheOtherRoles.Patches {
                 impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor || x == NekoKabocha.nekoKabocha);
                 if (MimicK.ifOneDiesBothDie) impPlayer.RemoveAll(y => y == MimicK.mimicK || y == MimicA.mimicA);
                 if (BomberA.ifOneDiesBothDie) impPlayer.RemoveAll(z => z == BomberA.bomberA || z == BomberB.bomberB);
-                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller || x == Akujo.akujo || x == Cupid.cupid || x == Fox.fox);
+                crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || x == Lawyer.lawyer || x == FortuneTeller.fortuneTeller || x == Akujo.akujo || x == Cupid.cupid || x == Fox.fox
+                || x == Kataomoi.kataomoi);
 
                 if (isEvilLover) firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, impPlayer);
                 else firstLoverId = setModifierToRandomPlayer((byte)RoleId.Lover, crewPlayer);
@@ -714,8 +735,6 @@ namespace TheOtherRoles.Patches {
                 while (madmateCount < modifiers.FindAll(x => x == RoleId.Madmate).Count)
                 {
                     playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
-                    crewPlayer.RemoveAll(x => x.PlayerId == playerId);
-                    playerList.RemoveAll(x => x.PlayerId == playerId);
                     crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
                     madmateCount++;
                 }

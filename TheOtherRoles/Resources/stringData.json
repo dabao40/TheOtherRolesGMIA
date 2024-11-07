@@ -509,18 +509,18 @@
     "playerStopGameStartText": {
         "0": "{0} stopped the game start!",
         "11": "{0} \u304c\u30b2\u30fc\u30e0\u958b\u59cb\u3092\u505c\u6b62\u3057\u307e\u3057\u305f!",
-        "13": "{0} \u963b\u6b62\u4e86\u6e38\u620f\u5f00\u59cb\uff01"
+        "13": "{0}\u963b\u6b62\u4e86\u6e38\u620f\u5f00\u59cb\uff01"
     },
     "fullCredentials": {
         "0": "<size=60%>Modded by <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\nDesign by <color=#FCCE03FF>Bavari</color>\nRebuild by <color=#FCCE03FF>Imp11</color></size>",
-        "11": "mod\u88fd\u4f5c <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\n\u30c7\u30b6\u30a4\u30f3 <color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color>",
-        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color> & <color=#808080FF>\u91ce\u751f\u7684\u7334\u5b50\u54c8\u54c8\u54e5</color>\u7ffb\u8bd1</size>",
+        "11": "<size=60%>mod\u88fd\u4f5c <color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>EndOfFile</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\n\u30c7\u30b6\u30a4\u30f3 <color=#FCCE03FF>Bavari</color> \n\u30ea\u30d3\u30eb\u30c9 <color=#FCCE03FF>Imp11</color></size>",
+        "13": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7ec4\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u94ae\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u5757</color>\u7ffb\u8bd1</size>",
         "14": "<size=60%>\u7531<color=#FCCE03FF>Eisbison</color>, <color=#FCCE03FF>EndOfFile</color>\n<color=#FCCE03FF>Thunderstorm584</color>, <color=#FCCE03FF>Mall\u00f6ris</color> & <color=#FCCE03FF>Gendelo</color>\u5236\u4f5c\u6a21\u7d44\u672c\u5bb6\n\u7531<color=#FCCE03FF>Bavari</color>\u5236\u4f5c\u6309\u9215\n\u7531<color=#FCCE03FF>Imp11</color>\u91cd\u5236\n\u7531<color=#00FFFFFF>\u65b9\u584a</color>\u7e41\u4e2d\u7ffb\u8b6f</size>"
     },
     "contributorsCredentials": {
-        "0": "<size=60%> <color=#FCCE03FF>Special thanks to <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
-        "11": "<size=60%> <color=#FCCE03FF>\u30b9\u30da\u30b7\u30e3\u30eb\u30b5\u30f3\u30af\u30b9 <color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
-        "13": "<size=60%> <color=#FCCE03FF>\u7279\u522b\u9e23\u8c22<color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>",
+        "0": "<size=60%><color=#FCCE03FF>Special thanks to <color=#FFFFE0FF>Among us</color> & <color=#00FFFFFF>Fangkuai</color></size>",
+        "11": "<size=60%><color=#FCCE03FF>\u30b9\u30da\u30b7\u30e3\u30eb\u30b5\u30f3\u30af\u30b9 <color=#FFFFE0FF>Among us</color> & <color=#00FFFFFF>Fangkuai</color></size>",
+        "13": "<size=60%><color=#FCCE03FF>\u7279\u522b\u9e23\u8c22<color=#FFFFE0FF>Among us</color> & <color=#00FFFFFF>\u65b9\u5757</color></size>",
         "14": "<size=60%> <color=#FCCE03FF>\u7279\u5225\u9cf4\u8b1d<color=#FFFFE0FF>Among us</color> & <color=#06FCC6FF>Sukuna</color></size>"
     },
     "mainMenuCredentials": {
@@ -739,6 +739,14 @@
         "11": "\u30ab\u30e2\u30d5\u30e9\u30fc\u30b8\u30e5\u306e\u6301\u7d9a\u6642\u9593",
         "13": "\u9690\u853d\u6301\u7eed\u65f6\u95f4",
         "14": "\u96b1\u853d\u6301\u7e8c\u6642\u9593"
+    },
+    "camouflagerEnableEffect": {
+        "0": "Enable Camo Rough Effect",
+        "13": "\u542f\u7528\u9690\u853d\u6a21\u7cca\u89c6\u91ce"
+    },
+    "camouflagerImpIgnore": {
+        "0": "Impostors Ignore Camo Effect",
+        "13": "\u5185\u9b3c\u65e0\u89c6\u9690\u853d\u6a21\u7cca\u6548\u679c"
     },
     "vampire": {
         "0": "Vampire",
@@ -1006,7 +1014,7 @@
     "loversFlavor": {
         "0": "\u2665 You are in love with {0} \u2665",
         "11": "\u2665 {0} \u3068\u604b\u4eba\u306b\u306a\u308a\u307e\u3057\u305f \u2665",
-        "13": "\u2665 \u4f60\u7231\u4e0a\u4e86 {0} \u2665",
+        "13": "\u2665\u4f60\u4e0e{0}\u5760\u5165\u4e86\u7231\u6cb3\u2665",
         "14": "\u2665 \u59b3\u611b\u4e0a\u4e86 {0} \u2665"
     },
     "loversImpLoverRate": {
@@ -1120,13 +1128,13 @@
     "guesserGuessChat": {
         "0": "{0} guessed the role {1} for {2}!",
         "11": "{0} \u306f {2} \u306e\u30ed\u30fc\u30eb\u3092 {1} \u3060\u3068\u63a8\u6e2c\u3057\u305f!",
-        "13": "{0} \u731c\u6d4b {2} \u7684\u8eab\u4efd\u4e3a {1}\uff01",
+        "13": "{0}\u731c\u6d4b{2}\u7684\u8eab\u4efd\u4e3a{1}\uff01",
         "14": "{0} \u731c\u6e2c {2} \u7684\u8eab\u4efd\u70ba {1}\uff01"
     },
     "watcherGuessChat": {
         "0": "The Guesser guessed the role {0} for {1}!",
         "11": "\u30b2\u30c3\u30b5\u30fc\u306f\u300c{1}\u300d\u306e\u30ed\u30fc\u30eb\u304c\u300c{0}\u300d\u3060\u3068\u63a8\u6e2c\u3057\u305f\uff01",
-        "13": "\u8d4c\u602a\u731c\u6d4b {1} \u7684\u8eab\u4efd\u4e3a {0}\uff01",
+        "13": "\u8d4c\u602a\u731c\u6d4b{1}\u7684\u8eab\u4efd\u4e3a{0}\uff01",
         "14": "\u8ced\u602a\u731c\u6e2c {1} \u7684\u8eab\u4efd\u70ba {0}\uff01"
     },
     "guesserGuessesLeft": {
@@ -1644,13 +1652,13 @@
     "deputyIntroLine": {
         "0": "\nYour Deputy is {0}",
         "11": "\n\u3042\u306a\u305f\u306e\u4ef2\u9593\u306e\u526f\u5b98\u306f {0} \u3067\u3059\u3002",
-        "13": "\n\u4f60\u7684\u6355\u5feb\u662f {0}",
+        "13": "\n\u4f60\u7684\u6355\u5feb\u662f{0}",
         "14": "\n\u59b3\u7684\u6355\u5feb\u662f {0}"
     },
     "sheriffIntroLine": {
         "0": "\nYour Sheriff is {0}",
         "11": "\n\u3042\u306a\u305f\u306e\u4ef2\u9593\u306e\u30b7\u30a7\u30ea\u30d5\u306f {0} \u3067\u3059\u3002",
-        "13": "\n\u4f60\u7684\u8b66\u957f\u662f {0}",
+        "13": "\n\u4f60\u7684\u8b66\u957f\u662f{0}",
         "14": "\n\u59b3\u7684\u8b66\u9577\u662f {0}"
     },
     "lighter": {
@@ -1746,7 +1754,7 @@
     "detectiveReportName": {
         "0": "Body Report: The killer appears to be {0}!",
         "11": "\u8abf\u67fb\u306e\u7d50\u679c\u3001\u72af\u4eba\u306f{0}\u307f\u305f\u3044!",
-        "13": "\u5c38\u68c0\u62a5\u544a: \u51f6\u624b\u4f3c\u4e4e\u662f {0}!",
+        "13": "\u5c38\u68c0\u62a5\u544a: \u51f6\u624b\u4f3c\u4e4e\u662f{0}!",
         "14": "\u5c4d\u6aa2\u5831\u544a: \u5147\u624b\u4f3c\u4e4e\u662f {0}!"
     },
     "detectiveReportColor": {
@@ -2555,31 +2563,31 @@
     "mediumQuestion1": {
         "0": "If my role hasn't been saved, there's no {0} in the game anymore.",
         "11": "\u300c\u3042\u306a\u305f\u306e\u5f79\u8077\u306f\u4f55\u3067\u3059\u304b\u300d\u300e\u79c1\u306f{0}\u3067\u3059\u300f",
-        "13": "\u5982\u679c\u6211\u6ca1\u6709\u5b58\u6d3b\uff0c\u90a3\u4e48\u573a\u4e0a\u5c31\u4e0d\u4f1a\u518d\u6709 {0} \u4e86",
+        "13": "\u5982\u679c\u6211\u6ca1\u6709\u5b58\u6d3b\uff0c\u90a3\u4e48\u573a\u4e0a\u5c31\u4e0d\u4f1a\u518d\u6709{0}\u4e86",
         "14": "\u5982\u679c\u6211\u6c92\u6709\u5b58\u6d3b\uff0c\u90a3\u9ebd\u5834\u4e0a\u5c31\u4e0d\u6703\u518d\u6709 {0} \u4e86"
     },
     "mediumQuestion2": {
         "0": "I'm not sure, but I guess a {0} color killed me.",
         "11": "\u300c\u3042\u306a\u305f\u3092\u6bba\u3057\u305f\u4eba\u306f\u3069\u3093\u306a\u8272\u3067\u3057\u3087\u3046\u300d\u300e\u79c1\u3092\u6bba\u3057\u305f\u4eba\u306f{0}\u8272\u3092\u3057\u3066\u3044\u307e\u3057\u305f\u300f",
-        "13": "\u6211\u4e0d\u592a\u786e\u5b9a\uff0c\u4f46\u662f\u6211\u611f\u89c9\u4e00\u4e2a {0} \u989c\u8272\u51fb\u6740\u4e86\u6211",
+        "13": "\u6211\u4e0d\u592a\u786e\u5b9a\uff0c\u4f46\u662f\u6211\u611f\u89c9\u4e00\u4e2a{0}\u989c\u8272\u51fb\u6740\u4e86\u6211",
         "14": "\u6211\u4e0d\u592a\u78ba\u5b9a\uff0c\u4f46\u662f\u6211\u611f\u89ba\u4e00\u500b {0} \u984f\u8272\u64ca\u6bba\u4e86\u6211"
     },
     "mediumQuestion3": {
         "0": "If I counted correctly, I died {0}s before the next meeting started.",
         "11": "\u300c\u3042\u306a\u305f\u306f\u3044\u3064\u6b7b\u3093\u3060\u3093\u3067\u3057\u3087\u3046\u300d\u300e\u79c1\u306f\u4f1a\u8b70\u306e{0}\u79d2\u524d\u306b\u6b7b\u306b\u307e\u3057\u305f\u300f",
-        "13": "\u5982\u679c\u6211\u6ca1\u6570\u9519\u7684\u8bdd\uff0c\u90a3\u4e48\u6211\u5728\u4f1a\u8bae\u524d {0} \u79d2\u6b7b\u4ea1\u7684",
+        "13": "\u5982\u679c\u6211\u6ca1\u6570\u9519\u7684\u8bdd\uff0c\u90a3\u4e48\u6211\u5728\u4f1a\u8bae\u524d{0}\u79d2\u6b7b\u4ea1\u7684",
         "14": "\u5982\u679c\u6211\u6c92\u6578\u932f\u7684\u8a71\uff0c\u90a3\u9ebd\u6211\u5728\u6703\u8b70\u524d {0} \u79d2\u6b7b\u4ea1\u7684"
     },
     "mediumQuestion4": {
         "0": "It seems like my killer was the {0}.",
         "11": "\u300c\u3042\u306a\u305f\u3092\u6bba\u3057\u305f\u4eba\u306e\u5f79\u8077\u306f\u4f55\u3067\u3057\u3087\u3046\u300d\u300e\u79c1\u3092\u6bba\u3057\u305f\u4eba\u306f{0}\u3067\u3059\u300f",
-        "13": "\u770b\u6837\u5b50\u6211\u7684\u51f6\u624b\u662f {0}",
+        "13": "\u770b\u6837\u5b50\u6211\u7684\u51f6\u624b\u662f{0}",
         "14": "\u770b\u6a23\u5b50\u6211\u7684\u5147\u624b\u662f {0}"
     },
     "mediumQuestion5": {
         "0": "I was a {0} without another role.",
         "11": "\u79c1\u306f\u4ed6\u306e\u30ed\u30fc\u30eb\u3092\u6301\u305f\u306a\u3044{0}\u3060\u3063\u305f\u3002",
-        "13": "\u6211\u662f\u4e00\u4e2a\u666e\u901a {0}"
+        "13": "\u6211\u662f\u4e00\u4e2a\u666e\u901a\u7684{0}"
     },
     "mediumSheriffSuicide": {
         "0": "Yikes, that Sheriff shot backfired.",
@@ -3804,6 +3812,10 @@
         "11": "\u5996\u72d0\u52dd\u5229",
         "13": "\u72d0\u5996\u56e2\u961f\u80dc\u5229"
     },
+    "kataomoiWin": {
+        "0": "Kataomoi Wins",
+        "13": "\u6211\u5e0c\u671b\u4f60\u80fd\u61c2\u5f97\u7231\u60c5\u7684\u7f8e\u597d"
+    },
     "everyoneDied": {
         "0": "Everyone Died",
         "11": "\u305d\u3057\u3066\u8ab0\u3082\u3044\u306a\u304f\u306a\u3063\u305f",
@@ -3898,6 +3910,9 @@
         "11": "\u5996\u72d0 {0} \u52dd\u5229",
         "13": "\u72d0\u5996\u56e2\u961f {0} \u80dc\u5229"
     },
+    "kataomoiWinExtra": {
+        "0": "Kataomoi {0} Win"
+    },
     "everyoneDiedExtra": {
         "0": "Everyone Died {0}",
         "11": "\u305d\u3057\u3066\u8ab0\u3082\u3044\u306a\u304f\u306a\u3063\u305f {0}",
@@ -3949,6 +3964,18 @@
         "11": "\u624b\u9320\u3092\u304b\u3051\u3089\u308c\u3066\u3044\u308b\u9593\u306f\u80fd\u529b\u3092\u4f7f\u7528\u3067\u304d\u306a\u3044",
         "13": "\u88ab\u902e\u6355\u65f6\u4e0d\u80fd\u4f7f\u7528\u6280\u80fd"
     },
+    "buttonsAkujoSuicide": {
+        "0": "You will suicide if the timer runs out of time and you still haven't selected your true love\nYou may also suicide during meetings",
+        "13": "\u5f53\u5012\u8ba1\u65f6\u7ed3\u675f\u4e14\u8fd8\u6ca1\u6709\u9009\u62e9\u771f\u7231\u65f6\u4f60\u4f1a\u81ea\u6740\n\u4f60\u8fd8\u53ef\u80fd\u4f1a\u5728\u4f1a\u8bae\u4e2d\u56e0\u672a\u9009\u62e9\u771f\u7231\u81ea\u6740"
+    },
+    "buttonsCupidSuicide": {
+        "0": "You will suicide if both lovers have not been selected and the timer runs out of time\nYou may also suicide during meetings",
+        "13": "\u5f53\u5012\u8ba1\u65f6\u7ed3\u675f\u4e14\u8fd8\u6ca1\u6709\u9009\u62e9\u4e24\u4e2a\u604b\u4eba\u65f6\u4f60\u4f1a\u81ea\u6740\n\u4f60\u8fd8\u53ef\u80fd\u4f1a\u5728\u4f1a\u8bae\u4e2d\u81ea\u6740"
+    },
+    "buttonsNormalSuicide": {
+        "0": "You will commit suicide when the timer ends",
+        "13": "\u5f53\u5012\u8ba1\u65f6\u7ed3\u675f\u65f6\u4f60\u4f1a\u81ea\u6740"
+    },
     "buttonLeftClick": {
         "0": "Left Click: {0}",
         "11": "\u5de6\u30af\u30ea\u30c3\u30af: {0}",
@@ -3973,6 +4000,18 @@
         "0": "Swap",
         "11": "\u30b9\u30ef\u30c3\u30d7",
         "13": "\u6362\u7968"
+    },
+    "detectiveReportInfo": {
+        "0": "Detective Report",
+        "13": "\u4fa6\u63a2\u5c38\u68c0\u62a5\u544a"
+    },
+    "medicReportInfo": {
+        "0": "Medic Report",
+        "13": "\u533b\u751f\u5c38\u68c0\u62a5\u544a"
+    },
+    "sherlockInfo": {
+        "0": "Sherlock Info",
+        "13": "\u798f\u5c14\u6469\u65af\u4fe1\u606f"
     },
     "eventKilled": {
         "0": "Kill",
@@ -4167,9 +4206,9 @@
         "14": "(\u8cde\u91d1\u76ee\u6a19) "
     },
     "roleInfoFakeSD": {
-        "0": " (fake SK)",
+        "0": "(fake SK) ",
         "11": "(\u30d5\u30a7\u30a4\u30af\u30b5\u30a4\u30c9\u30ad\u30c3\u30af)",
-        "13": " (\u5047\u8ddf\u73ed)",
+        "13": "(\u5047\u8ddf\u73ed) ",
         "14": " (\u5047\u8ddf\u73ed)"
     },
     "roleInfoRemaining": {
@@ -4199,6 +4238,14 @@
         "0": "(examined) ",
         "11": "(\u635c\u67fb\u6e08\u307f)",
         "13": "(\u88ab\u67e5\u9a8c) "
+    },
+    "roleInfoKataomoiTarget": {
+        "0": "(K target) ",
+        "13": "(\u51dd\u89c6\u5bf9\u8c61) "
+    },
+    "husk": {
+        "0": "Husk",
+        "13": "\u7a7a\u58f3"
     },
     "roleSummaryText": {
         "0": "Players and roles at the end of the game:",
@@ -4317,6 +4364,10 @@
         "0": "busker pseudocide",
         "11": "\u507d\u88c5\u6b7b",
         "13": "\u7075\u5316\u4f7f\u81ea\u6bd9"
+    },
+    "roleSummaryKataomoiStare": {
+        "0": "stared",
+        "13": "\u88ab\u51dd\u89c6"
     },
     "roleSummaryKillsInfo": {
         "0": " - <color=#FF0000FF>(Kills: {0})</color>",
@@ -5007,8 +5058,12 @@
     "sherlockMessage2": {
         "0": "killed by {0}",
         "11": "{0} \u306f {1} \u306b\u6bba\u3055\u308c\u3066\u3044\u308b",
-        "13": "\u88ab {0} \u6740\u5bb3",
+        "13": "\u88ab{0}\u6740\u5bb3",
         "14": "{0} \u88ab {1} \u6bba\u5bb3\u4e86"
+    },
+    "sherlockMeeting": {
+        "0": "{0} is killed by <b>{1}</b>",
+        "13": "{0}\u88ab<b>{1}</b>\u6740\u5bb3"
     },
     "evilTracker": {
         "0": "Evil Tracker",
@@ -5578,7 +5633,7 @@
     "trapperGotTrapText": {
         "0": "{0} got caught in the trap",
         "11": "{0} \u304c\u30c8\u30e9\u30c3\u30d7\u306b\u304b\u304b\u3063\u305f",
-        "13": "{0} \u6389\u8fdb\u4e86\u9677\u9631\u91cc\uff01",
+        "13": "{0}\u6389\u8fdb\u4e86\u9677\u9631\u91cc\uff01",
         "14": "{0} \u6389\u9032\u4e86\u9677\u9631\u88cf\uff01"
     },
     "moriarty": {
@@ -6114,6 +6169,54 @@
         "11": "\u3069\u306e\u9663\u55b6\u306b\u6240\u5c5e\u3059\u308b\u304b\u9078\u3079\u308b",
         "13": "\u5b8c\u6210\u4efb\u52a1\u540e\u53ef\u81ea\u7531\u9009\u62e9\u9635\u8425"
     },
+    "kataomoi": {
+        "0": "Kataomoi",
+        "13": "\u51dd\u89c6\u8005"
+    },
+    "kataomoiIntroDesc": {
+        "0": "Become one with your unrequited love",
+        "13": "\u548c\u4f60\u6df1\u7231\u7684\u4eba\u6c38\u8fdc\u7ed3\u4f34"
+    },
+    "kataomoiShortDesc": {
+        "0": "Become one with your unrequited love",
+        "13": "\u548c\u4f60\u6df1\u7231\u7684\u4eba\u6c38\u8fdc\u7ed3\u4f34"
+    },
+    "kataomoiIntroLine": {
+        "0": "\n\u2665 Your unrequited love target is {0} \u2665",
+        "13": "\n\u2665 \u4f60\u6697\u604b\u7684\u5bf9\u8c61\u662f{0} \u2665"
+    },
+    "kataomoiStareCooldown": {
+        "0": "Kataomoi Stare Cooldown",
+        "13": "\u51dd\u89c6\u8005\u51dd\u89c6\u51b7\u5374\u65f6\u95f4"
+    },
+    "kataomoiStareDuration": {
+        "0": "Kataomoi Stare Duration",
+        "13": "\u51dd\u89c6\u8005\u51dd\u89c6\u6301\u7eed\u65f6\u95f4"
+    },
+    "kataomoiStareCount": {
+        "0": "Kataomoi Stare Count",
+        "13": "\u51dd\u89c6\u8005\u6697\u604b\u6240\u9700\u6b21\u6570"
+    },
+    "kataomoiStalkingCooldown": {
+        "0": "Kataomoi Stalking Cooldown",
+        "13": "\u51dd\u89c6\u8005\u9690\u8eab\u51b7\u5374\u65f6\u95f4"
+    },
+    "kataomoiStalkingDuration": {
+        "0": "Kataomoi Stalking Duration",
+        "13": "\u51dd\u89c6\u8005\u9690\u8eab\u6301\u7eed\u65f6\u95f4"
+    },
+    "kataomoiStalkingFadeTime": {
+        "0": "Kataomoi Stalking Fade Time",
+        "13": "\u51dd\u89c6\u8005\u5b8c\u5168\u9690\u8eab\u6240\u9700\u65f6\u95f4"
+    },
+    "kataomoiSearchCooldown": {
+        "0": "Kataomoi Search Cooldown",
+        "13": "\u51dd\u89c6\u8005\u641c\u5bfb\u51b7\u5374\u65f6\u95f4"
+    },
+    "kataomoiSearchDuration": {
+        "0": "Kataomoi Search Duration",
+        "13": "\u51dd\u89c6\u8005\u641c\u5bfb\u6301\u7eed\u65f6\u95f4"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -6640,6 +6743,22 @@
         "0": "Operate",
         "13": "\u64cd\u4f5c"
     },
+    "KataomoiStareText": {
+        "0": "[BLANK]",
+        "13": "\u51dd\u89c6"
+    },
+    "KataomoiLoveText": {
+        "0": "[BLANK]",
+        "13": "\u6697\u604b"
+    },
+    "KataomoiSearchText": {
+        "0": "[BLANK]",
+        "13": "\u641c\u5bfb"
+    },
+    "KataomoiStalkText": {
+        "0": "[BLANK]",
+        "13": "\u9690\u8eab"
+    },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
         "11": "\u30fb\u4eba\u72fc\u3067\u3044\u3046\u300e\u3066\u308b\u3066\u308b\u300f\n\u30fb\u306a\u306b\u3082\u80fd\u529b\u3092\u6301\u305f\u306a\u3044\n\u30fb\u81ea\u8eab\u304c\u540a\u3089\u308c\u305f\u3068\u304d\u306b\u52dd\u5229\u3059\u308b",
@@ -7102,6 +7221,10 @@
         "11": "\u30b7\u30e5\u30ec\u30c7\u30a3\u30f3\u30ac\u30fc\u306e\u732b\u306f\u30b2\u30fc\u30e0\u958b\u59cb\u6642\u306b\u306f\u52dd\u5229\u6761\u4ef6\u3092\u6301\u305f\u306a\u3044\u7b2c3\u9663\u55b6\n\u30ad\u30eb\u3055\u308c\u308b\u3068\u30ad\u30e9\u30fc\u306e\u9663\u55b6\u306b\u6240\u5c5e\u3057\u52dd\u5229\u6761\u4ef6\u3092\u5f97\u308b\n\n\u8ffd\u653e\u3055\u308c\u305f\u5834\u5408\u306f\u30af\u30eb\u30fc\u9663\u55b6\u306b\u306a\u308b\n\n\u6240\u5c5e\u3057\u305f\u9663\u55b6\u3054\u3068\u306b\u80fd\u529b\u3092\u5f97\u308b\n\u30b8\u30e3\u30c3\u30ab\u30eb: \u30ad\u30eb\n\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc: \u30ad\u30eb\u30fb\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5 / \u80fd\u529b\u306a\u3057 (\u30aa\u30d7\u30b7\u30e7\u30f3\u306b\u3088\u308b\uff09\n\u30af\u30eb\u30fc\u30e1\u30a4\u30c8: \u80fd\u529b\u306a\u3057\u3001\u30bf\u30b9\u30af\u306a\u3057",
         "13": "\u859b\u5b9a\u8c14\u7684\u732b\u662f\u4e00\u4e2a\u53ef\u4ee5\u5728\u7b2c\u4e00\u6b21\u88ab\u51fb\u6740\u65f6\u52a0\u5165\u51f6\u624b\u9635\u8425\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\u5f53\u859b\u5b9a\u8c14\u7684\u732b\u88ab\u51fb\u6740\n\u7b2c\u4e8c\u6b21\u6216\uff0c\u6839\u636e\u8bbe\u7f6e\uff0c\u88ab\u8239\u5458\u804c\u4e1a\u51fb\u6740\u65f6\uff0c\u4ed6\u4eec\u5c06\u76f4\u63a5\u6b7b\u4ea1\u3002\u859b\u5b9a\u8c14\u7684\u732b\u5728\u521a\u5f00\u59cb\u53ef\u80fd\u4f1a\n\u8bef\u4ee5\u4e3a\u81ea\u5df1\u662f\u666e\u901a\u8239\u5458\uff0c\u53ea\u6709\u5728\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u65f6\u624d\u89c9\u9192\u53d1\u73b0\u81ea\u5df1\u771f\u5b9e\u8eab\u4efd\u3002\u6839\u636e\u8bbe\u7f6e\uff0c\n\u4ed6\u4eec\u8fd8\u53ef\u4ee5\u81ea\u7531\u9009\u62e9\u9635\u8425\u6765\u52a0\u5165\u3002"
     },
+    "kataomoiFullDesc": {
+        "0": "Kataomoi is a Neutral role that aims for a solo victory by killing a specific target.\nKataomoi = one-sided love\nAt the beginning of the game, a specific target is displayed.\nTo kill a specific target, the player must approach the target several times and\nstare at it for a certain period of time. Kataomoi has two features that are useful\nfor staring at a specific object. When the player is able to stare at a specific target\nseveral times, the \"Stare button\" changes to a \"Love button\". Then, when the player\napproaches the target again and presses the Love button, solo victory.",
+        "13": "\u51dd\u89c6\u8005\u662f\u4e00\u4e2a\u901a\u8fc7\u51fb\u6740\u67d0\u4e00\u4e2a\u7279\u5b9a\u7684\u76ee\u6807\u6765\u83b7\u5f97\u80dc\u5229\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\n\u6ce8\uff1a\u51dd\u89c6\u8005 = \u5355\u8fb9\u604b\u4eba\n\u5728\u6e38\u620f\u5f00\u59cb\u7684\u65f6\u5019\uff0c\u51dd\u89c6\u8005\u7684\u6697\u604b\u5bf9\u8c61\u4f1a\u88ab\u9009\u62e9\u3002\u4e3a\u4e86\u51fb\u6740\u6697\u604b\u5bf9\u8c61\uff0c\u51dd\u89c6\u8005\u5fc5\u987b\u63a5\u8fd1\u76ee\u6807\n\u82e5\u5e72\u6b21\u5e76\u901a\u8fc7\"\u51dd\u89c6\"\u6309\u94ae\u51dd\u89c6\u6697\u604b\u5bf9\u8c61\u3002\u51dd\u89c6\u8005\u8fd8\u53ef\u4ee5\u901a\u8fc7\u9690\u8eab\u548c\u8ffd\u5bfb\u6765\u5e2e\u52a9\u51dd\u89c6\u8005\u83b7\u5f97\u80dc\u5229\u3002\n\u5f53\u51dd\u89c6\u8005\u51dd\u89c6\u4e86\u5bf9\u8c61\u82e5\u5e72\u6b21\u4ee5\u540e\uff0c\u51dd\u89c6\u8005\u53ef\u4ee5\u901a\u8fc7\"\u6697\u604b\"\u6309\u94ae\u5c06\u76ee\u6807\u51fb\u6740\u5e76\u83b7\u5f97\u80dc\u5229\u3002"
+    },
     "bloodyFullDesc": {
         "0": "If killed, the Bloody Modifier will leave a trail for x-seconds on\ntheir killer. The trail will have the color of the killed person.",
         "11": "\u30fb\u30ad\u30eb\u3055\u308c\u305f\u6642\u3001\u4e00\u5b9a\u6642\u9593\u30ad\u30eb\u3057\u305f\u30d7\u30ec\u30a4\u30e4\u30fc\u304c\u6b69\u3044\u305f\u5834\u6240\u306b\u8840\u306e\u75d5\u8de1\u304c\u6b8b\u308b\n\u30fb\u8840\u306f\u6bba\u3055\u308c\u305f\u4eba\u306e\u8272\u306b\u306a\u308b",
@@ -7197,7 +7320,7 @@
     "achievementTitleHiddenDetail": {
         "0": "Details Have Not Been Disclosed...",
         "11": "\u8a73\u7d30\u306f\u4e0d\u660e...",
-        "13": "\u672a\u89e3\u9501\u8fd9\u4e2a\u6210\u5c31...",
+        "13": "\u8be6\u7ec6\u4fe1\u606f\u5c1a\u4e0d\u660e\u786e...",
         "14": "\u672a\u89e3\u9396\u9019\u500b\u6210\u5c31..."
     },
     "achievementCond": {
@@ -8902,6 +9025,258 @@
         "0": "Retrive Your Votes!",
         "11": "\u52d8\u306e\u3044\u3044\u30af\u30eb\u30fc\u306f\u5acc\u3044\u3060\u3088",
         "13": "\u4f60\u4eec\u7684\u7968\u90fd\u4e0d\u7b97\u6570\uff01"
+    },
+    "jestercommon1AchievementCond": {
+        "0": "Self Vote Doesn't Count",
+        "13": "\u81ea\u5df1\u7968\u81ea\u5df1\u4e0d\u7b97"
+    },
+    "jestercommon1AchievementGoal": {
+        "0": "Have At Least One Vote To Yourself",
+        "13": "\u6295\u7968\u73af\u8282\u81f3\u5c11\u83b7\u5f97\u4e00\u7968"
+    },
+    "jestercommon1AchievementTitle": {
+        "0": "Funny",
+        "13": "\u5a31\u8005"
+    },
+    "jesterchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "jesterchallengeAchievementGoal": {
+        "0": "Have Yourself Voted Out",
+        "13": "\u628a\u81ea\u5df1\u6295\u51fa\u53bb"
+    },
+    "jesterchallengeAchievementTitle": {
+        "0": "True Jester",
+        "13": "\u5c0f\u4e11\u7adf\u662f\u6211\u81ea\u5df1"
+    },
+    "arsonistcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "arsonistcommon1AchievementGoal": {
+        "0": "Douse A Player",
+        "13": "\u5bf9\u4e00\u540d\u73a9\u5bb6\u8fdb\u884c\u6d47\u6cb9"
+    },
+    "arsonistcommon1AchievementTitle": {
+        "0": "Doused!",
+        "13": "\u6d47\u6cb9\uff01"
+    },
+    "arsonistanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "arsonistanother1AchievementGoal": {
+        "0": "Have The Last Non-Doused Player Exiled",
+        "13": "\u628a\u6700\u540e\u6ca1\u88ab\u6d47\u6cb9\u7684\u73a9\u5bb6\u9a71\u9010"
+    },
+    "arsonistanother1AchievementTitle": {
+        "0": "Doused Meeting",
+        "13": "\u6709\u6c7d\u6cb9\u5473\u7684\u4f1a\u8bae"
+    },
+    "arsonistchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "arsonistchallengeAchievementGoal": {
+        "0": "Burn Everyone",
+        "13": "\u7eb5\u706b\u5e76\u70e7\u6b7b\u6240\u6709\u4eba"
+    },
+    "arsonistchallengeAchievementTitle": {
+        "0": "Let Them Burn!",
+        "13": "\u71c3\u70e7\u5427\uff01"
+    },
+    "jackalcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "jackalcommon1AchievementGoal": {
+        "0": "Create A Sidekick",
+        "13": "\u62db\u52df\u4e00\u540d\u8ddf\u73ed"
+    },
+    "jackalcommon1AchievementTitle": {
+        "0": "Apprentice!",
+        "13": "\u6536\u5f92\uff01"
+    },
+    "jackalchallengeAchievementCond": {
+        "0": "You Must Kill The Impostor",
+        "13": "\u4f60\u5fc5\u987b\u51fb\u6740\u4e00\u540d\u4f2a\u88c5\u8005"
+    },
+    "jackalchallengeAchievementGoal": {
+        "0": "Kill And Win The Game",
+        "13": "\u51fb\u6740\u5176\u4ed6\u73a9\u5bb6\u5e76\u83b7\u5f97\u80dc\u5229"
+    },
+    "jackalchallengeAchievementTitle": {
+        "0": "The Last Battle",
+        "13": "\u6700\u540e\u4e00\u6218"
+    },
+    "sidekickcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "sidekickcommon1AchievementGoal": {
+        "0": "Get Sidekicked",
+        "13": "\u88ab\u62db\u52df\u4e3a\u8ddf\u73ed"
+    },
+    "sidekickcommon1AchievementTitle": {
+        "0": "Recruit",
+        "13": "\u62db\u52df\uff01"
+    },
+    "sidekickcommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "sidekickcommon2AchievementGoal": {
+        "0": "Get Sidekicked When Being An Impostor",
+        "13": "\u5728\u8fd8\u662f\u5185\u9b3c\u65f6\u88ab\u62db\u52df\u4e3a\u8ddf\u73ed"
+    },
+    "sidekickcommon2AchievementTitle": {
+        "0": "Double Agent",
+        "13": "\u53cc\u6599\u95f4\u8c0d"
+    },
+    "sidekickchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "sidekickchallengeAchievementGoal": {
+        "0": "Get Promoted To Jackal",
+        "13": "\u664b\u5347\u4e3a\u8c7a\u72fc"
+    },
+    "sidekickchallengeAchievementTitle": {
+        "0": "Promotion",
+        "13": "\u5347\u5b98\uff01"
+    },
+    "vulturecommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "vulturecommon1AchievementGoal": {
+        "0": "Eat A Dead Body",
+        "13": "\u5403\u6389\u4e00\u4e2a\u5c38\u4f53"
+    },
+    "vulturecommon1AchievementTitle": {
+        "0": "Eaten",
+        "13": "\u541e\u566c\u8005"
+    },
+    "vulturechallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "vulturechallengeAchievementGoal": {
+        "0": "Win The Game As Vulture",
+        "13": "\u4ee5\u79c3\u9e6b\u7684\u8eab\u4efd\u83b7\u5f97\u80dc\u5229"
+    },
+    "vulturechallengeAchievementTitle": {
+        "0": "Thanks For The Meal!",
+        "13": "\u591a\u8c22\u6b3e\u5f85\uff01"
+    },
+    "lawyeranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "lawyeranother1AchievementGoal": {
+        "0": "Get Killed By Your Client",
+        "13": "\u88ab\u5ba2\u6237\u51fb\u6740"
+    },
+    "lawyeranother1AchievementTitle": {
+        "0": "Do I Still Get Paid?",
+        "13": "\u6211\u8fd8\u56de\u5f97\u5230\u62a5\u916c\u5417"
+    },
+    "lawyerchallenge1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "lawyerchallenge1AchievementGoal": {
+        "0": "Win Alone By Meetings",
+        "13": "\u901a\u8fc7\u4f1a\u8bae\u72ec\u81ea\u80dc\u5229"
+    },
+    "lawyerchallenge1AchievementTitle": {
+        "0": "I Am The Lawyer!",
+        "13": "\u6253\u8d62\u5b98\u53f8\uff01"
+    },
+    "lawyerchallenge2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "lawyerchallenge2AchievementGoal": {
+        "0": "Steal The Client's Victory",
+        "13": "\u7a83\u53d6\u5ba2\u6237\u7684\u80dc\u5229"
+    },
+    "lawyerchallenge2AchievementTitle": {
+        "0": "Working For Nothing",
+        "13": "\u767d\u767d\u6253\u5de5\uff01"
+    },
+    "pursuercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "pursuercommon1AchievementGoal": {
+        "0": "Blank An Impostor",
+        "13": "\u5411\u5185\u9b3c\u6295\u63b7\u7a7a\u5305\u5f39"
+    },
+    "pursuercommon1AchievementTitle": {
+        "0": "Blanked",
+        "13": "\u54d1\u70ae"
+    },
+    "pursuercommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "pursuercommon2AchievementGoal": {
+        "0": "Win The Game Additionally",
+        "13": "\u4ee5\u8d77\u8bc9\u4eba\u7684\u8eab\u4efd\u83b7\u5f97\u989d\u5916\u80dc\u5229"
+    },
+    "pursuercommon2AchievementTitle": {
+        "0": "Survival",
+        "13": "\u4e0a\u8bc9\u6210\u529f"
+    },
+    "opportunistcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "opportunistcommon1AchievementGoal": {
+        "0": "Win The Game In The End",
+        "13": "\u5728\u6e38\u620f\u7ed3\u675f\u65f6\u5b58\u6d3b\u5e76\u80dc\u5229"
+    },
+    "opportunistcommon1AchievementTitle": {
+        "0": "Do Whatever It Takes",
+        "13": "\u82df\u4e14\u5077\u751f"
+    },
+    "corruptedShiftercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "corruptedShiftercommon1AchievementGoal": {
+        "0": "Steal Someone Else's Role",
+        "13": "\u5077\u53d6\u67d0\u4eba\u7684\u804c\u4e1a"
+    },
+    "corruptedShiftercommon1AchievementTitle": {
+        "0": "Sneaky Shift",
+        "13": "\u6405\u5c4e\u68cd"
+    },
+    "corruptedShifteranother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "corruptedShifteranother1AchievementGoal": {
+        "0": "Lose The Game As Chain-Shifter",
+        "13": "\u5728\u6e38\u620f\u7ed3\u675f\u65f6\u4ee5\u8fde\u73af\u4ea4\u6362\u5e08\u7684\u8eab\u4efd\u8f93\u6389\u6bd4\u8d5b"
+    },
+    "corruptedShifteranother1AchievementTitle": {
+        "0": "Unavoidable",
+        "13": "\u65e0\u6cd5\u907f\u514d"
+    },
+    "corruptedShifterchallengeAchievementCond": {
+        "0": "You Must Once Be The Chain-Shifter",
+        "13": "\u4f60\u4ee5\u524d\u5fc5\u987b\u662f\u8fde\u73af\u4ea4\u6362\u5e08"
+    },
+    "corruptedShifterchallengeAchievementGoal": {
+        "0": "Kill The Chain-Shifter",
+        "13": "\u6740\u6b7b\u8fde\u73af\u4ea4\u6362\u5e08"
+    },
+    "corruptedShifterchallengeAchievementTitle": {
+        "0": "No More Annoying Shifters",
+        "13": "\u5012\u53cd\u5929\u7f61"
     },
     "hintHelpInGameTitle": {
         "0": "Role Help",

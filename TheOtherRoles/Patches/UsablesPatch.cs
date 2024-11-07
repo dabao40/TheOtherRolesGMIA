@@ -105,11 +105,8 @@ namespace TheOtherRoles.Patches {
                 Deputy.setHandcuffedKnows();
                 return false;
             }
-            //if (Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)) return false;
-            if (CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.disableVent && Undertaker.DraggedBody != null)
-            {
-                return false;
-            }
+            if (Trap.isTrapped(CachedPlayer.LocalPlayer.PlayerControl)) return false;
+            if (CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.disableVent && Undertaker.DraggedBody != null) return false;
 
             bool canUse;
             bool couldUse;
@@ -217,14 +214,13 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
-    class SabotageButtonRefreshPatch {
-        static void Postfix() {
-            // Mafia disable sabotage button for Janitor and sometimes for Mafioso
-            bool blockSabotageJanitor = (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl);
-            bool blockSabotageMafioso = (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead);
+    [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
+    public static class MapBehaviourShowPatch {
+        public static void Prefix(MapBehaviour __instance, ref MapOptions opts) {
+            bool blockSabotageJanitor = Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl;
+            bool blockSabotageMafioso = Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead;
             if (blockSabotageJanitor || blockSabotageMafioso) {
-                FastDestroyableSingleton<HudManager>.Instance.SabotageButton.SetDisabled();
+                if (opts.Mode == MapOptions.Modes.Sabotage) opts.Mode = MapOptions.Modes.Normal;
             }
         }
     }
@@ -310,7 +306,6 @@ namespace TheOtherRoles.Patches {
 			}
         }
     }
-
 
     [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
     public static class ConsoleCanUsePatch {
@@ -500,6 +495,76 @@ namespace TheOtherRoles.Patches {
                             text.gameObject.SetActive(false);
                 }
             }
+        }
+    }
+
+    [HarmonyPatch]
+    public static class MapBehaviourPatch2
+    {
+        public static void ResetIcons()
+        {
+            if (kataomoiMark != null)
+            {
+                GameObject.Destroy(kataomoiMark.gameObject);
+                kataomoiMark = null;
+            }
+        }
+
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.GenericShow))]
+        class GenericShowPatch
+        {
+            static void Postfix(MapBehaviour __instance)
+            {
+                if (Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    if (kataomoiMark == null)
+                    {
+                        kataomoiMark = UnityEngine.Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                        kataomoiMark.sprite = GetKataomoiMarkSprite();
+                        kataomoiMark.transform.localScale = Vector3.one * 0.5f;
+                        kataomoiMark.enabled = IsShowKataomoiMark();
+                        PlayerMaterial.SetColors(7, kataomoiMark);
+                        kataomoiMark.color = Kataomoi.color;
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
+        class FixedUpdatePatch
+        {
+            static void Postfix(MapBehaviour __instance)
+            {
+
+                if (Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    bool isShowKataomoiMark = IsShowKataomoiMark();
+                    kataomoiMark.enabled = isShowKataomoiMark;
+                    if (isShowKataomoiMark)
+                    {
+                        Vector3 vector = Kataomoi.target.transform.position;
+                        vector /= MapUtilities.CachedShipStatus.MapScale;
+                        vector.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                        vector.z = -1f;
+                        kataomoiMark.transform.localPosition = vector;
+                    }
+                }
+            }
+        }
+
+        static bool IsShowKataomoiMark()
+        {
+            return Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && Kataomoi.target != null && !Kataomoi.target.Data.IsDead && Kataomoi.isSearch;
+        }
+
+        static SpriteRenderer kataomoiMark;
+        static Sprite kataomoiMarkSprite;
+
+        static Sprite GetKataomoiMarkSprite()
+        {
+            if (kataomoiMarkSprite) return kataomoiMarkSprite;
+            kataomoiMarkSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.KataomoiMark.png", 115f);
+            return kataomoiMarkSprite;
         }
     }
 

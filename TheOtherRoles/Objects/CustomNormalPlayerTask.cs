@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,7 +18,7 @@ namespace TheOtherRoles.Objects
         public static List<Shrine> allTasks = new();
         public static List<int> completedConsoles = new();
         public static uint counter = 0;
-        public static NormalPlayerTask npt;
+        NormalPlayerTask npt;
 
         public CustomNormalPlayerTask(string name, Il2CppSystem.Type taskType, int maxStep, byte[] Data, SystemTypes startAt, bool showTaskStep)
         {
@@ -53,10 +53,13 @@ namespace TheOtherRoles.Objects
 
         public void addTaskToPlayer(byte playerId)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxSetTask, SendOption.Reliable, -1);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.foxSetTasks(playerId);
+            Helpers.getPlayerById(playerId).myTasks.Add(npt);
+            NetworkedPlayerInfo pi = GameData.Instance.GetPlayerById(playerId);
+            var taskinfo = new NetworkedPlayerInfo.TaskInfo((byte)npt.Id, npt.Id)
+            {
+                Complete = false
+            };
+            pi.Tasks.Add(taskinfo);
         }
 
         public static void reset()

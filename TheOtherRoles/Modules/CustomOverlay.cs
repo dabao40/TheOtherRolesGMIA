@@ -134,7 +134,8 @@ public class CustomOverlay
         }
 
         var rows = rolesText.Count(c => c == '\n');
-        var maxY = Mathf.Max(1.15f, (2 * rows - 24) * 0.04f + 1.16f);
+        var infoCount = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl).Count;
+        var maxY = Mathf.Max(1.15f, (infoCount * 2.2f + rows - 18f) * (AmongUs.Data.DataManager.Settings.Language.CurrentLanguage == SupportedLangs.English ? 0.06f : 0.09f) + 1.165f);
         scroller.enabled = true;
         scroller.ContentYBounds = new FloatRange(1.15f, maxY);
         scroller.ScrollToTop();

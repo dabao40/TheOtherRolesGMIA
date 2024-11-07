@@ -58,9 +58,11 @@ public class BepInExUpdater : MonoBehaviour
                 resource!.CopyTo(file);
             } 
         }
-        
-        var startInfo = new ProcessStartInfo(tempPath, $"--game-path \"{Paths.GameRootPath}\" --zip \"{zipPath}\"");
-        startInfo.UseShellExecute = false;
+
+        var startInfo = new ProcessStartInfo(tempPath, $"--game-path \"{Paths.GameRootPath}\" --zip \"{zipPath}\"")
+        {
+            UseShellExecute = false
+        };
         Process.Start(startInfo);
         Application.Quit();
     }

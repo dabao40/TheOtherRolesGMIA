@@ -47,7 +47,7 @@ namespace TheOtherRoles.Objects
 
         public Trap(Vector3 pos)
         {
-            // ×î³õ¤ÎÁF¤òÏû¤¹
+            // æœ€åˆã®ç½ ã‚’æ¶ˆã™
             if (traps.Count == Trapper.numTrap)
             {
 
@@ -61,7 +61,7 @@ namespace TheOtherRoles.Objects
                 }
             }
 
-            // ÁF¤òÔOÖÃ
+            // ç½ ã‚’è¨­ç½®
             this.trap = new GameObject("Trap");
             var trapRenderer = trap.AddComponent<SpriteRenderer>();
             trap.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
@@ -71,7 +71,7 @@ namespace TheOtherRoles.Objects
             // this.trap.transform.localPosition = pos;
             this.trap.SetActive(true);
 
-            // Òô¤òøQ¤é¤¹
+            // éŸ³ã‚’é³´ã‚‰ã™
             this.audioSource = trap.gameObject.AddComponent<AudioSource>();
             this.audioSource.priority = 0;
             this.audioSource.spatialBlend = 1;
@@ -83,7 +83,7 @@ namespace TheOtherRoles.Objects
             this.audioSource.rolloffMode = rollOffMode;
             this.audioSource.PlayOneShot(place);
 
-            // ÔOÖÃ•r¿Ì¤òÔO¶¨
+            // è¨­ç½®æ™‚åˆ»ã‚’è¨­å®š
             this.placedTime = DateTime.UtcNow;
 
             traps.Add(getAvailableId(), this);
@@ -94,13 +94,13 @@ namespace TheOtherRoles.Objects
         {
             var trap = traps[trapId];
 
-            // ÓĞ„¿¤Ë¤¹¤ë
+            // æœ‰åŠ¹ã«ã™ã‚‹
             trap.isActive = true;
             trap.target = target;
             var spriteRenderer = trap.trap.gameObject.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = trapActiveSprite;
 
-            // Ëû¤Î¥È¥é¥Ã¥×¤òÈ«¤ÆŸo„¿»¯¤¹¤ë
+            // ä»–ã®ãƒˆãƒ©ãƒƒãƒ—ã‚’å…¨ã¦ç„¡åŠ¹åŒ–ã™ã‚‹
             var newTraps = new SortedDictionary<byte, Trap>
             {
                 { trapId, trap }
@@ -114,7 +114,7 @@ namespace TheOtherRoles.Objects
             traps = newTraps;
 
 
-            // Òô¤òøQ¤é¤¹
+            // éŸ³ã‚’é³´ã‚‰ã™
             trap.audioSource.Stop();
             trap.audioSource.loop = true;
             trap.audioSource.priority = 0;
@@ -123,7 +123,7 @@ namespace TheOtherRoles.Objects
             trap.audioSource.clip = countdown;
             trap.audioSource.Play();
 
-            // ¥¿©`¥²¥Ã¥È¤ò„Ó¤±¤Ê¤¯¤¹¤ë
+            // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å‹•ã‘ãªãã™ã‚‹
             target.NetTransform.Halt();
 
             bool moveableFlag = false;
@@ -132,17 +132,13 @@ namespace TheOtherRoles.Objects
                 try
                 {
                     if (Trapper.meetingFlag) return;
-                    if (trap == null || trap.trap == null || !trap.isActive) //¡¡½â³ı¤µ¤ì¤¿ˆöºÏ¤Î„IÀí
+                    if (trap == null || trap.trap == null || !trap.isActive) //ã€€è§£é™¤ã•ã‚ŒãŸå ´åˆã®å‡¦ç†
                     {
-                        if (!moveableFlag)
-                        {
-                            target.moveable = true;
-                            moveableFlag = true;
-                        }
+                        target.moveable = true;
                         return;
                     }
                     else if ((p == 1f) && !target.Data.IsDead)
-                    { // Õı³£¤Ë¥­¥ë¤¬°kÉú¤¹¤ëˆöºÏ¤Î„IÀí
+                    { // æ­£å¸¸ã«ã‚­ãƒ«ãŒç™ºç”Ÿã™ã‚‹å ´åˆã®å‡¦ç†
                         target.moveable = true;
                         if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper)
                         {
@@ -155,10 +151,14 @@ namespace TheOtherRoles.Objects
                         }
                     }
                     else
-                    { // ¥«¥¦¥ó¥È¥À¥¦¥óÖĞ¤Î„IÀí
-                        target.moveable = false;
-                        target.NetTransform.Halt();
-                        target.transform.position = trap.trap.transform.position + new Vector3(0, 0.3f, 0);
+                    { // ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ä¸­ã®å‡¦ç†
+                        if (!moveableFlag)
+                        {
+                            target.moveable = false;
+                            target.NetTransform.Halt();
+                            target.transform.position = trap.trap.transform.position + new Vector3(0, 0.3f, 0);
+                            moveableFlag = true;
+                        }
                     }
                 }
                 catch (Exception e)

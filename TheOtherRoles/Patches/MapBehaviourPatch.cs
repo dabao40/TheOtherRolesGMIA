@@ -70,7 +70,7 @@ namespace TheOtherRoles.Patches {
             if (CachedPlayer.LocalPlayer.PlayerControl != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
             if (EvilTracker.target == null) return true;
             if (realTasks[EvilTracker.target.PlayerId] == null) return false;
-            EvilTracker.acTokenCommon2 ??= new("evilTracker.common2");
+            _ = new StaticAchievementToken("evilTracker.common2");
             __instance.gameObject.SetActive(true);
             __instance.data.Clear();
             for (int i = 0; i < realTasks[EvilTracker.target.PlayerId].Count; i++)

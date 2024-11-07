@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using System;
 using UnityEngine.Windows.Speech;
@@ -69,7 +69,7 @@ namespace TheOtherRoles.Patches
                     }
 
                     if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)
-                    || (Fox.fox != null && Fox.fox == player && Fox.stealthed)) hand.gameObject.SetActive(false);
+                    || (Fox.fox != null && Fox.fox == player && Fox.stealthed) || (Kataomoi.kataomoi != null && Kataomoi.kataomoi == player && Kataomoi.isStalking())) hand.gameObject.SetActive(false);
                 }
             })));
         }

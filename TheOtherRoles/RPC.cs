@@ -97,6 +97,7 @@ namespace TheOtherRoles
         Trapper,
         Blackmailer,
         Opportunist,
+        Kataomoi,
         Busker,
         Noisemaker,
         SchrodingersCat,
@@ -135,6 +136,7 @@ namespace TheOtherRoles
         UncheckedExilePlayer,
         UncheckedSetTasks,
         DynamicMapOption,
+        FinishShipStatusBegin,
         SetGameStarting,
         ShareGamemode,
         StopStart,
@@ -261,12 +263,15 @@ namespace TheOtherRoles
         UnlockTrackerAcChallenge,
         UnlockVeteranAcChallenge,
         UnlockTaskMasterAcChallenge,
+        UnlockJesterAcCommon,
         ResetAchievement,
         RecordStatistics,
         SetRoleHistory,
         NoisemakerSetSounded,
-        FoxSetTask,
         SchrodingersCatSetTeam,
+        KataomoiSetTarget,
+        KataomoiWin,
+        KataomoiStalking,
     }
 
     public static class RPCProcedure {
@@ -284,7 +289,9 @@ namespace TheOtherRoles
             BombEffect.clearBombEffects();
             MapBehaviourPatch.reset();
             MapBehaviourPatch.resetRealTasks();
+            MapBehaviourPatch2.ResetIcons();
             SpawnInMinigamePatch.reset();
+            MeetingOverlayHolder.clearAndReload();
             Props.clearAndReload();
             //Trap.clearTraps();
             Trap.clearAllTraps();
@@ -416,6 +423,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Akujo:
                         Akujo.akujo = player;
+                        break;
+                    case RoleId.Kataomoi:
+                        Kataomoi.kataomoi = player;
                         break;
                     case RoleId.Swapper:
                         Swapper.swapper = player;
@@ -708,6 +718,31 @@ namespace TheOtherRoles
            GameOptionsManager.Instance.currentNormalGameOptions.MapId = mapId;
         }
 
+        public static void finishShipStatusBegin()
+        {
+            HudManager.Instance.StartCoroutine(Effects.Lerp(1f, new Action<float>((p) =>
+            {
+                if (p == 1f)
+                {
+                    if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
+                    {
+                        CachedPlayer.LocalPlayer.PlayerControl.clearAllTasks();
+                        CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(Madmate.commonTasks, Madmate.shortTasks, Madmate.longTasks);
+                    }
+                    if (JekyllAndHyde.jekyllAndHyde != null && CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde)
+                    {
+                        PlayerControl.LocalPlayer.clearAllTasks();
+                        CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
+                        JekyllAndHyde.oddIsJekyll = rnd.Next(0, 2) == 1;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetOddIsJekyll, Hazel.SendOption.Reliable, -1);
+                        writer.Write(JekyllAndHyde.oddIsJekyll);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
+                    }
+                }
+            })));
+        }
+
         public static void setGameStarting() {
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 5f;
         }
@@ -760,7 +795,7 @@ namespace TheOtherRoles
             SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
             if(TimeMaster.timeMaster != null && TimeMaster.timeMaster == CachedPlayer.LocalPlayer.PlayerControl) {
                 resetTimeMasterButton();
-                TimeMaster.acTokenChallenge ??= new("timeMaster.challenge");
+                _ = new StaticAchievementToken("timeMaster.challenge");
             }
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
@@ -811,13 +846,17 @@ namespace TheOtherRoles
 
             Shifter.futureShift = null;
             if (!Shifter.isNeutral) Shifter.clearAndReload();
+            if (CachedPlayer.LocalPlayer.PlayerControl == oldShifter && Shifter.isNeutral) _ = new StaticAchievementToken("corruptedShifter.common1");
 
             // Suicide (exile) when impostor or impostor variants
-            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate) && !oldShifter.Data.IsDead)
+            if (!Shifter.isNeutral && (player.Data.Role.IsImpostor || Helpers.isNeutral(player) || Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate))
             {
                 GameStatistics.recordRoleHistory(oldShifter);   
-                oldShifter.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
+                if (!oldShifter.Data.IsDead)
+                {
+                    oldShifter.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
+                }
                 if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
@@ -833,7 +872,8 @@ namespace TheOtherRoles
             }
 
             if (!Shifter.isNeutral && CachedPlayer.LocalPlayer.PlayerControl == oldShifter)
-                Shifter.niceShifterAcTokenCommon ??= new("niceShifter.common1");
+                _ = new StaticAchievementToken("niceShifter.common1");
+            bool isHusk = false;
 
             // Switch shield
             if (Medic.shielded != null && Medic.shielded == player)
@@ -927,6 +967,12 @@ namespace TheOtherRoles
                 if (Sheriff.formerDeputy != null && Sheriff.formerDeputy == Sheriff.sheriff) Sheriff.formerDeputy = oldShifter;  // Shifter also shifts info on promoted deputy (to get handcuffs)
                 Sheriff.sheriff = oldShifter;
                 Sheriff.onAchievementActivate();
+            }
+            if (Sheriff.formerSheriff != null && Sheriff.formerSheriff == player)
+            {
+                Sheriff.formerSheriff = oldShifter;
+                Sheriff.onAchievementActivate();
+                isHusk = true;
             }
             if (Deputy.deputy != null && Deputy.deputy == player)
                 Deputy.deputy = oldShifter;
@@ -1126,6 +1172,7 @@ namespace TheOtherRoles
             }
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) Arsonist.arsonist = oldShifter;
+            if (player == Kataomoi.kataomoi) Kataomoi.kataomoi = oldShifter;
             if (player == Opportunist.opportunist) Opportunist.opportunist = oldShifter;
             if (player == Moriarty.moriarty) Moriarty.moriarty = oldShifter;
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.plagueDoctor = oldShifter;
@@ -1138,6 +1185,7 @@ namespace TheOtherRoles
             {
                 Jackal.formerJackals.Add(oldShifter);
                 Jackal.formerJackals.RemoveAll(x => x.PlayerId == targetId);
+                isHusk = true;
             }
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
             if (player == Fox.fox) Fox.fox = oldShifter;
@@ -1145,10 +1193,24 @@ namespace TheOtherRoles
             if (player == Akujo.akujo) Akujo.akujo = oldShifter;
             if (player == Cupid.cupid) Cupid.cupid = oldShifter;
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.jekyllAndHyde = oldShifter;
-            if (player == Moriarty.formerMoriarty) Moriarty.formerMoriarty = oldShifter;
-            if (player == JekyllAndHyde.formerJekyllAndHyde) JekyllAndHyde.formerJekyllAndHyde = oldShifter;
+            if (player == Moriarty.formerMoriarty) {
+                Moriarty.formerMoriarty = oldShifter;
+                isHusk = true;
+            }
+            if (player == JekyllAndHyde.formerJekyllAndHyde) {
+                JekyllAndHyde.formerJekyllAndHyde = oldShifter;
+                isHusk = true;
+            }
             if (player == SchrodingersCat.schrodingersCat) SchrodingersCat.schrodingersCat = oldShifter;
-            if (player == SchrodingersCat.formerSchrodingersCat) SchrodingersCat.formerSchrodingersCat = oldShifter;
+            if (player == SchrodingersCat.formerSchrodingersCat) {
+                SchrodingersCat.formerSchrodingersCat = oldShifter;
+                isHusk = true;
+            }
+            if (Husk.husk.Any(x => x.PlayerId == player.PlayerId))
+            {
+                Husk.husk.Add(oldShifter);
+                Husk.husk.RemoveAll(x => x.PlayerId == player.PlayerId);
+            }
 
             if (Lawyer.lawyer != null && Lawyer.target == player)
             {
@@ -1161,15 +1223,12 @@ namespace TheOtherRoles
                 Shifter.pastShifters.Add(oldShifter.PlayerId);
                 if (player.Data.Role.IsImpostor)
                 {
-                    FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
-                    FastDestroyableSingleton<RoleManager>.Instance.SetRole(oldShifter, RoleTypes.Impostor);
-                    if (Shifter.deathReason != DeadPlayer.CustomDeathReason.Disconnect && !oldShifter.Data.IsDead) // In case the Chain-Shifter revives
-                    {
-                        oldShifter.Exiled();
-                        GameHistory.overrideDeathReasonAndKiller(oldShifter, Shifter.deathReason, Shifter.killer);
-                    }
+                    player.FastSetRole(RoleTypes.Crewmate);
+                    oldShifter.FastSetRole(RoleTypes.Impostor);
                 }
             }
+
+            if (isHusk && !oldShifter.Data.IsDead) Husk.husk.Add(oldShifter);
 
             // Set cooldowns to max for both players
             if (CachedPlayer.LocalPlayer.PlayerControl == oldShifter || CachedPlayer.LocalPlayer.PlayerControl == player)
@@ -1322,7 +1381,7 @@ namespace TheOtherRoles
             else
             {
                 if (CachedPlayer.LocalPlayer.PlayerControl == EvilHacker.evilHacker)
-                    EvilHacker.acTokenCommon ??= new("evilHacker.common1");
+                    _ = new StaticAchievementToken("evilHacker.common1");
 
                 // Jackalバグ対応
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
@@ -1413,7 +1472,7 @@ namespace TheOtherRoles
 
             if (CachedPlayer.LocalPlayer.PlayerControl == fortuneTeller)
             {
-                if (target == Fox.fox) FortuneTeller.acTokenFox ??= new("fortuneTeller.another1");
+                if (target == Fox.fox) _ = new StaticAchievementToken("fortuneTeller.another1");
                 else if (target.Data.Role.IsImpostor) FortuneTeller.acTokenImpostor.Value.divined = true;
             }
         }
@@ -1430,7 +1489,7 @@ namespace TheOtherRoles
                 Sheriff.replaceCurrentSheriff(Deputy.deputy);
                 if (CachedPlayer.LocalPlayer.PlayerControl == Deputy.deputy)
                 {
-                    Deputy.acTokenAnother ??= new("deputy.another1");
+                    _ = new StaticAchievementToken("deputy.another1");
                     Sheriff.onAchievementActivate();
                 }
                 Sheriff.formerDeputy = Deputy.deputy;
@@ -1482,7 +1541,11 @@ namespace TheOtherRoles
                 if (wasSpy || wasImpostor) Sidekick.wasTeamRed = true;
                 Sidekick.wasSpy = wasSpy;
                 Sidekick.wasImpostor = wasImpostor;
-                if (player == CachedPlayer.LocalPlayer.PlayerControl) SoundEffectsManager.play("jackalSidekick");
+                if (player == CachedPlayer.LocalPlayer.PlayerControl) {
+                    SoundEffectsManager.play("jackalSidekick");
+                    _ = new StaticAchievementToken("sidekick.common1");
+                    if (wasImpostor) _ = new StaticAchievementToken("sidekick.common2");
+                }
                 if (HandleGuesser.isGuesserGm && CustomOptionHolder.guesserGamemodeSidekickIsAlwaysGuesser.getBool() && !HandleGuesser.isGuesser(targetId))
                     setGuesserGm(targetId);
             }
@@ -1492,6 +1555,7 @@ namespace TheOtherRoles
 
         public static void sidekickPromotes() {
             if (FreePlayGM.isFreePlayGM) return;
+            if (CachedPlayer.LocalPlayer.PlayerControl == Sidekick.sidekick) _ = new StaticAchievementToken("sidekick.challenge");
             Jackal.removeCurrentJackal();
             Jackal.jackal = Sidekick.sidekick;
             Jackal.canCreateSidekick = Jackal.jackalPromotedFromSidekickCanCreateSidekick;
@@ -1569,6 +1633,7 @@ namespace TheOtherRoles
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
             if (player == Arsonist.arsonist) Arsonist.clearAndReload();
+            if (player == Kataomoi.kataomoi) Kataomoi.clearAndReload();
             if (Guesser.isGuesser(player.PlayerId)) Guesser.clear(player.PlayerId);
             if (player == Watcher.nicewatcher || player == Watcher.evilwatcher) Watcher.clear(player.PlayerId);
             if (player == Yasuna.yasuna) Yasuna.clearAndReload();
@@ -1597,6 +1662,7 @@ namespace TheOtherRoles
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
+            if (Husk.husk.Any(x => x.PlayerId == player.PlayerId)) Husk.husk.RemoveAll(x => x.PlayerId == player.PlayerId);
 
             // Modifier
             if (!ignoreModifier)
@@ -1614,7 +1680,7 @@ namespace TheOtherRoles
             }
 
             if (GameStatistics.roleHistory.ContainsKey(playerId))
-                GameStatistics.roleHistory[playerId].Add(new(player.Data.PlayerName, RoleInfo.crewmate, GameStatistics.currentTime, player.Data.DefaultOutfit, isCreatedMadmate));
+                GameStatistics.roleHistory[playerId].Add(new(player.Data.PlayerName, RoleInfo.crewmate, GameStatistics.currentTime, player.Data.DefaultOutfit, isCreatedMadmate, Color.white));
         }
 
         public static void setFutureErased(byte playerId) {
@@ -1659,8 +1725,9 @@ namespace TheOtherRoles
 
             foreach (PlayerControl p in CachedPlayer.AllPlayers)
             {
+                var info = RoleInfo.getRoleInfoForPlayer(p, false, true).FirstOrDefault();
                 GameStatistics.roleHistory.Add(p.PlayerId, new());
-                GameStatistics.roleHistory[p.PlayerId].Add(new GameStatistics.RoleHistory(p.Data.PlayerName, RoleInfo.getRoleInfoForPlayer(p, false, true).FirstOrDefault(), GameStatistics.currentTime, p.Data.DefaultOutfit, Madmate.madmate.Any(x => x.PlayerId == p.PlayerId)));
+                GameStatistics.roleHistory[p.PlayerId].Add(new GameStatistics.RoleHistory(p.Data.PlayerName, info, GameStatistics.currentTime, p.Data.DefaultOutfit, Madmate.madmate.Any(x => x.PlayerId == p.PlayerId), info.color));
             }
         }
 
@@ -1950,6 +2017,7 @@ namespace TheOtherRoles
             if (player == null) return;
             if (!isTrueDead)
             {
+                Busker.pseudocideFlag = true;
                 player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                 if (player.AmOwner)
                 {
@@ -1968,7 +2036,7 @@ namespace TheOtherRoles
                     Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("seerInfo"));
                     if (CachedPlayer.LocalPlayer.PlayerControl == Seer.seer)
                     {
-                        Seer.acTokenCommon ??= new("seer.common1");
+                        _ = new StaticAchievementToken("seer.common1");
                         Seer.acTokenChallenge.Value.flash++;
                     }
                 }
@@ -1987,15 +2055,13 @@ namespace TheOtherRoles
             }
             else
             {
+                Busker.pseudocideFlag = false;
                 Seer.deadBodyPositions?.Add(Busker.deathPosition);
                 if (Medium.deadBodies != null) Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(new DeadPlayer(player, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Pseudocide, player), Busker.deathPosition));
                 GameHistory.overrideDeathReasonAndKiller(player, isLoverSuicide ? DeadPlayer.CustomDeathReason.LoverSuicide : DeadPlayer.CustomDeathReason.Pseudocide);
                 Busker.pseudocideComplete = true;
                 Busker.buskerList.Remove(targetId);
                 GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, targetId, 1 << targetId) { RelatedTag = isLoverSuicide ? EventDetail.Kill : EventDetail.Pseudocide });
-
-                // Trigger update to Haunt button
-                if (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker) FastDestroyableSingleton<HudManager>.Instance.AbilityButton.Show();
 
                 PlayerControl otherLover = null;
                 if ((Busker.busker == Lovers.lover1 || Busker.busker == Lovers.lover2) && Lovers.bothDie)
@@ -2017,6 +2083,7 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             if (player == null) return;
+            Busker.pseudocideFlag = false;
             DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
             foreach (DeadBody body in array)
             {
@@ -2092,7 +2159,7 @@ namespace TheOtherRoles
         public static void unlockVeteranAcChallenge()
         {
             if (CachedPlayer.LocalPlayer.PlayerControl == Veteran.veteran)
-                Veteran.acTokenChallenge ??= new("veteran.challenge");
+                _ = new StaticAchievementToken("veteran.challenge");
         }
 
         public static void mimicMorph(byte mimicAId, byte mimicBId)
@@ -2141,20 +2208,6 @@ namespace TheOtherRoles
             PlayerControl target = Helpers.playerById(Yasuna.specialVoteTargetPlayerId);
             if (target == null) return;
             MeetingHud.Instance.CmdCastVote(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
-        }
-
-        public static void foxSetTasks(byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            if (player == null) return;
-            player.clearAllTasks();
-            var npt = CustomNormalPlayerTask.npt;
-            NetworkedPlayerInfo pi = GameData.Instance.GetPlayerById(playerId);
-            pi.Tasks = new Il2CppSystem.Collections.Generic.List<NetworkedPlayerInfo.TaskInfo>(1);
-            pi.Tasks.Add(new NetworkedPlayerInfo.TaskInfo((byte)npt.Id, npt.Id));
-            player.myTasks.Add(npt);
-            npt.Owner = player;
-            npt.Initialize();
         }
 
         public static void taskMasterSetExTasks(byte playerId, byte oldTaskMasterPlayerId, byte[] taskTypeIds)
@@ -2266,7 +2319,14 @@ namespace TheOtherRoles
         public static void unlockTaskMasterAcChallenge()
         {
             if (CachedPlayer.LocalPlayer.PlayerControl == TaskMaster.taskMaster)
-                TaskMaster.acTokenChallenge ??= new("taskMaster.challenge");
+                _ = new StaticAchievementToken("taskMaster.challenge");
+        }
+
+        public static void unlockJesterAcCommon()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl == Jester.jester) {
+                _ = new StaticAchievementToken("jester.common1");
+            }
         }
 
         public static void activateTrap(byte trapId, byte trapperId, byte playerId)
@@ -2295,9 +2355,12 @@ namespace TheOtherRoles
             var target = Helpers.playerById(playerId);
             if (CachedPlayer.LocalPlayer.PlayerControl == trapper)
             {
-                Trapper.acTokenCommon ??= new("trapper.common1");
+                _ = new StaticAchievementToken("trapper.common1");
                 Trapper.acTokenChallenge.Value++;
             }
+            var murder = Helpers.checkMuderAttempt(trapper, target);
+            if (murder == MurderAttemptResult.ReverseKill) target.MurderPlayer(trapper, MurderResultFlags.Succeeded);
+            if (murder != MurderAttemptResult.PerformKill) return;
             Trap.trapKill(trapId, trapper, target);
         }
 
@@ -2309,6 +2372,30 @@ namespace TheOtherRoles
         public static void trapperMeetingFlag()
         {
             Trap.onMeeting();
+        }
+
+        public static void kataomoiSetTarget(byte playerId)
+        {
+            Kataomoi.target = Helpers.playerById(playerId);
+        }
+
+        public static void kataomoiWin()
+        {
+            if (Kataomoi.kataomoi == null) return;
+
+            Kataomoi.triggerKataomoiWin = true;
+            if (Kataomoi.target != null) {
+                Kataomoi.target.Exiled();
+                overrideDeathReasonAndKiller(Kataomoi.target, DeadPlayer.CustomDeathReason.KataomoiStare, Kataomoi.kataomoi);
+            }
+        }
+
+        public static void kataomoiStalking(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            if (Kataomoi.kataomoi == null || Kataomoi.kataomoi != player) return;
+
+            Kataomoi.doStalking();
         }
 
         public static void setBrainwash(byte playerId)
@@ -2534,6 +2621,7 @@ namespace TheOtherRoles
             if (Yasuna.yasuna != null && dyingTarget == Yasuna.yasuna) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
             if (Yasuna.yasuna != null && dyingTarget.PlayerId == Yasuna.specialVoteTargetPlayerId) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
             PlayerControl dyingLoverPartner = Lovers.bothDie ? dyingTarget.getPartner() : null; // Lover check
+            PlayerControl kataomoiPlayer = Kataomoi.kataomoi != null && Kataomoi.target == dyingTarget ? Kataomoi.kataomoi : null;
             if (Lawyer.target != null && dyingLoverPartner == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
 
             PlayerControl guesser = Helpers.playerById(killerId);
@@ -2566,6 +2654,7 @@ namespace TheOtherRoles
             }
 
             byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
+            byte partnerId2 = kataomoiPlayer != null ? kataomoiPlayer.PlayerId : dyingTargetId;
             byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
             byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
             byte akujoPartnerId = dyingAkujoPartner != null ? dyingAkujoPartner.PlayerId : byte.MaxValue;
@@ -2577,14 +2666,15 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(dyingTarget.KillSfx, false, 0.8f);
             if (MeetingHud.Instance) {
                 foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
-                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId || pva.TargetPlayerId == cupidLoverId || pva.TargetPlayerId == cupidId) {
+                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId || pva.TargetPlayerId == cupidLoverId || pva.TargetPlayerId == cupidId
+                        || pva.TargetPlayerId == partnerId2) {
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
                         MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, dyingTargetId);
                     }
 
                     //Give players back their vote if target is shot dead
-                    if (pva.VotedFor != dyingTargetId && pva.VotedFor != partnerId) continue;
+                    if (pva.VotedFor != dyingTargetId && pva.VotedFor != partnerId && pva.VotedFor != partnerId2) continue;
                     pva.UnsetVote();
                     var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
                     if (!voteAreaPlayer.AmOwner) continue;
@@ -2602,7 +2692,8 @@ namespace TheOtherRoles
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingLoverPartner.Data, dyingLoverPartner.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
-                
+                else if (kataomoiPlayer != null && CachedPlayer.LocalPlayer.PlayerControl == kataomoiPlayer)
+                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(kataomoiPlayer.Data, kataomoiPlayer.Data);
                 else if (CachedPlayer.LocalPlayer.PlayerControl == NekoKabocha.meetingKiller && revengeFlag)
                 {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(NekoKabocha.nekoKabocha.Data, killer.Data);
@@ -3064,6 +3155,9 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.UncheckedSetTasks:
                     RPCProcedure.uncheckedSetTasks(reader.ReadByte(), reader.ReadBytesAndSize());
                     break;
+                case (byte)CustomRPC.FinishShipStatusBegin:
+                    RPCProcedure.finishShipStatusBegin();
+                    break;
                 case (byte)CustomRPC.DynamicMapOption:
                     byte mapId = reader.ReadByte();
                     RPCProcedure.dynamicMapOption(mapId);
@@ -3217,9 +3311,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.DeactivateAccel:
                     RPCProcedure.deactivateAccel(reader.ReadByte());
                     break;
-                case (byte)CustomRPC.FoxSetTask:
-                    RPCProcedure.foxSetTasks(reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.SetOddIsJekyll:
                     RPCProcedure.setOddIsJekyll(reader.ReadBoolean());
                     break;
@@ -3258,6 +3349,20 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.UnlockTaskMasterAcChallenge:
                     RPCProcedure.unlockTaskMasterAcChallenge();
+                    break;
+                case (byte)CustomRPC.UnlockJesterAcCommon:
+                    RPCProcedure.unlockJesterAcCommon();
+                    break;
+                case (byte)CustomRPC.KataomoiSetTarget:
+                    playerId = reader.ReadByte();
+                    RPCProcedure.kataomoiSetTarget(playerId);
+                    break;
+                case (byte)CustomRPC.KataomoiWin:
+                    RPCProcedure.kataomoiWin();
+                    break;
+                case (byte)CustomRPC.KataomoiStalking:
+                    playerId = reader.ReadByte();
+                    RPCProcedure.kataomoiStalking(playerId);
                     break;
                 case (byte)CustomRPC.ResetAchievement:
                     RPCProcedure.resetAchievement();

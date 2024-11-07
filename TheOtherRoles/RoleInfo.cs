@@ -116,6 +116,7 @@ namespace TheOtherRoles
         public static RoleInfo fox = new("fox", Fox.color, RoleId.Fox, true);
         public static RoleInfo immoralist = new("immoralist", Immoralist.color, RoleId.Immoralist, true);
         public static RoleInfo schrodingersCat = new("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
+        public static RoleInfo kataomoi = new("kataomoi", Kataomoi.color, RoleId.Kataomoi, true);
 
         public static RoleInfo hunter = new("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new("hunted", Color.white, RoleId.Crewmate);
@@ -188,6 +189,7 @@ namespace TheOtherRoles
             moriarty,
             cupid,
             schrodingersCat,
+            kataomoi,
             //prosecutor,
             crewmate,
             mayor,
@@ -305,6 +307,7 @@ namespace TheOtherRoles
             if (p == Blackmailer.blackmailer) infos.Add(blackmailer);
             if (p == Prophet.prophet) infos.Add(prophet);
             if (p == Fox.fox) infos.Add(fox);
+            if (p == Kataomoi.kataomoi) infos.Add(kataomoi);
             if (p == Immoralist.immoralist) infos.Add(immoralist);
             if (p == Busker.busker) infos.Add(busker);
             if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
@@ -387,7 +390,8 @@ namespace TheOtherRoles
             }
 
             if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target) 
-                roleName += (useColors ? Helpers.cs(Pursuer.color, " §") : " §");
+                roleName += useColors ? Helpers.cs(Pursuer.color, " §") : " §";
+            if (Husk.husk.Any(x => x.PlayerId == p.PlayerId)) roleName += $" ({ModTranslation.getString("husk")})";
             if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");            
 
             if (!suppressGhostInfo && p != null) {
@@ -428,6 +432,8 @@ namespace TheOtherRoles
                         roleName = Helpers.cs(Color.gray, ModTranslation.getString("roleInfoBackup")) + roleName;
                     if (p == Akujo.honmei)
                         roleName = Helpers.cs(Akujo.color, ModTranslation.getString("roleInfoHonmei")) + roleName;
+                    if (p == Kataomoi.target)
+                        roleName = Helpers.cs(Kataomoi.color, ModTranslation.getString("roleInfoKataomoiTarget")) + roleName;
 
                     // Death Reason on Ghosts
                     if (p.Data.IsDead) {
@@ -471,6 +477,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Suicide:
                                     deathReasonString = ModTranslation.getString("roleSummarySuicide");
+                                    break;
+                                case DeadPlayer.CustomDeathReason.KataomoiStare:
+                                    deathReasonString = $" - {Helpers.cs(Kataomoi.color, ModTranslation.getString("roleSummaryKataomoiStare"))}";
                                     break;
                                 case DeadPlayer.CustomDeathReason.BrainwashedKilled:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryBrainwashedKilled"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -588,6 +588,8 @@ namespace TheOtherRoles.MetaContext
             UnityEngine.Object.Destroy(StandardTextPrefab.spriteAnimator);
             UnityEngine.Object.DontDestroyOnLoad(StandardTextPrefab.gameObject);
         }
+
+        public static void PlayHoverSE() => SoundManager.Instance.PlaySound(HoverClip, false, 0.8f);
 
         static public void LoadAssetAtInitialize()
         {

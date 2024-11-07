@@ -17,8 +17,10 @@ namespace TheOtherRoles.Objects {
 
 
         public Arrow(Color color) {
-            arrow = new GameObject("Arrow");
-            arrow.layer = 5;
+            arrow = new GameObject("Arrow")
+            {
+                layer = 5
+            };
             image = arrow.AddComponent<SpriteRenderer>();
             image.sprite = getSprite();
             image.color = color;

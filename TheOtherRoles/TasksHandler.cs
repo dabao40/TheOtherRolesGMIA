@@ -26,14 +26,6 @@ namespace TheOtherRoles {
                     GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks + 
                     GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks;
                 }
-                else if (Fox.fox != null && Fox.fox.PlayerId == playerInfo.PlayerId)
-                {
-                    foreach (var playerInfoTask in playerInfo.Tasks)
-                    {
-                        if (playerInfoTask.Complete) CompletedTasks++;
-                        TotalTasks++;
-                    }
-                }
                 else
                 {
                     foreach (var playerInfoTask in playerInfo.Tasks.GetFastEnumerator())

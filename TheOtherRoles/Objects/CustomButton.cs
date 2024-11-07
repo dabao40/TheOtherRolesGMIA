@@ -1,3 +1,4 @@
+using AmongUs.GameOptions;
 using Il2CppSystem.Runtime.ExceptionServices;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,15 @@ namespace TheOtherRoles.Objects {
             public static readonly Vector3 upperRowFarLeft = new(-3f, 1f, 0f);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", bool abilityTexture = false, string actionName = "", bool shakeOnEnd = true)
+        public enum ButtonLabelType
+        {
+            UseButton,
+            AdminButton,
+            KillButton,
+            HauntButton
+        }
+
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true)
         {
             this.hudManager = hudManager;
             this.OnClick = OnClick;
@@ -76,21 +85,17 @@ namespace TheOtherRoles.Objects {
             actionButtonGameObject = actionButton.gameObject;
             actionButtonRenderer = actionButton.graphic;
             actionButtonMat = actionButtonRenderer.material;
-            if (abilityTexture)
-            {
-                UnityEngine.Object.Destroy(actionButton.buttonLabelText);
-                actionButton.buttonLabelText = UnityEngine.Object.Instantiate(hudManager.UseButton.buttonLabelText, actionButton.transform);
-            }
+            setLabelType(abilityTexture);
             actionButtonLabelText = actionButton.buttonLabelText;
             PassiveButton button = actionButton.GetComponent<PassiveButton>();
-            this.showButtonText = (actionButtonRenderer.sprite == Sprite || buttonText != "");
+            showButtonText = actionButtonRenderer.sprite == Sprite || buttonText != "";
             button.OnClick = new Button.ButtonClickedEvent();
             button.OnClick.AddListener((UnityEngine.Events.UnityAction)onClickEvent);
             setKeyBind();
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", bool abilityTexture = false, string actionName = "", bool shakeOnEnd = true)
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true)
         : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd) { }
 
         public void onClickEvent()
@@ -255,9 +260,34 @@ namespace TheOtherRoles.Objects {
             }
         }
 
+        internal GameObject UsesIcon = null!;
+        public TMPro.TextMeshPro ShowUsesIcon(int iconVariation)
+        {
+            if (UsesIcon) GameObject.Destroy(UsesIcon);
+            UsesIcon = ButtonEffect.ShowUsesIcon(actionButton, iconVariation, out var text);
+            return text;
+        }
+
+        public void setLabelType(ButtonLabelType labelType)
+        {
+            Material mat = null;
+            switch (labelType)
+            {
+                case ButtonLabelType.UseButton:
+                    mat = hudManager.UseButton.fastUseSettings[ImageNames.UseButton].FontMaterial; break;
+                case ButtonLabelType.AdminButton:
+                    mat = hudManager.UseButton.fastUseSettings[ImageNames.PolusAdminButton].FontMaterial; break;
+                case ButtonLabelType.KillButton:
+                    mat = RoleManager.Instance.GetRole(RoleTypes.Shapeshifter).Ability.FontMaterial; break;
+                case ButtonLabelType.HauntButton:
+                    mat = RoleManager.Instance.GetRole(RoleTypes.Engineer).Ability.FontMaterial; break;
+            }
+            if (mat != null) actionButton.buttonLabelText.SetSharedMaterial(mat);
+        }
+
         public void setKeyBind()
         {
-            if (hotkey != null && hotkey != KeyCode.None && hotkey != KeyCode.KeypadPlus)
+            if (hotkey is not null and not KeyCode.None and not KeyCode.KeypadPlus)
             {
                 actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
                 ButtonEffect.SetKeyGuide(actionButtonGameObject, (KeyCode)hotkey, action: actionName != "" ? actionName : (showButtonText && buttonText != "" ? buttonText : ModTranslation.getString("buttonsActionButton")));
