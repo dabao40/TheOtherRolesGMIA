@@ -116,6 +116,8 @@ namespace TheOtherRoles
         Vip,
         Invert,
         Chameleon,
+        Rootkit,
+        AntiRootkit,
         //Shifter
     }
 
@@ -655,6 +657,13 @@ namespace TheOtherRoles
                 case RoleId.Madmate:
                     Madmate.madmate.Add(player);
                     break;
+                case RoleId.Rootkit:
+                    Rootkit.rootkit = player;
+                    break;
+                case RoleId.AntiRootkit:
+                    AntiRootkit.antiRootkit = player;
+                    break;
+
                 //case RoleId.Shifter:
                     //Shifter.shifter = player;
                     //break;

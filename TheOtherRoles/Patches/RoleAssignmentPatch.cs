@@ -222,6 +222,10 @@ namespace TheOtherRoles.Patches {
                 setRoleToRandomPlayer((byte)RoleId.MimicA, data.impostors);
                 data.maxImpostorRoles -= 2;
             }
+            if (data.impostors.Count >= 1 && CustomOptionHolder.modifierAntiRootkit.getBool())
+            {
+                setModifierToRandomPlayer((byte)RoleId.AntiRootkit, data.impostors);
+            }
         }
 
         private static void selectFactionForFactionIndependentRoles(RoleAssignmentData data) {
@@ -587,7 +591,9 @@ namespace TheOtherRoles.Patches {
                 RoleId.Vip,
                 RoleId.Invert,
                 RoleId.Chameleon,
-                RoleId.Madmate
+                RoleId.Madmate,
+                RoleId.Rootkit,
+                //RoleId.AntiRootkit Won't give to non-killer player
                 //RoleId.Shifter
             });
 
