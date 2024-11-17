@@ -1854,6 +1854,7 @@ namespace TheOtherRoles
                     SchrodingersCat.setCrewFlag();
                     break;
             }
+            if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat) _ = new StaticAchievementToken("schrodingersCat.another1");
         }
 
         public static void placeAssassinTrace(byte[] buff) {
@@ -1882,7 +1883,7 @@ namespace TheOtherRoles
 
             target.setLook("", 6, "", "", "", "");
             Color color = Color.clear;
-            bool canSee = CachedPlayer.LocalPlayer.Data.Role.IsImpostor || CachedPlayer.LocalPlayer.Data.IsDead;
+            bool canSee = CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
             if (canSee) color.a = 0.1f;
             target.cosmetics.currentBodySprite.BodySprite.color = color;
             target.cosmetics.colorBlindText.gameObject.SetActive(false);
@@ -2003,6 +2004,7 @@ namespace TheOtherRoles
                 cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
                 GameHistory.overrideDeathReasonAndKiller(cupid, isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
                 if (MeetingHud.Instance) updateMeeting(cupidId);
+                if (CachedPlayer.LocalPlayer.PlayerControl == cupid) _ = new StaticAchievementToken("cupid.another1");
             }
         }
 
@@ -2755,12 +2757,12 @@ namespace TheOtherRoles
                     else if ((RoleId)guessedRoleId == RoleId.Shifter) guessedRoleInfo = RoleInfo.niceshifter;
                 }
                 string msg = "";
-                if (CachedPlayer.LocalPlayer.Data.IsDead && guessedTarget != null && guesser != null)
+                if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && guessedTarget != null && guesser != null)
                 {
                     msg = string.Format(ModTranslation.getString("guesserGuessChat"), guesser.Data.PlayerName, guessedRoleInfo?.name ?? "", guessedTarget.Data.PlayerName);
                     sender = guesser;
                 }
-                else if (!CachedPlayer.LocalPlayer.Data.IsDead && (CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher || CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher) && Watcher.canSeeGuesses)
+                else if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && (CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher || CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher) && Watcher.canSeeGuesses)
                     msg = string.Format(ModTranslation.getString("watcherGuessChat"), guessedRoleInfo?.name ?? "", guessedTarget.Data.PlayerName);
 
                 if (!string.IsNullOrEmpty(msg))
@@ -2979,7 +2981,7 @@ namespace TheOtherRoles
                 if (p == 1f) FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = false;
             })));
 
-            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor) return; // only rewind hunter
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return; // only rewind hunter
 
             TimeMaster.isRewinding = true;
 

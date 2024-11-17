@@ -1195,7 +1195,7 @@ namespace TheOtherRoles {
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, Types.General, "maxNumberOfMeetings", 10, 0, 15, 1, null, true, "unitShots", heading: "headingGameplay");
-            freePlayGameModeNumDummies = CustomOption.Create(10424, Types.General, cs(Color.green, "freePlayGameModeNumDummies"), 1f, 1f, 23f, 1f, format: "unitPlayers");
+            freePlayGameModeNumDummies = CustomOption.Create(10424, Types.General, cs(Color.green, "freePlayGameModeNumDummies"), 1f, 0f, 23f, 1f, format: "unitPlayers");
             anyPlayerCanStopStart = CustomOption.Create(2, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "anyPlayerCanStopStart"), false, null, false);
             blockSkippingInEmergencyMeetings = CustomOption.Create(4, Types.General, "blockSkippingInEmergencyMeetings", false);
             noVoteIsSelfVote = CustomOption.Create(5, Types.General, "noVoteIsSelfVote", false, blockSkippingInEmergencyMeetings);

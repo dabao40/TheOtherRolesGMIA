@@ -18,7 +18,7 @@ namespace TheOtherRoles.Modules {
                 if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) {
                     if (text.ToLower().StartsWith("/kick ")) {
                         string playerName = text.Substring(6);
-                        PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.Data.PlayerName.Equals(playerName));
+                        PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.PlayerControl.Data.PlayerName.Equals(playerName));
                         if (target != null && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan()) {
                             var client = AmongUsClient.Instance.GetClient(target.OwnerId);
                             if (client != null) {
@@ -28,7 +28,7 @@ namespace TheOtherRoles.Modules {
                         }
                     } else if (text.ToLower().StartsWith("/ban ")) {
                         string playerName = text.Substring(5);
-                        PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.Data.PlayerName.Equals(playerName));
+                        PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.PlayerControl.Data.PlayerName.Equals(playerName));
                         if (target != null && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan()) {
                             var client = AmongUsClient.Instance.GetClient(target.OwnerId);
                             if (client != null) {
@@ -37,7 +37,7 @@ namespace TheOtherRoles.Modules {
                             }
                         }
                     }
-                    else if (text.ToLower().StartsWith("/gm"))
+                    else if (text.ToLower().StartsWith("/gm") && TORMapOptions.gameMode != CustomGamemodes.FreePlay)
                     {
                         string gm = text.Substring(4).ToLower();
                         CustomGamemodes gameMode = CustomGamemodes.Classic;
@@ -70,7 +70,7 @@ namespace TheOtherRoles.Modules {
                 if (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay) {
                     if (text.ToLower().Equals("/murder")) {
                         CachedPlayer.LocalPlayer.PlayerControl.Exiled();
-                        FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(CachedPlayer.LocalPlayer.Data, CachedPlayer.LocalPlayer.Data);
+                        FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(CachedPlayer.LocalPlayer.PlayerControl.Data, CachedPlayer.LocalPlayer.PlayerControl.Data);
                         handled = true;
                     } else if (text.ToLower().StartsWith("/color ")) {
                         handled = true;
@@ -84,9 +84,9 @@ namespace TheOtherRoles.Modules {
                     } 
                 }
 
-                if (text.ToLower().StartsWith("/tp ") && CachedPlayer.LocalPlayer.Data.IsDead) {
+                if (text.ToLower().StartsWith("/tp ") && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) {
                     string playerName = text.Substring(4).ToLower();
-                    PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.Data.PlayerName.ToLower().Equals(playerName));
+                    PlayerControl target = CachedPlayer.AllPlayers.FirstOrDefault(x => x.PlayerControl.Data.PlayerName.ToLower().Equals(playerName));
                     if (target != null) {
                         CachedPlayer.LocalPlayer.transform.position = target.transform.position;
                         handled = true;
@@ -113,7 +113,7 @@ namespace TheOtherRoles.Modules {
         public static class SetBubbleName { 
             public static void Postfix(ChatBubble __instance, [HarmonyArgument(0)] string playerName) {
                 PlayerControl sourcePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data != null && x.Data.PlayerName.Equals(playerName));
-                if (sourcePlayer != null && CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.Data?.Role?.IsImpostor == true && (Spy.spy != null && sourcePlayer.PlayerId == Spy.spy.PlayerId || Sidekick.sidekick != null && Sidekick.wasTeamRed && sourcePlayer.PlayerId == Sidekick.sidekick.PlayerId || Jackal.jackal != null && Jackal.wasTeamRed && sourcePlayer.PlayerId == Jackal.jackal.PlayerId) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
+                if (sourcePlayer != null && CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl.Data?.Role?.IsImpostor == true && (Spy.spy != null && sourcePlayer.PlayerId == Spy.spy.PlayerId || Sidekick.sidekick != null && Sidekick.wasTeamRed && sourcePlayer.PlayerId == Sidekick.sidekick.PlayerId || Jackal.jackal != null && Jackal.wasTeamRed && sourcePlayer.PlayerId == Jackal.jackal.PlayerId) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
             }
         }
 

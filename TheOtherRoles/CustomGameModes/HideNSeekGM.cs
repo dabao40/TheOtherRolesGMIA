@@ -22,17 +22,17 @@ namespace TheOtherRoles.CustomGameModes {
         public static float killCooldown = 10f;
         public static float hunterWaitingTime = 15f;
         public static bool isHunter() {
-            return isHideNSeekGM && CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.Data.Role.IsImpostor;
+            return isHideNSeekGM && CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor;
         }
 
         public static List<CachedPlayer> getHunters() {
             List<CachedPlayer> hunters = new(CachedPlayer.AllPlayers);
-            hunters.RemoveAll(x => !x.Data.Role.IsImpostor);
+            hunters.RemoveAll(x => !x.PlayerControl.Data.Role.IsImpostor);
             return hunters;
         }
 
         public static bool isHunted() {
-            return isHideNSeekGM && CachedPlayer.LocalPlayer != null && !CachedPlayer.LocalPlayer.Data.Role.IsImpostor;
+            return isHideNSeekGM && CachedPlayer.LocalPlayer != null && !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor;
         }
 
         public static void clearAndReload() {

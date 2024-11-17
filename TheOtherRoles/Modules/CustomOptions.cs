@@ -1410,9 +1410,9 @@ namespace TheOtherRoles {
             }
             if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl != null)
             {
-                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data);
+                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                bool zoomButtonActive = !(CachedPlayer.LocalPlayer.PlayerControl == null || !CachedPlayer.LocalPlayer.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag));
+                bool zoomButtonActive = !(CachedPlayer.LocalPlayer.PlayerControl == null || !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag));
                 zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
                 toggleZoomButtonObject.SetActive(zoomButtonActive);
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);

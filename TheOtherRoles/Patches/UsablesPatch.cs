@@ -110,7 +110,7 @@ namespace TheOtherRoles.Patches {
 
             bool canUse;
             bool couldUse;
-            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
+            __instance.CanUse(CachedPlayer.LocalPlayer.PlayerControl.Data, out canUse, out couldUse);
             bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy && CachedPlayer.LocalPlayer.PlayerControl != Jester.jester && !Madmate.madmate.Contains(CachedPlayer.LocalPlayer.PlayerControl) && CachedPlayer.LocalPlayer.PlayerControl != CreatedMadmate.createdMadmate; //&& !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)
             if (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer) canMoveInVents = true;
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
@@ -178,7 +178,7 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     class KillButtonDoClickPatch {
         public static bool Prefix(KillButton __instance) {
-            if (__instance.isActiveAndEnabled && __instance.currentTarget && !__instance.isCoolingDown && !CachedPlayer.LocalPlayer.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl.CanMove) {
+            if (__instance.isActiveAndEnabled && __instance.currentTarget && !__instance.isCoolingDown && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl.CanMove) {
                 // Ninja doesn't get teleported to the body on stealth
                 bool showAnimation = true;
                 if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && Ninja.stealthed)
@@ -984,7 +984,7 @@ namespace TheOtherRoles.Patches {
 
 
             isLightsOut = CachedPlayer.LocalPlayer.PlayerControl.myTasks.ToArray().Any(x => x.name.Contains("FixLightsTask")) || Trickster.lightsOutTimer > 0;
-            bool ignoreNightVision = CustomOptionHolder.camsNoNightVisionIfImpVision.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)) || CachedPlayer.LocalPlayer.Data.IsDead;
+            bool ignoreNightVision = CustomOptionHolder.camsNoNightVisionIfImpVision.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)) || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
             bool nightVisionEnabled = CustomOptionHolder.camsNightVision.getBool();
 
             if (isLightsOut && !nightVisionIsActive && nightVisionEnabled && !ignoreNightVision) {  // only update when something changed!

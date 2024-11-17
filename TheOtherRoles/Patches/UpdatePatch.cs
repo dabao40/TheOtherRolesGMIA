@@ -19,7 +19,7 @@ namespace TheOtherRoles.Patches {
         private static Dictionary<byte, (string name, Color color)> TagColorDict = new();
         static void resetNameTagsAndColors() {
             var localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
-            var myData = CachedPlayer.LocalPlayer.Data;
+            var myData = CachedPlayer.LocalPlayer.PlayerControl.Data;
             var amImpostor = myData.Role.IsImpostor;
             var morphTimerNotUp = Morphling.morphTimer > 0f;
             var morphTargetNotNull = Morphling.morphTarget != null;
@@ -286,7 +286,7 @@ namespace TheOtherRoles.Patches {
 
         static void setNameTags() {
             // Mafia
-            if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.Data.Role.IsImpostor) {
+            if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) {
                 foreach (PlayerControl player in CachedPlayer.AllPlayers)
                     if (Godfather.godfather != null && Godfather.godfather == player)
                             player.cosmetics.nameText.text = player.Data.PlayerName + $" ({ModTranslation.getString("mafiaG")})";
@@ -450,7 +450,7 @@ namespace TheOtherRoles.Patches {
             //  || Mini.mini == MimicK.mimicK && MimicK.victim != null
             // the above line deleted in 2024.3.9, specified the MimicK instead
             if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || (Mini.mini == MimicA.mimicA && MimicA.isMorph) || (Mini.mini == Morphling.morphling && Morphling.morphTimer > 0f) || (Mini.mini == Ninja.ninja && Ninja.stealthed)
-                || (Mini.mini == Fox.fox && Fox.stealthed) || (Mini.mini == Sprinter.sprinter && Sprinter.sprinting) || SurveillanceMinigamePatch.nightVisionIsActive) return;
+                || (Mini.mini == Fox.fox && Fox.stealthed) || (Mini.mini == Sprinter.sprinter && Sprinter.sprinting) || (Mini.mini == Kataomoi.kataomoi && Kataomoi.isStalking()) || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
@@ -474,7 +474,7 @@ namespace TheOtherRoles.Patches {
         }
 
         static void updateImpostorKillButton(HudManager __instance) {
-            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor) return;
+            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
             if (MeetingHud.Instance) {
                 __instance.KillButton.Hide();
                 return;

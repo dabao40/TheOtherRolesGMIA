@@ -9278,6 +9278,234 @@
         "0": "No More Annoying Shifters",
         "13": "\u5012\u53cd\u5929\u7f61"
     },
+    "plagueDoctorcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "plagueDoctorcommon1AchievementGoal": {
+        "0": "Infect One Player",
+        "13": "\u611f\u67d3\u4e00\u540d\u73a9\u5bb6"
+    },
+    "plagueDoctorcommon1AchievementTitle": {
+        "0": "Infection!",
+        "13": "\u611f\u67d3\u6e90\uff01"
+    },
+    "plagueDoctorchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "plagueDoctorchallengeAchievementGoal": {
+        "0": "Infect All Players And Win The Game",
+        "13": "\u611f\u67d3\u6240\u6709\u73a9\u5bb6\u5e76\u80dc\u5229"
+    },
+    "plagueDoctorchallengeAchievementTitle": {
+        "0": "Plague",
+        "13": "\u9ed1\u6b7b\u75c5"
+    },
+    "foxcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "foxcommon1AchievementGoal": {
+        "0": "Create An Immoralist",
+        "13": "\u8bf1\u60d1\u4e00\u4e2a\u80cc\u5fb7\u8005"
+    },
+    "foxcommon1AchievementTitle": {
+        "0": "Immortal!",
+        "13": "\u6c38\u8fdc\u4e0d\u6b7b\uff01"
+    },
+    "foxchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "foxchallengeAchievementGoal": {
+        "0": "Steal The Impostors' Or The Crewmates' Victory",
+        "13": "\u5077\u8d70\u5185\u9b3c\u6216\u8239\u5458\u7684\u80dc\u5229"
+    },
+    "foxchallengeAchievementTitle": {
+        "0": "No Work And All Gain",
+        "13": "\u8ba9\u4f60\u4eec\u767d\u6253\u5de5\uff01"
+    },
+    "immoralistchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "immoralistchallengeAchievementGoal": {
+        "0": "Commit Suicide To Protect The Fox",
+        "13": "\u81ea\u6740\u4ee5\u4fdd\u62a4\u72d0\u5996"
+    },
+    "immoralistchallengeAchievementTitle": {
+        "0": "All For The Best",
+        "13": "\u4e00\u5207\u90fd\u662f\u6700\u597d\u7684\u5b89\u6392"
+    },
+    "akujocommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "akujocommon1AchievementGoal": {
+        "0": "Make Someone Your Backup",
+        "13": "\u9009\u62e9\u4e00\u540d\u73a9\u5bb6\u5f53\u505a\u5907\u80ce"
+    },
+    "akujocommon1AchievementTitle": {
+        "0": "Dump You Anytime",
+        "13": "\u968f\u65f6\u629b\u5f03"
+    },
+    "akujocommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "akujocommon2AchievementGoal": {
+        "0": "Make Someone Your True Love",
+        "13": "\u9009\u62e9\u4e00\u540d\u73a9\u5bb6\u5f53\u505a\u771f\u7231"
+    },
+    "akujocommon2AchievementTitle": {
+        "0": "Love You~",
+        "13": "\u6211\u7231\u4f60\uff01"
+    },
+    "akujochallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "akujochallengeAchievementGoal": {
+        "0": "Win With Your True Love",
+        "13": "\u5728\u6e38\u620f\u7ed3\u675f\u65f6\u4e0e\u771f\u7231\u4e00\u8d77\u83b7\u80dc"
+    },
+    "akujochallengeAchievementTitle": {
+        "0": "Manipulate Everyone!",
+        "13": "\u6765\u505a\u70b9\"\u5feb\u4e50\"\u7684\u4e8b\u60c5\u5427"
+    },
+    "jekyllAndHydecommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "jekyllAndHydecommon1AchievementGoal": {
+        "0": "Use The Drug To Switch Personalities",
+        "13": "\u4f7f\u7528\u79d8\u836f\u5207\u6362\u4eba\u683c"
+    },
+    "jekyllAndHydecommon1AchievementTitle": {
+        "0": "Who Am I",
+        "13": "\u6211\u7a76\u7adf\u662f\u8c01"
+    },
+    "jekyllAndHydechallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "jekyllAndHydechallengeAchievementGoal": {
+        "0": "Kill Enough Players And Win The Game",
+        "13": "\u6740\u6b7b\u8db3\u591f\u591a\u7684\u73a9\u5bb6\u6765\u83b7\u5f97\u80dc\u5229"
+    },
+    "jekyllAndHydechallengeAchievementTitle": {
+        "0": "Darkness Has Arrived",
+        "13": "\u9ed1\u6697\u964d\u4e34"
+    },
+    "moriartycommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "moriartycommon1AchievementGoal": {
+        "0": "Brainwash A Player",
+        "13": "\u6d17\u8111\u4e00\u540d\u73a9\u5bb6"
+    },
+    "moriartycommon1AchievementTitle": {
+        "0": "Perfect Crime",
+        "13": "\u5b8c\u7f8e\u7684\u72af\u7f6a"
+    },
+    "moriartychallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "moriartychallengeAchievementGoal": {
+        "0": "Kill Enough Players Using Your Brainwash",
+        "13": "\u901a\u8fc7\u6d17\u8111\u6740\u6b7b\u8db3\u591f\u591a\u7684\u73a9\u5bb6"
+    },
+    "moriartychallengeAchievementTitle": {
+        "0": "World Under Control",
+        "13": "\u7834\u706d\uff01"
+    },
+    "cupidcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "cupidcommon1AchievementGoal": {
+        "0": "Create A Pair Of Lovers",
+        "13": "\u521b\u9020\u4e00\u5bf9\u604b\u4eba"
+    },
+    "cupidcommon1AchievementTitle": {
+        "0": "The One Who Shoots The Arrows",
+        "13": "\u5c04\u7bad\u7a7f\u5fc3\u4e4b\u4eba"
+    },
+    "cupidchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "cupidchallengeAchievementGoal": {
+        "0": "Win Together With The Lovers",
+        "13": "\u548c\u604b\u4eba\u4e00\u8d77\u83b7\u5f97\u80dc\u5229"
+    },
+    "cupidchallengeAchievementTitle": {
+        "0": "True Love Never Dies",
+        "13": "\u771f\u7231\u4e0d\u6b7b"
+    },
+    "cupidanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "cupidanother1AchievementGoal": {
+        "0": "Scapegoat And Protect The Lovers",
+        "13": "\u66ff\u6b7b\u4ee5\u4fdd\u62a4\u604b\u4eba"
+    },
+    "cupidanother1AchievementTitle": {
+        "0": "I Have Done My Duty",
+        "13": "\u606a\u5c3d\u804c\u5b88"
+    },
+    "schrodingersCatcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "schrodingersCatcommon1AchievementGoal": {
+        "0": "Get Killed And Join The Killer's Team",
+        "13": "\u901a\u8fc7\u88ab\u51fb\u6740\u52a0\u5165\u51f6\u624b\u9635\u8425"
+    },
+    "schrodingersCatcommon1AchievementTitle": {
+        "0": "A Cat Has Nine Lives",
+        "13": "\u732b\u6709\u4e5d\u6761\u547d\uff01"
+    },
+    "schrodingersCatanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "schrodingersCatanother1AchievementGoal": {
+        "0": "Switch Teams When All Tasks Completed",
+        "13": "\u5b8c\u6210\u4efb\u52a1\u540e\u5207\u6362\u9635\u8425"
+    },
+    "schrodingersCatanother1AchievementTitle": {
+        "0": "Choose Whatever I Want",
+        "13": "\u5c0f\u5b69\u5b50\u624d\u505a\u9009\u62e9, \u6211\u5168\u90fd\u8981\uff01"
+    },
+    "kataomoicommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "kataomoicommon1AchievementGoal": {
+        "0": "Stare Your Target",
+        "13": "\u51dd\u89c6\u4f60\u7684\u76ee\u6807"
+    },
+    "kataomoicommon1AchievementTitle": {
+        "0": "Seeing You Makes Me Happy",
+        "13": "\u770b\u89c1\u4f60\u8ba9\u6211\u9ad8\u5174"
+    },
+    "kataomoichallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "kataomoichallengeAchievementGoal": {
+        "0": "Kill Your Target And Win The Game",
+        "13": "\u6740\u6b7b\u51dd\u89c6\u76ee\u6807\u5e76\u83b7\u5f97\u80dc\u5229"
+    },
+    "kataomoichallengeAchievementTitle": {
+        "0": "I Hope I Can See Love More...",
+        "13": "\u6211\u5e0c\u671b\u6211\u80fd\u61c2\u5f97\u7231\u60c5\u7684\u7f8e\u597d..."
+    },
     "hintHelpInGameTitle": {
         "0": "Role Help",
         "13": "\u89d2\u8272\u89e3\u91ca"

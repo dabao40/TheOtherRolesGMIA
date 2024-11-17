@@ -42,34 +42,27 @@ namespace TheOtherRoles.Patches
                 {
                     if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive())
                     {
-                        if (player == Morphling.morphling && Morphling.morphTimer > 0)
-                        {
-                            hand.SetPlayerColor(Morphling.morphTarget.CurrentOutfit, PlayerMaterial.MaskType.None);
+                        if (player == Morphling.morphling && Morphling.morphTimer > 0) {
+                            hand.SetPlayerColor(Morphling.morphTarget.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
                             // Also set hat color, cause the line destroys it...
                             player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
-                        }
-                        else if (player == MimicK.mimicK && MimicK.victim != null)
-                        {
-                            hand.SetPlayerColor(MimicK.victim.CurrentOutfit, PlayerMaterial.MaskType.None);
+                        } else if (player == MimicK.mimicK && MimicK.victim != null) {
+                            hand.SetPlayerColor(MimicK.victim.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
                             player.RawSetHat(MimicK.victim.Data.DefaultOutfit.HatId, MimicK.victim.Data.DefaultOutfit.ColorId);
-                        }
-                        else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph)
-                        {
-                            hand.SetPlayerColor(MimicK.mimicK.CurrentOutfit, PlayerMaterial.MaskType.None);
+                        } else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph) {
+                            hand.SetPlayerColor(MimicK.mimicK.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
                             player.RawSetHat(MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.ColorId);
-                        }
-                        else
-                        {
-                            hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None);
+                        } else if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)
+                            || (Fox.fox != null && Fox.fox == player && Fox.stealthed) || (Kataomoi.kataomoi != null && Kataomoi.kataomoi == player && Kataomoi.isStalking())) {
+                            hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None, 0f);
+                        } else {
+                            hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None, player.cosmetics.GetPhantomRoleAlpha());
                         }
                     }
                     else
                     {
                         PlayerMaterial.SetColors(6, hand.handRenderer);
                     }
-
-                    if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)
-                    || (Fox.fox != null && Fox.fox == player && Fox.stealthed) || (Kataomoi.kataomoi != null && Kataomoi.kataomoi == player && Kataomoi.isStalking())) hand.gameObject.SetActive(false);
                 }
             })));
         }

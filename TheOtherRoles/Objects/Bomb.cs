@@ -83,7 +83,7 @@ using UnityEngine;
             if (Bomber.bomber != null) {
                 var position = b.bomb.transform.position;
                 var distance = Vector2.Distance(position, CachedPlayer.LocalPlayer.transform.position);  // every player only checks that for their own client (desynct with positions sucks)
-                if (distance < Bomber.destructionRange && !CachedPlayer.LocalPlayer.Data.IsDead) {
+                if (distance < Bomber.destructionRange && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) {
                     Helpers.checkMurderAttemptAndKill(Bomber.bomber, CachedPlayer.LocalPlayer.PlayerControl, false, false, true, true);
                     
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);

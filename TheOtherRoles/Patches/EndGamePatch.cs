@@ -126,7 +126,7 @@ namespace TheOtherRoles.Patches {
 
             AdditionalTempData.clear();
 
-            foreach(var playerControl in CachedPlayer.AllPlayers) {
+            foreach(PlayerControl playerControl in CachedPlayer.AllPlayers) {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
                 var colors = roles.Select(x => x.color).ToList();
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data, true);
@@ -296,6 +296,7 @@ namespace TheOtherRoles.Patches {
 
             else if (plagueDoctorWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor) _ = new StaticAchievementToken("plagueDoctor.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(PlagueDoctor.plagueDoctor.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -311,6 +312,7 @@ namespace TheOtherRoles.Patches {
 
             else if (jekyllAndHydeWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde) _ = new StaticAchievementToken("jekyllAndHyde.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(JekyllAndHyde.jekyllAndHyde.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -339,6 +341,7 @@ namespace TheOtherRoles.Patches {
 
             else if (moriartyWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == Moriarty.moriarty) _ = new StaticAchievementToken("moriarty.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Moriarty.moriarty.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -377,6 +380,7 @@ namespace TheOtherRoles.Patches {
             // Akujo win
             else if (akujoWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) _ = new StaticAchievementToken("akujo.challenge");
                 AdditionalTempData.winCondition = WinCondition.AkujoWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(Akujo.akujo.Data));
@@ -421,6 +425,7 @@ namespace TheOtherRoles.Patches {
 
             else if (cupidLoversWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
                 AdditionalTempData.winCondition = WinCondition.CupidLoversWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(Cupid.lovers1.Data));
@@ -486,6 +491,7 @@ namespace TheOtherRoles.Patches {
 
             else if (foxWin)
             {
+                if (CachedPlayer.LocalPlayer.PlayerControl == Fox.fox) _ = new StaticAchievementToken("fox.challenge");
                 AdditionalTempData.winCondition = WinCondition.FoxWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Fox.fox.Data);
@@ -551,6 +557,7 @@ namespace TheOtherRoles.Patches {
                     !EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == Cupid.cupid.Data.PlayerName)) {
                     EndGameResult.CachedWinners.Add(new CachedPlayerData(Cupid.cupid.Data));
                 }
+                if (CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
             }
 
             // Possible Additional winner: Pursuer

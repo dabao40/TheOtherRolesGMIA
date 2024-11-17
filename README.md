@@ -17,6 +17,8 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
+| 2024.6.18s        | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
 | 2024.6.18s        | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
 | 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
 
@@ -44,6 +46,41 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.3.0**
+ - Added compatibility to Among Us v2024.10.29
+ - Added new role Kataomoi
+ - Added new join lobby UI
+ - Added some new achievements to the Neutral roles
+ - Added some meeting clues to make memorizing the texts easier
+ - Adjusted the Moriarty Indicator and made the UI more beautiful
+ - Added the uses icons to some buttons
+ - Added the info icons to some suicidal buttons
+ - Added the Husk info for Shifters shifting onto dead Sheriff/Jackal etc.
+ - Added new types of button label texts as well as the uses texts
+ - Adjusted the Teleporter swapping by using the Shapeshifter menu
+ - The Madmate can now be assigned with another modifier
+ - The number of dummies can now be selected to 0
+ - The Cupid Lovers and the Lovers' chat channel won't interfere with each other now
+ - The Busker no longer gets to see the dead players' chats while pseudociding
+ - The Task Texts won't be visible during comms sabotage
+ - Fixed a bug where the dead Shifter could revive upon shifting someone alive
+ - Fixed a bug where the Jackal cannot be shifted
+ - Fixed a bug where the Fox would cause a game crash
+ - Fixed a bug where the Shifter can shift anyone upon death
+ - Fixed a bug where the Busker could not revive
+ - Fixed a bug where the Task Master's extra tasks are displayed wrongly
+ - Fixed a bug where the Moriarty's fake kill could be counted
+ - Fixed a bug where the Trapper's target can still move even when trapped
+ - Fixed a bug where the option "Trapper Hear Range" is useless
+ - Fixed a bug where the Madmate's tasks are not assigned properly
+ - Fixed a bug where the Janitor could stll sabotage
+ - Fixed a bug where switching gamemodes in Free Play would still work
+ - Fixed a bug where the "Crewmate" screen may still be shown during Intro
+ - Fixed a bug where the Schrodinger's Cat's role color will not change
+ - Fixed a bug where the option "Number Of Dummies" is still visible even not in Free Play
+ - Fixed a bug where the Swapper's charges would zoom up upon the death of a selected target
+ - Fixed a bug where the Akujo and the Cupid timer would still be visible during the meeting even if the target has been selected
 
   **Version v1.2.3**
  - Fixed several bugs with the colors/footprints of the Mimic (both Killer and Assistant).  
@@ -93,106 +130,6 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 - Added game option: Deputy Stops Game End  
 - Updated BepInEx to 671, thanks to [K](https://github.com/vdpcool)
 
-</details>
-
-<details>
-  <summary>Click to show the new roles added</summary>
-
-## Flashlight(Recently Not Available)  
-
-Original Idea by [eDonnes](https://github.com/eDonnes124)  
-The Flashlight is An Impostor with a special bomb ability.  
-This bomb ability makes everyone except for the Impostors and other players outside this range blind.  
-The cooldown of the Flashlight will be added after using this skill.  
-The Impostors can all see the blinded players since their names would be black.(optional)  
-
-| Options                  | Notes                                                    |
-| ------------------------ | -------------------------------------------------------- |
-| Flash Cooldown           |                                                          |
-| Flash Duration           |                                                          |
-| Name Is Black            | Impostors see those players who are affected by the bomb |
-| Cooldown after Bomb      | The Cooldown added after the bomb                        |
-| Flashlight Kill Cooldown |                                                          |
-
-## EvilLighter
-
-This role is developed by our team and is quite similar to the original role in TheOtherRolesGM H, which was the [Trickster](#Trickster)  
-The Evil Lighter will be affected by the lights and can use its lighter to increase its vision.  
-Once the Evil Lighter uses its lighter, the lights will still go out even if the lights are fixed.  
-This is quite similar to the Trickster, for the lights cannot be fixed as well. Everyone except for the Impostors will be forced to decrease their visions.  
-Every Impostor will know that the Evil Lighter has used its skill by receiving a message called "EvilLighterlightouttext".  
-However, in order to make the Evil Lighter not so invincible, its cooldown will increase by 5 every time it uses its skill.
-
-## KillerCreator  
-
-Original Idea by [miru-y](https://github.com/miru-y)  
-This is an Impostor roles that allows for a one-time nomination of "Madmate Killer" from among the Crewmates.
-"Madmate Killer" is promoted to Impostor upon the death of "Killer Creator".
-*If the "Madmate Killer" becomes a "Madmate Killer", all tasks are treated as completed.
-*If the Impostor team wins with the "Killer Creator" still alive, the "Madmate Killer" will not win.  
-*If the Killer Creator has created a Madmate Killer, the Killer Creator cannot kill.  
-
-| Options                                            | Notes                                                        |
-| -------------------------------------------------- | ------------------------------------------------------------ |
-| Madmate Killer Can Die to Sheriff                  |                                                              |
-| Madmate Killer Can Vent                            |                                                              |
-| Madmate Killer Knows Impostors when Tasks Finished | The Madmate Killer Knows who the Impostors are when the tasks are completed |
-| Madmate Killer Can Fix Comms                       |                                                              |
-| Madmate Killer Can Fix Lights                      |                                                              |
-| Madmate Killer Has Impostor Vision                 |                                                              |
-
-## TaskMaster  
-
-Original Idea by [miru-y](https://github.com/miru-y)  
-Task Master is a Crewmate that has special tasks.  
-When all the tasks are completed, this player turns into a Task Master.  
-When all the extra tasks are finished, the Crewmates will win.  
-Note: The victory won't be triggered if the Task Master is dead.  
-
-## Jailor
-
-Created by [dabao40](https://github.com/dabao40)  
-The Jailor is a Crewmate that can put people into the jail. (Only available in Skeld)  
-The Jail is a special container beside the Cafeteria.  
-Anyone can revive people from the jail by using the "Jail" button on the left bottom corner.  
-Once all the Impostors, Neutrals that can kill are put into jail, the Crewmates will win immediately.  
-The Jailor can put x+1 (x means the amount of evil roles in the game) players in the jail.  
-Once the Jailor is killed, everyone in the jail commits suicide.  
-NOTE: Players that are in the Jail cannot speak during meetings or vote or use any of the buttons besides the vent button. They can escape the Jail by venting.  
-Lovers can still talk in the chat and hosts can still kick players even if they're in the Jail.  
-
-## Sprinter
-
-The Sprinter is a Crewmate role with the ability to sprint for a short while.  
-While the Sprinter activates its skill, the Sprinter will turn invisible and that no one except for the dead players and itself will be able to see the Sprinter.  
-The Sprinter, unlike the Ninja, won't get a speed bonus and cannot be targeted while sprinting.  
-The Sprinter can deactivate its skill by pressing the button again.  
-
-## Cupid  
-
-Original Idea by [haoming37](https://github.com/haoming37)  
-The Cupid is a Neutral role that can make two player Lovers. 
-If one of the Lovers dies, all of them dies. 
-The Cupid can use his life to protect one of the Lovers. 
-This means that if a player tries to kill the protected Lovers, the victim himself will not notice, but the Cupid will suicide.  
-
-## Akujo  
-
-Original Idea by [haoming37](https://github.com/haoming37)  
-The Akujo is a Neutral role that can create a Backup and a True Love.  
-He will become lovers with the True Love, and it works like a normal Lovers.  
-If the True Love dies, the Akujo also dies. However, if the Backup dies, nothing will happen to the Akujo.  
-The Akujo knows the roles of the True Love and the Backup (Optional).  
-
-## Isolator
-
-This role is created by a member of my group, zcy.  
-The Isolator can be either an Impostor or a Crewmate depending on the options.  
-When the Isolator activates its skill, he will turn into a soul but won't leave a body behind.  
-He cannot move during this time and cannot do its tasks.  
-However, he will not be affected by the lights and can even use the chat.  
-NOTE: If the Isolator is a Lovers, the lover won't die if the Isolator uses its skill.  
-The Isolator will actually die and its body will be shown during the intro part of the meeting shown below "Dead" if it uses its skill and the meeting has started.  
 </details>
 
 <details>
@@ -2258,12 +2195,11 @@ For steam users, you have to follow the following steps.
 # Roles
 For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
 
-# Credits & Resources
+# The Other Roles GM IA Team
 
 ## Developers
 - [Imp11](https://github.com/dabao40)  
 - [Among us](https://github.com/XiezibanWrite)
-- [Sukuna](https://github.com/SaskueUchiwa)
 
 ## Artists
 - [Fangkuai](https://github.com/FangkuaiYa)
@@ -2274,6 +2210,8 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 - [yuunozikkyou](https://github.com/yuunozikkyou)
 - [unhappyset](https://github.com/unhappyset)
 - [KS](https://github.com/Ks-777)
+
+# Credits & Resources
 
 Firstly, credits to The Other Roles, since this mod is based on their developement.  
 Also credits to The Other Roles GM and The Other Roles GM H, for some of the roles are based on their ideas.  

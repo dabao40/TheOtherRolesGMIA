@@ -40,6 +40,7 @@ namespace TheOtherRoles.Objects {
         public string buttonText = "";
         public string actionName = "";
         public bool shakeOnEnd = true;
+        public bool isSuicide = false;
         public bool isHandcuffed = false;
         private static readonly int Desat = Shader.PropertyToID("_Desat");
 
@@ -61,7 +62,8 @@ namespace TheOtherRoles.Objects {
             HauntButton
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true)
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true,
+            bool isSuicide = false)
         {
             this.hudManager = hudManager;
             this.OnClick = OnClick;
@@ -79,6 +81,7 @@ namespace TheOtherRoles.Objects {
             this.buttonText = buttonText;
             this.actionName = actionName;
             this.shakeOnEnd = shakeOnEnd;
+            this.isSuicide = isSuicide;
             Timer = 16.2f;
             buttons.Add(this);
             actionButton = UnityEngine.Object.Instantiate(hudManager.KillButton, hudManager.KillButton.transform.parent);
@@ -95,8 +98,8 @@ namespace TheOtherRoles.Objects {
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true)
-        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd) { }
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true, bool isSuicide = false)
+        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd, isSuicide) { }
 
         public void onClickEvent()
         {
@@ -178,8 +181,8 @@ namespace TheOtherRoles.Objects {
 
         public void Update()
         {
-            var localPlayer = CachedPlayer.LocalPlayer;
-            var moveable = localPlayer.PlayerControl.moveable;
+            var localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
+            var moveable = localPlayer.moveable;
             
             if (localPlayer.Data == null || MeetingHud.Instance || ExileController.Instance || !HasButton()) {
                 setActive(false);
@@ -190,11 +193,11 @@ namespace TheOtherRoles.Objects {
             if (DeputyTimer >= 0) { // This had to be reordered, so that the handcuffs do not stop the underlying timers from running
                 if (HasEffect && isEffectActive)
                     DeputyTimer -= Time.deltaTime;
-                else if (!localPlayer.PlayerControl.inVent && moveable)
+                else if (!localPlayer.inVent && moveable)
                     DeputyTimer -= Time.deltaTime;
             }
 
-            if (DeputyTimer <= 0 && HasEffect && isEffectActive && buttonText != HudManagerStartPatch.serialKillerButton.buttonText) { // Here we have to specify that the Serial Killer button will not be affected
+            if (DeputyTimer <= 0 && HasEffect && isEffectActive && !isSuicide) { // Here we have to specify that the Serial Killer button will not be affected
                 isEffectActive = false;
                 actionButton.cooldownTimerText.color = Palette.EnabledColor;
                 OnEffectEnds();
@@ -234,7 +237,7 @@ namespace TheOtherRoles.Objects {
                     if (Timer <= 3f && Timer > 0f && shakeOnEnd)
                         actionButton.graphic.transform.localPosition = actionButton.transform.localPosition + (Vector3)UnityEngine.Random.insideUnitCircle * 0.05f;
                 }
-                else if (!localPlayer.PlayerControl.inVent && moveable)
+                else if (!localPlayer.inVent && moveable)
                     Timer -= Time.deltaTime;
             }
             

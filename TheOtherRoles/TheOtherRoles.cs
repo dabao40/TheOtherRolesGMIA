@@ -1515,7 +1515,7 @@ namespace TheOtherRoles
         }
 
         public static bool dousedEveryoneAlive() {
-            return CachedPlayer.AllPlayers.All(x => { return x.PlayerControl == Arsonist.arsonist || x.Data.IsDead || x.Data.Disconnected || Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
+            return CachedPlayer.AllPlayers.All(x => { return x.PlayerControl == Arsonist.arsonist || x.PlayerControl.Data.IsDead || x.PlayerControl.Data.Disconnected || Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerControl.PlayerId); });
         }
 
         public static void clearAndReload() {
@@ -4598,7 +4598,7 @@ namespace TheOtherRoles
         public static PlayerControl target;
         public static PlayerControl currentTarget;
         public static PlayerControl killTarget;
-        public static List<PlayerControl> brainwashed;
+        public static List<PlayerControl> brainwashed = new();
 
         public static int counter;
 

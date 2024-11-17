@@ -311,7 +311,7 @@ namespace TheOtherRoles {
             bool addHusk = isHusk && !roleInfo.isModifier;
             if (roleInfo.roleId == RoleId.Jackal) 
             {
-                var getSidekickText = Jackal.canCreateSidekick ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
+                var getSidekickText = Jackal.canCreateSidekick && !addHusk ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
                 return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {getSidekickText}");  
             }
 
@@ -1486,18 +1486,6 @@ namespace TheOtherRoles {
             }
 
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height, Screen.width, Screen.height, Screen.fullScreen); // This will move button positions to the correct position.
-        }
-
-        public static float GetShadowSize()
-        {
-            var shadowCollab = Camera.main.GetComponentInChildren<ShadowCollab>();
-            return shadowCollab.ShadowCamera.orthographicSize;
-        }
-        public static void ChangeShadowSize(float orthographicSize = 3f)
-        {
-            var shadowCollab = Camera.main.GetComponentInChildren<ShadowCollab>();
-            shadowCollab.ShadowCamera.orthographicSize = orthographicSize;
-            shadowCollab.ShadowQuad.transform.localScale = new Vector3(orthographicSize * Camera.main.aspect, orthographicSize) * 2f;
         }
 
         public static void AddModSettingsChangeMessage(this NotificationPopper popper, StringNames key, string value, string option, bool playSound = true)

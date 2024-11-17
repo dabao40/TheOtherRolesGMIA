@@ -56,7 +56,7 @@ namespace TheOtherRoles.Objects
                     var console = ShipStatus.Instance.AllConsoles.FirstOrDefault(x => x.ConsoleId == MyNormTask.Data[MyNormTask.taskStep]);
                     MyNormTask.StartAt = console.Room;
                 }
-                StartCoroutine(CoStartClose(0.5f));
+                StartCoroutine(CoDestroySelf());
             }
         }
 
@@ -74,7 +74,7 @@ namespace TheOtherRoles.Objects
 
         void onClick()
         {
-            Close();
+            StartCoroutine(CoDestroySelf());
         }
     }
 }
