@@ -586,10 +586,30 @@ namespace TheOtherRoles.Patches {
                 RoleId.Sunglasses,
                 RoleId.Vip,
                 RoleId.Invert,
-                RoleId.Chameleon,
-                RoleId.Madmate
+                RoleId.Chameleon
                 //RoleId.Shifter
             });
+
+
+            if (rnd.Next(1, 101) <= CustomOptionHolder.madmateSpawnRate.getSelection() * 10)
+            {
+                var crewPlayerMadmate = new List<PlayerControl>(players);
+                crewPlayerMadmate.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x) || x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
+                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
+
+                // Always remember to remove the Mad Sheriff if Deputy is assigned
+                if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
+
+                int madmateCount = 0;
+                byte playerId;
+                while (madmateCount < CustomOptionHolder.madmateQuantity.getQuantity() && crewPlayerMadmate.Count > 0)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
+                    crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
+                    madmateCount++;
+                    modifierCount--;
+                }
+            }
 
             if (rnd.Next(1, 101) <= CustomOptionHolder.modifierLover.getSelection() * 10) { // Assign lover
                 bool isEvilLover = rnd.Next(1, 101) <= CustomOptionHolder.modifierLoverImpLoverRate.getSelection() * 10;
@@ -722,24 +742,6 @@ namespace TheOtherRoles.Patches {
                 playerList.RemoveAll(x => x.PlayerId == playerId);
                 modifiers.RemoveAll(x => x == RoleId.Shifter);
             }*/
-            if (modifiers.Contains(RoleId.Madmate))
-            {
-                var crewPlayerMadmate = new List<PlayerControl>(crewPlayer);
-                crewPlayerMadmate.RemoveAll(x => x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
-                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
-
-                // Always remember to remove the Mad Sheriff if Deputy is assigned
-                if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
-
-                int madmateCount = 0;
-                while (madmateCount < modifiers.FindAll(x => x == RoleId.Madmate).Count)
-                {
-                    playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
-                    crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
-                    madmateCount++;
-                }
-                modifiers.RemoveAll(x => x == RoleId.Madmate);
-            }
             if (modifiers.Contains(RoleId.Sunglasses)) {
                 int sunglassesCount = 0;
                 while (sunglassesCount < modifiers.FindAll(x => x == RoleId.Sunglasses).Count) {

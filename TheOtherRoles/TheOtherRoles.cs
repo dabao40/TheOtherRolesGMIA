@@ -423,7 +423,7 @@ namespace TheOtherRoles
                     playerId = CachedPlayer.LocalPlayer.PlayerId;
 
                 if (active && playerId == CachedPlayer.LocalPlayer.PlayerId) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, SendOption.Reliable, -1);
                     writer.Write(CachedPlayer.LocalPlayer.PlayerId);
                     writer.Write((byte)RPCProcedure.GhostInfoTypes.HandcuffNoticed);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -695,7 +695,7 @@ namespace TheOtherRoles
         }
 
         public static bool hasAliveKillingLover(this PlayerControl player) {
-            if (!Lovers.existingAndAlive() || !existingWithKiller())
+            if (!existingAndAlive() || !existingWithKiller())
                 return false;
             return (player != null && (player == lover1 || player == lover2));
         }
@@ -1360,7 +1360,7 @@ namespace TheOtherRoles
 
         public static void resetCurse() {
             HudManagerStartPatch.warlockCurseButton.Timer = HudManagerStartPatch.warlockCurseButton.MaxTimer;
-            HudManagerStartPatch.warlockCurseButton.Sprite = Warlock.getCurseButtonSprite();
+            HudManagerStartPatch.warlockCurseButton.Sprite = getCurseButtonSprite();
             HudManagerStartPatch.warlockCurseButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
             currentTarget = null;
             curseVictim = null;
@@ -1515,7 +1515,7 @@ namespace TheOtherRoles
         }
 
         public static bool dousedEveryoneAlive() {
-            return CachedPlayer.AllPlayers.All(x => { return x.PlayerControl == Arsonist.arsonist || x.PlayerControl.Data.IsDead || x.PlayerControl.Data.Disconnected || Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerControl.PlayerId); });
+            return CachedPlayer.AllPlayers.All(x => { return x.PlayerControl == arsonist || x.Data.IsDead || x.Data.Disconnected || dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
         }
 
         public static void clearAndReload() {
@@ -1796,7 +1796,7 @@ namespace TheOtherRoles
             } else {
                 int randomNumber = rnd.Next(4);
                 string typeOfColor = Helpers.isLighterColor(Medium.target.killerIfExisting.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("mediumSoulPlayerLighter") : ModTranslation.getString("mediumSoulPlayerDarker");
-                float timeSinceDeath = ((float)(Medium.meetingStartTime - Medium.target.timeOfDeath).TotalMilliseconds);
+                float timeSinceDeath = ((float)(meetingStartTime - Medium.target.timeOfDeath).TotalMilliseconds);
                 var roleString = RoleInfo.GetRolesString(Medium.target.player, false, includeHidden: true);
                 var roleInfo = RoleInfo.getRoleInfoForPlayer(Medium.target.player);
 
@@ -2308,7 +2308,7 @@ namespace TheOtherRoles
             numUsed += 1;
 
             // 占いを実行したことで発火される処理を他クライアントに通知
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, Hazel.SendOption.Reliable, -1);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(p.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -2473,7 +2473,7 @@ namespace TheOtherRoles
             byte[] buff = new byte[sizeof(float) * 2];
             Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
             Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-            MessageWriter writer = AmongUsClient.Instance.StartRpc(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceTrap, Hazel.SendOption.Reliable);
+            MessageWriter writer = AmongUsClient.Instance.StartRpc(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceTrap, SendOption.Reliable);
             writer.WriteBytesAndSize(buff);
             writer.EndMessage();
             RPCProcedure.placeTrap(buff);
@@ -2506,8 +2506,8 @@ namespace TheOtherRoles
 
         public static PoolablePlayer playerTemplate;
         public static GameObject parent;
-        private static List<PoolablePlayer> teams;
-        private static bool shownMenu = false;
+        public static List<PoolablePlayer> teams;
+        public static bool shownMenu = false;
         public static PlayerControl currentTarget;
 
         public enum Team
@@ -2615,7 +2615,7 @@ namespace TheOtherRoles
                     parent.transform.localPosition = new Vector3(0, 0, 0);
                     var impostor = createPoolable(parent, "impostor", 0, (UnityAction)((Action)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                         writer.Write((byte)Team.Impostor);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.schrodingersCatSetTeam((byte)Team.Impostor);
@@ -2626,7 +2626,7 @@ namespace TheOtherRoles
                     {
                         var jackal = createPoolable(parent, "jackal", 1, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.Jackal);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.Jackal);
@@ -2638,7 +2638,7 @@ namespace TheOtherRoles
                     {
                         var moriarty = createPoolable(parent, "moriarty", 2, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.Moriarty);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.Moriarty);
@@ -2650,7 +2650,7 @@ namespace TheOtherRoles
                     {
                         var jekyllAndHyde = createPoolable(parent, "jekyllAndHyde", 6, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.JekyllAndHyde);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.JekyllAndHyde);
@@ -2660,7 +2660,7 @@ namespace TheOtherRoles
                     }
                     var crewmate = createPoolable(parent, "crewmate", 10, (UnityAction)((Action)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, Hazel.SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                         writer.Write((byte)Team.Crewmate);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.schrodingersCatSetTeam((byte)Team.Crewmate);
@@ -2726,13 +2726,13 @@ namespace TheOtherRoles
 
         private static PoolablePlayer createPoolable(GameObject parent, string name, int color, UnityAction func)
         {
-            var poolable = GameObject.Instantiate(playerTemplate, parent.transform);
+            var poolable = UnityEngine.Object.Instantiate(playerTemplate, parent.transform);
             var actionButton = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton, poolable.gameObject.transform);
             SpriteRenderer spriteRenderer = actionButton.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = null;
             actionButton.transform.localPosition = new Vector3(0, 0, 0);
             actionButton.gameObject.SetActive(true);
-            actionButton.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
+            actionButton.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) UnityEngine.Object.Destroy(c); }));
             PassiveButton button = actionButton.GetComponent<PassiveButton>();
             button.OnClick = new Button.ButtonClickedEvent();
             button.OnClick.AddListener((UnityAction)func);
@@ -2826,7 +2826,7 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {            
-            if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
+            if ((bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
             if (bomberA.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
@@ -2879,7 +2879,7 @@ namespace TheOtherRoles
         {
             foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
             //foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-            if (BomberA.bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && !MeetingHud.Instance)
+            if (bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !bomberA.Data.IsDead && !MeetingHud.Instance)
             {
                 if (bombTarget != null && TORMapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && TORMapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
                 {
@@ -2890,7 +2890,7 @@ namespace TheOtherRoles
                     icon.transform.localScale = Vector3.one * 0.4f;
                     if (targetText == null)
                     {
-                        targetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        targetText = UnityEngine.Object.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
                         targetText.enableWordWrapping = false;
                         targetText.transform.localScale = Vector3.one * 1.5f;
                         targetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
@@ -2909,7 +2909,7 @@ namespace TheOtherRoles
                     icon.transform.localScale = Vector3.one * 0.4f;
                     if (partnerTargetText == null)
                     {
-                        partnerTargetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        partnerTargetText = UnityEngine.Object.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
                         partnerTargetText.enableWordWrapping = false;
                         partnerTargetText.transform.localScale = Vector3.one * 1.5f;
                         partnerTargetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
@@ -2971,7 +2971,7 @@ namespace TheOtherRoles
         {
             foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
             //foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-            if (BomberA.bomberA != null && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && !MeetingHud.Instance)
+            if (BomberA.bomberA != null && bomberB != null && !bomberB.Data.IsDead && !BomberA.bomberA.Data.IsDead && !MeetingHud.Instance)
             {
                 if (bombTarget != null && TORMapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && TORMapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
                 {
@@ -2982,7 +2982,7 @@ namespace TheOtherRoles
                     icon.transform.localScale = Vector3.one * 0.4f;
                     if (targetText == null)
                     {
-                        targetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        targetText = UnityEngine.Object.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
                         targetText.enableWordWrapping = false;
                         targetText.transform.localScale = Vector3.one * 1.5f;
                         targetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
@@ -3001,7 +3001,7 @@ namespace TheOtherRoles
                     icon.transform.localScale = Vector3.one * 0.4f;
                     if (partnerTargetText == null)
                     {
-                        partnerTargetText = GameObject.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
+                        partnerTargetText = UnityEngine.Object.Instantiate(icon.cosmetics.nameText, icon.cosmetics.nameText.transform.parent);
                         partnerTargetText.enableWordWrapping = false;
                         partnerTargetText.transform.localScale = Vector3.one * 1.5f;
                         partnerTargetText.transform.localPosition += new Vector3(0f, 1.7f, 0);
@@ -3015,7 +3015,7 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {            
-            if ((BomberA.bombTarget == null || BomberB.bombTarget == null) && !BomberA.alwaysShowArrow) return;
+            if ((BomberA.bombTarget == null || bombTarget == null) && !BomberA.alwaysShowArrow) return;
             if (bomberB.Data.IsDead)
             {
                 if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
@@ -3215,7 +3215,7 @@ namespace TheOtherRoles
                     acTokenChallenge.Value.swapTime = DateTime.UtcNow;
                     acTokenChallenge.Value.target1 = target1.PlayerId;
                     acTokenChallenge.Value.target2 = target2.PlayerId;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TeleporterTeleport, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TeleporterTeleport, SendOption.Reliable, -1);
                     writer.Write(target1.PlayerId);
                     writer.Write(target2.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -3271,7 +3271,7 @@ namespace TheOtherRoles
                     if (Camera.main == null)
                         yield break;
 
-                    Menu = GameObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
+                    Menu = UnityEngine.Object.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
                 }
 
                 Menu.transform.SetParent(Camera.main.transform, false);
@@ -3282,7 +3282,7 @@ namespace TheOtherRoles
             private static ShapeshifterMinigame GetShapeshifterMenu()
             {
                 var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
-                return GameObject.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
+                return UnityEngine.Object.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
             }
 
             public void Clicked(PlayerControl player)
@@ -3314,7 +3314,7 @@ namespace TheOtherRoles
                         player.Data.IsDead = false;
                         var num = i % 3;
                         var num2 = i / 3;
-                        var panel = GameObject.Instantiate(__instance.PanelPrefab, __instance.transform);
+                        var panel = UnityEngine.Object.Instantiate(__instance.PanelPrefab, __instance.transform);
                         panel.transform.localScale *= PanelAreaScale[displayType];
                         panel.transform.localPosition = ToVoteAreaPos(__instance, i, displayType);
                         panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
@@ -3350,7 +3350,7 @@ namespace TheOtherRoles
                     if (__instance == null) return;
                     try
                     {
-                        PlayerMenu.singleton.Menu.Close();
+                        singleton.Menu.Close();
                     }
                     catch { }
                 }
@@ -3794,7 +3794,7 @@ namespace TheOtherRoles
 
         public static int getNumInvestigate()
         {
-            int counter = Sherlock.sherlock.Data.Tasks.ToArray().Where(t => t.Complete).Count();
+            int counter = sherlock.Data.Tasks.ToArray().Where(t => t.Complete).Count();
             return (int)Math.Floor((float)counter / numTasks);
         }
 
@@ -3979,7 +3979,7 @@ namespace TheOtherRoles
         public static void RpcDropBody(Vector3 position)
         {
             if (undertaker == null) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDropBody, Hazel.SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDropBody, SendOption.Reliable, -1);
             writer.Write(position.x);
             writer.Write(position.y);
             writer.Write(position.z);
@@ -3990,7 +3990,7 @@ namespace TheOtherRoles
         public static void RpcDragBody(byte playerId)
         {
             if (undertaker == null) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDragBody, Hazel.SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDragBody, SendOption.Reliable, -1);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             DragBody(playerId);
@@ -5243,7 +5243,7 @@ namespace TheOtherRoles
 
             if (winFlag)
             {
-                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, Hazel.SendOption.Reliable, -1);
+                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(winWriter);
                 RPCProcedure.plagueDoctorWin();
             }
@@ -5315,28 +5315,28 @@ namespace TheOtherRoles
 
         public static bool isStealthed(PlayerControl player)
         {
-            if (Ninja.ninja != null && !Ninja.ninja.Data.IsDead && Ninja.ninja == player)
+            if (ninja != null && !ninja.Data.IsDead && ninja == player)
             {
-                return Ninja.stealthed;
+                return stealthed;
             }
             return false;
         }
 
         public static float stealthFade(PlayerControl player)
         {
-            if (Ninja.ninja == player && fadeTime > 0 && !Ninja.ninja.Data.IsDead)
+            if (ninja == player && fadeTime > 0 && !ninja.Data.IsDead)
             {
-                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - Ninja.stealthedAt).TotalSeconds / fadeTime);
+                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - stealthedAt).TotalSeconds / fadeTime);
             }
             return 1.0f;
         }
 
         public static void setStealthed(PlayerControl player, bool stealthed = true)
         {
-            if (Ninja.ninja == player && Ninja.ninja != null)
+            if (ninja == player && ninja != null)
             {
                 Ninja.stealthed = stealthed;
-                Ninja.stealthedAt = DateTime.UtcNow;
+                stealthedAt = DateTime.UtcNow;
             }
         }
 
@@ -5381,7 +5381,7 @@ namespace TheOtherRoles
                     __instance.body.velocity *= (speedBonus + 1);
                 }
 
-                if (__instance.myPlayer == Ninja.ninja)
+                if (__instance.myPlayer == ninja)
                 {
                     var ninja = __instance.myPlayer;
                     if (ninja == null || ninja.Data.IsDead) return;
@@ -5442,28 +5442,28 @@ namespace TheOtherRoles
 
         public static float sprintFade(PlayerControl player)
         {
-            if (Sprinter.sprinter == player && fadeTime > 0 && !Sprinter.sprinter.Data.IsDead)
+            if (sprinter == player && fadeTime > 0 && !sprinter.Data.IsDead)
             {
-                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - Sprinter.sprintAt).TotalSeconds / fadeTime);
+                return Mathf.Min(1.0f, (float)(DateTime.UtcNow - sprintAt).TotalSeconds / fadeTime);
             }
             return 1.0f;
         }
 
         public static bool isSprinting()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter && !Sprinter.sprinter.Data.IsDead)
+            if (CachedPlayer.LocalPlayer.PlayerControl == sprinter && !sprinter.Data.IsDead)
             {
-                return Sprinter.sprinting;
+                return sprinting;
             }
             return false;
         }
 
         public static void setSprinting(PlayerControl player, bool sprinting = true)
         {
-            if (player == Sprinter.sprinter && !Sprinter.sprinter.Data.IsDead)
+            if (player == sprinter && !sprinter.Data.IsDead)
             {
                 Sprinter.sprinting = sprinting;
-                Sprinter.sprintAt = DateTime.UtcNow;
+                sprintAt = DateTime.UtcNow;
             }
         }
 
@@ -5494,7 +5494,7 @@ namespace TheOtherRoles
         {
             public static void Postfix(PlayerPhysics __instance)
             {
-                if (__instance.myPlayer == Sprinter.sprinter)
+                if (__instance.myPlayer == sprinter)
                 {
                     var sprinter = __instance.myPlayer;
                     if (sprinter == null || sprinter.Data.IsDead) return;
@@ -5507,7 +5507,7 @@ namespace TheOtherRoles
 
                     var opacity = canSee ? 0.5f : 0.0f;
 
-                    if (Sprinter.sprinting)
+                    if (sprinting)
                     {
                         opacity = Math.Max(opacity, 1.0f - sprintFade(sprinter));
                         sprinter.cosmetics.currentBodySprite.BodySprite.material.SetFloat("_Outline", 0f);
@@ -5551,7 +5551,7 @@ namespace TheOtherRoles
         }
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
-            return killer == Thief.thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : 
+            return killer == thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : 
                 null}.Contains(targetRole);
         }
     }

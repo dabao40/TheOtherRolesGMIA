@@ -1028,6 +1028,8 @@ namespace TheOtherRoles.Patches {
                 // Resett Bait list
                 //Bait.active = new Dictionary<DeadPlayer, float>();
                 // Save AntiTeleport position, if the player is able to move (i.e. not on a ladder or a gap thingy)
+                Bait.reported = true;
+
                 if (CachedPlayer.LocalPlayer.PlayerPhysics.enabled && (CachedPlayer.LocalPlayer.PlayerControl.moveable || CachedPlayer.LocalPlayer.PlayerControl.inVent
                     || HudManagerStartPatch.hackerVitalsButton.isEffectActive || HudManagerStartPatch.hackerAdminTableButton.isEffectActive || HudManagerStartPatch.securityGuardCamButton.isEffectActive
                     || Portal.isTeleporting && Portal.teleportedPlayers.Last().playerId == CachedPlayer.LocalPlayer.PlayerId))

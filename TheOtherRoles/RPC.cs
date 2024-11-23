@@ -2004,7 +2004,7 @@ namespace TheOtherRoles
                 cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
                 GameHistory.overrideDeathReasonAndKiller(cupid, isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
                 if (MeetingHud.Instance) updateMeeting(cupidId);
-                if (CachedPlayer.LocalPlayer.PlayerControl == cupid) _ = new StaticAchievementToken("cupid.another1");
+                if (CachedPlayer.LocalPlayer.PlayerControl == cupid && isScapegoat) _ = new StaticAchievementToken("cupid.another1");
             }
         }
 

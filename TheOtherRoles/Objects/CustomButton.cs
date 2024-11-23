@@ -181,8 +181,8 @@ namespace TheOtherRoles.Objects {
 
         public void Update()
         {
-            var localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
-            var moveable = localPlayer.moveable;
+            var localPlayer = CachedPlayer.LocalPlayer;
+            var moveable = localPlayer.PlayerControl.moveable;
             
             if (localPlayer.Data == null || MeetingHud.Instance || ExileController.Instance || !HasButton()) {
                 setActive(false);
@@ -193,7 +193,7 @@ namespace TheOtherRoles.Objects {
             if (DeputyTimer >= 0) { // This had to be reordered, so that the handcuffs do not stop the underlying timers from running
                 if (HasEffect && isEffectActive)
                     DeputyTimer -= Time.deltaTime;
-                else if (!localPlayer.inVent && moveable)
+                else if (!localPlayer.PlayerControl.inVent && moveable)
                     DeputyTimer -= Time.deltaTime;
             }
 
@@ -237,7 +237,7 @@ namespace TheOtherRoles.Objects {
                     if (Timer <= 3f && Timer > 0f && shakeOnEnd)
                         actionButton.graphic.transform.localPosition = actionButton.transform.localPosition + (Vector3)UnityEngine.Random.insideUnitCircle * 0.05f;
                 }
-                else if (!localPlayer.inVent && moveable)
+                else if (!localPlayer.PlayerControl.inVent && moveable)
                     Timer -= Time.deltaTime;
             }
             

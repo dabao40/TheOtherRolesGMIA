@@ -19,7 +19,7 @@ public class CachedPlayer
     public PlayerControl PlayerControl;
     public PlayerPhysics PlayerPhysics;
     public CustomNetworkTransform NetTransform;
-    public NetworkedPlayerInfo Data;
+    public NetworkedPlayerInfo Data => PlayerControl.Data;
     public byte PlayerId;
     
     public static implicit operator bool(CachedPlayer player)
@@ -105,7 +105,6 @@ public static class CachedPlayerPatches
     {
         foreach (CachedPlayer cachedPlayer in CachedPlayer.AllPlayers)
         {
-            cachedPlayer.Data = cachedPlayer.PlayerControl.Data;
             cachedPlayer.PlayerId = cachedPlayer.PlayerControl.PlayerId;
         }
     }
@@ -116,7 +115,6 @@ public static class CachedPlayerPatches
     {
         foreach (CachedPlayer cachedPlayer in CachedPlayer.AllPlayers)
         {
-            cachedPlayer.Data = cachedPlayer.PlayerControl.Data;
             cachedPlayer.PlayerId = cachedPlayer.PlayerControl.PlayerId;
         }
     }

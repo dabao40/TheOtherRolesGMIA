@@ -325,11 +325,11 @@ namespace TheOtherRoles
             }
             if (p == TaskMaster.taskMaster)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
+                if (CachedPlayer.LocalPlayer.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
                 else infos.Add(TaskMaster.isTaskComplete ? taskMaster : crewmate);
             }
             if (p == PlagueDoctor.plagueDoctor) infos.Add(plagueDoctor);
-            if (p == SchrodingersCat.schrodingersCat || p == SchrodingersCat.formerSchrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead
+            if (p == SchrodingersCat.schrodingersCat || p == SchrodingersCat.formerSchrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || CachedPlayer.LocalPlayer.Data.IsDead
                 || SchrodingersCat.hasTeam() || SchrodingersCat.tasksComplete(CachedPlayer.LocalPlayer.PlayerControl) ? schrodingersCat : crewmate);
             if (p == Opportunist.opportunist) infos.Add(opportunist);
             if (p == Shifter.shifter) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
@@ -425,7 +425,7 @@ namespace TheOtherRoles
                     if (Arsonist.dousedPlayers.Contains(p))
                         roleName = Helpers.cs(Arsonist.color, "♨ ") + roleName;
                     if (p == Arsonist.arsonist)
-                        roleName += Helpers.cs(Arsonist.color, $" ({CachedPlayer.AllPlayers.Count(x => { return x.PlayerControl != Arsonist.arsonist && !x.PlayerControl.Data.IsDead && !x.PlayerControl.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerControl.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
+                        roleName += Helpers.cs(Arsonist.color, $" ({CachedPlayer.AllPlayers.Count(x => { return x.PlayerControl != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
                     if (p == Jackal.fakeSidekick)
                         roleName = Helpers.cs(Sidekick.color, ModTranslation.getString("roleInfoFakeSD")) + roleName;
                     if (Akujo.keeps.Contains(p))

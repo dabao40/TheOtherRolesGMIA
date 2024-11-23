@@ -437,6 +437,13 @@ namespace TheOtherRoles.Patches {
             // AntiTeleport set position
             AntiTeleport.setPosition();
 
+            // Remove DeadBodys
+            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            for (int i = 0; i < array.Length; i++)
+            {
+                UnityEngine.Object.Destroy(array[i].gameObject);
+            }
+
             MapBehaviourPatch.resetRealTasks();
 
             if (CustomOptionHolder.randomGameStartPosition.getBool() && (AntiTeleport.antiTeleport.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId).Count == 0))

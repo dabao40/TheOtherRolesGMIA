@@ -554,7 +554,7 @@ namespace TheOtherRoles.Patches {
             if (Bait.bait == null || Bait.bait != CachedPlayer.LocalPlayer.PlayerControl) return;
 
             // Bait report
-            if (Bait.bait.Data.IsDead && !Bait.reported && Bait.killed)
+            if (Bait.bait.Data.IsDead && !Bait.reported)
             {
                 Bait.reportDelay -= Time.fixedDeltaTime;
                 DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == Bait.bait.PlayerId)?.FirstOrDefault();
@@ -1226,6 +1226,15 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void schrodingersCatUpdate()
+        {
+            if (SchrodingersCat.schrodingersCat == null || CachedPlayer.LocalPlayer.PlayerControl != SchrodingersCat.schrodingersCat) return;
+            if (SchrodingersCat.schrodingersCat.Data.IsDead || SchrodingersCat.hasTeam() || MeetingHud.Instance || ExileController.Instance) {
+                if (SchrodingersCat.shownMenu) SchrodingersCat.showMenu();
+                return;
+            }
+        }
+
         static void jekyllAndHydeSetTarget()
         {
             if (JekyllAndHyde.jekyllAndHyde == null || CachedPlayer.LocalPlayer.PlayerControl != JekyllAndHyde.jekyllAndHyde || JekyllAndHyde.jekyllAndHyde.Data.IsDead || JekyllAndHyde.isJekyll()) return;
@@ -1615,9 +1624,7 @@ namespace TheOtherRoles.Patches {
                     {
                         HudManagerStartPatch.cupidTimeRemainingText.text = TimeSpan.FromSeconds(Cupid.timeLeft).ToString(@"mm\:ss");
                     }
-                    HudManagerStartPatch.cupidTimeRemainingText.enabled = !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                      !MeetingHud.Instance &&
-                      !ExileController.Instance;
+                    HudManagerStartPatch.cupidTimeRemainingText.enabled = Helpers.ShowButtons;
                 }
                 else HudManagerStartPatch.cupidTimeRemainingText.enabled = false;
             }
@@ -1646,9 +1653,7 @@ namespace TheOtherRoles.Patches {
                     {
                         HudManagerStartPatch.akujoTimeRemainingText.text = TimeSpan.FromSeconds(Akujo.timeLeft).ToString(@"mm\:ss");
                     }
-                    HudManagerStartPatch.akujoTimeRemainingText.enabled = !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                      !MeetingHud.Instance &&
-                      !ExileController.Instance;
+                    HudManagerStartPatch.akujoTimeRemainingText.enabled = Helpers.ShowButtons;
                 }
                 else HudManagerStartPatch.akujoTimeRemainingText.enabled = false;
             }
@@ -2125,6 +2130,8 @@ namespace TheOtherRoles.Patches {
                 // Cupid
                 cupidSetTarget();
                 cupidUpdate();
+                // Schrodinger's Cat
+                schrodingersCatUpdate();
                 // Blackmailer
                 blackmailerSetTarget();
                 // Prophet
@@ -2400,7 +2407,7 @@ namespace TheOtherRoles.Patches {
             // Show flash on bait kill to the killer if enabled
             if (Bait.bait != null && target == Bait.bait)
             {
-                Bait.killed = true;
+                Bait.reported = false;
                 if (Bait.showKillFlash && __instance != Bait.bait && __instance == CachedPlayer.LocalPlayer.PlayerControl) {
                     Helpers.showFlash(new Color(204f / 255f, 102f / 255f, 0f / 255f));
                 }
@@ -3020,23 +3027,12 @@ namespace TheOtherRoles.Patches {
             if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller != null)
             {
                 PlayerControl killer = NekoKabocha.meetingKiller;
-                bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
+                bool revengeFlag = (NekoKabocha.revengeCrew && !Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor) ||
                 (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
                     (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
 
-                if (MeetingHud.Instance && revengeFlag)
-                {
-                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                    {
-                        if (pva.VotedFor != killer.PlayerId) continue;
-                        pva.UnsetVote();
-                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                        if (!voteAreaPlayer.AmOwner) continue;
-                        MeetingHud.Instance.ClearVote();
-                    }
-
-                    if (AmongUsClient.Instance.AmHost)
-                        MeetingHud.Instance.CheckForEndVoting();
+                if (MeetingHud.Instance && revengeFlag) {
+                    RPCProcedure.updateMeeting(killer.PlayerId);
                 }
             }
 
@@ -3064,29 +3060,9 @@ namespace TheOtherRoles.Patches {
 
                 if (MeetingHud.Instance && otherLover != null)
                 {
-                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                    {
-                        if (pva.VotedFor != otherLover.PlayerId) continue;
-                        pva.UnsetVote();
-                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                        if (!voteAreaPlayer.AmOwner) continue;
-                        MeetingHud.Instance.ClearVote();
-                    }
-
+                    RPCProcedure.updateMeeting(otherLover.PlayerId);
                     if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
-                    {
-                        foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                        {
-                            if (pva.VotedFor != Cupid.cupid.PlayerId) continue;
-                            pva.UnsetVote();
-                            var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                            if (!voteAreaPlayer.AmOwner) continue;
-                            MeetingHud.Instance.ClearVote();
-                        }
-                    }
-
-                    if (AmongUsClient.Instance.AmHost)
-                        MeetingHud.Instance.CheckForEndVoting();
+                        RPCProcedure.updateMeeting(Cupid.cupid.PlayerId);
                 }
 
                 if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
@@ -3104,22 +3080,7 @@ namespace TheOtherRoles.Patches {
                 {
                     otherMimic.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherMimic, DeadPlayer.CustomDeathReason.Suicide);
-                }
-
-                // Going to reset the votes here
-                if (MeetingHud.Instance && MimicK.ifOneDiesBothDie && otherMimic != null)
-                {
-                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                    {
-                        if (pva.VotedFor != otherMimic.PlayerId) continue;
-                        pva.UnsetVote();
-                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                        if (!voteAreaPlayer.AmOwner) continue;
-                        MeetingHud.Instance.ClearVote();
-                    }
-
-                    if (AmongUsClient.Instance.AmHost)
-                        MeetingHud.Instance.CheckForEndVoting();
+                    RPCProcedure.updateMeeting(otherMimic.PlayerId);
                 }
             }
 
@@ -3131,21 +3092,7 @@ namespace TheOtherRoles.Patches {
                 {
                     otherBomber.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherBomber, DeadPlayer.CustomDeathReason.Suicide);
-                }
-
-                if (MeetingHud.Instance && BomberA.ifOneDiesBothDie && otherBomber != null)
-                {
-                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                    {
-                        if (pva.VotedFor != otherBomber.PlayerId) continue;
-                        pva.UnsetVote();
-                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                        if (!voteAreaPlayer.AmOwner) continue;
-                        MeetingHud.Instance.ClearVote();
-                    }
-
-                    if (AmongUsClient.Instance.AmHost)
-                        MeetingHud.Instance.CheckForEndVoting();
+                    RPCProcedure.updateMeeting(otherBomber.PlayerId);
                 }
             }
 
@@ -3158,21 +3105,7 @@ namespace TheOtherRoles.Patches {
                     if (NekoKabocha.nekoKabocha != null && akujoPartner == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = akujoPartner;
                     akujoPartner.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
-                }
-
-                if (MeetingHud.Instance && akujoPartner != null)
-                {
-                    foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates)
-                    {
-                        if (pva.VotedFor != akujoPartner.PlayerId) continue;
-                        pva.UnsetVote();
-                        var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                        if (!voteAreaPlayer.AmOwner) continue;
-                        MeetingHud.Instance.ClearVote();
-                    }
-
-                    if (AmongUsClient.Instance.AmHost)
-                        MeetingHud.Instance.CheckForEndVoting();
+                    RPCProcedure.updateMeeting(akujoPartner.PlayerId);
                 }
             }
 
