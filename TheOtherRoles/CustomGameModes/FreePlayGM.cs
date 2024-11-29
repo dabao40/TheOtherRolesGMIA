@@ -86,6 +86,8 @@ namespace TheOtherRoles.CustomGameModes
                         } else if (formerRole.roleId is RoleId.Fox or RoleId.JekyllAndHyde or RoleId.TaskMaster) {
                             var options = GameOptionsManager.Instance.currentNormalGameOptions;
                             PlayerControl.LocalPlayer.generateAndAssignTasks(options.NumCommonTasks, options.NumShortTasks, options.NumLongTasks);
+                        } else if (r.roleId == RoleId.FortuneTeller) {
+                            FortuneTeller.meetingFlag = false;
                         }
                         RPCProcedure.resetAchievement();
                         roleScreen.CloseScreen();

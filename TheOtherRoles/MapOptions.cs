@@ -58,5 +58,11 @@ namespace TheOtherRoles{
             ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
             //Patches.ShouldAlwaysHorseAround.isHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         }
+
+        public static void resetPoolables() {
+            foreach (PoolablePlayer p in playerIcons.Values) {
+                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+            }
+        }
     }
 }

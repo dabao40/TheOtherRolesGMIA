@@ -142,7 +142,7 @@ namespace TheOtherRoles.Patches {
                     {
                         targetHerePoint = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                     }
-                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead);
+                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead);
                     NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
                     PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
                     Vector3 pos = new(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
@@ -154,7 +154,7 @@ namespace TheOtherRoles.Patches {
                 else UnityEngine.Object.Destroy(targetHerePoint);
 
                 // Use the red icons to indicate the Impostors' positions
-                if (impostorHerePoint == null) impostorHerePoint = new();
+                impostorHerePoint ??= new();
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
                     if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
@@ -164,7 +164,7 @@ namespace TheOtherRoles.Patches {
                         {
                             impostorHerePoint[p.PlayerId] = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                         }
-                        impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null);
+                        impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead);
                         NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
                         PlayerMaterial.SetColors(0, impostorHerePoint[p.PlayerId]);
                         Vector3 pos = new(p.transform.position.x, p.transform.position.y, p.transform.position.z);

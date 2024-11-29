@@ -198,7 +198,7 @@ namespace TheOtherRoles {
         public static Color HexToColor(string hex)
         {
             Color color = new();
-            ColorUtility.TryParseHtmlString("#" + hex, out color);
+            _ = ColorUtility.TryParseHtmlString("#" + hex, out color);
             return color;
         }
 
@@ -330,7 +330,7 @@ namespace TheOtherRoles {
         public static bool isCustomServer() {
             if (FastDestroyableSingleton<ServerManager>.Instance == null) return false;
             StringNames n = FastDestroyableSingleton<ServerManager>.Instance.CurrentRegion.TranslateName;
-            return n != StringNames.ServerNA && n != StringNames.ServerEU && n != StringNames.ServerAS;
+            return n is not StringNames.ServerNA and not StringNames.ServerEU and not StringNames.ServerAS;
         }
 
         static public int[] Sequential(int length)
@@ -372,17 +372,17 @@ namespace TheOtherRoles {
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
+            return player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole));
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole);
         }
 
         public static bool canBeErased(this PlayerControl player) {
-            return (player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player));
+            return player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player);
         }
 
         public static bool shouldShowGhostInfo() {
-            return CachedPlayer.LocalPlayer.PlayerControl != null && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag) && TORMapOptions.ghostsSeeInformation || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
+            return (CachedPlayer.LocalPlayer.PlayerControl != null && CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag) && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
         public static void clearAllTasks(this PlayerControl player) {
@@ -447,8 +447,8 @@ namespace TheOtherRoles {
             if (string.IsNullOrEmpty(input))
                 return input;
 
-            string firstLetter = input.Substring(0, 1).ToUpper();
-            string remainingLetters = input.Substring(1).ToLower();
+            string firstLetter = input[..1].ToUpper();
+            string remainingLetters = input[1..].ToLower();
             return firstLetter + remainingLetters;
         }
 
@@ -600,7 +600,7 @@ namespace TheOtherRoles {
             while (true)
             {
                 AnimatorStateInfo animatorStateInfo = andSeekDeathPopup.animator.GetCurrentAnimatorStateInfo(0);
-                if ((animatorStateInfo).IsName("Show"))
+                if (animatorStateInfo.IsName("Show"))
                 {
                     if (doNeedReduceSpeed && DateTime.UtcNow.Subtract(startTime).TotalSeconds >= 0.5)
                     {
@@ -836,9 +836,8 @@ namespace TheOtherRoles {
         public static bool canUseSabotage()
         {
             var sabSystem = ShipStatus.Instance.Systems[SystemTypes.Sabotage].CastFast<SabotageSystemType>();
-            ISystemType systemType;
             IActivatable doors = null;
-            if (ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Doors, out systemType))
+            if (ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Doors, out ISystemType systemType))
             {
                 doors = systemType.CastFast<IActivatable>();
             }
@@ -950,7 +949,7 @@ namespace TheOtherRoles {
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
             else if (source == null || target == null) return true;
             else if (source == target) return false; // Player sees his own name
-            else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || target == Sidekick.sidekick && Sidekick.wasTeamRed || target == Jackal.jackal && Jackal.wasTeamRed)) return false; // Members of team Impostors see the names of Impostors/Spies
+            else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || (target == Sidekick.sidekick && Sidekick.wasTeamRed) || (target == Jackal.jackal && Jackal.wasTeamRed))) return false; // Members of team Impostors see the names of Impostors/Spies
             else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
             else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
             else if (Deputy.knowsSheriff && (source == Sheriff.sheriff || source == Deputy.deputy) && (target == Sheriff.sheriff || target == Deputy.deputy)) return false; // Sheriff & Deputy see the names of each other
@@ -1197,7 +1196,7 @@ namespace TheOtherRoles {
         {
             PlainShipRoom[] array = null;
             Il2CppReferenceArray<Collider2D> buffer = new Collider2D[10];
-            ContactFilter2D filter = default(ContactFilter2D);
+            ContactFilter2D filter = default;
             filter.layerMask = Constants.PlayersOnlyMask;
             filter.useLayerMask = true;
             filter.useTriggers = false;
@@ -1537,7 +1536,7 @@ namespace TheOtherRoles {
 
         public static bool hasImpVision(NetworkedPlayerInfo player) {
             return player.Role.IsImpostor
-                || ((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
+                || (((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId) || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
                 || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
                 || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
                 || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)

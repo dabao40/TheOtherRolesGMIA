@@ -50,10 +50,6 @@ namespace TheOtherRoles.Patches {
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
                         player.gameObject.SetActive(true);
-                    } else if (CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi && p == Kataomoi.target) {
-                        player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
-                        player.transform.localScale = Vector3.one * 0.4f;
-                        player.gameObject.SetActive(true);
                     } else if (HideNSeek.isHideNSeekGM) {
                         if (HideNSeek.isHunted() && p.Data.Role.IsImpostor) {
                             player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0.4f, 0) + Vector3.right * playerCounter++ * 0.6f;
@@ -76,14 +72,14 @@ namespace TheOtherRoles.Patches {
             }
 
             // Force Bounty Hunter to load a new Bounty when the Intro is over
-            if (BountyHunter.bounty != null && CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter) {
-                BountyHunter.bountyUpdateTimer = 0f;
+            if (BountyHunter.bounty != null) {
+                if (CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter) BountyHunter.bountyUpdateTimer = 0f;
                 if (FastDestroyableSingleton<HudManager>.Instance != null) {
                     BountyHunter.cooldownText = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
                     BountyHunter.cooldownText.alignment = TMPro.TextAlignmentOptions.Center;
                     BountyHunter.cooldownText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
                     BountyHunter.cooldownText.transform.localScale = Vector3.one * 0.4f;
-                    BountyHunter.cooldownText.gameObject.SetActive(true);
+                    BountyHunter.cooldownText.gameObject.SetActive(CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter);
                 }
             }
 
@@ -321,15 +317,15 @@ namespace TheOtherRoles.Patches {
             GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
             GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
-            if (Kataomoi.kataomoi != null && CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi)
+            if (Kataomoi.kataomoi != null)
             {
                 if (FastDestroyableSingleton<HudManager>.Instance != null)
                 {
                     Kataomoi.stareText = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
                     Kataomoi.stareText.alignment = TMPro.TextAlignmentOptions.Center;
-                    Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.35f, -62f);
+                    Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
                     Kataomoi.stareText.transform.localScale = Vector3.one * 0.5f;
-                    Kataomoi.stareText.gameObject.SetActive(true);
+                    Kataomoi.stareText.gameObject.SetActive(CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi);
 
                     Kataomoi.gaugeRenderer[0] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.graphic, FastDestroyableSingleton<HudManager>.Instance.transform);
                     var killButton = Kataomoi.gaugeRenderer[0].GetComponent<KillButton>();
@@ -366,6 +362,8 @@ namespace TheOtherRoles.Patches {
                     Kataomoi.gaugeRenderer[2].transform.localScale = Vector3.one;
 
                     Kataomoi.gaugeTimer = 1.0f;
+
+                    for (int i = 0; i < 3; i++) if (Kataomoi.gaugeRenderer[i] != null) Kataomoi.gaugeRenderer[i].gameObject.SetActive(false);
                 }
             }
 

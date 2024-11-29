@@ -590,23 +590,27 @@ namespace TheOtherRoles.Patches {
                 //RoleId.Shifter
             });
 
+            var crewPlayerMadmate = new List<PlayerControl>(players);
+            crewPlayerMadmate.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x) || x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
+            || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
 
-            if (rnd.Next(1, 101) <= CustomOptionHolder.madmateSpawnRate.getSelection() * 10)
+            // Always remember to remove the Mad Sheriff if Deputy is assigned
+            if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
+
+            byte playerId;
+            bool isFixedMadmateAssigned = !crewPlayerMadmate.Any(x => RoleInfo.getRoleInfoForPlayer(x, includeHidden: true).Any(y => y.roleId == Madmate.fixedRole));
+            for (int i = 0; i < CustomOptionHolder.madmateQuantity.getQuantity(); i++)
             {
-                var crewPlayerMadmate = new List<PlayerControl>(players);
-                crewPlayerMadmate.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x) || x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
-                || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
-
-                // Always remember to remove the Mad Sheriff if Deputy is assigned
-                if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
-
-                int madmateCount = 0;
-                byte playerId;
-                while (madmateCount < CustomOptionHolder.madmateQuantity.getQuantity() && crewPlayerMadmate.Count > 0)
+                if (crewPlayerMadmate.Count <= 0) break;
+                if (rnd.Next(1, 101) <= CustomOptionHolder.madmateSpawnRate.getSelection() * 10)
                 {
-                    playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
+                    if (Madmate.fixedRole != RoleId.Jester && !isFixedMadmateAssigned)
+                    {
+                        playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate.Where(x => RoleInfo.getRoleInfoForPlayer(x, false, true).Any(y =>
+                        y.roleId == Madmate.fixedRole)).ToList());
+                    }
+                    else playerId = setModifierToRandomPlayer((byte)RoleId.Madmate, crewPlayerMadmate);
                     crewPlayerMadmate.RemoveAll(x => x.PlayerId == playerId);
-                    madmateCount++;
                     modifierCount--;
                 }
             }

@@ -808,6 +808,11 @@
         "13": "\u62b9\u9664\u51b7\u5374\u65f6\u95f4",
         "14": "\u62b9\u9664\u51b7\u537b\u6642\u9593"
     },
+    "eraserCooldownIncrease": {
+        "0": "Erase Cooldown Penalty",
+        "11": "\u524a\u9664\u3059\u308b\u5ea6\u306b\u8ffd\u52a0\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
+        "13": "\u62b9\u9664\u8005\u6bcf\u6b21\u62b9\u9664\u8ffd\u52a0\u51b7\u5374\u65f6\u95f4"
+    },
     "eraserCanEraseAnyone": {
         "0": "Eraser Can Erase Anyone",
         "11": "\u8ab0\u3067\u3082\u30ed\u30fc\u30eb\u3092\u524a\u9664\u3067\u304d\u308b\u304b",
@@ -4756,6 +4761,10 @@
         "13": "\u53db\u5f92\u5728\u5b8c\u6210\u4efb\u52a1\u540e\u77e5\u9053\u5185\u9b3c",
         "14": "\u53db\u5f92\u5728\u5b8c\u6210\u4efb\u52d9\u5f8c\u77e5\u9053\u5167\u9b3c"
     },
+    "madmateFixedRole": {
+        "0": "Fixed Role",
+        "13": "\u62e5\u6709\u56fa\u5b9a\u804c\u4e1a"
+    },
     "madmateCommonTasks": {
         "0": "Common Tasks",
         "11": "\u30b3\u30e2\u30f3\u30bf\u30b9\u30af",
@@ -5675,6 +5684,10 @@
     "moriartyKillIndicate": {
         "0": "Indicate Moriarty Kills",
         "13": "\u7279\u522b\u63d0\u793a\u83ab\u91cc\u4e9a\u8482\u51fb\u6740"
+    },
+    "moriartyTargetNone": {
+        "0": "None",
+        "13": "\u65e0\u51fb\u6740\u76ee\u6807"
     },
     "moriartyIndicator": {
         "0": "The Moriarty has killed someone!",

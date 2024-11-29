@@ -1682,7 +1682,7 @@ namespace TheOtherRoles
                         Helpers.checkMurderAttemptAndKill(Veteran.veteran, Eraser.eraser);
                         return;
                     }
-                    eraserButton.MaxTimer += 10;
+                    eraserButton.MaxTimer += Eraser.cooldownIncrease;
                     eraserButton.Timer = eraserButton.MaxTimer;
 
                     _ = new StaticAchievementToken("eraser.common1");
@@ -1750,40 +1750,7 @@ namespace TheOtherRoles
                         SoundEffectsManager.play("moriartyBrainwash");
 
                         // 洗脳終了までのカウントダウン
-                        TMPro.TMP_Text text;
-                        RoomTracker roomTracker = HudManager.Instance?.roomTracker;
-                        GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-                        UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-                        gameObject.transform.SetParent(HudManager.Instance.transform);
-                        gameObject.transform.localPosition = new Vector3(0, -1.3f, gameObject.transform.localPosition.z);
-                        gameObject.transform.localScale = Vector3.one * 3f;
-                        text = gameObject.GetComponent<TMPro.TMP_Text>();
-                        PlayerControl tmpP = Moriarty.target;
-                        bool done = false;
-                        HudManager.Instance.StartCoroutine(Effects.Lerp(Moriarty.brainwashTime, new Action<float>((p) =>
-                        {
-                            if (done)
-                            {
-                                return;
-                            }
-                            if (Moriarty.target == null || MeetingHud.Instance != null || p == 1f)
-                            {
-                                if (text != null && text.gameObject) UnityEngine.Object.Destroy(text.gameObject);
-                                if (Moriarty.target == tmpP) Moriarty.target = null;
-                                done = true;
-                                return;
-                            }
-                            else
-                            {
-                                string message = (Moriarty.brainwashTime - (p * Moriarty.brainwashTime)).ToString("0");
-                                bool even = ((int)(p * Moriarty.brainwashTime / 0.25f)) % 2 == 0; // Bool flips every 0.25 seconds
-                                // string prefix = even ? "<color=#555555FF>" : "<color=#FFFFFFFF>";
-                                string prefix = "<color=#555555FF>";
-                                text.text = prefix + message + "</color>";
-                                if (text != null) text.color = even ? Color.yellow : Color.red;
-
-                            }
-                        })));
+                        Moriarty.generateBrainwashText();
                     }
                     Moriarty.tmpTarget = null;
                     moriartyBrainwashButton.Timer = moriartyBrainwashButton.MaxTimer;
@@ -1823,6 +1790,7 @@ namespace TheOtherRoles
                     {
                         moriartyKillCounterText.text = $"{Moriarty.counter}/{Moriarty.numberToWin}";
                     }
+                    moriartyKillButton.buttonText = Moriarty.killTarget ? Moriarty.killTarget.Data.PlayerName : ModTranslation.getString("moriartyTargetNone");
                     return Moriarty.killTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
                 },
                 // OnMeetingEnds
@@ -1836,7 +1804,8 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString(),
+                buttonText: ModTranslation.getString("moriartyTargetNone")
             );
             moriartyKillCounterText = GameObject.Instantiate(moriartyKillButton.actionButton.cooldownTimerText, moriartyKillButton.actionButton.cooldownTimerText.transform.parent);
             moriartyKillCounterText.text = "";
@@ -3049,7 +3018,8 @@ namespace TheOtherRoles
                 KeyCode.H,
                 false,
                 FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
+                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString(),
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
 
             // Ninja Stealth
@@ -3701,7 +3671,7 @@ namespace TheOtherRoles
                     int adjustedIndex = index < CachedPlayer.LocalPlayer.PlayerId ? index : index - 1;
                     //　占い師以外の場合、リソースがない場合はボタンを表示しない
                     if (!TORMapOptions.playerIcons.ContainsKey(index) ||
-                        !CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller ||
+                        CachedPlayer.LocalPlayer.PlayerControl != FortuneTeller.fortuneTeller ||
                         CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ||
                         CachedPlayer.LocalPlayer.PlayerControl.PlayerId == index ||
                         !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) ||

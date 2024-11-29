@@ -387,6 +387,7 @@ namespace TheOtherRoles.Patches {
                         TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(false);
                     } else {
                         TORMapOptions.playerIcons[p.PlayerId].transform.localPosition = newBottomLeft + Vector3.right * visibleCounter * 0.35f;
+                        TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(true);
                         visibleCounter++;
                     }
                 }

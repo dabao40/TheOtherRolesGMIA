@@ -1195,6 +1195,7 @@ namespace TheOtherRoles
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
         public static bool canEraseAnyone = false;
+        public static float cooldownIncrease = 10f;
         public static AchievementToken<int> acTokenChallenge;
 
         public static void onAchievementActivate()
@@ -1216,6 +1217,7 @@ namespace TheOtherRoles
             currentTarget = null;
             cooldown = CustomOptionHolder.eraserCooldown.getFloat();
             canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
+            cooldownIncrease = CustomOptionHolder.eraserCooldownIncrease.getFloat();
             alreadyErased = new List<byte>();
             acTokenChallenge = null;
         }
@@ -1524,9 +1526,7 @@ namespace TheOtherRoles
             douseTarget = null; 
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
-            foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
-                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
-            }
+            TORMapOptions.resetPoolables();
             cooldown = CustomOptionHolder.arsonistCooldown.getFloat();
             duration = CustomOptionHolder.arsonistDuration.getFloat();
         }
@@ -1610,6 +1610,13 @@ namespace TheOtherRoles
             acTokenChallenge ??= new("bountyHunter.challenge", (DateTime.UtcNow, 0, false), (val, _) => val.cleared);
         }
 
+        public static void clearAllArrow() {
+            if (CachedPlayer.LocalPlayer.PlayerControl != bountyHunter) return;
+            if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            if (cooldownText) cooldownText.gameObject.SetActive(false);
+            TORMapOptions.resetPoolables();
+        }
+
         public static void clearAndReload() {
             arrow = new Arrow(color);
             bountyHunter = null;
@@ -1620,9 +1627,7 @@ namespace TheOtherRoles
             arrow = null;
             if (cooldownText != null && cooldownText.gameObject != null) UnityEngine.Object.Destroy(cooldownText.gameObject);
             cooldownText = null;
-            foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
-                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
-            }
+            TORMapOptions.resetPoolables();
 
 
             bountyDuration = CustomOptionHolder.bountyHunterBountyDuration.getFloat();
@@ -2331,6 +2336,7 @@ namespace TheOtherRoles
             divinedFlag = false;
             divineTarget = null;
             acTokenImpostor = null;
+            TORMapOptions.resetPoolables();
         }
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -2930,8 +2936,7 @@ namespace TheOtherRoles
             playerIcons = new Dictionary<byte, PoolablePlayer>();
             targetText = null;
             partnerTargetText = null;
-            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values)
-                pp?.gameObject?.SetActive(false);
+            TORMapOptions.resetPoolables();
             if (arrows != null)
             {
                 foreach (Arrow arrow in arrows)
@@ -3083,8 +3088,7 @@ namespace TheOtherRoles
             bombTarget = null;
             currentTarget = null;
             tmpTarget = null;
-            foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values)
-                pp?.gameObject?.SetActive(false);
+            TORMapOptions.resetPoolables();
             if (arrows != null)
             {
                 foreach (Arrow arrow in arrows)
@@ -3495,6 +3499,20 @@ namespace TheOtherRoles
             return 1.0f - (stareCountMax == 0 ? 0f : (float)stareCount / (float)stareCountMax);
         }
 
+        public static void resetAllArrow()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl != kataomoi) return;
+            TORMapOptions.resetPoolables();
+            for (int i = 0; i < gaugeRenderer.Length; ++i)
+            {
+                if (gaugeRenderer[i] != null)
+                {
+                    gaugeRenderer[i].gameObject.SetActive(false);
+                }
+            }
+            if (stareText != null) stareText.gameObject.SetActive(false);
+        }
+
         public static void clearAndReload()
         {
             resetStalking();
@@ -3514,6 +3532,7 @@ namespace TheOtherRoles
             triggerKataomoiWin = false;
             target = null;
             currentTarget = null;
+            TORMapOptions.resetPoolables();
             if (stareText != null) UnityEngine.Object.Destroy(stareText);
             stareText = null;
             if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
@@ -3540,7 +3559,7 @@ namespace TheOtherRoles
                 gaugeTimer = Mathf.Max(gaugeTimer - Time.fixedDeltaTime, 0.0f);
                 float gauge = getLoveGauge();
                 float nowGauge = Mathf.Lerp(baseGauge, gauge, 1.0f - gaugeTimer);
-                gaugeRenderer[1].transform.localPosition = new Vector3(Mathf.Lerp(-3.470784f - 1.121919f + 1f, -3.470784f + 1f, nowGauge), -2.626999f, -8.1f);
+                gaugeRenderer[1].transform.localPosition = new Vector3(Mathf.Lerp(-3.470784f - 1.121919f + 1.25f, -3.470784f + 1.25f, nowGauge), -2.626999f, -8.1f);
                 gaugeRenderer[1].transform.localScale = new Vector3(nowGauge, 1, 1);
             }
 
@@ -3553,8 +3572,8 @@ namespace TheOtherRoles
                 {
                     float elapsedTime = stalkingDuration - stalkingTimer;
                     float alpha = Mathf.Min(elapsedTime, stalkingFadeTime) / stalkingFadeTime;
-                    alpha = Mathf.Clamp(1f - alpha, CachedPlayer.LocalPlayer.PlayerControl == kataomoi || (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag)
-                        || (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible)) ? 0.5f : 0f, 1f);
+                    alpha = Mathf.Clamp(1f - alpha, CachedPlayer.LocalPlayer.PlayerControl == kataomoi || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag)
+                        || (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible) ? 0.5f : 0f, 1f);
                     setAlpha(alpha);
                 }
                 else
@@ -4242,6 +4261,21 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
+            if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                if (arrows.Count > 0) {
+                    foreach (var arrow in arrows)
+                        if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                if (impostorPositionText.Count > 0) {
+                foreach (var p in impostorPositionText.Values)
+                    if (p != null) UnityEngine.Object.Destroy(p.gameObject);
+                }
+                if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText.gameObject);
+                target = null;
+                return;
+            }
+
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -4351,6 +4385,20 @@ namespace TheOtherRoles
                 // タイマーに時間をセット
                 updateTimer = arrowUpdateInterval;
             }
+        }
+
+        public static void clearAllArrow()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl != evilTracker) return;
+            if (arrows.Count > 0) {
+            foreach (var arrow in arrows)
+                if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
+            if (impostorPositionText.Count > 0) {
+                foreach (var p in impostorPositionText.Values)
+                    if (p != null) p.gameObject.SetActive(false);
+            }
+            if (targetPositionText != null) targetPositionText.gameObject.SetActive(false);
         }
 
         public static void clearAndReload()
@@ -4513,7 +4561,6 @@ namespace TheOtherRoles
         public static bool showKillFlash = true;
 
         public static bool reported = false;
-        public static bool killed = false;
 
         public static AchievementToken<(byte killerId, bool cleared)> acTokenChallenge = null;
 
@@ -4527,7 +4574,6 @@ namespace TheOtherRoles
         {
             bait = null;
             reported = false;
-            killed = false;
             highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
@@ -4626,6 +4672,17 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
+            if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            {
+                if (arrows.Count > 0)
+                {
+                    foreach (var arrow in arrows)
+                        if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText.gameObject);
+                target = null;
+                return;
+            }
 
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
@@ -4698,6 +4755,57 @@ namespace TheOtherRoles
             }
         }
 
+        public static void clearAllArrow()
+        {
+            if (CachedPlayer.LocalPlayer.PlayerControl != moriarty) return;
+            if (arrows.Count > 0)
+            {
+                foreach (var arrow in arrows)
+                    if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
+            if (targetPositionText != null) targetPositionText.gameObject.SetActive(false);
+            var obj = GameObject.Find("MoriartyText(Clone)");
+            if (obj != null) obj.SetActive(false);
+        }
+
+        public static void generateBrainwashText()
+        {
+            TMPro.TMP_Text text;
+            RoomTracker roomTracker = HudManager.Instance?.roomTracker;
+            GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+            UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+            gameObject.transform.SetParent(HudManager.Instance.transform);
+            gameObject.transform.localPosition = new Vector3(0, -1.3f, gameObject.transform.localPosition.z);
+            gameObject.transform.localScale = Vector3.one * 3f;
+            text = gameObject.GetComponent<TMPro.TMP_Text>();
+            text.name = "MoriartyText(Clone)";
+            PlayerControl tmpP = target;
+            bool done = false;
+            HudManager.Instance.StartCoroutine(Effects.Lerp(brainwashTime, new Action<float>((p) =>
+            {
+                if (done)
+                {
+                    return;
+                }
+                if (target == null || MeetingHud.Instance != null || p == 1f)
+                {
+                    if (text != null && text.gameObject) UnityEngine.Object.Destroy(text.gameObject);
+                    if (target == tmpP) target = null;
+                    done = true;
+                    return;
+                }
+                else
+                {
+                    string message = (brainwashTime - (p * brainwashTime)).ToString("0");
+                    bool even = ((int)(p * brainwashTime / 0.25f)) % 2 == 0; // Bool flips every 0.25 seconds
+                                                                                      // string prefix = even ? "<color=#555555FF>" : "<color=#FFFFFFFF>";
+                    string prefix = "<color=#555555FF>";
+                    text.text = prefix + message + "</color>";
+                    if (text != null) text.color = even ? Color.yellow : Color.red;
+                }
+            })));
+        }
+
         public static void clearAndReload()
         {
             moriarty = null;
@@ -4724,6 +4832,9 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(arrow.arrow);
             }
             arrows = new List<Arrow>();
+
+            var obj = GameObject.Find("MoriartyText(Clone)");
+            if (obj != null) UnityEngine.Object.Destroy(obj);
         }
     }
 
@@ -5197,20 +5308,6 @@ namespace TheOtherRoles
             {
                 dead[pc.PlayerId] = pc.Data.IsDead;
             }
-        }
-
-        public static bool hasInfected()
-        {
-            bool flag = false;
-            foreach (var item in progress)
-            {
-                if (item.Value != 0f)
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            return flag;
         }
 
         public static string getProgressString(float progress)
@@ -5782,9 +5879,35 @@ namespace TheOtherRoles
         public static int commonTasks;
         public static int shortTasks;
         public static int longTasks;
+        public static RoleId fixedRole;
         
         public static string fullName { get { return ModTranslation.getString("madmate"); } }
         public static string prefix { get { return ModTranslation.getString("madmatePrefix"); } }
+
+        public static List<RoleId> validRoles = new()
+        {
+            RoleId.Jester,
+            RoleId.Shifter,
+            RoleId.Mayor,
+            RoleId.Engineer,
+            RoleId.Sheriff,
+            RoleId.Lighter,
+            RoleId.Detective,
+            RoleId.TimeMaster,
+            RoleId.Medic,
+            RoleId.Swapper,
+            RoleId.Seer,
+            RoleId.Hacker,
+            RoleId.Tracker,
+            RoleId.SecurityGuard,
+            RoleId.Bait,
+            RoleId.Medium,
+            RoleId.NiceGuesser,
+            RoleId.NiceWatcher,
+            RoleId.Busker,
+            RoleId.Yasuna,
+            RoleId.Noisemaker
+        };
 
         public static bool tasksComplete(PlayerControl player)
         {
@@ -5815,6 +5938,9 @@ namespace TheOtherRoles
             shortTasks = (int)CustomOptionHolder.madmateShortTasks.getFloat();
             commonTasks = (int)CustomOptionHolder.madmateCommonTasks.getFloat();
             longTasks = (int)CustomOptionHolder.madmateLongTasks.getFloat();
+            fixedRole = TORMapOptions.gameMode == CustomGamemodes.Guesser ? validRoles.Where(x => x != RoleId.NiceGuesser).ToList()[
+                CustomOptionHolder.madmateFixedRoleGuesserGamemode.getSelection()] :
+                validRoles[CustomOptionHolder.madmateFixedRole.getSelection()];
         }
     }
 
@@ -5834,7 +5960,8 @@ namespace TheOtherRoles
         }
 
         public static float visibility(byte playerId) {
-            if ((playerId == Ninja.ninja?.PlayerId && Ninja.stealthed) || (playerId == Sprinter.sprinter?.PlayerId && Sprinter.sprinting)) return 1f;
+            if ((playerId == Ninja.ninja?.PlayerId && Ninja.stealthed) || (playerId == Sprinter.sprinter?.PlayerId && Sprinter.sprinting)
+                || (playerId == Fox.fox?.PlayerId && Fox.stealthed) || (playerId == Kataomoi.kataomoi?.PlayerId && Kataomoi.isStalking())) return 1f;
             float visibility = 1f;
             if (lastMoved != null && lastMoved.ContainsKey(playerId)) {
                 var tStill = Time.time - lastMoved[playerId];

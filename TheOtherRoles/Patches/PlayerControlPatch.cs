@@ -510,17 +510,14 @@ namespace TheOtherRoles.Patches {
 
         static void kataomoiUpdate()
         {
-            if (Kataomoi.kataomoi != CachedPlayer.LocalPlayer.PlayerControl) return;
-
+            if (Kataomoi.kataomoi != CachedPlayer.LocalPlayer.PlayerControl || Kataomoi.target == null) return;
+            TORMapOptions.resetPoolables();
             if (Kataomoi.kataomoi.Data.IsDead)
             {
                 if (Kataomoi.arrow != null) UnityEngine.Object.Destroy(Kataomoi.arrow.arrow);
                 Kataomoi.arrow = null;
                 if (Kataomoi.stareText != null && Kataomoi.stareText.gameObject != null) UnityEngine.Object.Destroy(Kataomoi.stareText.gameObject);
                 Kataomoi.stareText = null;
-                foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
-                    if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
-                }
                 for (int i = 0; i < Kataomoi.gaugeRenderer.Length; ++i) {
                     if (Kataomoi.gaugeRenderer[i] != null)
                     {
@@ -534,14 +531,26 @@ namespace TheOtherRoles.Patches {
             // Update Stare Count Text
             if (Kataomoi.stareText != null)
             {
+                Kataomoi.stareText.gameObject.SetActive(true);
                 if (Kataomoi.stareCount > 0)
                     Kataomoi.stareText.text = $"{Kataomoi.stareCount}";
                 else
                     Kataomoi.stareText.text = "";
             }
 
+            if (Kataomoi.target != null && TORMapOptions.playerIcons.ContainsKey(Kataomoi.target?.PlayerId ?? byte.MaxValue)) {
+                TORMapOptions.playerIcons[Kataomoi.target.PlayerId].gameObject.SetActive(true);
+            }
+            for (int i = 0; i < Kataomoi.gaugeRenderer.Length; ++i)
+            {
+                if (Kataomoi.gaugeRenderer[i] != null)
+                {
+                    Kataomoi.gaugeRenderer[i].gameObject?.SetActive(!MeetingHud.Instance);
+                }
+            }
+
             // Update Arrow
-            if (Kataomoi.arrow == null) Kataomoi.arrow = new Arrow(Kataomoi.color);
+            Kataomoi.arrow ??= new Arrow(Kataomoi.color);
             Kataomoi.arrow.arrow.SetActive(Kataomoi.isSearch);
             if (Kataomoi.isSearch && Kataomoi.target != null)
             {
@@ -858,15 +867,15 @@ namespace TheOtherRoles.Patches {
                             }
                         }
 
-                        if (Tracker.trackingMode == 1 || Tracker.trackingMode == 2) Arrow.UpdateProximity(position);
-                        if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
+                        if (Tracker.trackingMode is 1 or 2) Arrow.UpdateProximity(position);
+                        if (Tracker.trackingMode is 0 or 2)
                         {
                             Tracker.arrow.Update(position);
                             Tracker.arrow.arrow.SetActive(trackedOnMap);
                         }
                         Tracker.timeUntilUpdate = Tracker.updateIntervall;
                     } else {
-                        if (Tracker.trackingMode == 0 || Tracker.trackingMode == 2)
+                        if (Tracker.trackingMode is 0 or 2)
                             Tracker.arrow.Update();
                     }
 
@@ -1145,6 +1154,11 @@ namespace TheOtherRoles.Patches {
                     if (snitchIsDead) Snitch.text.text = ModTranslation.getString("snitchDead");
                 }
             }
+            else if (Snitch.isRevealed)
+            {
+                if (Snitch.text != null && Snitch.text.isActiveAndEnabled)
+                    Snitch.text.gameObject.SetActive(false);
+            }
 
             if (snitchIsDead) {
                 if (MeetingHud.Instance == null) Snitch.needsUpdate = false;
@@ -1168,9 +1182,7 @@ namespace TheOtherRoles.Patches {
                 if (BountyHunter.cooldownText != null && BountyHunter.cooldownText.gameObject != null) UnityEngine.Object.Destroy(BountyHunter.cooldownText.gameObject);
                 BountyHunter.cooldownText = null;
                 BountyHunter.bounty = null;
-                foreach (PoolablePlayer p in TORMapOptions.playerIcons.Values) {
-                    if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
-                }
+                TORMapOptions.resetPoolables();
                 return;
             }
 
@@ -1199,7 +1211,7 @@ namespace TheOtherRoles.Patches {
 
                 // Show poolable player
                 if (FastDestroyableSingleton<HudManager>.Instance != null && FastDestroyableSingleton<HudManager>.Instance.UseButton != null) {
-                    foreach (PoolablePlayer pp in TORMapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    TORMapOptions.resetPoolables();
                     if (TORMapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
                         TORMapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
                 }
@@ -1217,7 +1229,7 @@ namespace TheOtherRoles.Patches {
 
             // Update Arrow
             if (BountyHunter.showArrow && BountyHunter.bounty != null) {
-                if (BountyHunter.arrow == null) BountyHunter.arrow = new Arrow(Color.red);
+                BountyHunter.arrow ??= new Arrow(Color.red);
                 if (BountyHunter.arrowUpdateTimer <= 0f) {
                     BountyHunter.arrow.Update(BountyHunter.bounty.transform.position);
                     BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
@@ -1613,6 +1625,9 @@ namespace TheOtherRoles.Patches {
 
         public static void cupidUpdate()
         {
+            if (HudManagerStartPatch.cupidTimeRemainingText != null && HudManagerStartPatch.cupidTimeRemainingText.isActiveAndEnabled)
+                HudManagerStartPatch.cupidTimeRemainingText.enabled = false;
+
             if (Cupid.cupid == null || Cupid.cupid.Data.IsDead || CachedPlayer.LocalPlayer.PlayerControl != Cupid.cupid) return;
             Cupid.timeLeft = (int)Math.Ceiling(Cupid.timeLimit - (DateTime.UtcNow - Cupid.startTime).TotalSeconds);
 
@@ -1643,6 +1658,8 @@ namespace TheOtherRoles.Patches {
 
         public static void akujoUpdate()
         {
+            if (HudManagerStartPatch.akujoTimeRemainingText != null && HudManagerStartPatch.akujoTimeRemainingText.isActiveAndEnabled)
+                HudManagerStartPatch.akujoTimeRemainingText.enabled = false;
             if (Akujo.akujo == null || Akujo.akujo.Data.IsDead || CachedPlayer.LocalPlayer.PlayerControl != Akujo.akujo) return;
             Akujo.timeLeft = (int)Math.Ceiling(Akujo.timeLimit - (DateTime.UtcNow - Akujo.startTime).TotalSeconds);
             if (Akujo.timeLeft > 0)
@@ -1687,34 +1704,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        /*public static void ninjaUpdate()
-        {
-            if (Ninja.ninja == null) return;
-            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive()) Ninja.ninja.setDefaultLook();
-            if (Ninja.stealthed && Ninja.invisibleTimer <= 0 && Camouflager.camouflageTimer <= 0f && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl)
-            {
-                MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
-                invisibleWriter.Write(Ninja.ninja.PlayerId);
-                invisibleWriter.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
-                RPCProcedure.ninjaStealth(Ninja.ninja.PlayerId, false);
-            }
-        }
-
-        public static void sprinterUpdate()
-        {
-            if (Sprinter.sprinter == null) return;
-            if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive()) Sprinter.sprinter.setDefaultLook();
-            if (Sprinter.sprinting && Sprinter.invisibleTimer <= 0 && Sprinter.sprinter == CachedPlayer.LocalPlayer.PlayerControl)
-            {
-                MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
-                invisibleWriter.Write(Sprinter.sprinter.PlayerId);
-                invisibleWriter.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
-                RPCProcedure.sprinterSprint(Sprinter.sprinter.PlayerId, false);
-            }
-        }*/
-
         public static void fortuneTellerUpdate()
         {
             if (FortuneTeller.fortuneTeller == null) return;
@@ -1736,12 +1725,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        /*public static void serialKillerUpdate()
-        {
-            if (SerialKiller.serialKiller == null || CachedPlayer.LocalPlayer.PlayerControl != SerialKiller.serialKiller) return;
-            if (SerialKiller.isCountDown) HudManagerStartPatch.serialKillerButton.isEffectActive = true;
-        }*/
-
         public static void evilTrackerUpdate()
         {
             if (EvilTracker.evilTracker == null) return;
@@ -1755,7 +1738,7 @@ namespace TheOtherRoles.Patches {
 
         public static void moriartyUpdate()
         {
-            if (Moriarty.moriarty == null || CachedPlayer.LocalPlayer.PlayerControl != Moriarty.moriarty || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) return;
+            if (Moriarty.moriarty == null || CachedPlayer.LocalPlayer.PlayerControl != Moriarty.moriarty) return;
             Moriarty.arrowUpdate();
         }
 
@@ -1771,7 +1754,7 @@ namespace TheOtherRoles.Patches {
         {
             if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
             {
-                if (FortuneTeller.fortuneTeller == null || FortuneTeller.fortuneTeller.Data.IsDead)
+                if (FortuneTeller.fortuneTeller == null || FortuneTeller.fortuneTeller.Data.IsDead || !CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
                 {
                     foreach (Arrow arrows in FortuneTeller.arrows) arrows.arrow.SetActive(false);
                     return;
@@ -1918,6 +1901,7 @@ namespace TheOtherRoles.Patches {
 
                 Bloody.active[entry.Key] = entry.Value - Time.fixedDeltaTime;
                 if (entry.Value <= 0 || player.Data.IsDead) {
+                    Bloody.bloodyKillerMap.Remove(player.PlayerId);
                     Bloody.active.Remove(entry.Key);
                     continue;  // Skip the creation of the next blood drop, if the killer is dead or the time is up
                 }

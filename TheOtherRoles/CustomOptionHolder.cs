@@ -1,5 +1,6 @@
 using Epic.OnlineServices.RTCAudio;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 using Types = TheOtherRoles.CustomOption.CustomOptionType;
@@ -44,7 +45,9 @@ namespace TheOtherRoles {
 
         public static CustomOption eraserSpawnRate;
         public static CustomOption eraserCooldown;
+        public static CustomOption eraserCooldownIncrease;
         public static CustomOption eraserCanEraseAnyone;
+
         public static CustomOption guesserSpawnRate;
         public static CustomOption guesserIsImpGuesserRate;
         public static CustomOption guesserNumberOfShots;
@@ -519,6 +522,8 @@ namespace TheOtherRoles {
 
         public static CustomOption madmateSpawnRate;
         public static CustomOption madmateQuantity;
+        public static CustomOption madmateFixedRole;
+        public static CustomOption madmateFixedRoleGuesserGamemode;
         public static CustomOption madmateCanDieToSheriff;
         public static CustomOption madmateCanEnterVents;
         public static CustomOption madmateCanSabotage;
@@ -660,6 +665,7 @@ namespace TheOtherRoles {
 
             eraserSpawnRate = CustomOption.Create(230, Types.Impostor, cs(Eraser.color, "eraser"), rates, null, true);
             eraserCooldown = CustomOption.Create(231, Types.Impostor, "eraserCooldown", 30f, 10f, 120f, 5f, eraserSpawnRate, false, "unitSeconds");
+            eraserCooldownIncrease = CustomOption.Create(233, Types.Impostor, "eraserCooldownIncrease", 10f, 0f, 120f, 2.5f, eraserSpawnRate, format: "unitSeconds");
             eraserCanEraseAnyone = CustomOption.Create(232, Types.Impostor, "eraserCanEraseAnyone", false, eraserSpawnRate);
 
             tricksterSpawnRate = CustomOption.Create(250, Types.Impostor, cs(Trickster.color, "trickster"), rates, null, true);
@@ -1136,6 +1142,8 @@ namespace TheOtherRoles {
 
             madmateSpawnRate = CustomOption.Create(4041, Types.Modifier, cs(Color.yellow, "madmate"), rates, null, true);
             madmateQuantity = CustomOption.Create(7005, Types.Modifier, cs(Color.yellow, "madmateQuantity"), ratesModifier, madmateSpawnRate);
+            madmateFixedRole = CustomOption.Create(7006, Types.Modifier, "madmateFixedRole", Madmate.validRoles, madmateSpawnRate);
+            madmateFixedRoleGuesserGamemode = CustomOption.Create(7007, Types.Modifier, "madmateFixedRole", Madmate.validRoles.Where(x => x != RoleId.NiceGuesser).ToList(), madmateSpawnRate);
             madmateAbility = CustomOption.Create(4047, Types.Modifier, "madmateAbility", true, madmateSpawnRate);
             madmateCommonTasks = CustomOption.Create(4049, Types.Modifier, "madmateCommonTasks", 1f, 0f, 3f, 1f, madmateAbility, false, "unitScrews");
             madmateShortTasks = CustomOption.Create(4048, Types.Modifier, "madmateShortTasks", 3f, 0f, 4f, 1f, madmateAbility, false, "unitScrews");
@@ -1214,10 +1222,10 @@ namespace TheOtherRoles {
             fungleElectrical = CustomOption.Create(6074, Types.General, "fungleElectrical", false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, "randomGameStartPosition", false);
             activateProps = CustomOption.Create(6083, Types.General, "activateProps", false, null, true, heading: "headingPropSetting");
-            numAccelTraps = CustomOption.Create(6084, Types.General, "numAccelTraps", 1f, 1f, 5f, 1f, activateProps, false, "unitScrews");
+            numAccelTraps = CustomOption.Create(6084, Types.General, "numAccelTraps", 1f, 0f, 5f, 1f, activateProps, false, "unitScrews");
             accelerationDuration = CustomOption.Create(6085, Types.General, "accelerationDuration", 5f, 1f, 20f, 1f, activateProps, false, "unitSeconds");
             speedAcceleration = CustomOption.Create(6086, Types.General, "speedAcceleration", 1.25f, 0.5f, 2f, 0.25f, activateProps, false, "unitTimes");
-            numDecelTraps = CustomOption.Create(6087, Types.General, "numDecelTraps", 1f, 1f, 3f, 1f, activateProps, false, "unitScrews");
+            numDecelTraps = CustomOption.Create(6087, Types.General, "numDecelTraps", 1f, 0f, 3f, 1f, activateProps, false, "unitScrews");
             decelerationDuration = CustomOption.Create(6091, Types.General, "decelerationDuration", 5f, 1f, 20f, 1f, activateProps, false, "unitSeconds");
             speedDeceleration = CustomOption.Create(6089, Types.General, "speedDeceleration", -0.5f, -0.8f, -0.1f, 0.1f, activateProps, false, "unitTimes");
             decelUpdateInterval = CustomOption.Create(6090, Types.General, "decelUpdateInterval", 10f, 5f, 60f, 2.5f, activateProps, false, "unitSeconds");

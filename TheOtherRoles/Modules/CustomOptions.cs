@@ -85,6 +85,11 @@ namespace TheOtherRoles {
             return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format, heading);
         }
 
+        public static CustomOption Create(int id, CustomOptionType type, string name, List<RoleId> roleId, CustomOption parent = null, bool isHeader = false) {
+            return new CustomOption(id, type, name, roleId.Select(x => x == RoleId.Jester ? "optionOff" : RoleInfo.allRoleInfos.FirstOrDefault(y => y.roleId == x
+            && y.color != Palette.ImpostorRed && !y.isNeutral).nameKey).ToArray(), 0, parent, isHeader, "");
+        }
+
         // Static behaviour
 
         public static void switchPreset(int newPreset) {
@@ -501,7 +506,10 @@ namespace TheOtherRoles {
             }
 
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
-                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
+                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318, 7006 }).Contains(x.id)).ToList();
+            else
+                relevantOptions = relevantOptions.Where(x => x.id != 7007).ToList();
+
             if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
                 relevantOptions = relevantOptions.Where(x => x.id != 10424).ToList();
 
@@ -975,7 +983,10 @@ namespace TheOtherRoles {
             torSettingsGOM.Children.Clear();
             var relevantOptions = options.Where(x => x.type == optionType).ToList();
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) // Exclude guesser options in neutral mode
-                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318 }).Contains(x.id)).ToList();
+                relevantOptions = relevantOptions.Where(x => !(new List<int> { 310, 311, 312, 313, 314, 315, 316, 317, 318, 7006 }).Contains(x.id)).ToList();
+            else
+                relevantOptions = relevantOptions.Where(x => x.id != 7007).ToList();
+
             if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
                 relevantOptions = relevantOptions.Where(x => x.id != 10424).ToList();
             createSettings(torSettingsGOM, relevantOptions);
@@ -1119,10 +1130,10 @@ namespace TheOtherRoles {
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) {
                 if (type == CustomOption.CustomOptionType.General)
                     options = CustomOption.options.Where(o => o.type == type || o.type == CustomOption.CustomOptionType.Guesser);
-                List<int> remove = new() { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318 };
+                List<int> remove = new() { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318, 7006 };
                 options = options.Where(x => !remove.Contains(x.id));
             } else if (TORMapOptions.gameMode == CustomGamemodes.Classic) 
-                options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill));
+                options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill || x.id == 7007));
             else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
                 options = options.Where(x => (x.type == CustomOption.CustomOptionType.HideNSeekMain || x.type == CustomOption.CustomOptionType.HideNSeekRoles));
             if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
