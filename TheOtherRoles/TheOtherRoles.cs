@@ -5515,6 +5515,7 @@ namespace TheOtherRoles
         public static float sprintCooldown = 30f;
         public static float sprintDuration = 15f;
         public static float fadeTime = 0.5f;
+        public static float speedBonus = 0.25f;
 
         public static bool sprinting = false;
 
@@ -5546,15 +5547,6 @@ namespace TheOtherRoles
             return 1.0f;
         }
 
-        public static bool isSprinting()
-        {
-            if (CachedPlayer.LocalPlayer.PlayerControl == sprinter && !sprinter.Data.IsDead)
-            {
-                return sprinting;
-            }
-            return false;
-        }
-
         public static void setSprinting(PlayerControl player, bool sprinting = true)
         {
             if (player == sprinter && !sprinter.Data.IsDead)
@@ -5583,6 +5575,7 @@ namespace TheOtherRoles
             sprintCooldown = CustomOptionHolder.sprinterCooldown.getFloat();
             sprintDuration = CustomOptionHolder.sprinterDuration.getFloat();
             fadeTime = CustomOptionHolder.sprinterFadeTime.getFloat();
+            speedBonus = CustomOptionHolder.sprinterSpeedBonus.getFloat();
             acTokenMove = null;
         }
 
@@ -5593,6 +5586,7 @@ namespace TheOtherRoles
             {
                 if (__instance.myPlayer == sprinter)
                 {
+                    if (GameData.Instance && sprinting && __instance.AmOwner && __instance.myPlayer.CanMove) __instance.body.velocity *= 1 + speedBonus;
                     var sprinter = __instance.myPlayer;
                     if (sprinter == null || sprinter.Data.IsDead) return;
 

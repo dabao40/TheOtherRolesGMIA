@@ -195,6 +195,7 @@ namespace TheOtherRoles {
         public static CustomOption sprinterCooldown;
         public static CustomOption sprinterDuration;
         public static CustomOption sprinterFadeTime;
+        public static CustomOption sprinterSpeedBonus;
 
         public static CustomOption fortuneTellerSpawnRate;
         public static CustomOption fortuneTellerNumTasks;
@@ -947,6 +948,7 @@ namespace TheOtherRoles {
             sprinterCooldown = CustomOption.Create(4006, Types.Crewmate, "sprinterCooldown", 30f, 2.5f, 60f, 2.5f, sprinterSpawnRate, false, "unitSeconds");
             sprinterDuration = CustomOption.Create(4007, Types.Crewmate, "sprintDuration", 15f, 10f, 60f, 2.5f, sprinterSpawnRate, false, "unitSeconds");
             sprinterFadeTime = CustomOption.Create(4008, Types.Crewmate, "sprintFadeTime", 0.5f, 0.0f, 2.5f, 0.5f, sprinterSpawnRate, false, "unitSeconds");
+            sprinterSpeedBonus = CustomOption.Create(4009, Types.Crewmate, "sprinterSpeedBonus", 1.25f, 0.5f, 2f, 0.25f, sprinterSpawnRate, false, "unitTimes");
 
             detectiveSpawnRate = CustomOption.Create(120, Types.Crewmate, cs(Detective.color, "detective"), rates, null, true);
             detectiveAnonymousFootprints = CustomOption.Create(121, Types.Crewmate, "detectiveAnonymousFootprints", false, detectiveSpawnRate);

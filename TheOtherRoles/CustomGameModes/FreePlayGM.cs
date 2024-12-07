@@ -141,9 +141,7 @@ namespace TheOtherRoles.CustomGameModes
                     break;
                 case RoleId.Chameleon:
                     Chameleon.chameleon.RemoveAll(x => x.PlayerId == playerId);
-                    break;
-                case RoleId.Mini:
-                    Mini.mini = null;
+                    Chameleon.lastMoved.Clear();
                     break;
                 case RoleId.Invert:
                     Invert.invert.RemoveAll(x => x.PlayerId == playerId);

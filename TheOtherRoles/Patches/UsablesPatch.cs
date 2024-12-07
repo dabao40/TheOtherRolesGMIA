@@ -217,10 +217,11 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
     public static class MapBehaviourShowPatch {
         public static void Prefix(MapBehaviour __instance, ref MapOptions opts) {
-            bool blockSabotageJanitor = Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl;
-            bool blockSabotageMafioso = Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead;
-            if (blockSabotageJanitor || blockSabotageMafioso) {
+            if (!CachedPlayer.LocalPlayer.PlayerControl.roleCanUseSabotage()) {
                 if (opts.Mode == MapOptions.Modes.Sabotage) opts.Mode = MapOptions.Modes.Normal;
+            }
+            else {
+                if (opts.Mode == MapOptions.Modes.Normal) opts.Mode = MapOptions.Modes.Sabotage;
             }
         }
     }

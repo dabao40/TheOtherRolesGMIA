@@ -4891,6 +4891,10 @@
         "13": "\u5f57\u661f\u4e4b\u5b50\u9690\u8eab\u6240\u9700\u65f6\u95f4",
         "14": "\u5f57\u661f\u4e4b\u5b50\u96b1\u8eab\u6240\u9700\u6642\u9593"
     },
+    "sprinterSpeedBonus": {
+        "0": "Sprinting Speed Bonus",
+        "13": "\u51b2\u523a\u65f6\u901f\u5ea6\u589e\u52a0\u500d\u7387"
+    },
     "undertaker": {
         "0": "Undertaker",
         "11": "\u30a2\u30f3\u30c0\u30fc\u30c6\u30a4\u30ab\u30fc",
