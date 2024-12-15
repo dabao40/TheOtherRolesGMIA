@@ -60,6 +60,7 @@ namespace TheOtherRoles
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
         public static ConfigEntry<bool> ToggleCursor { get; set; }
         public static ConfigEntry<bool> ShowChatNotifications { get; set; }
+        public static ConfigEntry<bool> ShowVentsOnMap { get; set; }
 
         public static Sprite ModStamp;
 
@@ -114,6 +115,7 @@ namespace TheOtherRoles
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
             ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
+            ShowVentsOnMap = Config.Bind("Custom", "Show Vent Positions On Minimap", false);
 
             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);

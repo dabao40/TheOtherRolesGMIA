@@ -3636,6 +3636,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         public static bool canHasBetterAdmin = false;
         public static bool canCreateMadmate = false;
+        public static bool canSeeDoorStatus = true;
         public static bool canCreateMadmateFromJackal;
         public static bool canInheritAbility;
         public static PlayerControl fakeMadmate;
@@ -3686,6 +3687,7 @@ namespace TheOtherRoles
             canHasBetterAdmin = CustomOptionHolder.evilHackerCanHasBetterAdmin.getBool();
             canCreateMadmateFromJackal = CustomOptionHolder.evilHackerCanCreateMadmateFromJackal.getBool();
             canInheritAbility = CustomOptionHolder.evilHackerCanInheritAbility.getBool();
+            canSeeDoorStatus = CustomOptionHolder.evilHackerCanSeeDoorStatus.getBool();
             acTokenChallenge = null;
         }
     }

@@ -90,7 +90,7 @@ namespace TheOtherRoles.CustomGameModes
                             FortuneTeller.meetingFlag = false;
                         }
                         RPCProcedure.resetAchievement();
-                        roleScreen.CloseScreen();
+                        roleScreen?.CloseScreen();
                     })), 4);
                 }
                 else if (tab == 1)
@@ -110,7 +110,7 @@ namespace TheOtherRoles.CustomGameModes
                         })), 4)}
                         );
                 }
-                roleScreen.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, TORGUIContextEngine.API.VerticalMargin(0.15f), gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
+                roleScreen?.SetContext(gui.VerticalHolder(GUIAlignment.Center, new List<GUIContext>() { holder, TORGUIContextEngine.API.VerticalMargin(0.15f), gui.ScrollView(GUIAlignment.Center, new(7.4f, 3.5f), null, inner, out _) }), out _);
             }
 
             SetWidget(0);

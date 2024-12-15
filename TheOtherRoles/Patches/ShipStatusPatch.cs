@@ -117,7 +117,7 @@ namespace TheOtherRoles.Patches {
                 GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = Mathf.RoundToInt(CustomOptionHolder.hideNSeekShortTasks.getFloat());
                 GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = Mathf.RoundToInt(CustomOptionHolder.hideNSeekLongTasks.getFloat());
             }
-
+            MapBehaviourPatch.VentNetworks.Clear();
             return true;
         }
 

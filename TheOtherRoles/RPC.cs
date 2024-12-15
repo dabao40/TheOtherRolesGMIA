@@ -3473,12 +3473,6 @@ namespace TheOtherRoles
                     byte id = reader.ReadByte();
                     byte targetId = reader.ReadByte();
                     RPCProcedure.yasunaSpecialVote(id, targetId);
-                    if (AmongUsClient.Instance.AmHost && Yasuna.isYasuna(id))
-                    {
-                        int clientId = Helpers.GetClientId(Yasuna.yasuna);
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.YasunaSpecialVote_DoCastVote, Hazel.SendOption.Reliable, clientId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
                     break;
                 case (byte)CustomRPC.YasunaSpecialVote_DoCastVote:
                     RPCProcedure.yasunaSpecialVote_DoCastVote();

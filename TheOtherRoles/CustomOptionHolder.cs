@@ -336,6 +336,7 @@ namespace TheOtherRoles {
         public static CustomOption evilHackerSpawnRate;
         public static CustomOption evilHackerCanHasBetterAdmin;
         public static CustomOption evilHackerCanCreateMadmate;
+        public static CustomOption evilHackerCanSeeDoorStatus;
         public static CustomOption evilHackerCanCreateMadmateFromJackal;
         public static CustomOption evilHackerCanInheritAbility;
         public static CustomOption createdMadmateCanDieToSheriff;
@@ -554,6 +555,7 @@ namespace TheOtherRoles {
         public static CustomOption fungleElectrical;
         public static CustomOption miraVitals;
         public static CustomOption randomGameStartPosition;
+        public static CustomOption noticeNewDeadBodies;
         public static CustomOption activateProps;
         public static CustomOption numAccelTraps;
         public static CustomOption accelerationDuration;
@@ -740,8 +742,9 @@ namespace TheOtherRoles {
 
             evilHackerSpawnRate = CustomOption.Create(8001, Types.Impostor, cs(EvilHacker.color, "evilHacker"), rates, null, true);
             evilHackerCanHasBetterAdmin = CustomOption.Create(8002, Types.Impostor, "evilHackerCanHasBetterAdmin", false, evilHackerSpawnRate);
+            evilHackerCanSeeDoorStatus = CustomOption.Create(8015, Types.Impostor, "evilHackerCanSeeDoorStatus", true, evilHackerSpawnRate);
             evilHackerCanCreateMadmate = CustomOption.Create(8000, Types.Impostor, "evilHackerCanCreateMadmate", true, evilHackerSpawnRate);
-            evilHackerCanCreateMadmateFromJackal = CustomOption.Create(8005, Types.Impostor, "evilHackerCanCreateMadmateFromJackal", true, evilHackerCanCreateMadmate);
+            evilHackerCanCreateMadmateFromJackal = CustomOption.Create(8013, Types.Impostor, "evilHackerCanCreateMadmateFromJackal", true, evilHackerCanCreateMadmate);
             createdMadmateCanDieToSheriff = CustomOption.Create(8004, Types.Impostor, "createdMadmateCanDieToSheriff", true, evilHackerCanCreateMadmate);
             createdMadmateCanEnterVents = CustomOption.Create(8005, Types.Impostor, "createdMadmateCanEnterVents", true, evilHackerCanCreateMadmate);
             createdMadmateCanFixComm = CustomOption.Create(8006, Types.Impostor, "createdMadmateCanFixComm", false, evilHackerCanCreateMadmate);
@@ -759,7 +762,7 @@ namespace TheOtherRoles {
             trapperTrapRange = CustomOption.Create(8021, Types.Impostor, "trapperTrapRange", 1f, 0.5f, 5f, 0.1f, trapperSpawnRate, false, "unitMeters");
             trapperMaxDistance = CustomOption.Create(8022, Types.Impostor, "trapperMaxDistance", 10f, 1f, 50f, 1f, trapperSpawnRate, false, "unitMeters");
             trapperPenaltyTime = CustomOption.Create(8023, Types.Impostor, "trapperPenaltyTime", 10f, 0f, 50f, 1f, trapperSpawnRate, false, "unitSeconds");
-            trapperBonusTime = CustomOption.Create(8024, Types.Impostor, "trapperBonusTime", 8f, 0f, 9f, 1f, trapperSpawnRate, false, "unitSeconds");
+            trapperBonusTime = CustomOption.Create(8024, Types.Impostor, "trapperBonusTime", 10f, 0f, 50f, 1f, trapperSpawnRate, false, "unitSeconds");
 
             mimicSpawnRate = CustomOption.Create(5000, Types.Impostor, cs(MimicK.color, "mimic"), rates, null, true);
             mimicCountAsOne = CustomOption.Create(5001, Types.Impostor, "mimicCountAsOne", true, mimicSpawnRate);
@@ -1213,8 +1216,6 @@ namespace TheOtherRoles {
             allowParallelMedBayScans = CustomOption.Create(7, Types.General, "allowParallelMedBayScans", false);
             shieldFirstKill = CustomOption.Create(8, Types.General, "shieldFirstKill", false);
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "finishTasksBeforeHauntingOrZoomingOut", true);
-            camsNightVision = CustomOption.Create(11, Types.General, "camsNightVision", false, null, true, heading: "headingNightVision");
-            camsNoNightVisionIfImpVision = CustomOption.Create(12, Types.General, "camsNoNightVisionIfImpVision", false, camsNightVision, false);
             additionalVents = CustomOption.Create(5060, Types.General, "additionalVents", false);
             specimenVital = CustomOption.Create(5061, Types.General, "specimenVital", false);
             miraVitals = CustomOption.Create(6075, Types.General, "miraVitals", false);
@@ -1223,6 +1224,11 @@ namespace TheOtherRoles {
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, "airshipAdditionalSpawn", false);
             fungleElectrical = CustomOption.Create(6074, Types.General, "fungleElectrical", false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, "randomGameStartPosition", false);
+            noticeNewDeadBodies = CustomOption.Create(6098, Types.General, "noticeNewDeadBodies", true);
+
+            camsNightVision = CustomOption.Create(11, Types.General, "camsNightVision", false, null, true, heading: "headingNightVision");
+            camsNoNightVisionIfImpVision = CustomOption.Create(12, Types.General, "camsNoNightVisionIfImpVision", false, camsNightVision, false);
+
             activateProps = CustomOption.Create(6083, Types.General, "activateProps", false, null, true, heading: "headingPropSetting");
             numAccelTraps = CustomOption.Create(6084, Types.General, "numAccelTraps", 1f, 0f, 5f, 1f, activateProps, false, "unitScrews");
             accelerationDuration = CustomOption.Create(6085, Types.General, "accelerationDuration", 5f, 1f, 20f, 1f, activateProps, false, "unitSeconds");

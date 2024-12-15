@@ -17,6 +17,7 @@ using TheOtherRoles.Modules;
 using Il2CppSystem.Reflection;
 using TheOtherRoles.MetaContext;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using System.IO;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -616,7 +617,7 @@ namespace TheOtherRoles.Patches {
         static void yasunaOnClick(int buttonTarget, MeetingHud __instance)
         {
             if (Yasuna.yasuna != null && (Yasuna.yasuna.Data.IsDead || Yasuna.specialVoteTargetPlayerId != byte.MaxValue)) return;
-            if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted || __instance.state == MeetingHud.VoteStates.Results)) return;
+            if (__instance.state is not (MeetingHud.VoteStates.Voted or MeetingHud.VoteStates.NotVoted or MeetingHud.VoteStates.Results)) return;
             if (__instance.playerStates[buttonTarget].AmDead) return;
 
             var yasunaPVA = __instance.playerStates.FirstOrDefault(t => t.TargetPlayerId == Yasuna.yasuna.PlayerId);
@@ -627,29 +628,15 @@ namespace TheOtherRoles.Patches {
             }
 
             byte targetId = __instance.playerStates[buttonTarget].TargetPlayerId;
-            RPCProcedure.yasunaSpecialVote(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, targetId);
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.YasunaSpecialVote, Hazel.SendOption.Reliable, -1);
             writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
             writer.Write(targetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.yasunaSpecialVote(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, targetId);
             if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) Yasuna.yasunaAcTokenChallenge.Value.targetId = targetId;
             else Yasuna.evilYasunaAcTokenChallenge.Value.targetId = targetId;
 
-            __instance.SkipVoteButton.gameObject.SetActive(false);
-            for (int i = 0; i < __instance.playerStates.Length; i++)
-            {
-                PlayerVoteArea voteArea = __instance.playerStates[i];
-                voteArea.ClearButtons();
-                Transform t = voteArea.transform.FindChild("SpecialVoteButton");
-                if (t != null && voteArea.TargetPlayerId != targetId)
-                    t.gameObject.SetActive(false);
-            }
-            if (AmongUsClient.Instance.AmHost)
-            {
-                PlayerControl target = Helpers.playerById(targetId);
-                if (target != null)
-                    MeetingHud.Instance.CmdCastVote(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
-            }
+            __instance.playerStates[buttonTarget].VoteForMe();
         }
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]
@@ -992,6 +979,37 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        // From Town-Of-Us-R
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CoIntro))]
+        public static class ShowNewDead
+        {
+            public static Sprite megaphone => Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DeadMegaphone.png", 100f);
+            public static readonly List<byte> ReportedBodies = new();
+            public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
+            {
+                ReportedBodies.Clear();
+                if (!CustomOptionHolder.noticeNewDeadBodies.getBool()) return;
+                foreach (var player in __instance.playerStates)
+                {
+                    if (deadBodies?.Any(x => x.PlayerId == player.TargetPlayerId) == true)
+                    {
+                        if (reportedBody != null && player.TargetPlayerId == reportedBody.PlayerId)
+                        {
+                            player.Megaphone.gameObject.SetActive(true);
+                            player.Megaphone.enabled = true;
+                            player.Megaphone.transform.localEulerAngles = Vector3.zero;
+                            player.Megaphone.transform.localScale = Vector3.one;
+                            player.Megaphone.sprite = megaphone;
+                        }
+                        player.HighlightedFX.enabled = true;
+                        player.HighlightedFX.color = Palette.ImpostorRed;
+
+                        ReportedBodies.Add(player.TargetPlayerId);
+                    }
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.Init))]
         public static class MeetingIntroAnimationInitPatch
         {
@@ -1241,6 +1259,15 @@ namespace TheOtherRoles.Patches {
                     {
                         Blackmailer.alreadyShook = true;
                         __instance.StartCoroutine(Effects.SwayX(playerState.transform));
+                    }
+                }
+
+                if (CustomOptionHolder.noticeNewDeadBodies.getBool())
+                {
+                    foreach (var state in __instance.playerStates)
+                    {
+                        if (ShowNewDead.ReportedBodies?.Contains(state.TargetPlayerId) == true)
+                            if (!state.HighlightedFX.enabled) state.HighlightedFX.enabled = true;
                     }
                 }
             }

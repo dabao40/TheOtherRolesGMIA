@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.Events;
 using static UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace TheOtherRoles.Patches 
 {
@@ -23,6 +24,7 @@ namespace TheOtherRoles.Patches
             new SelectionBehaviour("toggleCursor", () => TORMapOptions.toggleCursor = TheOtherRolesPlugin.ToggleCursor.Value = !TheOtherRolesPlugin.ToggleCursor.Value, TheOtherRolesPlugin.ToggleCursor.Value),
             new SelectionBehaviour("enableSoundEffects", () => TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value = !TheOtherRolesPlugin.EnableSoundEffects.Value, TheOtherRolesPlugin.EnableSoundEffects.Value),
             new("showChatNotification", () => TORMapOptions.ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value = !TheOtherRolesPlugin.ShowChatNotifications.Value, TheOtherRolesPlugin.ShowChatNotifications.Value),
+            new("showVentsOnMap", () => TORMapOptions.ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value = !TheOtherRolesPlugin.ShowVentsOnMap.Value, TheOtherRolesPlugin.ShowVentsOnMap.Value),
         };
         
         private static GameObject popUp;
@@ -31,6 +33,7 @@ namespace TheOtherRoles.Patches
         private static ToggleButtonBehaviour moreOptions;
         private static TextMeshPro titleTextTitle;
         private static List<ToggleButtonBehaviour> modButtons = new();
+        private static int page = 1;
 
         private static ToggleButtonBehaviour buttonPrefab;
         private static Vector3? _origin;
@@ -156,17 +159,17 @@ namespace TheOtherRoles.Patches
 
         private static void SetUpOptions()
         {
-            if (popUp.transform.GetComponentInChildren<ToggleButtonBehaviour>()) return;
+            //if (popUp.transform.GetComponentInChildren<ToggleButtonBehaviour>()) return;
             foreach (var button in modButtons)
             {
                 if (button != null) GameObject.Destroy(button.gameObject);
             }
 
             modButtons = new List<ToggleButtonBehaviour>();
-
-            for (var i = 0; i < AllOptions.Length; i++)
+            int length = (page * 10) < AllOptions.Length ? page * 10 : AllOptions.Length;
+            for (var i = 0; i + ((page - 1) * 10) < length; i++)
             {
-                var info = AllOptions[i];
+                var info = AllOptions[i + ((page - 1) * 10)];
                 
                 var button = Object.Instantiate(buttonPrefab, popUp.transform);
                 var pos = new Vector3(i % 2 == 0 ? -1.17f : 1.17f, 1.3f - i / 2 * 0.8f, -.5f);
@@ -211,6 +214,59 @@ namespace TheOtherRoles.Patches
                 foreach (var spr in button.gameObject.GetComponentsInChildren<SpriteRenderer>())
                     spr.size = new Vector2(2.2f, .7f);
 
+                modButtons.Add(button);
+            }
+
+            if (page * 10 < AllOptions.Length)
+            {
+                var button = Object.Instantiate(buttonPrefab, popUp.transform);
+                var pos = new Vector3(1.2f, -2.5f, -0.5f);
+                var transform = button.transform;
+                transform.localPosition = pos;
+                button.Text.text = ModTranslation.getString("next");
+                button.Text.fontSizeMin = button.Text.fontSizeMax = 2.2f;
+                button.Text.font = Object.Instantiate(titleText.font);
+                button.Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 2);
+                button.gameObject.SetActive(true);
+                var passiveButton = button.GetComponent<PassiveButton>();
+                var colliderButton = button.GetComponent<BoxCollider2D>();
+                colliderButton.size = new Vector2(2.2f, .7f);
+                passiveButton.OnClick = new ButtonClickedEvent();
+                passiveButton.OnMouseOut = new UnityEvent();
+                passiveButton.OnMouseOver = new UnityEvent();
+                passiveButton.OnClick.AddListener((Action)(() =>
+                {
+                    page += 1;
+                    SetUpOptions();
+                }));
+                passiveButton.OnMouseOver.AddListener((Action)(() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
+                passiveButton.OnMouseOut.AddListener((Action)(() => button.Background.color = Color.white));
+                modButtons.Add(button);
+            }
+            if (page > 1)
+            {
+                var button = Object.Instantiate(buttonPrefab, popUp.transform);
+                var pos = new Vector3(-1.2f, -2.5f, -0.5f);
+                var transform = button.transform;
+                transform.localPosition = pos;
+                button.Text.text = ModTranslation.getString("previous");
+                button.Text.fontSizeMin = button.Text.fontSizeMax = 2.2f;
+                button.Text.font = Object.Instantiate(titleText.font);
+                button.Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 2);
+                button.gameObject.SetActive(true);
+                var passiveButton = button.GetComponent<PassiveButton>();
+                var colliderButton = button.GetComponent<BoxCollider2D>();
+                colliderButton.size = new Vector2(2.2f, .7f);
+                passiveButton.OnClick = new ButtonClickedEvent();
+                passiveButton.OnMouseOut = new UnityEvent();
+                passiveButton.OnMouseOver = new UnityEvent();
+                passiveButton.OnClick.AddListener((Action)(() =>
+                {
+                    page -= 1;
+                    SetUpOptions();
+                }));
+                passiveButton.OnMouseOver.AddListener((Action)(() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
+                passiveButton.OnMouseOut.AddListener((Action)(() => button.Background.color = Color.white));
                 modButtons.Add(button);
             }
         }

@@ -1922,6 +1922,7 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.witchSpellButton.MaxTimer = (Witch.cooldown + Witch.currentCooldownAddition) * multiplier;
                 HudManagerStartPatch.assassinButton.MaxTimer = Assassin.cooldown * multiplier;
                 HudManagerStartPatch.thiefKillButton.MaxTimer = Thief.cooldown * multiplier;
+                HudManagerStartPatch.serialKillerButton.MaxTimer = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 2f : 1f);
             }
         }
 
@@ -2550,8 +2551,8 @@ namespace TheOtherRoles.Patches {
             {
                 if (Trap.isTrapped(target) && !Trapper.isTrapKill)  // トラップにかかっている対象をキルした場合のボーナス
                 {
-                    Trapper.trapper.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - Trapper.bonusTime;
-                    HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown - Trapper.bonusTime;
+                    Trapper.trapper.killTimer = Mathf.Max(1f, GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - Trapper.bonusTime);
+                    HudManagerStartPatch.trapperSetTrapButton.Timer = Mathf.Max(1f, Trapper.cooldown - Trapper.bonusTime);
                 }
                 else if (Trap.isTrapped(target) && Trapper.isTrapKill)  // トラップキルした場合のペナルティ
                 {
