@@ -550,6 +550,13 @@ namespace TheOtherRoles {
             return renderer;
         }
 
+        static public float GetKillCooldown(this PlayerControl player)
+        {
+            if (player == SerialKiller.serialKiller) return SerialKiller.killCooldown;
+            if (player == SchrodingersCat.schrodingersCat) return SchrodingersCat.killCooldown;
+            return GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+        }
+
         static public IEnumerator Sequence(params IEnumerator[] enumerator)
         {
             foreach (var e in enumerator) yield return e;
@@ -978,7 +985,7 @@ namespace TheOtherRoles {
 
             SkinViewData nextSkin = null;
             try { nextSkin = ShipStatus.Instance.CosmeticsCache.GetSkin(skinId); } catch { return; };
-            
+
             PlayerPhysics playerPhysics = target.MyPhysics;
             AnimationClip clip = null;
             var spriteAnim = playerPhysics.myPlayer.cosmetics.skin.animator;
@@ -1436,6 +1443,27 @@ namespace TheOtherRoles {
             }
             
             return team;
+        }
+
+        /// <summary>
+        /// Check whether the action should be done. (i.e. Veteran alert)
+        /// </summary>
+        /// <param name="player">The action player</param>
+        /// <param name="target">The target of the action player</param>
+        /// <returns></returns>
+        public static bool checkSuspendAction(PlayerControl player, PlayerControl target)
+        {
+            if (player == null || target == null) return false;
+            if (Veteran.veteran != null && target == Veteran.veteran && Veteran.alertActive)
+            {
+                if (isEvil(player))
+                {
+                    _ = checkMuderAttempt(player, target);  // Gives the Veteran the achievement
+                    checkMurderAttemptAndKill(target, player);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static bool isNeutral(PlayerControl player) {

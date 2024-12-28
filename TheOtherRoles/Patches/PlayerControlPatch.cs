@@ -891,15 +891,15 @@ namespace TheOtherRoles.Patches {
                 }
                 else if (Tracker.tracker.Data.IsDead)
                 {
-                    Tracker.DangerMeterParent?.SetActive(false);
-                    Tracker.Meter?.gameObject?.SetActive(false);
+                    if (Tracker.DangerMeterParent != null) Tracker.DangerMeterParent?.SetActive(false);
+                    if (Tracker.Meter?.gameObject != null) Tracker.Meter?.gameObject?.SetActive(false);
                     if (Tracker.arrow?.arrow != null) Tracker.arrow.arrow.SetActive(false);
                 }
             }
 
             // Handle corpses tracking
             if (Tracker.tracker != null && Tracker.tracker == CachedPlayer.LocalPlayer.PlayerControl && Tracker.corpsesTrackingTimer >= 0f && !Tracker.tracker.Data.IsDead) {
-                bool arrowsCountChanged = Tracker.localArrows.Count != Tracker.deadBodyPositions.Count();
+                bool arrowsCountChanged = Tracker.localArrows.Count != Tracker.deadBodyPositions.Count;
                 int index = 0;
 
                 if (arrowsCountChanged) {
@@ -1923,6 +1923,7 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.assassinButton.MaxTimer = Assassin.cooldown * multiplier;
                 HudManagerStartPatch.thiefKillButton.MaxTimer = Thief.cooldown * multiplier;
                 HudManagerStartPatch.serialKillerButton.MaxTimer = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 2f : 1f);
+                HudManagerStartPatch.schrodingersCatKillButton.MaxTimer = SchrodingersCat.killCooldown * multiplier;
             }
         }
 
@@ -2089,12 +2090,6 @@ namespace TheOtherRoles.Patches {
                 bomberBUpdate();
                 // Bait
                 baitUpdate();
-                // Ninja
-                //ninjaUpdate();
-                // Sprinter
-                //sprinterUpdate();
-                // Serial Killer
-                //serialKillerUpdate();
                 // Evil Tracker
                 evilTrackerUpdate();
                 // Evil Hacker
@@ -2446,7 +2441,7 @@ namespace TheOtherRoles.Patches {
             }
 
             if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat &&  __instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Impostor)
-                SchrodingersCat.schrodingersCat.SetKillTimer(SchrodingersCat.killCooldown);
+                SchrodingersCat.schrodingersCat.SetKillTimerUnchecked(SchrodingersCat.killCooldown);
 
             if (Sheriff.sheriff != null && CachedPlayer.LocalPlayer.PlayerControl == Sheriff.sheriff && __instance == Sheriff.sheriff)
             {
@@ -2528,7 +2523,7 @@ namespace TheOtherRoles.Patches {
             if (SerialKiller.serialKiller != null && CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller && __instance == SerialKiller.serialKiller && target != SerialKiller.serialKiller)
             {
                 _ = new StaticAchievementToken("serialKiller.common1");
-                SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
+                SerialKiller.serialKiller.SetKillTimerUnchecked(SerialKiller.killCooldown);
                 HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
                 SerialKiller.isCountDown = true;
             }
@@ -2747,11 +2742,6 @@ namespace TheOtherRoles.Patches {
             {
                 MimicK.mimicK.setDefaultLook();
                 MimicK.victim = null;
-                if (MimicA.mimicA != null)
-                {
-                    MimicA.mimicA.setDefaultLook();
-                    MimicA.isMorph = false;
-                }
             }
 
             if (MimicA.mimicA != null && target == MimicA.mimicA)
@@ -2925,19 +2915,26 @@ namespace TheOtherRoles.Patches {
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKillTimer))]
-    class PlayerControlSetCoolDownPatch {
+    static class PlayerControlSetCoolDownPatch {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)]float time) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
-            if (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown <= 0f) return false;
+            if (CachedPlayer.LocalPlayer.PlayerControl.GetKillCooldown() <= 0f) return false;
             float multiplier = 1f;
             float addition = 0f;
             if (Mini.mini != null && CachedPlayer.LocalPlayer.PlayerControl == Mini.mini) multiplier = Mini.isGrownUp() ? 0.66f : 2f;
             if (BountyHunter.bountyHunter != null && CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter) addition = BountyHunter.punishmentTime;
             if (Ninja.ninja != null && CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja && Ninja.penalized) addition = Ninja.killPenalty;
 
-            __instance.killTimer = Mathf.Clamp(time, 0f, GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * multiplier + addition);
-            FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * multiplier + addition);
+            float max = Mathf.Max(CachedPlayer.LocalPlayer.PlayerControl.GetKillCooldown() * multiplier + addition, __instance.killTimer);
+            __instance.SetKillTimerUnchecked(Mathf.Clamp(time, 0f, max), max);
             return false;
+        }
+
+        public static void SetKillTimerUnchecked(this PlayerControl player, float time, float max = float.NegativeInfinity)
+        {
+            if (max == float.NegativeInfinity) max = time;
+            player.killTimer = time;
+            FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(time, max);
         }
     }
 

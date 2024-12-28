@@ -723,12 +723,7 @@ namespace TheOtherRoles
             // Shifter shift
             shifterShiftButton = new CustomButton(
                 () => {
-                    if (Veteran.veteran != null && Shifter.currentTarget == Veteran.veteran && Veteran.alertActive && Shifter.isNeutral)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Shifter.shifter);
-                        return;
-                    }
-
+                    if (Helpers.checkSuspendAction(Shifter.shifter, Shifter.currentTarget)) return;
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetFutureShifted, Hazel.SendOption.Reliable, -1);
                     writer.Write(Shifter.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -761,11 +756,7 @@ namespace TheOtherRoles
                         morphlingButton.shakeOnEnd = true;
                         SoundEffectsManager.play("morphlingMorph");
                     } else if (Morphling.currentTarget != null) {
-                        if (Morphling.currentTarget == Veteran.veteran && Veteran.alertActive && Veteran.veteran != null)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Morphling.morphling);
-                            return;
-                        }
+                        if (Helpers.checkSuspendAction(Morphling.morphling, Morphling.currentTarget)) return;
                         Morphling.acTokenChallenge.Value.playerId = Morphling.currentTarget.PlayerId;
                         Morphling.acTokenChallenge.Value.kill = false;
                         Morphling.sampledTarget = Morphling.currentTarget;
@@ -1033,11 +1024,7 @@ namespace TheOtherRoles
     
             vampireKillButton = new CustomButton(
                 () => {
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Vampire.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Vampire.vampire);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Vampire.vampire, Vampire.currentTarget)) return;
                     MurderAttemptResult murder = Helpers.checkMuderAttempt(Vampire.vampire, Vampire.currentTarget);
                     if (murder == MurderAttemptResult.PerformKill) {
                         if (Vampire.targetNearGarlic) {
@@ -1305,11 +1292,7 @@ namespace TheOtherRoles
             // Jackal Sidekick Button
             jackalSidekickButton = new CustomButton(
                 () => {
-                    if (Jackal.currentTarget == Veteran.veteran && Veteran.alertActive && Veteran.veteran != null)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Jackal.jackal);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Jackal.jackal, Jackal.currentTarget)) return;
                     _ = new StaticAchievementToken("jackal.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.JackalCreatesSidekick, Hazel.SendOption.Reliable, -1);
                     writer.Write(Jackal.currentTarget.PlayerId);
@@ -1511,11 +1494,7 @@ namespace TheOtherRoles
             plagueDoctorButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && PlagueDoctor.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, PlagueDoctor.plagueDoctor);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(PlagueDoctor.plagueDoctor, PlagueDoctor.currentTarget)) return;
 
                     byte targetId = PlagueDoctor.currentTarget.PlayerId;
 
@@ -1558,12 +1537,7 @@ namespace TheOtherRoles
                     /*
                      * creates madmate
                      */
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == EvilHacker.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, EvilHacker.evilHacker);
-                        return;
-                    }
-
+                    if (Helpers.checkSuspendAction(EvilHacker.evilHacker, EvilHacker.currentTarget)) return;
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.EvilHackerCreatesMadmate, Hazel.SendOption.Reliable, -1);
                     writer.Write(EvilHacker.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1626,12 +1600,7 @@ namespace TheOtherRoles
                () => { // Action when Pressed
                    if (Blackmailer.currentTarget != null)
                    {
-                       if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Blackmailer.currentTarget)
-                       {
-                           Helpers.checkMurderAttemptAndKill(Veteran.veteran, Blackmailer.blackmailer);
-                           return;
-                       }
-
+                       if (Helpers.checkSuspendAction(Blackmailer.blackmailer, Blackmailer.currentTarget)) return;
                        _ = new StaticAchievementToken("blackmailer.common1");
                        Blackmailer.acTokenChallenge.Value.cleared |= Blackmailer.acTokenChallenge.Value.witness.Any(x => x == Blackmailer.currentTarget.PlayerId);
 
@@ -1677,11 +1646,7 @@ namespace TheOtherRoles
             // Eraser erase button
             eraserButton = new CustomButton(
                 () => {
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Eraser.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Eraser.eraser);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Eraser.eraser, Eraser.currentTarget)) return;
                     eraserButton.MaxTimer += Eraser.cooldownIncrease;
                     eraserButton.Timer = eraserButton.MaxTimer;
 
@@ -1737,11 +1702,7 @@ namespace TheOtherRoles
                 {
                     if (Moriarty.currentTarget != null)
                     {
-                        if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Moriarty.currentTarget)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Moriarty.moriarty);
-                            return;
-                        }
+                        if (Helpers.checkSuspendAction(Moriarty.moriarty, Moriarty.currentTarget)) return;
                         _ = new StaticAchievementToken("moriarty.common1");
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBrainwash, Hazel.SendOption.Reliable, -1);
                         writer.Write(Moriarty.currentTarget.PlayerId);
@@ -1919,12 +1880,7 @@ namespace TheOtherRoles
             warlockCurseButton = new CustomButton(
                 () => {
                     if (Warlock.curseVictim == null) {
-                        if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Warlock.currentTarget)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Warlock.warlock);
-                            return;
-                        }
-
+                        if (Helpers.checkSuspendAction(Warlock.warlock, Warlock.currentTarget)) return;
                         // Apply Curse
                         Warlock.curseVictim = Warlock.currentTarget;
                         warlockCurseButton.Sprite = Warlock.getCurseKillButtonSprite();
@@ -2145,11 +2101,7 @@ namespace TheOtherRoles
                         RPCProcedure.arsonistWin();
                         arsonistButton.HasEffect = false;
                     } else if (Arsonist.currentTarget != null) {
-                        if (Veteran.veteran != null && Veteran.veteran == Arsonist.currentTarget && Veteran.alertActive)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Arsonist.arsonist);
-                            return;
-                        }
+                        if (Helpers.checkSuspendAction(Arsonist.arsonist, Arsonist.currentTarget)) return;
                         Arsonist.douseTarget = Arsonist.currentTarget;
                         arsonistButton.HasEffect = true;
                         SoundEffectsManager.play("arsonistDouse");
@@ -2284,11 +2236,7 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == BomberA.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberA.bomberA);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(BomberA.bomberA, BomberA.currentTarget)) return;
 
                     if (BomberA.currentTarget != null)
                     {
@@ -2353,11 +2301,7 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == BomberB.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberB.bomberB);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(BomberB.bomberB, BomberB.currentTarget)) return;
 
                     if (BomberB.currentTarget != null)
                     {
@@ -2419,11 +2363,7 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (BomberA.bombTarget == Veteran.veteran && Veteran.veteran != null && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberA.bomberA);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(BomberA.bomberA, BomberA.currentTarget)) return;
 
                     // Use MurderAttempt to exclude eg.Medic shielded
                     MurderAttemptResult attempt = Helpers.checkMuderAttempt(BomberA.bomberA, BomberA.bombTarget);
@@ -2477,12 +2417,7 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (BomberB.bombTarget == Veteran.veteran && Veteran.veteran != null && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, BomberB.bomberB);
-                        return;
-                    }
-
+                    if (Helpers.checkSuspendAction(BomberB.bomberB, BomberB.currentTarget)) return;
                     var bomberA = BomberA.bomberA;
                     float distance = Vector2.Distance(CachedPlayer.LocalPlayer.PlayerControl.transform.localPosition, bomberA.transform.localPosition);
 
@@ -2813,11 +2748,7 @@ namespace TheOtherRoles
             cupidArrowButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && Veteran.veteran == Cupid.currentTarget && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Cupid.currentTarget);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Cupid.cupid, Cupid.currentTarget)) return;
 
                     if (Cupid.lovers1 == null)
                     {
@@ -2865,12 +2796,7 @@ namespace TheOtherRoles
             cupidShieldButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && Cupid.shieldTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Cupid.cupid);
-                        return;
-                    }
-
+                    if (Helpers.checkSuspendAction(Cupid.cupid, Cupid.currentTarget)) return;
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetCupidShield, Hazel.SendOption.Reliable, -1);
                     writer.Write(Cupid.shieldTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -2892,11 +2818,7 @@ namespace TheOtherRoles
             akujoHonmeiButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && Akujo.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Akujo.akujo);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Akujo.akujo, Akujo.currentTarget)) return;
                     _ = new StaticAchievementToken("akujo.common2");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetHonmei, Hazel.SendOption.Reliable, -1);
                     writer.Write(Akujo.akujo.PlayerId);
@@ -2930,11 +2852,7 @@ namespace TheOtherRoles
             akujoBackupButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && Akujo.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Akujo.akujo);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Akujo.akujo, Akujo.currentTarget)) return;
                     _ = new StaticAchievementToken("akujo.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.AkujoSetKeep, Hazel.SendOption.Reliable, -1);
                     writer.Write(Akujo.akujo.PlayerId);
@@ -3060,7 +2978,6 @@ namespace TheOtherRoles
                     ninjaButton.Timer = ninjaButton.MaxTimer = Ninja.stealthCooldown;
                     ninjaButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
                     ninjaButton.isEffectActive = false;
-                    Ninja.stealthed = false;
                     Ninja.ninja.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + (Ninja.penalized ? Ninja.killPenalty : 0f));
                 },
                 Ninja.getButtonSprite(),
@@ -3253,7 +3170,6 @@ namespace TheOtherRoles
                     foxStealthButton.Timer = foxStealthButton.MaxTimer = Fox.stealthCooldown;
                     foxStealthButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
                     foxStealthButton.isEffectActive = false;
-                    Fox.stealthed = false;
                 },
                 Fox.getHideButtonSprite(),
                 CustomButton.ButtonPositions.upperRowCenter,
@@ -3342,11 +3258,7 @@ namespace TheOtherRoles
             foxImmoralistButton = new CustomButton(
                 () =>
                 {
-                    if (Veteran.veteran != null && Fox.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Fox.fox);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Fox.fox, Fox.currentTarget)) return;
                     _ = new StaticAchievementToken("fox.common1");
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.FoxCreatesImmoralist, Hazel.SendOption.Reliable, -1);
                     writer.Write(Fox.currentTarget.PlayerId);
@@ -3395,7 +3307,7 @@ namespace TheOtherRoles
                 {
                     if (CachedPlayer.LocalPlayer.PlayerControl == SerialKiller.serialKiller)
                     {
-                        SerialKiller.serialKiller.SetKillTimer(SerialKiller.killCooldown);
+                        SerialKiller.serialKiller.SetKillTimerUnchecked(SerialKiller.killCooldown);
                         if (SerialKiller.resetTimer)
                         {
                             serialKillerButton.Timer = SerialKiller.suicideTimer;
@@ -3429,11 +3341,7 @@ namespace TheOtherRoles
             // Evil Tracker track
             evilTrackerButton = new CustomButton(
                 () => {
-                    if (Veteran.veteran != null && EvilTracker.currentTarget == Veteran.veteran && Veteran.alertActive)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, EvilTracker.evilTracker);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(EvilTracker.evilTracker, EvilTracker.evilTracker)) return;
                     _ = new StaticAchievementToken("evilTracker.common1");
                     EvilTracker.target = EvilTracker.currentTarget;
                 },
@@ -3794,11 +3702,7 @@ namespace TheOtherRoles
             pursuerButton = new CustomButton(
                 () => {
                     if (Pursuer.target != null) {
-                        if (Pursuer.target == Veteran.veteran && Veteran.alertActive && Veteran.veteran != null)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Pursuer.pursuer);
-                            return;
-                        }
+                        if (Helpers.checkSuspendAction(Pursuer.pursuer, Pursuer.target)) return;
                         if (Pursuer.target.Data.Role.IsImpostor) _ = new StaticAchievementToken("pursuer.common1");
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetBlanked, Hazel.SendOption.Reliable, -1);
                         writer.Write(Pursuer.target.PlayerId);
@@ -3836,11 +3740,7 @@ namespace TheOtherRoles
             // Witch Spell button
             witchSpellButton = new CustomButton(
                 () => {
-                    if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == Witch.currentTarget)
-                    {
-                        Helpers.checkMurderAttemptAndKill(Veteran.veteran, Witch.witch);
-                        return;
-                    }
+                    if (Helpers.checkSuspendAction(Witch.witch, Witch.currentTarget)) return;
                     if (Witch.currentTarget != null) {
                         Witch.spellCastingTarget = Witch.currentTarget;
                         SoundEffectsManager.play("witchSpell");
@@ -3934,7 +3834,6 @@ namespace TheOtherRoles
                     sprintButton.Timer = sprintButton.MaxTimer = Sprinter.sprintCooldown;
                     sprintButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
                     sprintButton.isEffectActive = false;
-                    Sprinter.sprinting = false;
                 },
                 Sprinter.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
@@ -4025,11 +3924,7 @@ namespace TheOtherRoles
                         return;
                     } 
                     if (Assassin.currentTarget != null) {
-                        if (Assassin.currentTarget == Veteran.veteran && Veteran.alertActive && Veteran.veteran != null)
-                        {
-                            Helpers.checkMurderAttemptAndKill(Veteran.veteran, Assassin.assassin);
-                            return;
-                        }
+                        if (Helpers.checkSuspendAction(Assassin.assassin, Assassin.currentTarget)) return;
                         Assassin.assassinMarked = Assassin.currentTarget;
                         assassinButton.Timer = 5f;
                         SoundEffectsManager.play("warlockCurse");

@@ -1964,19 +1964,10 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            //if (MimicK.mimicK == null || MimicA.mimicA == null) return;
-            if (arrows.FirstOrDefault()?.arrow != null)
+            if (CachedPlayer.LocalPlayer.PlayerControl != mimicK || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || MimicA.mimicA == null)
             {
-                if (mimicK == null || MimicA.mimicA == null)
-                {
+                if (arrows.FirstOrDefault()?.arrow != null)
                     foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
-                    return;
-                }
-            }            
-            if (CachedPlayer.LocalPlayer.PlayerControl != mimicK || mimicK == null) return;
-            if (mimicK.Data.IsDead)
-            {
-                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
                 return;
             }
             // 前フレームからの経過時間をマイナスする
@@ -2029,7 +2020,7 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
-            mimicK?.setDefaultLook();
+            if (mimicK != null && mimicK?.Data != null) mimicK.setDefaultLook();
             if (MimicA.mimicA != null)
             {
                 MimicA.isMorph = false;
@@ -2088,20 +2079,17 @@ namespace TheOtherRoles
         public static float arrowUpdateInterval = 0.5f;
         public static void arrowUpdate()
         {
-            //if (MimicA.mimicA == null || MimicK.mimicK == null) return;
-            if (arrows.FirstOrDefault()?.arrow != null)
-            {
-                if (MimicK.mimicK == null || mimicA == null)
-                {
-                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
-                    return;
+            if (MimicK.mimicK == null || MimicK.mimicK.Data.IsDead || MimicK.mimicK.Data.Disconnected) {
+                if (mimicA != null && isMorph) {
+                    isMorph = false;
+                    mimicA.setDefaultLook();
                 }
-            }            
-            if (CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
+            }
 
-            if (mimicA.Data.IsDead)
+            if (CachedPlayer.LocalPlayer.PlayerControl != mimicA || CachedPlayer.LocalPlayer.Data.IsDead || MimicK.mimicK == null)
             {
-                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                if (arrows.FirstOrDefault()?.arrow != null)
+                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                 return;
             }
 
@@ -2139,7 +2127,7 @@ namespace TheOtherRoles
 
         public static void clearAndReload()
         {
-            mimicA?.setDefaultLook();
+            if (mimicA != null && mimicA?.Data != null) mimicA.setDefaultLook();
             mimicA = null;
             isMorph = false;
             if (arrows != null)
@@ -2833,9 +2821,10 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {            
             if ((bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
-            if (bomberA.Data.IsDead)
+            if (bomberA.Data.IsDead || BomberB.bomberB == null)
             {
-                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                if (arrows.FirstOrDefault()?.arrow != null)
+                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                 return;
             }
             // 前フレームからの経過時間をマイナスする
@@ -3021,9 +3010,10 @@ namespace TheOtherRoles
         public static void arrowUpdate()
         {            
             if ((BomberA.bombTarget == null || bombTarget == null) && !BomberA.alwaysShowArrow) return;
-            if (bomberB.Data.IsDead)
+            if (bomberB.Data.IsDead || BomberA.bomberA == null)
             {
-                if (arrows.FirstOrDefault().arrow != null) UnityEngine.Object.Destroy(arrows.FirstOrDefault().arrow);
+                if (arrows.FirstOrDefault()?.arrow != null)
+                    foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
                 return;
             }
             // 前フレームからの経過時間をマイナスする
@@ -6006,6 +5996,21 @@ namespace TheOtherRoles
                 } catch { }
             }
                 
+        }
+
+        public static void removeChameleonFully(PlayerControl player) {
+            try
+            {  // Sometimes renderers are missing for weird reasons. Try catch to avoid exceptions
+                player.cosmetics.currentBodySprite.BodySprite.color = player.cosmetics.currentBodySprite.BodySprite.color.SetAlpha(1f);
+                if (DataManager.Settings.Accessibility.ColorBlindMode) player.cosmetics.colorBlindText.color = player.cosmetics.colorBlindText.color.SetAlpha(1f);
+                player.SetHatAndVisorAlpha(1f);
+                player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(1f);
+                player.cosmetics.nameText.color = player.cosmetics.nameText.color.SetAlpha(1f);
+                foreach (var rend in player.cosmetics.currentPet.renderers) rend.color = rend.color.SetAlpha(1f);
+                foreach (var shadowRend in player.cosmetics.currentPet.shadows) shadowRend.color = shadowRend.color.SetAlpha(1f);
+                if (lastMoved.ContainsKey(player.PlayerId)) lastMoved.Remove(player.PlayerId);
+            }
+            catch { }
         }
     }
 

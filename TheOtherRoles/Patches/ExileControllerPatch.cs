@@ -208,15 +208,15 @@ namespace TheOtherRoles.Patches {
             // Reset custom button timers where necessary
             CustomButton.MeetingEndedUpdate();
 
+            if (SchrodingersCat.schrodingersCat != null && CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && CachedPlayer.LocalPlayer.Data.Role.IsImpostor) {
+                SchrodingersCat.schrodingersCat.SetKillTimerUnchecked(SchrodingersCat.killCooldown);
+            }
+
             // Mini set adapted cooldown
             if (Mini.mini != null && CachedPlayer.LocalPlayer.PlayerControl == Mini.mini && Mini.mini.Data.Role.IsImpostor) {
                 var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
-                Mini.mini.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * multiplier);
+                Mini.mini.SetKillTimer(CachedPlayer.LocalPlayer.PlayerControl.GetKillCooldown() * multiplier);
             }
-
-            // Mimic(Assistant) and Mimic(Killer) reset outfit
-            if (MimicA.mimicA != null) MimicA.mimicA.setDefaultLook();
-            if (MimicK.mimicK != null) MimicK.mimicK.setDefaultLook();
 
             if (Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor && exiled != null)
             {

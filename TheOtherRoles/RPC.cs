@@ -927,6 +927,7 @@ namespace TheOtherRoles
                 {
                     Chameleon.chameleon.Add(oldShifter);
                     Chameleon.chameleon.Remove(player);
+                    Chameleon.removeChameleonFully(player);
                 }
                 // Switch Sunglasses
                 if (Sunglasses.sunglasses.Any(x => x.PlayerId == player.PlayerId))
@@ -1163,20 +1164,8 @@ namespace TheOtherRoles
                 Blackmailer.blackmailer = oldShifter;
                 Blackmailer.onAchievementActivate();
             }
-            if (player == MimicK.mimicK) {
-                if (CachedPlayer.LocalPlayer.PlayerControl == player) {
-                    if (MimicK.arrows.FirstOrDefault().arrow != null) MimicK.arrows.FirstOrDefault().arrow.SetActive(false);
-                }
-                player.setDefaultLook(); // set default look in case they are morphed
-                MimicK.mimicK = oldShifter;
-            }
-            if (player == MimicA.mimicA) {
-                if (CachedPlayer.LocalPlayer.PlayerControl == player) {
-                    if (MimicA.arrows.FirstOrDefault().arrow != null) MimicA.arrows.FirstOrDefault().arrow.SetActive(false);
-                }
-                player.setDefaultLook();
-                MimicA.mimicA = oldShifter;
-            }
+            if (player == MimicK.mimicK) MimicK.mimicK = oldShifter;
+            if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
             if (player == BomberA.bomberA) {
                 if (CachedPlayer.LocalPlayer.PlayerControl == player) {
                     resetPoolables();
@@ -2964,7 +2953,7 @@ namespace TheOtherRoles
             //if (target == Bomber.bomber) Bomber.bomber = thief;
             if (target.Data.Role.IsImpostor) {
                 RoleManager.Instance.SetRole(Thief.thief, RoleTypes.Impostor);
-                FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(Thief.thief.killTimer, GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(Thief.thief.killTimer, CachedPlayer.LocalPlayer.PlayerControl.GetKillCooldown());
             }
             if (Lawyer.lawyer != null && target == Lawyer.target)
                 Lawyer.target = thief;

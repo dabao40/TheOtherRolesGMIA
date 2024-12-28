@@ -541,9 +541,6 @@ namespace TheOtherRoles {
                     if ((int)optionType == 99)
                         categoryHeaderMasked.Title.text = new Dictionary<CustomOptionType, string>() { { CustomOptionType.Impostor, ModTranslation.getString("impostorRoles") }, { CustomOptionType.Neutral, ModTranslation.getString("neutralRoles") },
                             { CustomOptionType.Crewmate, ModTranslation.getString("crewmateRoles") }, { CustomOptionType.Modifier, ModTranslation.getString("modifiers") } }[curType];
-                    var color = titleText.Contains("<color=") && (int)optionType != 99 ? Helpers.HexToColor(titleText.Substring(8, 6)) : Color.white;
-                    categoryHeaderMasked.Title.outlineColor = color;
-                    categoryHeaderMasked.Title.outlineWidth = 0.2f;
                     categoryHeaderMasked.transform.SetParent(__instance.settingsContainer);
                     categoryHeaderMasked.transform.localScale = Vector3.one;
                     categoryHeaderMasked.transform.localPosition = new Vector3(-9.77f, num, -2f);
@@ -579,9 +576,6 @@ namespace TheOtherRoles {
                 }
                 if ((int)optionType == 99)
                 {
-                    var color = option.getName().Contains("<color=") ? Helpers.HexToColor(option.getName().Substring(8, 6)) : Color.white;
-                    viewSettingsInfoPanel.titleText.outlineColor = color;
-                    viewSettingsInfoPanel.titleText.outlineWidth = 0.2f;
                     if (option.type == CustomOptionType.Modifier)
                         viewSettingsInfoPanel.settingText.text = viewSettingsInfoPanel.settingText.text + GameOptionsDataPatch.buildModifierExtras(option);
                 }
@@ -877,9 +871,6 @@ namespace TheOtherRoles {
                     categoryHeaderMasked.SetHeader(StringNames.ImpostorsCategory, 20);
                     string titleText = option.heading != "" ? option.getHeading() : option.getName();
                     categoryHeaderMasked.Title.text = titleText;
-                    var color = titleText.Contains("<color=") ? Helpers.HexToColor(titleText.Substring(8, 6)) : Color.white;
-                    categoryHeaderMasked.Title.outlineColor = color;
-                    categoryHeaderMasked.Title.outlineWidth = 0.2f;
                     categoryHeaderMasked.transform.localScale = Vector3.one * 0.63f;
                     categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
                     num -= 0.63f;

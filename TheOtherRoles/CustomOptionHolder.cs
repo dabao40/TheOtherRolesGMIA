@@ -555,7 +555,6 @@ namespace TheOtherRoles {
         public static CustomOption fungleElectrical;
         public static CustomOption miraVitals;
         public static CustomOption randomGameStartPosition;
-        public static CustomOption noticeNewDeadBodies;
         public static CustomOption activateProps;
         public static CustomOption numAccelTraps;
         public static CustomOption accelerationDuration;
@@ -1224,7 +1223,6 @@ namespace TheOtherRoles {
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, "airshipAdditionalSpawn", false);
             fungleElectrical = CustomOption.Create(6074, Types.General, "fungleElectrical", false);
             randomGameStartPosition = CustomOption.Create(6071, Types.General, "randomGameStartPosition", false);
-            noticeNewDeadBodies = CustomOption.Create(6098, Types.General, "noticeNewDeadBodies", true);
 
             camsNightVision = CustomOption.Create(11, Types.General, "camsNightVision", false, null, true, heading: "headingNightVision");
             camsNoNightVisionIfImpVision = CustomOption.Create(12, Types.General, "camsNoNightVisionIfImpVision", false, camsNightVision, false);

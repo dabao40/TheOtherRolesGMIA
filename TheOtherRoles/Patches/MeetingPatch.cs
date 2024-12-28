@@ -979,37 +979,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        // From Town-Of-Us-R
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CoIntro))]
-        public static class ShowNewDead
-        {
-            public static Sprite megaphone => Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DeadMegaphone.png", 100f);
-            public static readonly List<byte> ReportedBodies = new();
-            public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
-            {
-                ReportedBodies.Clear();
-                if (!CustomOptionHolder.noticeNewDeadBodies.getBool()) return;
-                foreach (var player in __instance.playerStates)
-                {
-                    if (deadBodies?.Any(x => x.PlayerId == player.TargetPlayerId) == true)
-                    {
-                        if (reportedBody != null && player.TargetPlayerId == reportedBody.PlayerId)
-                        {
-                            player.Megaphone.gameObject.SetActive(true);
-                            player.Megaphone.enabled = true;
-                            player.Megaphone.transform.localEulerAngles = Vector3.zero;
-                            player.Megaphone.transform.localScale = Vector3.one;
-                            player.Megaphone.sprite = megaphone;
-                        }
-                        player.HighlightedFX.enabled = true;
-                        player.HighlightedFX.color = Palette.ImpostorRed;
-
-                        ReportedBodies.Add(player.TargetPlayerId);
-                    }
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.Init))]
         public static class MeetingIntroAnimationInitPatch
         {
@@ -1074,6 +1043,14 @@ namespace TheOtherRoles.Patches {
 
                 BomberA.bombTarget = null;
                 BomberB.bombTarget = null;
+
+                Sprinter.sprinting = false;
+                Ninja.stealthed = false;
+                Fox.stealthed = false;
+
+                // Mimic(Assistant) and Mimic(Killer) reset outfit
+                if (MimicA.mimicA != null) MimicA.mimicA.setDefaultLook();
+                if (MimicK.mimicK != null) MimicK.mimicK.setDefaultLook();
 
                 TranslatableTag tag = meetingTarget == null ? EventDetail.EmergencyButton : EventDetail.Report;
                 if (meetingTarget != null)
@@ -1259,15 +1236,6 @@ namespace TheOtherRoles.Patches {
                     {
                         Blackmailer.alreadyShook = true;
                         __instance.StartCoroutine(Effects.SwayX(playerState.transform));
-                    }
-                }
-
-                if (CustomOptionHolder.noticeNewDeadBodies.getBool())
-                {
-                    foreach (var state in __instance.playerStates)
-                    {
-                        if (ShowNewDead.ReportedBodies?.Contains(state.TargetPlayerId) == true)
-                            if (!state.HighlightedFX.enabled) state.HighlightedFX.enabled = true;
                     }
                 }
             }
