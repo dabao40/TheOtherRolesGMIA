@@ -2287,7 +2287,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             BomberA.bombTarget = BomberA.tmpTarget;
                         }
-                        _ = new StaticAchievementToken("bomberA.common1");
+                        _ = new StaticAchievementToken("bomber.common1");
                         BomberA.tmpTarget = null;
                         bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
                         SoundEffectsManager.play("bomberPlantBomb");
@@ -2349,7 +2349,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             BomberB.bombTarget = BomberB.tmpTarget;
                         }
-                        _ = new StaticAchievementToken("bomberA.common1");
+                        _ = new StaticAchievementToken("bomber.common1");
                         BomberB.tmpTarget = null;
                         bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
                         SoundEffectsManager.play("bomberPlantBomb");
@@ -2382,7 +2382,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
                         }
-                        _ = new StaticAchievementToken("bomberA.challenge");
+                        _ = new StaticAchievementToken("bomber.challenge");
                     }
                     else if (attempt == MurderAttemptResult.BlankKill)
                     {
@@ -2435,7 +2435,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
                         }
-                        _ = new StaticAchievementToken("bomberA.challenge");
+                        _ = new StaticAchievementToken("bomber.challenge");
                     }
                     else if (attempt == MurderAttemptResult.BlankKill)
                     {
