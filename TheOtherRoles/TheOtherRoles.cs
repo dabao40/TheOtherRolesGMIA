@@ -1954,11 +1954,12 @@ namespace TheOtherRoles
         public static bool hasOneVote = true;
         public static bool countAsOne = true;
 
-        public static string name = "";
-
         public static List<Arrow> arrows = new();
         public static float updateTimer = 0f;
         public static float arrowUpdateInterval = 0.5f;
+
+        public static AchievementToken<int> acTokenChallenge;
+
 
         public static PlayerControl victim;
 
@@ -1986,25 +1987,8 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(arrow1.arrow);
                     }
                 }
-
-                //if (MimicK.mimicK == null) return;
-
                 // Arrows一覧
                 arrows = new List<Arrow>();
-
-                // インポスターの位置を示すArrowsを描画
-                /*foreach (PlayerControl p in CachedPlayer.AllPlayers)
-                {
-                    if (p.Data.IsDead) continue;
-                    Arrow arrow;
-                    if (p == MimicA.mimicA)
-                    {
-                        arrow = MimicA.isMorph ? new Arrow(Palette.White) : new Arrow(Palette.ImpostorRed);
-                        arrow.arrow.SetActive(true);
-                        arrow.Update(p.transform.position);
-                        arrows.Add(arrow);
-                    }
-                }*/
 
                 if (MimicA.mimicA.Data.IsDead || MimicA.mimicA == null) return;
                 Arrow arrow;
@@ -2016,6 +2000,12 @@ namespace TheOtherRoles
                 // タイマーに時間をセット
                 updateTimer = arrowUpdateInterval;
             }
+        }
+
+        public static void onAchievementActivate()
+        {
+            if (mimicK == null || CachedPlayer.LocalPlayer.PlayerControl != mimicK) return;
+            acTokenChallenge = new("mimicK.challenge", 0, (val, _) => val >= 3);
         }
 
         public static void clearAndReload()
@@ -2040,6 +2030,7 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(arrow.arrow);
             }
             arrows = new List<Arrow>();
+            acTokenChallenge = null;
         }
     }
 
@@ -2072,6 +2063,14 @@ namespace TheOtherRoles
             else if (Helpers.isFungle()) button = FastDestroyableSingleton<HudManager>.Instance.UseButton.fastUseSettings[ImageNames.AdminMapButton];
             adminButtonSprite = button.Image;
             return adminButtonSprite;
+        }
+
+        public static AchievementToken<int> acTokenCommon;
+
+        public static void onAchievementActivate()
+        {
+            if (mimicA == null || CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
+            acTokenCommon = new("mimicA.challenge", 0, (val, _) => val >= 4);
         }
 
         public static List<Arrow> arrows = new();

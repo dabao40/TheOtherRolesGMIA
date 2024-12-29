@@ -170,7 +170,7 @@ namespace TheOtherRoles.Patches {
             public static async Task loadMOTDs()
             {
                 HttpClient client = new();
-                HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt".getGithubUrl());
+                HttpResponseMessage response = await client.GetAsync(Helpers.isChinese() ? "https://gitee.com/dabaoimp11/GMIAMOTDs/raw/master/MOTDs.txt" : "https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt");
                 response.EnsureSuccessStatusCode();
                 string motds = await response.Content.ReadAsStringAsync();
                 foreach (string line in motds.Split("\n", StringSplitOptions.RemoveEmptyEntries))

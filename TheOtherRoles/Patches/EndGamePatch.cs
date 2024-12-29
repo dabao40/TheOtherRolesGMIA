@@ -569,6 +569,9 @@ namespace TheOtherRoles.Patches {
                 if (CachedPlayer.LocalPlayer.PlayerControl == Pursuer.pursuer) _ = new StaticAchievementToken("pursuer.common2");
             }
 
+            if (Lighter.lighter != null && !Lighter.lighter.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter)
+                _ = new StaticAchievementToken("lighter.common1");
+
             // Possible Additional winner: Opportunist
             if (Opportunist.opportunist != null && !Opportunist.opportunist.Data.IsDead && !saboWin && !arsonistWin && !miniLose)
             {

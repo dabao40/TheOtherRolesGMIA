@@ -269,6 +269,8 @@ namespace TheOtherRoles.Modules
             Trapper.onAchievementActivate();
             Blackmailer.onAchievementActivate();
             Yasuna.evilYasunaOnAcheivementActivate();
+            MimicK.onAchievementActivate();
+            MimicA.onAchievementActivate();
         }
 
         public bool IsHidden

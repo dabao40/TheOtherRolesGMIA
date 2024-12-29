@@ -1164,8 +1164,14 @@ namespace TheOtherRoles
                 Blackmailer.blackmailer = oldShifter;
                 Blackmailer.onAchievementActivate();
             }
-            if (player == MimicK.mimicK) MimicK.mimicK = oldShifter;
-            if (player == MimicA.mimicA) MimicA.mimicA = oldShifter;
+            if (player == MimicK.mimicK) {
+                MimicK.mimicK = oldShifter;
+                MimicK.onAchievementActivate();
+            }
+            if (player == MimicA.mimicA) {
+                MimicA.mimicA = oldShifter;
+                MimicA.onAchievementActivate();
+            }
             if (player == BomberA.bomberA) {
                 if (CachedPlayer.LocalPlayer.PlayerControl == player) {
                     resetPoolables();

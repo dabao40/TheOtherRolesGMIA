@@ -2287,7 +2287,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             BomberA.bombTarget = BomberA.tmpTarget;
                         }
-
+                        _ = new StaticAchievementToken("bomberA.common1");
                         BomberA.tmpTarget = null;
                         bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
                         SoundEffectsManager.play("bomberPlantBomb");
@@ -2349,7 +2349,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             BomberB.bombTarget = BomberB.tmpTarget;
                         }
-
+                        _ = new StaticAchievementToken("bomberA.common1");
                         BomberB.tmpTarget = null;
                         bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
                         SoundEffectsManager.play("bomberPlantBomb");
@@ -2382,6 +2382,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
                         }
+                        _ = new StaticAchievementToken("bomberA.challenge");
                     }
                     else if (attempt == MurderAttemptResult.BlankKill)
                     {
@@ -2434,6 +2435,7 @@ namespace TheOtherRoles
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.releaseBomb(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
                         }
+                        _ = new StaticAchievementToken("bomberA.challenge");
                     }
                     else if (attempt == MurderAttemptResult.BlankKill)
                     {
@@ -2901,10 +2903,11 @@ namespace TheOtherRoles
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.mimicResetMorph(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
                     }
+                    MimicA.acTokenCommon.Value++;
                 },
                 () => { return MimicA.mimicA != null && CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead; },
                 () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead && !Helpers.MushroomSabotageActive(); },
-                () => { },
+                () => { MimicA.acTokenCommon.Value = 0; },
                 MimicA.getMorphSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
@@ -2922,7 +2925,7 @@ namespace TheOtherRoles
                         __instance.InitMap();
                         MapBehaviour.Instance.ShowCountOverlay(allowedToMove: true, showLivePlayerPosition: true, includeDeadBodies: true);
                     }
-                    CachedPlayer.LocalPlayer.NetTransform.Halt();
+                    _ = new StaticAchievementToken("mimicA.common1");
                 },
                 () => {
                     return MimicA.mimicA != null && CachedPlayer.LocalPlayer.PlayerControl == MimicA.mimicA && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead
@@ -4187,6 +4190,7 @@ namespace TheOtherRoles
                         RPCProcedure.uncheckedMurderPlayer(thief.PlayerId, thief.PlayerId, 0);
                         AmongUsClient.Instance.FinishRpcImmediately(writer2);
                         if (!FreePlayGM.isFreePlayGM) Thief.thief.clearAllTasks();
+                        _ = new StaticAchievementToken("thief.another1");
                     }
 
                     // Steal role if survived.
@@ -4195,6 +4199,7 @@ namespace TheOtherRoles
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.thiefStealsRole(target.PlayerId);
+                        _ = new StaticAchievementToken("thief.challenge");
                     }
                     // Kill the victim (after becoming their role - so that no win is triggered for other teams)
                     if (result == MurderAttemptResult.PerformKill) {

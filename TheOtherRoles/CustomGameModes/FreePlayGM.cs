@@ -56,7 +56,7 @@ namespace TheOtherRoles.CustomGameModes
 
                 if (tab == 0)
                 {
-                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
+                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
                     {
                         bool isImpostorFormer = PlayerControl.LocalPlayer.Data.Role.IsImpostor;
                         var formerRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false).FirstOrDefault();

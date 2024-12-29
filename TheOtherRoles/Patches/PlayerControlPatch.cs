@@ -2735,6 +2735,8 @@ namespace TheOtherRoles.Patches {
                 if (Camouflager.camouflageTimer <= 0f && !Helpers.MushroomSabotageActive())
                     MimicK.mimicK.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
                 MimicK.victim = target;
+
+                if (CachedPlayer.LocalPlayer.PlayerControl == __instance) MimicK.acTokenChallenge.Value++;
             }
 
             // Mimic morph and arrows

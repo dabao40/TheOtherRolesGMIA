@@ -7642,6 +7642,18 @@
         "11": "\u5fc5\u8981\u306a\u72a0\u7272",
         "13": "\u8d70\u4f60\uff01"
     },
+    "lightercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "lightercommon1AchievementGoal": {
+        "0": "Survive The Game",
+        "13": "\u5728\u6e38\u620f\u7ed3\u675f\u65f6\u4e3a\u5b58\u6d3b\u72b6\u6001"
+    },
+    "lightercommon1AchievementTitle": {
+        "0": "Why Am I Here",
+        "13": "\u6211\u662f\u6765\u5e72\u4ec0\u4e48\u7684"
+    },
     "detectivecommon1AchievementCond": {
         "0": "[BLANK]",
         "11": "[BLANK]",
@@ -9036,6 +9048,66 @@
         "11": "\u6c88\u9ed9",
         "13": "\u95ed\u5634\uff01"
     },
+    "mimicKchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "mimicKchallengeAchievementGoal": {
+        "0": "Kill At Least 3 Players",
+        "13": "\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6"
+    },
+    "mimicKchallengeAchievementTitle": {
+        "0": "Not A Trace",
+        "13": "\u4e0d\u7559\u4efb\u4f55\u75d5\u8ff9"
+    },
+    "mimicAcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "mimicAcommon1AchievementGoal": {
+        "0": "View The Portable Admin",
+        "13": "\u89c2\u5bdf\u79fb\u52a8\u5f0f\u7ba1\u7406\u5730\u56fe"
+    },
+    "mimicAcommon1AchievementTitle": {
+        "0": "Where Are You",
+        "13": "\u6765\u770b\u770b\u4f60\u5728\u54ea"
+    },
+    "mimicAchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "mimicAchallengeAchievementGoal": {
+        "0": "Morph At Least 4 Times Before The Meeting",
+        "13": "\u5728\u4f1a\u8bae\u524d\u81f3\u5c11\u5316\u5f624\u6b21"
+    },
+    "mimicAchallengeAchievementTitle": {
+        "0": "Fake The Alibi",
+        "13": "\u4f2a\u9020\u4e0d\u5728\u573a\u8bc1\u660e"
+    },
+    "bombercommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "bombercommon1AchievementGoal": {
+        "0": "Plant A Bomb On Someone",
+        "13": "\u7ed9\u4e00\u540d\u73a9\u5bb6\u653e\u7f6e\u70b8\u5f39"
+    },
+    "bombercommon1AchievementTitle": {
+        "0": "Plant And Boom",
+        "13": "\u653e\u7f6e...\u5f15\u7206!"
+    },
+    "bomberchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "bomberchallengeAchievementGoal": {
+        "0": "Meet The Other Bomber And Blast Your Bomb Target",
+        "13": "\u4e0e\u53e6\u4e00\u540d\u53cc\u5b50\u7206\u7834\u8005\u6c47\u5408\u5e76\u5f15\u7206\u4f60\u7684\u76ee\u6807"
+    },
+    "bomberchallengeAchievementTitle": {
+        "0": "Boom!",
+        "13": "\u827a\u672f\u5c31\u662f\u7206\u70b8!"
+    },
     "evilYasunaanother1AchievementCond": {
         "0": "[BLANK]",
         "11": "[BLANK]",
@@ -9230,6 +9302,30 @@
     "lawyerchallenge2AchievementTitle": {
         "0": "Working For Nothing",
         "13": "\u767d\u767d\u6253\u5de5\uff01"
+    },
+    "thiefcommon1AchievementCond": {
+        "0": "You Must Die After The Killing Attempt",
+        "13": "\u4f60\u5fc5\u987b\u5728\u8bd5\u56fe\u51fb\u6740\u540e\u6b7b\u4ea1"
+    },
+    "thiefcommon1AchievementGoal": {
+        "0": "Fail To Steal Someone's Role",
+        "13": "\u8bd5\u56fe\u7a83\u53d6\u8eab\u4efd\u4f46\u5931\u8d25"
+    },
+    "thiefcommon1AchievementTitle": {
+        "0": "Tried... But Failed",
+        "13": "\u66fe\u7ecf\u5c1d\u8bd5\u8fc7"
+    },
+    "thiefchallengeAchievementGoal": {
+        "0": "Steal A Killer's Role By Killing Them",
+        "13": "\u6210\u529f\u7a83\u53d6\u6267\u5203\u8005\u7684\u8eab\u4efd"
+    },
+    "thiefchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "thiefchallengeAchievementTitle": {
+        "0": "I Have A Role",
+        "13": "\u542c\u6211\u8bf4, \u6211\u6709\u804c\u4e1a\u4e86"
     },
     "pursuercommon1AchievementCond": {
         "0": "[BLANK]",
