@@ -2437,6 +2437,7 @@ namespace TheOtherRoles.Patches {
                     DeadPlayer deadPlayerEntry = deadPlayers.Where(x => x.player.PlayerId == target.PlayerId).FirstOrDefault();
                     if (deadPlayerEntry != null) deadPlayers.Remove(deadPlayerEntry);
                     GameStatistics.recordRoleHistory(target);
+                    GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << target.PlayerId) { RelatedTag = EventDetail.Revive });
                 }
             }
 

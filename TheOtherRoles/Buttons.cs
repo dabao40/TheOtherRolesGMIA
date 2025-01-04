@@ -239,6 +239,7 @@ namespace TheOtherRoles
             noisemakerButton.MaxTimer = Noisemaker.cooldown;
             schrodingersCatKillButton.MaxTimer = SchrodingersCat.killCooldown;
             schrodingersCatSwitchButton.MaxTimer = 0f;
+            schrodingersCatSwitchButton.Timer = 0f;
             //roleSummaryButton.Timer = 0f;
             //roleSummaryButton.MaxTimer = 0f;
             cupidArrowButton.MaxTimer = 0f;
@@ -251,6 +252,7 @@ namespace TheOtherRoles
             jekyllAndHydeKillButton.MaxTimer = JekyllAndHyde.cooldown;
             jekyllAndHydeSuicideButton.MaxTimer = JekyllAndHyde.suicideTimer;
             jekyllAndHydeDrugButton.MaxTimer = 0f;
+            jekyllAndHydeDrugButton.Timer = 0f;
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
             prophetButton.MaxTimer = Prophet.cooldown;
@@ -597,8 +599,7 @@ namespace TheOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                KeyCode.Q
             );
 
             // Deputy Handcuff
@@ -762,7 +763,6 @@ namespace TheOtherRoles
                         Morphling.sampledTarget = Morphling.currentTarget;
                         morphlingButton.Sprite = Morphling.getMorphSprite();
                         morphlingButton.buttonText = ModTranslation.getString("MorphText");
-                        morphlingButton.resetKeyBind();
                         morphlingButton.shakeOnEnd = false;
                         morphlingButton.EffectDuration = 1f;
                         SoundEffectsManager.play("morphlingSample");
@@ -777,7 +777,6 @@ namespace TheOtherRoles
                     morphlingButton.Timer = morphlingButton.MaxTimer;
                     morphlingButton.Sprite = Morphling.getSampleSprite();
                     morphlingButton.buttonText = ModTranslation.getString("SampleText");
-                    morphlingButton.resetKeyBind();
                     morphlingButton.isEffectActive = false;
                     morphlingButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
                     Morphling.sampledTarget = null;
@@ -794,14 +793,14 @@ namespace TheOtherRoles
                         morphlingButton.Timer = morphlingButton.MaxTimer;
                         morphlingButton.Sprite = Morphling.getSampleSprite();
                         morphlingButton.buttonText = ModTranslation.getString("SampleText");
-                        morphlingButton.resetKeyBind();
                         SoundEffectsManager.play("morphlingMorph");
 
                         // Reset the poolable player
                         setButtonTargetDisplay(null);
                     }
                 },
-                buttonText: ModTranslation.getString("SampleText")
+                buttonText: ModTranslation.getString("SampleText"),
+                actionName: ModTranslation.getString("morphlingButton")
             );
 
             // Camouflager camouflage
@@ -892,8 +891,7 @@ namespace TheOtherRoles
                },
                GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3,
                FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-               abilityTexture: CustomButton.ButtonLabelType.AdminButton,
-               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
+               abilityTexture: CustomButton.ButtonLabelType.AdminButton
            );
 
             // Hacker Admin Table Charges
@@ -963,10 +961,7 @@ namespace TheOtherRoles
               Helpers.isMira() ?
               TranslationController.Instance.GetString(StringNames.DoorlogLabel) :
               TranslationController.Instance.GetString(StringNames.VitalsLabel),
-              abilityTexture: CustomButton.ButtonLabelType.AdminButton,
-              Helpers.isMira() ?
-              TranslationController.Instance.GetString(StringNames.DoorlogLabel).camelString() :
-              TranslationController.Instance.GetString(StringNames.VitalsLabel).camelString()
+              abilityTexture: CustomButton.ButtonLabelType.AdminButton
            );
 
             // Hacker Vitals Charges
@@ -1091,13 +1086,11 @@ namespace TheOtherRoles
                         vampireKillButton.actionButton.graphic.sprite = __instance.KillButton.graphic.sprite;
                         vampireKillButton.showButtonText = true;
                         vampireKillButton.buttonText = TranslationController.Instance.GetString(StringNames.KillLabel);
-                        vampireKillButton.resetKeyBind();
                     }
                     else {
                         vampireKillButton.actionButton.graphic.sprite = Vampire.getButtonSprite();
                         vampireKillButton.showButtonText = ModTranslation.getString("VampireText") != "";
                         vampireKillButton.buttonText = ModTranslation.getString("VampireText");
-                        vampireKillButton.resetKeyBind();
                     }
                     return Vampire.currentTarget != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove && (!Vampire.targetNearGarlic || Vampire.canKillNearGarlics);
                 },
@@ -1324,8 +1317,7 @@ namespace TheOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                KeyCode.Q
             );
 
             jekyllAndHydeKillButton = new CustomButton(
@@ -1357,8 +1349,7 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.Q,
-                false,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                false
             );
             jekyllAndHydeKillCounterText = GameObject.Instantiate(jekyllAndHydeKillButton.actionButton.cooldownTimerText, jekyllAndHydeKillButton.actionButton.cooldownTimerText.transform.parent);
             jekyllAndHydeKillCounterText.text = "";
@@ -1433,7 +1424,8 @@ namespace TheOtherRoles
                 KeyCode.F,
                 false,
                 ModTranslation.getString("DrugText"),
-                CustomButton.ButtonLabelType.UseButton
+                CustomButton.ButtonLabelType.UseButton,
+                actionName: ModTranslation.getString("drugButtonSwitch")
             );
             jekyllAndHydeDrugText = GameObject.Instantiate(jekyllAndHydeDrugButton.actionButton.cooldownTimerText, jekyllAndHydeDrugButton.actionButton.cooldownTimerText.transform.parent); 
             jekyllAndHydeDrugText.text = "";
@@ -1639,8 +1631,7 @@ namespace TheOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                KeyCode.Q
             );
 
             // Eraser erase button
@@ -1765,8 +1756,8 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString(),
-                buttonText: ModTranslation.getString("moriartyTargetNone")
+                buttonText: ModTranslation.getString("moriartyTargetNone"),
+                actionName: ModTranslation.getString("moriartyKillTarget")
             );
             moriartyKillCounterText = GameObject.Instantiate(moriartyKillButton.actionButton.cooldownTimerText, moriartyKillButton.actionButton.cooldownTimerText.transform.parent);
             moriartyKillCounterText.text = "";
@@ -1886,7 +1877,6 @@ namespace TheOtherRoles
                         warlockCurseButton.Sprite = Warlock.getCurseKillButtonSprite();
                         warlockCurseButton.Timer = 1f;
                         warlockCurseButton.buttonText = ModTranslation.getString("CurseKillText");
-                        warlockCurseButton.resetKeyBind();
                         SoundEffectsManager.play("warlockCurse");
 
                         // Ghost Info
@@ -1907,7 +1897,6 @@ namespace TheOtherRoles
                         }
 
                         warlockCurseButton.buttonText = ModTranslation.getString("CurseText");
-                        warlockCurseButton.resetKeyBind();
                         // If blanked or killed
                         if (Warlock.rootTime > 0) {
                             AntiTeleport.position = CachedPlayer.LocalPlayer.transform.position;
@@ -1919,7 +1908,7 @@ namespace TheOtherRoles
                                 }
                             })));
                         }
-                        
+
                         Warlock.curseVictim = null;
                         Warlock.curseVictimTarget = null;
                         warlockCurseButton.Sprite = Warlock.getCurseButtonSprite();
@@ -1935,11 +1924,10 @@ namespace TheOtherRoles
                 },
                 () => { return Warlock.warlock != null && Warlock.warlock == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
                 () => { return ((Warlock.curseVictim == null && Warlock.currentTarget != null) || (Warlock.curseVictim != null && Warlock.curseVictimTarget != null)) && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
-                () => { 
+                () => {
                     warlockCurseButton.Timer = warlockCurseButton.MaxTimer;
                     warlockCurseButton.Sprite = Warlock.getCurseButtonSprite();
                     warlockCurseButton.buttonText = ModTranslation.getString("CurseText");
-                    warlockCurseButton.resetKeyBind();
                     Warlock.curseVictim = null;
                     Warlock.curseVictimTarget = null;
                 },
@@ -1947,7 +1935,8 @@ namespace TheOtherRoles
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
                 KeyCode.F,
-                buttonText: ModTranslation.getString("CurseText")
+                buttonText: ModTranslation.getString("CurseText"),
+                actionName: ModTranslation.getString("warlockButton")
             );
 
             // Security Guard button
@@ -1984,12 +1973,10 @@ namespace TheOtherRoles
                     if (SecurityGuard.ventTarget == null && !Helpers.isMira() && !Helpers.isFungle() && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 1 && !SubmergedCompatibility.IsSubmerged)
                     {
                         securityGuardButton.buttonText = ModTranslation.getString("PlaceCameraText");
-                        securityGuardButton.resetKeyBind();
                     }
                     else
                     {
                         securityGuardButton.buttonText = ModTranslation.getString("CloseVentText");
-                        securityGuardButton.resetKeyBind();
                     }
                     if (securityGuardButtonScrewsText != null) securityGuardButtonScrewsText.text = $"{SecurityGuard.remainingScrews}/{SecurityGuard.totalScrews}";
 
@@ -2003,7 +1990,8 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.F,
                 abilityTexture: CustomButton.ButtonLabelType.UseButton,
-                buttonText: ModTranslation.getString("PlaceCameraText")
+                buttonText: ModTranslation.getString("PlaceCameraText"),
+                actionName: ModTranslation.getString("securityGuardButton")
             );
 
             // Security Guard button screws counter
@@ -2077,10 +2065,7 @@ namespace TheOtherRoles
                 Helpers.isMira() ?
                 TranslationController.Instance.GetString(StringNames.SecurityLogsSystem) :
                 ModTranslation.getString("securityGuardCamButton"),
-                abilityTexture: CustomButton.ButtonLabelType.AdminButton,
-                Helpers.isMira() ?
-                TranslationController.Instance.GetString(StringNames.SecurityLogsSystem).camelString() :
-                ModTranslation.getString("securityGuardCamButton").camelString()
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
 
             // Security Guard cam button charges
@@ -2114,7 +2099,6 @@ namespace TheOtherRoles
                     {
                         arsonistButton.actionButton.graphic.sprite = Arsonist.getIgniteSprite();
                         arsonistButton.buttonText = ModTranslation.getString("IgniteText");
-                        arsonistButton.resetKeyBind();
                     }
                     
                     if (arsonistButton.isEffectActive && Arsonist.douseTarget != Arsonist.currentTarget) {
@@ -2494,13 +2478,11 @@ namespace TheOtherRoles
                     {
                         undertakerDragButton.Sprite = Undertaker.getDropButtonSprite();
                         undertakerDragButton.buttonText = ModTranslation.getString("DropBodyText");
-                        undertakerDragButton.resetKeyBind();
                     }
                     else
                     {
                         undertakerDragButton.Sprite = Undertaker.getDragButtonSprite();
                         undertakerDragButton.buttonText = ModTranslation.getString("DragBodyText");
-                        undertakerDragButton.resetKeyBind();
                     }
                     return ((Undertaker.TargetBody != null && Undertaker.DraggedBody == null)
                             || (Undertaker.DraggedBody != null && Undertaker.CanDropBody))
@@ -2539,12 +2521,10 @@ namespace TheOtherRoles
                     if (buskerButton.isEffectActive)
                     {
                         buskerButton.buttonText = ModTranslation.getString("ReviveText");
-                        buskerButton.resetKeyBind();
                     }
                     else
                     {
                         buskerButton.buttonText = ModTranslation.getString("PseudocideText");
-                        buskerButton.resetKeyBind();
                     }
                     return CachedPlayer.LocalPlayer.PlayerControl.CanMove && (!Busker.pseudocideFlag || MapData.GetCurrentMapData().CheckMapArea(CachedPlayer.LocalPlayer.PlayerControl.transform.position));
                 },
@@ -2629,8 +2609,7 @@ namespace TheOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.Q,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+                KeyCode.Q
             );
 
             schrodingersCatSwitchButton = new CustomButton(
@@ -2644,7 +2623,9 @@ namespace TheOtherRoles
                 Morphling.getMorphSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                KeyCode.F
+                KeyCode.F,
+                buttonText: ModTranslation.getString("SwitchTeamText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Sherlock Investigate
@@ -2739,7 +2720,8 @@ namespace TheOtherRoles
                 Sherlock.getWatchIcon(),
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.H
+                KeyCode.H,
+                actionName: ModTranslation.getString("sherlockWatchButton")
             );
             sherlockNumKillTimerText = GameObject.Instantiate(sherlockWatchButton.actionButton.cooldownTimerText, sherlockWatchButton.actionButton.cooldownTimerText.transform.parent);
             sherlockNumKillTimerText.text = "";
@@ -2939,7 +2921,6 @@ namespace TheOtherRoles
                 KeyCode.H,
                 false,
                 FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString(),
                 abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
 
@@ -2967,12 +2948,10 @@ namespace TheOtherRoles
                     if (ninjaButton.isEffectActive)
                     {
                         ninjaButton.buttonText = ModTranslation.getString("NinjaUnstealthText");
-                        ninjaButton.resetKeyBind();
                     }
                     else
                     {
                         ninjaButton.buttonText = ModTranslation.getString("NinjaText");
-                        ninjaButton.resetKeyBind();
                     }
                     return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
                 },
@@ -3044,7 +3023,6 @@ namespace TheOtherRoles
                     if (Kataomoi.canLove()) {
                         kataomoiButton.actionButton.graphic.sprite = Kataomoi.getLoveSprite();
                         kataomoiButton.buttonText = ModTranslation.getString("KataomoiLoveText");
-                        kataomoiButton.resetKeyBind();
                     }
 
                     if (kataomoiButton.isEffectActive && Kataomoi.target != null && Kataomoi.target != Kataomoi.currentTarget)
@@ -3159,12 +3137,10 @@ namespace TheOtherRoles
                     if (foxStealthButton.isEffectActive)
                     {
                         foxStealthButton.buttonText = ModTranslation.getString("FoxUnstealthText");
-                        foxStealthButton.resetKeyBind();
                     }
                     else
                     {
                         foxStealthButton.buttonText = ModTranslation.getString("FoxStealthText");
-                        foxStealthButton.resetKeyBind();
                     }
                     return CachedPlayer.LocalPlayer.PlayerControl.CanMove;
                 },
@@ -3438,8 +3414,7 @@ namespace TheOtherRoles
                 KeyCode.H,
                 false,
                 FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-                abilityTexture: CustomButton.ButtonLabelType.AdminButton,
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
 
             // Medium button
@@ -3823,12 +3798,10 @@ namespace TheOtherRoles
                     if (sprintButton.isEffectActive)
                     {
                         sprintButton.buttonText = ModTranslation.getString("SprinterStopText");
-                        sprintButton.resetKeyBind();
                     }
                     else
                     {
                         sprintButton.buttonText = ModTranslation.getString("SprintText");
-                        sprintButton.resetKeyBind();
                     }
                     return PlayerControl.LocalPlayer.CanMove;
                 },
@@ -4217,8 +4190,7 @@ namespace TheOtherRoles
                __instance.KillButton.graphic.sprite,
                CustomButton.ButtonPositions.upperRowRight,
                __instance,
-               KeyCode.Q,
-               actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel).camelString()
+               KeyCode.Q
                );
 
             // Trapper Charges
@@ -4317,8 +4289,7 @@ namespace TheOtherRoles
                    if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
                },
                false,
-               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
-                actionName: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin).camelString()
+               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
             );
 
             hunterArrowButton = new CustomButton(

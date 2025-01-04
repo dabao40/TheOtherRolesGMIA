@@ -1225,11 +1225,11 @@ namespace TheOtherRoles {
             bool roleCouldUse = false;
             if (Madmate.madmate.Any(x => x.PlayerId == player?.PlayerId) && Madmate.canSabotage)
                 roleCouldUse = true;
-            else if (CreatedMadmate.createdMadmate != null && CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
+            else if (CreatedMadmate.createdMadmate != null && player == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
                 roleCouldUse = true;
-            else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
+            else if (Janitor.janitor != null && Janitor.janitor == player)
                 roleCouldUse = false;
-            else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+            else if (Mafioso.mafioso != null && Mafioso.mafioso == player && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
                 roleCouldUse = false;
             else if (player?.Data?.Role?.IsImpostor == true)
                 roleCouldUse = true;
@@ -1263,13 +1263,13 @@ namespace TheOtherRoles {
             else if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat == player && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
-                if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
+                if (Janitor.janitor != null && Janitor.janitor == player)
                     roleCouldUse = false;
-                else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+                else if (Mafioso.mafioso != null && Mafioso.mafioso == player && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
                     roleCouldUse = false;
-                else if (Ninja.ninja != null && Ninja.ninja == CachedPlayer.LocalPlayer.PlayerControl && Ninja.canUseVents == false)
+                else if (Ninja.ninja != null && Ninja.ninja == player && Ninja.canUseVents == false)
                     roleCouldUse = false;
-                else if (Undertaker.undertaker != null && Undertaker.undertaker == CachedPlayer.LocalPlayer.PlayerControl && Undertaker.DraggedBody != null && Undertaker.disableVent)
+                else if (Undertaker.undertaker != null && Undertaker.undertaker == player && Undertaker.DraggedBody != null && Undertaker.disableVent)
                     roleCouldUse = false;
                 else
                     roleCouldUse = true;

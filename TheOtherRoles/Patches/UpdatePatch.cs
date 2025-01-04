@@ -407,14 +407,6 @@ namespace TheOtherRoles.Patches {
                             player.NameText.text += suffix;
             }
 
-            // Display lighter / darker color for all alive players
-            if (CachedPlayer.LocalPlayer != null && MeetingHud.Instance != null && TORMapOptions.showLighterDarker) {
-                foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates) {
-                    var target = Helpers.playerById(player.TargetPlayerId);
-                    if (target != null)  player.NameText.text += $" ({(Helpers.isLighterColor(target.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("detectiveLightLabel") : ModTranslation.getString("detectiveDarkLabel"))})";
-                }
-            }
-
             // Add medic shield info:
             if (MeetingHud.Instance != null && Medic.medic != null && Medic.shielded != null && Medic.shieldVisible(Medic.shielded))
             {
@@ -479,16 +471,6 @@ namespace TheOtherRoles.Patches {
                 __instance.KillButton.Hide();
                 return;
             }
-
-            /*if (Undertaker.undertaker != null && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.undertaker && Undertaker.DraggedBody != null)
-            {
-                __instance.KillButton.graphic.color = Palette.DisabledClear;
-                __instance.KillButton.buttonLabelText.color = Palette.DisabledClear;
-                __instance.KillButton.cooldownTimerText.color = Palette.DisabledClear;
-                __instance.KillButton.graphic.material.SetFloat(Shader.PropertyToID("_Desat"), 1f);
-                return;
-            }*/
-
             bool enabled = true;
             if (Vampire.vampire != null && Vampire.vampire == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;

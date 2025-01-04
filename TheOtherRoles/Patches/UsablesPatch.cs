@@ -631,7 +631,7 @@ namespace TheOtherRoles.Patches {
 
                     if (!commsActive)
                     {
-                        PlainShipRoom plainShipRoom = MapUtilities.CachedShipStatus.FastRooms[counterArea.RoomType];
+                        MapUtilities.CachedShipStatus.FastRooms.TryGetValue(counterArea.RoomType, out var plainShipRoom);
 
                         if (plainShipRoom != null && plainShipRoom.roomArea) {
 

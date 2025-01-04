@@ -1879,6 +1879,7 @@ namespace TheOtherRoles
                     break;
             }
             if (CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat) _ = new StaticAchievementToken("schrodingersCat.another1");
+            GameStatistics.recordRoleHistory(SchrodingersCat.schrodingersCat);
         }
 
         public static void placeAssassinTrace(byte[] buff) {
@@ -2102,6 +2103,8 @@ namespace TheOtherRoles
                     otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
+
+                if (AmongUsClient.Instance.AmHost) FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(player, false);
             }
         }
 

@@ -532,8 +532,8 @@ namespace TheOtherRoles.Patches {
                 else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && (CustomOptionHolder.mafiaSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 3)) continue;
                 else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.jackalCanCreateSidekick.getBool() || CustomOptionHolder.jackalSpawnRate.getSelection() == 0)) continue;
-                else if (new List<RoleId>() { RoleId.MimicA, RoleId.MimicK }.Contains(roleInfo.roleId) && CustomOptionHolder.mimicSpawnRate.getSelection() == 0) continue;
-                else if (roleInfo.roleId == RoleId.BomberA && CustomOptionHolder.bomberSpawnRate.getSelection() == 0) continue;
+                else if (new List<RoleId>() { RoleId.MimicA, RoleId.MimicK }.Contains(roleInfo.roleId) && (CustomOptionHolder.mimicSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 2)) continue;
+                else if (roleInfo.roleId == RoleId.BomberA && (CustomOptionHolder.bomberSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 2)) continue;
                 if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.deputySpawnRate.getSelection() == 0 || CustomOptionHolder.sheriffSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
                 if (roleInfo.roleId == RoleId.Immoralist && CustomOptionHolder.foxSpawnRate.getSelection() == 0) continue;
@@ -947,7 +947,6 @@ namespace TheOtherRoles.Patches {
         class MeetingServerStartPatch {
             static void Postfix(MeetingHud __instance)
             {
-                SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1, 10f);
                 populateButtonsPostfix(__instance);
             }
         }
@@ -959,8 +958,16 @@ namespace TheOtherRoles.Patches {
                 // Add swapper buttons
                 if (initialState) {
                     populateButtonsPostfix(__instance);
-                    SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1, 10f);
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateButtons))]
+        class MeetingArrangeButtonStartPatch
+        {
+            public static void Postfix(MeetingHud __instance)
+            {
+                SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1, 10f);
             }
         }
 
@@ -994,6 +1001,26 @@ namespace TheOtherRoles.Patches {
                     __instance.ProtectedRecently.SetActive(true);
                     Moriarty.hasKilled = false;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+        class MeetingHudStartPatch
+        {
+            static private Image LightColorSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.ColorLight.png", 100f);
+            static private Image DarkColorSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.ColorDark.png", 100f);
+
+            static void Postfix(MeetingHud __instance)
+            {
+                foreach (var player in __instance.playerStates)
+                {
+                    if (showLighterDarker)
+                    {
+                        SpriteRenderer renderer = Helpers.CreateObject<SpriteRenderer>("Color", player.transform, new Vector3(1.2f, -0.18f, -1f));
+                        renderer.sprite = Helpers.isLighterColor(GameData.Instance.GetPlayerById(player.TargetPlayerId).DefaultOutfit.ColorId) ? LightColorSprite.GetSprite() : DarkColorSprite.GetSprite();
+                    }
+                }
+                __instance.StartCoroutine(Effects.Sequence(Effects.Wait(2f), Helpers.Action(() => SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1)).WrapToIl2Cpp()));
             }
         }
 
@@ -1110,8 +1137,11 @@ namespace TheOtherRoles.Patches {
                 {
                     if (Busker.pseudocideFlag)
                         Busker.dieBusker();
-                    else
-                        Busker.acTokenChallenge.Value.cleared |= DateTime.UtcNow.Subtract(Busker.acTokenChallenge.Value.pseudocide).TotalSeconds <= 3f && __instance != Busker.busker;
+                    else {
+                        if (Busker.acTokenChallenge != null) {
+                            Busker.acTokenChallenge.Value.cleared |= !Busker.busker.Data.IsDead && DateTime.UtcNow.Subtract(Busker.acTokenChallenge.Value.pseudocide).TotalSeconds <= 3f && __instance != Busker.busker;
+                        }
+                    }
                 }
 
                 // Blackmail target

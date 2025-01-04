@@ -122,7 +122,12 @@ namespace TheOtherRoles.Modules
             collider.isTrigger = true;
             collider.radius = 0.125f;
             button.OnMouseOver.AddListener((Action)(() => {
-                string str = keyCode != KeyCode.None ? string.Format(ModTranslation.getString("buttonsDescription"), action, KeyCodeInfo.GetKeyDisplayName(keyCode)) : action;
+                string str = keyCode != KeyCode.None ? string.Format(ModTranslation.getString("buttonsDescription"), KeyCodeInfo.GetKeyDisplayName(keyCode)) : "";
+                if (action != null)
+                {
+                    if (str.Length > 0) str += "<br>";
+                    str += "<line-indent=0.8em>" + action;
+                }
                 TORGUIManager.Instance.SetHelpContext(button, str);
             }));
             button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
@@ -185,7 +190,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.SabotageButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.SabotageLabel).camelString());
+                ButtonEffect.SetKeyGuide(HudManager.Instance.SabotageButton.gameObject, actionMap.keyCode);
             }
 
             //使用
@@ -193,8 +198,8 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.UseButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.UseLabel).camelString());
-                ButtonEffect.SetKeyGuide(HudManager.Instance.PetButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.PetLabel).camelString());
+                ButtonEffect.SetKeyGuide(HudManager.Instance.UseButton.gameObject, actionMap.keyCode);
+                ButtonEffect.SetKeyGuide(HudManager.Instance.PetButton.gameObject, actionMap.keyCode);
             }
 
             //レポート
@@ -202,7 +207,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.ReportButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.ReportLabel).camelString());
+                ButtonEffect.SetKeyGuide(HudManager.Instance.ReportButton.gameObject, actionMap.keyCode);
             }
 
             //キル
@@ -210,7 +215,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.KillButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.KillLabel).camelString());
+                ButtonEffect.SetKeyGuide(HudManager.Instance.KillButton.gameObject, actionMap.keyCode);
             }
 
             //ベント
@@ -218,7 +223,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.ImpostorVentButton.gameObject, actionMap.keyCode, action: TranslationController.Instance.GetString(StringNames.VentLabel).camelString());
+                ButtonEffect.SetKeyGuide(HudManager.Instance.ImpostorVentButton.gameObject, actionMap.keyCode);
             }
         }
     }

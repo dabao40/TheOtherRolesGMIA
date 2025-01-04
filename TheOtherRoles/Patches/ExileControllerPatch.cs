@@ -382,14 +382,16 @@ namespace TheOtherRoles.Patches {
                 var BottomLeft = newBottomLeft + new Vector3(-0.25f, -0.25f, 0);
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
                     if (((!p.Data.IsDead && !p.Data.Disconnected) || (exiled != null && exiled.PlayerId == p.PlayerId)) && !Arsonist.dousedPlayers.Contains(p) && Arsonist.arsonist != p) notDoused.Add(p);
-                    if (!TORMapOptions.playerIcons.ContainsKey(p.PlayerId)) continue;
+                    if (!TORMapOptions.playerIcons.ContainsKey(p.PlayerId) || Arsonist.arsonist == p) continue;
+                    TORMapOptions.playerIcons[p.PlayerId].transform.localScale = Vector3.one * 0.2f;
                     if (p.Data.IsDead || p.Data.Disconnected) {
                         TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(false);
                     } else {
-                        TORMapOptions.playerIcons[p.PlayerId].transform.localPosition = newBottomLeft + Vector3.right * visibleCounter * 0.35f;
+                        TORMapOptions.playerIcons[p.PlayerId].transform.localPosition = BottomLeft + Vector3.right * visibleCounter * 0.35f;
                         TORMapOptions.playerIcons[p.PlayerId].gameObject.SetActive(true);
                         visibleCounter++;
                     }
+                    if (!Arsonist.dousedPlayers.Contains(p)) TORMapOptions.playerIcons[p.PlayerId].setSemiTransparent(true);
                 }
 
                 if (notDoused.Count == 1 && exiled != null && notDoused[0].PlayerId == exiled.PlayerId)

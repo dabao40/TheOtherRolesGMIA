@@ -2279,7 +2279,7 @@
         "0": "{0}, was last seen {1}",
         "11": "{0}\u6700\u5f8c\u306b\u898b\u305f\u306e\u306f{1}",
         "13": "{0}\u6700\u540e\u88ab\u53d1\u73b0\u4e8e{1}",
-        "14": "\uff0c\u6700\u5f8c\u88ab\u767c\u73fe\u65bc"
+        "14": "{0}\u6700\u5f8c\u88ab\u767c\u73fe\u65bc{1}"
     },
     "spy": {
         "0": "Spy",
@@ -2664,70 +2664,50 @@
         "14": "\u6df1\u8272"
     },
     "mediumAskPrefix": {
-        "0": "When you asked, ",
+        "0": "When you asked, {0}",
         "11": "\u3068\u5c0b\u306d\u305f",
-        "13": "\u5f53\u4f60\u8be2\u95ee\u7684\u65f6\u5019\uff0c",
+        "13": "\u5f53\u4f60\u8be2\u95ee\u7684\u65f6\u5019, {0}",
         "14": "\u7576\u59b3\u8a62\u554f\u7684\u6642\u5019\uff0c"
     },
-    "mediumPlural": {
-        "0": "s",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "mediumKiller": {
-        "0": "killer",
+        "0": "{0} killer",
         "11": "\u6bba\u3057\u305f\u4eba",
-        "13": "\u6267\u5203\u8005",
+        "13": "{0}\u540d\u5e26\u53e8\u73a9\u5bb6",
         "14": "\u57f7\u5203\u8005"
     },
+    "mediumKillerPlural": {
+        "0": "{0} killers",
+        "13": "{0}\u540d\u5e26\u53e8\u73a9\u5bb6"
+    },
     "mediumPlayerUseVents": {
-        "0": "player{0} who can use vents",
+        "0": "{0} player who can use vents",
         "11": "\u30d7\u30ec\u30a4\u30e4\u30fc{0}\u306f\u30d9\u30f3\u30c8\u3092\u4f7f\u3046\u3053\u3068\u304c\u3067\u304d\u308b\u3002",
-        "13": "\u540d\u73a9\u5bb6{0}\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1",
+        "13": "{0}\u540d\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1\u7684\u73a9\u5bb6",
         "14": "\u540d\u73a9\u5bb6{0}\u53ef\u4ee5\u4f7f\u7528\u901a\u98a8\u7ba1"
     },
-    "mediumPlayer": {
-        "0": "player",
-        "11": "\u30d7\u30ec\u30a4\u30e4\u30fc",
-        "13": "\u73a9\u5bb6",
-        "14": "\u73a9\u5bb6"
-    },
-    "mediumIs": {
-        "0": "is",
-        "11": "\u306f",
-        "13": "\u662f",
-        "14": "\u662f"
-    },
-    "mediumAre": {
-        "0": "are",
-        "11": "\u306f",
-        "13": "\u662f",
-        "14": "\u662f"
+    "mediumPlayerUseVentsPlural": {
+        "0": "{0} players who can use vents",
+        "13": "{0}\u540d\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1\u7684\u73a9\u5bb6"
     },
     "mediumPlayerNeutral": {
-        "0": "player{0} who {1} neutral but cannot kill",
+        "0": "{0} player who is neutral but cannot kill",
         "11": "{0}\u306f\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u3060\u304c{1}\u3092\u6bba\u3059\u3053\u3068\u306f\u3067\u304d\u306a\u3044",
-        "13": "\u540d\u73a9\u5bb6{0}{1}\u4e2d\u7acb\u4f46\u662f\u4e0d\u80fd\u51fb\u6740",
+        "13": "{0}\u540d\u4e0d\u80fd\u4f7f\u7528\u51fb\u6740\u7684\u4e2d\u7acb\u73a9\u5bb6",
         "14": "\u540d\u73a9\u5bb6{0}{1}\u4e2d\u7acb\u4f46\u662f\u4e0d\u80fd\u64ca\u6bba"
     },
-    "mediumWas": {
-        "0": "was",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
-    "mediumWere": {
-        "0": "were",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "mediumPlayerNeutralPlural": {
+        "0": "{0} players who are neutral but cannot kill",
+        "13": "{0}\u540d\u4e0d\u80fd\u4f7f\u7528\u51fb\u6740\u7684\u4e2d\u7acb\u73a9\u5bb6"
     },
     "mediumStillAlive": {
-        "0": "{0} still alive",
+        "0": "{0} was still alive",
         "11": "{0}\u306f\u307e\u3060\u751f\u5b58\u3057\u3066\u3044\u307e\u3059\u3002",
-        "13": "\u8fd8\u5b58\u6d3b",
-        "14": "\u9084\u5b58\u6d3b"
+        "13": "{0}\u8fd8\u5b58\u6d3b",
+        "14": "{0}\u9084\u5b58\u6d3b"
+    },
+    "mediumStillAlivePlural": {
+        "0": "{0} were still alive",
+        "13": "{0}\u8fd8\u5b58\u6d3b"
     },
     "lawyer": {
         "0": "Lawyer",
@@ -3956,17 +3936,12 @@
         "0": "{0} Ghost",
         "11": "{0} \u30b4\u30fc\u30b9\u30c8",
         "13": "(\u9b3c\u9b42) {0}",
-        "14": " \u9b3c\u9b42"
-    },
-    "buttonsActionButton": {
-        "0": "Action",
-        "11": "\u30a2\u30af\u30b7\u30e7\u30f3",
-        "13": "\u4f7f\u7528\u6280\u80fd"
+        "14": "(\u9b3c\u9b42) {0}"
     },
     "buttonsDescription": {
-        "0": "{0} : {1}",
-        "11": "{0} : {1}\u30ad\u30fc\u3092\u62bc\u3059",
-        "13": "{0} : \u6309\u4e0b{1}\u952e"
+        "0": "Action : {0}",
+        "11": "\u52d5\u4f5c\u3057 : {0}\u30ad\u30fc\u3092\u62bc\u3059",
+        "13": "\u884c\u52a8 : {0}"
     },
     "buttonsHandcuffed": {
         "0": "Abilities not available while handcuffed",
@@ -4009,6 +3984,30 @@
         "0": "Swap",
         "11": "\u30b9\u30ef\u30c3\u30d7",
         "13": "\u6362\u7968"
+    },
+    "sherlockWatchButton": {
+        "0": "This is a Kill Timer counter and cannot be pressed",
+        "13": "\u8fd9\u662f\u4e00\u4e2a\u51fb\u6740\u51b7\u5374\u6570\u91cf\u7684\u8ba1\u65f6\u5668"
+    },
+    "securityGuardButton": {
+        "0": "Seal a vent or place a camera",
+        "13": "\u5c01\u9501\u7ba1\u9053\u6216\u653e\u7f6e\u6444\u50cf\u5934"
+    },
+    "warlockButton": {
+        "0": "Apply a curse or kill the player next to the cursed player",
+        "13": "\u8bc5\u5492\u4e00\u540d\u73a9\u5bb6\u6216\u5492\u6740\u8ddd\u79bb\u88ab\u8bc5\u5492\u73a9\u5bb6\u6700\u8fd1\u7684\u4eba"
+    },
+    "moriartyKillTarget": {
+        "0": "Kill the player next to the brainwashed player",
+        "13": "\u51fb\u6740\u8ddd\u79bb\u88ab\u6d17\u8111\u73a9\u5bb6\u6700\u8fd1\u7684\u4eba"
+    },
+    "drugButtonSwitch": {
+        "0": "Switch personalities regardless of the remaining players",
+        "13": "\u65e0\u89c6\u5269\u4f59\u73a9\u5bb6\u6570\u91cf\u76f4\u63a5\u5207\u6362\u4eba\u683c"
+    },
+    "morphlingButton": {
+        "0": "Sample or morph into the sampled player",
+        "13": "\u53d6\u6837\u6216\u5316\u5f62\u4e3a\u88ab\u53d6\u6837\u73a9\u5bb6"
     },
     "detectiveReportInfo": {
         "0": "Detective Report",
@@ -5075,12 +5074,12 @@
     "sherlockMessage2": {
         "0": "killed by {0}",
         "11": "{0} \u306f {1} \u306b\u6bba\u3055\u308c\u3066\u3044\u308b",
-        "13": "\u88ab{0}\u6740\u5bb3",
-        "14": "{0} \u88ab {1} \u6bba\u5bb3\u4e86"
+        "13": "\u88ab{0}\u6740\u5bb3"
     },
     "sherlockMeeting": {
         "0": "{0} is killed by <b>{1}</b>",
-        "13": "{0}\u88ab<b>{1}</b>\u6740\u5bb3"
+        "13": "{0}\u88ab<b>{1}</b>\u6740\u5bb3",
+        "14": "{0}\u88ab<b>{1}</b>\u6bba\u5bb3\u4e86"
     },
     "evilTracker": {
         "0": "Evil Tracker",
@@ -5957,17 +5956,11 @@
         "13": "\u9884\u8a00\u5bb6\u88ab\u53d1\u73b0\u6240\u9700\u63ed\u793a\u6b21\u6570",
         "14": "\u9810\u8a00\u5bb6\u88ab\u767c\u73fe\u6240\u9700\u63ed\u793a\u6b21\u6578"
     },
-    "prophetNeutralAsRed": {
-        "0": "Neutral Roles Shown As Evil",
+    "prophetAccuracy": {
+        "0": "Reveal Accuracy",
         "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb\u306e\u540d\u524d\u3092\u8d64\u304f\u3059\u308b",
-        "13": "\u4e2d\u7acb\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d",
+        "13": "\u63ed\u793a\u51c6\u786e\u7387",
         "14": "\u4e2d\u7acb\u8077\u696d\u986f\u793a\u70ba\u7d05\u540d"
-    },
-    "prophetPowerCrewAsRed": {
-        "0": "Power Crew Shown As Evil",
-        "11": "\u30ad\u30eb\u80fd\u529b\u306e\u3042\u308b\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u306e\u540d\u524d\u3092\u8d64\u304f\u3059\u308b",
-        "13": "\u5f3a\u529b\u8239\u5458\u804c\u4e1a\u663e\u793a\u4e3a\u7ea2\u540d",
-        "14": "\u5f37\u529b\u8239\u54e1\u8077\u696d\u986f\u793a\u70ba\u7d05\u540d"
     },
     "fox": {
         "0": "Fox",
@@ -6783,6 +6776,10 @@
     "KataomoiStalkText": {
         "0": "[BLANK]",
         "13": "\u9690\u8eab"
+    },
+    "SwitchTeamText": {
+        "0": "Switch Team",
+        "13": "\u9009\u62e9\u9635\u8425"
     },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",

@@ -38,7 +38,7 @@ namespace TheOtherRoles.Objects {
         public bool mirror;
         public KeyCode? hotkey;
         public string buttonText = "";
-        public string actionName = "";
+        public string actionName = null;
         public bool shakeOnEnd = true;
         public bool isSuicide = false;
         public bool isHandcuffed = false;
@@ -62,7 +62,7 @@ namespace TheOtherRoles.Objects {
             HauntButton
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true,
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true,
             bool isSuicide = false)
         {
             this.hudManager = hudManager;
@@ -98,7 +98,7 @@ namespace TheOtherRoles.Objects {
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = "", bool shakeOnEnd = true, bool isSuicide = false)
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true, bool isSuicide = false)
         : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd, isSuicide) { }
 
         public void onClickEvent()
@@ -290,22 +290,11 @@ namespace TheOtherRoles.Objects {
 
         public void setKeyBind()
         {
-            if (hotkey is not null and not KeyCode.None and not KeyCode.KeypadPlus)
+            if (hotkey is not null and not KeyCode.None)
             {
                 actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
-                ButtonEffect.SetKeyGuide(actionButtonGameObject, (KeyCode)hotkey, action: actionName != "" ? actionName : (showButtonText && buttonText != "" ? buttonText : ModTranslation.getString("buttonsActionButton")));
+                ButtonEffect.SetKeyGuide(actionButtonGameObject, (KeyCode)hotkey, action: actionName);
             }
-        }
-
-        public void resetKeyBind()
-        {
-            bool isVampire = Sprite == Vampire.getButtonSprite();
-            if (buttonText == "" && !isVampire) return; // English or something that doesn't require an update, return
-            // Specify vampire as not to override things with English language
-            if (actionName == buttonText.camelString() && (buttonText != "" || isVampire)) return;
-            actionName = buttonText.camelString();
-            actionButtonGameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((c) => { if (c.name.Equals("HotKeyGuide")) GameObject.Destroy(c); }));
-            setKeyBind();
         }
     }
 }

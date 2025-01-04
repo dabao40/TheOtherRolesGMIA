@@ -296,8 +296,7 @@ namespace TheOtherRoles {
         public static CustomOption prophetSpawnRate;
         public static CustomOption prophetCooldown;
         public static CustomOption prophetNumExamines;
-        public static CustomOption prophetPowerCrewAsRed;
-        public static CustomOption prophetNeutralAsRed;
+        public static CustomOption prophetAccuracy;
         public static CustomOption prophetCanCallEmergency;
         public static CustomOption prophetIsRevealed;
         public static CustomOption prophetExaminesToBeRevealed;
@@ -1017,8 +1016,7 @@ namespace TheOtherRoles {
             prophetCanCallEmergency = CustomOption.Create(9007, Types.Crewmate, "prophetCanCallEmergency", false, prophetSpawnRate);
             prophetIsRevealed = CustomOption.Create(9012, Types.Crewmate, "prophetIsRevealed", true, prophetSpawnRate);
             prophetExaminesToBeRevealed = CustomOption.Create(9008, Types.Crewmate, "prophetExaminesToBeRevealed", 3f, 1f, 10f, 1f, prophetIsRevealed, false, "unitScrews");
-            prophetNeutralAsRed = CustomOption.Create(9009, Types.Crewmate, "prophetNeutralAsRed", true, prophetSpawnRate);
-            prophetPowerCrewAsRed = CustomOption.Create(9010, Types.Crewmate, "prophetPowerCrewAsRed", false, prophetSpawnRate);
+            prophetAccuracy = CustomOption.Create(9009, Types.Crewmate, "prophetAccuracy", 30f, 0f, 100f, 10f, prophetSpawnRate, format: "unitPercent");
 
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, "teleporter"), rates, null, true);
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, "teleporterCooldown", 30f, 5f, 120f, 5f, teleporterSpawnRate, false, "unitSeconds");

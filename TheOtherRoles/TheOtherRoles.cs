@@ -1821,22 +1821,24 @@ namespace TheOtherRoles
                 var alivePlayersList = PlayerControl.AllPlayerControls.ToArray().Where(pc => !pc.Data.IsDead);
                 switch (rnd.Next(3)) {
                     case 0:
-                        count = alivePlayersList.Where(pc => pc.Data.Role.IsImpostor || new List<RoleInfo>() { RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.sheriff, RoleInfo.thief }.Contains(RoleInfo.getRoleInfoForPlayer(pc, false).FirstOrDefault())).Count();
-                        condition = ModTranslation.getString("mediumKiller") + (count == 1 ? "" : ModTranslation.getString("mediumPlural"));
+                        count = alivePlayersList.Where(pc => pc.Data.Role.IsImpostor || new List<RoleInfo>() { RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.sheriff, RoleInfo.thief, RoleInfo.jekyllAndHyde, RoleInfo.moriarty,
+                        SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : null}.Contains(RoleInfo.getRoleInfoForPlayer(pc, false).FirstOrDefault())).Count();
+                        condition = ModTranslation.getString($"mediumKiller{(count == 1 ? "" : "Plural")}");
                         break;
                     case 1:
                         count = alivePlayersList.Where(Helpers.roleCanUseVents).Count();
-                        condition = string.Format(ModTranslation.getString("mediumPlayerUseVents"), (count == 1 ? "" : ModTranslation.getString("mediumPlural")));
+                        condition = ModTranslation.getString($"mediumPlayerUseVents{(count == 1 ? "" : "Plural")}");
                         break;
                     case 2:
-                        count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && pc != Jackal.jackal && pc != Sidekick.sidekick && pc != Thief.thief).Count();
-                        condition = string.Format(ModTranslation.getString("mediumPlayerNeutral"), (count == 1 ? "" : ModTranslation.getString("mediumPlural")), (count == 1 ? ModTranslation.getString("mediumIs") : ModTranslation.getString("mediumAre")));
+                        count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && pc != Jackal.jackal && pc != Sidekick.sidekick && pc != Thief.thief && pc != JekyllAndHyde.jekyllAndHyde && pc != Moriarty.moriarty
+                        && !(pc == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)).Count();
+                        condition = ModTranslation.getString($"mediumPlayerNeutral{(count == 1 ? "" : "Plural")}");
                         break;
                     case 3:
                         //count = alivePlayersList.Where(pc =>
                         break;
                 }
-                msg += $"\n" + ModTranslation.getString("mediumAskPrefix") + $"{count} " + $"{condition} " + string.Format(ModTranslation.getString("mediumStillAlive"), (count == 1 ? ModTranslation.getString("mediumWas") : ModTranslation.getString("mediumWere")));
+                msg += $"\n" + string.Format(ModTranslation.getString("mediumAskPrefix"), string.Format(ModTranslation.getString($"mediumStillAlive{(count == 1 ? "" : "Plural")}"), string.Format(condition, count)));
 
                 acTokenChallenge.Value.additionals.Add(Medium.target.killerIfExisting.PlayerId);
             }
@@ -2005,7 +2007,7 @@ namespace TheOtherRoles
         public static void onAchievementActivate()
         {
             if (mimicK == null || CachedPlayer.LocalPlayer.PlayerControl != mimicK) return;
-            acTokenChallenge = new("mimicK.challenge", 0, (val, _) => val >= 3);
+            acTokenChallenge ??= new("mimicK.challenge", 0, (val, _) => val >= 3);
         }
 
         public static void clearAndReload()
@@ -2070,7 +2072,7 @@ namespace TheOtherRoles
         public static void onAchievementActivate()
         {
             if (mimicA == null || CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
-            acTokenCommon = new("mimicA.challenge", 0, (val, _) => val >= 4);
+            acTokenCommon ??= new("mimicA.challenge", 0, (val, _) => val >= 4);
         }
 
         public static List<Arrow> arrows = new();
@@ -2136,6 +2138,7 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(arrow.arrow);
             }
             arrows = new List<Arrow>();
+            acTokenCommon = null;
         }
     }
 
@@ -4113,7 +4116,6 @@ namespace TheOtherRoles
             writer.Write(isLoverSuicide);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.buskerPseudocide(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, true, isLoverSuicide);
-            FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(CachedPlayer.LocalPlayer.PlayerControl, false);
         }
 
         public static bool checkPseudocide()
@@ -4153,8 +4155,7 @@ namespace TheOtherRoles
         public static Color32 color = new(255, 204, 127, byte.MaxValue);
 
         public static float cooldown = 30f;
-        public static bool powerCrewAsRed = false;
-        public static bool neutralAsRed = true;
+        public static float accuracy = 20f;
         public static bool canCallEmergency = false;
         public static int examineNum = 3;
         public static int examinesToBeRevealed = 1;
@@ -4183,8 +4184,8 @@ namespace TheOtherRoles
 
         public static bool isKiller(PlayerControl p)
         {
-            return Helpers.isKiller(p)
-                || ((p == Sheriff.sheriff || p == Deputy.deputy || p == Veteran.veteran || p == Mayor.mayor || p == Swapper.swapper || p == Guesser.niceGuesser || p == Yasuna.yasuna) && powerCrewAsRed) || (Helpers.isNeutral(p) && neutralAsRed);
+            var rand = rnd.Next(1, 101);
+            return (Helpers.isEvil(p) && rand <= accuracy) || (!Helpers.isEvil(p) && rand > accuracy);
         }
 
         public static void clearAndReload()
@@ -4196,8 +4197,7 @@ namespace TheOtherRoles
             revealProphet = CustomOptionHolder.prophetIsRevealed.getBool();
             cooldown = CustomOptionHolder.prophetCooldown.getFloat();
             examineNum = Mathf.RoundToInt(CustomOptionHolder.prophetNumExamines.getFloat());
-            powerCrewAsRed = CustomOptionHolder.prophetPowerCrewAsRed.getBool();
-            neutralAsRed = CustomOptionHolder.prophetNeutralAsRed.getBool();
+            accuracy = CustomOptionHolder.prophetAccuracy.getFloat();
             canCallEmergency = CustomOptionHolder.prophetCanCallEmergency.getBool();
             examinesToBeRevealed = Math.Min(examineNum, Mathf.RoundToInt(CustomOptionHolder.prophetExaminesToBeRevealed.getFloat()));
             examinesLeft = examineNum;
