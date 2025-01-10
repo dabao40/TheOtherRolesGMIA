@@ -703,7 +703,10 @@ namespace TheOtherRoles
 
         public static void uncheckedExilePlayer(byte targetId) {
             PlayerControl target = Helpers.playerById(targetId);
-            if (target != null) target.Exiled();
+            if (target != null) {
+                target.Exiled();
+                ExileControllerBeginPatch.extraVictim = true;
+            }
         }
 
         public static void uncheckedSetTasks(byte playerId, byte[] taskTypeIds)
@@ -1954,7 +1957,6 @@ namespace TheOtherRoles
 
         public static void nekoKabochaExile(byte targetId)
         {
-            ExileControllerBeginPatch.extraVictim = true;
             uncheckedExilePlayer(targetId);
             overrideDeathReasonAndKiller(Helpers.playerById(targetId), DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
         }
