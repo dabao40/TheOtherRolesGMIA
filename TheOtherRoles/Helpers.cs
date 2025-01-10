@@ -1478,7 +1478,8 @@ namespace TheOtherRoles {
                 player != Opportunist.opportunist &&
                 player != Akujo.akujo &&
                 player != PlagueDoctor.plagueDoctor &&
-                player != Cupid.cupid);
+                player != Cupid.cupid &&
+                !(player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()));
 
         }
 

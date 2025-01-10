@@ -273,8 +273,8 @@ namespace TheOtherRoles {
 
         public static CustomOption snitchSpawnRate;
         public static CustomOption snitchLeftTasksForReveal;
-        public static CustomOption snitchMode;
-        public static CustomOption snitchTargets;
+        public static CustomOption snitchIncludeTeamEvil;
+        public static CustomOption snitchTeamEvilUseDifferentArrowColor;
 
         public static CustomOption shifterSpawnRate;
         public static CustomOption shifterIsNeutralRate;
@@ -546,6 +546,7 @@ namespace TheOtherRoles {
         public static CustomOption finishTasksBeforeHauntingOrZoomingOut;
         public static CustomOption camsNightVision;
         public static CustomOption camsNoNightVisionIfImpVision;
+        public static CustomOption noticeExtraVictims;
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
         public static CustomOption airshipLadder;
@@ -1016,7 +1017,7 @@ namespace TheOtherRoles {
             prophetCanCallEmergency = CustomOption.Create(9007, Types.Crewmate, "prophetCanCallEmergency", false, prophetSpawnRate);
             prophetIsRevealed = CustomOption.Create(9012, Types.Crewmate, "prophetIsRevealed", true, prophetSpawnRate);
             prophetExaminesToBeRevealed = CustomOption.Create(9008, Types.Crewmate, "prophetExaminesToBeRevealed", 3f, 1f, 10f, 1f, prophetIsRevealed, false, "unitScrews");
-            prophetAccuracy = CustomOption.Create(9009, Types.Crewmate, "prophetAccuracy", 30f, 0f, 100f, 10f, prophetSpawnRate, format: "unitPercent");
+            prophetAccuracy = CustomOption.Create(9009, Types.Crewmate, "prophetAccuracy", 30f, 0f, 100f, 5f, prophetSpawnRate, format: "unitPercent");
 
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, "teleporter"), rates, null, true);
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, "teleporterCooldown", 30f, 5f, 120f, 5f, teleporterSpawnRate, false, "unitSeconds");
@@ -1037,8 +1038,8 @@ namespace TheOtherRoles {
 
             snitchSpawnRate = CustomOption.Create(210, Types.Crewmate, cs(Snitch.color, "snitch"), rates, null, true);
             snitchLeftTasksForReveal = CustomOption.Create(219, Types.Crewmate, "snitchLeftTasksForReveal", 5f, 0f, 25f, 1f, snitchSpawnRate, false, "unitScrews");
-            snitchMode = CustomOption.Create(211, Types.Crewmate, "snitchMode", new string[] { "snitchChat", "snitchMap", "snitchChatAndMap" }, snitchSpawnRate);
-            snitchTargets = CustomOption.Create(212, Types.Crewmate, "snitchTargets", new string[] { "snitchAllEvilPlayers", "snitchKillingPlayers" }, snitchSpawnRate);
+            snitchIncludeTeamEvil = CustomOption.Create(211, Types.Crewmate, "snitchIncludeTeamEvil", true, snitchSpawnRate);
+            snitchTeamEvilUseDifferentArrowColor = CustomOption.Create(212, Types.Crewmate, "snitchTeamEvilUseDifferentArrowColor", true, snitchIncludeTeamEvil);
 
             spySpawnRate = CustomOption.Create(240, Types.Crewmate, cs(Spy.color, "spy"), rates, null, true);
             spyCanDieToSheriff = CustomOption.Create(241, Types.Crewmate, "spyCanDieToSheriff", false, spySpawnRate);
@@ -1213,6 +1214,7 @@ namespace TheOtherRoles {
             allowParallelMedBayScans = CustomOption.Create(7, Types.General, "allowParallelMedBayScans", false);
             shieldFirstKill = CustomOption.Create(8, Types.General, "shieldFirstKill", false);
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "finishTasksBeforeHauntingOrZoomingOut", true);
+            noticeExtraVictims = CustomOption.Create(13, Types.General, "noticeExtraVictims", true);
             additionalVents = CustomOption.Create(5060, Types.General, "additionalVents", false);
             specimenVital = CustomOption.Create(5061, Types.General, "specimenVital", false);
             miraVitals = CustomOption.Create(6075, Types.General, "miraVitals", false);

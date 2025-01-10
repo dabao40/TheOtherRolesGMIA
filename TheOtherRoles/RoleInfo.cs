@@ -443,7 +443,7 @@ namespace TheOtherRoles
                         Color killerColor = new();
                         if (deadPlayer != null && deadPlayer.killerIfExisting != null) {
                             killerColor = RoleInfo.getRoleInfoForPlayer(deadPlayer.killerIfExisting, false, true).FirstOrDefault().color;
-                            if (Madmate.madmate.Any(x => x.PlayerId == deadPlayer.killerIfExisting.PlayerId)) killerColor = Palette.ImpostorRed;
+                            if (Madmate.madmate.Any(x => x.PlayerId == deadPlayer.killerIfExisting.PlayerId) || CreatedMadmate.createdMadmate == deadPlayer.killerIfExisting) killerColor = Palette.ImpostorRed;
                         }
 
                         if (deadPlayer != null) {

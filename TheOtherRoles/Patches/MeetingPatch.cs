@@ -9,17 +9,14 @@ using System;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
-using Innersloth.Assets;
 using Reactor.Utilities;
 using AmongUs.QuickChat;
-using Epic.OnlineServices.Presence;
 using TheOtherRoles.Modules;
-using Il2CppSystem.Reflection;
 using TheOtherRoles.MetaContext;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
-using System.IO;
 
-namespace TheOtherRoles.Patches {
+namespace TheOtherRoles.Patches
+{
     [HarmonyPatch]
     class MeetingHudPatch {
         static bool[] selections;
@@ -188,9 +185,9 @@ namespace TheOtherRoles.Patches {
                 var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
                 var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
                                      (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && TORMapOptions.ghostsSeeVotes) ||
-                                     (Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors ||
+                                     Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors ||
                                      CachedPlayer.LocalPlayer.PlayerControl == Watcher.nicewatcher ||
-                                     CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher);
+                                     CachedPlayer.LocalPlayer.PlayerControl == Watcher.evilwatcher;
                 if (showVoteColors)
                 {
                     PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
@@ -301,10 +298,10 @@ namespace TheOtherRoles.Patches {
                 Lovers.notAckedExiledIsLover = false;
                 Pursuer.notAckedExiled = false;
                 if (exiled != null) {
-                    Lovers.notAckedExiledIsLover = ((Lovers.lover1 != null && Lovers.lover1.PlayerId == exiled.PlayerId) || (Lovers.lover2 != null && Lovers.lover2.PlayerId == exiled.PlayerId));
+                    Lovers.notAckedExiledIsLover = (Lovers.lover1 != null && Lovers.lover1.PlayerId == exiled.PlayerId) || (Lovers.lover2 != null && Lovers.lover2.PlayerId == exiled.PlayerId);
                     
                     // Changed this: The Lawyer doesn't die if the target was ejected
-                    Pursuer.notAckedExiled = (Pursuer.pursuer != null && Pursuer.pursuer.PlayerId == exiled.PlayerId);  //|| (Lawyer.lawyer != null && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId && Lawyer.target != Jester.jester); // && !Lawyer.isProsecutor
+                    Pursuer.notAckedExiled = Pursuer.pursuer != null && Pursuer.pursuer.PlayerId == exiled.PlayerId;  //|| (Lawyer.lawyer != null && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId && Lawyer.target != Jester.jester); // && !Lawyer.isProsecutor
                 }
 
                 if (Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor) { 
@@ -327,11 +324,6 @@ namespace TheOtherRoles.Patches {
 
                 // Mini
                 if (!Mini.isGrowingUpInMeeting) Mini.timeOfGrowthStart = Mini.timeOfGrowthStart.Add(DateTime.UtcNow.Subtract(Mini.timeOfMeetingStart)).AddSeconds(10);
-
-                // Snitch
-                if (Snitch.snitch != null && !Snitch.needsUpdate && Snitch.snitch.Data.IsDead && Snitch.text != null) {
-                    UnityEngine.Object.Destroy(Snitch.text);
-                }
             }
         }
 
@@ -500,7 +492,7 @@ namespace TheOtherRoles.Patches {
 
             guesserCurrentTarget = __instance.playerStates[buttonTarget].TargetPlayerId;
 
-            Transform exitButtonParent = (new GameObject()).transform;
+            Transform exitButtonParent = new GameObject().transform;
             exitButtonParent.SetParent(container);
             Transform exitButton = UnityEngine.Object.Instantiate(buttonTemplate.transform, exitButtonParent);
             Transform exitButtonMask = UnityEngine.Object.Instantiate(maskTemplate, exitButtonParent);
@@ -547,7 +539,7 @@ namespace TheOtherRoles.Patches {
                     if (numberOfLeftTasks <= 0 && roleInfo.roleId == RoleId.Snitch) continue;
                 }
 
-                Transform buttonParent = (new GameObject()).transform;
+                Transform buttonParent = new GameObject().transform;
                 buttonParent.SetParent(container);
                 Transform button = UnityEngine.Object.Instantiate(buttonTemplate, buttonParent);
                 Transform buttonMask = UnityEngine.Object.Instantiate(maskTemplate, buttonParent);
@@ -693,7 +685,7 @@ namespace TheOtherRoles.Patches {
                 var buttonTemplate = __instance.playerStates[0].transform.FindChild("votePlayerBase");
                 var maskTemplate = __instance.playerStates[0].transform.FindChild("MaskArea");
                 var textTemplate = __instance.playerStates[0].NameText;
-                Transform meetingExtraButtonParent = (new GameObject()).transform;
+                Transform meetingExtraButtonParent = new GameObject().transform;
                 meetingExtraButtonParent.SetParent(meetingUI);
                 Transform meetingExtraButton = UnityEngine.Object.Instantiate(buttonTemplate, meetingExtraButtonParent);
 
@@ -750,12 +742,16 @@ namespace TheOtherRoles.Patches {
             if (Witch.witch != null && Witch.futureSpelled != null) {
                 foreach (PlayerVoteArea pva in __instance.playerStates) {
                     if (Witch.futureSpelled.Any(x => x.PlayerId == pva.TargetPlayerId)) {
-                        SpriteRenderer rend = (new GameObject()).AddComponent<SpriteRenderer>();
+                        SpriteRenderer rend = new GameObject().AddComponent<SpriteRenderer>();
                         rend.transform.SetParent(pva.transform);
                         rend.gameObject.layer = pva.Megaphone.gameObject.layer;
                         rend.transform.localPosition = new Vector3(-0.5f, -0.03f, -1f);
                         if (CachedPlayer.LocalPlayer.PlayerControl == Swapper.swapper && isGuesser) rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
                         rend.sprite = Witch.getSpelledOverlaySprite();
+                        addButtonGuide(rend.gameObject.SetUpButton(), ModTranslation.getString("witchMeetingOverlay"));
+                        var collider = rend.gameObject.AddComponent<CircleCollider2D>();
+                        collider.isTrigger = true;
+                        collider.radius = 0.14f;
                     }
                 }
             }
@@ -795,9 +791,7 @@ namespace TheOtherRoles.Patches {
                         renderer.sprite = EvilTracker.getArrowSprite();
                         renderer.color = Palette.CrewmateBlue;
                     }));
-                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
-                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonTrack")))))));
-                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+                    addButtonGuide(button, string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonTrack")));
                 }
             }
 
@@ -808,7 +802,6 @@ namespace TheOtherRoles.Patches {
                 for (int i = 0; i < __instance.playerStates.Length; i++) {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == CachedPlayer.LocalPlayer.PlayerId) continue;
-                    if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl == Eraser.eraser && Eraser.alreadyErased.Contains(playerVoteArea.TargetPlayerId)) continue;
 
                     GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
                     GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
@@ -820,9 +813,7 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((System.Action)(() => guesserOnClick(copiedIndex, __instance)));
-                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
-                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonGuess")))))));
-                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+                    addButtonGuide(button, string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonGuess")));
                 }
             }
 
@@ -845,11 +836,16 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => yasunaOnClick(copiedIndex, __instance)));
-                    button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
-                        new RawTextComponent(string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonForceExile")))))));
-                    button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+                    addButtonGuide(button, string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonForceExile")));
                 }
             }
+        }
+
+        public static void addButtonGuide(PassiveButton button, string guide)
+        {
+            button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
+                        new RawTextComponent(guide)))));
+            button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
         }
 
         public static void updateMeetingText(MeetingHud __instance)
@@ -881,8 +877,7 @@ namespace TheOtherRoles.Patches {
                 return;
 
             int numGuesses = HandleGuesser.isGuesser(CachedPlayer.LocalPlayer.PlayerControl.PlayerId) ? HandleGuesser.remainingShots(CachedPlayer.LocalPlayer.PlayerControl.PlayerId) : 0;
-            if (numGuesses > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
-            {
+            if (numGuesses > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("guesserGuessesLeft"), numGuesses);
             }
 
@@ -890,25 +885,13 @@ namespace TheOtherRoles.Patches {
             if (numSpecialVotes > 0 && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
             {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("yasunaSpecialVotes"), numSpecialVotes);
-            }
-
-            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && Akujo.timeLeft > 0 && Akujo.honmei == null)
-            {
+            } if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo && Akujo.timeLeft > 0 && Akujo.honmei == null) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("akujoTimeRemaining"), $"{TimeSpan.FromSeconds(Akujo.timeLeft):mm\\:ss}");
-            }
-
-            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && Cupid.timeLeft > 0 && Cupid.lovers1 == null && Cupid.lovers2 == null)
-            {
+            } if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid && Cupid.timeLeft > 0 && Cupid.lovers1 == null && Cupid.lovers2 == null) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("akujoTimeRemaining"), $"{TimeSpan.FromSeconds(Cupid.timeLeft):mm\\:ss}");
-            }
-
-            if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && EvilTracker.target != null)
-            {
+            } if (CachedPlayer.LocalPlayer.PlayerControl == EvilTracker.evilTracker && EvilTracker.target != null) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("evilTrackerCurrentTarget"), EvilTracker.target?.Data?.PlayerName ?? "");
-            }
-
-            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && Lawyer.winsAfterMeetings)
-            {
+            } if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && Lawyer.winsAfterMeetings) {
                 meetingInfoText.getFirst().text = Lawyer.neededMeetings - Lawyer.meetings > 1 ? string.Format(ModTranslation.getString("lawyerMeetingInfo"), Lawyer.neededMeetings - Lawyer.meetings - 1) : ModTranslation.getString("lawyerAboutToWin");
             }
 
@@ -1027,17 +1010,6 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch {
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]NetworkedPlayerInfo meetingTarget) {
-                RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
-                byte roomId = Byte.MinValue;
-                if (roomTracker != null && roomTracker.LastRoom != null) {
-                    roomId = (byte)roomTracker.LastRoom?.RoomId;
-                }
-                if (Snitch.snitch != null && roomTracker != null) {
-                    MessageWriter roomWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareRoom, Hazel.SendOption.Reliable, -1);
-                    roomWriter.Write(CachedPlayer.LocalPlayer.PlayerId);
-                    roomWriter.Write(roomId);
-                    AmongUsClient.Instance.FinishRpcImmediately(roomWriter);
-                }
 
                 // Resett Bait list
                 //Bait.active = new Dictionary<DeadPlayer, float>();
@@ -1119,8 +1091,11 @@ namespace TheOtherRoles.Patches {
                     Seer.acTokenChallenge.Value.flash = 0;
                 }
 
-                if (CachedPlayer.LocalPlayer.PlayerControl == Snitch.snitch)
-                    Snitch.acTokenChallenge.Value.cleared |= Snitch.acTokenChallenge.Value.taskComplete && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead;
+                if (Snitch.snitch != null && CachedPlayer.LocalPlayer.PlayerControl == Snitch.snitch)
+                {
+                    var (taskComplete, taskTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
+                    if (!CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && taskTotal > 0 && taskComplete == taskTotal) _ = new StaticAchievementToken("snitch.challenge");
+                }
 
                 if (CachedPlayer.LocalPlayer.PlayerControl == Vampire.vampire)
                     Vampire.acTokenChallenge.Value.cleared |= DateTime.UtcNow.Subtract(Vampire.acTokenChallenge.Value.deathTime).TotalSeconds <= 3;
@@ -1164,62 +1139,6 @@ namespace TheOtherRoles.Patches {
                 }
 
                 NekoKabocha.meetingKiller = null;
-
-                // Add trapped Info into Trapper chat
-                /*if (Trapper.trapper != null && (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper || Helpers.shouldShowGhostInfo()) && !Trapper.trapper.Data.IsDead) {
-                    if (Trap.traps.Any(x => x.revealed))
-                        FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Trapper.trapper, "Trap Logs:");
-                    foreach (Trap trap in Trap.traps) {
-                        if (!trap.revealed) continue;
-                        string message = $"Trap {trap.instanceId}: \n";
-                        trap.trappedPlayer = trap.trappedPlayer.OrderBy(x => rnd.Next()).ToList();
-                        foreach (PlayerControl p in trap.trappedPlayer) {
-                            if (Trapper.infoType == 0) message += RoleInfo.GetRolesString(p, false, false, true) + "\n";
-                            else if (Trapper.infoType == 1) {
-                                if (Helpers.isNeutral(p) || p.Data.Role.IsImpostor) message += "Evil Role \n";
-                                else message += "Good Role \n";
-                            }
-                            else message += p.Data.PlayerName + "\n";
-                        }
-                        FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Trapper.trapper, $"{message}");
-                    }
-                }*/
-
-                // Add Snitch info
-                string output = "";
-
-                if (Snitch.snitch != null && Snitch.mode != Snitch.Mode.Map && (CachedPlayer.LocalPlayer.PlayerControl == Snitch.snitch || Helpers.shouldShowGhostInfo()) && !Snitch.snitch.Data.IsDead) {
-                    var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
-                    int numberOfTasks = playerTotal - playerCompleted;
-                    if (numberOfTasks == 0) {
-                        output = ModTranslation.getString("snitchOutput");
-                        FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(0.4f, new Action<float>((x) => {
-                            if (x == 1f) {
-                                foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                                    if (Snitch.targets == Snitch.Targets.Killers && !Helpers.isKiller(p)) continue;
-                                    else if (Snitch.targets == Snitch.Targets.EvilPlayers && !Helpers.isEvil(p)) continue;
-                                    if (!Snitch.playerRoomMap.ContainsKey(p.PlayerId)) continue;
-                                    if (p.Data.IsDead) continue;
-                                    var room = Snitch.playerRoomMap[p.PlayerId];
-                                    var roomName = DestroyableSingleton<TranslationController>.Instance.GetString(SystemTypes.Outside);
-                                    if (room != byte.MinValue) {
-                                        roomName = DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)room);
-                                    }
-                                    output += "- " + string.Format(ModTranslation.getString("snitchLastSeen"), RoleInfo.GetRolesString(p, false, false, true), roomName) + "\n";
-                                }
-                                FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Snitch.snitch, $"{output}", false);
-                            }
-                        })));
-                    }
-                }
-
-                if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && output != "") FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(CachedPlayer.LocalPlayer, $"{output}", false);
-
-                //Trapper.playersOnMap = new List<PlayerControl>();
-                Snitch.playerRoomMap = new Dictionary<byte, byte>();
-
-                // Remove revealed traps
-                //Trap.clearRevealedTraps();
 
                 // Clear props here else something will get wrong
                 if (CustomOptionHolder.activateProps.getBool())

@@ -249,7 +249,7 @@ namespace TheOtherRoles.Modules
 
             try
             {
-                var req = await client.GetAsync($"https://api.{(Helpers.isChinese() ? "kk":"")}github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
+                var req = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
 
                 if (!req.IsSuccessStatusCode) return null;
 
@@ -273,16 +273,20 @@ namespace TheOtherRoles.Modules
 
             JToken assets = data.Request["assets"];
             string downloadURI = "";
-            for (JToken current = assets.First; current != null; current = current.Next)
+            if (Helpers.isChinese()) downloadURI = "https://dl.fangkuai.fun/ModFiles/TheOtherRolesGMIA/TheOtherRoles.dll";
+            else
             {
-                string browser_download_url = current["browser_download_url"]?.ToString();
-                if (browser_download_url != null && current["content_type"] != null)
+                for (JToken current = assets.First; current != null; current = current.Next)
                 {
-                    if (current["content_type"].ToString().Equals("application/x-msdownload") &&
-                        browser_download_url.EndsWith(".dll"))
+                    string browser_download_url = current["browser_download_url"]?.ToString();
+                    if (browser_download_url != null && current["content_type"] != null)
                     {
-                        downloadURI = browser_download_url;
-                        break;
+                        if (current["content_type"].ToString().Equals("application/x-msdownload") &&
+                            browser_download_url.EndsWith(".dll"))
+                        {
+                            downloadURI = browser_download_url;
+                            break;
+                        }
                     }
                 }
             }

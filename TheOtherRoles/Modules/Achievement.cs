@@ -240,7 +240,6 @@ namespace TheOtherRoles.Modules
             Swapper.niceSwapperOnAchievementActivate();
             Seer.onAchievementActivate();
             Tracker.onAchievementActivate();
-            Snitch.onAchievementActivate();
             SecurityGuard.onAchievementActivate();
             Medium.onAchievementActivate();
             FortuneTeller.onAchievementActivate();

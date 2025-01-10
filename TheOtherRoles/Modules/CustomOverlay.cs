@@ -209,7 +209,7 @@ public class CustomOverlay
         public static void Postfix(KeyboardJoystick __instance)
         {
             ChatController cc = DestroyableSingleton<ChatController>.Instance;
-            bool isOpen = cc != null && cc.IsOpenOrOpening;
+            bool isOpen = cc != null && cc?.IsOpenOrOpening == true;
             if (Input.GetKeyDown(KeyCode.H) && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && !isOpen && !Minigame.Instance && !ExileController.Instance)
             {
                 toggleInfoOverlay();

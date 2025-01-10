@@ -1061,44 +1061,24 @@ namespace TheOtherRoles
     public static class Snitch {
         public static PlayerControl snitch;
         public static Color color = new Color32(184, 251, 79, byte.MaxValue);
-        public enum Mode {
-            Chat = 0,
-            Map = 1,
-            ChatAndMap = 2
-        }
-        public enum Targets {
-            EvilPlayers = 0,
-            Killers = 1
-        }
 
-        public static AchievementToken<(bool taskComplete, bool cleared)> acTokenChallenge = null;
-
-        public static void onAchievementActivate()
-        {
-            if (snitch == null || CachedPlayer.LocalPlayer.PlayerControl != snitch) return;
-            acTokenChallenge ??= new("snitch.challenge", (false, false), (val, _) => val.cleared);
-        }
-
-        public static Mode mode = Mode.Chat;
-        public static Targets targets = Targets.EvilPlayers;
+        public static List<Arrow> localArrows = new();
         public static int taskCountForReveal = 1;
-
-        public static bool isRevealed = false;
-        public static Dictionary<byte, byte> playerRoomMap = new();
-        public static TMPro.TextMeshPro text = null;
-        public static bool needsUpdate = true;
+        public static bool includeTeamEvil = false;
+        public static bool teamEvilUseDifferentArrowColor = true;
 
         public static void clearAndReload() {
+            if (localArrows != null)
+            {
+                foreach (Arrow arrow in localArrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            localArrows = new List<Arrow>();
             taskCountForReveal = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForReveal.getFloat());
+            includeTeamEvil = CustomOptionHolder.snitchIncludeTeamEvil.getBool();
+            teamEvilUseDifferentArrowColor = CustomOptionHolder.snitchTeamEvilUseDifferentArrowColor.getBool();
             snitch = null;
-            isRevealed = false;
-            playerRoomMap = new Dictionary<byte, byte>();
-            if (text != null) UnityEngine.Object.Destroy(text);
-            text = null;
-            needsUpdate = true;
-            mode = (Mode) CustomOptionHolder.snitchMode.getSelection();
-            targets = (Targets) CustomOptionHolder.snitchTargets.getSelection();
-            acTokenChallenge = null;
         }
     }
 

@@ -10,15 +10,18 @@ using TheOtherRoles.Utilities;
 using UnityEngine;
 using Epic.OnlineServices.Connect;
 using TheOtherRoles.Modules;
+using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
     [HarmonyPriority(Priority.First)]
     class ExileControllerBeginPatch {
         public static NetworkedPlayerInfo lastExiled;
+        public static bool extraVictim;
         public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref NetworkedPlayerInfo exiled) {
             lastExiled = exiled;
-
+            extraVictim = false;
             // Medic shield
             if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
@@ -81,35 +84,38 @@ namespace TheOtherRoles.Patches {
             Portal.meetingEndsUpdate();            
 
             // Witch execute casted spells
-            if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost) {
-                bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
-                bool witchDiesWithExiledLover = exiled != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (exiled.PlayerId == Lovers.lover1.PlayerId || exiled.PlayerId == Lovers.lover2.PlayerId);
+            if (Witch.witch != null && Witch.futureSpelled != null) {
+                extraVictim = true;
+                if (AmongUsClient.Instance.AmHost) {
+                    bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
+                    bool witchDiesWithExiledLover = exiled != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (exiled.PlayerId == Lovers.lover1.PlayerId || exiled.PlayerId == Lovers.lover2.PlayerId);
 
-                if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = new List<PlayerControl>();
-                foreach (PlayerControl target in Witch.futureSpelled) {
-                    if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(Witch.witch, target, true) == MurderAttemptResult.PerformKill)
-                    {
-                        if (exiled != null && Lawyer.lawyer != null && (target == Lawyer.lawyer || target == Lovers.otherLover(Lawyer.lawyer)) && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId) // && Lawyer.isProsecutor
-                            continue;
-                        if (target == Lawyer.target && Lawyer.lawyer != null) {
-                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                            RPCProcedure.lawyerPromotesToPursuer();
+                    if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = new List<PlayerControl>();
+                    foreach (PlayerControl target in Witch.futureSpelled) {
+                        if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(Witch.witch, target, true) == MurderAttemptResult.PerformKill)
+                        {
+                            if (exiled != null && Lawyer.lawyer != null && (target == Lawyer.lawyer || target == Lovers.otherLover(Lawyer.lawyer)) && Lawyer.target != null && Lawyer.target.PlayerId == exiled.PlayerId) // && Lawyer.isProsecutor
+                                continue;
+                            if (target == Lawyer.target && Lawyer.lawyer != null) {
+                                MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                                RPCProcedure.lawyerPromotesToPursuer();
+                            }
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
+                            writer.Write(target.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.uncheckedExilePlayer(target.PlayerId);
+
+                            MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                            writer3.Write(CachedPlayer.LocalPlayer.PlayerId);
+                            writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                            writer3.Write(target.PlayerId);
+                            writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
+                            writer3.Write(Witch.witch.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer3);
+
+                            GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.WitchExile, killer: Witch.witch);
                         }
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
-                        writer.Write(target.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.uncheckedExilePlayer(target.PlayerId);
-
-                        MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                        writer3.Write(CachedPlayer.LocalPlayer.PlayerId);
-                        writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
-                        writer3.Write(target.PlayerId);
-                        writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
-                        writer3.Write(Witch.witch.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer3);
-
-                        GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.WitchExile, killer: Witch.witch);
                     }
                 }
             }
@@ -154,6 +160,10 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
         class BaseExileControllerPatch {
+            static bool Prefix(ExileController __instance) {
+                __instance.StartCoroutine(WrapUpPrefix(__instance).WrapToIl2Cpp());
+                return false;
+            }
             public static void Postfix(ExileController __instance) {
                 WrapUpPostfix(__instance.initData.networkedPlayer);
             }
@@ -161,6 +171,10 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
         class AirshipExileControllerPatch {
+            static bool Prefix(AirshipExileController __instance, ref Il2CppSystem.Collections.IEnumerator __result) {
+                __result = WrapUpPrefix(__instance).WrapToIl2Cpp();
+                return false;
+            }
             public static void Postfix(AirshipExileController __instance) {
                 WrapUpPostfix(__instance.initData.networkedPlayer);
             }
@@ -183,6 +197,49 @@ namespace TheOtherRoles.Patches {
                 AntiTeleport.setPosition();
                 Chameleon.lastMoved.Clear();
             }
+        }
+
+        static IEnumerator WrapUpPrefix(ExileController __instance)
+        {
+            PlayerControl @object = null;
+            if (__instance.initData.networkedPlayer != null)
+            {
+                @object = __instance.initData.networkedPlayer.Object;
+                if (@object) @object.Exiled();
+                __instance.initData.networkedPlayer.IsDead = true;
+            }
+            if (ExileControllerBeginPatch.extraVictim && CustomOptionHolder.noticeExtraVictims.getBool())
+            {
+                string str = ModTranslation.getString("someoneDisappeared");
+                int num = 0;
+                var additionalText = UnityEngine.Object.Instantiate(__instance.Text, __instance.transform);
+                additionalText.transform.localPosition = new Vector3(0, 0, -800f);
+                additionalText.text = "";
+
+                while (num < str.Length)
+                {
+                    num++;
+                    additionalText.text = str[..num];
+                    SoundManager.Instance.PlaySoundImmediate(__instance.TextSound, false, 0.8f, 0.92f);
+                    yield return new WaitForSeconds(Mathf.Min(2.8f / str.Length, 0.28f));
+                }
+                yield return new WaitForSeconds(1.9f);
+
+                float a = 1f;
+                while (a > 0f)
+                {
+                    a -= Time.deltaTime * 1.5f;
+                    additionalText.color = Color.white.AlphaMultiplied(a);
+                    yield return null;
+                }
+                yield return new WaitForSeconds(0.3f);
+            }
+            if (DestroyableSingleton<TutorialManager>.InstanceExists || GameData.Instance || GameManager.Instance.LogicFlow.IsGameOverDueToDeath())
+            {
+                if (__instance is AirshipExileController airshipExileController) yield return ShipStatus.Instance.PrespawnStep();
+                __instance.ReEnableGameplay();
+            }
+            UnityEngine.Object.Destroy(__instance.gameObject);
         }
 
         static void WrapUpPostfix(NetworkedPlayerInfo exiled)

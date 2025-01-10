@@ -856,6 +856,7 @@ namespace TheOtherRoles
                 {
                     oldShifter.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
                 if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
                 {
@@ -1028,11 +1029,7 @@ namespace TheOtherRoles
                 Tracker.tracker = oldShifter;
                 Tracker.onAchievementActivate();
             }
-            if (Snitch.snitch != null && Snitch.snitch == player)
-            {
-                Snitch.snitch = oldShifter;
-                Snitch.onAchievementActivate();
-            }
+            if (Snitch.snitch != null && Snitch.snitch == player) Snitch.snitch = oldShifter;
             if (Spy.spy != null && Spy.spy == player)
                 Spy.spy = oldShifter;
             if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == player)
@@ -1957,8 +1954,9 @@ namespace TheOtherRoles
 
         public static void nekoKabochaExile(byte targetId)
         {
+            ExileControllerBeginPatch.extraVictim = true;
             uncheckedExilePlayer(targetId);
-            GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(targetId), DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
+            overrideDeathReasonAndKiller(Helpers.playerById(targetId), DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
         }
 
         public static void serialKillerSuicide(byte serialKillerId)
@@ -2009,9 +2007,9 @@ namespace TheOtherRoles
             target2.MyPhysics.ResetMoveState();
             var targetPosition = target1.GetTruePosition();
             var TempFacing = target1.cosmetics.currentBodySprite.BodySprite.flipX;
-            target1.NetTransform.RpcSnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
+            target1.NetTransform.SnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
             target1.cosmetics.currentBodySprite.BodySprite.flipX = target2.cosmetics.currentBodySprite.BodySprite.flipX;
-            target2.NetTransform.RpcSnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
+            target2.NetTransform.SnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
             target2.cosmetics.currentBodySprite.BodySprite.flipX = TempFacing;
 
             if (CachedPlayer.LocalPlayer.PlayerControl == target1 || CachedPlayer.LocalPlayer.PlayerControl == target2)
@@ -3103,11 +3101,6 @@ namespace TheOtherRoles
             bomberButton.isEffectActive = false;
             bomberButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
         }*/
-
-        public static void shareRoom(byte playerId, byte roomId) {
-            if (Snitch.playerRoomMap.ContainsKey(playerId)) Snitch.playerRoomMap[playerId] = roomId;
-            else Snitch.playerRoomMap.Add(playerId, roomId);
-        }
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -3621,13 +3614,6 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.ShareGhostInfo:
                     RPCProcedure.receiveGhostInfo(reader.ReadByte(), reader);
-                    break;
-
-
-                case (byte)CustomRPC.ShareRoom:
-                    byte roomPlayer = reader.ReadByte();
-                    byte roomId = reader.ReadByte();
-                    RPCProcedure.shareRoom(roomPlayer, roomId);
                     break;
             }
         }

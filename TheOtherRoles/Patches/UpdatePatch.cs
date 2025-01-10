@@ -503,10 +503,9 @@ namespace TheOtherRoles.Patches {
             if ((Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0) || MeetingHud.Instance || CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() == false) __instance.ImpostorVentButton.Hide();
             else if (CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
 
-            if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId)) {
-                if (CachedPlayer.LocalPlayer.PlayerControl != Engineer.engineer) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.upperRowLeft;
-                else if (Madmate.canVent && CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
-            }
+            if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
+                __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer ?
+                    CustomButton.ButtonPositions.lowerRowRight : CustomButton.ButtonPositions.upperRowLeft);
             if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
         }
 

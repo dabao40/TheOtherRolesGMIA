@@ -1131,45 +1131,62 @@ namespace TheOtherRoles.Patches {
         }
 
         static void snitchUpdate() {
-            if (Snitch.snitch == null) return;
-            if (!Snitch.needsUpdate) return;
+            if (Snitch.localArrows == null) return;
 
-            bool snitchIsDead = Snitch.snitch.Data.IsDead;
+            foreach (Arrow arrow in Snitch.localArrows) arrow.arrow.SetActive(false);
+
+            if (Snitch.snitch == null || Snitch.snitch.Data.IsDead) return;
+            var local = CachedPlayer.LocalPlayer.PlayerControl;
+
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
-
-            if (playerTotal == 0) return;
-            PlayerControl local = CachedPlayer.LocalPlayer.PlayerControl;
-
             int numberOfTasks = playerTotal - playerCompleted;
 
-            if (Snitch.isRevealed && ((Snitch.targets == Snitch.Targets.EvilPlayers && Helpers.isEvil(local)) || (Snitch.targets == Snitch.Targets.Killers && Helpers.isKiller(local)))) {
-                if (Snitch.text == null) {
-                    Snitch.text = GameObject.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
-                    Snitch.text.enableWordWrapping = false;
-                    Snitch.text.transform.localScale = Vector3.one * 0.75f;
-                    Snitch.text.transform.localPosition += new Vector3(0f, 1.8f, -69f);
-                    Snitch.text.gameObject.SetActive(true);
-                } else {
-                    Snitch.text.text = ModTranslation.getString("snitchAlive") + playerCompleted + "/" + playerTotal;
-                    if (snitchIsDead) Snitch.text.text = ModTranslation.getString("snitchDead");
+            if (numberOfTasks <= Snitch.taskCountForReveal && !local.Data.IsDead && (local.Data.Role.IsImpostor || (Snitch.includeTeamEvil && (local == Jackal.jackal || local == Sidekick.sidekick
+                || local == Moriarty.moriarty || local == JekyllAndHyde.jekyllAndHyde || local == Fox.fox || local == Immoralist.immoralist
+                || (local == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)))))
+            {
+                if (Snitch.localArrows.Count == 0) Snitch.localArrows.Add(new Arrow(Color.blue));
+                if (Snitch.localArrows.Count != 0 && Snitch.localArrows[0] != null)
+                {
+                    Snitch.localArrows[0].arrow.SetActive(true);
+                    Snitch.localArrows[0].Update(Snitch.snitch.transform.position);
                 }
             }
-            else if (Snitch.isRevealed)
+            else if (local == Snitch.snitch && numberOfTasks == 0)
             {
-                if (Snitch.text != null && Snitch.text.isActiveAndEnabled)
-                    Snitch.text.gameObject.SetActive(false);
-            }
+                bool includeEvil = Snitch.includeTeamEvil;
+                int arrowIndex = 0;
+                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                {
+                    bool arrowForImp = p.Data.Role.IsImpostor;
+                    bool arrowForTeamJackal = includeEvil && (p == Jackal.jackal || p == Sidekick.sidekick || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Jackal));
+                    bool arrowForFox = includeEvil && (p == Fox.fox || p == Immoralist.immoralist);
+                    bool arrowForJekyll = includeEvil && (p == JekyllAndHyde.jekyllAndHyde || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde));
+                    bool arrowForMoriarty = includeEvil && (p == Moriarty.moriarty || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Moriarty));
 
-            if (snitchIsDead) {
-                if (MeetingHud.Instance == null) Snitch.needsUpdate = false;
-                return;
-            }
-            if (numberOfTasks <= Snitch.taskCountForReveal) Snitch.isRevealed = true;
+                    Color color = Palette.ImpostorRed;
+                    if (Snitch.teamEvilUseDifferentArrowColor)
+                    {
+                        if (arrowForTeamJackal) color = Jackal.color;
+                        else if (arrowForFox) color = Fox.color;
+                        else if (arrowForJekyll) color = JekyllAndHyde.color;
+                        else if (arrowForMoriarty) color = Moriarty.color;
+                    }
 
-            if (numberOfTasks == 0)
-            {
-                if (local == Snitch.snitch)
-                    Snitch.acTokenChallenge.Value.taskComplete = true;
+                    if (!p.Data.IsDead && (arrowForImp || arrowForTeamJackal || arrowForFox || arrowForJekyll || arrowForMoriarty))
+                    {
+                        if (arrowIndex >= Snitch.localArrows.Count)
+                        {
+                            Snitch.localArrows.Add(new Arrow(color));
+                        }
+                        if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
+                        {
+                            Snitch.localArrows[arrowIndex].arrow.SetActive(true);
+                            Snitch.localArrows[arrowIndex].Update(p.transform.position, color);
+                        }
+                        arrowIndex++;
+                    }
+                }
             }
         }
 
@@ -2882,14 +2899,6 @@ namespace TheOtherRoles.Patches {
                     }
                 }
             }
-
-            // Snitch
-            if (Snitch.snitch != null && CachedPlayer.LocalPlayer.PlayerId == Snitch.snitch.PlayerId && MapBehaviourPatch.herePoints.Keys.Any(x => x.PlayerId == target.PlayerId)) {
-                foreach (var a in MapBehaviourPatch.herePoints.Where(x => x.Key.PlayerId == target.PlayerId)) {
-                    UnityEngine.Object.Destroy(a.Value);
-                    MapBehaviourPatch.herePoints.Remove(a.Key);
-                }
-            }
         }
     }
 
@@ -3002,7 +3011,6 @@ namespace TheOtherRoles.Patches {
                     var target = candidates[targetID];
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.NekoKabochaExile, Hazel.SendOption.Reliable, -1);
                     writer.Write(target.PlayerId);
-                    //writer.Write((byte)DeadPlayer.CustomDeathReason.Revenge);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.nekoKabochaExile(target.PlayerId);
                 }
@@ -3028,8 +3036,8 @@ namespace TheOtherRoles.Patches {
                     if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover; // Can put other non-null values here
                     otherLover.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
-
             }
 
             // Cupid and Cupid Lovers suicide
@@ -3041,6 +3049,7 @@ namespace TheOtherRoles.Patches {
                     if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover;
                     otherLover.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
 
                 if (MeetingHud.Instance && otherLover != null)
@@ -3054,6 +3063,7 @@ namespace TheOtherRoles.Patches {
                 {
                     Cupid.cupid.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
             }
 
@@ -3066,6 +3076,7 @@ namespace TheOtherRoles.Patches {
                     otherMimic.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherMimic, DeadPlayer.CustomDeathReason.Suicide);
                     RPCProcedure.updateMeeting(otherMimic.PlayerId);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
             }
 
@@ -3078,6 +3089,7 @@ namespace TheOtherRoles.Patches {
                     otherBomber.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(otherBomber, DeadPlayer.CustomDeathReason.Suicide);
                     RPCProcedure.updateMeeting(otherBomber.PlayerId);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
             }
 
@@ -3091,6 +3103,7 @@ namespace TheOtherRoles.Patches {
                     akujoPartner.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
                     RPCProcedure.updateMeeting(akujoPartner.PlayerId);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
             }
 
@@ -3101,6 +3114,7 @@ namespace TheOtherRoles.Patches {
                     Immoralist.immoralist.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(Immoralist.immoralist, DeadPlayer.CustomDeathReason.Suicide);
                     if (MeetingHud.Instance) RPCProcedure.updateMeeting(Immoralist.immoralist.PlayerId);
+                    ExileControllerBeginPatch.extraVictim = true;
                 }
             }
 
@@ -3108,6 +3122,7 @@ namespace TheOtherRoles.Patches {
             if (Kataomoi.kataomoi != null && !Kataomoi.kataomoi.Data.IsDead && Kataomoi.target == __instance) {
                 Kataomoi.kataomoi.Exiled();
                 overrideDeathReasonAndKiller(Kataomoi.kataomoi, DeadPlayer.CustomDeathReason.Suicide);
+                ExileControllerBeginPatch.extraVictim = true;
             }
 
             // Check Plague Doctor status
