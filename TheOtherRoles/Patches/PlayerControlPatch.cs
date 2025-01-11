@@ -2180,6 +2180,8 @@ namespace TheOtherRoles.Patches {
                 //Bomb.update();
                 // Bomber
                 BombEffect.UpdateAll();
+                // Yo-yo
+                Silhouette.UpdateAll();
                 // Props
                 accelTrapUpdate();
                 decelTrapUpdate();

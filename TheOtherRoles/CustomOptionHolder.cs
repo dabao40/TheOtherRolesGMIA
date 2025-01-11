@@ -153,6 +153,12 @@ namespace TheOtherRoles {
         public static CustomOption serialKillerSuicideTimer;
         public static CustomOption serialKillerResetTimer;
 
+        public static CustomOption yoyoSpawnRate;
+        public static CustomOption yoyoBlinkDuration;
+        public static CustomOption yoyoMarkCooldown;
+        public static CustomOption yoyoMarkStaysOverMeeting;
+        public static CustomOption yoyoSilhouetteVisibility;
+
         public static CustomOption mayorSpawnRate;
         public static CustomOption mayorCanSeeVoteColors;
         public static CustomOption mayorTasksNeededToSeeVoteColors;
@@ -735,6 +741,12 @@ namespace TheOtherRoles {
             undertakerSpawnRate = CustomOption.Create(4056, Types.Impostor, cs(Undertaker.color, "undertaker"), rates, null, true);
             undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, "undertakerSpeedDecrease", -50f, -80f, 0f, 10f, undertakerSpawnRate, false, "unitPercent");
             undertakerDisableVent = CustomOption.Create(4058, Types.Impostor, "undertakerDisableVent", true, undertakerSpawnRate);
+
+            yoyoSpawnRate = CustomOption.Create(470, Types.Impostor, cs(Yoyo.color, "yoyo"), rates, null, true);
+            yoyoBlinkDuration = CustomOption.Create(471, Types.Impostor, "yoyoBlinkDuration", 20f, 2.5f, 120f, 2.5f, yoyoSpawnRate, format: "unitSeconds");
+            yoyoMarkCooldown = CustomOption.Create(472, Types.Impostor, "yoyoMarkCooldown", 20f, 2.5f, 120f, 2.5f, yoyoSpawnRate, format: "unitSeconds");
+            yoyoMarkStaysOverMeeting = CustomOption.Create(473, Types.Impostor, "yoyoMarkStaysOverMeeting", true, yoyoSpawnRate);
+            yoyoSilhouetteVisibility = CustomOption.Create(476, Types.Impostor, "yoyoSilhouetteVisibility", new string[] { "0%", "10%", "20%", "30%", "40%", "50%" }, yoyoSpawnRate);
 
             blackmailerSpawnRate = CustomOption.Create(710, Types.Impostor, cs(Blackmailer.color, "blackmailer"), rates, null, true);
             blackmailerCooldown = CustomOption.Create(711, Types.Impostor, "blackmailerCooldown", 30f, 5f, 120f, 5f, blackmailerSpawnRate, false, "unitSeconds");

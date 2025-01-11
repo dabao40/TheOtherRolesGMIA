@@ -12,15 +12,6 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Patches {
-    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
-    public static class GameStartManagerUpdatePatch
-    {
-        public static void Prefix(GameStartManager __instance)
-        {
-            __instance.MinPlayers = 1;
-        }
-    }
-
     public class GameStartManagerPatch  {
         public static Dictionary<int, PlayerVersion> playerVersions = new();
         public static float timer = 600f;
@@ -99,6 +90,7 @@ namespace TheOtherRoles.Patches {
 
             public static void Prefix(GameStartManager __instance) {
                 if (!GameData.Instance ) return; // No instance
+                __instance.MinPlayers = 1;
                 update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
             }
 
@@ -186,7 +178,8 @@ namespace TheOtherRoles.Patches {
 
                 // Client update with handshake infos
                 else {
-                    if (!playerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TheOtherRolesPlugin.Version.CompareTo(playerVersions[AmongUsClient.Instance.HostId].version) != 0) {
+                    if (!playerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TheOtherRolesPlugin.Version.CompareTo(playerVersions[AmongUsClient.Instance.HostId].version) != 0
+                        || TORMapOptions.gameMode == CustomGamemodes.FreePlay) {
                         kickingTimer += Time.deltaTime;
                         if (kickingTimer > 10) {
                             kickingTimer = 0;
@@ -319,13 +312,15 @@ namespace TheOtherRoles.Patches {
                         // 4 = Airship
                         // 5 = Submerged
                         byte chosenMapId = 0;
-                        List<float> probabilities = new();
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSkeld.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableMira.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnablePolus.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableAirShip.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableFungle.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSubmerged.getSelection() / 10f);
+                        List<float> probabilities = new()
+                        {
+                            CustomOptionHolder.dynamicMapEnableSkeld.getSelection() / 10f,
+                            CustomOptionHolder.dynamicMapEnableMira.getSelection() / 10f,
+                            CustomOptionHolder.dynamicMapEnablePolus.getSelection() / 10f,
+                            CustomOptionHolder.dynamicMapEnableAirShip.getSelection() / 10f,
+                            CustomOptionHolder.dynamicMapEnableFungle.getSelection() / 10f,
+                            CustomOptionHolder.dynamicMapEnableSubmerged.getSelection() / 10f
+                        };
 
                         // if any map is at 100%, remove all maps that are not!
                         if (probabilities.Contains(1.0f)) {

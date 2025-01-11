@@ -97,6 +97,7 @@ namespace TheOtherRoles
         Trapper,
         Blackmailer,
         Opportunist,
+        Yoyo,
         Kataomoi,
         Busker,
         Noisemaker,
@@ -272,6 +273,8 @@ namespace TheOtherRoles
         KataomoiSetTarget,
         KataomoiWin,
         KataomoiStalking,
+        YoyoMarkLocation,
+        YoyoBlink,
     }
 
     public static class RPCProcedure {
@@ -293,6 +296,7 @@ namespace TheOtherRoles
             SpawnInMinigamePatch.reset();
             MeetingOverlayHolder.clearAndReload();
             Props.clearAndReload();
+            Silhouette.clearSilhouettes();
             //Trap.clearTraps();
             Trap.clearAllTraps();
             CustomNormalPlayerTask.reset();
@@ -501,6 +505,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Eraser:
                         Eraser.eraser = player;
+                        break;
+                    case RoleId.Yoyo:
+                        Yoyo.yoyo = player;
                         break;
                     case RoleId.Spy:
                         Spy.spy = player;
@@ -1190,6 +1197,10 @@ namespace TheOtherRoles
                 Trapper.trapper = oldShifter;
                 Trapper.onAchievementActivate();
             }
+            if (player == Yoyo.yoyo) {
+                Yoyo.yoyo = oldShifter;
+                Yoyo.markedLocation = null;
+            }
             if (player == Jester.jester) Jester.jester = oldShifter;
             if (player == Arsonist.arsonist) {
                 if (CachedPlayer.LocalPlayer.PlayerControl == player) resetPoolables();
@@ -1652,6 +1663,7 @@ namespace TheOtherRoles
             if (player == EvilHacker.evilHacker) EvilHacker.clearAndReload();
             if (player == Trapper.trapper) Trapper.clearAndReload();
             if (player == Blackmailer.blackmailer) Blackmailer.clearAndReload();
+            if (player == Yoyo.yoyo) Yoyo.clearAndReload();
             //if (player == Bomber.bomber) Bomber.clearAndReload();
 
             // Other roles
@@ -2189,6 +2201,45 @@ namespace TheOtherRoles
         {
             if (CachedPlayer.LocalPlayer.PlayerControl == Veteran.veteran)
                 _ = new StaticAchievementToken("veteran.challenge");
+        }
+
+        public static void yoyoMarkLocation(byte[] buff)
+        {
+            if (Yoyo.yoyo == null) return;
+            Vector3 position = Vector3.zero;
+            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
+            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
+            Yoyo.markLocation(position);
+            new Silhouette(position, -1, false);
+        }
+
+        public static void yoyoBlink(bool isFirstJump, byte[] buff)
+        {
+            TheOtherRolesPlugin.Logger.LogMessage($"blink fistjumpo: {isFirstJump}");
+            if (Yoyo.yoyo == null || Yoyo.markedLocation == null) return;
+            var markedPos = (Vector3)Yoyo.markedLocation;
+            Yoyo.yoyo.NetTransform.SnapTo(markedPos);
+
+            var markedSilhouette = Silhouette.silhouettes.FirstOrDefault(s => s.gameObject.transform.position.x == markedPos.x && s.gameObject.transform.position.y == markedPos.y);
+            if (markedSilhouette != null)
+                markedSilhouette.permanent = false;
+
+            Vector3 position = Vector3.zero;
+            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
+            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
+            // Create Silhoutte At Start Position:
+            if (isFirstJump)
+            {
+                Yoyo.markLocation(position);
+                new Silhouette(position, Yoyo.blinkDuration, true);
+            }
+            else
+            {
+                new Silhouette(position, 5, true);
+                Yoyo.markedLocation = null;
+            }
+            if (Chameleon.chameleon.Any(x => x.PlayerId == Yoyo.yoyo.PlayerId)) // Make the Yoyo visible if chameleon!
+                Chameleon.lastMoved[Yoyo.yoyo.PlayerId] = Time.time;
         }
 
         public static void mimicMorph(byte mimicAId, byte mimicBId)
@@ -2959,6 +3010,11 @@ namespace TheOtherRoles
                 Assassin.assassin = thief;
                 Assassin.onAchievementActivate();
             }
+            if (target == Yoyo.yoyo)
+            {
+                Yoyo.yoyo = thief;
+                Yoyo.markedLocation = null;
+            }
             //if (target == Bomber.bomber) Bomber.bomber = thief;
             if (target.Data.Role.IsImpostor) {
                 RoleManager.Instance.SetRole(Thief.thief, RoleTypes.Impostor);
@@ -3292,6 +3348,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.LightsOut:
                     RPCProcedure.lightsOut();
+                    break;
+                case (byte)CustomRPC.YoyoMarkLocation:
+                    RPCProcedure.yoyoMarkLocation(reader.ReadBytesAndSize());
+                    break;
+                case (byte)CustomRPC.YoyoBlink:
+                    RPCProcedure.yoyoBlink(reader.ReadByte() == byte.MaxValue, reader.ReadBytesAndSize());
                     break;
                 case (byte)CustomRPC.NinjaStealth:
                     RPCProcedure.ninjaStealth(reader.ReadByte(), reader.ReadBoolean());

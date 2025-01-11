@@ -19,8 +19,8 @@ namespace TheOtherRoles.Patches {
     class ExileControllerBeginPatch {
         public static NetworkedPlayerInfo lastExiled;
         public static bool extraVictim;
-        public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref NetworkedPlayerInfo exiled) {
-            lastExiled = exiled;
+        public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref ExileController.InitProperties init) {
+            lastExiled = init.networkedPlayer;
             extraVictim = false;
             // Medic shield
             if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
@@ -85,8 +85,8 @@ namespace TheOtherRoles.Patches {
 
             // Witch execute casted spells
             if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost) {
-                bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
-                bool witchDiesWithExiledLover = exiled != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (exiled.PlayerId == Lovers.lover1.PlayerId || exiled.PlayerId == Lovers.lover2.PlayerId);
+                bool exiledIsWitch = init.networkedPlayer != null && init.networkedPlayer.PlayerId == Witch.witch.PlayerId;
+                bool witchDiesWithExiledLover = init.networkedPlayer != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (init.networkedPlayer.PlayerId == Lovers.lover1.PlayerId || init.networkedPlayer.PlayerId == Lovers.lover2.PlayerId);
 
                 if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = new List<PlayerControl>();
                 foreach (PlayerControl target in Witch.futureSpelled) {
@@ -705,6 +705,9 @@ namespace TheOtherRoles.Patches {
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown / 2 + 2, new Action<float>((p) => {
             if (p == 1f) foreach (Trap trap in Trap.traps) trap.triggerable = true;
             })));*/
+
+            if (!Yoyo.markStaysOverMeeting)
+                Silhouette.clearSilhouettes();
         }
     }
 

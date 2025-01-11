@@ -999,8 +999,13 @@ namespace TheOtherRoles.Patches
                 {
                     if (showLighterDarker)
                     {
+                        bool isLighter = Helpers.isLighterColor(GameData.Instance.GetPlayerById(player.TargetPlayerId).DefaultOutfit.ColorId);
                         SpriteRenderer renderer = Helpers.CreateObject<SpriteRenderer>("Color", player.transform, new Vector3(1.2f, -0.18f, -1f));
-                        renderer.sprite = Helpers.isLighterColor(GameData.Instance.GetPlayerById(player.TargetPlayerId).DefaultOutfit.ColorId) ? LightColorSprite.GetSprite() : DarkColorSprite.GetSprite();
+                        renderer.sprite = isLighter ? LightColorSprite.GetSprite() : DarkColorSprite.GetSprite();
+                        addButtonGuide(renderer.gameObject.SetUpButton(), isLighter ? ModTranslation.getString("detectiveLightLabel") : ModTranslation.getString("detectiveDarkLabel"));
+                        var collider = renderer.gameObject.AddComponent<CircleCollider2D>();
+                        collider.isTrigger = true;
+                        collider.radius = 0.1f;
                     }
                 }
                 __instance.StartCoroutine(Effects.Sequence(Effects.Wait(2f), Helpers.Action(() => SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1)).WrapToIl2Cpp()));

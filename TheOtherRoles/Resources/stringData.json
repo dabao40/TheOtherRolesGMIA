@@ -1787,15 +1787,15 @@
         "14": "\u6df1"
     },
     "detectiveLightLabel": {
-        "0": "L",
+        "0": "Light color",
         "11": "\u660e",
-        "13": "\u6d45",
+        "13": "\u6d45\u8272",
         "14": "\u6dfa"
     },
     "detectiveDarkLabel": {
-        "0": "D",
+        "0": "Dark color",
         "11": "\u6697",
-        "13": "\u6df1",
+        "13": "\u6df1\u8272",
         "14": "\u6df1"
     },
     "timeMaster": {
@@ -3966,6 +3966,10 @@
     "morphlingButton": {
         "0": "Sample or morph into the sampled player",
         "13": "\u53d6\u6837\u6216\u5316\u5f62\u4e3a\u88ab\u53d6\u6837\u73a9\u5bb6"
+    },
+    "yoyoButton": {
+        "0": "Mark a location or blink back",
+        "13": "\u6807\u8bb0\u5730\u70b9\u6216\u95ea\u73b0\u56de\u6807\u8bb0\u5730\u70b9"
     },
     "detectiveReportInfo": {
         "0": "Detective Report",
@@ -6193,6 +6197,34 @@
         "0": "Kataomoi Search Duration",
         "13": "\u51dd\u89c6\u8005\u641c\u5bfb\u6301\u7eed\u65f6\u95f4"
     },
+    "yoyo": {
+        "0": "Yo-Yo",
+        "13": "\u60a0\u60a0\u7403"
+    },
+    "yoyoIntroDesc": {
+        "0": "Blink to a marked location and back",
+        "13": "\u95ea\u73b0\u5230\u6807\u8bb0\u5730\u70b9\u5e76\u8fd4\u56de"
+    },
+    "yoyoShortDesc": {
+        "0": "Blink to a location",
+        "13": "\u95ea\u73b0\u5230\u6807\u8bb0\u5730\u70b9"
+    },
+    "yoyoBlinkDuration": {
+        "0": "Blink Duration",
+        "13": "\u95ea\u73b0\u51b7\u5374\u65f6\u95f4"
+    },
+    "yoyoMarkCooldown": {
+        "0": "Mark Location Cooldown",
+        "13": "\u6807\u8bb0\u5730\u70b9\u51b7\u5374\u65f6\u95f4"
+    },
+    "yoyoMarkStaysOverMeeting": {
+        "0": "Marked Location Stays After Meeting",
+        "13": "\u88ab\u6807\u8bb0\u7684\u5730\u70b9\u6301\u7eed\u81f3\u4f1a\u8bae\u540e"
+    },
+    "yoyoSilhouetteVisibility": {
+        "0": "Silhouette Visibility",
+        "13": "\u9634\u5f71\u53ef\u89c1\u7a0b\u5ea6"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -6739,6 +6771,18 @@
         "0": "Switch Team",
         "13": "\u9009\u62e9\u9635\u8425"
     },
+    "BlinkText": {
+        "0": "Blink",
+        "13": "\u95ea\u73b0"
+    },
+    "MarkText": {
+        "0": "Mark Location",
+        "13": "\u6807\u8bb0\u5730\u70b9"
+    },
+    "ReturnText": {
+        "0": "Returning...",
+        "13": "\u8fd4\u56de\u4e2d..."
+    },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
         "11": "\u30fb\u4eba\u72fc\u3067\u3044\u3046\u300e\u3066\u308b\u3066\u308b\u300f\n\u30fb\u306a\u306b\u3082\u80fd\u529b\u3092\u6301\u305f\u306a\u3044\n\u30fb\u81ea\u8eab\u304c\u540a\u3089\u308c\u305f\u3068\u304d\u306b\u52dd\u5229\u3059\u308b",
@@ -6966,6 +7010,10 @@
         "11": "\u30fb\u81ea\u5206\u542b\u3081\u6295\u7968\u3092\u5165\u308c\u66ff\u3048\u308b\u3053\u3068\u304c\u3067\u304d\u308b\uff08\u8a2d\u5b9a\u306b\u3088\u308b\uff09\n\u30fb\u30b9\u30ef\u30c3\u30d7\u5236\u9650\u3042\u308a\uff08\u8a2d\u5b9a\u306b\u3088\u308b\uff09",
         "13": "\u5728\u4f1a\u8bae\u9636\u6bb5\u6362\u7968\u5e08\u53ef\u4ee5\u4ea4\u6362\u4e24\u540d\u73a9\u5bb6\u7684\u5f97\u7968\u3002\n\u7531\u4e8e\u6362\u7968\u5e08\u7684\u80fd\u529b\u8fc7\u4e8e\u5f3a\u5927\uff0c\u4ed6\u4eec\u53ef\u80fd\u4e0d\u53ef\u4ee5\u53ec\u5f00\u7d27\u6025\u4f1a\u8bae\u6216\u8005\u4fee\u706f\uff0c\n\u6291\u6216\u662f\u4fee\u7406\u901a\u8baf\u3002",
         "14": "\u5728\u6703\u8b70\u968e\u6bb5\u63db\u7968\u5e2b\u53ef\u4ee5\u4ea4\u63db\u5169\u540d\u73a9\u5bb6\u7684\u5f97\u7968\u3002\n\u7531\u65bc\u63db\u7968\u5e2b\u7684\u80fd\u529b\u904e\u65bc\u5f37\u5927\uff0c\u4ed6\u5011\u53ef\u80fd\u4e0d\u53ef\u4ee5\u53ec\u958b\u7dca\u6025\u6703\u8b70\u6216\u8005\u4fee\u71c8\uff0c\n\u6291\u6216\u662f\u4fee\u7406\u901a\u8a0a\u3002"
+    },
+    "yoyoFullDesc": {
+        "0": "The Yo-Yo is an Impostor who has the ability mark a position and later blink\n(teleport) to this position. After the initial blink, the Yo-Yo has a fixed amount\nof time (option) to do whatever they want, before automatically blinking back\nto the starting point of the first blink. Each blink leaves behind a silhouette\nwith configurable transparency. The silhouette is very hard to see. The marked\nposition for the first jump's target is displayed to the Yo-Yo and ghosts only.\nThe silhouette of the first blink stays (almost) until the Yo-Yo returns.\nThe silhouette of the second blink (return) stays for 5 seconds.",
+        "13": "\u60a0\u60a0\u7403\u662f\u4e00\u4e2a\u62e5\u6709\u6807\u8bb0\u5730\u70b9\u5e76\u95ea\u73b0\uff08\u4f20\u9001\uff09\u81f3\u8be5\u5730\u70b9\u7684\u5185\u9b3c\u3002\u7b2c\u4e00\u6b21\u95ea\u73b0\u4e4b\u540e\uff0c\u60a0\u60a0\u7403\n\u6709\u4e00\u5b9a\u65f6\u95f4\u4e3a\u6240\u6b32\u4e3a\uff0c\u76f4\u5230\u65f6\u95f4\u7ed3\u675f\u60a0\u60a0\u7403\u5fc5\u987b\u8fd4\u56de\u95ea\u73b0\u524d\u7684\u5730\u70b9\uff0c\u5373\u4f7f\u662f\u5728\u7ba1\u9053\u5185\u3002\n\u6bcf\u4e00\u6b21\u95ea\u73b0\u90fd\u4f1a\u7559\u4e0b\u4e00\u4e2a\u53ef\u8bbe\u7f6e\u900f\u660e\u5ea6\u7684\u9634\u5f71\uff0c\u5e76\u4e14\u975e\u5e38\u96be\u88ab\u770b\u89c1\u3002\u88ab\u6807\u8bb0\u7684\u5730\u70b9\u53ea\n\u80fd\u88ab\u9b3c\u9b42\u6216\u60a0\u60a0\u7403\u770b\u89c1\uff0c\u95ea\u73b0\u7559\u4e0b\u7684\u9634\u5f71\u57fa\u672c\u6301\u7eed\u81f3\u60a0\u60a0\u7403\u8fd4\u56de\u95ea\u73b0\u524d\u5730\u70b9\u540e\u6d88\u5931\uff0c\n\u8fd4\u56de\u540e\u5728\u539f\u5730\u7559\u4e0b\u7684\u9634\u5f71\u6301\u7eed5\u79d2\u3002"
     },
     "corruptedShifterFullDesc": {
         "0": "A Neutral version of the Shifter, known as the Chain-Shifter,\nis able to steal roles from any player, regardless of their team.\nThe shifted player then inherits the role of Chain-Shifter, and must\nsteal another player's role. The player who retains the Chain-Shifter\nrole at the end of the game automatically loses.",
@@ -9077,6 +9125,18 @@
         "0": "Retrive Your Votes!",
         "11": "\u52d8\u306e\u3044\u3044\u30af\u30eb\u30fc\u306f\u5acc\u3044\u3060\u3088",
         "13": "\u4f60\u4eec\u7684\u7968\u90fd\u4e0d\u7b97\u6570\uff01"
+    },
+    "yoyochallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "yoyochallengeAchievementGoal": {
+        "0": "Complete A Full Cycle Of The Blink",
+        "13": "\u5b8c\u6210\u6807\u8bb0-\u95ea\u73b0-\u8fd4\u56de\u7684\u5faa\u73af"
+    },
+    "yoyochallengeAchievementTitle": {
+        "0": "Yoyo back!",
+        "13": "\u8fd9\u624d\u53eb\u60a0\u60a0\u7403!"
     },
     "jestercommon1AchievementCond": {
         "0": "Self Vote Doesn't Count",

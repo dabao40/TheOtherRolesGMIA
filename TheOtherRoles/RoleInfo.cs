@@ -94,6 +94,7 @@ namespace TheOtherRoles
         public static RoleInfo evilHacker = new("evilHacker", EvilHacker.color, RoleId.EvilHacker);
         public static RoleInfo trapper = new("trapper", Trapper.color, RoleId.Trapper);
         public static RoleInfo blackmailer = new("blackmailer", Blackmailer.color, RoleId.Blackmailer);
+        public static RoleInfo yoyo = new("yoyo", Yoyo.color, RoleId.Yoyo);
         public static RoleInfo fortuneTeller = new("fortuneTeller", FortuneTeller.color, RoleId.FortuneTeller);
         public static RoleInfo veteran = new("veteran", Veteran.color, RoleId.Veteran);
         public static RoleInfo sprinter = new("sprinter", Sprinter.color, RoleId.Sprinter);
@@ -166,6 +167,7 @@ namespace TheOtherRoles
             bomberA,
             bomberB,
             evilYasuna,
+            yoyo,
             //bomber,
             goodGuesser,
             badGuesser,
@@ -311,6 +313,7 @@ namespace TheOtherRoles
             if (p == Immoralist.immoralist) infos.Add(immoralist);
             if (p == Busker.busker) infos.Add(busker);
             if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
+            if (p == Yoyo.yoyo) infos.Add(yoyo);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)

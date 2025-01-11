@@ -142,7 +142,8 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 		static void Postfix(MapBehaviour __instance) {
-			/*if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
+            __instance.HerePoint.transform.SetLocalZ(-2.1f);
+            /*if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
 				foreach (PlayerControl player in Trapper.playersOnMap) {
 					if (herePoints.ContainsKey(player)) continue;
 					Vector3 v = Trap.trapPlayerIdMap[player.PlayerId].trap.transform.position;
@@ -163,7 +164,7 @@ namespace TheOtherRoles.Patches {
 					herePoints.Remove(s.Key);
 				}
 			}*/
-			if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
+            if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
 			{
                 if (EvilTracker.target != null && MeetingHud.Instance == null)
                 {
