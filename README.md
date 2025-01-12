@@ -17,6 +17,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
 | 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
 | 2024.6.18s        | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
 | 2024.6.18s        | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
@@ -47,6 +48,34 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 <details>
   <summary>Click to show the Changelog</summary>
 
+  **Version v1.3.1**
+ - Added new role Yo-Yo
+ - Added new guides for newcomers, hover your mouse over the buttons to see the uses
+ - Added the achievements for Lighter, Mimic, Bomber and Thief
+ - Added new option "Madmate Fixed Role"
+ - Added new option "Evil Hacker Can See Door Status"
+ - Added new option "Notice Extra Victims"
+ - Added new option "Sprinter Speed Bonus"
+ - Added new option "Eraser Cooldown Penalty"
+ - Allows players to see the vent layouts on maps
+ - Madmate can now have a second modifier
+ - Optimized the arrows to make them look better
+ - Replaced the Light/Dark color tag with white/black buttons during meetings
+ - Removed the old Prophet examination results and added an accuracy
+ - Removed the dead bodies of players who have died during meetings
+ - Reverted Snitch to the version with arrows
+ - Fixed the Witch not being able to execute spelled targets
+ - Fixed the Busker being kicked out of the game when failed to revive
+ - Fixed the Teleporter kicking everyone out when trying to swap positions
+ - Fixed the Task Master resulting in the Crew win when only 1 task completed
+ - Fixed the Mad Engineer having wrong button alignments
+ - Fixed the new ladders on Airship having no climb animation
+ - Fixed the Arsonist's poolable indicators
+ - Fixed the kill cooldown not being arraged properly
+ - Fixed the Chameleon not being removed fully when being shifted from
+ - Adjusted the Medium's questions and answers
+ - Resorted the alignments of players during meetings
+  
   **Version v1.3.0**
  - Added compatibility to Among Us v2024.10.29
  - Added new role Kataomoi
