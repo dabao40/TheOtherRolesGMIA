@@ -802,7 +802,7 @@ namespace TheOtherRoles
 
         public static void timeMasterRewindTime() {
             TimeMaster.shieldActive = false; // Shield is no longer active when rewinding
-            SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
+            SoundEffectsAssetsManager.stop(SoundEffects.timemasterShield);  // Shield sound stopped when rewinding
             if(TimeMaster.timeMaster != null && TimeMaster.timeMaster == CachedPlayer.LocalPlayer.PlayerControl) {
                 resetTimeMasterButton();
                 _ = new StaticAchievementToken("timeMaster.challenge");
@@ -1577,7 +1577,7 @@ namespace TheOtherRoles
                 Sidekick.wasSpy = wasSpy;
                 Sidekick.wasImpostor = wasImpostor;
                 if (player == CachedPlayer.LocalPlayer.PlayerControl) {
-                    SoundEffectsManager.play("jackalSidekick");
+                    SoundEffectsAssetsManager.play(SoundEffects.jackalSidekick);
                     _ = new StaticAchievementToken("sidekick.common1");
                     if (wasImpostor) _ = new StaticAchievementToken("sidekick.common2");
                 }
@@ -1826,7 +1826,7 @@ namespace TheOtherRoles
             decel.activateTime = DateTime.UtcNow;
             if (Props.DecelTrap.deceled.ContainsKey(player)) Props.DecelTrap.deceled.Remove(player);
             Props.DecelTrap.deceled.Add(player, DateTime.UtcNow);
-            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("triggerDeceleration");
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsAssetsManager.play(SoundEffects.triggerDeceleration);
             decel.decelTrap.SetActive(false);
         }
 
@@ -1841,7 +1841,7 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             if (Props.DecelTrap.deceled.ContainsKey(player)) Props.DecelTrap.deceled.Remove(player);
-            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("untriggerDeceleration");
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsAssetsManager.play(SoundEffects.untriggerDeceleration);
         }
 
         public static void activateAccel(byte playerId)
@@ -1849,7 +1849,7 @@ namespace TheOtherRoles
             PlayerControl player = Helpers.playerById(playerId);
             if (Props.AccelTrap.acceled.ContainsKey(player)) Props.AccelTrap.acceled.Remove(player);
             Props.AccelTrap.acceled.Add(player, DateTime.UtcNow);
-            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("jekyllAndHydeDrug");
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsAssetsManager.play(SoundEffects.jekyllAndHydeDrug);
         }
 
         public static void deactivateAccel(byte playerId)
@@ -1857,7 +1857,7 @@ namespace TheOtherRoles
             PlayerControl player = Helpers.playerById(playerId);
 
             if (Props.AccelTrap.acceled.ContainsKey(player)) Props.AccelTrap.acceled.Remove(player);
-            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsManager.play("jekyllAndHydeDrug");
+            if (CachedPlayer.LocalPlayer.PlayerControl == player) SoundEffectsAssetsManager.play(SoundEffects.jekyllAndHydeDrug);
         }
 
         public static void noisemakerSetSounded(byte playerId)
@@ -3061,7 +3061,7 @@ namespace TheOtherRoles
 
         public static void huntedRewindTime(byte playerId) {
             Hunted.timeshieldActive.Remove(playerId); // Shield is no longer active when rewinding
-            SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
+            SoundEffectsAssetsManager.stop(SoundEffects.timemasterShield);  // Shield sound stopped when rewinding
             if (playerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId) {
                 resetHuntedRewindButton();
             }
@@ -3152,7 +3152,7 @@ namespace TheOtherRoles
 
         public static void defuseBomb() {
             try {
-                SoundEffectsManager.playAtPosition("bombDefused", Bomber.bomb.bomb.transform.position, range: Bomber.hearRange);
+                SoundEffectsAssetsManager.playAtPosition("bombDefused", Bomber.bomb.bomb.transform.position, range: Bomber.hearRange);
             } catch { }
             Bomber.clearBomb();
             bomberButton.Timer = bomberButton.MaxTimer;
