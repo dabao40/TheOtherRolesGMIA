@@ -1290,7 +1290,7 @@ namespace TheOtherRoles {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.shieldedMurderAttempt();
-                SoundEffectsManager.play("fail");
+                SoundEffectsAssetsManager.play(SoundEffects.fail);
 
                 MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockMedicAcChallenge, SendOption.Reliable, -1);
                 writer.Write(killer.PlayerId);

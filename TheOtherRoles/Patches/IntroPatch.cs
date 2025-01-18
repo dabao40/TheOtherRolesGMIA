@@ -84,6 +84,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Force Reload of SoundEffectHolder
+            SoundEffectsAssetsManager.Load();
             SoundEffectsManager.Load();
 
             // Place props

@@ -64,7 +64,7 @@ using UnityEngine;
                 if (x == 1f && this != null) {
                     bomb.SetActive(true);
                     background.SetActive(true);
-                    SoundEffectsManager.playAtPosition("bombFuseBurning", p, Bomber.destructionTime, Bomber.hearRange, true);
+                    SoundEffectsAssetsManager.playAtPosition("bombFuseBurning", p, Bomber.destructionTime, Bomber.hearRange, true);
                     Bomber.isActive = true;
 
                     FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Bomber.destructionTime, new Action<float>((x) => { // can you feel the pain?
@@ -95,7 +95,7 @@ using UnityEngine;
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     GameHistory.overrideDeathReasonAndKiller(CachedPlayer.LocalPlayer, DeadPlayer.CustomDeathReason.Bomb, killer: Bomber.bomber);
                 }
-                SoundEffectsManager.playAtPosition("bombExplosion", position, range: Bomber.hearRange) ;
+                SoundEffectsAssetsManager.playAtPosition("bombExplosion", position, range: Bomber.hearRange) ;
             }
             Bomber.clearBomb();
             canDefuse = false;
