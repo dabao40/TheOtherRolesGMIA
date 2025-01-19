@@ -458,7 +458,7 @@ namespace TheOtherRoles.Patches
             if (Mayor.mayorChooseSingleVote == 1) { // Only accept changes until the mayor voted
                 var mayorPVA = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == Mayor.mayor.PlayerId);
                 if (mayorPVA != null && mayorPVA.DidVote) {
-                    SoundEffectsAssetsManager.play(SoundEffects.fail);
+                    SoundEffectsManager.play("fail");
                     return;
                 }
             }
@@ -571,7 +571,7 @@ namespace TheOtherRoles.Patches
                             MessageWriter murderAttemptWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
                             AmongUsClient.Instance.FinishRpcImmediately(murderAttemptWriter);
                             RPCProcedure.shieldedMurderAttempt();
-                            SoundEffectsAssetsManager.play(SoundEffects.fail);
+                            SoundEffectsManager.play("fail");
                             return;
                         }
 
@@ -615,7 +615,7 @@ namespace TheOtherRoles.Patches
             var yasunaPVA = __instance.playerStates.FirstOrDefault(t => t.TargetPlayerId == Yasuna.yasuna.PlayerId);
             if (yasunaPVA != null && yasunaPVA.DidVote)
             {
-                SoundEffectsAssetsManager.play(SoundEffects.fail);
+                SoundEffectsManager.play("fail");
                 return;
             }
 
@@ -1157,7 +1157,6 @@ namespace TheOtherRoles.Patches
                 Helpers.toggleZoom(reset: true);
 
                 // Stop all playing sounds
-                SoundEffectsAssetsManager.stopAll();
                 SoundEffectsManager.stopAll();
 
                 // Close In-Game Settings Display if open
