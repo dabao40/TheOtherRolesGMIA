@@ -372,7 +372,7 @@ namespace TheOtherRoles.Objects
             t.triggerable = false;
             if (playerId == CachedPlayer.LocalPlayer.PlayerId || playerId == Trapper.trapper.PlayerId) {
                 t.trap.SetActive(true);
-                SoundEffectsAssetsManager.play("trapperTrap");
+                SoundEffectsManager.play("trapperTrap");
             }
             player.moveable = false;
             player.NetTransform.Halt();
