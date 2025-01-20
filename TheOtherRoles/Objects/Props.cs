@@ -1,7 +1,6 @@
 ﻿using Hazel;
 using System.Collections.Generic;
 using System.Linq;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using System;
@@ -189,7 +188,7 @@ namespace TheOtherRoles.Objects
                     
                     foreach (var item in buff)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceAccel, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAccel, Hazel.SendOption.Reliable);
                         writer.Write(item);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.placeAccel(item);
@@ -297,7 +296,7 @@ namespace TheOtherRoles.Objects
 
                     foreach (var item in buff)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceDecel, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceDecel, Hazel.SendOption.Reliable);
                         writer.Write(item);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.placeDecel(item);

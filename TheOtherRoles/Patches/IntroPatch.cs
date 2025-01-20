@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Objects;
@@ -24,14 +23,14 @@ namespace TheOtherRoles.Patches {
             // Generate and initialize player icons
             int playerCounter = 0;
             int hideNSeekCounter = 0;
-            if (CachedPlayer.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null) {
+            if (PlayerControl.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null) {
                 float aspect = Camera.main.aspect;
                 float safeOrthographicSize = CameraSafeArea.GetSafeOrthographicSize(Camera.main);
                 float xpos = 1.75f - safeOrthographicSize * aspect * 1.70f;
                 float ypos = 0.15f - safeOrthographicSize * 1.7f;
                 bottomLeft = new Vector3(xpos / 2, ypos/2, -61f);
 
-                foreach (PlayerControl p in CachedPlayer.AllPlayers) {
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                     NetworkedPlayerInfo data = p.Data;
                     PoolablePlayer player = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
                     playerPrefab = __instance.PlayerPrefab;
@@ -45,7 +44,7 @@ namespace TheOtherRoles.Patches {
 
                     player.gameObject.SetActive(false);
 
-                    if (CachedPlayer.LocalPlayer.PlayerControl == Arsonist.arsonist && p != Arsonist.arsonist) {
+                    if (PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist) {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
@@ -73,18 +72,17 @@ namespace TheOtherRoles.Patches {
 
             // Force Bounty Hunter to load a new Bounty when the Intro is over
             if (BountyHunter.bounty != null) {
-                if (CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter) BountyHunter.bountyUpdateTimer = 0f;
+                if (PlayerControl.LocalPlayer == BountyHunter.bountyHunter) BountyHunter.bountyUpdateTimer = 0f;
                 if (FastDestroyableSingleton<HudManager>.Instance != null) {
                     BountyHunter.cooldownText = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
                     BountyHunter.cooldownText.alignment = TMPro.TextAlignmentOptions.Center;
                     BountyHunter.cooldownText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
                     BountyHunter.cooldownText.transform.localScale = Vector3.one * 0.4f;
-                    BountyHunter.cooldownText.gameObject.SetActive(CachedPlayer.LocalPlayer.PlayerControl == BountyHunter.bountyHunter);
+                    BountyHunter.cooldownText.gameObject.SetActive(PlayerControl.LocalPlayer == BountyHunter.bountyHunter);
                 }
             }
 
             // Force Reload of SoundEffectHolder
-            SoundEffectsAssetsManager.Load();
             SoundEffectsManager.Load();
 
             // Place props
@@ -95,7 +93,7 @@ namespace TheOtherRoles.Patches {
 
             if (AmongUsClient.Instance.AmHost)
             {
-                MessageWriter roleWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetRoleHistory, SendOption.Reliable, -1);
+                MessageWriter roleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRoleHistory, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(roleWriter);
                 RPCProcedure.setRoleHistory();
                 GameStatistics.Event.GameStatistics.RpcRecordEvent(GameStatistics.EventVariation.GameStart, EventDetail.GameStart, null, 0);
@@ -287,11 +285,11 @@ namespace TheOtherRoles.Patches {
                 new Vector3(-20.8897f, 2.7606f, 0.002f)
                 };
 
-                if (Helpers.isSkeld()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(skeldSpawn[rnd.Next(skeldSpawn.Count)]);
-                if (Helpers.isMira()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(miraSpawn[rnd.Next(miraSpawn.Count)]);
-                if (Helpers.isPolus()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(polusSpawn[rnd.Next(polusSpawn.Count)]);
-                if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(dleksSpawn[rnd.Next(dleksSpawn.Count)]);
-                if (Helpers.isFungle()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(fungleSpawn[rnd.Next(fungleSpawn.Count)]);
+                if (Helpers.isSkeld()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(skeldSpawn[rnd.Next(skeldSpawn.Count)]);
+                if (Helpers.isMira()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(miraSpawn[rnd.Next(miraSpawn.Count)]);
+                if (Helpers.isPolus()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(polusSpawn[rnd.Next(polusSpawn.Count)]);
+                if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(dleksSpawn[rnd.Next(dleksSpawn.Count)]);
+                if (Helpers.isFungle()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(fungleSpawn[rnd.Next(fungleSpawn.Count)]);
 
             }
 
@@ -299,7 +297,7 @@ namespace TheOtherRoles.Patches {
             if (AmongUsClient.Instance.AmHost && TORMapOptions.shieldFirstKill && TORMapOptions.firstKillName != "" && !HideNSeek.isHideNSeekGM) {
                 PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(TORMapOptions.firstKillName));
                 if (target != null) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.setFirstKill(target.PlayerId);
@@ -307,7 +305,7 @@ namespace TheOtherRoles.Patches {
             }
             TORMapOptions.firstKillName = "";
 
-            if (Helpers.isAirship() && CustomOptionHolder.airshipOptimize.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)))
+            if (Helpers.isAirship() && CustomOptionHolder.airshipOptimize.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId)))
             {
                 var obj = ShipStatus.Instance.FastRooms[SystemTypes.GapRoom].gameObject;
                 OneWayShadows oneWayShadow = obj.transform.FindChild("Shadow").FindChild("LedgeShadow").GetComponent<OneWayShadows>();
@@ -326,7 +324,7 @@ namespace TheOtherRoles.Patches {
                     Kataomoi.stareText.alignment = TMPro.TextAlignmentOptions.Center;
                     Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
                     Kataomoi.stareText.transform.localScale = Vector3.one * 0.5f;
-                    Kataomoi.stareText.gameObject.SetActive(CachedPlayer.LocalPlayer.PlayerControl == Kataomoi.kataomoi);
+                    Kataomoi.stareText.gameObject.SetActive(PlayerControl.LocalPlayer == Kataomoi.kataomoi);
 
                     Kataomoi.gaugeRenderer[0] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.graphic, FastDestroyableSingleton<HudManager>.Instance.transform);
                     var killButton = Kataomoi.gaugeRenderer[0].GetComponent<KillButton>();
@@ -369,7 +367,7 @@ namespace TheOtherRoles.Patches {
             }
 
             SchrodingersCat.playerTemplate = UnityEngine.Object.Instantiate(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
-            SchrodingersCat.playerTemplate.UpdateFromPlayerOutfit(CachedPlayer.LocalPlayer.PlayerControl.Data.DefaultOutfit, PlayerMaterial.MaskType.ComplexUI, false, true);
+            SchrodingersCat.playerTemplate.UpdateFromPlayerOutfit(PlayerControl.LocalPlayer.Data.DefaultOutfit, PlayerMaterial.MaskType.ComplexUI, false, true);
             SchrodingersCat.playerTemplate.SetFlipX(true);
             SchrodingersCat.playerTemplate.gameObject.SetActive(false);
             SchrodingersCat.playerTemplate.cosmetics.currentPet?.gameObject.SetActive(false);
@@ -392,7 +390,7 @@ namespace TheOtherRoles.Patches {
                 Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
                 taskIdList.Shuffle();
                 var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p == Fox.fox)
                     {
@@ -455,19 +453,19 @@ namespace TheOtherRoles.Patches {
     class IntroPatch {
         public static void setupIntroTeamIcons(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
             // Intro solo teams
-            if (Helpers.isNeutral(CachedPlayer.LocalPlayer.PlayerControl) && !(CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
+            if (Helpers.isNeutral(PlayerControl.LocalPlayer) && !(PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
                 var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-                soloTeam.Add(CachedPlayer.LocalPlayer.PlayerControl);
+                soloTeam.Add(PlayerControl.LocalPlayer);
                 yourTeam = soloTeam;
             }
 
             // Add the Spy to the Impostor team (for the Impostors)
-            if (Spy.spy != null && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) {
+            if (Spy.spy != null && PlayerControl.LocalPlayer.Data.Role.IsImpostor) {
                 List<PlayerControl> players = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
                 var fakeImpostorTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>(); // The local player always has to be the first one in the list (to be displayed in the center)
-                fakeImpostorTeam.Add(CachedPlayer.LocalPlayer.PlayerControl);
+                fakeImpostorTeam.Add(PlayerControl.LocalPlayer);
                 foreach (PlayerControl p in players) {
-                    if (CachedPlayer.LocalPlayer.PlayerControl != p && (p == Spy.spy || p.Data.Role.IsImpostor))
+                    if (PlayerControl.LocalPlayer != p && (p == Spy.spy || p.Data.Role.IsImpostor))
                         fakeImpostorTeam.Add(p);
                 }
                 yourTeam = fakeImpostorTeam;
@@ -475,10 +473,10 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void setupIntroTeam(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
-            List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl);
+            List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer);
             RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
             if (roleInfo == null) return;
-            if (roleInfo.isNeutral && !(CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
+            if (roleInfo.isNeutral && !(PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
                 var neutralColor = new Color32(76, 84, 78, 255);
                 __instance.BackgroundBar.material.color = neutralColor;
                 __instance.TeamTitle.text = ModTranslation.getString("roleIntroNeutral");
@@ -508,7 +506,7 @@ namespace TheOtherRoles.Patches {
             static int seed = 0;
             static public IEnumerator SetRoleTexts(IntroCutscene __instance) {
                 // Don't override the intro of the vanilla roles
-                List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl);
+                List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer);
                 RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
                 List<RoleInfo> modifierInfo = infos.Where(info => info.isModifier).ToList();
 
@@ -539,7 +537,7 @@ namespace TheOtherRoles.Patches {
                 }
 
                 // Setup Madmate Intro
-                if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
+                if (Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))
                 {
                     if (roleInfo == RoleInfo.crewmate) __instance.RoleText.text = ModTranslation.getString("madmate");
                     else __instance.RoleText.text = ModTranslation.getString("madmatePrefix") + __instance.RoleText.text;
@@ -554,7 +552,7 @@ namespace TheOtherRoles.Patches {
                         if (info.roleId != RoleId.Lover)
                             __instance.RoleBlurbText.text += Helpers.cs(info.color, $"\n{info.introDescription}");
                         else {
-                            PlayerControl otherLover = CachedPlayer.LocalPlayer.PlayerControl == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
+                            PlayerControl otherLover = PlayerControl.LocalPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
                             __instance.RoleBlurbText.text += "\n" + Helpers.cs(Lovers.color, String.Format(ModTranslation.getString("loversFlavor"), otherLover?.Data?.PlayerName ?? ""));
                         }
                     }

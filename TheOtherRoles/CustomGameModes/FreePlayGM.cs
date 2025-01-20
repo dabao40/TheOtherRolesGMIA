@@ -9,7 +9,6 @@ using MonoMod.Cil;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
-using TheOtherRoles.Players;
 using UnityEngine;
 
 namespace TheOtherRoles.CustomGameModes
@@ -72,7 +71,7 @@ namespace TheOtherRoles.CustomGameModes
                         RPCProcedure.setRole((byte)r.roleId, PlayerControl.LocalPlayer.PlayerId);
 
                         if (r.roleId == RoleId.Fox) {
-                            CachedPlayer.LocalPlayer.PlayerControl.clearAllTasks();
+                            PlayerControl.LocalPlayer.clearAllTasks();
                             if (Shrine.allShrine?.FirstOrDefault() == null){
                                 Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
                             }
@@ -80,9 +79,9 @@ namespace TheOtherRoles.CustomGameModes
                             Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
                             taskIdList.Shuffle();
                             var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
-                            cpt.addTaskToPlayer(CachedPlayer.LocalPlayer.PlayerId);
+                            cpt.addTaskToPlayer(PlayerControl.LocalPlayer.PlayerId);
                         } else if (r.roleId == RoleId.JekyllAndHyde) {
-                            CachedPlayer.LocalPlayer.PlayerControl.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
+                            PlayerControl.LocalPlayer.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
                         } else if (formerRole.roleId is RoleId.Fox or RoleId.JekyllAndHyde or RoleId.TaskMaster) {
                             var options = GameOptionsManager.Instance.currentNormalGameOptions;
                             PlayerControl.LocalPlayer.generateAndAssignTasks(options.NumCommonTasks, options.NumShortTasks, options.NumLongTasks);

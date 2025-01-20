@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using TheOtherRoles.MetaContext;
-using TheOtherRoles.Players;
 using HarmonyLib;
 using TheOtherRoles.Utilities;
 using AmongUs.GameOptions;
@@ -87,7 +86,7 @@ public class CustomOverlay
         if (overlayShown) return;
 
         HudManager hudManager = FastDestroyableSingleton<HudManager>.Instance;
-        if (MapUtilities.CachedShipStatus == null || CachedPlayer.LocalPlayer.PlayerControl == null || hudManager == null || FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed || (!CachedPlayer.LocalPlayer.PlayerControl.CanMove && MeetingHud.Instance == null))
+        if (MapUtilities.CachedShipStatus == null || PlayerControl.LocalPlayer == null || hudManager == null || FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed || (!PlayerControl.LocalPlayer.CanMove && MeetingHud.Instance == null))
             return;
 
         if (!initializeOverlays()) return;
@@ -116,7 +115,7 @@ public class CustomOverlay
         infoUnderlay.enabled = true;
 
         string rolesText = "";
-        foreach (RoleInfo r in RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl, false))
+        foreach (RoleInfo r in RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false))
         {
             string roleDesc = r.fullDescription;
             rolesText += $"<size=180%>{Helpers.cs(r.color, r.name)}</size>" + "\n" +
@@ -124,7 +123,7 @@ public class CustomOverlay
                 (roleDesc != "" ? $"\n{r.fullDescription}" : "") + "\n\n";
         }
 
-        foreach (var r in RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl))
+        foreach (var r in RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer))
         {
             if (!r.isModifier) continue;
             string roleDesc = r.fullDescription;
@@ -134,7 +133,7 @@ public class CustomOverlay
         }
 
         var rows = rolesText.Count(c => c == '\n');
-        var infoCount = RoleInfo.getRoleInfoForPlayer(CachedPlayer.LocalPlayer.PlayerControl).Count;
+        var infoCount = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).Count;
         var maxY = Mathf.Max(1.15f, (infoCount * 2.2f + rows - 18f) * (AmongUs.Data.DataManager.Settings.Language.CurrentLanguage == SupportedLangs.English ? 0.06f : 0.09f) + 1.165f);
         scroller.enabled = true;
         scroller.ContentYBounds = new FloatRange(1.15f, maxY);
