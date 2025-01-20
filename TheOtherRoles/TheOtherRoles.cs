@@ -435,7 +435,7 @@ namespace TheOtherRoles
 
                 if (playerId == CachedPlayer.LocalPlayer.PlayerId) {
                     HudManagerStartPatch.setAllButtonsHandcuffedStatus(active);
-                    SoundEffectsAssetsManager.play(SoundEffects.deputyHandcuff);
+                    SoundEffectsManager.play("deputyHandcuff");
 		}
  
 	    }
@@ -3200,7 +3200,7 @@ namespace TheOtherRoles
                 target2 = null;
                 HudManagerStartPatch.teleporterTeleportButton.Timer = HudManagerStartPatch.teleporterTeleportButton.MaxTimer;
                 teleportNumber--;
-                SoundEffectsAssetsManager.play(SoundEffects.teleporterTeleport);
+                SoundEffectsManager.play("teleporterTeleport");
             }, (y) =>
             {
                 return transporttargetIDs.Contains(y.PlayerId);
@@ -5732,7 +5732,7 @@ namespace TheOtherRoles
             }
             isPlanted = false;
             isActive = false;
-            if (flag) SoundEffectsAssetsManager.stop("bombFuseBurning");
+            if (flag) SoundEffectsManager.stop("bombFuseBurning");
         }
 
         public static void clearAndReload() {
