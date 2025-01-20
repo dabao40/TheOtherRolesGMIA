@@ -1332,12 +1332,6 @@ namespace TheOtherRoles {
                 return MurderAttemptResult.SuppressKill;
             }
 
-            else if (Rootkit.rootkit != null && target == Rootkit.rootkit && killer != AntiRootkit.antiRootkit && Rootkit.AntiKillChance != 0)
-            {
-                Rootkit.AntiKillChance--;
-                return MurderAttemptResult.SuppressKill;
-            }
-
             else if (Cupid.cupid != null && Cupid.shielded == target && !Cupid.cupid.Data.IsDead)
             {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, Hazel.SendOption.Reliable, -1);

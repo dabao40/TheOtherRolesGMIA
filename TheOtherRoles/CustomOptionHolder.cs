@@ -508,12 +508,7 @@ namespace TheOtherRoles {
         public static CustomOption modifierSunglasses;
         public static CustomOption modifierSunglassesQuantity;
         public static CustomOption modifierSunglassesVision;
-
-        public static CustomOption modifierRootkit;
-        public static CustomOption modifierRootkitAntiKillChance;
-
-        public static CustomOption modifierAntiRootkit;
-
+        
         public static CustomOption modifierMini;
         public static CustomOption modifierMiniGrowingUpDuration;
         public static CustomOption modifierMiniGrowingUpInMeeting;
@@ -1148,10 +1143,6 @@ namespace TheOtherRoles {
             modifierMini = CustomOption.Create(1061, Types.Modifier, cs(Color.yellow, "mini"), rates, null, true);
             modifierMiniGrowingUpDuration = CustomOption.Create(1062, Types.Modifier, "miniGrowingUpDuration", 400f, 100f, 1500f, 100f, modifierMini, false, "unitSeconds");
             modifierMiniGrowingUpInMeeting = CustomOption.Create(1063, Types.Modifier, "miniGrowingUpInMeeting", true, modifierMini);
-
-            modifierRootkit = CustomOption.Create(10000, Types.Modifier, cs(Color.yellow, "rootkit"), rates, null, true);
-            modifierRootkitAntiKillChance = CustomOption.Create(10001, Types.Modifier, cs(Color.yellow, "modifierRootkitAntiKillChance"), 1f, 1f, 6f, 1f, modifierRootkit, false, "unitShots");
-            modifierAntiRootkit = CustomOption.Create(10002, Types.Modifier, "modifierAntiRootkit", true, modifierRootkit);
 
             modifierVip = CustomOption.Create(1070, Types.Modifier, cs(Color.yellow, "vip"), rates, null, true);
             modifierVipQuantity = CustomOption.Create(1071, Types.Modifier, cs(Color.yellow, "vipQuantity"), ratesModifier, modifierVip);

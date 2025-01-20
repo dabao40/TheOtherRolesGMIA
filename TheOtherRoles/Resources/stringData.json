@@ -329,10 +329,6 @@
         "13": "\u8d4c\u602a\u8d4c\u6740\u65e0\u89c6\u533b\u751f\u62a4\u76fe",
         "14": "\u8ced\u602a\u8ced\u6bba\u7121\u8996\u91ab\u751f\u8b77\u76fe"
     },
-    "guesserGamemodeCrewGuesserNumberOfTasks": {
-        "0": "Number Of Tasks Needed To Unlock Shooting\nFor Crew Guesser",
-        "13": "\u8239\u5458\u8d4c\u602a\u89e3\u9501\u731c\u6d4b\u6280\u80fd\u6240\u9700\u5b8c\u6210\u4efb\u52a1\u6570"
-    },
     "guesserGamemodeEvilCanKillSpy": {
         "0": "Evil Guesser Can Guess The Spy",
         "11": "\u30a4\u30d3\u30eb\u30b2\u30c3\u30b5\u30fc\u306f\u30b9\u30d1\u30a4\u3092\u63a8\u6bba\u3067\u304d\u308b\u304b",
@@ -2818,18 +2814,6 @@
         "0": "This player might die after the meeting",
         "13": "\u8fd9\u540d\u73a9\u5bb6\u53ef\u80fd\u5728\u4f1a\u8bae\u540e\u6b7b\u4ea1"
     },
-    "armored": {
-        "0": "Armored",
-        "13": "\u88c5\u7532\u5175"
-    },
-    "armoredIntroDesc": {
-        "0": "You are protected from one murder attempt",
-        "13": "\u4f60\u53d7\u5230\u4fdd\u62a4\uff0c\u514d\u906d\u4e00\u6b21\u8c0b\u6740\u4f01\u56fe"
-    },
-    "armoredShortDesc": {
-        "0": "You are protected from one murder attempt",
-        "13": "\u4f60\u6709\u4e00\u6b21\u514d\u6b7b\u673a\u4f1a"
-    },
     "ninja": {
         "0": "Ninja",
         "11": "\u30cb\u30f3\u30b8\u30e3",
@@ -4361,34 +4345,6 @@
         "13": " - <color=#FF0000FF>(\u51fb\u6740\u6570: {0})</color>",
         "14": " - <color=#FF0000FF>(\u64ca\u6bba\u6578: {0})</color>"
     },
-    "ImpostorDisconnect": {
-        "0": "Last Crewmate Disconnected",
-        "13": "\u6700\u540e\u4e00\u540d\u8239\u5458\u65ad\u8fde"
-    },
-    "ImpostorByKill": {
-        "0": "Impostors Win - By Kill",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u4eba\u6570\u4f18\u52bf(\u51fb\u6740)"
-    },
-    "ImpostorBySabotage": {
-        "0": "Impostors Win - By Sabotage",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u7834\u574f\u80dc\u5229"
-    },
-    "ImpostorByVote": {
-        "0": "Impostors Win - By Vote, Guess or DC",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u4eba\u6570\u4f18\u52bf(\u9a71\u9010,\u731c\u6d4b\u6216\u65ad\u8fde)"
-    },
-    "HumansByTask": {
-        "0": "Crew Wins - Task Win",
-        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u4efb\u52a1\u83b7\u80dc"
-    },
-    "HumansDisconnect": {
-        "0": "Crew Wins - No Evil Killers Left",
-        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6ca1\u6709\u90aa\u6076\u804c\u4e1a(\u65ad\u8fde)"
-    },
-    "HumansByVote": {
-        "0": "Crew Wins - No Evil Killers Left",
-        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6ca1\u6709\u90aa\u6076\u804c\u4e1a(\u7968\u51fa)"
-    },
     "roleIntroNeutral": {
         "0": "Neutral",
         "11": "\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb",
@@ -4655,18 +4611,6 @@
         "11": "\u3042\u306a\u305f\u306e\u6b7b\u306f\u5168\u54e1\u306b\u901a\u77e5\u3055\u308c\u308b\u3002",
         "13": "\u6240\u6709\u4eba\u90fd\u4f1a\u77e5\u9053\u4f60\u7684\u6b7b\u8baf",
         "14": "\u6240\u6709\u4eba\u90fd\u6703\u77e5\u9053\u59b3\u7684\u6b7b\u8a0a"
-    },
-    "rootkit": {
-        "0": "Rootkit"
-    },
-    "antirootkit": {
-        "0": "Anti Rootkit"
-    },
-    "modifierRootkitAntiKillChance": {
-        "0": "Rootkit Anti Kill Chance"
-    },
-    "modifierAntiRootkit": {
-        "0": "Have Anti Rootkit"
     },
     "bloody": {
         "0": "Bloody",
@@ -6281,14 +6225,6 @@
         "0": "Silhouette Visibility",
         "13": "\u9634\u5f71\u53ef\u89c1\u7a0b\u5ea6"
     },
-    "LobbyJoinBindText1": {
-        "0": "Prev Lobby:",
-        "13": "\u8fd4\u56de\u4e0a\u4e00\u4e2a\u5927\u5385:"
-    },
-    "LobbyJoinBindText2": {
-        "0": "\nClipboard:",
-        "13": "\n\u7c98\u8d34\u677f:"
-    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -7352,10 +7288,6 @@
         "11": "\u30fbVIP\u304c\u6b7b\u4ea1\u3057\u305f\u5834\u5408\u3001\u5168\u54e1\u306b\u901a\u77e5\u3055\u308c\u308b\n\u30fb\u901a\u77e5\u3055\u308c\u308b\u3068\u304d\u306f\u753b\u9762\u304c\u5149\u308a\u3001VIP\u3092\u6bba\u3057\u305f\u9663\u55b6\u306e\u8272\u3067\u5149\u308b",
         "13": "\u5185\u9b3c,\u8c7a\u72fc\u6216\u8005\u8239\u5458\u90fd\u4f1a\u53d7\u5230\u9644\u52a0\u804c\u4e1aVIP\u7684\u5f71\u54cd,\n\u5f53VIP\u6b7b\u4ea1\u65f6\uff0c\u4ed6\u4f1a\u5411\u5728\u573a\u7684\u6240\u6709\u73a9\u5bb6\u53d1\u51fa\u4e00\u4e2a\u767d\u8272\u95ea\u5c4f\u6765\u63d0\u793a\u5927\u5bb6\n\u5982\u679c\"\u663e\u793a\u9635\u8425\u989c\u8272\"\u7684\u8bbe\u7f6e\u88ab\u6253\u5f00,\u90a3\u4e48\u5728\u573a\u7684\u6bcf\u4e00\u4f4d\u73a9\u5bb6\n\u4f1a\u5f97\u5230\u4e00\u4e2a\u8ddfVIP\u9635\u8425\u76f8\u540c\u989c\u8272\u7684\u95ea\u5c4f\u3002",
         "14": "\u5167\u9b3c,\u8c7a\u72fc\u6216\u8005\u8239\u54e1\u90fd\u6703\u53d7\u5230\u9644\u52a0\u8077\u696dVIP\u7684\u5f71\u97ff,\n\u7576VIP\u6b7b\u4ea1\u6642\uff0c\u4ed6\u6703\u56ae\u5728\u5834\u7684\u6240\u6709\u73a9\u5bb6\u767c\u51fa\u4e00\u500b\u767d\u8272\u9583\u5c4f\u4f86\u63d0\u793a\u5927\u5bb6\n\u5982\u679c\"\u986f\u793a\u9663\u71df\u984f\u8272\"\u7684\u8a2d\u7f6e\u88ab\u6253\u958b,\u90a3\u9ebd\u5728\u5834\u7684\u6bcf\u4e00\u4f4d\u73a9\u5bb6\n\u6703\u5f97\u5230\u4e00\u500b\u8ddfVIP\u9663\u71df\u76f8\u540c\u984f\u8272\u7684\u9583\u5c4f\u3002"
-    },
-    "armoredFullDesc": {
-        "0": "The Armored is a Modifier that protects the player from the first shot that would have killed them. \nThere can only be one Armored player per round.",
-        "13": "\u88c5\u7532\u5175\u662f\u4e00\u4e2a\u9644\u52a0\u804c\u4e1a\n\u53ef\u4ee5\u4fdd\u62a4\u73a9\u5bb6\u514d\u53d7\u7b2c\u4e00\u5200\u4f24\u5bb3\n\u6bcf\u8f6e\u53ea\u6709\u4e00\u540d\u88c5\u7532\u5175"
     },
     "miniFullDesc": {
         "0": "The Mini's character is smaller and hence visible to everyone in\nthe game. The Mini cannot be killed until it turns 18 years old, \nhowever it can be voted out.",
