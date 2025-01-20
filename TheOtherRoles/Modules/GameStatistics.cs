@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TheOtherRoles.MetaContext;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using Unity.Services.Core.Telemetry.Internal;
 using UnityEngine;
@@ -333,7 +332,7 @@ namespace TheOtherRoles.Modules
 
         public void RpcRecordEvent(EventVariation variation, TranslatableTag relatedTag, PlayerControl source, int targetMask)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
             writer.Write((byte)variation.Id);
             writer.Write((byte)relatedTag.Id);
             writer.Write(source?.PlayerId ?? byte.MaxValue);
@@ -345,7 +344,7 @@ namespace TheOtherRoles.Modules
 
         public void RpcRecordEvent(EventVariation variation, TranslatableTag relatedTag, float timeLag, PlayerControl source, int targetMask)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
             writer.Write((byte)variation.Id);
             writer.Write((byte)relatedTag.Id);
             writer.Write(source?.PlayerId ?? byte.MaxValue);

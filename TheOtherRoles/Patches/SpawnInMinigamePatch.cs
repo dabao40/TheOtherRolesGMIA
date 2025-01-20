@@ -6,7 +6,6 @@ using Hazel;
 using Il2CppSystem.Data;
 using PowerTools;
 using TheOtherRoles.Objects;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
@@ -51,13 +50,13 @@ namespace TheOtherRoles.Patches
         {
             __instance.MyTask = task;
             __instance.MyNormTask = task as NormalPlayerTask;
-            if (CachedPlayer.LocalPlayer.PlayerControl)
+            if (PlayerControl.LocalPlayer)
             {
                 if (MapBehaviour.Instance)
                 {
                     MapBehaviour.Instance.Close();
                 }
-                CachedPlayer.LocalPlayer.PlayerControl.NetTransform.Halt();
+                PlayerControl.LocalPlayer.NetTransform.Halt();
             }
             __instance.StartCoroutine(__instance.CoAnimateOpen());
 
@@ -81,7 +80,7 @@ namespace TheOtherRoles.Patches
             array = (from s in array.Take(__instance.LocationButtons.Length)
                      orderby s.Location.x, s.Location.y descending
                      select s).ToArray<SpawnInMinigame.SpawnLocation>();
-            CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(new Vector2(-25f, 40f));
+            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(-25f, 40f));
 
             for (int i = 0; i < __instance.LocationButtons.Length; i++)
             {
@@ -99,8 +98,8 @@ namespace TheOtherRoles.Patches
             }
 
 
-            CachedPlayer.LocalPlayer.PlayerControl.gameObject.SetActive(false);
-            CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(new Vector2(-25f, 40f));
+            PlayerControl.LocalPlayer.gameObject.SetActive(false);
+            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(-25f, 40f));
             __instance.StartCoroutine(__instance.RunTimer());
             ControllerManager.Instance.OpenOverlayMenu(__instance.name, null, __instance.DefaultButtonSelected, __instance.ControllerSelectable, false);
             PlayerControl.HideCursorTemporarily();
@@ -115,9 +114,9 @@ namespace TheOtherRoles.Patches
                 return;
             }
             __instance.gotButton = true;
-            CachedPlayer.LocalPlayer.PlayerControl.gameObject.SetActive(true);
+            PlayerControl.LocalPlayer.gameObject.SetActive(true);
             __instance.StopAllCoroutines();
-            CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(spawnAt);
+            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(spawnAt);
             FastDestroyableSingleton<HudManager>.Instance.PlayerCam.SnapToTarget();
             __instance.Close();
         }

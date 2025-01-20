@@ -1,7 +1,6 @@
 using System.Linq;
 using System;
 using System.Collections.Generic;
-using TheOtherRoles.Players;
 using static TheOtherRoles.TheOtherRoles;
 using UnityEngine;
 using TheOtherRoles.Utilities;
@@ -135,6 +134,7 @@ namespace TheOtherRoles
         public static RoleInfo vip = new("vip", Color.yellow, RoleId.Vip, false, true);
         public static RoleInfo invert = new("invert", Color.yellow, RoleId.Invert, false, true);
         public static RoleInfo chameleon = new("chameleon", Color.yellow, RoleId.Chameleon, false, true);
+        public static RoleInfo armored = new ("armored", Color.yellow, RoleId.Armored, false, true);
         //public static RoleInfo shifter = new RoleInfo("Shifter", Color.yellow, "Shift your role", "Shift your role", RoleId.Shifter, false, true);
 
 
@@ -233,6 +233,7 @@ namespace TheOtherRoles
             vip,
             invert,
             chameleon,
+            armored,
             cupidLover,
             //shifter, 
         };
@@ -258,6 +259,7 @@ namespace TheOtherRoles
                 if (p == Mini.mini) infos.Add(mini);
                 if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
+                if (p == Armored.armored) infos.Add(armored);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
 
@@ -328,12 +330,12 @@ namespace TheOtherRoles
             }
             if (p == TaskMaster.taskMaster)
             {
-                if (CachedPlayer.LocalPlayer.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
+                if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
                 else infos.Add(TaskMaster.isTaskComplete ? taskMaster : crewmate);
             }
             if (p == PlagueDoctor.plagueDoctor) infos.Add(plagueDoctor);
-            if (p == SchrodingersCat.schrodingersCat || p == SchrodingersCat.formerSchrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || CachedPlayer.LocalPlayer.Data.IsDead
-                || SchrodingersCat.hasTeam() || SchrodingersCat.tasksComplete(CachedPlayer.LocalPlayer.PlayerControl) ? schrodingersCat : crewmate);
+            if (p == SchrodingersCat.schrodingersCat || p == SchrodingersCat.formerSchrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || PlayerControl.LocalPlayer.Data.IsDead
+                || SchrodingersCat.hasTeam() || SchrodingersCat.tasksComplete(PlayerControl.LocalPlayer) ? schrodingersCat : crewmate);
             if (p == Opportunist.opportunist) infos.Add(opportunist);
             if (p == Shifter.shifter) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
             if (p == Arsonist.arsonist) infos.Add(arsonist);
@@ -392,15 +394,22 @@ namespace TheOtherRoles
                 }
             }
 
-            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && CachedPlayer.LocalPlayer.PlayerControl != Lawyer.target) 
+            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target) 
                 roleName += useColors ? Helpers.cs(Pursuer.color, " §") : " §";
             if (Husk.husk.Any(x => x.PlayerId == p.PlayerId)) roleName += $" ({ModTranslation.getString("husk")})";
-            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId)) roleName += ModTranslation.getString("guesserModifier");            
-
+            if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId))
+            {
+                int remainingShots = HandleGuesser.remainingShots(p.PlayerId);
+                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(p.Data);
+                if (!Helpers.isEvil(p) && playerCompleted < HandleGuesser.tasksToUnlock || remainingShots == 0)
+                    roleName += Helpers.cs(Color.gray, "guesserModifier".Translate());
+                else
+                    roleName += Helpers.cs(Color.white, "guesserModifier".Translate());
+            }
             if (!suppressGhostInfo && p != null) {
-                if (p == Shifter.shifter && (CachedPlayer.LocalPlayer.PlayerControl == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
+                if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
                     roleName += Helpers.cs(Color.yellow, " ← " + Shifter.futureShift.Data.PlayerName);
-                if (p == Vulture.vulture && (CachedPlayer.LocalPlayer.PlayerControl == Vulture.vulture || Helpers.shouldShowGhostInfo()))
+                if (p == Vulture.vulture && (PlayerControl.LocalPlayer == Vulture.vulture || Helpers.shouldShowGhostInfo()))
                     roleName += Helpers.cs(Vulture.color, $" ({Vulture.vultureNumberToWin - Vulture.eatenBodies} {ModTranslation.getString("roleInfoRemaining")})");
                 if (Helpers.shouldShowGhostInfo()) {
                     if (Eraser.futureErased.Contains(p))
@@ -428,7 +437,7 @@ namespace TheOtherRoles
                     if (Arsonist.dousedPlayers.Contains(p))
                         roleName = Helpers.cs(Arsonist.color, "♨ ") + roleName;
                     if (p == Arsonist.arsonist)
-                        roleName += Helpers.cs(Arsonist.color, $" ({CachedPlayer.AllPlayers.Count(x => { return x.PlayerControl != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
+                        roleName += Helpers.cs(Arsonist.color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return x != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
                     if (p == Jackal.fakeSidekick)
                         roleName = Helpers.cs(Sidekick.color, ModTranslation.getString("roleInfoFakeSD")) + roleName;
                     if (Akujo.keeps.Contains(p))

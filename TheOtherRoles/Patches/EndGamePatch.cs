@@ -6,7 +6,6 @@ using UnityEngine;
 using System.Linq;
 using System;
 using System.Text;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
@@ -94,8 +93,9 @@ namespace TheOtherRoles.Patches {
     }
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-    public class OnGameEndPatch {
-        private static GameOverReason gameOverReason;
+    public static class OnGameEndPatch
+    {
+        public static GameOverReason gameOverReason = GameOverReason.HumansByTask;
         public static void Prefix(AmongUsClient __instance, [HarmonyArgument(0)]ref EndGameResult endGameResult) {
             gameOverReason = endGameResult.GameOverReason;
             if ((int)endGameResult.GameOverReason >= 10) endGameResult.GameOverReason = GameOverReason.ImpostorByKill;
@@ -126,7 +126,7 @@ namespace TheOtherRoles.Patches {
 
             AdditionalTempData.clear();
 
-            foreach(PlayerControl playerControl in CachedPlayer.AllPlayers) {
+            foreach(PlayerControl playerControl in PlayerControl.AllPlayerControls) {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
                 var colors = roles.Select(x => x.color).ToList();
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data, true);
@@ -215,7 +215,7 @@ namespace TheOtherRoles.Patches {
             if (crewmateWin)
             {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (!p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && !Madmate.madmate.Contains(p) && CreatedMadmate.createdMadmate != p)
                     {
@@ -230,7 +230,7 @@ namespace TheOtherRoles.Patches {
             if (impostorWin)
             {
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.Role.IsImpostor)
                     {
@@ -270,7 +270,7 @@ namespace TheOtherRoles.Patches {
 
             // Jester win
             else if (jesterWin) {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Jester.jester) _ = new StaticAchievementToken("jester.challenge");
+                if (PlayerControl.LocalPlayer == Jester.jester) _ = new StaticAchievementToken("jester.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Jester.jester.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -296,7 +296,7 @@ namespace TheOtherRoles.Patches {
 
             else if (plagueDoctorWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == PlagueDoctor.plagueDoctor) _ = new StaticAchievementToken("plagueDoctor.challenge");
+                if (PlayerControl.LocalPlayer == PlagueDoctor.plagueDoctor) _ = new StaticAchievementToken("plagueDoctor.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(PlagueDoctor.plagueDoctor.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -312,7 +312,7 @@ namespace TheOtherRoles.Patches {
 
             else if (jekyllAndHydeWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == JekyllAndHyde.jekyllAndHyde) _ = new StaticAchievementToken("jekyllAndHyde.challenge");
+                if (PlayerControl.LocalPlayer == JekyllAndHyde.jekyllAndHyde) _ = new StaticAchievementToken("jekyllAndHyde.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(JekyllAndHyde.jekyllAndHyde.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -341,7 +341,7 @@ namespace TheOtherRoles.Patches {
 
             else if (moriartyWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Moriarty.moriarty) _ = new StaticAchievementToken("moriarty.challenge");
+                if (PlayerControl.LocalPlayer == Moriarty.moriarty) _ = new StaticAchievementToken("moriarty.challenge");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Moriarty.moriarty.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -374,13 +374,13 @@ namespace TheOtherRoles.Patches {
                 CachedPlayerData wpd = new(Vulture.vulture.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.VultureWin;
-                if (CachedPlayer.LocalPlayer.PlayerControl == Vulture.vulture) _ = new StaticAchievementToken("vulture.challenge");
+                if (PlayerControl.LocalPlayer == Vulture.vulture) _ = new StaticAchievementToken("vulture.challenge");
             }
 
             // Akujo win
             else if (akujoWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) _ = new StaticAchievementToken("akujo.challenge");
+                if (PlayerControl.LocalPlayer == Akujo.akujo) _ = new StaticAchievementToken("akujo.challenge");
                 AdditionalTempData.winCondition = WinCondition.AkujoWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(Akujo.akujo.Data));
@@ -401,7 +401,7 @@ namespace TheOtherRoles.Patches {
                 if (!Lovers.existingWithKiller()) {
                     AdditionalTempData.winCondition = WinCondition.LoversTeamWin;
                     EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                    foreach (PlayerControl p in CachedPlayer.AllPlayers) {
+                    foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                         if (p == null) continue;
                         if (p == Lovers.lover1 || p == Lovers.lover2)
                             EndGameResult.CachedWinners.Add(new CachedPlayerData(p.Data));
@@ -425,7 +425,7 @@ namespace TheOtherRoles.Patches {
 
             else if (cupidLoversWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
+                if (PlayerControl.LocalPlayer == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
                 AdditionalTempData.winCondition = WinCondition.CupidLoversWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(Cupid.lovers1.Data));
@@ -442,7 +442,7 @@ namespace TheOtherRoles.Patches {
                     IsImpostor = false
                 };
                 EndGameResult.CachedWinners.Add(wpd);
-                if (CachedPlayer.LocalPlayer.PlayerControl == Jackal.jackal) {
+                if (PlayerControl.LocalPlayer == Jackal.jackal) {
                     var lastDead = GameHistory.deadPlayers.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
                     if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == Jackal.jackal) _ = new StaticAchievementToken("jackal.challenge");
                 }
@@ -482,7 +482,7 @@ namespace TheOtherRoles.Patches {
 
             else if (lawyerSoloWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer) _ = new StaticAchievementToken("lawyer.challenge1");
+                if (PlayerControl.LocalPlayer == Lawyer.lawyer) _ = new StaticAchievementToken("lawyer.challenge1");
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Lawyer.lawyer.Data);
                 EndGameResult.CachedWinners.Add(wpd);
@@ -491,7 +491,7 @@ namespace TheOtherRoles.Patches {
 
             else if (foxWin)
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl == Fox.fox) _ = new StaticAchievementToken("fox.challenge");
+                if (PlayerControl.LocalPlayer == Fox.fox) _ = new StaticAchievementToken("fox.challenge");
                 AdditionalTempData.winCondition = WinCondition.FoxWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
                 CachedPlayerData wpd = new(Fox.fox.Data);
@@ -535,7 +535,7 @@ namespace TheOtherRoles.Patches {
                     {
                         if (!Lawyer.lawyer.Data.IsDead)
                         {
-                            if (CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer) _ = new StaticAchievementToken("lawyer.challenge2");
+                            if (PlayerControl.LocalPlayer == Lawyer.lawyer) _ = new StaticAchievementToken("lawyer.challenge2");
                             EndGameResult.CachedWinners.Remove(winningClient);
                             EndGameResult.CachedWinners.Add(new CachedPlayerData(Lawyer.lawyer.Data));
                             AdditionalTempData.additionalWinConditions.Add(WinCondition.AdditionalLawyerStolenWin); // The Lawyer replaces the client's victory
@@ -557,7 +557,7 @@ namespace TheOtherRoles.Patches {
                     !EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == Cupid.cupid.Data.PlayerName)) {
                     EndGameResult.CachedWinners.Add(new CachedPlayerData(Cupid.cupid.Data));
                 }
-                if (CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
+                if (PlayerControl.LocalPlayer == Cupid.cupid) _ = new StaticAchievementToken("cupid.challenge");
             }
 
             // Possible Additional winner: Pursuer
@@ -566,10 +566,10 @@ namespace TheOtherRoles.Patches {
                 if (!EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == Pursuer.pursuer.Data.PlayerName))
                     EndGameResult.CachedWinners.Add(new CachedPlayerData(Pursuer.pursuer.Data));
                 AdditionalTempData.additionalWinConditions.Add(WinCondition.AdditionalAlivePursuerWin);
-                if (CachedPlayer.LocalPlayer.PlayerControl == Pursuer.pursuer) _ = new StaticAchievementToken("pursuer.common2");
+                if (PlayerControl.LocalPlayer == Pursuer.pursuer) _ = new StaticAchievementToken("pursuer.common2");
             }
 
-            if (Lighter.lighter != null && !Lighter.lighter.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter)
+            if (Lighter.lighter != null && !Lighter.lighter.Data.IsDead && PlayerControl.LocalPlayer == Lighter.lighter)
                 _ = new StaticAchievementToken("lighter.common1");
 
             // Possible Additional winner: Opportunist
@@ -578,10 +578,10 @@ namespace TheOtherRoles.Patches {
                 if (!EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == Opportunist.opportunist.Data.PlayerName))
                     EndGameResult.CachedWinners.Add(new CachedPlayerData(Opportunist.opportunist.Data));
                 AdditionalTempData.additionalWinConditions.Add(WinCondition.OpportunistWin);
-                if (CachedPlayer.LocalPlayer.PlayerControl == Opportunist.opportunist) _ = new StaticAchievementToken("opportunist.common1");
+                if (PlayerControl.LocalPlayer == Opportunist.opportunist) _ = new StaticAchievementToken("opportunist.common1");
             }
 
-            if (CachedPlayer.LocalPlayer.PlayerControl == Shifter.shifter && Shifter.isNeutral &&
+            if (PlayerControl.LocalPlayer == Shifter.shifter && Shifter.isNeutral &&
                 !EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == Shifter.shifter.Data.PlayerName))
                 _ = new StaticAchievementToken("corruptedShifter.another1");
 
@@ -727,7 +727,7 @@ namespace TheOtherRoles.Patches {
                 nonModTranslationText = "crewLoverWin";
                 textRenderer.text = ModTranslation.getString("crewLoverWin");
                 textRenderer.color = Lovers.color;
-                __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);                
+                __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversSoloWin || AdditionalTempData.winCondition == WinCondition.CupidLoversWin)
             {
@@ -781,6 +781,40 @@ namespace TheOtherRoles.Patches {
                 textRenderer.text = ModTranslation.getString("impostorWin");
                 textRenderer.color = Palette.ImpostorRed;
             }
+            else if (AdditionalTempData.winCondition == WinCondition.Default)
+            {
+                switch (OnGameEndPatch.gameOverReason)
+                {
+                    case GameOverReason.ImpostorDisconnect:
+                        textRenderer.text = "ImpostorDisconnect".Translate();
+                        textRenderer.color = Color.red;
+                        break;
+                    case GameOverReason.ImpostorByKill:
+                        textRenderer.text = "ImpostorByKill".Translate();
+                        textRenderer.color = Color.red;
+                        break;
+                    case GameOverReason.ImpostorBySabotage:
+                        textRenderer.text = "ImpostorBySabotage".Translate();
+                        textRenderer.color = Color.red;
+                        break;
+                    case GameOverReason.ImpostorByVote:
+                        textRenderer.text = "ImpostorByVote".Translate();
+                        textRenderer.color = Color.red;
+                        break;
+                    case GameOverReason.HumansByTask:
+                        textRenderer.text = "HumansByTask".Translate();
+                        textRenderer.color = Color.white;
+                        break;
+                    case GameOverReason.HumansDisconnect:
+                        textRenderer.text = "HumansDisconnect".Translate();
+                        textRenderer.color = Color.white;
+                        break;
+                    case GameOverReason.HumansByVote:
+                        textRenderer.text = "HumansByVote".Translate();
+                        textRenderer.color = Color.white;
+                        break;
+                }
+            }
             foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
             {
                 if (cond == WinCondition.OpportunistWin)
@@ -789,10 +823,13 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            foreach (WinCondition cond in AdditionalTempData.additionalWinConditions) {
-                if (cond == WinCondition.AdditionalLawyerBonusWin) {
+            foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
+            {
+                if (cond == WinCondition.AdditionalLawyerBonusWin)
+                {
                     textRenderer.text += $"\n{Helpers.cs(Lawyer.color, ModTranslation.getString("lawyerExtraBonus"))}";
-                } else if (cond == WinCondition.AdditionalAlivePursuerWin) {
+                }
+                else if (cond == WinCondition.AdditionalAlivePursuerWin) {
                     textRenderer.text += $"\n{Helpers.cs(Pursuer.color, ModTranslation.getString("pursuerExtraBonus"))}";
                 }
                 else if (cond == WinCondition.AdditionalLawyerStolenWin)

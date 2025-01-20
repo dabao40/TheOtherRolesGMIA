@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
@@ -41,22 +40,22 @@ namespace TheOtherRoles
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             //System.Console.WriteLine("AddAdditionalVents");
 
-            // Polus¤Ë¥Ù¥ó¥È¤ò×·¼Ó¤¹¤ë
+            // Polusï¿½Ë¥Ù¥ï¿½È¤ï¿½×·ï¿½Ó¤ï¿½ï¿½ï¿½
             if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool())
             {
-                AdditionalVents vents1 = new(new Vector3(36.54f, -21.77f, CachedPlayer.LocalPlayer.PlayerControl.transform.position.z + 1f)); // Specimen
-                AdditionalVents vents2 = new(new Vector3(16.64f, -2.46f, CachedPlayer.LocalPlayer.PlayerControl.transform.position.z + 1f)); // InitialSpawn
-                AdditionalVents vents3 = new(new Vector3(26.67f, -17.54f, CachedPlayer.LocalPlayer.PlayerControl.transform.position.z + 1f)); // Vital
+                AdditionalVents vents1 = new(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
+                AdditionalVents vents2 = new(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
+                AdditionalVents vents3 = new(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
                 vents1.vent.Left = vents3.vent; // Specimen - Vital
                 vents2.vent.Center = vents3.vent; // InitialSpawn - Vital
                 vents3.vent.Right = vents1.vent; // Vital - Specimen
                 vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
             }
 
-            // AirShip¤Ë¥Ù¥ó¥È¤ò×·¼Ó¤¹¤ë
+            // AirShipï¿½Ë¥Ù¥ï¿½È¤ï¿½×·ï¿½Ó¤ï¿½ï¿½ï¿½
             // if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.additionalVents.getBool()){
-            //     AdditionalVents vents1 = new AdditionalVents(new Vector3(17.086f, 15.24f, CachedPlayer.LocalPlayer.PlayerControl.transform.position.z + 1f)); // MeetingRoom
-            //     AdditionalVents vents2 = new AdditionalVents(new Vector3(19.137f, -11.32f, CachedPlayer.LocalPlayer.PlayerControl.transform.position.z + 1f)); // Electrical
+            //     AdditionalVents vents1 = new AdditionalVents(new Vector3(17.086f, 15.24f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // MeetingRoom
+            //     AdditionalVents vents2 = new AdditionalVents(new Vector3(19.137f, -11.32f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Electrical
             //     vents1.vent.Right = vents2.vent;
             //     vents2.vent.Left = vents1.vent;
             // }

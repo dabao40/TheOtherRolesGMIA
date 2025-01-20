@@ -5,7 +5,6 @@ using System.Linq;
 using static TheOtherRoles.TheOtherRoles;
 using TheOtherRoles.Objects;
 using System;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using Epic.OnlineServices.Connect;
@@ -24,7 +23,7 @@ namespace TheOtherRoles.Patches {
             extraVictim = false;
             // Medic shield
             if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
                 writer.Write(Medic.futureShielded.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.medicSetShielded(Medic.futureShielded.PlayerId);
@@ -35,7 +34,7 @@ namespace TheOtherRoles.Patches {
             if (Shifter.shifter != null && AmongUsClient.Instance.AmHost && Shifter.futureShift != null) { // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
                 PlayerControl oldShifter = Shifter.shifter;
                 byte oldTaskMasterPlayerId = TaskMaster.isTaskMaster(Shifter.futureShift.PlayerId) && TaskMaster.isTaskComplete ? Shifter.futureShift.PlayerId : byte.MaxValue;
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShifterShift, Hazel.SendOption.Reliable, -1);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShifterShift, Hazel.SendOption.Reliable, -1);
                 writer.Write(Shifter.futureShift.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.shifterShift(Shifter.futureShift.PlayerId);
@@ -50,7 +49,7 @@ namespace TheOtherRoles.Patches {
                     }
                     bool allTasksCompleted = clearTasks == oldShifter.Data.Tasks.Count;
                     byte[] taskTypeIds = allTasksCompleted ? TaskMasterTaskHelper.GetTaskMasterTasks(oldShifter) : null;
-                    MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TaskMasterSetExTasks, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TaskMasterSetExTasks, Hazel.SendOption.Reliable, -1);
                     writer2.Write(oldShifter.PlayerId);
                     writer2.Write(oldTaskMasterPlayerId);
                     if (taskTypeIds != null)
@@ -64,7 +63,7 @@ namespace TheOtherRoles.Patches {
             // Eraser erase
             if (Eraser.eraser != null && AmongUsClient.Instance.AmHost && Eraser.futureErased != null) {  // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
                 foreach (PlayerControl target in Eraser.futureErased) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ErasePlayerRoles, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ErasePlayerRoles, Hazel.SendOption.Reliable, -1);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.erasePlayerRoles(target.PlayerId);
@@ -76,7 +75,7 @@ namespace TheOtherRoles.Patches {
             // Trickster boxes
             if (Trickster.trickster != null && JackInTheBox.hasJackInTheBoxLimitReached()) {
                 JackInTheBox.convertToVents();
-                if (CachedPlayer.LocalPlayer.PlayerControl == Trickster.trickster)
+                if (PlayerControl.LocalPlayer == Trickster.trickster)
                     _ = new StaticAchievementToken("trickster.common1");
             }
 
@@ -92,17 +91,17 @@ namespace TheOtherRoles.Patches {
                 foreach (PlayerControl target in Witch.futureSpelled) {
                     if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(Witch.witch, target, true) == MurderAttemptResult.PerformKill){
                         if (target == Lawyer.target && Lawyer.lawyer != null) {
-                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
                             RPCProcedure.lawyerPromotesToPursuer();
                         }
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.uncheckedExilePlayer(target.PlayerId);
 
-                        MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                        writer3.Write(CachedPlayer.LocalPlayer.PlayerId);
+                        MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                        writer3.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
                         writer3.Write(target.PlayerId);
                         writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
@@ -159,7 +158,8 @@ namespace TheOtherRoles.Patches {
                 return false;
             }
             public static void Postfix(ExileController __instance) {
-                WrapUpPostfix(__instance.initData.networkedPlayer);
+                NetworkedPlayerInfo networkedPlayer = __instance.initData.networkedPlayer;
+                WrapUpPostfix((networkedPlayer != null) ? networkedPlayer.Object : null);
             }
         }
 
@@ -170,7 +170,8 @@ namespace TheOtherRoles.Patches {
                 return false;
             }
             public static void Postfix(AirshipExileController __instance) {
-                WrapUpPostfix(__instance.initData.networkedPlayer);
+                NetworkedPlayerInfo networkedPlayer = __instance.initData.networkedPlayer;
+                WrapUpPostfix((networkedPlayer != null) ? networkedPlayer.Object : null);
             }
         }
 
@@ -186,7 +187,7 @@ namespace TheOtherRoles.Patches {
 
             if (!SubmergedCompatibility.IsSubmerged) return;
             if (obj.name.Contains("ExileCutscene")) {
-                WrapUpPostfix(ExileControllerBeginPatch.lastExiled);
+                WrapUpPostfix(obj.GetComponent<ExileController>().initData.networkedPlayer?.Object);
             } else if (obj.name.Contains("SpawnInMinigame")) {
                 AntiTeleport.setPosition();
                 Chameleon.lastMoved.Clear();
@@ -236,7 +237,7 @@ namespace TheOtherRoles.Patches {
             UnityEngine.Object.Destroy(__instance.gameObject);
         }
 
-        static void WrapUpPostfix(NetworkedPlayerInfo exiled)
+        static void WrapUpPostfix(PlayerControl exiled)
         {
             GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.MeetingEnd, null, 0) { RelatedTag = EventDetail.MeetingEnd });
             if (exiled != null)
@@ -259,35 +260,35 @@ namespace TheOtherRoles.Patches {
             // Reset custom button timers where necessary
             CustomButton.MeetingEndedUpdate();
 
-            if (SchrodingersCat.schrodingersCat != null && CachedPlayer.LocalPlayer.PlayerControl == SchrodingersCat.schrodingersCat && CachedPlayer.LocalPlayer.Data.Role.IsImpostor) {
+            if (SchrodingersCat.schrodingersCat != null && PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && PlayerControl.LocalPlayer.Data.Role.IsImpostor) {
                 SchrodingersCat.schrodingersCat.SetKillTimerUnchecked(SchrodingersCat.killCooldown);
             }
 
             // Mini set adapted cooldown
-            if (Mini.mini != null && CachedPlayer.LocalPlayer.PlayerControl == Mini.mini && Mini.mini.Data.Role.IsImpostor) {
+            if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini && Mini.mini.Data.Role.IsImpostor) {
                 var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
-                Mini.mini.SetKillTimer(CachedPlayer.LocalPlayer.PlayerControl.GetKillCooldown() * multiplier);
+                Mini.mini.SetKillTimer(PlayerControl.LocalPlayer.GetKillCooldown() * multiplier);
             }
 
-            if (Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor && exiled != null)
+            if (Mayor.mayor != null && PlayerControl.LocalPlayer == Mayor.mayor && exiled != null)
             {
                 Mayor.acTokenChallenge.Value.cleared |= Mayor.acTokenChallenge.Value.votedFor == exiled.PlayerId && Mayor.acTokenChallenge.Value.doubleVote &&
-                    ((Helpers.isEvil(exiled.Object) && Jester.jester != exiled.Object) || Madmate.madmate.Any(x => x.PlayerId == exiled.PlayerId)
-                || CreatedMadmate.createdMadmate == exiled.Object);
+                    ((Helpers.isEvil(ExileController.Instance.initData.networkedPlayer.Object) && Jester.jester != ExileController.Instance.initData.networkedPlayer.Object) || Madmate.madmate.Any(x => x.PlayerId == exiled.PlayerId)
+                || CreatedMadmate.createdMadmate == ExileController.Instance.initData.networkedPlayer.Object);
             }
 
-            if (Shifter.niceShifterAcTokenChallenge != null && CachedPlayer.LocalPlayer.PlayerControl.PlayerId == Shifter.niceShifterAcTokenChallenge.Value.oldShifterId && !Shifter.isNeutral &&
+            if (Shifter.niceShifterAcTokenChallenge != null && PlayerControl.LocalPlayer.PlayerId == Shifter.niceShifterAcTokenChallenge.Value.oldShifterId && !Shifter.isNeutral &&
                 exiled != null)
             {
                 Shifter.niceShifterAcTokenChallenge.Value.cleared |= Shifter.niceShifterAcTokenChallenge.Value.shiftId == exiled.PlayerId;
             }
 
-            if (Bait.bait != null && Bait.bait.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Bait.bait && exiled != null)
+            if (Bait.bait != null && Bait.bait.Data.IsDead && PlayerControl.LocalPlayer == Bait.bait && exiled != null)
             {
                 Bait.acTokenChallenge.Value.cleared |= Bait.acTokenChallenge.Value.killerId == exiled.PlayerId;
             }
 
-            if (Detective.detective != null && !Detective.detective.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl == Detective.detective)
+            if (Detective.detective != null && !Detective.detective.Data.IsDead && PlayerControl.LocalPlayer == Detective.detective)
             {
                 if (exiled != null)
                     Detective.acTokenChallenge.Value.cleared |= Detective.acTokenChallenge.Value.reported && Detective.acTokenChallenge.Value.votedFor == exiled.PlayerId;
@@ -295,31 +296,31 @@ namespace TheOtherRoles.Patches {
                 Detective.acTokenChallenge.Value.killerId = byte.MaxValue;
             }
 
-            if (Medic.medic != null && CachedPlayer.LocalPlayer.PlayerControl == Medic.medic)
+            if (Medic.medic != null && PlayerControl.LocalPlayer == Medic.medic)
             {
                 if (exiled != null)
                     Medic.acTokenChallenge.Value.cleared |= Medic.acTokenChallenge.Value.killerId == exiled.PlayerId;
                 Medic.acTokenChallenge.Value.killerId = byte.MaxValue;
             }
 
-            if (Swapper.swapper != null && CachedPlayer.LocalPlayer.PlayerControl == Swapper.swapper && exiled != null)
+            if (Swapper.swapper != null && PlayerControl.LocalPlayer == Swapper.swapper && exiled != null)
             {
-                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor)
                     Swapper.acTokenChallenge.Value.cleared |= (Swapper.acTokenChallenge.Value.swapped1 == exiled.PlayerId || Swapper.acTokenChallenge.Value.swapped2 == exiled.PlayerId)
-                        && exiled.Object.Data.Role.IsImpostor;
+                        && ExileController.Instance.initData.networkedPlayer.Object.Data.Role.IsImpostor;
                 else
                 {
                     bool swapped = Swapper.evilSwapperAcTokenChallenge.Value.swapped1 == exiled.PlayerId || Swapper.evilSwapperAcTokenChallenge.Value.swapped2 == exiled.PlayerId;
-                    Swapper.evilSwapperAcTokenChallenge.Value.cleared |= swapped && !exiled.Object.Data.Role.IsImpostor && (Helpers.playerById(Swapper.evilSwapperAcTokenChallenge.Value.swapped1).Data.Role.IsImpostor || Helpers.playerById(
+                    Swapper.evilSwapperAcTokenChallenge.Value.cleared |= swapped && !ExileController.Instance.initData.networkedPlayer.Object.Data.Role.IsImpostor && (Helpers.playerById(Swapper.evilSwapperAcTokenChallenge.Value.swapped1).Data.Role.IsImpostor || Helpers.playerById(
                         Swapper.evilSwapperAcTokenChallenge.Value.swapped2).Data.Role.IsImpostor);
-                    if (swapped && Jester.jester == exiled.Object)
+                    if (swapped && Jester.jester == ExileController.Instance.initData.networkedPlayer.Object)
                         _ = new StaticAchievementToken("evilSwapper.another1");
                 }
             }
 
-            if (Yasuna.yasuna != null && CachedPlayer.LocalPlayer.PlayerControl == Yasuna.yasuna && exiled != null)
+            if (Yasuna.yasuna != null && PlayerControl.LocalPlayer == Yasuna.yasuna && exiled != null)
             {
-                if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor)
+                if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor)
                 {
                     if (Yasuna.yasunaAcTokenChallenge.Value.targetId == exiled.PlayerId)
                     {
@@ -334,13 +335,13 @@ namespace TheOtherRoles.Patches {
                 }
                 else
                 {
-                    Yasuna.evilYasunaAcTokenChallenge.Value.cleared |= Yasuna.evilYasunaAcTokenChallenge.Value.targetId == exiled.PlayerId && !exiled.Object.Data.Role.IsImpostor;
+                    Yasuna.evilYasunaAcTokenChallenge.Value.cleared |= Yasuna.evilYasunaAcTokenChallenge.Value.targetId == exiled.PlayerId && !ExileController.Instance.initData.networkedPlayer.Object.Data.Role.IsImpostor;
                     Yasuna.evilYasunaAcTokenChallenge.Value.targetId = byte.MaxValue;
                 }
             }
 
             // Seer spawn souls
-            if (Seer.deadBodyPositions != null && Seer.seer != null && CachedPlayer.LocalPlayer.PlayerControl == Seer.seer && (Seer.mode == 0 || Seer.mode == 2)) {
+            if (Seer.deadBodyPositions != null && Seer.seer != null && PlayerControl.LocalPlayer == Seer.seer && (Seer.mode == 0 || Seer.mode == 2)) {
                 foreach (Vector3 pos in Seer.deadBodyPositions) {
                     GameObject soul = new();
                     //soul.transform.position = pos;
@@ -364,7 +365,7 @@ namespace TheOtherRoles.Patches {
                 Seer.deadBodyPositions = new List<Vector3>();
             }
 
-            if (Morphling.morphling != null && CachedPlayer.LocalPlayer.PlayerControl == Morphling.morphling)
+            if (Morphling.morphling != null && PlayerControl.LocalPlayer == Morphling.morphling)
             {
                 Morphling.acTokenChallenge.Value.cleared |= exiled != null && Morphling.acTokenChallenge.Value.kill && Morphling.acTokenChallenge.Value.playerId == exiled.PlayerId;
                 Morphling.acTokenChallenge.Value.playerId = byte.MaxValue;
@@ -387,7 +388,7 @@ namespace TheOtherRoles.Patches {
                     FortuneTeller.playerStatus[p.PlayerId] = !p.Data.IsDead;
                 }
 
-                if (CachedPlayer.LocalPlayer.PlayerControl == FortuneTeller.fortuneTeller)
+                if (PlayerControl.LocalPlayer == FortuneTeller.fortuneTeller)
                     FortuneTeller.acTokenImpostor.Value.cleared |= exiled != null && FortuneTeller.acTokenImpostor.Value.divined && FortuneTeller.divineTarget != null
                         && FortuneTeller.divineTarget.PlayerId == exiled.PlayerId;
             }
@@ -419,19 +420,19 @@ namespace TheOtherRoles.Patches {
             // Blackmailer reset blackmail
             if (Blackmailer.blackmailer != null && Blackmailer.blackmailed != null)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnblackmailPlayer, Hazel.SendOption.Reliable, -1);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnblackmailPlayer, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.unblackmailPlayer();
             }
 
             // Arsonist deactivate dead poolable players
-            if (Arsonist.arsonist != null && Arsonist.arsonist == CachedPlayer.LocalPlayer.PlayerControl) {
+            if (Arsonist.arsonist != null && Arsonist.arsonist == PlayerControl.LocalPlayer) {
                 var notDoused = new List<PlayerControl>();
 
                 int visibleCounter = 0;
                 Vector3 newBottomLeft = IntroCutsceneOnDestroyPatch.bottomLeft;
                 var BottomLeft = newBottomLeft + new Vector3(-0.25f, -0.25f, 0);
-                foreach (PlayerControl p in CachedPlayer.AllPlayers) {
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                     if (((!p.Data.IsDead && !p.Data.Disconnected) || (exiled != null && exiled.PlayerId == p.PlayerId)) && !Arsonist.dousedPlayers.Contains(p) && Arsonist.arsonist != p) notDoused.Add(p);
                     if (!TORMapOptions.playerIcons.ContainsKey(p.PlayerId) || Arsonist.arsonist == p) continue;
                     TORMapOptions.playerIcons[p.PlayerId].transform.localScale = Vector3.one * 0.2f;
@@ -456,11 +457,11 @@ namespace TheOtherRoles.Patches {
             }
 
             // Force Bounty Hunter Bounty Update
-            if (BountyHunter.bountyHunter != null && BountyHunter.bountyHunter == CachedPlayer.LocalPlayer.PlayerControl)
+            if (BountyHunter.bountyHunter != null && BountyHunter.bountyHunter == PlayerControl.LocalPlayer)
                 BountyHunter.bountyUpdateTimer = 0f;
 
             // Medium spawn souls
-            if (Medium.medium != null && CachedPlayer.LocalPlayer.PlayerControl == Medium.medium) {
+            if (Medium.medium != null && PlayerControl.LocalPlayer == Medium.medium) {
                 Medium.acTokenChallenge.Value.cleared |= exiled != null && Medium.acTokenChallenge.Value.additionals.Any(x => x == exiled.PlayerId);
                 Medium.acTokenChallenge.Value.additionals = new();
 
@@ -485,7 +486,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (Lawyer.lawyer != null && CachedPlayer.LocalPlayer.PlayerControl == Lawyer.lawyer && !Lawyer.lawyer.Data.IsDead)
+            if (Lawyer.lawyer != null && PlayerControl.LocalPlayer == Lawyer.lawyer && !Lawyer.lawyer.Data.IsDead)
                 Lawyer.meetings++;
 
             // AntiTeleport set position
@@ -500,7 +501,7 @@ namespace TheOtherRoles.Patches {
 
             MapBehaviourPatch.resetRealTasks();
 
-            if (CustomOptionHolder.randomGameStartPosition.getBool() && (AntiTeleport.antiTeleport.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId).Count == 0))
+            if (CustomOptionHolder.randomGameStartPosition.getBool() && (AntiTeleport.antiTeleport.FindAll(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId).Count == 0))
             { //Random spawn on round start
 
                 List<Vector3> skeldSpawn = new() {
@@ -686,11 +687,11 @@ namespace TheOtherRoles.Patches {
                 new Vector3(-20.8897f, 2.7606f, 0.002f)
                 };
 
-                if (Helpers.isSkeld()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(skeldSpawn[rnd.Next(skeldSpawn.Count)]);
-                if (Helpers.isMira()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(miraSpawn[rnd.Next(miraSpawn.Count)]);
-                if (Helpers.isPolus()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(polusSpawn[rnd.Next(polusSpawn.Count)]);
-                if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(dleksSpawn[rnd.Next(dleksSpawn.Count)]);
-                if (Helpers.isFungle()) CachedPlayer.LocalPlayer.PlayerControl.NetTransform.RpcSnapTo(fungleSpawn[rnd.Next(fungleSpawn.Count)]);
+                if (Helpers.isSkeld()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(skeldSpawn[rnd.Next(skeldSpawn.Count)]);
+                if (Helpers.isMira()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(miraSpawn[rnd.Next(miraSpawn.Count)]);
+                if (Helpers.isPolus()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(polusSpawn[rnd.Next(polusSpawn.Count)]);
+                if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(dleksSpawn[rnd.Next(dleksSpawn.Count)]);
+                if (Helpers.isFungle()) PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(fungleSpawn[rnd.Next(fungleSpawn.Count)]);
 
             }
 
@@ -723,8 +724,9 @@ namespace TheOtherRoles.Patches {
     class ExileControllerMessagePatch {
         static void Postfix(ref string __result, [HarmonyArgument(0)]StringNames id) {
             try {
-                if (ExileController.Instance != null && ExileController.Instance.initData != null) {
-                    PlayerControl player = Helpers.playerById(ExileController.Instance.initData.networkedPlayer.Object.PlayerId);
+                if (ExileController.Instance != null && ExileController.Instance.initData != null)
+                {
+                    PlayerControl player = ExileController.Instance.initData.networkedPlayer.Object;
                     if (player == null) return;
                     // Exile role text
                     if (id is StringNames.ExileTextPN or StringNames.ExileTextSN or StringNames.ExileTextPP or StringNames.ExileTextSP) {

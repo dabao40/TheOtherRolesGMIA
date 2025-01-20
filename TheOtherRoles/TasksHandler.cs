@@ -3,7 +3,6 @@ using Hazel;
 using System;
 using System.Linq;
 using TheOtherRoles.Patches;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 
 namespace TheOtherRoles {
@@ -13,7 +12,7 @@ namespace TheOtherRoles {
         public static Tuple<int, int> taskInfo(NetworkedPlayerInfo playerInfo, bool isResult = false) {
             int TotalTasks = 0;
             int CompletedTasks = 0;
-            if (!playerInfo.Disconnected && playerInfo.Tasks != null &&
+            if (playerInfo != null && !playerInfo.Disconnected && playerInfo.Tasks != null &&
                 playerInfo.Object &&
                 playerInfo.Role && playerInfo.Role.TasksCountTowardProgress &&
                 !playerInfo.Object.hasFakeTasks() && !playerInfo.Role.IsImpostor
@@ -95,7 +94,7 @@ namespace TheOtherRoles {
                                 if (pc.Data.Tasks[i].Complete)
                                     ++clearTasks;
                             }
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TaskMasterUpdateExTasks, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TaskMasterUpdateExTasks, Hazel.SendOption.Reliable, -1);
                             writer.Write(clearTasks);
                             writer.Write((byte)pc.Data.Tasks.Count);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -108,7 +107,7 @@ namespace TheOtherRoles {
                         if (!TaskMaster.isTaskComplete)
                         {
                             byte[] taskTypeIds = TaskMasterTaskHelper.GetTaskMasterTasks(pc);
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TaskMasterSetExTasks, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TaskMasterSetExTasks, Hazel.SendOption.Reliable, -1);
                             writer.Write(pc.PlayerId);
                             writer.Write(byte.MaxValue);
                             writer.Write(taskTypeIds);
@@ -119,7 +118,7 @@ namespace TheOtherRoles {
                         else if (!TaskMaster.triggerTaskMasterWin)
                         {
                             action();
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockTaskMasterAcChallenge, SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockTaskMasterAcChallenge, SendOption.Reliable, -1);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.unlockTaskMasterAcChallenge();
                             TaskMaster.triggerTaskMasterWin = true;

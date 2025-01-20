@@ -6,7 +6,6 @@ using System.Text;
 using HarmonyLib;
 using Hazel;
 using TheOtherRoles.MetaContext;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.GameHistory;
@@ -35,7 +34,7 @@ namespace TheOtherRoles.Patches
                 //昇降機右に影を追加
                 OneWayShadows oneWayShadow = obj.transform.FindChild("Shadow").FindChild("LedgeShadow").GetComponent<OneWayShadows>();
                 oneWayShadow.enabled = false;
-                if (CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) oneWayShadow.gameObject.SetActive(false);
+                if (PlayerControl.LocalPlayer.Data.Role.IsImpostor) oneWayShadow.gameObject.SetActive(false);
 
                 SpriteRenderer renderer;
 
