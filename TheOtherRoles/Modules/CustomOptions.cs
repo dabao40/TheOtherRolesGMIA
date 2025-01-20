@@ -583,7 +583,7 @@ namespace TheOtherRoles {
                 }
                 viewSettingsInfoPanel.transform.localPosition = new Vector3(num2, num, -2f);
                 int value = option.getSelection();
-                var settingTuple = handleSpecialOptionsView(option, option.name, option.getString());
+                var settingTuple = handleSpecialOptionsView(option, option.getName(), option.getString());
                 viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, settingTuple.Item2, 61);
                 viewSettingsInfoPanel.titleText.text = settingTuple.Item1;
                 if (option.isHeader && (int)optionType != 99 && option.heading == "" && (option.type == CustomOptionType.Neutral || option.type == CustomOptionType.Crewmate || option.type == CustomOptionType.Impostor || option.type == CustomOptionType.Modifier))
