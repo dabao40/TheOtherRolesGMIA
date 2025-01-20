@@ -402,9 +402,9 @@ namespace TheOtherRoles
                 int remainingShots = HandleGuesser.remainingShots(p.PlayerId);
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(p.Data);
                 if (!Helpers.isEvil(p) && playerCompleted < HandleGuesser.tasksToUnlock || remainingShots == 0)
-                    roleName += Helpers.cs(Color.gray, "guesserModifier".Translate());
+                    roleName += Helpers.cs(Color.gray, ModTranslation.getString("guesserModifier"));
                 else
-                    roleName += Helpers.cs(Color.white, "guesserModifier".Translate());
+                    roleName += Helpers.cs(Color.white, ModTranslation.getString("guesserModifier"));
             }
             if (!suppressGhostInfo && p != null) {
                 if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)

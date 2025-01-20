@@ -55,12 +55,12 @@ namespace TheOtherRoles.Patches
                     if (code != "")
                     {
                         code = DataManager.Settings.Gameplay.StreamerMode ? "****" : code;
-                        LobbyText.GetComponent<TMPro.TextMeshPro>().text = "LobbyJoinBindText1".Translate() + $" {code}   [LShift]";
+                        LobbyText.GetComponent<TMPro.TextMeshPro>().text = ModTranslation.getString("LobbyJoinBindText1") + $" {code}   [LShift]";
                     }
                 }
                 if (code2 != "")
                 {
-                    LobbyText.GetComponent<TMPro.TextMeshPro>().text += "LobbyJoinBindText2".Translate() + $" {code2Disp}  [RShift]";
+                    LobbyText.GetComponent<TMPro.TextMeshPro>().text += ModTranslation.getString("LobbyJoinBindText2") + $" {code2Disp}  [RShift]";
                 }
             }
         }
