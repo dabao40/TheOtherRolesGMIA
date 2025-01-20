@@ -5828,6 +5828,26 @@ namespace TheOtherRoles
             isTiebreak = false;
         }
     }
+    public static class Rootkit
+    {
+        public static PlayerControl rootkit;
+        public static float AntiKillChance;
+        public static void clearAndReload()
+        {
+            rootkit = null;
+            AntiKillChance = CustomOptionHolder.modifierRootkitAntiKillChance.getFloat();
+
+        }
+    }
+
+    public static class AntiRootkit
+    {
+        public static PlayerControl antiRootkit;
+        public static void clearAndReload()
+        {
+            antiRootkit = null;
+        }
+    }
 
     public static class Sunglasses {
         public static List<PlayerControl> sunglasses = new();

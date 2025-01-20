@@ -135,6 +135,8 @@ namespace TheOtherRoles
         public static RoleInfo invert = new("invert", Color.yellow, RoleId.Invert, false, true);
         public static RoleInfo chameleon = new("chameleon", Color.yellow, RoleId.Chameleon, false, true);
         public static RoleInfo armored = new ("armored", Color.yellow, RoleId.Armored, false, true);
+        public static RoleInfo rootkit = new("rootkit", Color.yellow, RoleId.Rootkit, false, true);
+        public static RoleInfo antiRootkit = new("antirootkit", Color.yellow, RoleId.AntiRootkit, false, true);
         //public static RoleInfo shifter = new RoleInfo("Shifter", Color.yellow, "Shift your role", "Shift your role", RoleId.Shifter, false, true);
 
 
@@ -233,6 +235,8 @@ namespace TheOtherRoles
             vip,
             invert,
             chameleon,
+            rootkit,
+            antiRootkit,
             armored,
             cupidLover,
             //shifter, 
@@ -259,6 +263,8 @@ namespace TheOtherRoles
                 if (p == Mini.mini) infos.Add(mini);
                 if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
+                if (p == Rootkit.rootkit) infos.Add(rootkit);
+                if (p == AntiRootkit.antiRootkit) infos.Add(antiRootkit);
                 if (p == Armored.armored) infos.Add(armored);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
