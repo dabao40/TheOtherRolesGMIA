@@ -1576,7 +1576,7 @@ After dousing everyone alive the Arsonist can ignite all the players which resul
 | Name                    |             Description             |
 | ----------------------- | :---------------------------------: |
 | Arsonist Spawn Chance   |                  -                  |
-| Arsonist Countdown      |                  -                  |
+| Arsonist Cooldown       |                  -                  |
 | Arsonist Douse Duration | The time it takes to douse a player |
 
 -----------------------
@@ -1917,8 +1917,8 @@ The team Jackal enables multiple new outcomes of the game, listing some examples
 
 The priority of the win conditions is the following:
 
-1. Crewmate Mini lose by vote
-2. Jester wins by vote
+1. Jester wins by vote (even as Mini)
+2. Crewmate Mini lose by vote
 3. Arsonist win
 4. Team Impostor wins by sabotage
 5. Team Crew wins by tasks (also possible if the whole Crew is dead)

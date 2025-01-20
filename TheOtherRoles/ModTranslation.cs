@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using HarmonyLib;
 using Newtonsoft.Json.Linq;
+using TheOtherRoles;
 using TheOtherRoles.Patches;
 using UnityEngine;
 
@@ -91,5 +92,12 @@ namespace TheOtherRoles
         {
             ClientOptionsPatch.updateTranslations();
         }
+    }
+}
+internal static class LanguageExtension
+{
+    internal static string Translate(this string key)
+    {
+        return ModTranslation.getString(key);
     }
 }

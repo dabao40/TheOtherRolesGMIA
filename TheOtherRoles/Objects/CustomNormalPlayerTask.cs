@@ -9,7 +9,6 @@ using TheOtherRoles;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
 using Hazel;
-using TheOtherRoles.Players;
 
 namespace TheOtherRoles.Objects
 {

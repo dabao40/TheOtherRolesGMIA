@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Patches;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -140,14 +139,14 @@ namespace TheOtherRoles.Objects
                     else if ((p == 1f) && !target.Data.IsDead)
                     { // 正常にキルが発生する場合の処理
                         target.moveable = true;
-                        if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper)
+                        if (PlayerControl.LocalPlayer == Trapper.trapper)
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
                             writer.Write(trapId);
-                            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
                             writer.Write(target.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.trapperKill(trapId, CachedPlayer.LocalPlayer.PlayerControl.PlayerId, target.PlayerId);
+                            RPCProcedure.trapperKill(trapId, PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
                         }
                     }
                     else
@@ -186,9 +185,9 @@ namespace TheOtherRoles.Objects
                 }
             })));
 
-            if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper)
+            if (PlayerControl.LocalPlayer == Trapper.trapper)
             {
-                CachedPlayer.LocalPlayer.PlayerControl.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
+                PlayerControl.LocalPlayer.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + Trapper.penaltyTime;
                 HudManagerStartPatch.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
             }
         }
@@ -202,16 +201,16 @@ namespace TheOtherRoles.Objects
                 if (trap.Value.target != null)
                 {
 
-                    if (CachedPlayer.LocalPlayer.PlayerControl == Trapper.trapper)
+                    if (PlayerControl.LocalPlayer == Trapper.trapper)
                     {
                         if (!trap.Value.target.Data.IsDead)
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
                             writer.Write(trap.Key);
-                            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
                             writer.Write(trap.Value.target.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.trapperKill(trap.Key, CachedPlayer.LocalPlayer.PlayerControl.PlayerId, trap.Value.target.PlayerId);
+                            RPCProcedure.trapperKill(trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId);
                         }
                     }
 
@@ -286,10 +285,10 @@ namespace TheOtherRoles.Objects
                 {
                     bool canSee =
                         trap.isActive ||
-                        CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor ||
-                        CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || 
-                        CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter ||
-                        CachedPlayer.LocalPlayer.PlayerControl == Fox.fox;
+                        PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
+                        PlayerControl.LocalPlayer.Data.IsDead || 
+                        PlayerControl.LocalPlayer == Lighter.lighter ||
+                        PlayerControl.LocalPlayer == Fox.fox;
                     var opacity = canSee ? 1.0f : 0.0f;
                     if (trap.trap != null)
                         trap.trap.GetComponent<SpriteRenderer>().material.color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
@@ -331,7 +330,7 @@ namespace TheOtherRoles.Objects
             var trapRenderer = trap.AddComponent<SpriteRenderer>();
             trapRenderer.sprite = getTrapSprite();
             trap.SetActive(false);
-            if (CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) trap.SetActive(true);
+            if (PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) trap.SetActive(true);
             this.instanceId = ++instanceCounter;
             traps.Add(this);
             arrow.Update(position);
@@ -366,11 +365,11 @@ namespace TheOtherRoles.Objects
             Trap t = traps.FirstOrDefault(x => x.instanceId == (int)trapId);
             PlayerControl player = Helpers.playerById(playerId);
             if (Trapper.trapper == null || t == null || player == null) return;
-            bool localIsTrapper = CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId;
+            bool localIsTrapper = PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId;
             if (!trapPlayerIdMap.ContainsKey(playerId)) trapPlayerIdMap.Add(playerId, t);
             t.usedCount ++;
             t.triggerable = false;
-            if (playerId == CachedPlayer.LocalPlayer.PlayerId || playerId == Trapper.trapper.PlayerId) {
+            if (playerId == PlayerControl.LocalPlayer.PlayerId || playerId == Trapper.trapper.PlayerId) {
                 t.trap.SetActive(true);
                 SoundEffectsManager.play("trapperTrap");
             }
@@ -399,7 +398,7 @@ namespace TheOtherRoles.Objects
 
         public static void Update() {
             if (Trapper.trapper == null) return;
-            CachedPlayer player = CachedPlayer.LocalPlayer;
+            var player = PlayerControl.LocalPlayer;
             Vent vent = MapUtilities.CachedShipStatus.AllVents[0];
             float closestDistance = float.MaxValue;
 
@@ -408,16 +407,16 @@ namespace TheOtherRoles.Objects
             Trap target = null;
             foreach (Trap trap in traps) {
                 if (trap.arrow.arrow.active) trap.arrow.Update();
-                if (trap.revealed || !trap.triggerable || trap.trappedPlayer.Contains(player.PlayerControl)) continue;
-                if (player.PlayerControl.inVent || !player.PlayerControl.CanMove) continue;
-                float distance = Vector2.Distance(trap.trap.transform.position, player.PlayerControl.GetTruePosition());
+                if (trap.revealed || !trap.triggerable || trap.trappedPlayer.Contains(player)) continue;
+                if (player.inVent || !player.CanMove) continue;
+                float distance = Vector2.Distance(trap.trap.transform.position, player.GetTruePosition());
                 if (distance <= ud && distance < closestDistance) {
                     closestDistance = distance;
                     target = trap;
                 }
             }
             if (target != null && player.PlayerId != Trapper.trapper.PlayerId && !player.Data.IsDead) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TriggerTrap, Hazel.SendOption.Reliable, -1);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TriggerTrap, Hazel.SendOption.Reliable, -1);
                 writer.Write(player.PlayerId);
                 writer.Write(target.instanceId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

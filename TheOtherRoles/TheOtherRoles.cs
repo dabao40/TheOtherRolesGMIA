@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TheOtherRoles.Objects;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using static TheOtherRoles.TheOtherRoles;
@@ -120,6 +119,7 @@ namespace TheOtherRoles
             Vip.clearAndReload();
             Invert.clearAndReload();
             Chameleon.clearAndReload();
+            Armored.clearAndReload();
 
             // Gamemodes
             HandleGuesser.clearAndReload();
@@ -138,7 +138,7 @@ namespace TheOtherRoles
 
             public static void unlockAch()
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockJesterAcCommon, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockJesterAcCommon, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.unlockJesterAcCommon();
             }
@@ -201,7 +201,7 @@ namespace TheOtherRoles
 
             public static void onAchievementActivate()
             {
-                if (portalmaker == null || CachedPlayer.LocalPlayer.PlayerControl != portalmaker) return;
+                if (portalmaker == null || PlayerControl.LocalPlayer != portalmaker) return;
                 acTokenChallenge ??= new("portalmaker.challenge", (0, false), (val, _) => val.cleared);
             }
 
@@ -243,14 +243,14 @@ namespace TheOtherRoles
 
             public static void onAchievementActivate()
             {
-                if (mayor == null || CachedPlayer.LocalPlayer.PlayerControl != mayor) return;
+                if (mayor == null || PlayerControl.LocalPlayer != mayor) return;
                 acTokenDoubleVote ??= new("mayor.common1", (false, false), (val, _) => val.cleared);
                 acTokenChallenge ??= new("mayor.challenge", (byte.MaxValue, false, false), (val, _) => val.cleared);
             }
 
             public static void unlockAch(byte votedFor)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockMayorAcCommon, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockMayorAcCommon, SendOption.Reliable, -1);
                 writer.Write(votedFor);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.unlockMayorAcCommon(votedFor);
@@ -284,7 +284,7 @@ namespace TheOtherRoles
 
             public static void onAchievementActivate()
             {
-                if (engineer == null || CachedPlayer.LocalPlayer.PlayerControl != engineer) return;
+                if (engineer == null || PlayerControl.LocalPlayer != engineer) return;
                 acTokenChallenge ??= new("engineer.another1", (false, false), (val, _) => val.cleared);
             }
 
@@ -358,7 +358,7 @@ namespace TheOtherRoles
 
             public static void onAchievementActivate()
             {
-                if (sheriff == null || CachedPlayer.LocalPlayer.PlayerControl != sheriff) return;
+                if (sheriff == null || PlayerControl.LocalPlayer != sheriff) return;
                 acTokenChallenge ??= new("sheriff.challenge", (true, true), (val, _) => val.cleared && !val.isTriggeredFalse);
             }
 
@@ -419,11 +419,11 @@ namespace TheOtherRoles
             public static void setHandcuffedKnows(bool active = true, byte playerId = Byte.MaxValue)
             {
                 if (playerId == Byte.MaxValue)
-                    playerId = CachedPlayer.LocalPlayer.PlayerId;
+                    playerId = PlayerControl.LocalPlayer.PlayerId;
 
-                if (active && playerId == CachedPlayer.LocalPlayer.PlayerId) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, SendOption.Reliable, -1);
-                    writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                if (active && playerId == PlayerControl.LocalPlayer.PlayerId) {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write((byte)RPCProcedure.GhostInfoTypes.HandcuffNoticed);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -433,7 +433,7 @@ namespace TheOtherRoles
                     handcuffedPlayers.RemoveAll(x => x == playerId);
                }
 
-                if (playerId == CachedPlayer.LocalPlayer.PlayerId) {
+                if (playerId == PlayerControl.LocalPlayer.PlayerId) {
                     HudManagerStartPatch.setAllButtonsHandcuffedStatus(active);
                     SoundEffectsManager.play("deputyHandcuff");
 		}
@@ -491,14 +491,14 @@ namespace TheOtherRoles
 
             public static void onAchievementActivate()
             {
-                if (detective == null || CachedPlayer.LocalPlayer.PlayerControl != detective) return;
+                if (detective == null || PlayerControl.LocalPlayer != detective) return;
                 acTokenChallenge ??= new("detective.challenge", (false, byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
                 acTokenCommon ??= new("detective.common1", false, (val, _) => val);
             }
 
             public static void unlockAch(byte votedFor)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockDetectiveAcChallenge, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockDetectiveAcChallenge, SendOption.Reliable, -1);
                 writer.Write(votedFor);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.unlockDetectiveAcChallenge(votedFor);
@@ -575,7 +575,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (medic == null || CachedPlayer.LocalPlayer.PlayerControl != medic) return;
+            if (medic == null || PlayerControl.LocalPlayer != medic) return;
             acTokenChallenge ??= new("medic.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
@@ -589,10 +589,10 @@ namespace TheOtherRoles
             if (shielded != null && ((target == shielded && !isMorphedMorphling && !isMimicKShield && !isMimicAMorph) || (isMorphedMorphling && Morphling.morphTarget == shielded) || (isMimicAMorph && MimicK.mimicK == shielded)))
             {
                 hasVisibleShield = showShielded == 0 || Helpers.shouldShowGhostInfo() // Everyone or Ghost info
-                    || (showShielded == 1 && (CachedPlayer.LocalPlayer.PlayerControl == shielded || CachedPlayer.LocalPlayer.PlayerControl == medic)) // Shielded + Medic
-                    || (showShielded == 2 && CachedPlayer.LocalPlayer.PlayerControl == medic); // Medic only
+                    || (showShielded == 1 && (PlayerControl.LocalPlayer == shielded || PlayerControl.LocalPlayer == medic)) // Shielded + Medic
+                    || (showShielded == 2 && PlayerControl.LocalPlayer == medic); // Medic only
                 // Make shield invisible till after the next meeting if the option is set (the medic can already see the shield)
-                hasVisibleShield = hasVisibleShield && (meetingAfterShielding || !showShieldAfterMeeting || CachedPlayer.LocalPlayer.PlayerControl == medic || Helpers.shouldShowGhostInfo());
+                hasVisibleShield = hasVisibleShield && (meetingAfterShielding || !showShieldAfterMeeting || PlayerControl.LocalPlayer == medic || Helpers.shouldShowGhostInfo());
             }
             return hasVisibleShield;
         }
@@ -631,13 +631,13 @@ namespace TheOtherRoles
 
         public static void niceSwapperOnAchievementActivate()
         {
-            if (swapper == null || CachedPlayer.LocalPlayer.PlayerControl != swapper) return;
+            if (swapper == null || PlayerControl.LocalPlayer != swapper) return;
             acTokenChallenge ??= new("niceSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static void evilSwapperOnAchievementActivate()
         {
-            if (swapper != null && CachedPlayer.LocalPlayer.PlayerControl == swapper) {
+            if (swapper != null && PlayerControl.LocalPlayer == swapper) {
                 evilSwapperAcTokenChallenge ??= new("evilSwapper.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
             }
         }
@@ -731,7 +731,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (seer == null || CachedPlayer.LocalPlayer.PlayerControl != seer) return;
+            if (seer == null || PlayerControl.LocalPlayer != seer) return;
             acTokenChallenge ??= new("seer.challenge", (0, false), (val, _) => val.flash >= 5 || val.cleared);
         }
 
@@ -777,7 +777,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (morphling == null || CachedPlayer.LocalPlayer.PlayerControl != morphling) return;
+            if (morphling == null || PlayerControl.LocalPlayer != morphling) return;
             acTokenChallenge ??= new("morphling.challenge", (byte.MaxValue, false, false), (val, _) => val.cleared);
         }
 
@@ -824,18 +824,18 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (camouflager == null || CachedPlayer.LocalPlayer.PlayerControl != camouflager) return;
+            if (camouflager == null || PlayerControl.LocalPlayer != camouflager) return;
             acTokenChallenge ??= new("camouflager.challenge", (0, false), (val, _) => val.cleared);
         }
 
         public static void resetCamouflage() {
             camouflageTimer = 0f;
-            foreach (PlayerControl p in CachedPlayer.AllPlayers) {
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                 /*if ((p == Ninja.ninja && Ninja.stealthed) || (p == Sprinter.sprinter && Sprinter.sprinting))
                     continue;*/
                 p.setDefaultLook();
             }
-            if (CachedPlayer.LocalPlayer.PlayerControl == camouflager)
+            if (PlayerControl.LocalPlayer == camouflager)
                 acTokenChallenge.Value.kills = 0;
         }
 
@@ -945,7 +945,7 @@ namespace TheOtherRoles
 
         public static void unlockAch(float ventTime)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UnlockTrackerAcChallenge, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockTrackerAcChallenge, SendOption.Reliable, -1);
             writer.Write(ventTime);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.unlockTrackerAcChallenge(ventTime);
@@ -953,7 +953,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (tracker == null || CachedPlayer.LocalPlayer.PlayerControl != tracker) return;
+            if (tracker == null || PlayerControl.LocalPlayer != tracker) return;
             acTokenChallenge ??= new("tracker.challenge", (false, 0f, false), (val, _) => val.cleared);
         }
 
@@ -1025,7 +1025,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (vampire == null || CachedPlayer.LocalPlayer.PlayerControl != vampire) return;
+            if (vampire == null || PlayerControl.LocalPlayer != vampire) return;
             acTokenChallenge ??= new("vampire.challenge", (DateTime.UtcNow, false), (val, _) => val.cleared);
         }
 
@@ -1179,7 +1179,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (eraser == null || CachedPlayer.LocalPlayer.PlayerControl != eraser) return;
+            if (eraser == null || PlayerControl.LocalPlayer != eraser) return;
             acTokenChallenge ??= new("eraser.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -1233,7 +1233,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (trickster == null || CachedPlayer.LocalPlayer.PlayerControl != trickster) return;
+            if (trickster == null || PlayerControl.LocalPlayer != trickster) return;
             acTokenChallenge ??= new("trickster.challenge", (0, false), (val, _) => val.cleared || val.kills >= 2);
         }
 
@@ -1277,7 +1277,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (cleaner == null || CachedPlayer.LocalPlayer.PlayerControl != cleaner) return;
+            if (cleaner == null || PlayerControl.LocalPlayer != cleaner) return;
             acTokenChallenge ??= new("cleaner.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -1313,7 +1313,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (warlock == null || CachedPlayer.LocalPlayer.PlayerControl != warlock) return;
+            if (warlock == null || PlayerControl.LocalPlayer != warlock) return;
             acTokenChallenge ??= new("warlock.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -1373,7 +1373,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (securityGuard == null || CachedPlayer.LocalPlayer.PlayerControl != securityGuard) return;
+            if (securityGuard == null || PlayerControl.LocalPlayer != securityGuard) return;
             acTokenCommon ??= new("securityGuard.common1", (false, false), (val, _) => val.vent && val.camera);
             acTokenChallenge ??= new("securityGuard.challenge", 0, (val, _) => val >= 5);
         }
@@ -1496,7 +1496,7 @@ namespace TheOtherRoles
         }
 
         public static bool dousedEveryoneAlive() {
-            return CachedPlayer.AllPlayers.All(x => { return x.PlayerControl == arsonist || x.Data.IsDead || x.Data.Disconnected || dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
+            return PlayerControl.AllPlayerControls.ToArray().All(x => { return x == arsonist || x.Data.IsDead || x.Data.Disconnected || dousedPlayers.Any(y => y.PlayerId == x.PlayerId); });
         }
 
         public static void clearAndReload() {
@@ -1524,13 +1524,13 @@ namespace TheOtherRoles
 
         public static void niceGuesserOnAchievementActivate()
         {
-            if (niceGuesser == null || CachedPlayer.LocalPlayer.PlayerControl != niceGuesser) return;
+            if (niceGuesser == null || PlayerControl.LocalPlayer != niceGuesser) return;
             acTokenNiceGuesser ??= new("niceGuesser.challenge1", 0, (val, _) => val >= 3);
         }
 
         public static void evilGuesserOnAchievementActivate()
         {
-            if (evilGuesser == null || CachedPlayer.LocalPlayer.PlayerControl != evilGuesser) return;
+            if (evilGuesser == null || PlayerControl.LocalPlayer != evilGuesser) return;
             acTokenEvilGuesser ??= new("evilGuesser.challenge1", 0, (val, _) => val >= 3);
         }
 
@@ -1585,12 +1585,12 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (bountyHunter == null || CachedPlayer.LocalPlayer.PlayerControl != bountyHunter) return;
+            if (bountyHunter == null || PlayerControl.LocalPlayer != bountyHunter) return;
             acTokenChallenge ??= new("bountyHunter.challenge", (DateTime.UtcNow, 0, false), (val, _) => val.cleared);
         }
 
         public static void clearAllArrow() {
-            if (CachedPlayer.LocalPlayer.PlayerControl != bountyHunter) return;
+            if (PlayerControl.LocalPlayer != bountyHunter) return;
             if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
             if (cooldownText) cooldownText.gameObject.SetActive(false);
             TORMapOptions.resetPoolables();
@@ -1673,7 +1673,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (medium == null || CachedPlayer.LocalPlayer.PlayerControl != medium) return;
+            if (medium == null || PlayerControl.LocalPlayer != medium) return;
             acTokenCommon ??= new("medium.common1", 0, (val, _) => val >= 3);
             acTokenChallenge ??= new("medium.challenge", (new(), false), (val, _) => val.cleared);
         }
@@ -1723,18 +1723,19 @@ namespace TheOtherRoles
             acTokenChallenge = null;
         }
 
-        public static string getInfo(PlayerControl target, PlayerControl killer) {
+        public static string getInfo(PlayerControl target, PlayerControl killer, DeadPlayer.CustomDeathReason deathReason)
+        {
             string msg = "";
 
             List<SpecialMediumInfo> infos = new();
             // collect fitting death info types.
             // suicides:
             if (killer == target) {
-                if (target == Sheriff.sheriff || target == Sheriff.formerSheriff) infos.Add(SpecialMediumInfo.SheriffSuicide);
+                if ((target == Sheriff.sheriff || target == Sheriff.formerSheriff) && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.SheriffSuicide);
                 if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.PassiveLoverSuicide);
-                if (target == Thief.thief) infos.Add(SpecialMediumInfo.ThiefSuicide);
-                if (target == Warlock.warlock) infos.Add(SpecialMediumInfo.WarlockSuicide);
-                if (target == Busker.busker) infos.Add(SpecialMediumInfo.BuskerPseudocide);
+                if (target == Thief.thief && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.ThiefSuicide);
+                if (target == Warlock.warlock && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.WarlockSuicide);
+                if (target == Busker.busker && deathReason != DeadPlayer.CustomDeathReason.LoverSuicide) infos.Add(SpecialMediumInfo.BuskerPseudocide);
             } else {
                 if (target == Lovers.lover1 || target == Lovers.lover2) infos.Add(SpecialMediumInfo.ActiveLoverDies);
                 if (target.Data.Role.IsImpostor && killer.Data.Role.IsImpostor && Thief.formerThief != killer) infos.Add(SpecialMediumInfo.ImpostorTeamkill);
@@ -1946,7 +1947,7 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl != mimicK || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || MimicA.mimicA == null)
+            if (PlayerControl.LocalPlayer != mimicK || PlayerControl.LocalPlayer.Data.IsDead || MimicA.mimicA == null)
             {
                 if (arrows.FirstOrDefault()?.arrow != null)
                     foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
@@ -1985,7 +1986,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (mimicK == null || CachedPlayer.LocalPlayer.PlayerControl != mimicK) return;
+            if (mimicK == null || PlayerControl.LocalPlayer != mimicK) return;
             acTokenChallenge ??= new("mimicK.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -2050,7 +2051,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (mimicA == null || CachedPlayer.LocalPlayer.PlayerControl != mimicA) return;
+            if (mimicA == null || PlayerControl.LocalPlayer != mimicA) return;
             acTokenCommon ??= new("mimicA.challenge", 0, (val, _) => val >= 4);
         }
 
@@ -2066,7 +2067,7 @@ namespace TheOtherRoles
                 }
             }
 
-            if (CachedPlayer.LocalPlayer.PlayerControl != mimicA || CachedPlayer.LocalPlayer.Data.IsDead || MimicK.mimicK == null)
+            if (PlayerControl.LocalPlayer != mimicA || PlayerControl.LocalPlayer.Data.IsDead || MimicK.mimicK == null)
             {
                 if (arrows.FirstOrDefault()?.arrow != null)
                     foreach (Arrow arrows in arrows) arrows.arrow.SetActive(false);
@@ -2159,7 +2160,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (fortuneTeller == null || CachedPlayer.LocalPlayer.PlayerControl != fortuneTeller) return;
+            if (fortuneTeller == null || PlayerControl.LocalPlayer != fortuneTeller) return;
             acTokenImpostor ??= new("fortuneTeller.challenge", (false, false), (val, _) => val.cleared);
         }
 
@@ -2365,13 +2366,13 @@ namespace TheOtherRoles
 
         public static void yasunaOnAchievementActivate()
         {
-            if (yasuna != null && CachedPlayer.LocalPlayer.PlayerControl == yasuna)
+            if (yasuna != null && PlayerControl.LocalPlayer == yasuna)
                 yasunaAcTokenChallenge ??= new("niceYasuna.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
         public static void evilYasunaOnAcheivementActivate()
         {
-            if (yasuna == null || CachedPlayer.LocalPlayer.PlayerControl != yasuna) return;
+            if (yasuna == null || PlayerControl.LocalPlayer != yasuna) return;
             evilYasunaAcTokenChallenge ??= new("evilYasuna.another1", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
@@ -2431,7 +2432,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (trapper == null || CachedPlayer.LocalPlayer.PlayerControl != trapper) return;
+            if (trapper == null || PlayerControl.LocalPlayer != trapper) return;
             acTokenChallenge ??= new("trapper.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -2444,11 +2445,11 @@ namespace TheOtherRoles
 
         public static void setTrap()
         {
-            var pos = CachedPlayer.LocalPlayer.PlayerControl.transform.position;
+            var pos = PlayerControl.LocalPlayer.transform.position;
             byte[] buff = new byte[sizeof(float) * 2];
             Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
             Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-            MessageWriter writer = AmongUsClient.Instance.StartRpc(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceTrap, SendOption.Reliable);
+            MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceTrap, SendOption.Reliable);
             writer.WriteBytesAndSize(buff);
             writer.EndMessage();
             RPCProcedure.placeTrap(buff);
@@ -2515,7 +2516,7 @@ namespace TheOtherRoles
         {
             foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
-                if (CachedPlayer.LocalPlayer.PlayerControl != p && p.Data.Role.IsImpostor && !p.Data.IsDead) return false;
+                if (PlayerControl.LocalPlayer != p && p.Data.Role.IsImpostor && !p.Data.IsDead) return false;
             }
             return true;
         }
@@ -2590,7 +2591,7 @@ namespace TheOtherRoles
                     parent.transform.localPosition = new Vector3(0, 0, 0);
                     var impostor = createPoolable(parent, "impostor", 0, (UnityAction)((Action)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                         writer.Write((byte)Team.Impostor);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.schrodingersCatSetTeam((byte)Team.Impostor);
@@ -2601,7 +2602,7 @@ namespace TheOtherRoles
                     {
                         var jackal = createPoolable(parent, "jackal", 1, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.Jackal);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.Jackal);
@@ -2613,7 +2614,7 @@ namespace TheOtherRoles
                     {
                         var moriarty = createPoolable(parent, "moriarty", 2, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.Moriarty);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.Moriarty);
@@ -2625,7 +2626,7 @@ namespace TheOtherRoles
                     {
                         var jekyllAndHyde = createPoolable(parent, "jekyllAndHyde", 6, (UnityAction)((Action)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                             writer.Write((byte)Team.JekyllAndHyde);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.schrodingersCatSetTeam((byte)Team.JekyllAndHyde);
@@ -2635,7 +2636,7 @@ namespace TheOtherRoles
                     }
                     var crewmate = createPoolable(parent, "crewmate", 10, (UnityAction)((Action)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
                         writer.Write((byte)Team.Crewmate);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.schrodingersCatSetTeam((byte)Team.Crewmate);
@@ -2665,7 +2666,7 @@ namespace TheOtherRoles
 
         public static bool isJackalButtonEnable()
         {
-            if (team == Team.Jackal && CachedPlayer.LocalPlayer.PlayerControl == schrodingersCat && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            if (team == Team.Jackal && PlayerControl.LocalPlayer == schrodingersCat && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (!isTeamJackalAlive() || !cantKillUntilLastOne)
                 {
@@ -2677,7 +2678,7 @@ namespace TheOtherRoles
 
         public static bool isJekyllAndHydeButtonEnable()
         {
-            if (team == Team.JekyllAndHyde && CachedPlayer.LocalPlayer.PlayerControl == schrodingersCat && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            if (team == Team.JekyllAndHyde && PlayerControl.LocalPlayer == schrodingersCat && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (JekyllAndHyde.jekyllAndHyde == null || JekyllAndHyde.jekyllAndHyde.Data.IsDead || !cantKillUntilLastOne)
                 {
@@ -2833,7 +2834,7 @@ namespace TheOtherRoles
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberB.bomberB.transform.position);
                 arrows.Add(arrow);*/
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.IsDead) continue;
                     if (p == BomberB.bomberB)
@@ -3023,7 +3024,7 @@ namespace TheOtherRoles
                 arrow.arrow.SetActive(true);
                 arrow.Update(BomberA.bomberA.transform.position);
                 arrows.Add(arrow);*/
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.IsDead) continue;
                     if (p == BomberA.bomberA)
@@ -3130,7 +3131,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (teleporter == null || CachedPlayer.LocalPlayer.PlayerControl != teleporter) return;
+            if (teleporter == null || PlayerControl.LocalPlayer != teleporter) return;
             acTokenChallenge ??= new("teleporter.challenge", (byte.MaxValue, byte.MaxValue, DateTime.UtcNow, false), (val, _) => val.cleared);
         }
 
@@ -3190,7 +3191,7 @@ namespace TheOtherRoles
                     acTokenChallenge.Value.swapTime = DateTime.UtcNow;
                     acTokenChallenge.Value.target1 = target1.PlayerId;
                     acTokenChallenge.Value.target2 = target2.PlayerId;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.TeleporterTeleport, SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TeleporterTeleport, SendOption.Reliable, -1);
                     writer.Write(target1.PlayerId);
                     writer.Write(target2.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -3271,8 +3272,8 @@ namespace TheOtherRoles
             {
                 public static bool Prefix(ShapeshifterMinigame __instance)
                 {
-                    CachedPlayer.LocalPlayer.PlayerControl.MyPhysics.ResetMoveState(false);
-                    CachedPlayer.LocalPlayer.PlayerControl.NetTransform.Halt();
+                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(false);
+                    PlayerControl.LocalPlayer.NetTransform.Halt();
                     var menu = singleton;
 
                     if (menu == null)
@@ -3472,7 +3473,7 @@ namespace TheOtherRoles
 
         public static void resetAllArrow()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl != kataomoi) return;
+            if (PlayerControl.LocalPlayer != kataomoi) return;
             TORMapOptions.resetPoolables();
             for (int i = 0; i < gaugeRenderer.Length; ++i)
             {
@@ -3543,13 +3544,13 @@ namespace TheOtherRoles
                 {
                     float elapsedTime = stalkingDuration - stalkingTimer;
                     float alpha = Mathf.Min(elapsedTime, stalkingFadeTime) / stalkingFadeTime;
-                    alpha = Mathf.Clamp(1f - alpha, CachedPlayer.LocalPlayer.PlayerControl == kataomoi || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag)
-                        || (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible) ? 0.5f : 0f, 1f);
+                    alpha = Mathf.Clamp(1f - alpha, PlayerControl.LocalPlayer == kataomoi || PlayerControl.LocalPlayer.Data.IsDead && !(PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag)
+                        || (PlayerControl.LocalPlayer == Lighter.lighter && Lighter.canSeeInvisible) ? 0.5f : 0f, 1f);
                     setAlpha(alpha);
                 }
                 else
                 {
-                    setAlpha(CachedPlayer.LocalPlayer.PlayerControl == kataomoi ? 0.5f : 0f);
+                    setAlpha(PlayerControl.LocalPlayer == kataomoi ? 0.5f : 0f);
                 }
 
                 if (stalkingTimer <= 0f)
@@ -3565,7 +3566,7 @@ namespace TheOtherRoles
                 {
                     float elapsedTime = stalkingFadeTime - stalkingEffectTimer;
                     float alpha = Mathf.Min(elapsedTime, stalkingFadeTime) / stalkingFadeTime;
-                    alpha = Mathf.Clamp(alpha, CachedPlayer.LocalPlayer.PlayerControl == kataomoi || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead ? 0.5f : 0f, 1f);
+                    alpha = Mathf.Clamp(alpha, PlayerControl.LocalPlayer == kataomoi || PlayerControl.LocalPlayer.Data.IsDead ? 0.5f : 0f, 1f);
                     setAlpha(alpha);
                 }
                 else
@@ -3664,7 +3665,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (evilHacker == null || CachedPlayer.LocalPlayer.PlayerControl != evilHacker) return;
+            if (evilHacker == null || PlayerControl.LocalPlayer != evilHacker) return;
             acTokenChallenge ??= new("evilHacker.challenge", (false, false), (val, _) => val.cleared);
         }
 
@@ -3693,7 +3694,7 @@ namespace TheOtherRoles
 
         public static bool isInherited()
         {
-            return canInheritAbility && evilHacker != null && evilHacker.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor;
+            return canInheritAbility && evilHacker != null && evilHacker.Data.IsDead && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
         }
 
         public static void clearAndReload()
@@ -3727,7 +3728,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (blackmailer == null || CachedPlayer.LocalPlayer.PlayerControl != blackmailer) return;
+            if (blackmailer == null || PlayerControl.LocalPlayer != blackmailer) return;
             acTokenChallenge ??= new("blackmailer.challenge", (new List<byte>(), false), (val, _) => val.cleared);
         }
 
@@ -3781,7 +3782,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (sherlock == null || CachedPlayer.LocalPlayer.PlayerControl != sherlock) return;
+            if (sherlock == null || PlayerControl.LocalPlayer != sherlock) return;
             acTokenChallenge ??= new("sherlock.challenge", false, (val, _) => val);
         }
 
@@ -3891,7 +3892,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (noisemaker == null || CachedPlayer.LocalPlayer.PlayerControl != noisemaker) return;
+            if (noisemaker == null || PlayerControl.LocalPlayer != noisemaker) return;
             acTokenChallenge ??= new("noisemaker.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -4018,7 +4019,7 @@ namespace TheOtherRoles
         public static void RpcDropBody(Vector3 position)
         {
             if (undertaker == null) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDropBody, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndertakerDropBody, SendOption.Reliable, -1);
             writer.Write(position.x);
             writer.Write(position.y);
             writer.Write(position.z);
@@ -4029,7 +4030,7 @@ namespace TheOtherRoles
         public static void RpcDragBody(byte playerId)
         {
             if (undertaker == null) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UndertakerDragBody, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndertakerDragBody, SendOption.Reliable, -1);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             DragBody(playerId);
@@ -4122,7 +4123,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (busker == null || CachedPlayer.LocalPlayer.PlayerControl != busker) return;
+            if (busker == null || PlayerControl.LocalPlayer != busker) return;
             acTokenChallenge ??= new("busker.challenge", (DateTime.UtcNow, false), (val, _) => val.cleared);
         }
 
@@ -4136,12 +4137,12 @@ namespace TheOtherRoles
 
         public static void dieBusker(bool isLoverSuicide = false)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.BuskerPseudocide, SendOption.Reliable, -1);
-            writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BuskerPseudocide, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(true);
             writer.Write(isLoverSuicide);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.buskerPseudocide(CachedPlayer.LocalPlayer.PlayerControl.PlayerId, true, isLoverSuicide);
+            RPCProcedure.buskerPseudocide(PlayerControl.LocalPlayer.PlayerId, true, isLoverSuicide);
         }
 
         public static bool checkPseudocide()
@@ -4196,7 +4197,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (prophet == null || CachedPlayer.LocalPlayer.PlayerControl != prophet) return;
+            if (prophet == null || PlayerControl.LocalPlayer != prophet) return;
             acTokenEvil ??= new("prophet.challenge2", (false, true), (val, _) => val.triggered && val.cleared);
         }
 
@@ -4278,7 +4279,7 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            if (PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (arrows.Count > 0) {
                     foreach (var arrow in arrows)
@@ -4315,7 +4316,7 @@ namespace TheOtherRoles
 
                 // インポスターの位置を示すArrowsを描画
                 int count = 0;
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.IsDead)
                     {
@@ -4327,7 +4328,7 @@ namespace TheOtherRoles
                         continue;
                     }
                     Arrow arrow;
-                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
+                    if ((p.Data.Role.IsImpostor && p != PlayerControl.LocalPlayer) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
                         || (p == Jackal.jackal && Jackal.wasTeamRed))
                     {
                         arrow = new Arrow(Palette.ImpostorRed);
@@ -4406,7 +4407,7 @@ namespace TheOtherRoles
 
         public static void clearAllArrow()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl != evilTracker) return;
+            if (PlayerControl.LocalPlayer != evilTracker) return;
             if (arrows.Count > 0) {
             foreach (var arrow in arrows)
                 if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
@@ -4449,6 +4450,17 @@ namespace TheOtherRoles
             canSetTargetOnMeeting = CustomOptionHolder.evilTrackerCanSetTargetOnMeeting.getBool();
         }
     }
+    public static class Armored
+    {
+        public static PlayerControl armored;
+
+        public static bool isBrokenArmor = false;
+        public static void clearAndReload()
+        {
+            armored = null;
+            isBrokenArmor = false;
+        }
+    }
 
     public static class Shifter
     {
@@ -4476,7 +4488,7 @@ namespace TheOtherRoles
         public static void niceShifterOnAchievementActivate()
         {
             niceShifterAcTokenChallenge = null;
-            if (shifter != null && CachedPlayer.LocalPlayer.PlayerControl == shifter && !isNeutral)
+            if (shifter != null && PlayerControl.LocalPlayer == shifter && !isNeutral)
             {
                 niceShifterAcTokenChallenge ??= new("niceShifter.challenge", (byte.MaxValue, byte.MaxValue, false), (val, _) => val.cleared);
             }
@@ -4513,7 +4525,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (witch == null || CachedPlayer.LocalPlayer.PlayerControl != witch) return;
+            if (witch == null || PlayerControl.LocalPlayer != witch) return;
             acTokenChallenge ??= new("witch.challenge", 0, (val, _) => val >= 3);
         }
 
@@ -4583,7 +4595,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (bait == null || CachedPlayer.LocalPlayer.PlayerControl != bait) return;
+            if (bait == null || PlayerControl.LocalPlayer != bait) return;
             acTokenChallenge ??= new("bait.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
 
@@ -4619,7 +4631,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (assassin == null || CachedPlayer.LocalPlayer.PlayerControl != assassin) return;
+            if (assassin == null || PlayerControl.LocalPlayer != assassin) return;
             acTokenChallenge ??= new("assassin.challenge", (false, false), (val, _) => val.cleared);
         }
 
@@ -4689,7 +4701,7 @@ namespace TheOtherRoles
 
         public static void arrowUpdate()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)
+            if (PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (arrows.Count > 0)
                 {
@@ -4774,7 +4786,7 @@ namespace TheOtherRoles
 
         public static void clearAllArrow()
         {
-            if (CachedPlayer.LocalPlayer.PlayerControl != moriarty) return;
+            if (PlayerControl.LocalPlayer != moriarty) return;
             if (arrows.Count > 0)
             {
                 foreach (var arrow in arrows)
@@ -5097,7 +5109,7 @@ namespace TheOtherRoles
                 arrows = new List<Arrow>();
 
                 // インポスターの位置を示すArrowsを描画
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.IsDead) continue;
                     Arrow arrow;
@@ -5186,11 +5198,11 @@ namespace TheOtherRoles
                     if (fox == null || fox.Data.IsDead) return;
 
                     bool canSee =
-                        CachedPlayer.LocalPlayer.PlayerControl == fox ||
-                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        PlayerControl.LocalPlayer == fox ||
+                        (PlayerControl.LocalPlayer.Data.IsDead && !(PlayerControl.LocalPlayer == Busker.busker
                         && Busker.pseudocideFlag && Busker.restrictInformation)) ||
-                        (CachedPlayer.LocalPlayer.PlayerControl == Lighter.lighter && Lighter.canSeeInvisible) ||
-                        CachedPlayer.LocalPlayer.PlayerControl == Immoralist.immoralist;
+                        (PlayerControl.LocalPlayer == Lighter.lighter && Lighter.canSeeInvisible) ||
+                        PlayerControl.LocalPlayer == Immoralist.immoralist;
 
                     var opacity = canSee ? 0.5f : 0.0f;
 
@@ -5249,7 +5261,7 @@ namespace TheOtherRoles
                 arrows = new List<Arrow>();
 
                 // 狐の位置を示すArrowを描画
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (p.Data.IsDead) continue;
                     Arrow arrow;
@@ -5344,7 +5356,7 @@ namespace TheOtherRoles
         public static void checkWinStatus()
         {
             bool winFlag = true;
-            foreach (PlayerControl p in CachedPlayer.AllPlayers)
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
             {
                 if (p.Data.IsDead) continue;
                 if (p == plagueDoctor) continue;
@@ -5357,7 +5369,7 @@ namespace TheOtherRoles
 
             if (winFlag)
             {
-                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlagueDoctorWin, SendOption.Reliable, -1);
+                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorWin, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(winWriter);
                 RPCProcedure.plagueDoctorWin();
             }
@@ -5415,7 +5427,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (ninja == null || CachedPlayer.LocalPlayer.PlayerControl != ninja) return;
+            if (ninja == null || PlayerControl.LocalPlayer != ninja) return;
             acTokenChallenge ??= new("ninja.challenge", 0, (val, _) => val >= 2);
         }
 
@@ -5501,7 +5513,7 @@ namespace TheOtherRoles
                     if (ninja == null || ninja.Data.IsDead) return;
 
                     bool canSee =
-                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        (PlayerControl.LocalPlayer.Data.IsDead && !(PlayerControl.LocalPlayer == Busker.busker
                         && Busker.pseudocideFlag && Busker.restrictInformation)) ||
                         PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
                         (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
@@ -5542,7 +5554,7 @@ namespace TheOtherRoles
 
         public static void onAchievementActivate()
         {
-            if (sprinter == null || CachedPlayer.LocalPlayer.PlayerControl != sprinter) return;
+            if (sprinter == null || PlayerControl.LocalPlayer != sprinter) return;
             if (sprintDuration <= 15f)
                 acTokenMove ??= new("sprinter.common2", (Vector3.zero, false), (val, _) => val.cleared);
         }
@@ -5608,9 +5620,9 @@ namespace TheOtherRoles
                     if (sprinter == null || sprinter.Data.IsDead) return;
 
                     bool canSee =
-                        (CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead && !(CachedPlayer.LocalPlayer.PlayerControl == Busker.busker
+                        (PlayerControl.LocalPlayer.Data.IsDead && !(PlayerControl.LocalPlayer == Busker.busker
                         && Busker.pseudocideFlag && Busker.restrictInformation)) ||
-                        CachedPlayer.LocalPlayer.PlayerControl == Sprinter.sprinter ||
+                        PlayerControl.LocalPlayer == Sprinter.sprinter ||
                         (Lighter.canSeeInvisible && PlayerControl.LocalPlayer == Lighter.lighter);
 
                     var opacity = canSee ? 0.5f : 0.0f;
@@ -5797,8 +5809,8 @@ namespace TheOtherRoles
 
         public static void setPosition() {
             if (position == Vector3.zero) return;  // Check if this has been set, otherwise first spawn on submerged will fail
-            if (antiTeleport.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0) {
-                CachedPlayer.LocalPlayer.NetTransform.RpcSnapTo(position);
+            if (antiTeleport.FindAll(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId).Count > 0) {
+                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(position);
                 if (SubmergedCompatibility.IsSubmerged) {
                     SubmergedCompatibility.ChangeFloor(position.y > -7);
                 }

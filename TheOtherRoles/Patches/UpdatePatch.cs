@@ -5,7 +5,6 @@ using static TheOtherRoles.TheOtherRoles;
 using TheOtherRoles.Objects;
 using System.Collections.Generic;
 using System.Linq;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
@@ -18,8 +17,8 @@ namespace TheOtherRoles.Patches {
     {
         private static Dictionary<byte, (string name, Color color)> TagColorDict = new();
         static void resetNameTagsAndColors() {
-            var localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
-            var myData = CachedPlayer.LocalPlayer.PlayerControl.Data;
+            var localPlayer = PlayerControl.LocalPlayer;
+            var myData = PlayerControl.LocalPlayer.Data;
             var amImpostor = myData.Role.IsImpostor;
             var morphTimerNotUp = Morphling.morphTimer > 0f;
             var morphTargetNotNull = Morphling.morphTarget != null;
@@ -74,7 +73,7 @@ namespace TheOtherRoles.Patches {
         }
 
         static void setNameColors() {
-            var localPlayer = CachedPlayer.LocalPlayer.PlayerControl;
+            var localPlayer = PlayerControl.LocalPlayer;
             var localRole = RoleInfo.getRoleInfoForPlayer(localPlayer, false).FirstOrDefault();
             setPlayerNameColor(localPlayer, localRole.color);
 
@@ -254,7 +253,7 @@ namespace TheOtherRoles.Patches {
             }
             if (Madmate.madmate.Contains(localPlayer))
             {
-                setPlayerNameColor(CachedPlayer.LocalPlayer.PlayerControl, Madmate.color);
+                setPlayerNameColor(PlayerControl.LocalPlayer, Madmate.color);
                 if (Madmate.tasksComplete(localPlayer))
                 {
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls.GetFastEnumerator())
@@ -268,7 +267,7 @@ namespace TheOtherRoles.Patches {
             }
             if (localPlayer == CreatedMadmate.createdMadmate)
             {
-                setPlayerNameColor(CachedPlayer.LocalPlayer.PlayerControl, Madmate.color);
+                setPlayerNameColor(PlayerControl.LocalPlayer, Madmate.color);
                 if (CreatedMadmate.tasksComplete(localPlayer))
                 {
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls.GetFastEnumerator())
@@ -286,8 +285,8 @@ namespace TheOtherRoles.Patches {
 
         static void setNameTags() {
             // Mafia
-            if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) {
-                foreach (PlayerControl player in CachedPlayer.AllPlayers)
+            if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.Role.IsImpostor) {
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                     if (Godfather.godfather != null && Godfather.godfather == player)
                             player.cosmetics.nameText.text = player.Data.PlayerName + $" ({ModTranslation.getString("mafiaG")})";
                     else if (Mafioso.mafioso != null && Mafioso.mafioso == player)
@@ -305,7 +304,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Lovers
-            if (Lovers.lover1 != null && Lovers.lover2 != null && (Lovers.lover1 == CachedPlayer.LocalPlayer.PlayerControl || Lovers.lover2 == CachedPlayer.LocalPlayer.PlayerControl)) {
+            if (Lovers.lover1 != null && Lovers.lover2 != null && (Lovers.lover1 == PlayerControl.LocalPlayer || Lovers.lover2 == PlayerControl.LocalPlayer)) {
                 string suffix = Helpers.cs(Lovers.color, " ♥");
                 Lovers.lover1.cosmetics.nameText.text += suffix;
                 Lovers.lover2.cosmetics.nameText.text += suffix;
@@ -317,7 +316,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Cupid
-            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (Cupid.lovers1 == CachedPlayer.LocalPlayer.PlayerControl || Cupid.lovers2 == CachedPlayer.LocalPlayer.PlayerControl || (Cupid.cupid != null && CachedPlayer.LocalPlayer.PlayerControl == Cupid.cupid)))
+            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (Cupid.lovers1 == PlayerControl.LocalPlayer || Cupid.lovers2 == PlayerControl.LocalPlayer || (Cupid.cupid != null && PlayerControl.LocalPlayer == Cupid.cupid)))
             {
                 string suffix = Helpers.cs(Cupid.color, " ♥");
                 Cupid.lovers1.cosmetics.nameText.text += suffix;
@@ -330,7 +329,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Kataomoi
-            if (Kataomoi.kataomoi != null && Kataomoi.kataomoi == CachedPlayer.LocalPlayer.PlayerControl && Kataomoi.target != null)
+            if (Kataomoi.kataomoi != null && Kataomoi.kataomoi == PlayerControl.LocalPlayer && Kataomoi.target != null)
             {
                 string suffix = Helpers.cs(Kataomoi.color, " ♥");
                 Kataomoi.target.cosmetics.nameText.text += suffix;
@@ -348,8 +347,8 @@ namespace TheOtherRoles.Patches {
                 {
                     foreach (PlayerControl p in Akujo.keeps)
                     {
-                        if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) p.cosmetics.nameText.text += Helpers.cs(Color.gray, " ♥");
-                        if (CachedPlayer.LocalPlayer.PlayerControl == p)
+                        if (PlayerControl.LocalPlayer == Akujo.akujo) p.cosmetics.nameText.text += Helpers.cs(Color.gray, " ♥");
+                        if (PlayerControl.LocalPlayer == p)
                         {
                             Akujo.akujo.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
                             p.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
@@ -358,8 +357,8 @@ namespace TheOtherRoles.Patches {
                 }
                 if (Akujo.honmei != null)
                 {
-                    if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo) Akujo.honmei.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
-                    if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.honmei)
+                    if (PlayerControl.LocalPlayer == Akujo.akujo) Akujo.honmei.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
+                    if (PlayerControl.LocalPlayer == Akujo.honmei)
                     {
                         Akujo.akujo.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
                         Akujo.honmei.cosmetics.nameText.text += Helpers.cs(Akujo.color, " ♥");
@@ -370,9 +369,9 @@ namespace TheOtherRoles.Patches {
                 {
                     foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                     {
-                        if (player.TargetPlayerId == Akujo.akujo.PlayerId && ((Akujo.honmei != null && Akujo.honmei == CachedPlayer.LocalPlayer.PlayerControl) || (Akujo.keeps != null && Akujo.keeps.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId))))
+                        if (player.TargetPlayerId == Akujo.akujo.PlayerId && ((Akujo.honmei != null && Akujo.honmei == PlayerControl.LocalPlayer) || (Akujo.keeps != null && Akujo.keeps.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))))
                             player.NameText.text += Helpers.cs(Akujo.color, " ♥");
-                        if (CachedPlayer.LocalPlayer.PlayerControl == Akujo.akujo)
+                        if (PlayerControl.LocalPlayer == Akujo.akujo)
                         {
                             if (player.TargetPlayerId == Akujo.honmei?.PlayerId) player.NameText.text += Helpers.cs(Akujo.color, " ♥");
                             if (Akujo.keeps != null && Akujo.keeps.Any(x => x.PlayerId == player.TargetPlayerId)) player.NameText.text += Helpers.cs(Color.gray, " ♥");
@@ -382,8 +381,8 @@ namespace TheOtherRoles.Patches {
             }
 
             // Lawyer or Prosecutor
-            bool localIsLawyer = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.lawyer == CachedPlayer.LocalPlayer.PlayerControl;
-            bool localIsKnowingTarget = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.targetKnows && Lawyer.target == CachedPlayer.LocalPlayer.PlayerControl;
+            bool localIsLawyer = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.lawyer == PlayerControl.LocalPlayer;
+            bool localIsKnowingTarget = Lawyer.lawyer != null && Lawyer.target != null && Lawyer.targetKnows && Lawyer.target == PlayerControl.LocalPlayer;
 
             if (localIsLawyer || (localIsKnowingTarget && !Lawyer.lawyer.Data.IsDead)) {
                 Color color = Lawyer.color;
@@ -398,7 +397,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Former Thief
-            if (Thief.formerThief != null && (Thief.formerThief == CachedPlayer.LocalPlayer.PlayerControl || CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead)) {
+            if (Thief.formerThief != null && (Thief.formerThief == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Data.IsDead)) {
                 string suffix = Helpers.cs(Thief.color, " $");
                 Thief.formerThief.cosmetics.nameText.text += suffix;
                 if (MeetingHud.Instance != null)
@@ -466,47 +465,47 @@ namespace TheOtherRoles.Patches {
         }
 
         static void updateImpostorKillButton(HudManager __instance) {
-            if (!CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) return;
+            if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor) return;
             if (MeetingHud.Instance) {
                 __instance.KillButton.Hide();
                 return;
             }
             bool enabled = true;
-            if (Vampire.vampire != null && Vampire.vampire == CachedPlayer.LocalPlayer.PlayerControl)
+            if (Vampire.vampire != null && Vampire.vampire == PlayerControl.LocalPlayer)
                 enabled = false;
-            else if (Mafioso.mafioso != null && Mafioso.mafioso == CachedPlayer.LocalPlayer.PlayerControl && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+            else if (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
                 enabled = false;
-            else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
+            else if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
                 enabled = false;
-            else if (MimicA.mimicA != null && MimicA.mimicA == CachedPlayer.LocalPlayer.PlayerControl && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead)
+            else if (MimicA.mimicA != null && MimicA.mimicA == PlayerControl.LocalPlayer && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead)
                 enabled = false;
-            else if (BomberA.bomberA != null && BomberA.bomberA == CachedPlayer.LocalPlayer.PlayerControl && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead)
+            else if (BomberA.bomberA != null && BomberA.bomberA == PlayerControl.LocalPlayer && BomberB.bomberB != null && !BomberB.bomberB.Data.IsDead)
                 enabled = false;
-            else if (BomberB.bomberB != null && BomberB.bomberB == CachedPlayer.LocalPlayer.PlayerControl && BomberA.bomberA != null && !BomberA.bomberA.Data.IsDead)
+            else if (BomberB.bomberB != null && BomberB.bomberB == PlayerControl.LocalPlayer && BomberA.bomberA != null && !BomberA.bomberA.Data.IsDead)
                 enabled = false;
 
             if (enabled) __instance.KillButton.Show();
             else __instance.KillButton.Hide();
 
-            if (Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0) __instance.KillButton.Hide();
+            if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0) __instance.KillButton.Hide();
         }
 
         static void updateReportButton(HudManager __instance) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
-            if (Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0 || MeetingHud.Instance) __instance.ReportButton.Hide();
+            if (Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0 || MeetingHud.Instance) __instance.ReportButton.Hide();
             else if (!__instance.ReportButton.isActiveAndEnabled) __instance.ReportButton.Show();
         }
          
         static void updateVentButton(HudManager __instance)
         {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
-            if ((Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0) || MeetingHud.Instance || CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() == false) __instance.ImpostorVentButton.Hide();
-            else if (CachedPlayer.LocalPlayer.PlayerControl.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
+            if ((Deputy.handcuffedKnows.ContainsKey(PlayerControl.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[PlayerControl.LocalPlayer.PlayerId] > 0) || MeetingHud.Instance || PlayerControl.LocalPlayer.roleCanUseVents() == false) __instance.ImpostorVentButton.Hide();
+            else if (PlayerControl.LocalPlayer.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
 
-            if (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId))
-                __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + (CachedPlayer.LocalPlayer.PlayerControl == Engineer.engineer ?
+            if (Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))
+                __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + (PlayerControl.LocalPlayer == Engineer.engineer ?
                     CustomButton.ButtonPositions.lowerRowRight : CustomButton.ButtonPositions.upperRowLeft);
-            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == CachedPlayer.LocalPlayer.PlayerControl && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
+            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == PlayerControl.LocalPlayer && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
         }
 
         static void updateUseButton(HudManager __instance) {
@@ -514,18 +513,18 @@ namespace TheOtherRoles.Patches {
         }
 
         static void updateSabotageButton(HudManager __instance) {
-            if (MeetingHud.Instance || TORMapOptions.gameMode == CustomGamemodes.HideNSeek || !CachedPlayer.LocalPlayer.PlayerControl.roleCanUseSabotage()) __instance.SabotageButton.Hide();
-            else if (CachedPlayer.LocalPlayer.PlayerControl.roleCanUseSabotage() && !__instance.SabotageButton.isActiveAndEnabled) __instance.SabotageButton.Show();
+            if (MeetingHud.Instance || TORMapOptions.gameMode == CustomGamemodes.HideNSeek || !PlayerControl.LocalPlayer.roleCanUseSabotage()) __instance.SabotageButton.Hide();
+            else if (PlayerControl.LocalPlayer.roleCanUseSabotage() && !__instance.SabotageButton.isActiveAndEnabled) __instance.SabotageButton.Show();
 
             if (Helpers.ShowButtons) {
-                if ((CreatedMadmate.createdMadmate != null && CachedPlayer.LocalPlayer.PlayerControl == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
-                    || (Madmate.madmate.Any(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId) && Madmate.canSabotage))
+                if ((CreatedMadmate.createdMadmate != null && PlayerControl.LocalPlayer == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
+                    || (Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId) && Madmate.canSabotage))
                     __instance.SabotageButton.transform.localPosition = CustomButton.ButtonPositions.upperRowCenter + __instance.UseButton.transform.localPosition;
             }
         }
 
         static void updateMapButton(HudManager __instance) {
-            //Trapper.trapper == null || !(CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) ||
+            //Trapper.trapper == null || !(PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) ||
             if ( __instance == null || __instance.MapButton.HeldButtonSprite == null) return;
             //__instance.MapButton.HeldButtonSprite.color = Trapper.playersOnMap.Any() ? Trapper.color : Color.white;
         }
@@ -560,7 +559,7 @@ namespace TheOtherRoles.Patches {
             GameStatistics.updateTimer();
 
             // Fix dead player's pets being visible by just always updating whether the pet should be visible at all.
-            foreach (PlayerControl target in CachedPlayer.AllPlayers) {
+            foreach (PlayerControl target in PlayerControl.AllPlayerControls) {
                 var pet = target.GetPet();
                 if (pet != null) {
                     pet.Visible = (PlayerControl.LocalPlayer.Data.IsDead && target.Data.IsDead || !target.Data.IsDead) && !target.inVent;

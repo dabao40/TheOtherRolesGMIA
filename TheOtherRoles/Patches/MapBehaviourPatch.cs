@@ -7,7 +7,6 @@ using System.Linq;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace TheOtherRoles.Patches {
 
 	[HarmonyPatch(typeof(MapBehaviour))]
 	class MapBehaviourPatch {
-		public static Dictionary<PlayerControl, SpriteRenderer> herePoints = new();
+		public static Dictionary<Byte, SpriteRenderer> herePoints = new();
 
         public static SpriteRenderer targetHerePoint;
         public static Dictionary<byte, SpriteRenderer> impostorHerePoint;
@@ -39,9 +38,9 @@ namespace TheOtherRoles.Patches {
 
         public static void shareRealTasks()
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareRealTasks, Hazel.SendOption.Reliable, -1);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareRealTasks, Hazel.SendOption.Reliable, -1);
             int count = 0;
-            foreach (var task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+            foreach (var task in PlayerControl.LocalPlayer.myTasks)
             {
                 if (!task.IsComplete && task.HasLocation && !PlayerTask.TaskIsEmergency(task))
                 {
@@ -52,13 +51,13 @@ namespace TheOtherRoles.Patches {
                 }
             }
             writer.Write((byte)count);
-            foreach (var task in CachedPlayer.LocalPlayer.PlayerControl.myTasks)
+            foreach (var task in PlayerControl.LocalPlayer.myTasks)
             {
                 if (!task.IsComplete && task.HasLocation && !PlayerTask.TaskIsEmergency(task))
                 {
                     foreach (var loc in task.Locations)
                     {
-                        writer.Write(CachedPlayer.LocalPlayer.PlayerControl.PlayerId);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(loc.x);
                         writer.Write(loc.y);
                     }
@@ -96,7 +95,7 @@ namespace TheOtherRoles.Patches {
         {
             if (FreePlayGM.isFreePlayGM) return true;
             if (!MeetingHud.Instance) return true;  // Only run in meetings, and then set the Position of the HerePoint to the Position before the Meeting!
-            if (CachedPlayer.LocalPlayer.PlayerControl != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
+            if (PlayerControl.LocalPlayer != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
             if (EvilTracker.target == null) return true;
             if (realTasks[EvilTracker.target.PlayerId] == null) return false;
             _ = new StaticAchievementToken("evilTracker.common2");
@@ -132,7 +131,7 @@ namespace TheOtherRoles.Patches {
         {
             static bool Prefix(MapTaskOverlay __instance)
             {
-                if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId)
+                if (EvilTracker.evilTracker != null && PlayerControl.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId)
                 {
                     return evilTrackerShowTask(__instance);
                 }
@@ -143,9 +142,9 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 		static void Postfix(MapBehaviour __instance) {
             __instance.HerePoint.transform.SetLocalZ(-2.1f);
-            /*if (Trapper.trapper != null && CachedPlayer.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
+            /*if (Trapper.trapper != null && PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
 				foreach (PlayerControl player in Trapper.playersOnMap) {
-					if (herePoints.ContainsKey(player)) continue;
+					if (herePoints.ContainsKey(player.PlayerId)) continue;
 					Vector3 v = Trap.trapPlayerIdMap[player.PlayerId].trap.transform.position;
 					v /= MapUtilities.CachedShipStatus.MapScale;
 					v.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
@@ -157,14 +156,14 @@ namespace TheOtherRoles.Patches {
 					if (Trapper.anonymousMap) player.CurrentOutfit.ColorId = 6;
 					player.SetPlayerMaterialColors(herePoint);
 					player.CurrentOutfit.ColorId = colorId;
-					herePoints.Add(player, herePoint);
+					herePoints.Add(player.PlayerId, herePoint);
 				}
-				foreach (var s in herePoints.Where(x => !Trapper.playersOnMap.Contains(x.Key)).ToList()) {
+				foreach (var s in herePoints.Where(x => !Trapper.playersOnMap.Contains(Helpers.playerById(x.Key))).ToList()) {
 					UnityEngine.Object.Destroy(s.Value);
 					herePoints.Remove(s.Key);
 				}
 			}*/
-            if (EvilTracker.evilTracker != null && CachedPlayer.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
+            if (EvilTracker.evilTracker != null && PlayerControl.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
 			{
                 if (EvilTracker.target != null && MeetingHud.Instance == null)
                 {
@@ -172,7 +171,7 @@ namespace TheOtherRoles.Patches {
                     {
                         targetHerePoint = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                     }
-                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead);
+                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead);
                     NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
                     PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
                     Vector3 pos = new(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
@@ -185,16 +184,16 @@ namespace TheOtherRoles.Patches {
 
                 // Use the red icons to indicate the Impostors' positions
                 impostorHerePoint ??= new();
-                foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if ((p.Data.Role.IsImpostor && p != CachedPlayer.LocalPlayer.PlayerControl) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
+                    if ((p.Data.Role.IsImpostor && p != PlayerControl.LocalPlayer) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
                         || (p == Jackal.jackal && Jackal.wasTeamRed))
                     {
                         if (!impostorHerePoint.ContainsKey(p.PlayerId))
                         {
                             impostorHerePoint[p.PlayerId] = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                         }
-                        impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null && !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead);
+                        impostorHerePoint[p.PlayerId].gameObject.SetActive(!p.Data.IsDead && MeetingHud.Instance == null && !PlayerControl.LocalPlayer.Data.IsDead);
                         NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(p.PlayerId);
                         PlayerMaterial.SetColors(0, impostorHerePoint[p.PlayerId]);
                         Vector3 pos = new(p.transform.position.x, p.transform.position.y, p.transform.position.z);
@@ -206,7 +205,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (EvilHacker.canSeeDoorStatus && ((EvilHacker.evilHacker != null && CachedPlayer.LocalPlayer.PlayerId == EvilHacker.evilHacker.PlayerId) || EvilHacker.isInherited()))
+            if (EvilHacker.canSeeDoorStatus && ((EvilHacker.evilHacker != null && PlayerControl.LocalPlayer.PlayerId == EvilHacker.evilHacker.PlayerId) || EvilHacker.isInherited()))
             {
                 if (doorClosedSprite == null)
                 {

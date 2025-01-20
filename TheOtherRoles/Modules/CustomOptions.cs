@@ -8,7 +8,6 @@ using HarmonyLib;
 using Hazel;
 using System.Reflection;
 using System.Text;
-using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.CustomOption;
@@ -17,6 +16,9 @@ using AmongUs.GameOptions;
 using TMPro;
 using TheOtherRoles.Modules;
 using AmongUs.Data;
+using Rewired.Utils.Platforms.Windows;
+using static Il2CppSystem.Xml.Schema.FacetsChecker.FacetsCompiler;
+using TheOtherRoles;
 
 namespace TheOtherRoles {
     public class CustomOption {
@@ -132,7 +134,7 @@ namespace TheOtherRoles {
         public static void ShareOptionChange(uint optionId) {
             var option = options.FirstOrDefault(x => x.id == optionId);
             if (option == null) return;
-            var writer = AmongUsClient.Instance!.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance!.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
             writer.Write((byte)1);
             writer.WritePacked((uint)option.id);
             writer.WritePacked(Convert.ToUInt32(option.selection));
@@ -140,12 +142,12 @@ namespace TheOtherRoles {
         }
 
         public static void ShareOptionSelections() {
-            if (CachedPlayer.AllPlayers.Count <= 1 || AmongUsClient.Instance!.AmHost == false && CachedPlayer.LocalPlayer.PlayerControl == null) return;
+            if (PlayerControl.AllPlayerControls.Count <= 1 || AmongUsClient.Instance!.AmHost == false && PlayerControl.LocalPlayer == null) return;
             var optionsList = new List<CustomOption>(CustomOption.options);
             while (optionsList.Any())
             {
                 byte amount = (byte) Math.Min(optionsList.Count, 200); // takes less than 3 bytes per option on average
-                var writer = AmongUsClient.Instance!.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance!.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareOptions, SendOption.Reliable, -1);
                 writer.Write(amount);
                 for (int i = 0; i < amount; i++)
                 {
@@ -216,6 +218,7 @@ namespace TheOtherRoles {
             {
                 try
                 {
+                    selection = newSelection;
                     if (GameStartManager.Instance != null && GameStartManager.Instance.LobbyInfoPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
                     {
                         LobbyViewSettingsPaneChangeTabPatch.Postfix(GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane, GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
@@ -233,11 +236,20 @@ namespace TheOtherRoles {
                 DestroyableSingleton<HudManager>.Instance.Notifier.AddModSettingsChangeMessage((StringNames)(this.id + 6000), getString(),
                     (originalParent != null ? originalParent.getName().Replace("- ", "") + ": " : "") + getName().Replace("- ", ""), false);
             }
+            if (AmongUsClient.Instance?.AmHost == true)
+            {
+                var currentTab = GameOptionsMenuStartPatch.currentTabs.FirstOrDefault(x => x.active).GetComponent<GameOptionsMenu>();
+                if (currentTab != null)
+                {
+                    var optionType = options.First(x => x.optionBehaviour == currentTab.Children[0]).type;
+                    GameOptionsMenuStartPatch.updateGameOptionsMenu(optionType, currentTab);
+                }
+            }
             if (optionBehaviour != null && optionBehaviour is StringOption stringOption) {
                 stringOption.oldValue = stringOption.Value = selection;
                 stringOption.ValueText.text = getString();
 
-                if (AmongUsClient.Instance?.AmHost == true && CachedPlayer.LocalPlayer.PlayerControl) {
+                if (AmongUsClient.Instance?.AmHost == true && PlayerControl.LocalPlayer) {
                     if (id == 0 && selection != preset) {
                         switchPreset(selection); // Switch presets
                         ShareOptionSelections();
@@ -548,6 +560,9 @@ namespace TheOtherRoles {
                     num -= 0.85f;
                     i = 0;
                 }
+                else if (option.parent != null && (option.parent.selection == 0 || option.parent.parent != null && option.parent.parent.selection == 0)) continue;  // Hides options, for which the parent is disabled!
+                if (option == CustomOptionHolder.crewmateRolesCountMax || option == CustomOptionHolder.neutralRolesCountMax || option == CustomOptionHolder.impostorRolesCountMax || option == CustomOptionHolder.modifiersCountMax || option == CustomOptionHolder.crewmateRolesFill)
+                    continue;
 
                 ViewSettingsInfoPanel viewSettingsInfoPanel = UnityEngine.Object.Instantiate<ViewSettingsInfoPanel>(__instance.infoPanelOrigin);
                 viewSettingsInfoPanel.transform.SetParent(__instance.settingsContainer);
@@ -568,8 +583,9 @@ namespace TheOtherRoles {
                 }
                 viewSettingsInfoPanel.transform.localPosition = new Vector3(num2, num, -2f);
                 int value = option.getSelection();
-                viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, option.getString(), 61);
-                viewSettingsInfoPanel.titleText.text = option.getName();
+                var settingTuple = handleSpecialOptionsView(option, option.name, option.getString());
+                viewSettingsInfoPanel.SetInfo(StringNames.ImpostorsCategory, settingTuple.Item2, 61);
+                viewSettingsInfoPanel.titleText.text = settingTuple.Item1;
                 if (option.isHeader && (int)optionType != 99 && option.heading == "" && (option.type == CustomOptionType.Neutral || option.type == CustomOptionType.Crewmate || option.type == CustomOptionType.Impostor || option.type == CustomOptionType.Modifier))
                 {
                     viewSettingsInfoPanel.titleText.text = ModTranslation.getString("optionSpawnChance");
@@ -586,6 +602,58 @@ namespace TheOtherRoles {
             float actual_spacing = (headers * 0.85f + lines * 0.59f) / (headers + lines);
             __instance.scrollBar.CalculateAndSetYBounds((float)(__instance.settingsInfo.Count + singles * 2 + headers), 2f, 6f, actual_spacing);
 
+        }
+        private static Tuple<string, string> handleSpecialOptionsView(CustomOption option, string defaultString, string defaultVal)
+        {
+            string name = defaultString;
+            string val = defaultVal;
+            if (option == CustomOptionHolder.crewmateRolesCountMin)
+            {
+                val = "";
+                name = ModTranslation.getString("crewmateRoles");
+                var min = CustomOptionHolder.crewmateRolesCountMin.getSelection();
+                var max = CustomOptionHolder.crewmateRolesCountMax.getSelection();
+                if (CustomOptionHolder.crewmateRolesFill.getBool())
+                {
+                    var crewCount = PlayerControl.AllPlayerControls.Count - GameOptionsManager.Instance.currentGameOptions.NumImpostors;
+                    int minNeutral = CustomOptionHolder.neutralRolesCountMin.getSelection();
+                    int maxNeutral = CustomOptionHolder.neutralRolesCountMax.getSelection();
+                    if (minNeutral > maxNeutral) minNeutral = maxNeutral;
+                    min = crewCount - maxNeutral;
+                    max = crewCount - minNeutral;
+                    if (min < 0) min = 0;
+                    if (max < 0) max = 0;
+                    val = ModTranslation.getString("crewmateFill");
+                }
+                if (min > max) min = max;
+                val += (min == max) ? $"{max}" : $"{min} - {max}";
+            }
+            if (option == CustomOptionHolder.neutralRolesCountMin)
+            {
+                name = ModTranslation.getString("neutralRoles");
+                var min = CustomOptionHolder.neutralRolesCountMin.getSelection();
+                var max = CustomOptionHolder.neutralRolesCountMax.getSelection();
+                if (min > max) min = max;
+                val = (min == max) ? $"{max}" : $"{min} - {max}";
+            }
+            if (option == CustomOptionHolder.impostorRolesCountMin)
+            {
+                name = ModTranslation.getString("impostorRoles");
+                var min = CustomOptionHolder.impostorRolesCountMin.getSelection();
+                var max = CustomOptionHolder.impostorRolesCountMax.getSelection();
+                if (max > GameOptionsManager.Instance.currentGameOptions.NumImpostors) max = GameOptionsManager.Instance.currentGameOptions.NumImpostors;
+                if (min > max) min = max;
+                val = (min == max) ? $"{max}" : $"{min} - {max}";
+            }
+            if (option == CustomOptionHolder.modifiersCountMin)
+            {
+                name = ModTranslation.getString("modifiers");
+                var min = CustomOptionHolder.modifiersCountMin.getSelection();
+                var max = CustomOptionHolder.modifiersCountMax.getSelection();
+                if (min > max) min = max;
+                val = (min == max) ? $"{max}" : $"{min} - {max}";
+            }
+            return new(name, val);
         }
 
         public static void createSettingTabs(LobbyViewSettingsPane __instance)
@@ -875,6 +943,7 @@ namespace TheOtherRoles {
                     categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
                     num -= 0.63f;
                 }
+                else if (option.parent != null && (option.parent.selection == 0 || option.parent.parent != null && option.parent.parent.selection == 0)) continue;  // Hides options, for which the parent is disabled!
                 OptionBehaviour optionBehaviour = UnityEngine.Object.Instantiate<StringOption>(menu.stringOptionOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
                 optionBehaviour.transform.localPosition = new Vector3(0.952f, num, -2f);
                 optionBehaviour.SetClickMask(menu.ButtonClickMask);
@@ -966,6 +1035,13 @@ namespace TheOtherRoles {
             torSettingsTab.name = settingName;
 
             var torSettingsGOM = torSettingsTab.GetComponent<GameOptionsMenu>();
+
+            updateGameOptionsMenu(optionType, torSettingsGOM);
+            currentTabs.Add(torSettingsTab);
+            torSettingsTab.SetActive(false);
+        }
+        public static void updateGameOptionsMenu(CustomOptionType optionType, GameOptionsMenu torSettingsGOM)
+        {
             foreach (var child in torSettingsGOM.Children)
             {
                 child.Destroy();
@@ -981,9 +1057,6 @@ namespace TheOtherRoles {
             if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
                 relevantOptions = relevantOptions.Where(x => x.id != 10424).ToList();
             createSettings(torSettingsGOM, relevantOptions);
-
-            currentTabs.Add(torSettingsTab);
-            torSettingsTab.SetActive(false);
         }
 
         private static void createSettingTabs(GameSettingMenu __instance)
@@ -1263,6 +1336,15 @@ namespace TheOtherRoles {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == AmongUs.GameOptions.GameModes.HideNSeek) return; // Allow Vanilla Hide N Seek
             __result = buildAllOptions(vanillaSettings:__result);
         }
+
+        [HarmonyPatch(typeof(StringGameSetting), nameof(StringGameSetting.GetValueString))]
+        [HarmonyPrefix]
+        public static bool AjdustStringForViewPanel(StringGameSetting __instance, float value, ref string __result)
+        {
+            if (__instance.OptionName != Int32OptionNames.KillDistance) return true;
+            __result = GameOptionsData.KillDistanceStrings[(int)value];
+            return false;
+        }
     }
 
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
@@ -1410,11 +1492,11 @@ namespace TheOtherRoles {
                 toggleZoomButton.OnClick.RemoveAllListeners();
                 toggleZoomButton.OnClick.AddListener((Action)(() => Helpers.toggleZoom()));
             }
-            if (CachedPlayer.LocalPlayer != null && CachedPlayer.LocalPlayer.PlayerControl != null)
+            if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer != null)
             {
-                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.PlayerControl.Data);
+                var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                bool zoomButtonActive = !(CachedPlayer.LocalPlayer.PlayerControl == null || !CachedPlayer.LocalPlayer.PlayerControl.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Busker.busker && Busker.pseudocideFlag));
+                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag));
                 zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
                 toggleZoomButtonObject.SetActive(zoomButtonActive);
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);
