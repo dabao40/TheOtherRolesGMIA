@@ -960,6 +960,7 @@ namespace TheOtherRoles
                     Invert.invert.Add(oldShifter);
                     Invert.invert.Remove(player);
                 }
+                if (Armored.armored == player) Armored.armored = oldShifter;
             }
 
             // Specify shifting onto Lawyer/Akujo
