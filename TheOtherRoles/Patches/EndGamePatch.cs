@@ -786,31 +786,31 @@ namespace TheOtherRoles.Patches {
                 switch (OnGameEndPatch.gameOverReason)
                 {
                     case GameOverReason.ImpostorDisconnect:
-                        textRenderer.text = "ImpostorDisconnect".Translate();
+                        textRenderer.text = ModTranslation.getString("ImpostorDisconnect");
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorByKill:
-                        textRenderer.text = "ImpostorByKill".Translate();
+                        textRenderer.text = ModTranslation.getString("ImpostorByKill");
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorBySabotage:
-                        textRenderer.text = "ImpostorBySabotage".Translate();
+                        textRenderer.text = ModTranslation.getString("ImpostorBySabotage");
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorByVote:
-                        textRenderer.text = "ImpostorByVote".Translate();
+                        textRenderer.text = ModTranslation.getString("ImpostorByVote");
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.HumansByTask:
-                        textRenderer.text = "HumansByTask".Translate();
+                        textRenderer.text = ModTranslation.getString("HumansByTask");
                         textRenderer.color = Color.white;
                         break;
                     case GameOverReason.HumansDisconnect:
-                        textRenderer.text = "HumansDisconnect".Translate();
+                        textRenderer.text = ModTranslation.getString("HumansDisconnect");
                         textRenderer.color = Color.white;
                         break;
                     case GameOverReason.HumansByVote:
-                        textRenderer.text = "HumansByVote".Translate();
+                        textRenderer.text = ModTranslation.getString("HumansByVote");
                         textRenderer.color = Color.white;
                         break;
                 }

@@ -157,6 +157,9 @@ namespace TheOtherRoles.CustomGameModes
                 case RoleId.Vip:
                     Vip.vip.RemoveAll(x => x.PlayerId == playerId);
                     break;
+                case RoleId.Armored:
+                    Armored.armored = null;
+                    break;
             }
         }
 

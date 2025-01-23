@@ -94,10 +94,3 @@ namespace TheOtherRoles
         }
     }
 }
-internal static class LanguageExtension
-{
-    internal static string Translate(this string key)
-    {
-        return ModTranslation.getString(key);
-    }
-}
