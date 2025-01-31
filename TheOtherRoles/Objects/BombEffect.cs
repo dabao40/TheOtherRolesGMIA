@@ -32,7 +32,6 @@ namespace TheOtherRoles
             var bombeffectRenderer = bombeffect.AddComponent<SpriteRenderer>();
             bombeffectRenderer.sprite = getBombEffectSprite();
             bombeffect.SetActive(true);
-            Helpers.addRendererGuide(bombeffectRenderer, ModTranslation.getString("bombEffectHint"));
             bombeffects.Add(this);
         }
 

@@ -1140,20 +1140,6 @@ namespace TheOtherRoles {
             transitionFade.StartCoroutine(Coroutine().WrapToIl2Cpp());
         }
 
-        public static void addRendererGuide(SpriteRenderer renderer, string text)
-        {
-            if (!TORMapOptions.showExtraInfo) return;
-            var button = renderer.gameObject.SetUpButton(false, renderer, renderer.color, renderer.color * new UnityEngine.Color(0.7f, 1f, 0.7f));
-            var collider = renderer.gameObject.AddComponent<BoxCollider2D>();
-            collider.size = renderer.sprite.bounds.size;
-            collider.isTrigger = true;
-            button.OnMouseOver.AddListener((Action)(() => {
-                VanillaAsset.PlayHoverSE(); TORGUIManager.Instance.SetHelpContext(button,
-                TORGUIContextEngine.API.RawText(GUIAlignment.Center, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent), text));
-            }));
-            button.OnMouseOut.AddListener((Action)(() => { TORGUIManager.Instance.HideHelpContextIf(button); }));
-        }
-
         public static void TryAdd<T>(this List<T> list, T param) where T : class
         {
             if (list.Contains(param) || param == null) return;

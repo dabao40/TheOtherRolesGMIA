@@ -96,7 +96,6 @@ namespace TheOtherRoles.Objects
             vent.gameObject.SetActive(true);
             boxRenderer.color = boxRenderer.color.SetAlpha(1f);
             ventRenderer.sprite = null;
-            Helpers.addRendererGuide(boxRenderer, "111");
             return;
         }
 

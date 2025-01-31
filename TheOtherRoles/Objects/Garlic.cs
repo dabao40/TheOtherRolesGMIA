@@ -36,8 +36,6 @@ namespace TheOtherRoles.Objects {
             var backgroundRenderer = background.AddComponent<SpriteRenderer>();
             backgroundRenderer.sprite = getBackgroundSprite();
 
-            Helpers.addRendererGuide(garlicRenderer, Vampire.canKillNearGarlics ? ModTranslation.getString("garlicCanKillHint") : ModTranslation.getString("garlicCantKillHint"));
-
             garlic.SetActive(true);
             garlics.Add(this);
         }
