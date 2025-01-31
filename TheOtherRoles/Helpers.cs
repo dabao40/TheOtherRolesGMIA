@@ -87,7 +87,7 @@ namespace TheOtherRoles {
                 Stream stream = assembly.GetManifestResourceStream(path);
                 var length = stream.Length;
                 var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int) length));
+                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
                 if (path.Contains("HorseHats")) {
                     byteTexture = new Il2CppStructArray<byte>(byteTexture.Reverse().ToArray());
                 }
@@ -100,8 +100,8 @@ namespace TheOtherRoles {
         }
 
         public static Texture2D loadTextureFromDisk(string path) {
-            try {          
-                if (File.Exists(path))     {
+            try {
+                if (File.Exists(path)) {
                     Texture2D texture = new(2, 2, TextureFormat.ARGB32, true);
                     var byteTexture = Il2CppSystem.IO.File.ReadAllBytes(path);
                     ImageConversion.LoadImage(texture, byteTexture, false);
@@ -149,7 +149,7 @@ namespace TheOtherRoles {
                     return player;
             return null;
         }
-        
+
         public static Dictionary<byte, PlayerControl> allPlayersById()
         {
             Dictionary<byte, PlayerControl> res = new();
@@ -263,25 +263,25 @@ namespace TheOtherRoles {
         }
 
         public static void refreshRoleDescription(PlayerControl player) {
-            List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(player); 
-            List<string> taskTexts = new(infos.Count); 
+            List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(player);
+            List<string> taskTexts = new(infos.Count);
 
             foreach (var roleInfo in infos)
             {
                 taskTexts.Add(getRoleString(roleInfo, Husk.husk.Any(x => x.PlayerId == player.PlayerId)));
             }
-            
+
             var toRemove = new List<PlayerTask>();
-            foreach (PlayerTask t in player.myTasks.GetFastEnumerator()) 
+            foreach (PlayerTask t in player.myTasks.GetFastEnumerator())
             {
                 var textTask = t.TryCast<ImportantTextTask>();
                 if (textTask == null) continue;
-                
+
                 var currentText = textTask.Text;
-                
+
                 if (taskTexts.Contains(currentText)) taskTexts.Remove(currentText); // TextTask for this RoleInfo does not have to be added, as it already exists
                 else toRemove.Add(t); // TextTask does not have a corresponding RoleInfo and will hence be deleted
-            }   
+            }
 
             foreach (PlayerTask t in toRemove) {
                 t.OnRemove();
@@ -309,20 +309,20 @@ namespace TheOtherRoles {
         internal static string getRoleString(RoleInfo roleInfo, bool isHusk)
         {
             bool addHusk = isHusk && !roleInfo.isModifier;
-            if (roleInfo.roleId == RoleId.Jackal) 
+            if (roleInfo.roleId == RoleId.Jackal)
             {
                 var getSidekickText = Jackal.canCreateSidekick && !addHusk ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
-                return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {getSidekickText}");  
+                return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {getSidekickText}");
             }
 
-            if (roleInfo.roleId == RoleId.Invert) 
+            if (roleInfo.roleId == RoleId.Invert)
             {
                 return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription} ({Invert.meetings})");
             }
-            
+
             return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {roleInfo.shortDescription}");
         }
-        
+
         public static bool isLighterColor(int colorId) {
             return CustomColors.lighterColors.Contains(colorId);
         }
@@ -393,7 +393,7 @@ namespace TheOtherRoles {
                 UnityEngine.Object.Destroy(playerTask.gameObject);
             }
             player.myTasks.Clear();
-            
+
             if (player.Data != null && player.Data.Tasks != null)
                 player.Data.Tasks.Clear();
         }
@@ -1006,7 +1006,7 @@ namespace TheOtherRoles {
             Chameleon.update();  // so that morphling and camo wont make the chameleons visible
         }
 
-        public static void showFlash(Color color, float duration=1f, string message="") {
+        public static void showFlash(Color color, float duration = 1f, string message = "") {
             if (FastDestroyableSingleton<HudManager>.Instance == null || FastDestroyableSingleton<HudManager>.Instance.FullScreen == null) return;
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.gameObject.SetActive(true);
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
@@ -1089,9 +1089,7 @@ namespace TheOtherRoles {
             return null;
         }
 
-        public static Shader HSVShader;
-
-        public static (GameObject obj, NoisemakerArrow arrow) InstantiateNoisemakerArrow(Vector2 targetPos, bool withSound = false, float? hue = null)
+        public static (GameObject obj, NoisemakerArrow arrow) InstantiateNoisemakerArrow(Vector2 targetPos, bool withSound = false)
         {
             var noisemaker = GetRolePrefab<NoisemakerRole>();
             if (noisemaker != null)
@@ -1117,14 +1115,6 @@ namespace TheOtherRoles {
                 deathArrow.gameObject.SetActive(true);
                 deathArrow.target = targetPos;
 
-                if (hue.HasValue)
-                {
-                    deathArrow.GetComponentsInChildren<SpriteRenderer>().Do(renderer =>
-                    {
-                        renderer.material = new Material(HSVShader);
-                        renderer.sharedMaterial.SetFloat("_Hue", 314);
-                    });
-                }
                 return (gameObject, deathArrow);
             }
 
@@ -1148,6 +1138,44 @@ namespace TheOtherRoles {
             }
 
             transitionFade.StartCoroutine(Coroutine().WrapToIl2Cpp());
+        }
+
+        public static void addRendererGuide(SpriteRenderer renderer, string text)
+        {
+            if (!TORMapOptions.showExtraInfo) return;
+            var button = renderer.gameObject.SetUpButton(false, renderer, renderer.color, renderer.color * new UnityEngine.Color(0.7f, 1f, 0.7f));
+            var collider = renderer.gameObject.AddComponent<BoxCollider2D>();
+            collider.size = renderer.sprite.bounds.size;
+            collider.isTrigger = true;
+            button.OnMouseOver.AddListener((Action)(() => {
+                VanillaAsset.PlayHoverSE(); TORGUIManager.Instance.SetHelpContext(button,
+                TORGUIContextEngine.API.RawText(GUIAlignment.Center, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent), text));
+            }));
+            button.OnMouseOut.AddListener((Action)(() => { TORGUIManager.Instance.HideHelpContextIf(button); }));
+        }
+
+        public static void TryAdd<T>(this List<T> list, T param) where T : class
+        {
+            if (list.Contains(param) || param == null) return;
+            list.Add(param);
+        }
+
+        public static List<PlayerControl> GetAllRelatedPlayers(this PlayerControl player)
+        {
+            List<PlayerControl> relatedPlayers = new();
+            if (player.getPartner() != null && Lovers.bothDie) relatedPlayers.TryAdd(player.getPartner());
+            if (player.getCupidLover() != null) {
+                relatedPlayers.TryAdd(player.getCupidLover());
+                if (Cupid.cupid != null) relatedPlayers.TryAdd(Cupid.cupid);
+            }
+            if ((player == Akujo.akujo && Akujo.honmei != null) || (player == Akujo.honmei && Akujo.akujo != null)) relatedPlayers.TryAdd(player == Akujo.akujo ?
+                Akujo.honmei : Akujo.akujo);
+            if ((player == BomberA.bomberA || player == BomberB.bomberB) && BomberA.ifOneDiesBothDie) relatedPlayers.TryAdd(player == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA);
+            if ((player == MimicK.mimicK || player == MimicA.mimicA) && MimicK.ifOneDiesBothDie) relatedPlayers.TryAdd(player == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK);
+            if (player == Fox.fox && Immoralist.immoralist != null) relatedPlayers.TryAdd(Immoralist.immoralist);
+            if (player == Kataomoi.target && Kataomoi.kataomoi != null) relatedPlayers.TryAdd(Kataomoi.kataomoi);
+            relatedPlayers.RemoveAll(x => x == player);
+            return relatedPlayers;
         }
 
         public static void setInvisible(PlayerControl player, Color color, float alpha)

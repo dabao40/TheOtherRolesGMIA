@@ -1,5 +1,7 @@
 using Reactor.Utilities.Extensions;
+using System;
 using System.Collections.Generic;
+using TheOtherRoles.MetaContext;
 using UnityEngine;
 
 namespace TheOtherRoles.Objects
@@ -43,6 +45,13 @@ namespace TheOtherRoles.Objects
             timeRemaining = duration;
 
             renderer.color = renderer.color.SetAlpha(Yoyo.SilhouetteVisibility);
+
+            var text = ModTranslation.getString("silhouetteVisibleOnlyYou");
+            if (PlayerControl.LocalPlayer == Yoyo.yoyo) {
+                if (!permanent) text = string.Format(ModTranslation.getString("silhouetteLastDuration"), duration);
+            }
+            else text = ModTranslation.getString("silhouetteHint");
+            Helpers.addRendererGuide(renderer, text);
 
             bool visible = visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
 

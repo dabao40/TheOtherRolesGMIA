@@ -46,8 +46,6 @@ namespace TheOtherRoles.Patches {
         AdditionalAlivePursuerWin,
         AdditionalLawyerStolenWin,
         OpportunistWin,
-        CrewmateWin, 
-        ImpostorWin,
         FoxWin,
         MoriartyWin,
         AkujoWin,
@@ -172,8 +170,10 @@ namespace TheOtherRoles.Patches {
             if (Immoralist.immoralist != null) notWinners.Add(Immoralist.immoralist);
             if (SchrodingersCat.schrodingersCat != null) notWinners.Add(SchrodingersCat.schrodingersCat);
             if (SchrodingersCat.formerSchrodingersCat != null) notWinners.Add(SchrodingersCat.formerSchrodingersCat);
+            if (CreatedMadmate.createdMadmate != null) notWinners.Add(CreatedMadmate.createdMadmate);
 
             notWinners.AddRange(Jackal.formerJackals);
+            notWinners.AddRange(Madmate.madmate);
 
             List<CachedPlayerData> winnersToRemove = new();
             foreach (CachedPlayerData winner in EndGameResult.CachedWinners.GetFastEnumerator()) {
@@ -183,13 +183,8 @@ namespace TheOtherRoles.Patches {
 
             // Putting them all in one doesn't work
             bool saboWin = gameOverReason == GameOverReason.ImpostorBySabotage;
-            bool impostorkillWin = gameOverReason == GameOverReason.ImpostorByKill;
-            bool impostorvoteWin = gameOverReason == GameOverReason.ImpostorByVote;
-            bool impostorWin = saboWin || impostorkillWin || impostorvoteWin;
-
-            bool taskWin = gameOverReason == GameOverReason.HumansByTask;
-            bool crewmatevoteWin = gameOverReason == GameOverReason.HumansByVote;
-            bool crewmateWin = taskWin || crewmatevoteWin;
+            bool impostorWin = gameOverReason is GameOverReason.ImpostorByKill or GameOverReason.ImpostorBySabotage or GameOverReason.ImpostorDisconnect or GameOverReason.ImpostorByVote;
+            bool crewmateWin = gameOverReason is GameOverReason.HumansByTask or GameOverReason.HumansByVote or GameOverReason.HumansDisconnect;
 
             bool jesterWin = Jester.jester != null && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
             bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
@@ -214,47 +209,18 @@ namespace TheOtherRoles.Patches {
             // Crewmates Win
             if (crewmateWin)
             {
-                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                if (SchrodingersCat.team == SchrodingersCat.Team.Crewmate)
                 {
-                    if (!p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && !Madmate.madmate.Contains(p) && CreatedMadmate.createdMadmate != p)
-                    {
-                        CachedPlayerData wpd = new(p.Data);
-                        EndGameResult.CachedWinners.Add(wpd);
-                    }
+                    if (SchrodingersCat.schrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.schrodingersCat.Data));
+                    if (SchrodingersCat.formerSchrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.formerSchrodingersCat.Data));
                 }
-                AdditionalTempData.winCondition = WinCondition.CrewmateWin;
             }
 
             // Impostors Win
             if (impostorWin)
             {
-                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
-                    if (p.Data.Role.IsImpostor)
-                    {
-                        CachedPlayerData wpd = new(p.Data);
-                        EndGameResult.CachedWinners.Add(wpd);
-                    }
-                    else if (p == SchrodingersCat.schrodingersCat)
-                    {
-                        if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
-                        {
-                            CachedPlayerData wpd = new(p.Data);
-                            EndGameResult.CachedWinners.Add(wpd);
-                        }
-                    }
-                    else if (p == SchrodingersCat.formerSchrodingersCat)
-                    {
-                        if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
-                        {
-                            CachedPlayerData wpd = new(p.Data);
-                            EndGameResult.CachedWinners.Add(wpd);
-                        }
-                    }
-                }
-                AdditionalTempData.winCondition = WinCondition.ImpostorWin;
+                if (SchrodingersCat.schrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.schrodingersCat.Data));
+                if (SchrodingersCat.formerSchrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.formerSchrodingersCat.Data));
             }
 
             // Mini lose
@@ -669,77 +635,66 @@ namespace TheOtherRoles.Patches {
             if (AdditionalTempData.winCondition == WinCondition.JesterWin)
             {
                 nonModTranslationText = "jesterWin";
-                textRenderer.text = ModTranslation.getString("jesterWin");
                 textRenderer.color = Jester.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Jester.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin)
             {
                 nonModTranslationText = "arsonistWin";
-                textRenderer.text = ModTranslation.getString("arsonistWin");
                 textRenderer.color = Arsonist.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Arsonist.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.KataomoiWin)
             {
                 nonModTranslationText = "kataomoiWin";
-                textRenderer.text = ModTranslation.getString("kataomoiWin");
                 textRenderer.color = Kataomoi.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Kataomoi.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.VultureWin)
             {
                 nonModTranslationText = "vultureWin";
-                textRenderer.text = ModTranslation.getString("vultureWin");
                 textRenderer.color = Vulture.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Vulture.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.LawyerSoloWin)
             {
                 nonModTranslationText = "lawyerWin";
-                textRenderer.text = ModTranslation.getString("lawyerWin");
                 textRenderer.color = Lawyer.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Lawyer.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.PlagueDoctorWin)
             {
                 nonModTranslationText = "plagueDoctorWin";
-                textRenderer.text = ModTranslation.getString("plagueDoctorWin");
                 textRenderer.color = PlagueDoctor.color;
                 __instance.BackgroundBar.material.SetColor("_Color", PlagueDoctor.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.FoxWin)
             {
                 nonModTranslationText = "foxWin";
-                textRenderer.text = ModTranslation.getString("foxWin");
                 textRenderer.color = Fox.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Fox.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.JekyllAndHydeWin)
             {
                 nonModTranslationText = "jekyllAndHydeWin";
-                textRenderer.text = ModTranslation.getString("jekyllAndHydeWin");
                 textRenderer.color = JekyllAndHyde.color;
                 __instance.BackgroundBar.material.SetColor("_Color", JekyllAndHyde.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin)
             {
                 nonModTranslationText = "crewLoverWin";
-                textRenderer.text = ModTranslation.getString("crewLoverWin");
                 textRenderer.color = Lovers.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
             }
-            else if (AdditionalTempData.winCondition == WinCondition.LoversSoloWin || AdditionalTempData.winCondition == WinCondition.CupidLoversWin)
+            else if (AdditionalTempData.winCondition is WinCondition.LoversSoloWin or WinCondition.CupidLoversWin)
             {
                 nonModTranslationText = "loversWin";
-                textRenderer.text = ModTranslation.getString("loversWin");
                 textRenderer.color = Lovers.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.JackalWin)
             {
                 nonModTranslationText = "jackalWin";
-                textRenderer.text = ModTranslation.getString("jackalWin");
                 textRenderer.color = Jackal.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Jackal.color);
             }
@@ -758,63 +713,60 @@ namespace TheOtherRoles.Patches {
             else if (AdditionalTempData.winCondition == WinCondition.AkujoWin)
             {
                 nonModTranslationText = "akujoWin";
-                textRenderer.text = ModTranslation.getString("akujoWin");
                 textRenderer.color = Akujo.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Akujo.color);
             }
             else if (AdditionalTempData.winCondition == WinCondition.MoriartyWin)
             {
                 nonModTranslationText = "moriartyWin";
-                textRenderer.text = ModTranslation.getString("moriartyWin");
                 textRenderer.color = Moriarty.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Moriarty.color);
             }
-            else if (AdditionalTempData.winCondition == WinCondition.CrewmateWin)
-            {
-                nonModTranslationText = "crewWin";
-                textRenderer.text = ModTranslation.getString("crewWin");
-                textRenderer.color = Palette.White;
-            }
-            else if (AdditionalTempData.winCondition == WinCondition.ImpostorWin)
-            {
-                nonModTranslationText = "impostorWin";
-                textRenderer.text = ModTranslation.getString("impostorWin");
-                textRenderer.color = Palette.ImpostorRed;
-            }
-            else if (AdditionalTempData.winCondition == WinCondition.Default)
+
+            if (!string.IsNullOrEmpty(nonModTranslationText)) textRenderer.text = ModTranslation.getString(nonModTranslationText);
+
+            if (AdditionalTempData.winCondition == WinCondition.Default)
             {
                 switch (OnGameEndPatch.gameOverReason)
                 {
                     case GameOverReason.ImpostorDisconnect:
-                        textRenderer.text = ModTranslation.getString("ImpostorDisconnect");
+                        textRenderer.text = ModTranslation.getString("impostorDisconnect");
+                        nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorByKill:
-                        textRenderer.text = ModTranslation.getString("ImpostorByKill");
+                        textRenderer.text = ModTranslation.getString("impostorByKill");
+                        nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorBySabotage:
-                        textRenderer.text = ModTranslation.getString("ImpostorBySabotage");
+                        textRenderer.text = ModTranslation.getString("impostorBySabotage");
+                        nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.ImpostorByVote:
-                        textRenderer.text = ModTranslation.getString("ImpostorByVote");
+                        textRenderer.text = ModTranslation.getString("impostorByVote");
+                        nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
                     case GameOverReason.HumansByTask:
-                        textRenderer.text = ModTranslation.getString("HumansByTask");
+                        textRenderer.text = ModTranslation.getString("humansByTask");
+                        nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
                         break;
                     case GameOverReason.HumansDisconnect:
-                        textRenderer.text = ModTranslation.getString("HumansDisconnect");
+                        textRenderer.text = ModTranslation.getString("humansDisconnect");
+                        nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
                         break;
                     case GameOverReason.HumansByVote:
-                        textRenderer.text = ModTranslation.getString("HumansByVote");
+                        textRenderer.text = ModTranslation.getString("humansByVote");
+                        nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
                         break;
                 }
             }
+
             foreach (WinCondition cond in AdditionalTempData.additionalWinConditions)
             {
                 if (cond == WinCondition.OpportunistWin)

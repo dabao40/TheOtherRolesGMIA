@@ -21,6 +21,7 @@ namespace TheOtherRoles{
         public static bool shieldFirstKill = false;
         public static bool ShowChatNotifications = true;
         public static bool ShowVentsOnMap = true;
+        public static bool showExtraInfo = true;
         public static CustomGamemodes gameMode = CustomGamemodes.Classic;
 
         // Updating values
@@ -58,6 +59,7 @@ namespace TheOtherRoles{
             enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
             ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
             ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value;
+            showExtraInfo = TheOtherRolesPlugin.ShowExtraInfo.Value;
             //Patches.ShouldAlwaysHorseAround.isHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         }
 

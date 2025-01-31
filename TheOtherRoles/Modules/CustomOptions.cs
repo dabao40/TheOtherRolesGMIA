@@ -160,6 +160,18 @@ namespace TheOtherRoles {
             }
         }
 
+        public static bool ShouldBeEnabled(CustomOption option)
+        {
+            bool enabled = true;
+            var parent = option.parent;
+            while (parent != null && enabled)
+            {
+                enabled = parent.selection != 0;
+                parent = parent.parent;
+            }
+            return enabled;
+        }
+
         // Getter
 
         public int getSelection() {
@@ -560,7 +572,7 @@ namespace TheOtherRoles {
                     num -= 0.85f;
                     i = 0;
                 }
-                else if (option.parent != null && (option.parent.selection == 0 || option.parent.parent != null && option.parent.parent.selection == 0)) continue;  // Hides options, for which the parent is disabled!
+                else if (!ShouldBeEnabled(option)) continue;  // Hides options, for which the parent is disabled!
                 if (option == CustomOptionHolder.crewmateRolesCountMax || option == CustomOptionHolder.neutralRolesCountMax || option == CustomOptionHolder.impostorRolesCountMax || option == CustomOptionHolder.modifiersCountMax || option == CustomOptionHolder.crewmateRolesFill)
                     continue;
 
@@ -943,7 +955,7 @@ namespace TheOtherRoles {
                     categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
                     num -= 0.63f;
                 }
-                else if (option.parent != null && (option.parent.selection == 0 || option.parent.parent != null && option.parent.parent.selection == 0)) continue;  // Hides options, for which the parent is disabled!
+                else if (!ShouldBeEnabled(option)) continue;  // Hides options, for which the parent is disabled!
                 OptionBehaviour optionBehaviour = UnityEngine.Object.Instantiate<StringOption>(menu.stringOptionOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
                 optionBehaviour.transform.localPosition = new Vector3(0.952f, num, -2f);
                 optionBehaviour.SetClickMask(menu.ButtonClickMask);
@@ -1225,7 +1237,7 @@ namespace TheOtherRoles {
             foreach (CustomOption option in options) {
                 if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek && option.type != CustomOptionType.HideNSeekMain && option.type != CustomOptionType.HideNSeekRoles) continue;
                 if (option.parent != null) {
-                    bool isIrrelevant = option.parent.getSelection() == 0 || (option.parent.parent != null && option.parent.parent.getSelection() == 0);
+                    bool isIrrelevant = !ShouldBeEnabled(option);
 
                     Color c = isIrrelevant ? Color.grey : Color.white;  // No use for now
                     if (isIrrelevant) continue;
@@ -1335,15 +1347,6 @@ namespace TheOtherRoles {
         {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == AmongUs.GameOptions.GameModes.HideNSeek) return; // Allow Vanilla Hide N Seek
             __result = buildAllOptions(vanillaSettings:__result);
-        }
-
-        [HarmonyPatch(typeof(StringGameSetting), nameof(StringGameSetting.GetValueString))]
-        [HarmonyPrefix]
-        public static bool AjdustStringForViewPanel(StringGameSetting __instance, float value, ref string __result)
-        {
-            if (__instance.OptionName != Int32OptionNames.KillDistance) return true;
-            __result = GameOptionsData.KillDistanceStrings[(int)value];
-            return false;
         }
     }
 
@@ -1496,7 +1499,7 @@ namespace TheOtherRoles {
             {
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag));
+                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag) || MeetingHud.Instance || ExileController.Instance);
                 zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
                 toggleZoomButtonObject.SetActive(zoomButtonActive);
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);

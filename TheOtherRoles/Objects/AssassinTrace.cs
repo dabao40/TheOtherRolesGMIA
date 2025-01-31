@@ -58,6 +58,8 @@ namespace TheOtherRoles.Objects {
                 if (traceRenderer) traceRenderer.color = new Color(traceRenderer.color.r, traceRenderer.color.g, traceRenderer.color.b, Mathf.Clamp01(1 - interP));
             })));
 
+            Helpers.addRendererGuide(traceRenderer, ModTranslation.getString("assassinTraceHint"));
+
             trace.SetActive(true);
             traces.Add(this);
         }

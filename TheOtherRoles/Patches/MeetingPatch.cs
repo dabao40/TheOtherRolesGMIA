@@ -844,6 +844,7 @@ namespace TheOtherRoles.Patches
 
         public static void addButtonGuide(PassiveButton button, string guide)
         {
+            if (!showExtraInfo) return;
             button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
                         new RawTextComponent(guide)))));
             button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));

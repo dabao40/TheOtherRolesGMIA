@@ -60,6 +60,7 @@ namespace TheOtherRoles
         public static ConfigEntry<bool> ToggleCursor { get; set; }
         public static ConfigEntry<bool> ShowChatNotifications { get; set; }
         public static ConfigEntry<bool> ShowVentsOnMap { get; set; }
+        public static ConfigEntry<bool> ShowExtraInfo { get; set; }
 
         public static Sprite ModStamp;
 
@@ -115,6 +116,7 @@ namespace TheOtherRoles
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
             ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
             ShowVentsOnMap = Config.Bind("Custom", "Show Vent Positions On Minimap", false);
+            ShowExtraInfo = Config.Bind("Custom", "Show Info On Mouse Hover", true);
 
             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);

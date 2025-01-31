@@ -788,6 +788,14 @@
         "13": "\u53ef\u5728\u5927\u849c\u9644\u8fd1\u4f7f\u7528\u51fb\u6740",
         "14": "\u53ef\u5728\u5927\u849c\u9644\u8fd1\u4f7f\u7528\u64ca\u6bba"
     },
+    "garlicCanKillHint": {
+        "0": "Vampire can only perform normal kills in Garlic",
+        "13": "\u5438\u8840\u9b3c\u5728\u5927\u849c\u9644\u8fd1\u53ea\u80fd\u4f7f\u7528\u666e\u901a\u51fb\u6740"
+    },
+    "garlicCantKillHint": {
+        "0": "The Vampire cannot perform kills near Garlic",
+        "13": "\u5728\u5927\u849c\u9644\u8fd1\u5438\u8840\u9b3c\u4e0d\u53ef\u51fb\u6740"
+    },
     "eraser": {
         "0": "Eraser",
         "11": "\u30a4\u30ec\u30a4\u30b5\u30fc",
@@ -3619,6 +3627,10 @@
         "0": "Show Vents On Map",
         "13": "\u5728\u5730\u56fe\u4e0a\u663e\u793a\u7ba1\u9053\u4f4d\u7f6e"
     },
+    "showExtraInfo": {
+        "0": "Show Info On Mouse Hover",
+        "13": "\u9f20\u6807\u60ac\u505c\u65f6\u663e\u793a\u4fe1\u606f"
+    },
     "next": {
         "0": "Next",
         "13": "\u4e0b\u4e00\u9875"
@@ -4361,33 +4373,33 @@
         "13": " - <color=#FF0000FF>(\u51fb\u6740\u6570: {0})</color>",
         "14": " - <color=#FF0000FF>(\u64ca\u6bba\u6578: {0})</color>"
     },
-    "ImpostorDisconnect": {
+    "impostorDisconnect": {
         "0": "Last Crewmate Disconnected",
         "13": "\u6700\u540e\u4e00\u540d\u8239\u5458\u65ad\u8fde"
     },
-    "ImpostorByKill": {
+    "impostorByKill": {
         "0": "Impostors Win - By Kill",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u4eba\u6570\u4f18\u52bf(\u51fb\u6740)"
+        "13": "\u5185\u9b3c\u9635\u8425\u80dc\u5229 - \u901a\u8fc7\u51fb\u6740"
     },
-    "ImpostorBySabotage": {
+    "impostorBySabotage": {
         "0": "Impostors Win - By Sabotage",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u7834\u574f\u80dc\u5229"
+        "13": "\u5185\u9b3c\u9635\u8425\u80dc\u5229 - \u7834\u574f\u80dc\u5229"
     },
-    "ImpostorByVote": {
+    "impostorByVote": {
         "0": "Impostors Win - By Vote, Guess or DC",
-        "13": "\u4f2a\u88c5\u8005\u9635\u8425\u80dc\u5229 - \u4eba\u6570\u4f18\u52bf(\u9a71\u9010,\u731c\u6d4b\u6216\u65ad\u8fde)"
+        "13": "\u5185\u9b3c\u9635\u8425\u80dc\u5229 - \u901a\u8fc7\u9a71\u9010\u8239\u5458,\u8d4c\u6740\u6216\u8239\u5458\u65ad\u8fde"
     },
-    "HumansByTask": {
+    "humansByTask": {
         "0": "Crew Wins - Task Win",
         "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u4efb\u52a1\u83b7\u80dc"
     },
-    "HumansDisconnect": {
+    "humansDisconnect": {
         "0": "Crew Wins - No Evil Killers Left",
-        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6ca1\u6709\u90aa\u6076\u804c\u4e1a(\u65ad\u8fde)"
+        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6700\u540e\u90aa\u6076\u804c\u4e1a\u65ad\u8fde"
     },
-    "HumansByVote": {
+    "humansByVote": {
         "0": "Crew Wins - No Evil Killers Left",
-        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6ca1\u6709\u90aa\u6076\u804c\u4e1a(\u7968\u51fa)"
+        "13": "\u8239\u5458\u9635\u8425\u80dc\u5229 - \u6700\u540e\u90aa\u6076\u804c\u4e1a\u88ab\u9a71\u9010"
     },
     "roleIntroNeutral": {
         "0": "Neutral",
@@ -4864,6 +4876,10 @@
         "13": "\u75d5\u8ff9\u6d88\u5931\u65f6\u95f4",
         "14": "\u75d5\u8de1\u6d88\u5931\u6642\u9593"
     },
+    "assassinTraceHint": {
+        "0": "A trace the Assassin leaves before and after assassinating",
+        "13": "\u523a\u5ba2\u523a\u6740\u5b8c\u6bd5\u540e\u518d\u539f\u5730\u548c\u76ee\u6807\u4f4d\u7f6e\u7559\u4e0b\u7684\u75d5\u8ff9"
+    },
     "sprinter": {
         "0": "Sprinter",
         "11": "\u30b9\u30d7\u30ea\u30f3\u30bf\u30fc",
@@ -5221,6 +5237,10 @@
         "13": "\u642d\u6863\u7684\u76ee\u6807",
         "14": "\u642d\u6a94\u7684\u76ee\u6a19"
     },
+    "bombEffectHint": {
+        "0": "An effect the Bomber leaves after blasting",
+        "13": "\u53cc\u5b50\u7206\u7834\u8005\u7206\u7834\u540e\u7559\u4e0b\u7684\u75d5\u8ff9"
+    },
     "yasuna": {
         "0": "Yasuna",
         "11": "\u30e4\u30b9\u30ca",
@@ -5369,6 +5389,10 @@
         "11": "\u30ab\u30e2\u30d5\u30e9\u30fc\u30b8\u30e5\u30d7\u30ec\u30a4\u30e4\u30fc",
         "13": "\u4e00\u4e2a\u9690\u853d\u540e\u7684\u73a9\u5bb6",
         "14": "\u4e00\u500b\u96b1\u853d\u5f8c\u7684\u73a9\u5bb6"
+    },
+    "portalHint": {
+        "0": "A portal that everyone can use",
+        "13": "\u4e00\u4e2a\u6240\u6709\u4eba\u90fd\u53ef\u4ee5\u4f7f\u7528\u7684\u4f20\u9001\u95e8"
     },
     "thief": {
         "0": "Thief",
@@ -6121,7 +6145,7 @@
     "noisemakerSoundDuration": {
         "0": "Noisemaker Sound Duration",
         "11": "\u97f3\u306e\u6301\u7d9a\u6642\u9593",
-        "13": "\u5e7f\u64ad\u5458\u5e7f\u64ad\u5c38\u4f53\u65f6\u5e38"
+        "13": "\u5e7f\u64ad\u5458\u5e7f\u64ad\u5c38\u4f53\u6301\u7eed\u65f6\u95f4"
     },
     "noisemakerSoundNumber": {
         "0": "Noisemaker Number Of Sounds",
@@ -6269,11 +6293,23 @@
         "0": "Silhouette Visibility",
         "13": "\u9634\u5f71\u53ef\u89c1\u7a0b\u5ea6"
     },
-    "LobbyJoinBindText1": {
+    "silhouetteVisibleOnlyYou": {
+        "0": "This Silhouette is only visible to you",
+        "13": "\u53ea\u6709\u4f60\u80fd\u770b\u89c1\u8fd9\u4e2a\u9634\u5f71"
+    },
+    "silhouetteLastDuration": {
+        "0": "This Silhouette lasts for {0} seconds",
+        "13": "\u8fd9\u4e2a\u9634\u5f71\u6301\u7eed{0}\u79d2\u540e\u6d88\u5931"
+    },
+    "silhouetteHint": {
+        "0": "A trace the Yo-Yo leaves when blinks or returns",
+        "13": "\u60a0\u60a0\u7403\u95ea\u73b0\u6216\u8fd4\u56de\u65f6\u7559\u4e0b\u7684\u9634\u5f71"
+    },
+    "lobbyJoinBindText1": {
         "0": "Prev Lobby:",
         "13": "\u8fd4\u56de\u4e0a\u4e00\u4e2a\u5927\u5385:"
     },
-    "LobbyJoinBindText2": {
+    "lobbyJoinBindText2": {
         "0": "\nClipboard:",
         "13": "\n\u7c98\u8d34\u677f:"
     },

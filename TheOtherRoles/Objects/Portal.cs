@@ -148,7 +148,8 @@ namespace TheOtherRoles.Objects {
                 secondPortal.portalGameObject.SetActive(true);
                 bothPlacedAndEnabled = true;
                 HudManagerStartPatch.portalmakerButtonText2.text = "2. " + secondPortal.room;
-
+                Helpers.addRendererGuide(firstPortal.portalRenderer, ModTranslation.getString("portalHint"));
+                Helpers.addRendererGuide(secondPortal.portalRenderer, ModTranslation.getString("portalHint"));
                 if (PlayerControl.LocalPlayer == Portalmaker.portalmaker)
                     _ = new Modules.StaticAchievementToken("portalmaker.common1");
             }

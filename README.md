@@ -2221,6 +2221,8 @@ For steam users, you have to follow the following steps.
 **5.** Unzip the files and double click on ```Among Us.exe```  
 **6.** The first launch will take a while. When the game has been fully launched, you will be able to enjoy the mod!
 
+If the installation isn't working, you can try using the [TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/) created by [Fangkuai](https://github.com/FangkuaiYa)
+
 # Roles
 For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
 
@@ -2250,7 +2252,7 @@ BepInEx - Used to hook game functions
 Essentials - Custom game options by DorCoMaNdO:  
 Before v1.6: We used the default Essentials release  
 v1.6-v1.8: We slightly changed the default Essentials.  
-Nebula-On-The-Ship: Partly code of the Achievements and the UIs are from Dolly  
+Nebula-On-The-Ship: Partly code of the UIs are from Dolly  
 Four-Han-sinicization-group - Some of the pictures are made by them  
 Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard  
 Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
@@ -2263,8 +2265,7 @@ Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottoma
 Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
 Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-Town-Of-Host-Enhanced - Gradient color (full code)  
-Nebula-On-The-Ship - Idea and partly code for the 24 players support
+Town-Of-Host-Enhanced - Gradient color (full code)
 
 # Translation
 

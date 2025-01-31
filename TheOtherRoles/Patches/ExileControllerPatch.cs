@@ -85,7 +85,7 @@ namespace TheOtherRoles.Patches {
             // Witch execute casted spells
             if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost) {
                 bool exiledIsWitch = init.networkedPlayer != null && init.networkedPlayer.PlayerId == Witch.witch.PlayerId;
-                bool witchDiesWithExiledLover = init.networkedPlayer != null && Lovers.existing() && Lovers.bothDie && (Lovers.lover1.PlayerId == Witch.witch.PlayerId || Lovers.lover2.PlayerId == Witch.witch.PlayerId) && (init.networkedPlayer.PlayerId == Lovers.lover1.PlayerId || init.networkedPlayer.PlayerId == Lovers.lover2.PlayerId);
+                bool witchDiesWithExiledLover = init.networkedPlayer != null && init.networkedPlayer.Object.GetAllRelatedPlayers().Contains(Witch.witch);
 
                 if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = new List<PlayerControl>();
                 foreach (PlayerControl target in Witch.futureSpelled) {

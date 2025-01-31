@@ -168,7 +168,7 @@ namespace TheOtherRoles.Patches
                 comp.fontSize = 0.2f;
                 serverWarning.transform.position = new Vector3(5f, 1f, -200f);
                 __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) => {
-                    comp.text = Helpers.cs(Color.red, "Vanilla Servers Are Currently Not Compatible With TOR");
+                    comp.text = Helpers.cs(Color.red, "Vanilla Servers Are Currently Not Compatible With GMIA");
                     serverWarning.transform.position = new Vector3(0f, 1f, -200f);
                 })));
                 serverWarning.SetActive(true);
@@ -192,6 +192,30 @@ namespace TheOtherRoles.Patches
             }
             __instance.Open();
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(RegionMenu))]
+    public static class RegionMenuPatch
+    {
+        public static Scroller Scroller;
+
+        [HarmonyPatch(nameof(RegionMenu.Awake)), HarmonyPostfix]
+        public static void Awake_Postfix(RegionMenu __instance)
+        {
+            if (Scroller != null) return;
+
+            var back = __instance.ButtonPool.transform.FindChild("Backdrop");
+            back.transform.localScale *= 10f;
+
+            Scroller = __instance.ButtonPool.transform.parent.gameObject.AddComponent<Scroller>();
+            Scroller.Inner = __instance.ButtonPool.transform;
+            Scroller.MouseMustBeOverToScroll = true;
+            Scroller.ClickMask = back.GetComponent<BoxCollider2D>();
+            Scroller.ScrollWheelSpeed = 0.7f;
+            Scroller.SetYBoundsMin(0f);
+            Scroller.SetYBoundsMax(4f);
+            Scroller.allowY = true;
         }
     }
 }

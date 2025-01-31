@@ -536,7 +536,7 @@ namespace TheOtherRoles.Patches {
             // Update Stare Count Text
             if (Kataomoi.stareText != null)
             {
-                Kataomoi.stareText.gameObject.SetActive(true);
+                Kataomoi.stareText.gameObject.SetActive(!MeetingHud.Instance);
                 if (Kataomoi.stareCount > 0)
                     Kataomoi.stareText.text = $"{Kataomoi.stareCount}";
                 else
@@ -544,7 +544,7 @@ namespace TheOtherRoles.Patches {
             }
 
             if (Kataomoi.target != null && TORMapOptions.playerIcons.ContainsKey(Kataomoi.target?.PlayerId ?? byte.MaxValue)) {
-                TORMapOptions.playerIcons[Kataomoi.target.PlayerId].gameObject.SetActive(true);
+                TORMapOptions.playerIcons[Kataomoi.target.PlayerId].gameObject.SetActive(!MeetingHud.Instance);
             }
             for (int i = 0; i < Kataomoi.gaugeRenderer.Length; ++i)
             {
@@ -3023,112 +3023,33 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            // Neko-Kabocha set dead to meeting killer
-            if (NekoKabocha.nekoKabocha != null && __instance == NekoKabocha.nekoKabocha && NekoKabocha.meetingKiller != null)
+            // Handle all suicides
+            foreach (var p in __instance.GetAllRelatedPlayers())
             {
-                PlayerControl killer = NekoKabocha.meetingKiller;
-                bool revengeFlag = (NekoKabocha.revengeCrew && !Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor) ||
-                (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
-                    (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
-
-                if (MeetingHud.Instance && revengeFlag) {
-                    RPCProcedure.updateMeeting(killer.PlayerId);
-                }
-            }
-
-            // Lover suicide trigger on exile
-            if ((Lovers.lover1 != null && __instance == Lovers.lover1) || (Lovers.lover2 != null && __instance == Lovers.lover2)) {
-                PlayerControl otherLover = __instance == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-                if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
-                    if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover; // Can put other non-null values here
-                    otherLover.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            // Cupid and Cupid Lovers suicide
-            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (__instance == Cupid.lovers1 || __instance == Cupid.lovers2))
-            {
-                PlayerControl otherLover = __instance == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
-                if (otherLover != null && !otherLover.Data.IsDead)
+                if (p == null || p.Data.IsDead) continue;
+                p.Exiled();
+                bool isLoverSuicide = (p.isLover() && __instance == p.getPartner()) || (p.isCupidLover() && __instance == p.getCupidLover()) ||
+                    (p == Akujo.akujo && __instance == Akujo.honmei) || (p == Akujo.honmei && __instance == Akujo.akujo);
+                RPCProcedure.updateMeeting(p.PlayerId);
+                if (isLoverSuicide && p == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = p;
+                overrideDeathReasonAndKiller(p, isLoverSuicide ? DeadPlayer.CustomDeathReason.LoverSuicide : DeadPlayer.CustomDeathReason.Suicide);
+                if (MeetingHud.Instance)
                 {
-                    if (NekoKabocha.nekoKabocha != null && otherLover == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = otherLover;
-                    otherLover.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
-                    ExileControllerBeginPatch.extraVictim = true;
+                    if (FastDestroyableSingleton<HudManager>.Instance != null && PlayerControl.LocalPlayer == p)
+                    {
+                        FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(p.Data, p.Data);
+                        if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                    }
+                    if (GuesserGM.isGuesser(PlayerControl.LocalPlayer.PlayerId) && !PlayerControl.LocalPlayer.Data.IsDead && GuesserGM.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 0)
+                    {
+                        MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == p.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
+                        if (MeetingHudPatch.guesserUI != null && MeetingHudPatch.guesserUIExitButton != null)
+                        {
+                            if (MeetingHudPatch.guesserCurrentTarget == p.PlayerId)
+                                MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
+                        }
+                    }
                 }
-
-                if (MeetingHud.Instance && otherLover != null)
-                {
-                    RPCProcedure.updateMeeting(otherLover.PlayerId);
-                    if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
-                        RPCProcedure.updateMeeting(Cupid.cupid.PlayerId);
-                }
-
-                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
-                {
-                    Cupid.cupid.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            // Other Mimic suicide
-            if (MimicK.mimicK != null && MimicA.mimicA != null && (__instance == MimicA.mimicA || __instance == MimicK.mimicK))
-            {
-                PlayerControl otherMimic = __instance == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
-                if (MimicK.ifOneDiesBothDie && !otherMimic.Data.IsDead)
-                {
-                    otherMimic.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(otherMimic, DeadPlayer.CustomDeathReason.Suicide);
-                    RPCProcedure.updateMeeting(otherMimic.PlayerId);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            // Other Bomber trigger suicide
-            if ((BomberA.bomberA != null && __instance == BomberA.bomberA) || (BomberB.bomberB != null && __instance == BomberB.bomberB))
-            {
-                var otherBomber = __instance == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
-                if (otherBomber != null && BomberA.ifOneDiesBothDie && !otherBomber.Data.IsDead)
-                {
-                    otherBomber.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(otherBomber, DeadPlayer.CustomDeathReason.Suicide);
-                    RPCProcedure.updateMeeting(otherBomber.PlayerId);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            // Akujo Partner suicide
-            if ((Akujo.akujo != null && Akujo.akujo == __instance) || (Akujo.honmei != null && Akujo.honmei == __instance))
-            {
-                PlayerControl akujoPartner = __instance == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
-                if (akujoPartner != null && !akujoPartner.Data.IsDead)
-                {
-                    if (NekoKabocha.nekoKabocha != null && akujoPartner == NekoKabocha.nekoKabocha) NekoKabocha.otherKiller = akujoPartner;
-                    akujoPartner.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
-                    RPCProcedure.updateMeeting(akujoPartner.PlayerId);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            if (Fox.fox != null && __instance == Fox.fox)
-            {
-                if (Immoralist.immoralist != null)
-                {
-                    Immoralist.immoralist.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(Immoralist.immoralist, DeadPlayer.CustomDeathReason.Suicide);
-                    if (MeetingHud.Instance) RPCProcedure.updateMeeting(Immoralist.immoralist.PlayerId);
-                    ExileControllerBeginPatch.extraVictim = true;
-                }
-            }
-
-            // Kataomoi suicide trigger on murder
-            if (Kataomoi.kataomoi != null && !Kataomoi.kataomoi.Data.IsDead && Kataomoi.target == __instance) {
-                Kataomoi.kataomoi.Exiled();
-                overrideDeathReasonAndKiller(Kataomoi.kataomoi, DeadPlayer.CustomDeathReason.Suicide);
                 ExileControllerBeginPatch.extraVictim = true;
             }
 

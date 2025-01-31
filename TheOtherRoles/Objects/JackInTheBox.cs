@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TheOtherRoles.Utilities;
-using Reactor.Utilities.Extensions;
 
-namespace TheOtherRoles.Objects {
-
+namespace TheOtherRoles.Objects
+{
     public class JackInTheBox {
         public static System.Collections.Generic.List<JackInTheBox> AllJackInTheBoxes = new();
         public static int JackInTheBoxLimit = 3;
@@ -97,6 +96,7 @@ namespace TheOtherRoles.Objects {
             vent.gameObject.SetActive(true);
             boxRenderer.color = boxRenderer.color.SetAlpha(1f);
             ventRenderer.sprite = null;
+            Helpers.addRendererGuide(boxRenderer, "111");
             return;
         }
 
@@ -110,7 +110,7 @@ namespace TheOtherRoles.Objects {
         }
 
         public static bool hasJackInTheBoxLimitReached() {
-            return (AllJackInTheBoxes.Count >= JackInTheBoxLimit);
+            return AllJackInTheBoxes.Count >= JackInTheBoxLimit;
         }
 
         private static void connectVents() {

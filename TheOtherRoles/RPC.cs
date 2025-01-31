@@ -2003,6 +2003,7 @@ namespace TheOtherRoles
                     {
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
+                        MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, targetId);
                     }
 
                     // Give players back their vote if target is shot dead
@@ -2668,56 +2669,20 @@ namespace TheOtherRoles
 
             PlayerControl killer = Helpers.playerById(killerId);
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
-            PlayerControl dyingMimicPartner;
-            PlayerControl dyingBomberPartner;
-            PlayerControl dyingAkujoPartner;
-            PlayerControl dyingCupidLover;
-            PlayerControl dyingImmoralist = Fox.fox != null && dyingTarget == Fox.fox && Immoralist.immoralist != null ? Immoralist.immoralist : null;
-            byte NekoKabochaKillerId = byte.MaxValue;
-            if (dyingTarget == null ) return;
-            bool revengeFlag = (NekoKabocha.revengeCrew && (!Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor)) ||
+            if (dyingTarget == null) return;
+            bool revengeFlag = (NekoKabocha.revengeCrew && !Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor) ||
                     (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
                     (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
             if (dyingTarget == NekoKabocha.nekoKabocha)
             {
                 NekoKabocha.meetingKiller = killer;
-                NekoKabochaKillerId = killer.PlayerId;
                 if (revengeFlag)
                 {
                     killer.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
+                    overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, NekoKabocha.nekoKabocha);
+                    updateMeeting(killerId);
                 }
             }
-            if ((dyingTarget == MimicK.mimicK || dyingTarget == MimicA.mimicA) && MimicK.ifOneDiesBothDie)
-            {
-                dyingMimicPartner = dyingTarget == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
-                //dyingMimicPartner.Exiled();
-                //GameHistory.overrideDeathReasonAndKiller(dyingMimicPartner, DeadPlayer.CustomDeathReason.Suicide);
-            }
-            else dyingMimicPartner = null;
-
-            if ((dyingTarget == BomberA.bomberA || dyingTarget == BomberB.bomberB) && BomberA.ifOneDiesBothDie)
-            {
-                dyingBomberPartner = dyingTarget == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
-                //dyingBomberPartner.Exiled();
-                //GameHistory.overrideDeathReasonAndKiller(dyingBomberPartner, DeadPlayer.CustomDeathReason.Suicide);
-            }
-            else dyingBomberPartner = null;
-
-            if ((Akujo.akujo != null && dyingTarget == Akujo.akujo) || (Akujo.honmei != null && dyingTarget == Akujo.honmei)) dyingAkujoPartner = dyingTarget == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
-            else dyingAkujoPartner = null;
-
-            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (dyingTarget == Cupid.lovers1 || dyingTarget == Cupid.lovers2)) dyingCupidLover = dyingTarget == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
-            else dyingCupidLover = null;
-
-            PlayerControl cupid = Cupid.cupid != null && !Cupid.cupid.Data.IsDead && dyingCupidLover != null ? Cupid.cupid : null;
-
-            if (Lawyer.target != null && dyingTarget == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
-            if (Yasuna.yasuna != null && dyingTarget == Yasuna.yasuna) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
-            if (Yasuna.yasuna != null && dyingTarget.PlayerId == Yasuna.specialVoteTargetPlayerId) Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
-            PlayerControl dyingLoverPartner = Lovers.bothDie ? dyingTarget.getPartner() : null; // Lover check
-            PlayerControl kataomoiPlayer = Kataomoi.kataomoi != null && Kataomoi.target == dyingTarget ? Kataomoi.kataomoi : null;
-            if (Lawyer.target != null && dyingLoverPartner == Lawyer.target) Lawyer.targetWasGuessed = true;  // Lawyer shouldn't be exiled with the client for guesses
 
             PlayerControl guesser = Helpers.playerById(killerId);
             if (Thief.thief != null && Thief.thief.PlayerId == killerId && Thief.canStealWithGuess) {
@@ -2748,93 +2713,29 @@ namespace TheOtherRoles
                 }
             }
 
-            byte partnerId = dyingLoverPartner != null ? dyingLoverPartner.PlayerId : dyingTargetId;
-            byte partnerId2 = kataomoiPlayer != null ? kataomoiPlayer.PlayerId : dyingTargetId;
-            byte mimicPartnerId = dyingMimicPartner != null ? dyingMimicPartner.PlayerId: byte.MaxValue;
-            byte bomberPartnerId = dyingBomberPartner != null ? dyingBomberPartner.PlayerId : byte.MaxValue;
-            byte akujoPartnerId = dyingAkujoPartner != null ? dyingAkujoPartner.PlayerId : byte.MaxValue;
-            byte cupidLoverId = dyingCupidLover != null ? dyingCupidLover.PlayerId : byte.MaxValue;
-            byte cupidId = cupid != null ? Cupid.cupid.PlayerId : byte.MaxValue;
-            //byte nKkillerId = (NekoKabocha.meetingKiller != null && revengeFlag) ? NekoKabocha.meetingKiller.PlayerId : dyingTargetId;
-
             HandleGuesser.remainingShots(killerId, true);
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(dyingTarget.KillSfx, false, 0.8f);
-            if (MeetingHud.Instance) {
-                foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
-                    if (pva.TargetPlayerId == dyingTargetId || pva.TargetPlayerId == partnerId || pva.TargetPlayerId == mimicPartnerId || (pva.TargetPlayerId == NekoKabochaKillerId && revengeFlag) || pva.TargetPlayerId == bomberPartnerId || pva.TargetPlayerId == akujoPartnerId || pva.TargetPlayerId == cupidLoverId || pva.TargetPlayerId == cupidId
-                        || pva.TargetPlayerId == partnerId2) {
-                        pva.SetDead(pva.DidReport, true);
-                        pva.Overlay.gameObject.SetActive(true);
-                        MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, dyingTargetId);
-                    }
-
-                    //Give players back their vote if target is shot dead
-                    if (pva.VotedFor != dyingTargetId && pva.VotedFor != partnerId && pva.VotedFor != partnerId2) continue;
-                    pva.UnsetVote();
-                    var voteAreaPlayer = Helpers.playerById(pva.TargetPlayerId);
-                    if (!voteAreaPlayer.AmOwner) continue;
-                    MeetingHud.Instance.ClearVote();
-
-                }
-                if (AmongUsClient.Instance.AmHost) 
-                    MeetingHud.Instance.CheckForEndVoting();
-            }
+            updateMeeting(dyingTargetId);
             if (FastDestroyableSingleton<HudManager>.Instance != null && guesser != null)
                 if (PlayerControl.LocalPlayer == dyingTarget) {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(guesser.Data, dyingTarget.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                } else if (dyingLoverPartner != null && PlayerControl.LocalPlayer == dyingLoverPartner) {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingLoverPartner.Data, dyingLoverPartner.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
-                else if (kataomoiPlayer != null && PlayerControl.LocalPlayer == kataomoiPlayer)
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(kataomoiPlayer.Data, kataomoiPlayer.Data);
-                else if (PlayerControl.LocalPlayer == NekoKabocha.meetingKiller && revengeFlag)
-                {
+                else if (PlayerControl.LocalPlayer == NekoKabocha.meetingKiller && revengeFlag) {
                     FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(NekoKabocha.nekoKabocha.Data, killer.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                }
-
-                else if (dyingMimicPartner != null && PlayerControl.LocalPlayer == dyingMimicPartner)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingMimicPartner.Data, dyingMimicPartner.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                }
-
-                else if (dyingAkujoPartner != null && PlayerControl.LocalPlayer == dyingAkujoPartner)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingAkujoPartner.Data, dyingAkujoPartner.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                }
-
-                else if (dyingCupidLover != null && PlayerControl.LocalPlayer == dyingCupidLover)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingCupidLover.Data, dyingCupidLover.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                }
-
-                else if (dyingImmoralist != null && PlayerControl.LocalPlayer == dyingImmoralist)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(dyingImmoralist.Data, dyingImmoralist.Data);
-                    if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                }
-                
-                if (cupid != null && PlayerControl.LocalPlayer == cupid)
-                {
-                    FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(cupid.Data, cupid.Data);
                     if (MeetingHudPatch.guesserUI != null) MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
 
             // remove shoot button from targets for all guessers and close their guesserUI
             if (GuesserGM.isGuesser(PlayerControl.LocalPlayer.PlayerId) && PlayerControl.LocalPlayer != guesser && !PlayerControl.LocalPlayer.Data.IsDead && GuesserGM.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 0 && MeetingHud.Instance) {
                 MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == dyingTarget.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
-                if (dyingLoverPartner != null)
-                    MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == dyingLoverPartner.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
+                if (NekoKabocha.meetingKiller != null && revengeFlag)
+                    MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == NekoKabocha.meetingKiller.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
 
                 if (MeetingHudPatch.guesserUI != null && MeetingHudPatch.guesserUIExitButton != null) {
                     if (MeetingHudPatch.guesserCurrentTarget == dyingTarget.PlayerId)
                         MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
-                    else if (dyingLoverPartner != null && MeetingHudPatch.guesserCurrentTarget == dyingLoverPartner.PlayerId)
+                    else if (NekoKabocha.meetingKiller != null && revengeFlag && MeetingHudPatch.guesserCurrentTarget == NekoKabocha.meetingKiller.PlayerId)
                         MeetingHudPatch.guesserUIExitButton.OnClick.Invoke();
                 }
             }
