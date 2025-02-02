@@ -103,6 +103,8 @@ namespace TheOtherRoles
         public static CustomButton schrodingersCatKillButton;
         public static CustomButton schrodingersCatSwitchButton;
         public static CustomButton yoyoButton;
+        public static CustomButton archaeologistDetectButton;
+        public static CustomButton archaeologistExcavateButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
         public static CustomButton freePlayReviveButton;
@@ -208,6 +210,8 @@ namespace TheOtherRoles
             mayorMeetingButton.MaxTimer = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
             ninjaButton.MaxTimer = Ninja.stealthCooldown;
             serialKillerButton.MaxTimer = SerialKiller.suicideTimer;
+            archaeologistDetectButton.MaxTimer = Archaeologist.cooldown;
+            archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
             foreach (var button in fortuneTellerButtons)
             {
                 button.MaxTimer = 0f;
@@ -298,6 +302,8 @@ namespace TheOtherRoles
             kataomoiSearchButton.EffectDuration = Kataomoi.searchDuration;
             bomberAPlantBombButton.EffectDuration = BomberA.duration;
             bomberBPlantBombButton.EffectDuration = BomberA.duration;
+            archaeologistDetectButton.EffectDuration = Archaeologist.arrowDuration;
+            archaeologistExcavateButton.EffectDuration = Archaeologist.detectDuration;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             foxStealthButton.EffectDuration = Fox.stealthDuration;
@@ -2176,6 +2182,80 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             veteranButtonAlertText = veteranAlertButton.ShowUsesIcon(3);
+
+            archaeologistDetectButton = new CustomButton(
+                () =>
+                {
+                    var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
+                    var id = rnd.Next(remainingList.Count);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArchaeologistDetect, SendOption.Reliable);
+                    writer.Write(id);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.archaeologistDetect((byte)id);
+                    _ = new StaticAchievementToken("archaeologist.common1");
+                },
+                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead && Archaeologist.hasRemainingAntique(); },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => { archaeologistDetectButton.Timer = archaeologistDetectButton.MaxTimer = Archaeologist.cooldown; },
+                Archaeologist.getDetectSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.F,
+                true,
+                Archaeologist.arrowDuration,
+                () =>
+                {
+                    archaeologistDetectButton.Timer = archaeologistDetectButton.MaxTimer;
+                    Archaeologist.arrowActive = false;
+                },
+                buttonText: ModTranslation.getString("DetectText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+
+            archaeologistExcavateButton = new CustomButton(
+                () =>
+                {
+                    if (Archaeologist.target != null)
+                    {
+                        Archaeologist.antiqueTarget = Archaeologist.target;
+                        archaeologistExcavateButton.HasEffect = true;
+                    }
+                },
+                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead && Archaeologist.hasRemainingAntique(); },
+                () =>
+                {
+                    if (archaeologistExcavateButton.isEffectActive && Archaeologist.target != Archaeologist.antiqueTarget)
+                    {
+                        Archaeologist.antiqueTarget = null;
+                        archaeologistExcavateButton.Timer = 0f;
+                        archaeologistExcavateButton.isEffectActive = false;
+                    }
+                    return Archaeologist.target != null && PlayerControl.LocalPlayer.CanMove;
+                },
+                () =>
+                {
+                    archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
+                    archaeologistExcavateButton.isEffectActive = false;
+                    Archaeologist.antiqueTarget = null;
+                },
+                Archaeologist.getExcavateSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.G,
+                true,
+                Archaeologist.detectDuration,
+                () =>
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArchaeologistExcavate, SendOption.Reliable);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.archaeologistExcavate();
+                    Archaeologist.revealed.RemoveAll(x => x.isBroken);
+                    archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer;
+                },
+                buttonText: ModTranslation.getString("ExcavateText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton,
+                shakeOnEnd: false
+            );
 
             //createRoleSummaryButton(__instance);
 

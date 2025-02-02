@@ -17,6 +17,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
 | 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
 | 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
 | 2024.6.18s        | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
@@ -47,6 +48,19 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.3.2**
+ - Updated to Among Us version v2024.11.26, thanks to @XiezibanWrite
+ - Added new role Archaeologist, thanks to Windy_BaiLan
+ - Added new modifier Armored
+ - Added the possibility to use the shift keys to (re-)join a lobby, if you just left a lobby or you have a lobby code copied to the clipboard
+ - Added a setting to Guesser Mode: "Number Of Tasks Needed To Unlock Shooting For Crew Guesser"
+ - Fixed a bug with the Tracker's Proximity Meter - it now disappears after the meeting if the target is dead and no new target can be tracked
+ - Fixed a bug with the "Fill Crewmates" option, where selecting a range for min/max neutral roles would often lead to players being plain crewmates without a role
+ - Fixed a bug where a passive lover death of a role that can suicide would sometimes give the medium incorrect info
+ - Fixed a bug where the zoom out button would be shown to ghosts during meetings
+ - Changed the way options are shown in the menu: Disabling an option (e.g. a role or modifier spawn chance) will now hide its depending sub-options again
+ - Change: Significantly decreased the size of our mod by using compression, thanks to @FangkuaiYa
 
   **Version v1.3.1**
  - Added new role Yo-Yo

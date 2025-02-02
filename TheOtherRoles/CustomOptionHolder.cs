@@ -277,6 +277,12 @@ namespace TheOtherRoles {
         public static CustomOption trackerCorpsesTrackingDuration;
         public static CustomOption trackerTrackingMethod;
 
+        public static CustomOption archaeologistSpawnRate;
+        public static CustomOption archaeologistCooldown;
+        public static CustomOption archaeologistExploreDuration;
+        public static CustomOption archaeologistArrowDuration;
+        public static CustomOption archaeologistRevealAntiqueMode;
+
         public static CustomOption snitchSpawnRate;
         public static CustomOption snitchLeftTasksForReveal;
         public static CustomOption snitchIncludeTeamEvil;
@@ -465,31 +471,7 @@ namespace TheOtherRoles {
         public static CustomOption bomberHasOneVote;
         public static CustomOption bomberAlwaysShowArrow;
 
-        /*public static CustomOption trapperSpawnRate;
-        public static CustomOption trapperCooldown;
-        public static CustomOption trapperMaxCharges;
-        public static CustomOption trapperRechargeTasksNumber;
-        public static CustomOption trapperTrapNeededTriggerToReveal;
-        public static CustomOption trapperAnonymousMap;
-        public static CustomOption trapperInfoType;
-        public static CustomOption trapperTrapDuration;*/
-
-        /*public static CustomOption bomberSpawnRate;
-        public static CustomOption bomberBombDestructionTime;
-        public static CustomOption bomberBombDestructionRange;
-        public static CustomOption bomberBombHearRange;
-        public static CustomOption bomberDefuseDuration;
-        public static CustomOption bomberBombCooldown;
-        public static CustomOption bomberBombActiveAfter;*/
-
         public static CustomOption modifiersAreHidden;
-
-        /*public static CustomOption modifierBait;
-        public static CustomOption modifierBaitQuantity;
-        public static CustomOption modifierBaitReportDelayMin;
-        public static CustomOption modifierBaitReportDelayMax;
-        public static CustomOption modifierBaitShowKillFlash;*/
-        // Bait is no longer a modifier
 
         public static CustomOption modifierLover;
         public static CustomOption modifierLoverImpLoverRate;
@@ -1055,6 +1037,12 @@ namespace TheOtherRoles {
             snitchLeftTasksForReveal = CustomOption.Create(219, Types.Crewmate, "snitchLeftTasksForReveal", 5f, 0f, 25f, 1f, snitchSpawnRate, false, "unitScrews");
             snitchIncludeTeamEvil = CustomOption.Create(211, Types.Crewmate, "snitchIncludeTeamEvil", true, snitchSpawnRate);
             snitchTeamEvilUseDifferentArrowColor = CustomOption.Create(212, Types.Crewmate, "snitchTeamEvilUseDifferentArrowColor", true, snitchIncludeTeamEvil);
+
+            archaeologistSpawnRate = CustomOption.Create(7030, Types.Crewmate, cs(Archaeologist.color, "archaeologist"), rates, null, true);
+            archaeologistCooldown = CustomOption.Create(7031, Types.Crewmate, "archaeologistCooldown", 20f, 5f, 60f, 1f, archaeologistSpawnRate, format: "unitSeconds");
+            archaeologistArrowDuration = CustomOption.Create(7034, Types.Crewmate, "archaeologistArrowDuration", 5f, 1f, 60f, 1f, archaeologistSpawnRate, format: "unitSeconds");
+            archaeologistExploreDuration = CustomOption.Create(7032, Types.Crewmate, "archaeologistExploreDuration", 3f, 0f, 15f, 1f, archaeologistSpawnRate, format: "unitSeconds");
+            archaeologistRevealAntiqueMode = CustomOption.Create(7035, Types.Crewmate, "archaeologistRevealAntiqueMode", new string[] { "archaeologistModeNever", "archaeologistModeImmediately", "archaeologistModeAfterMeeting" }, archaeologistSpawnRate);
 
             spySpawnRate = CustomOption.Create(240, Types.Crewmate, cs(Spy.color, "spy"), rates, null, true);
             spyCanDieToSheriff = CustomOption.Create(241, Types.Crewmate, "spyCanDieToSheriff", false, spySpawnRate);

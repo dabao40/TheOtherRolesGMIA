@@ -181,6 +181,7 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Teleporter, CustomOptionHolder.teleporterSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Prophet, CustomOptionHolder.prophetSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Busker, CustomOptionHolder.buskerSpawnRate.getSelection());
+            crewSettings.Add((byte)RoleId.Archaeologist, CustomOptionHolder.archaeologistSpawnRate.getSelection());
             //crewSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.getSelection());
             //crewSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
             if (impostors.Count > 1) {

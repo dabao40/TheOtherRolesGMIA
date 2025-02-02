@@ -6281,6 +6281,50 @@
         "0": "\nClipboard:",
         "13": "\n\u7c98\u8d34\u677f:"
     },
+    "archaeologist": {
+        "0": "Archaeologist",
+        "13": "\u8003\u53e4\u5b66\u5bb6"
+    },
+    "archaeologistIntroDesc": {
+        "0": "Discover antiques and find the clues",
+        "13": "\u5bfb\u627e\u6587\u7269\u5e76\u63a2\u6c42\u7ebf\u7d22"
+    },
+    "archaeologistShortDesc": {
+        "0": "Discover antiques",
+        "13": "\u5bfb\u627e\u6587\u7269"
+    },
+    "archaeologistCooldown": {
+        "0": "Archaeologist Cooldown",
+        "13": "\u8003\u53e4\u5b66\u5bb6\u51b7\u5374\u65f6\u95f4"
+    },
+    "archaeologistExploreDuration": {
+        "0": "Archaeologist Excavating Duration",
+        "13": "\u8003\u53e4\u5b66\u5bb6\u6316\u6398\u6301\u7eed\u65f6\u95f4"
+    },
+    "archaeologistArrowDuration": {
+        "0": "Archaeologist Detecting Duration",
+        "13": "\u8003\u53e4\u5b66\u5bb6\u63a2\u7d22\u6301\u7eed\u65f6\u95f4"
+    },
+    "archaeologistRevealAntiqueMode": {
+        "0": "Reveal Broken Antiques",
+        "13": "\u63ed\u793a\u5df2\u51fa\u571f\u7684\u6587\u7269"
+    },
+    "archaeologistModeNever": {
+        "0": "Never",
+        "13": "\u4ece\u4e0d"
+    },
+    "archaeologistModeImmediately": {
+        "0": "Immediately",
+        "13": "\u7acb\u5373"
+    },
+    "archaeologistModeAfterMeeting": {
+        "0": "After Meeting",
+        "13": "\u4f1a\u8bae\u540e"
+    },
+    "archaeologistClue": {
+        "0": "A role that exists was The {0}",
+        "13": "\u672c\u8f6e\u6e38\u620f\u6709\u4e00\u540d\u73a9\u5bb6\u7684\u804c\u4e1a\u4e3a{0}"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -6839,6 +6883,14 @@
         "0": "Returning...",
         "13": "\u8fd4\u56de\u4e2d..."
     },
+    "DetectText": {
+        "0": "[BLANK]",
+        "13": "\u63a2\u7d22"
+    },
+    "ExcavateText": {
+        "0": "[BLANK]",
+        "13": "\u6316\u6398"
+    },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
         "11": "\u30fb\u4eba\u72fc\u3067\u3044\u3046\u300e\u3066\u308b\u3066\u308b\u300f\n\u30fb\u306a\u306b\u3082\u80fd\u529b\u3092\u6301\u305f\u306a\u3044\n\u30fb\u81ea\u8eab\u304c\u540a\u3089\u308c\u305f\u3068\u304d\u306b\u52dd\u5229\u3059\u308b",
@@ -7232,6 +7284,10 @@
         "11": "\u30fb\u507d\u88c5\u6b7b\u3092\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\u3002\n\u30fb\u5e7d\u970a\u306b\u306a\u3063\u3066\u79fb\u52d5\u3057\u3001\u597d\u304d\u306a\u5834\u6240\u3067\u5fa9\u6d3b\u304c\u3067\u304d\u308b\u3002\n\u30fb\u58c1\u306e\u4e2d\u3067\u306f\u5fa9\u6d3b\u3067\u304d\u306a\u3044\u3002\n\u30fb\u4e00\u5b9a\u6642\u9593\u4ee5\u5185\u306b\u5fa9\u6d3b\u3067\u304d\u306a\u304b\u3063\u305f\u5834\u5408\u3001\u507d\u88c5\u6b7b\u4e2d\u306b\u7dca\u6025\u4f1a\u8b70\u304c\u958b\u304b\u308c\u305f\u5834\u5408\u306f\u672c\u5f53\u306b\u6b7b\u3093\u3067\u3057\u307e\u3046\u3002",
         "13": "\u7075\u5316\u4f7f\u662f\u4e00\u4e2a\u53ef\u4ee5\u4f2a\u9020\u81ea\u5df1\u6b7b\u4ea1\u7684\u8239\u5458\u3002\u4ed6\u7684\u89c6\u91ce\u4e0d\u53d7\u9650\uff0c\u4f46\u662f\u5e76\u4e0d\u80fd\n\u5728\u5899\u5185\u590d\u6d3b\u3002\u5f53\u5047\u6b7b\u65f6\u95f4\u5230\u5e76\u4e14\u7075\u5316\u4f7f\u8fd8\u6ca1\u6709\u590d\u6d3b\uff0c\u5219\u7075\u5316\u4f7f\u6b7b\u4ea1\u3002\u5728\n\u5047\u6b7b\u671f\u95f4\u5f00\u542f\u4f1a\u8bae\u6216\u5c38\u4f53\u88ab\u6e05\u7406\u90fd\u4f1a\u5bfc\u81f4\u540c\u6837\u7684\u7ed3\u679c\u3002"
     },
+    "archaeologistFullDesc": {
+        "0": "The Archaeologist is a Crewmate that can detect and excavate antiques.\nThe Archaeologist can also detect the antiques with their detect ability,\nand once active, they will see arrows pointing to room the antiques\nare in. Once they've entered the room, the antiques will be visible to\nthemselves, and they can then excavate the antiques by standing near\nthem and using the excavate ability. A clue about the roles in the game\nwill then be visible and the antique will be broken. According to the\noptions, the broken antiques will never or immediately be seen by\nothers, or might be visible to others after the meeting.",
+        "13": "\u8003\u53e4\u5b66\u5bb6\u5c5e\u4e8e\u8239\u5458\u9635\u8425\uff0c\u53ef\u4ee5\u901a\u8fc7\u6280\u80fd\u63a2\u7d22\u53d1\u73b0\u6307\u5411\u968f\u673a\u6587\u7269\u6240\u5728\u623f\u95f4\u7684\u7bad\u5934\uff0c\n\u5982\u679c\u8003\u53e4\u5b66\u5bb6\u5230\u8fbe\u901a\u8fc7\u63a2\u7d22\u641c\u7d22\u5230\u6587\u7269\u6240\u5728\u623f\u95f4\uff0c\u8003\u53e4\u5b66\u5bb6\u5c31\u53ef\u4ee5\u53d1\u73b0\u8be5\u6587\u7269\u3002\n\u6587\u7269\u88ab\u53d1\u73b0\u540e\u53ef\u4ee5\u901a\u8fc7\u6316\u6398\u6280\u80fd\u5c06\u6587\u7269\u51fa\u571f\uff0c\u51fa\u571f\u540e\u6587\u7269\u5c06\u7ed9\u4e88\u76f8\u5e94\u7ebf\u7d22\uff0c\n\u7ebf\u7d22\u5c06\u4f1a\u7ed9\u51fa\u672c\u5c40\u4e2d\u5305\u62ec\u5df2\u6b7b\u4ea1\u73a9\u5bb6\u7684\u4e00\u4e2a\u8eab\u4efd\u3002\u5df2\u7ecf\u51fa\u571f\u7684\u6587\u7269\u4e0d\u80fd\u518d\u88ab\n\u6316\u6398\uff0c\u63a2\u7d22\u6280\u80fd\u4e5f\u4e0d\u4f1a\u518d\u6709\u6307\u5411\u8fd9\u4e2a\u6587\u7269\u7684\u7bad\u5934\u3002\u5df2\u7ecf\u51fa\u571f\u7684\u6587\u7269\u6839\u636e\u8bbe\u7f6e\n\u53ef\u80fd\u4f1a\u6c38\u4e0d\uff0c\u7acb\u5373\u6216\u5728\u4f1a\u8bae\u540e\u88ab\u5176\u4ed6\u73a9\u5bb6\u770b\u5230"
+    },
     "niceYasunaFullDesc": {
         "0": "The Yasuna is capable of voting someone out automatically regardless\nof the other votes. The Yasuna only has a specific amount of special\nvotes, and should be used properly.",
         "11": "\u30fb\u30e4\u30b9\u30ca\u306f\u4ed6\u306e\u6295\u7968\u306b\u95a2\u4fc2\u306a\u304f\u4efb\u610f\u306e\u8ab0\u304b\u3092\u8ffd\u653e\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
@@ -7346,8 +7402,8 @@
         "14": "\u5167\u9b3c,\u8c7a\u72fc\u6216\u8005\u8239\u54e1\u90fd\u6703\u53d7\u5230\u9644\u52a0\u8077\u696dVIP\u7684\u5f71\u97ff,\n\u7576VIP\u6b7b\u4ea1\u6642\uff0c\u4ed6\u6703\u56ae\u5728\u5834\u7684\u6240\u6709\u73a9\u5bb6\u767c\u51fa\u4e00\u500b\u767d\u8272\u9583\u5c4f\u4f86\u63d0\u793a\u5927\u5bb6\n\u5982\u679c\"\u986f\u793a\u9663\u71df\u984f\u8272\"\u7684\u8a2d\u7f6e\u88ab\u6253\u958b,\u90a3\u9ebd\u5728\u5834\u7684\u6bcf\u4e00\u4f4d\u73a9\u5bb6\n\u6703\u5f97\u5230\u4e00\u500b\u8ddfVIP\u9663\u71df\u76f8\u540c\u984f\u8272\u7684\u9583\u5c4f\u3002"
     },
     "armoredFullDesc": {
-        "0": "The Armored is a Modifier that protects the player from the first shot that would have killed them. \nThere can only be one Armored player per round.",
-        "13": "\u88c5\u7532\u5175\u662f\u4e00\u4e2a\u9644\u52a0\u804c\u4e1a\n\u53ef\u4ee5\u4fdd\u62a4\u73a9\u5bb6\u514d\u53d7\u7b2c\u4e00\u5200\u4f24\u5bb3\n\u6bcf\u8f6e\u53ea\u6709\u4e00\u540d\u88c5\u7532\u5175"
+        "0": "The Armored is a Modifier that protects the player from the first\nshot that would have killed them.  There can only be one Armored\nplayer per round.",
+        "13": "\u88c5\u7532\u5175\u662f\u4e00\u4e2a\u53ef\u4ee5\u4fdd\u62a4\u73a9\u5bb6\u514d\u53d7\u7b2c\u4e00\u5200\u4f24\u5bb3\u7684\u9644\u52a0\u804c\u4e1a\n\u6bcf\u8f6e\u53ea\u6709\u4e00\u540d\u88c5\u7532\u5175"
     },
     "miniFullDesc": {
         "0": "The Mini's character is smaller and hence visible to everyone in\nthe game. The Mini cannot be killed until it turns 18 years old, \nhowever it can be voted out.",
@@ -8375,6 +8431,30 @@
         "0": "Warn The Crew",
         "11": "\u4e57\u7d44\u54e1\u3078\u306e\u8b66\u5831",
         "13": "\u8b66\u60d5\u5427\uff0c\u8239\u5458\u4eec"
+    },
+    "archaeologistcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "archaeologistcommon1AchievementGoal": {
+        "0": "Use The Detect Ability",
+        "13": "\u4f7f\u7528\u63a2\u7d22\u6280\u80fd"
+    },
+    "archaeologistcommon1AchievementTitle": {
+        "0": "\"Gold\" Detect!",
+        "13": "\"\u9ec4\u91d1\"\u68c0\u6d4b!"
+    },
+    "archaeologistchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "archaeologistchallengeAchievementGoal": {
+        "0": "Find An Antique And Reveal Its Clue",
+        "13": "\u627e\u5230\u4e00\u4e2a\u6587\u7269\u5e76\u53d1\u73b0\u5176\u4e2d\u7684\u7ebf\u7d22"
+    },
+    "archaeologistchallengeAchievementTitle": {
+        "0": "Antique Excavator",
+        "13": "\u8003\u53e4\u6316\u6398"
     },
     "mafiosoanother1AchievementCond": {
         "0": "You Must Be Alive When The Godfather Is Killed",

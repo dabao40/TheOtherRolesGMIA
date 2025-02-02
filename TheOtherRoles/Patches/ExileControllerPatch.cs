@@ -365,6 +365,15 @@ namespace TheOtherRoles.Patches {
                 Seer.deadBodyPositions = new List<Vector3>();
             }
 
+            if (Antique.antiques != null && Antique.antiques.Count > 0) {
+                if (Archaeologist.revealAntique == Archaeologist.RevealAntique.AfterMeeting) {
+                    var revealed = Antique.antiques.Where(x => x.isBroken).ToList();
+                    foreach (var a in revealed) {
+                        a.revealAntique();
+                    }
+                }
+            }
+
             if (Morphling.morphling != null && PlayerControl.LocalPlayer == Morphling.morphling)
             {
                 Morphling.acTokenChallenge.Value.cleared |= exiled != null && Morphling.acTokenChallenge.Value.kill && Morphling.acTokenChallenge.Value.playerId == exiled.PlayerId;

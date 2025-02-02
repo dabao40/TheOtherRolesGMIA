@@ -100,6 +100,7 @@ namespace TheOtherRoles
         Kataomoi,
         Busker,
         Noisemaker,
+        Archaeologist,
         SchrodingersCat,
         Madmate,
         //Bomber,
@@ -276,6 +277,9 @@ namespace TheOtherRoles
         YoyoMarkLocation,
         YoyoBlink,
         BreakArmor,
+        PlaceAntique,
+        ArchaeologistDetect,
+        ArchaeologistExcavate
     }
 
     public static class RPCProcedure {
@@ -302,6 +306,8 @@ namespace TheOtherRoles
             Trap.clearAllTraps();
             CustomNormalPlayerTask.reset();
             Shrine.reset();
+            RolloverMessage.Initialize();
+            Antique.clearAllAntiques();
             clearAndReloadMapOptions();
             clearAndReloadRoles();
             clearGameHistory();
@@ -437,6 +443,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Seer:
                         Seer.seer = player;
+                        break;
+                    case RoleId.Archaeologist:
+                        Archaeologist.archaeologist = player;
                         break;
                     case RoleId.Morphling:
                         Morphling.morphling = player;
@@ -1108,6 +1117,7 @@ namespace TheOtherRoles
                 Noisemaker.noisemaker = oldShifter;
                 Noisemaker.onAchievementActivate();
             }
+            if (Archaeologist.archaeologist != null && Archaeologist.archaeologist == player) Archaeologist.archaeologist = player;
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
@@ -1517,6 +1527,46 @@ namespace TheOtherRoles
             }
         }
 
+        public static void placeAntique()
+        {
+            var dictionary = new Dictionary<Vector3, SystemTypes>();
+            if (Helpers.isSkeld()) dictionary = Antique.SkeldPos;
+            else if (Helpers.isMira()) dictionary = Antique.MiraPos;
+            else if (Helpers.isPolus()) dictionary = Antique.PolusPos;
+            else if (Helpers.isAirship()) dictionary = Antique.AirsihpPos;
+            else dictionary = Antique.FunglePos;
+
+            foreach (var p in dictionary) new Antique(p.Key, p.Value);
+        }
+
+        public static void archaeologistDetect(byte id)
+        {
+            if (Antique.antiques == null || Antique.antiques.Count == 0) return;
+            foreach (var a in Antique.antiques) if (a.isDetected) a.isDetected = false;
+            var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
+            var antique = remainingList[id];
+            antique.isDetected = true;
+            Archaeologist.arrowActive = true;
+        }
+
+        public static void archaeologistExcavate()
+        {
+            var detected = Antique.antiques.Where(x => x.isDetected).ToList();
+            foreach (var antique in detected) {
+                antique.isDetected = false;
+                antique.isBroken = true;
+                antique.spriteRenderer.sprite = Antique.getBrokenSprite();
+                if (PlayerControl.LocalPlayer == Archaeologist.archaeologist) {
+                    var info = Archaeologist.getRoleInfo();
+                    RolloverMessage rolloverMessage = RolloverMessage.Create(antique.gameObject.transform.position, true,
+                        string.Format(ModTranslation.getString("archaeologistClue"), Helpers.cs(info.color, info.name)), 5f, 0.5f, 2f, 1f, Color.white);
+                    rolloverMessage.velocity = new Vector3(0f, 0.1f);
+                    _ = new StaticAchievementToken("archaeologist.challenge");
+                }
+                if (Archaeologist.revealAntique == Archaeologist.RevealAntique.Immediately) antique.revealAntique();
+            }
+        }
+
         public static void deputyUsedHandcuffs(byte targetId)
         {
             Deputy.remainingHandcuffs--;
@@ -1641,6 +1691,7 @@ namespace TheOtherRoles
             if (player == Prophet.prophet) Prophet.clearAndReload();
             if (player == Busker.busker) Busker.clearAndReload();
             if (player == Noisemaker.noisemaker) Noisemaker.clearAndReload();
+            if (player == Archaeologist.archaeologist) Archaeologist.clearAndReload();
             //if (player == Trapper.trapper) Trapper.clearAndReload();
 
             // Impostor roles
@@ -3285,6 +3336,15 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.SerialKillerSuicide:
                     RPCProcedure.serialKillerSuicide(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.PlaceAntique:
+                    RPCProcedure.placeAntique();
+                    break;
+                case (byte)CustomRPC.ArchaeologistDetect:
+                    RPCProcedure.archaeologistDetect(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.ArchaeologistExcavate:
+                    RPCProcedure.archaeologistExcavate();
                     break;
                 case (byte)CustomRPC.FortuneTellerUsedDivine:
                     byte fId = reader.ReadByte();

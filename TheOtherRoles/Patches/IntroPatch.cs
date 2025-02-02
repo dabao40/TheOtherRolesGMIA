@@ -374,6 +374,13 @@ namespace TheOtherRoles.Patches {
             SchrodingersCat.playerTemplate.cosmetics.nameText.text = "";
             SchrodingersCat.playerTemplate.gameObject.SetActive(false);
 
+            if (AmongUsClient.Instance.AmHost && (Archaeologist.archaeologist != null || FreePlayGM.isFreePlayGM))
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAntique, SendOption.Reliable);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.placeAntique();
+            }
+
             // Additional Vents
             AdditionalVents.AddAdditionalVents();
 

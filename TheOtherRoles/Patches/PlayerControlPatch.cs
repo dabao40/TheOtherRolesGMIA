@@ -1195,6 +1195,56 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void archaeologistUpdate()
+        {
+            if (Archaeologist.arrow?.arrow != null)
+            {
+                if (Archaeologist.archaeologist == null || PlayerControl.LocalPlayer != Archaeologist.archaeologist)
+                {
+                    Archaeologist.arrow.arrow.SetActive(false);
+                    return;
+                }
+                if (Antique.antiques != null && Antique.antiques.Any(x => x.isDetected) && !PlayerControl.LocalPlayer.Data.IsDead && Archaeologist.arrowActive)
+                {
+                    var antique = Antique.antiques.FirstOrDefault(x => x.isDetected);
+                    Archaeologist.arrow.Update(ShipStatus.Instance.FastRooms[antique.room].roomArea.ClosestPoint(PlayerControl.LocalPlayer.transform.position));
+                    Archaeologist.arrow.arrow.SetActive(true);
+                }
+                else
+                {
+                    Archaeologist.arrow.arrow.SetActive(false);
+                }
+            }
+
+            if (PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead && Antique.antiques != null && Antique.antiques.Any(x => x.isDetected))
+            {
+                var antique = Antique.antiques.FirstOrDefault(x => x.isDetected);
+                if (ShipStatus.Instance.FastRooms[antique.room].roomArea.OverlapPoint(PlayerControl.LocalPlayer.GetTruePosition())) {
+                    antique.gameObject.SetActive(true);
+                    Archaeologist.revealed.Add(antique);
+                }
+            }
+        }
+
+        static void archaeologistSetTarget()
+        {
+            if (Archaeologist.archaeologist == null || PlayerControl.LocalPlayer != Archaeologist.archaeologist || PlayerControl.LocalPlayer.Data.IsDead || Archaeologist.revealed == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
+            Antique target = null;
+            Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+            float closestDistance = float.MaxValue;
+            float usableDistance = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault().UsableDistance;
+            foreach (var antique in Archaeologist.revealed)
+            {
+                float distance = Vector2.Distance(antique.gameObject.transform.position, truePosition);
+                if (distance <= usableDistance && distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    target = antique;
+                }
+            }
+            Archaeologist.target = target;
+        }
+
         static void bountyHunterUpdate() {
             if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
 
@@ -2152,6 +2202,9 @@ namespace TheOtherRoles.Patches {
                 // Akujo
                 akujoSetTarget();
                 akujoUpdate();
+                // Archaeologist
+                archaeologistSetTarget();
+                archaeologistUpdate();
                 // Noisemaker
                 noisemakerSetTarget();
                 // Schrodinger's Cat

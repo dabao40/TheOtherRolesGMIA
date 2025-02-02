@@ -104,6 +104,7 @@ namespace TheOtherRoles
         public static RoleInfo prophet = new("prophet", Prophet.color, RoleId.Prophet);
         public static RoleInfo busker = new("busker", Busker.color, RoleId.Busker);
         public static RoleInfo noisemaker = new("noisemaker", Noisemaker.color, RoleId.Noisemaker);
+        public static RoleInfo archaeologist = new("archaeologist", Archaeologist.color, RoleId.Archaeologist);
         public static RoleInfo evilYasuna = new("evilYasuna", Palette.ImpostorRed, RoleId.EvilYasuna);
         public static RoleInfo opportunist = new("opportunist", Opportunist.color, RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new("corruptedShifter", Shifter.color, RoleId.Shifter, true);
@@ -224,6 +225,7 @@ namespace TheOtherRoles
             prophet,
             busker,
             noisemaker,
+            archaeologist,
             //trapper,
             bloody,
             antiTeleport,
@@ -315,6 +317,7 @@ namespace TheOtherRoles
             if (p == Immoralist.immoralist) infos.Add(immoralist);
             if (p == Busker.busker) infos.Add(busker);
             if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
+            if (p == Archaeologist.archaeologist) infos.Add(archaeologist);
             if (p == Yoyo.yoyo) infos.Add(yoyo);
             if (p == FortuneTeller.fortuneTeller)
             {
