@@ -4561,7 +4561,10 @@ namespace TheOtherRoles
         public static RoleInfo getRoleInfo()
         {
             var list = new List<RoleInfo>();
-            foreach (var p in PlayerControl.AllPlayerControls) list.Add(RoleInfo.getRoleInfoForPlayer(p, false, true).FirstOrDefault());
+            foreach (var p in PlayerControl.AllPlayerControls) {
+                if (p == archaeologist) continue;
+                list.Add(RoleInfo.getRoleInfoForPlayer(p, false, true).FirstOrDefault());
+            }
             if (list.Count == 0) list.Add(RoleInfo.archaeologist);
             return list[rnd.Next(list.Count)];
         }
@@ -4580,7 +4583,6 @@ namespace TheOtherRoles
             if (arrow?.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             arrow = new Arrow(color);
             if (arrow.arrow != null) arrow.arrow.SetActive(false);
-            foreach (var antique in Antique.antiques) if (antique != null && antique.gameObject != null) antique.gameObject.SetActive(false);
         }
     }
 

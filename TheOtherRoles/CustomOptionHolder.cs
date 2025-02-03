@@ -536,7 +536,6 @@ namespace TheOtherRoles {
         public static CustomOption finishTasksBeforeHauntingOrZoomingOut;
         public static CustomOption camsNightVision;
         public static CustomOption camsNoNightVisionIfImpVision;
-        public static CustomOption noticeExtraVictims;
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
         public static CustomOption airshipLadder;
@@ -618,6 +617,10 @@ namespace TheOtherRoles {
         private static byte ToByte(float f) {
             f = Mathf.Clamp01(f);
             return (byte)(f * 255);
+        }
+
+        public static bool isMapSelectionOption(CustomOption option) {
+            return option == hideNSeekMap;
         }
 
         public static void Load() {
@@ -1180,7 +1183,7 @@ namespace TheOtherRoles {
             guesserGamemodeCantGuessSnitchIfTaksDone = CustomOption.Create(2010, Types.Guesser, "guesserGamemodeCantGuessSnitchIfTaksDone", true, null);
 
             // Hide N Seek Gamemode (3000 - 3999)
-            hideNSeekMap = CustomOption.Create(3020, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekMap"), new string[] { "The Skeld", "Mira", "Polus", "Airship", "Submerged" }, null, true);
+            hideNSeekMap = CustomOption.Create(3020, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekMap"), new string[] { "The Skeld", "Mira", "Polus", "Airship", "Fungle" }, null, true, onChange: () => { int map = hideNSeekMap.selection; if (map >= 3) map++; GameOptionsManager.Instance.currentNormalGameOptions.MapId = (byte)map; });
             hideNSeekHunterCount = CustomOption.Create(3000, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekHunterCount"), 1f, 1f, 3f, 1f, format: "unitPlayers");
             hideNSeekKillCooldown = CustomOption.Create(3021, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekKillCooldown"), 10f, 2.5f, 60f, 2.5f, format: "unitSeconds");
             hideNSeekHunterVision = CustomOption.Create(3001, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekHunterVision"), 0.5f, 0.25f, 2f, 0.25f, format: "unitTimes");
@@ -1220,7 +1223,6 @@ namespace TheOtherRoles {
             allowParallelMedBayScans = CustomOption.Create(7, Types.General, "allowParallelMedBayScans", false);
             shieldFirstKill = CustomOption.Create(8, Types.General, "shieldFirstKill", false);
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "finishTasksBeforeHauntingOrZoomingOut", true);
-            noticeExtraVictims = CustomOption.Create(13, Types.General, "noticeExtraVictims", true);
             additionalVents = CustomOption.Create(5060, Types.General, "additionalVents", false);
             specimenVital = CustomOption.Create(5061, Types.General, "specimenVital", false);
             miraVitals = CustomOption.Create(6075, Types.General, "miraVitals", false);

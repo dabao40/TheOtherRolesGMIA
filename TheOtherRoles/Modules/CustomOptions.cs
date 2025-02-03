@@ -49,11 +49,12 @@ namespace TheOtherRoles {
         public CustomOption parent;
         public bool isHeader;
         public CustomOptionType type;
+        public Action onChange = null;
         public string heading = "";
 
         // Option creation
 
-        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, string format, string heading = "") {
+        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, string format, Action onChange = null, string heading = "") {
             this.id = id;
             this.name = parent == null ? name : "- " + name;
             this.format = format;
@@ -63,6 +64,7 @@ namespace TheOtherRoles {
             this.parent = parent;
             this.isHeader = isHeader;
             this.type = type;
+            this.onChange = onChange;
             this.heading = heading;
             selection = 0;
             if (id != 0) {
@@ -72,19 +74,19 @@ namespace TheOtherRoles {
             options.Add(this);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, string format = "", string heading = "") {
-            return new CustomOption(id, type, name, selections, "", parent, isHeader, format, heading);
+        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "") {
+            return new CustomOption(id, type, name, selections, "", parent, isHeader, format, onChange, heading);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, string format = "", string heading = "") {
+        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "") {
             List<object> selections = new();
             for (float s = min; s <= max; s += step)
                 selections.Add(s);
-            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, format, heading);
+            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, format, onChange, heading);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, string format = "", string heading = "") {
-            return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format, heading);
+        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "") {
+            return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format, onChange, heading);
         }
 
         public static CustomOption Create(int id, CustomOptionType type, string name, List<RoleId> roleId, CustomOption parent = null, bool isHeader = false) {
@@ -239,6 +241,9 @@ namespace TheOtherRoles {
                 catch { }
             }
             selection = newSelection;
+            try {
+                if (onChange != null) onChange();
+            } catch { }
             if (doNeedNotifier) {
                 CustomOption originalParent = parent;
                 if (originalParent != null) {

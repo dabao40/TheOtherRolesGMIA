@@ -725,7 +725,6 @@ namespace TheOtherRoles
             PlayerControl target = Helpers.playerById(targetId);
             if (target != null) {
                 target.Exiled();
-                ExileControllerBeginPatch.extraVictim = true;
             }
         }
 
@@ -879,7 +878,6 @@ namespace TheOtherRoles
                 {
                     oldShifter.Exiled();
                     GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
-                    ExileControllerBeginPatch.extraVictim = true;
                 }
                 if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost && Lawyer.lawyer != null)
                 {
@@ -1544,27 +1542,30 @@ namespace TheOtherRoles
             if (Antique.antiques == null || Antique.antiques.Count == 0) return;
             foreach (var a in Antique.antiques) if (a.isDetected) a.isDetected = false;
             var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
+            if (remainingList.Count <= id) return;
             var antique = remainingList[id];
             antique.isDetected = true;
             Archaeologist.arrowActive = true;
         }
 
-        public static void archaeologistExcavate()
+        public static void archaeologistExcavate(byte index)
         {
-            var detected = Antique.antiques.Where(x => x.isDetected).ToList();
-            foreach (var antique in detected) {
-                antique.isDetected = false;
-                antique.isBroken = true;
-                antique.spriteRenderer.sprite = Antique.getBrokenSprite();
-                if (PlayerControl.LocalPlayer == Archaeologist.archaeologist) {
-                    var info = Archaeologist.getRoleInfo();
-                    RolloverMessage rolloverMessage = RolloverMessage.Create(antique.gameObject.transform.position, true,
-                        string.Format(ModTranslation.getString("archaeologistClue"), Helpers.cs(info.color, info.name)), 5f, 0.5f, 2f, 1f, Color.white);
-                    rolloverMessage.velocity = new Vector3(0f, 0.1f);
-                    _ = new StaticAchievementToken("archaeologist.challenge");
-                }
-                if (Archaeologist.revealAntique == Archaeologist.RevealAntique.Immediately) antique.revealAntique();
+            if (Antique.antiques == null || Antique.antiques.Count <= index) return; 
+            var antique = Antique.antiques.FirstOrDefault(x => x.id == index);
+            if (antique == null) return;
+            antique.isBroken = true;
+            antique.spriteRenderer.sprite = Antique.getBrokenSprite();
+            if (PlayerControl.LocalPlayer == Archaeologist.archaeologist)
+            {
+                var info = Archaeologist.getRoleInfo();
+                RolloverMessage rolloverMessage = RolloverMessage.Create(antique.gameObject.transform.position, true,
+                    string.Format(ModTranslation.getString("archaeologistClue"), Helpers.cs(info.color, info.name)), 5f, 0.5f, 2f, 1f, Color.white);
+                rolloverMessage.velocity = new Vector3(0f, 0.1f);
+                _ = new StaticAchievementToken("archaeologist.challenge");
+                if (archaeologistDetectButton.isEffectActive && antique.isDetected) archaeologistDetectButton.Timer = 0f;
             }
+            antique.isDetected = false;
+            if (Archaeologist.revealAntique == Archaeologist.RevealAntique.Immediately) antique.revealAntique();
         }
 
         public static void deputyUsedHandcuffs(byte targetId)
@@ -3344,7 +3345,7 @@ namespace TheOtherRoles
                     RPCProcedure.archaeologistDetect(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.ArchaeologistExcavate:
-                    RPCProcedure.archaeologistExcavate();
+                    RPCProcedure.archaeologistExcavate(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.FortuneTellerUsedDivine:
                     byte fId = reader.ReadByte();

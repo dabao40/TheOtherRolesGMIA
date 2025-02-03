@@ -193,6 +193,7 @@ namespace TheOtherRoles.Modules
 
     public class Achievement
     {
+        static public IDividedSpriteLoader TrophySprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.Trophy.png", 100f, 3);
         public static AchievementToken<(bool isCleared, bool triggered)> GenerateSimpleTriggerToken(string achievement) => new(achievement, (false, false), (val, _) => val.isCleared);
 
         int goal;
@@ -492,6 +493,7 @@ namespace TheOtherRoles.Modules
             return result.DistinctBy(a => a.achievement).ToArray();
         }
 
+        static XOnlyDividedSpriteLoader trophySprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.Trophy.png", 220f, 3);
         static public IEnumerator CoShowAchievements(MonoBehaviour coroutineHolder, params (Achievement achievement, ClearState clearState)[] achievements)
         {
             int num = 0;
@@ -527,7 +529,7 @@ namespace TheOtherRoles.Modules
                 button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
 
                 white.material.shader = materialShader;
-                icon.sprite = Helpers.loadSpriteFromResources($"TheOtherRoles.Resources.Trophy{achievement.Trophy + 1}.png", 220f);
+                icon.sprite = trophySprite.GetSprite(achievement.Trophy);
 
                 return (billboard, animator, body, white);
             }

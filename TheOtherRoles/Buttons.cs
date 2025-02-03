@@ -2194,8 +2194,8 @@ namespace TheOtherRoles
                     RPCProcedure.archaeologistDetect((byte)id);
                     _ = new StaticAchievementToken("archaeologist.common1");
                 },
-                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead && Archaeologist.hasRemainingAntique(); },
-                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove && Archaeologist.hasRemainingAntique(); },
                 () => { archaeologistDetectButton.Timer = archaeologistDetectButton.MaxTimer = Archaeologist.cooldown; },
                 Archaeologist.getDetectSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
@@ -2221,7 +2221,7 @@ namespace TheOtherRoles
                         archaeologistExcavateButton.HasEffect = true;
                     }
                 },
-                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead && Archaeologist.hasRemainingAntique(); },
+                () => { return Archaeologist.archaeologist != null && PlayerControl.LocalPlayer == Archaeologist.archaeologist && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () =>
                 {
                     if (archaeologistExcavateButton.isEffectActive && Archaeologist.target != Archaeologist.antiqueTarget)
@@ -2230,12 +2230,13 @@ namespace TheOtherRoles
                         archaeologistExcavateButton.Timer = 0f;
                         archaeologistExcavateButton.isEffectActive = false;
                     }
-                    return Archaeologist.target != null && PlayerControl.LocalPlayer.CanMove;
+                    return Archaeologist.target != null && PlayerControl.LocalPlayer.CanMove && Archaeologist.hasRemainingAntique();
                 },
                 () =>
                 {
                     archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
                     archaeologistExcavateButton.isEffectActive = false;
+                    lightsOutButton.actionButton.graphic.color = Palette.EnabledColor;
                     Archaeologist.antiqueTarget = null;
                 },
                 Archaeologist.getExcavateSprite(),
@@ -2246,9 +2247,11 @@ namespace TheOtherRoles
                 Archaeologist.detectDuration,
                 () =>
                 {
+                    byte index = (byte)Archaeologist.antiqueTarget.id;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArchaeologistExcavate, SendOption.Reliable);
+                    writer.Write(index);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.archaeologistExcavate();
+                    RPCProcedure.archaeologistExcavate(index);
                     Archaeologist.revealed.RemoveAll(x => x.isBroken);
                     archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer;
                 },

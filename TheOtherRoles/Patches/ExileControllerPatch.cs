@@ -17,10 +17,8 @@ namespace TheOtherRoles.Patches {
     [HarmonyPriority(Priority.First)]
     class ExileControllerBeginPatch {
         public static NetworkedPlayerInfo lastExiled;
-        public static bool extraVictim;
         public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref ExileController.InitProperties init) {
             lastExiled = init.networkedPlayer;
-            extraVictim = false;
             // Medic shield
             if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
@@ -153,10 +151,6 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
         class BaseExileControllerPatch {
-            static bool Prefix(ExileController __instance) {
-                __instance.StartCoroutine(WrapUpPrefix(__instance).WrapToIl2Cpp());
-                return false;
-            }
             public static void Postfix(ExileController __instance) {
                 NetworkedPlayerInfo networkedPlayer = __instance.initData.networkedPlayer;
                 WrapUpPostfix((networkedPlayer != null) ? networkedPlayer.Object : null);
@@ -165,10 +159,6 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
         class AirshipExileControllerPatch {
-            static bool Prefix(AirshipExileController __instance, ref Il2CppSystem.Collections.IEnumerator __result) {
-                __result = WrapUpPrefix(__instance).WrapToIl2Cpp();
-                return false;
-            }
             public static void Postfix(AirshipExileController __instance) {
                 NetworkedPlayerInfo networkedPlayer = __instance.initData.networkedPlayer;
                 WrapUpPostfix((networkedPlayer != null) ? networkedPlayer.Object : null);
@@ -192,49 +182,6 @@ namespace TheOtherRoles.Patches {
                 AntiTeleport.setPosition();
                 Chameleon.lastMoved.Clear();
             }
-        }
-
-        static IEnumerator WrapUpPrefix(ExileController __instance)
-        {
-            PlayerControl @object = null;
-            if (__instance.initData.networkedPlayer != null)
-            {
-                @object = __instance.initData.networkedPlayer.Object;
-                if (@object) @object.Exiled();
-                __instance.initData.networkedPlayer.IsDead = true;
-            }
-            if (ExileControllerBeginPatch.extraVictim && CustomOptionHolder.noticeExtraVictims.getBool())
-            {
-                string str = ModTranslation.getString("someoneDisappeared");
-                int num = 0;
-                var additionalText = UnityEngine.Object.Instantiate(__instance.Text, __instance.transform);
-                additionalText.transform.localPosition = new Vector3(0, 0, -800f);
-                additionalText.text = "";
-
-                while (num < str.Length)
-                {
-                    num++;
-                    additionalText.text = str[..num];
-                    SoundManager.Instance.PlaySoundImmediate(__instance.TextSound, false, 0.8f, 0.92f);
-                    yield return new WaitForSeconds(Mathf.Min(2.8f / str.Length, 0.28f));
-                }
-                yield return new WaitForSeconds(1.9f);
-
-                float a = 1f;
-                while (a > 0f)
-                {
-                    a -= Time.deltaTime * 1.5f;
-                    additionalText.color = Color.white.AlphaMultiplied(a);
-                    yield return null;
-                }
-                yield return new WaitForSeconds(0.3f);
-            }
-            if (DestroyableSingleton<TutorialManager>.InstanceExists || GameData.Instance || GameManager.Instance.LogicFlow.IsGameOverDueToDeath())
-            {
-                if (__instance is AirshipExileController airshipExileController) yield return ShipStatus.Instance.PrespawnStep();
-                __instance.ReEnableGameplay();
-            }
-            UnityEngine.Object.Destroy(__instance.gameObject);
         }
 
         static void WrapUpPostfix(PlayerControl exiled)

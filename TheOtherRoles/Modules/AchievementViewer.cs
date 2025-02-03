@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,7 +46,7 @@ namespace TheOtherRoles.Modules
                 if (inner.Count != 0) inner.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.08f)));
 
                 var aContenxt = new HorizontalContextsHolder(GUIAlignment.Left,
-                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Helpers.loadSpriteFromResources($"TheOtherRoles.Resources.Trophy{a.Trophy+1}.png", 220f)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true },
+                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Achievement.TrophySprite.GetSprite(a.Trophy)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true },
                     new TORGUIMargin(GUIAlignment.Left, new(0.15f, 0.1f)),
                     new VerticalContextsHolder(GUIAlignment.Center,
                         new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
@@ -65,7 +65,7 @@ namespace TheOtherRoles.Modules
                 int copiedIndex = i;
                 if (footerList.Count != 0) footerList.Add(new TORGUIMargin(GUIAlignment.Center, new(0.2f, 0f)));
 
-                footerList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Helpers.loadSpriteFromResources($"TheOtherRoles.Resources.Trophy{copiedIndex+1}.png", 220f)), new(0.5f, 0.5f)));
+                footerList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Achievement.TrophySprite.GetSprite(copiedIndex)), new(0.5f, 0.5f)));
                 footerList.Add(new TORGUIMargin(GUIAlignment.Center, new(0.05f, 0f)));
                 footerList.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, new RawTextComponent(cul[i].num + "/" + cul[i].max)));
             }

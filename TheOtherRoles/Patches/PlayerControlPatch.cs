@@ -3103,7 +3103,6 @@ namespace TheOtherRoles.Patches {
                         }
                     }
                 }
-                ExileControllerBeginPatch.extraVictim = true;
             }
 
             // Check Plague Doctor status

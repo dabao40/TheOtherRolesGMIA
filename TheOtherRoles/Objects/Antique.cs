@@ -16,6 +16,8 @@ namespace TheOtherRoles.Objects
         public bool isBroken;
         public SystemTypes room;
         public bool isDetected;
+        public int id;
+        public static int counter = 0;
 
         public Antique(Vector2 p, SystemTypes system)
         {
@@ -34,6 +36,8 @@ namespace TheOtherRoles.Objects
             isBroken = false;
             isDetected = false;
             gameObject.SetActive(false);
+            id = counter;
+            counter++;
             antiques.Add(this);
         }
 
@@ -52,6 +56,7 @@ namespace TheOtherRoles.Objects
         {
             foreach (var antique in antiques) antique.gameObject.Destroy();
             antiques = new();
+            counter = 0;
         }
 
         private static Sprite normalSprite;

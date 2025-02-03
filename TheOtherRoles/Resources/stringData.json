@@ -199,14 +199,6 @@
         "13": "\u968f\u673a\u51fa\u751f\u70b9",
         "14": "\u96a8\u6a5f\u51fa\u751f\u9ede"
     },
-    "noticeExtraVictims": {
-        "0": "Notice Extra Victims When Exiled",
-        "13": "\u9a71\u9010\u65f6\u6807\u8bb0\u989d\u5916\u6b7b\u4ea1\u73a9\u5bb6"
-    },
-    "someoneDisappeared": {
-        "0": "Someone disappeared",
-        "13": "\u6709\u73a9\u5bb6\u5931\u8e2a\u4e86"
-    },
     "activateProps": {
         "0": "Activate Props",
         "11": "\u5c0f\u9053\u5177\u3092\u6709\u52b9\u5316",
@@ -396,7 +388,7 @@
     "hideNSeekTimer": {
         "0": "Timer In Min",
         "11": "\u5206\u30bf\u30a4\u30de\u30fc",
-        "13": "\u6700\u5c11\u8eb2\u85cf\u65f6\u95f4",
+        "13": "\u8eb2\u85cf\u65f6\u95f4 (\u5355\u4f4d\u4e3a\u5206\u949f)",
         "14": "\u6700\u5c11\u8eb2\u85cf\u6642\u9593"
     },
     "hideNSeekTaskWin": {
@@ -2212,7 +2204,7 @@
     "snitchIntroDesc": {
         "0": "Finish your tasks to find the <color=#FF1919FF>Impostors</color>",
         "11": "\u30bf\u30b9\u30af\u3092\u65e9\u304f\u6e08\u307e\u305b\u3066<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3092\u66b4\u3053\u3046",
-        "13": "\u5b8c\u6210\u4efb\u52a1\u4ee5<color=#FF1919FF>\u5185\u9b3c</color>",
+        "13": "\u5b8c\u6210\u4efb\u52a1\u4ee5\u53d1\u73b0<color=#FF1919FF>\u5185\u9b3c</color>",
         "14": "\u505a\u5b8c\u4efb\u52d9\u767c\u73fe<color=#FF1919FF>\u5167\u9b3c</color>"
     },
     "snitchShortDesc": {
@@ -6884,11 +6876,11 @@
         "13": "\u8fd4\u56de\u4e2d..."
     },
     "DetectText": {
-        "0": "[BLANK]",
+        "0": "Detect",
         "13": "\u63a2\u7d22"
     },
     "ExcavateText": {
-        "0": "[BLANK]",
+        "0": "Excavate",
         "13": "\u6316\u6398"
     },
     "jesterFullDesc": {
