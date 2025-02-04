@@ -1268,7 +1268,8 @@ namespace TheOtherRoles.Patches {
                 BountyHunter.bountyUpdateTimer = BountyHunter.bountyDuration;
                 var possibleTargets = new List<PlayerControl>();
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
+                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) &&
+                        !BountyHunter.bountyHunter.GetAllRelatedPlayers().Contains(p) && !(p == Akujo.akujo && Akujo.keeps.Contains(BountyHunter.bountyHunter))) possibleTargets.Add(p);
                 }
                 if (possibleTargets.Count == 0) return;
                 BountyHunter.bounty = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
@@ -1684,7 +1685,7 @@ namespace TheOtherRoles.Patches {
 
             if (Prophet.prophet == null || Prophet.prophet.Data.IsDead) return;
 
-            if (Prophet.isRevealed && Helpers.isKiller(PlayerControl.LocalPlayer))
+            if (Prophet.isRevealed && Helpers.isKiller(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (Prophet.arrows.Count == 0) Prophet.arrows.Add(new Arrow(Prophet.color));
                 if (Prophet.arrows.Count != 0 && Prophet.arrows[0] != null)
@@ -1824,13 +1825,13 @@ namespace TheOtherRoles.Patches {
 
         public static void impostorArrowUpdate()
         {
-            if (FortuneTeller.arrows.FirstOrDefault()?.arrow != null)
-            {
-                if (FortuneTeller.fortuneTeller == null || FortuneTeller.fortuneTeller.Data.IsDead || !PlayerControl.LocalPlayer.Data.Role.IsImpostor)
-                {
-                    foreach (Arrow arrows in FortuneTeller.arrows) arrows.arrow.SetActive(false);
-                    return;
+            if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor || PlayerControl.LocalPlayer.Data.IsDead) {
+                if (FortuneTeller.arrows != null && FortuneTeller.arrows.Count > 0) {
+                    foreach (var arrow in FortuneTeller.arrows) {
+                        if (arrow != null && arrow?.arrow != null) arrow.arrow.SetActive(false);
+                    }
                 }
+                return;
             }
             if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
             {
@@ -1853,10 +1854,7 @@ namespace TheOtherRoles.Patches {
                     // Arrow一覧
                     FortuneTeller.arrows = new List<Arrow>();
 
-                    if (FortuneTeller.fortuneTeller == null || !FortuneTeller.divinedFlag || !FortuneTeller.isCompletedNumTasks(FortuneTeller.fortuneTeller) || FortuneTeller.fortuneTeller.Data.IsDead)
-                    {
-                        return;
-                    }
+                    if (FortuneTeller.fortuneTeller == null || !FortuneTeller.divinedFlag || FortuneTeller.fortuneTeller.Data.IsDead) return;
 
                     Arrow arrow = new(FortuneTeller.color);
                     arrow.arrow.SetActive(true);
@@ -2389,43 +2387,31 @@ namespace TheOtherRoles.Patches {
 
             GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, __instance.PlayerId, 1 << target.PlayerId) { RelatedTag = EventDetail.Kill});
 
-            // Lover suicide trigger on murder
-            if ((Lovers.lover1 != null && target == Lovers.lover1) || (Lovers.lover2 != null && target == Lovers.lover2)) {
-                PlayerControl otherLover = target == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
-                if (otherLover != null && !otherLover.Data.IsDead && Lovers.bothDie) {
-                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
-                }
-                if (otherLover == Busker.busker && Lovers.bothDie && Busker.pseudocideFlag && PlayerControl.LocalPlayer == Busker.busker) // If not pseudociding then the Busker is already killed
-                {
-                    Busker.dieBusker(true);
-                }
-            }
-
-            // Cupid and Cupid Lovers suicide
-            if (Cupid.lovers1 != null && Cupid.lovers2 != null && (target == Cupid.lovers1 || target == Cupid.lovers2))
+            // Handle all suicides
+            foreach (var p in target.GetAllRelatedPlayers())
             {
-                PlayerControl otherLover = target == Cupid.lovers1 ? Cupid.lovers2 : Cupid.lovers1;
-                if (otherLover != null && !otherLover.Data.IsDead)
-                {
-                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoverSuicide);
-                }
-                if (otherLover == Busker.busker && Busker.pseudocideFlag && PlayerControl.LocalPlayer == Busker.busker)
-                {
-                    Busker.dieBusker(true);
-                }
-                if (Cupid.cupid != null && !Cupid.cupid.Data.IsDead)
-                {
-                    Cupid.cupid.MurderPlayer(Cupid.cupid, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(Cupid.cupid, DeadPlayer.CustomDeathReason.Suicide);
-                }
+                if (p == null || p.Data.IsDead) continue;
+                p.MurderPlayer(p, MurderResultFlags.Succeeded);
+                if (p == Busker.busker && Busker.pseudocideFlag && PlayerControl.LocalPlayer == Busker.busker) Busker.dieBusker(true);
+                bool isLoverSuicide = (p.isLover() && target == p.getPartner()) || (p.isCupidLover() && target == p.getCupidLover()) ||
+                    (p == Akujo.akujo && target == Akujo.honmei) || (p == Akujo.honmei && target == Akujo.akujo);
+                overrideDeathReasonAndKiller(p, isLoverSuicide ? DeadPlayer.CustomDeathReason.LoverSuicide : DeadPlayer.CustomDeathReason.Suicide);
             }
 
-            // Kataomoi suicide trigger on murder
-            if (Kataomoi.kataomoi != null && !Kataomoi.kataomoi.Data.IsDead && Kataomoi.kataomoi != __instance && Kataomoi.target == target) {
-                Kataomoi.kataomoi.MurderPlayer(Kataomoi.kataomoi, MurderResultFlags.Succeeded);
-                GameHistory.overrideDeathReasonAndKiller(Kataomoi.kataomoi, DeadPlayer.CustomDeathReason.Suicide);
+            // Neko-Kabocha kill murderer
+            if (NekoKabocha.nekoKabocha != null && target == NekoKabocha.nekoKabocha && __instance != NekoKabocha.nekoKabocha)
+            {
+                if (!__instance.Data.IsDead)
+                {
+                    if ((__instance.Data.Role.IsImpostor && NekoKabocha.revengeImpostor)
+                        || (Helpers.isNeutral(__instance) && NekoKabocha.revengeNeutral)
+                        || (NekoKabocha.revengeCrew && !Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor))
+                    {
+                        if (PlayerControl.LocalPlayer == NekoKabocha.nekoKabocha) _ = new StaticAchievementToken("nekoKabocha.challenge");
+                        NekoKabocha.nekoKabocha.MurderPlayer(__instance, MurderResultFlags.Succeeded);
+                        GameHistory.overrideDeathReasonAndKiller(__instance, DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
+                    }
+                }
             }
 
             // Sidekick promotion trigger on murder
@@ -2647,59 +2633,6 @@ namespace TheOtherRoles.Patches {
                 Trapper.isTrapKill = false;
             }
 
-            // Neko-Kabocha kill murderer
-            if (NekoKabocha.nekoKabocha != null && target == NekoKabocha.nekoKabocha && __instance != NekoKabocha.nekoKabocha)
-            {
-                if (!__instance.Data.IsDead)
-                {
-                    if ((__instance.Data.Role.IsImpostor && NekoKabocha.revengeImpostor)
-                        || (Helpers.isNeutral(__instance) && NekoKabocha.revengeNeutral)
-                        || (NekoKabocha.revengeCrew && !Helpers.isNeutral(__instance) && !__instance.Data.Role.IsImpostor))
-                    {
-                        if (PlayerControl.LocalPlayer == NekoKabocha.nekoKabocha) _ = new StaticAchievementToken("nekoKabocha.challenge");
-                        NekoKabocha.nekoKabocha.MurderPlayer(__instance, MurderResultFlags.Succeeded);
-                        GameHistory.overrideDeathReasonAndKiller(__instance, DeadPlayer.CustomDeathReason.Revenge, killer: NekoKabocha.nekoKabocha);
-                    }
-                }
-            }
-
-            // Other Bomber trigger suicide
-            if ((BomberA.bomberA != null && target == BomberA.bomberA) || (BomberB.bomberB != null && target == BomberB.bomberB))
-            {
-                var bomberPartner = target == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA;
-                if (bomberPartner != null && BomberA.ifOneDiesBothDie && !bomberPartner.Data.IsDead)
-                {
-                    bomberPartner.MurderPlayer(bomberPartner, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(bomberPartner, DeadPlayer.CustomDeathReason.Suicide);
-                }
-            }
-
-            // Other Mimic trigger suicide
-            if ((MimicK.mimicK != null && target == MimicK.mimicK) || (MimicA.mimicA != null && target == MimicA.mimicA))
-            {
-                var mimicPartner = target == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK;
-                if (mimicPartner != null && MimicK.ifOneDiesBothDie && !mimicPartner.Data.IsDead)
-                {
-                    mimicPartner.MurderPlayer(mimicPartner, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(mimicPartner, DeadPlayer.CustomDeathReason.Suicide);
-                }
-            }
-
-            // Akujo Lovers trigger suicide
-            if ((Akujo.akujo != null && target ==  Akujo.akujo) || (Akujo.honmei != null && target == Akujo.honmei))
-            {
-                PlayerControl akujoPartner = target == Akujo.akujo ? Akujo.honmei : Akujo.akujo;
-                if (akujoPartner != null && !akujoPartner.Data.IsDead)
-                {
-                    akujoPartner.MurderPlayer(akujoPartner, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(akujoPartner, DeadPlayer.CustomDeathReason.LoverSuicide);
-                }
-                if (akujoPartner == Busker.busker && Busker.pseudocideFlag && PlayerControl.LocalPlayer == Busker.busker)
-                {
-                    Busker.dieBusker(true);
-                }
-            }
-
             // Evil Tracker see flash
             if (__instance.Data.Role.IsImpostor && __instance != EvilTracker.evilTracker && PlayerControl.LocalPlayer == EvilTracker.evilTracker && !PlayerControl.LocalPlayer.Data.IsDead && EvilTracker.canSeeDeathFlash)
             {
@@ -2708,15 +2641,6 @@ namespace TheOtherRoles.Patches {
 
             if (Immoralist.immoralist != null && PlayerControl.LocalPlayer == Immoralist.immoralist && !PlayerControl.LocalPlayer.Data.IsDead)
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
-
-            if (Fox.fox != null && target == Fox.fox)
-            {
-                if (Immoralist.immoralist != null && !Immoralist.immoralist.Data.IsDead)
-                {
-                    Immoralist.immoralist.MurderPlayer(Immoralist.immoralist, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(Immoralist.immoralist, DeadPlayer.CustomDeathReason.Suicide);
-                }
-            }
 
             // Plague Doctor infect killer
             if (PlagueDoctor.plagueDoctor != null && target == PlagueDoctor.plagueDoctor && PlagueDoctor.infectKiller)
@@ -2797,7 +2721,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // Mimic(Killer) morph into victim
-            if (MimicK.mimicK != null && __instance == MimicK.mimicK)
+            if (MimicK.mimicK != null && __instance == MimicK.mimicK && target != MimicK.mimicK)
             {
                 // Delete the dead body
                 DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();

@@ -273,7 +273,7 @@ namespace TheOtherRoles.Modules
 
             JToken assets = data.Request["assets"];
             string downloadURI = "";
-            if (Helpers.isChinese()) downloadURI = "https://dl.fangkuai.fun/ModFiles/TheOtherRolesGMIA/TheOtherRoles.dll";
+            if (Helpers.isChinese()) downloadURI = "https://dl.fungle.icu/ModFiles/TheOtherRolesGMIA/TheOtherRoles.dll";
             else
             {
                 for (JToken current = assets.First; current != null; current = current.Next)

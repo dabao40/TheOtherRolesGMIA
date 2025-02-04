@@ -13,6 +13,7 @@ using AmongUs.QuickChat;
 using TheOtherRoles.Modules;
 using TheOtherRoles.MetaContext;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using TMPro;
 
 namespace TheOtherRoles.Patches
 {
@@ -474,9 +475,35 @@ namespace TheOtherRoles.Patches
         public static GameObject guesserUI;
         public static PassiveButton guesserUIExitButton;
         public static byte guesserCurrentTarget;
+        public const int MaxOneScreenRole = 40;
+        private static List<Transform> RoleButtons;
+        private static List<SpriteRenderer> PageButtons;
+        public static int Page;
+
+        static void guesserSelectRole(bool SetPage = true)
+        {
+            if (SetPage) Page = 1;
+            foreach (var RoleButton in RoleButtons)
+            {
+                int index = 0;
+                foreach (var RoleBtn in RoleButtons)
+                {
+                    if (RoleBtn == null) continue;
+                    index++;
+                    if (index <= (Page - 1) * MaxOneScreenRole) { RoleBtn.gameObject.SetActive(false); continue; }
+                    if ((Page * MaxOneScreenRole) < index) { RoleBtn.gameObject.SetActive(false); continue; }
+                    RoleBtn.gameObject.SetActive(true);
+                }
+            }
+        }
+
         static void guesserOnClick(int buttonTarget, MeetingHud __instance) {
             if (guesserUI != null || !(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted)) return;
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
+
+            Page = 1;
+            RoleButtons = new();
+            PageButtons = new();
 
             Transform PhoneUI = UnityEngine.Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
             Transform container = UnityEngine.Object.Instantiate(PhoneUI, __instance.transform);
@@ -508,7 +535,62 @@ namespace TheOtherRoles.Patches
                 UnityEngine.Object.Destroy(container.gameObject);
             }));
 
-            List<Transform> buttons = new();
+            static void ReloadPage()
+            {
+                PageButtons[0].gameObject.SetActive(true);
+                PageButtons[1].gameObject.SetActive(true);
+                if (((RoleButtons.Count / MaxOneScreenRole) +
+                    (RoleButtons.Count % MaxOneScreenRole != 0 ? 1 : 0)) < Page)
+                {
+                    Page -= 1;
+                    PageButtons[1].gameObject.SetActive(false);
+                }
+                else if (((RoleButtons.Count / MaxOneScreenRole) +
+                    (RoleButtons.Count % MaxOneScreenRole != 0 ? 1 : 0)) < Page + 1)
+                {
+                    PageButtons[1].gameObject.SetActive(false);
+                }
+                if (Page <= 1)
+                {
+                    Page = 1;
+                    PageButtons[0].gameObject.SetActive(false);
+                }
+                guesserSelectRole(false);
+            }
+
+            void CreatePage(bool IsNext, MeetingHud __instance, Transform container)
+            {
+                var buttonTemplate = __instance.playerStates[0].transform.FindChild("votePlayerBase");
+                var maskTemplate = __instance.playerStates[0].transform.FindChild("MaskArea");
+                var smallButtonTemplate = __instance.playerStates[0].Buttons.transform.Find("CancelButton");
+                var textTemplate = __instance.playerStates[0].NameText;
+                Transform PagebuttonParent = new GameObject().transform;
+                PagebuttonParent.SetParent(container);
+                Transform Pagebutton = UnityEngine.Object.Instantiate(buttonTemplate, PagebuttonParent);
+                Pagebutton.FindChild("ControllerHighlight").gameObject.SetActive(false);
+                Transform PagebuttonMask = UnityEngine.Object.Instantiate(maskTemplate, PagebuttonParent);
+                TextMeshPro Pagelabel = UnityEngine.Object.Instantiate(textTemplate, Pagebutton);
+                Pagebutton.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+                PagebuttonParent.localPosition = IsNext ? new(3.535f, -2.2f, -200) : new(-3.475f, -2.2f, -200);
+                PagebuttonParent.localScale = new(0.55f, 0.55f, 1f);
+                Pagelabel.color = Color.white;
+                Pagelabel.text = ModTranslation.getString(IsNext ? "guesserNextPage" : "guesserPrevPage");
+                Pagelabel.alignment = TextAlignmentOptions.Center;
+                Pagelabel.transform.localPosition = new Vector3(0, 0, Pagelabel.transform.localPosition.z);
+                Pagelabel.transform.localScale *= 1.6f;
+                Pagelabel.autoSizeTextContainer = true;
+                Pagebutton.GetComponent<PassiveButton>().OnClick.AddListener((UnityEngine.Events.UnityAction)(() =>
+                {
+                    if (IsNext) Page += 1;
+                    else Page -= 1;
+                    ReloadPage();
+                }));
+                PageButtons.Add(Pagebutton.GetComponent<SpriteRenderer>());
+            }
+
+            CreatePage(false, __instance, container);
+            CreatePage(true, __instance, container);
+
             Transform selectedButton = null;
 
             foreach (RoleInfo roleInfo in RoleInfo.allRoleInfos) {
@@ -537,17 +619,22 @@ namespace TheOtherRoles.Patches
                     int numberOfLeftTasks = playerTotal - playerCompleted;
                     if (numberOfLeftTasks <= 0 && roleInfo.roleId == RoleId.Snitch) continue;
                 }
+                CreateRole(roleInfo);
+            }
 
+            void CreateRole(RoleInfo roleInfo)
+            {
+                if (i >= MaxOneScreenRole) i = 0;
                 Transform buttonParent = new GameObject().transform;
                 buttonParent.SetParent(container);
                 Transform button = UnityEngine.Object.Instantiate(buttonTemplate, buttonParent);
                 Transform buttonMask = UnityEngine.Object.Instantiate(maskTemplate, buttonParent);
                 TMPro.TextMeshPro label = UnityEngine.Object.Instantiate(textTemplate, button);
                 button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-                buttons.Add(button);
+                RoleButtons.Add(button);
                 int row = i/5, col = i%5;
-                buttonParent.localPosition = new Vector3(-3.47f + 1.55f * col, 1.5f - 0.35f * row, -5);
-                buttonParent.localScale = new Vector3(0.45f, 0.45f, 1f);
+                buttonParent.localPosition = new Vector3(-3.47f + 1.75f * col, 1.5f - 0.45f * row, -5);
+                buttonParent.localScale = new Vector3(0.55f, 0.55f, 1f);
                 label.text = Helpers.cs(roleInfo.color, roleInfo.name);
                 label.alignment = TMPro.TextAlignmentOptions.Center;
                 label.transform.localPosition = new Vector3(0, 0, label.transform.localPosition.z);
@@ -558,7 +645,7 @@ namespace TheOtherRoles.Patches
                 if (!PlayerControl.LocalPlayer.Data.IsDead && !Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId).Data.IsDead) button.GetComponent<PassiveButton>().OnClick.AddListener((System.Action)(() => {
                     if (selectedButton != button) {
                         selectedButton = button;
-                        buttons.ForEach(x => x.GetComponent<SpriteRenderer>().color = x == selectedButton ? Color.red : Color.white);
+                        RoleButtons.ForEach(x => x.GetComponent<SpriteRenderer>().color = x == selectedButton ? Color.red : Color.white);
                     } else {
                         PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId);
                         if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted) || focusedTarget == null || HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) <= 0 ) return;
@@ -602,6 +689,8 @@ namespace TheOtherRoles.Patches
 
                 i++;
             }
+            guesserSelectRole();
+            ReloadPage();
             container.transform.localScale *= 0.75f;
         }
 

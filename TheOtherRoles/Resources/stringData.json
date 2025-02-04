@@ -812,7 +812,7 @@
     "eraserCanEraseAnyone": {
         "0": "Eraser Can Erase Anyone",
         "11": "\u8ab0\u3067\u3082\u30ed\u30fc\u30eb\u3092\u524a\u9664\u3067\u304d\u308b\u304b",
-        "13": "\u53ef\u4ee5\u62b9\u9664\u6240\u6709\u4eba",
+        "13": "\u62b9\u9664\u8005\u53ef\u4ee5\u62b9\u9664\u4efb\u4f55\u4eba",
         "14": "\u53ef\u4ee5\u62b9\u9664\u6240\u6709\u4eba"
     },
     "trickster": {
@@ -836,19 +836,19 @@
     "tricksterPlaceBoxCooldown": {
         "0": "Trickster Box Cooldown",
         "11": "\u3073\u3063\u304f\u308a\u7bb1\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u653e\u7f6e\u7bb1\u51b7\u5374\u65f6\u95f4",
+        "13": "\u9a97\u672f\u5e08\u653e\u7f6e\u60ca\u5413\u76d2\u7684\u51b7\u5374\u65f6\u95f4",
         "14": "\u653e\u7f6e\u7bb1\u51b7\u537b\u6642\u9593"
     },
     "tricksterLightsOutCooldown": {
         "0": "Trickster Lights Out Cooldown",
         "11": "\u5f37\u5236\u505c\u96fb\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u7184\u706f\u51b7\u5374\u65f6\u95f4",
+        "13": "\u9a97\u672f\u5e08\u7184\u706f\u7684\u51b7\u5374\u65f6\u95f4",
         "14": "\u7184\u71c8\u51b7\u537b\u6642\u9593"
     },
     "tricksterLightsOutDuration": {
         "0": "Trickster Lights Out Duration",
         "11": "\u5f37\u5236\u505c\u96fb\u306e\u6301\u7d9a\u6642\u9593",
-        "13": "\u7184\u706f\u6301\u7eed\u65f6\u95f4",
+        "13": "\u9a97\u672f\u5e08\u7184\u706f\u7684\u6301\u7eed\u65f6\u95f4",
         "14": "\u7184\u71c8\u6301\u7e8c\u6642\u9593"
     },
     "tricksterLightsOutText": {
@@ -878,7 +878,7 @@
     "cleanerCooldown": {
         "0": "Cleaner Cooldown",
         "11": "\u6b7b\u4f53\u6d88\u3057\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u6e05\u6d01\u51b7\u5374",
+        "13": "\u6e05\u7406\u8005\u6e05\u7406\u7684\u51b7\u5374\u65f6\u95f4",
         "14": "\u6e05\u6f54\u51b7\u537b"
     },
     "warlock": {
@@ -902,7 +902,7 @@
     "warlockCooldown": {
         "0": "Warlock Cooldown",
         "11": "\u546a\u3044\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u8bc5\u5492\u51b7\u5374\u65f6\u95f4",
+        "13": "\u672f\u58eb\u8bc5\u5492\u7684\u51b7\u5374\u65f6\u95f4",
         "14": "\u8a5b\u5492\u51b7\u537b\u6642\u9593"
     },
     "warlockRootTime": {
@@ -1117,7 +1117,7 @@
     "guesserSpawnBothRate": {
         "0": "Both Guesser Spawn Rate",
         "11": "\u30a4\u30d3\u30eb\u3068\u30ca\u30a4\u30b9\u4e21\u65b9\u306e\u30b2\u30c3\u30b5\u30fc\u304c\u51fa\u308b\u78ba\u7387",
-        "13": "\u4e24\u4e2a\u8d4c\u602a\u751f\u6210\u6982\u7387",
+        "13": "\u540c\u65f6\u751f\u6210\u6b63\u4e49\u4e0e\u90aa\u6076\u8d4c\u602a\u7684\u6982\u7387",
         "14": "\u5169\u500b\u8ced\u602a\u751f\u6210\u6982\u7387"
     },
     "guesserCantGuessSnitchIfTaksDone": {
@@ -1142,6 +1142,14 @@
         "0": "Guesses Left: {0}",
         "11": "\u6b8b\u308a\u63a8\u6e2c\u53ef\u80fd\u56de\u6570:{0}",
         "13": "\u5269\u4f59\u731c\u6d4b\u6b21\u6570\uff1a{0}"
+    },
+    "guesserNextPage": {
+        "0": "Next",
+        "13": "\u4e0b\u4e00\u9875"
+    },
+    "guesserPrevPage": {
+        "0": "Previous",
+        "13": "\u4e0a\u4e00\u9875"
     },
     "jester": {
         "0": "Jester",
@@ -1504,7 +1512,7 @@
     "engineerIntroDesc": {
         "0": "Maintain important systems on the ship",
         "11": "\u304a\u8239\u306e\u30e1\u30f3\u30c6\u306f\u5fd8\u308c\u305a\u306b",
-        "13": "\u7ef4\u4fee\u8d39\u8239\u4e0a\u7684\u91cd\u8981\u8bbe\u5907",
+        "13": "\u7ef4\u4fee\u98de\u8239\u4e0a\u7684\u91cd\u8981\u8bbe\u5907",
         "14": "\u554a\u54c8\uff0c\u4feemaker~"
     },
     "engineerShortDesc": {
@@ -1516,7 +1524,7 @@
     "engineerNumberOfFixes": {
         "0": "Number Of Sabotage Fixes",
         "11": "\u30b5\u30dc\u30bf\u30fc\u30b8\u30e5\u3092\u4f55\u56de\u76f4\u305b\u308b\u304b",
-        "13": "\u7834\u574f\u4fee\u590d\u6b21\u6570",
+        "13": "\u53ef\u4ee5\u7d27\u6025\u4fee\u7406\u7834\u574f\u7684\u6b21\u6570",
         "14": "\u7834\u58de\u4fee\u5fa9\u6b21\u6578"
     },
     "engineerHighlightForImpostors": {
@@ -1683,13 +1691,13 @@
     "lighterModeLightsOnVision": {
         "0": "Vision On Lights On",
         "11": "\u30e9\u30a4\u30c8\u4e2d\u3001\u901a\u5e38\u6642\u8996\u91ce",
-        "13": "\u6062\u590d\u7535\u529b\u65f6\u89c6\u91ce",
+        "13": "\u706f\u5149\u6b63\u5e38\u65f6\u6267\u706f\u4eba\u89c6\u91ce",
         "14": "\u6062\u5fa9\u96fb\u529b\u6642\u8996\u91ce"
     },
     "lighterModeLightsOffVision": {
         "0": "Vision On Lights Off",
         "11": "\u30e9\u30a4\u30c8\u4e2d\u3001\u505c\u96fb\u6642\u8996\u91ce",
-        "13": "\u7535\u529b\u7834\u574f\u65f6\u89c6\u91ce",
+        "13": "\u706f\u5149\u7184\u706d\u65f6\u6267\u706f\u4eba\u89c6\u91ce",
         "14": "\u96fb\u529b\u7834\u58de\u6642\u8996\u91ce"
     },
     "lighterFlashlightWidth": {
@@ -1725,13 +1733,13 @@
     "detectiveAnonymousFootprints": {
         "0": "Anonymous Footprints",
         "11": "\u8db3\u8de1\u306e\u8272\u3067\u8ab0\u306a\u306e\u304b\u5224\u5225\u3067\u304d\u306a\u304f\u3059\u308b",
-        "13": "\u533f\u540d\u811a\u5370",
+        "13": "\u811a\u5370\u989c\u8272\u533f\u540d",
         "14": "\u533f\u540d\u8173\u5370"
     },
     "detectiveFootprintInterval": {
         "0": "Footprint Interval",
         "11": "\u8db3\u8de1\u306e\u9593\u9694",
-        "13": "\u811a\u5370\u95f4\u6b47\u65f6\u95f4",
+        "13": "\u811a\u5370\u751f\u6210\u95f4\u9694\u65f6\u95f4",
         "14": "\u8173\u5370\u9593\u6b47\u6642\u9593"
     },
     "detectiveFootprintDuration": {
@@ -1743,31 +1751,31 @@
     "detectiveReportNameDuration": {
         "0": "Time Where Detective Reports Will Have Name",
         "11": "\u6b7b\u4f53\u767a\u898b\u6642\u3001\u72af\u4eba\u306e\u540d\u524d\u304c\u308f\u304b\u308b\u6642\u9593",
-        "13": "\u4fa6\u63a2\u53d1\u73b0\u51f6\u624b\u540d\u5b57\u65f6\u95f4",
+        "13": "\u5728\u4ee5\u4e0b\u65f6\u95f4\u5185\u62a5\u544a\u53ef\u4ee5\u5f97\u77e5\u51f6\u624b\u59d3\u540d",
         "14": "\u5075\u63a2\u767c\u73fe\u5147\u624b\u540d\u5b57\u6642\u9593"
     },
     "detectiveReportColorDuration": {
         "0": "Time Where Detective Reports Will Have Color Type",
         "11": "\u6b7b\u4f53\u767a\u898b\u6642\u3001\u72af\u4eba\u306e\u8272\u8abf\u304c\u308f\u304b\u308b\u6642\u9593",
-        "13": "\u4fa6\u63a2\u53d1\u73b0\u51f6\u624b\u989c\u8272\u65f6\u95f4",
+        "13": "\u5728\u4ee5\u4e0b\u65f6\u95f4\u5185\u62a5\u544a\u53ef\u4ee5\u5f97\u77e5\u51f6\u624b\u989c\u8272\u7c7b\u578b",
         "14": "\u5075\u63a2\u767c\u73fe\u5147\u624b\u984f\u8272\u6642\u9593"
     },
     "detectiveReportName": {
         "0": "Body Report: The killer appears to be {0}!",
         "11": "\u8abf\u67fb\u306e\u7d50\u679c\u3001\u72af\u4eba\u306f{0}\u307f\u305f\u3044!",
-        "13": "\u5c38\u68c0\u62a5\u544a: \u51f6\u624b\u4f3c\u4e4e\u662f{0}!",
+        "13": "\u5c38\u68c0\u62a5\u544a:\u51f6\u624b\u662f{0}!",
         "14": "\u5c4d\u6aa2\u5831\u544a: \u5147\u624b\u4f3c\u4e4e\u662f {0}!"
     },
     "detectiveReportColor": {
         "0": "Body Report: The killer appears to be a {0} color!",
         "11": "\u8abf\u67fb\u306e\u7d50\u679c\u3001\u72af\u4eba\u306f{0}\u8272\u307f\u305f\u3044!",
-        "13": "\u5c38\u68c0\u62a5\u544a:\u51f6\u624b\u4f3c\u4e4e\u662f{0}\u8272\u7684!",
+        "13": "\u5c38\u68c0\u62a5\u544a:\u51f6\u624b\u5e94\u8be5\u662f{0}\u8272\u7684!",
         "14": "\u5c4d\u6aa2\u5831\u544a:\u5147\u624b\u4f3c\u4e4e\u662f{0}\u8272\u7684!"
     },
     "detectiveReportNone": {
         "0": "Body Report: The corpse is too old to gain information from!",
         "11": "\u691c\u67fb\u306e\u7d50\u679c\u3001\u6b7b\u4f53\u304c\u51b7\u3048\u3066\u3066\u4f55\u3082\u308f\u304b\u3089\u306a\u304b\u3063\u305f\uff01",
-        "13": "\u5c38\u68c0\u62a5\u544a: \u5c38\u4f53\u5df2\u7ecf\u8150\u70c2\u4e86!",
+        "13": "\u5c38\u68c0\u62a5\u544a:\u8fd9\u4eba\u6b7b\u900f\u4e86, \u5df2\u7ecf\u6ca1\u6709\u66f4\u591a\u7ebf\u7d22\u4e86!",
         "14": "\u5c4d\u6aa2\u5831\u544a: \u5c4d\u9ad4\u5df2\u7d93\u8150\u721b\u4e86!"
     },
     "detectiveColorLight": {
@@ -1821,7 +1829,7 @@
     "timeMasterRewindTime": {
         "0": "Rewind Time",
         "11": "\u5dfb\u304d\u623b\u3059\u6642\u9593",
-        "13": "\u56de\u6eaf\u65f6\u95f4",
+        "13": "\u65f6\u5149\u4e4b\u76fe\u56de\u6eaf\u65f6\u957f",
         "14": "\u56de\u6eaf\u6642\u9593"
     },
     "timeMasterShieldDuration": {
@@ -1851,7 +1859,7 @@
     "medicShowShielded": {
         "0": "Show Shielded Player",
         "11": "\u30b7\u30fc\u30eb\u30c9\u304c\u898b\u3048\u308b\u4eba",
-        "13": "\u53ef\u4ee5\u770b\u89c1\u62a4\u76fe",
+        "13": "\u53ef\u89c1\u533b\u751f\u62a4\u76fe\u7684\u73a9\u5bb6",
         "14": "\u53ef\u4ee5\u770b\u898b\u8b77\u76fe"
     },
     "medicShowShieldedMedic": {
@@ -1863,7 +1871,7 @@
     "medicShowShieldedBoth": {
         "0": "Shielded + Medic",
         "11": "\u5bfe\u8c61\u8005\uff06\u30e1\u30c7\u30a3\u30c3\u30af",
-        "13": "\u88ab\u4fdd\u62a4\u8005+\u533b\u751f",
+        "13": "\u88ab\u4fdd\u62a4\u8005\u4e0e\u533b\u751f",
         "14": "\u4fdd\u8b77\u8005+\u91ab\u751f"
     },
     "medicShowShieldedAll": {
@@ -1911,7 +1919,7 @@
     "medicReport": {
         "0": "Body Report: Killed {0}s ago!",
         "11": "\u6b7b\u4f53\u8abf\u67fb\u306e\u7d50\u679c\u3001{0}\u79d2\u524d\u306b\u6bba\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u304c\u308f\u304b\u308a\u307e\u3057\u305f!",
-        "13": "\u5c38\u4f53\u62a5\u544a\uff1a{0}\u79d2\u524d\u88ab\u6740",
+        "13": "\u5c38\u4f53\u62a5\u544a:\u6b7b\u8005\u5728{0}\u79d2\u524d\u9047\u5bb3!",
         "14": "\u5c4d\u9ad4\u5831\u544a\uff1a{0}\u79d2\u524d\u88ab\u6bba"
     },
     "medicInfo": {
@@ -2089,37 +2097,37 @@
     "hackerCooldown": {
         "0": "Hacker Cooldown",
         "11": "\u30cf\u30c3\u30ad\u30f3\u30b0\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u9ed1\u5ba2\u51b7\u5374\u65f6\u95f4",
+        "13": "\u9ed1\u5ba2\u6280\u80fd\u51b7\u5374\u65f6\u95f4",
         "14": "\u99ed\u5ba2\u51b7\u537b\u6642\u9593"
     },
     "hackerHackeringDuration": {
         "0": "Hacker Duration",
         "11": "\u30cf\u30c3\u30ad\u30f3\u30b0\u6301\u7d9a\u6642\u9593",
-        "13": "\u9ed1\u5ba2\u6301\u7eed\u65f6\u95f4",
+        "13": "\u9ed1\u5ba2\u6280\u80fd\u53ef\u6301\u7eed\u65f6\u95f4",
         "14": "\u99ed\u5ba2\u6301\u7e8c\u6642\u9593"
     },
     "hackerOnlyColorType": {
         "0": "Hacker Only Sees Color Type",
         "11": "\u8272\u8abf\u306e\u307f\u898b\u3048\u308b",
-        "13": "\u53ea\u80fd\u770b\u5230\u989c\u8272\u7c7b\u578b",
+        "13": "\u9ed1\u5ba2\u9ed1\u5165\u5730\u56fe\u53ea\u80fd\u770b\u5230\u989c\u8272\u7c7b\u578b",
         "14": "\u53ea\u80fd\u770b\u5230\u984f\u8272\u985e\u578b"
     },
     "hackerToolsNumber": {
         "0": "Max Mobile Gadget Charges",
         "11": "\u6700\u5927\u30c1\u30e3\u30fc\u30b8\u6570",
-        "13": "\u6700\u5927\u79fb\u52a8\u8bbe\u5907\u4f7f\u7528\u6b21\u6570",
+        "13": "\u9ed1\u5ba2\u79fb\u52a8\u8bbe\u5907\u6700\u5927\u80fd\u91cf",
         "14": "\u6700\u5927\u79fb\u52d5\u8a2d\u5099\u4f7f\u7528\u6b21\u6578"
     },
     "hackerRechargeTasksNumber": {
         "0": "Number Of Tasks Needed For Recharging",
         "11": "\u5145\u96fb\u306b\u5fc5\u8981\u306a\u30bf\u30b9\u30af\u6570",
-        "13": "\u5145\u80fd\u6240\u9700\u4efb\u52a1",
+        "13": "\u9ed1\u5ba2\u5145\u80fd\u9700\u8981\u5b8c\u6210\u7684\u4efb\u52a1\u6570",
         "14": "\u5145\u80fd\u6240\u9700\u4efb\u52d9"
     },
     "hackerNoMove": {
         "0": "Cant Move During Mobile Gadget Duration",
         "11": "\u643a\u5e2f\u88c5\u7f6e\u4f7f\u7528\u6642\u3001\u79fb\u52d5\u4e0d\u80fd",
-        "13": "\u5728\u4f7f\u7528\u79fb\u52a8\u8bbe\u65bd\u65f6\u4e0d\u80fd\u79fb\u52a8",
+        "13": "\u9ed1\u5ba2\u4e0d\u53ef\u4ee5\u5728\u4f7f\u7528\u79fb\u52a8\u8bbe\u5907\u65f6\u79fb\u52a8",
         "14": "\u5728\u4f7f\u7528\u79fb\u52d5\u8a2d\u65bd\u6642\u4e0d\u80fd\u79fb\u52d5"
     },
     "hackerTimer": {
@@ -2148,13 +2156,13 @@
     "trackerUpdateInterval": {
         "0": "Tracker Update Interval",
         "11": "\u30c8\u30e9\u30c3\u30ab\u30fc\u66f4\u65b0\u9593\u9694",
-        "13": "\u66f4\u65b0\u65f6\u95f4\u95f4\u9694",
+        "13": "\u8ffd\u8e2a\u8005\u7bad\u5934\u66f4\u65b0\u95f4\u9694\u65f6\u95f4",
         "14": "\u66f4\u65b0\u6642\u9593\u9593\u9694"
     },
     "trackerResetTargetAfterMeeting": {
         "0": "Tracker Reset Target After Meeting",
         "11": "\u4f1a\u8b70\u5f8c\u3001\u30bf\u30fc\u30b2\u30c3\u30c8\u304c\u30ea\u30bb\u30c3\u30c8\u3055\u308c\u308b",
-        "13": "\u4f1a\u8bae\u7ed3\u675f\u540e\u91cd\u7f6e\u76ee\u6807",
+        "13": "\u4f1a\u8bae\u540e\u91cd\u7f6e\u8ffd\u8e2a\u76ee\u6807",
         "14": "\u6703\u8b70\u7d50\u675f\u5f8c\u91cd\u7f6e\u76ee\u6a19"
     },
     "trackerCanTrackCorpses": {
@@ -2166,13 +2174,13 @@
     "trackerCorpsesTrackingCooldown": {
         "0": "Corpses Tracking Cooldown",
         "11": "\u6b7b\u4f53\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u5c38\u4f53\u8ffd\u8e2a\u51b7\u5374\u65f6\u95f4",
+        "13": "\u8ffd\u8e2a\u8005\u8ffd\u8e2a\u5c38\u4f53\u51b7\u5374\u65f6\u95f4",
         "14": "\u5c4d\u9ad4\u8ffd\u8e64\u51b7\u537b\u6642\u9593"
     },
     "trackerCorpsesTrackingDuration": {
         "0": "Corpses Tracking Duration",
         "11": "\u6b7b\u4f53\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u6301\u7d9a\u6642\u9593",
-        "13": "\u5c38\u4f53\u8ffd\u8e2a\u6301\u7eed\u65f6\u95f4",
+        "13": "\u8ffd\u8e2a\u8005\u8ffd\u8e2a\u5c38\u4f53\u6301\u7eed\u65f6\u95f4",
         "14": "\u5c4d\u9ad4\u8ffd\u8e64\u6301\u7e8c\u6642\u9593"
     },
     "trackerTrackingMethod": {
@@ -2193,7 +2201,7 @@
     "trackerBoth": {
         "0": "Arrow + Proximity",
         "11": "\u4e21\u65b9",
-        "13": "\u7bad\u5934+\u5371\u9669\u6307\u793a\u5668"
+        "13": "\u7bad\u5934\u4e0e\u5371\u9669\u6307\u793a\u5668"
     },
     "snitch": {
         "0": "Snitch",
@@ -2214,9 +2222,9 @@
         "14": "\u505a\u5b8c\u4efb\u52d9\u767c\u73fe\u5167\u9b3c"
     },
     "snitchLeftTasksForReveal": {
-        "0": "Task Count Where The Snitch Will Be Revealed",
+        "0": "Task Left Where The Snitch Will Be Revealed",
         "11": "\u6575\u9663\u55b6\u306b\u30d0\u30ec\u308b\u30bf\u30b9\u30af\u6b8b\u91cf",
-        "13": "\u544a\u5bc6\u8005\u5b8c\u6210\u591a\u5c11\u4efb\u52a1\u4f1a\u88ab\u53d1\u73b0",
+        "13": "\u544a\u5bc6\u8005\u5269\u4f59\u591a\u5c11\u4efb\u52a1\u4f1a\u88ab\u53d1\u73b0",
         "14": "\u5269\u4f59\u591a\u5c11\u4efb\u52d9\u63ed\u793a\u544a\u5bc6\u8005\u7684\u4f4d\u7f6e"
     },
     "snitchIncludeTeamEvil": {
@@ -2248,25 +2256,25 @@
     "spyCanDieToSheriff": {
         "0": "Spy Can Die To Sheriff",
         "11": "\u30b7\u30a7\u30ea\u30d5\u304c\u30b9\u30d1\u30a4\u3092\u6bba\u305b\u308b",
-        "13": "\u53ef\u4ee5\u88ab\u8b66\u957f\u6267\u6cd5",
+        "13": "\u5367\u5e95\u53ef\u88ab\u8b66\u957f\u51fb\u6740",
         "14": "\u53ef\u4ee5\u88ab\u8b66\u9577\u57f7\u6cd5"
     },
     "spyImpostorsCanKillAnyone": {
         "0": "Impostors Can Kill Anyone If There Is A Spy",
         "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u304c\u8ab0\u3067\u3082\u6bba\u305b\u308b",
-        "13": "\u5367\u5e95\u5b58\u5728\u65f6\u5185\u9b3c\u53ef\u51fb\u6740\u6240\u6709\u4eba",
+        "13": "\u5367\u5e95\u5b58\u5728\u65f6\u5185\u9b3c\u53ef\u4ee5\u51fb\u6740\u4efb\u4f55\u4eba",
         "14": "\u5982\u679c\u6709\u81e5\u5e95\uff0c\u5167\u9b3c\u53ef\u4ee5\u64ca\u6bba\u4efb\u4f55\u4eba"
     },
     "spyCanEnterVents": {
         "0": "Spy Can Enter Vents",
         "11": "\u30d9\u30f3\u30c8\u306b\u5165\u308c\u308b",
-        "13": "\u53ef\u4ee5\u8fdb\u5165\u901a\u98ce\u53e3",
+        "13": "\u5367\u5e95\u53ef\u4ee5\u8fdb\u5165\u7ba1\u9053",
         "14": "\u53ef\u4ee5\u9032\u5165\u901a\u98a8\u53e3"
     },
     "spyHasImpostorVision": {
         "0": "Spy Has Impostor Vision",
         "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3068\u540c\u3058\u8996\u91ce",
-        "13": "\u62e5\u6709\u5185\u9b3c\u89c6\u91ce",
+        "13": "\u5367\u5e95\u62e5\u6709\u5185\u9b3c\u89c6\u91ce",
         "14": "\u64c1\u6709\u5167\u9b3c\u8996\u91ce"
     },
     "securityGuard": {
@@ -2296,43 +2304,43 @@
     "securityGuardTotalScrews": {
         "0": "Security Guard Number Of Screws",
         "11": "\u30cd\u30b8\u6240\u6301\u6570",
-        "13": "\u4fdd\u5b89\u87ba\u4e1d\u603b\u6570",
+        "13": "\u4fdd\u5b89\u53ef\u4f7f\u7528\u7684\u87ba\u4e1d\u603b\u6570",
         "14": "\u87ba\u91d8\u7e3d\u6578"
     },
     "securityGuardCamPrice": {
         "0": "Number Of Screws Per Cam",
         "11": "\u30ab\u30e1\u30e9\u8a2d\u7f6e\u306b\u8981\u3059\u308b\u30cd\u30b8\u6570",
-        "13": "\u6bcf\u4e2a\u76d1\u63a7\u6240\u9700\u87ba\u9489",
+        "13": "\u4fdd\u5b89\u5b89\u88c5\u6444\u50cf\u5934\u9700\u8981\u7684\u87ba\u4e1d\u6570",
         "14": "\u6bcf\u500b\u76e3\u63a7\u6240\u9700\u87ba\u91d8"
     },
     "securityGuardVentPrice": {
         "0": "Number Of Screws Per Vent",
         "11": "\u30d9\u30f3\u30c8\u5c01\u9396\u306b\u8981\u3059\u308b\u30cd\u30b8\u6570",
-        "13": "\u6bcf\u4e2a\u901a\u98ce\u7ba1\u9700\u87ba\u9489",
+        "13": "\u4fdd\u5b89\u5c01\u9501\u7ba1\u9053\u9700\u8981\u7684\u87ba\u4e1d\u6570",
         "14": "\u6bcf\u500b\u901a\u98a8\u7ba1\u9700\u87ba\u91d8"
     },
     "securityGuardCamDuration": {
         "0": "Security Guard Duration",
         "11": "\u643a\u5e2f\u30ab\u30e1\u30e9\u4f7f\u7528\u53ef\u80fd\u6642\u9593",
-        "13": "\u76d1\u63a7\u6301\u7eed\u65f6\u95f4",
+        "13": "\u4fdd\u5b89\u89c2\u5bdf\u76d1\u63a7\u53ef\u6301\u7eed\u65f6\u95f4",
         "14": "\u76e3\u63a7\u6301\u7e8c\u6642\u9593"
     },
     "securityGuardCamMaxCharges": {
         "0": "Gadget Max Charges",
         "11": "\u6700\u5927\u30c1\u30e3\u30fc\u30b8\u6570",
-        "13": "\u6700\u5927\u4f7f\u7528\u9650\u989d",
+        "13": "\u4fdd\u5b89\u79fb\u52a8\u6444\u50cf\u5934\u6700\u5927\u80fd\u91cf",
         "14": "\u6700\u5927\u4f7f\u7528\u9650\u984d"
     },
     "securityGuardCamRechargeTasksNumber": {
         "0": "Number Of Tasks Needed For Recharging",
         "11": "\u5145\u96fb\u306b\u5fc5\u8981\u306a\u30bf\u30b9\u30af\u6570",
-        "13": "\u5145\u80fd\u6240\u9700\u4efb\u52a1\u6570",
+        "13": "\u4fdd\u5b89\u5145\u80fd\u9700\u8981\u5b8c\u6210\u7684\u4efb\u52a1\u6570",
         "14": "\u5145\u80fd\u6240\u9700\u4efb\u52d9\u6578"
     },
     "securityGuardNoMove": {
         "0": "Cant Move During Cam Duration",
         "11": "\u643a\u5e2f\u30ab\u30e1\u30e9\u4f7f\u7528\u6642\u3001\u79fb\u52d5\u4e0d\u80fd",
-        "13": "\u5728\u4f7f\u7528\u6444\u50cf\u5934\u65f6\u4e0d\u80fd\u79fb\u52a8",
+        "13": "\u4fdd\u5b89\u4e0d\u53ef\u4ee5\u5728\u4f7f\u7528\u79fb\u52a8\u8bbe\u5907\u65f6\u79fb\u52a8",
         "14": "\u5728\u4f7f\u7528\u651d\u50cf\u982d\u6642\u4e0d\u80fd\u79fb\u52d5"
     },
     "securityGuardCamButton": {
@@ -2368,7 +2376,7 @@
     "baitReportDelay": {
         "0": "Bait Report Delay",
         "11": "\u6b7b\u4ea1\u5f8c\u3001\u5831\u544a\u3055\u308c\u308b\u307e\u3067\u306e\u9593",
-        "13": "\u8bf1\u9975\u62a5\u544a\u5ef6\u8fdf",
+        "13": "\u8bf1\u9975\u88ab\u51fb\u6740\u540e\u62a5\u544a\u5ef6\u8fdf\u65f6\u95f4",
         "14": "\u8a98\u990c\u5831\u544a\u5ef6\u9072"
     },
     "baitShowKillFlash": {
@@ -2470,31 +2478,31 @@
     "mediumIntroDesc": {
         "0": "Question the souls of the dead to gain information",
         "11": "\u53d6\u308a\u6b8b\u3055\u308c\u305f\u9b42\u304b\u3089\u60c5\u5831\u3092\u805e\u304d\u51fa\u305d\u3046",
-        "13": "\u8be2\u95ee\u7075\u9b42\u6765\u83b7\u53d6\u7ebf\u7d22",
+        "13": "\u5bf9\u6b7b\u8005\u7684\u7075\u9b42\u901a\u7075\u6765\u83b7\u53d6\u4fe1\u606f",
         "14": "\u8a62\u554f\u9748\u9b42\u4f86\u7372\u53d6\u7dda\u7d22"
     },
     "mediumShortDesc": {
         "0": "Question the souls",
         "11": "\u9b42\u304b\u3089\u60c5\u5831\u3092\u805e\u304d\u51fa\u305d\u3046",
-        "13": "\u8be2\u95ee\u7075\u9b42",
+        "13": "\u5bf9\u7075\u9b42\u901a\u7075",
         "14": "\u8a62\u554f\u9748\u9b42"
     },
     "mediumCooldown": {
         "0": "Medium Questioning Cooldown",
         "11": "\u970a\u80fd\u529b\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u8be2\u95ee\u51b7\u5374",
+        "13": "\u901a\u7075\u5e08\u901a\u7075\u51b7\u5374\u65f6\u95f4",
         "14": "\u8a62\u554f\u51b7\u537b"
     },
     "mediumDuration": {
         "0": "Medium Questioning Duration",
         "11": "\u970a\u80fd\u529b\u4f7f\u7528\u6642\u9593",
-        "13": "\u8be2\u95ee\u65f6\u957f",
+        "13": "\u901a\u7075\u5e08\u901a\u7075\u6240\u9700\u65f6\u95f4",
         "14": "\u8a62\u554f\u6642\u9577"
     },
     "mediumOneTimeUse": {
         "0": "Each Soul Can Only Be Questioned Once",
         "11": "1\u4eba\u305a\u30641\u56de\u306e\u307f\u970a\u80fd\u529b\u3092\u4f7f\u3048\u308b",
-        "13": "\u6bcf\u4e2a\u804c\u4e1a\u53ea\u80fd\u88ab\u8be2\u95ee\u4e00\u6b21",
+        "13": "\u6bcf\u4e2a\u7075\u9b42\u53ea\u53ef\u88ab\u901a\u7075\u4e00\u6b21",
         "14": "\u6bcf\u500b\u8077\u696d\u53ea\u80fd\u88ab\u8a62\u554f\u4e00\u6b21"
     },
     "mediumChanceAdditionalInfo": {
@@ -2680,19 +2688,19 @@
     "lawyerTargetKnows": {
         "0": "Lawyer Target Knows",
         "11": "\u4f9d\u983c\u4eba\u304c\u5206\u304b\u308b",
-        "13": "\u5f8b\u5e08\u7684\u5ba2\u6237\u77e5\u9053\u81ea\u5df1\u662f\u5ba2\u6237",
+        "13": "\u5ba2\u6237\u77e5\u9053\u5f8b\u5e08\u5b58\u5728",
         "14": "\u5f8b\u5e2b\u7684\u5ba2\u6236\u77e5\u9053\u81ea\u5df1\u662f\u5ba2\u6236"
     },
     "lawyerWinsMeeting": {
         "0": "Lawyer Needed Meeting To Win",
         "11": "\u7dca\u6025\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u304c\u53ef\u80fd",
-        "13": "\u5f8b\u5e08\u53ef\u4ee5\u901a\u8fc7\u4f1a\u8bae\u83b7\u80dc",
+        "13": "\u5f8b\u5e08\u5728\u6307\u5b9a\u6b21\u6570\u4f1a\u8bae\u540e\u80dc\u5229",
         "14": "\u53ef\u4ee5\u958b\u555f\u7dca\u6025\u6703\u8b70"
     },
     "lawyerMeetingsNeeded": {
         "0": "Number Of Meetings Required",
         "11": "\u5fc5\u8981\u306a\u4f1a\u8b70\u56de\u6570",
-        "13": "\u5f8b\u5e08\u83b7\u80dc\u6240\u9700\u4f1a\u8bae\u6b21\u6570"
+        "13": "\u5f8b\u5e08\u5355\u72ec\u80dc\u5229\u9700\u8981\u7684\u4f1a\u8bae\u6b21\u6570"
     },
     "lawyerVision": {
         "0": "Vision",
@@ -2703,7 +2711,7 @@
     "lawyerKnowsRole": {
         "0": "Lawyer Knows Target Role",
         "11": "\u4f9d\u983c\u4eba\u306e\u5f79\u8077\u304c\u5206\u304b\u308b",
-        "13": "\u5f8b\u5e08\u77e5\u9053\u5ba2\u6237\u76ee\u6807",
+        "13": "\u5f8b\u5e08\u77e5\u9053\u5ba2\u6237\u5177\u4f53\u8eab\u4efd",
         "14": "\u5f8b\u5e2b\u77e5\u9053\u5ba2\u6236\u76ee\u6a19"
     },
     "lawyerTargetCanBeJester": {
@@ -2743,13 +2751,13 @@
     "pursuerCooldown": {
         "0": "Pursuer Blank Cooldown",
         "11": "\u8ffd\u8de1\u8005\u306e\u7a7a\u5305\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u8d77\u8bc9\u4eba\u7a7a\u5305\u5f39\u51b7\u5374",
+        "13": "\u8d77\u8bc9\u4eba\u7a7a\u5305\u5f39\u51b7\u5374\u65f6\u95f4",
         "14": "\u8d77\u8a34\u4eba\u7a7a\u5305\u5f48\u51b7\u537b"
     },
     "pursuerBlanksNumber": {
         "0": "Pursuer Number Of Blanks",
         "11": "\u8ffd\u8de1\u8005\u306e\u7a7a\u5305\u306e\u6570",
-        "13": "\u8d77\u8bc9\u4eba\u7a7a\u5305\u5f39\u6570\u91cf",
+        "13": "\u8d77\u8bc9\u4eba\u62e5\u6709\u7a7a\u5305\u5f39\u6570\u91cf",
         "14": "\u8d77\u8a34\u4eba\u7a7a\u5305\u5f48\u6578\u91cf"
     },
     "witch": {
@@ -4839,25 +4847,25 @@
     "assassinCooldown": {
         "0": "Assassin Mark Cooldown",
         "11": "\u30de\u30fc\u30af\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u523a\u5ba2\u523a\u6740\u51b7\u5374",
+        "13": "\u523a\u5ba2\u6807\u8bb0\u73a9\u5bb6\u51b7\u5374",
         "14": "\u523a\u5ba2\u523a\u6bba\u51b7\u537b"
     },
     "assassinKnowsTargetLocation": {
         "0": "Assassin Knows Location Of Target",
         "11": "\u30a2\u30b5\u30b7\u30f3\u306f\u30bf\u30fc\u30b2\u30c3\u30c8\u306e\u4f4d\u7f6e\u304c\u5206\u304b\u308b",
-        "13": "\u523a\u5ba2\u77e5\u9053\u76ee\u6807\u4f4d\u7f6e",
+        "13": "\u523a\u5ba2\u53ef\u4ee5\u786e\u8ba4\u88ab\u6807\u8bb0\u73a9\u5bb6\u7684\u4f4d\u7f6e",
         "14": "\u523a\u5ba2\u77e5\u9053\u76ee\u6a19\u4f4d\u7f6e"
     },
     "assassinTraceDuration": {
         "0": "Trace Duration",
         "11": "\u30c8\u30ec\u30fc\u30b9\u6642\u9593",
-        "13": "\u75d5\u8ff9\u65f6\u95f4",
+        "13": "\u6811\u53f6\u5728\u573a\u4e0a\u5b58\u5728\u7684\u6301\u7eed\u65f6\u95f4",
         "14": "\u75d5\u8de1\u6642\u9593"
     },
     "assassinTraceColorTime": {
         "0": "Time Till Trace Color Has Faded",
         "11": "\u30c8\u30ec\u30fc\u30b9\u306e\u8272\u304c\u6d88\u3048\u308b\u307e\u3067\u306e\u6642\u9593",
-        "13": "\u75d5\u8ff9\u6d88\u5931\u65f6\u95f4",
+        "13": "\u6811\u53f6\u6240\u663e\u793a\u7684\u523a\u5ba2\u989c\u8272\u6df1\u6d45\u7684\u6301\u7eed\u65f6\u95f4",
         "14": "\u75d5\u8de1\u6d88\u5931\u6642\u9593"
     },
     "sprinter": {
@@ -5011,19 +5019,19 @@
     "mimicCountAsOne": {
         "0": "Count As One Impostor",
         "11": "1\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3068\u30ab\u30a6\u30f3\u30c8\u3059\u308b",
-        "13": "\u7b97\u4f5c\u4e00\u540d\u5185\u9b3c",
+        "13": "\u6a21\u4eff\u8005\u56e2\u961f\u7b97\u4f5c\u4e00\u540d\u5185\u9b3c",
         "14": "\u7b97\u4f5c\u4e00\u540d\u5167\u9b3c"
     },
     "mimicIfOneDiesBothDies": {
         "0": "If One Dies Both Dies",
         "11": "\u7247\u65b9\u304c\u6b7b\u3093\u3060\u3089\u4e21\u65b9\u6b7b\u306c",
-        "13": "\u5982\u679c\u4e00\u4e2a\u6b7b\u4ea1\u53e6\u4e00\u4e2a\u4e5f\u6b7b\u4ea1",
+        "13": "\u6a21\u4eff\u8005\u56e2\u961f\u5171\u6b7b",
         "14": "\u5982\u679c\u4e00\u500b\u6b7b\u4ea1\u53e6\u4e00\u500b\u4e5f\u6b7b\u4ea1"
     },
     "mimicHasOneVote": {
         "0": "Two Impostors Only Have One Vote",
         "11": "2\u4eba\u30671\u7968\u6271\u3044",
-        "13": "\u4e24\u4e2a\u5185\u9b3c\u53ea\u6709\u4e00\u7968",
+        "13": "\u6a21\u4eff\u8005\u56e2\u961f\u5171\u7528\u4e00\u7968\u6295\u7968",
         "14": "\u5169\u500b\u5167\u9b3c\u53ea\u6709\u4e00\u7968"
     },
     "mimicAInfo": {
@@ -5110,13 +5118,13 @@
     "evilTrackerResetTargetAfterMeeting": {
         "0": "Reset Target After Meeting",
         "11": "\u4f1a\u8b70\u5f8c\u3001\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u30ea\u30bb\u30c3\u30c8",
-        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u5728\u4f1a\u8bae\u540e\u91cd\u7f6e\u76ee\u6807",
+        "13": "\u4f1a\u8bae\u540e\u91cd\u7f6e\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u8ffd\u8e2a\u76ee\u6807",
         "14": "\u90aa\u60e1\u7684\u8ffd\u8e64\u8005\u5728\u6703\u8b70\u5f8c\u91cd\u7f6e\u76ee\u6a19"
     },
     "evilTrackerCanSeeDeathFlash": {
         "0": "Can See Impostor Kill Flash",
         "11": "\u76f8\u65b9\u306e\u30ad\u30eb\u30d5\u30e9\u30c3\u30b7\u30e5\u3092\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
-        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u770b\u89c1\u5185\u9b3c\u51fb\u6740",
+        "13": "\u5f53\u5185\u9b3c\u8fdb\u884c\u51fb\u6740\u65f6\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u53ef\u4ee5\u770b\u5230\u95ea\u5149",
         "14": "\u90aa\u60e1\u7684\u8ffd\u8e64\u8005\u53ef\u4ee5\u770b\u898b\u5167\u9b3c\u64ca\u6bba"
     },
     "evilTrackerCanSeeTargetPosition": {
@@ -5128,7 +5136,7 @@
     "evilTrackerCanSeeTargetTask": {
         "0": "Can See Target Tasks During Meetings",
         "11": "\u4f1a\u8b70\u4e2d\u306b\u30bf\u30fc\u30b2\u30c3\u30c8\u306e\u30bf\u30b9\u30af\u3092\u78ba\u8a8d\u3067\u304d\u308b",
-        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u5728\u4f1a\u8bae\u4e0a\u53ef\u4ee5\u770b\u89c1\u76ee\u6807\u4efb\u52a1"
+        "13": "\u90aa\u6076\u7684\u8ffd\u8e2a\u8005\u5728\u4f1a\u8bae\u4e2d\u53ef\u89c1\u8ffd\u8e2a\u76ee\u6807\u4efb\u52a1\u5206\u5e03"
     },
     "evilTrackerCanSetTargetOnMeeting": {
         "0": "Can Set Target On Meetings",
@@ -5166,13 +5174,13 @@
     "bomberCooldown": {
         "0": "Bomber Plant Bomb Cooldown",
         "11": "\u7206\u5f3e\u8a2d\u7f6e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",
-        "13": "\u53cc\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f39\u51b7\u5374",
+        "13": "\u5b89\u653e\u70b8\u5f39\u51b7\u5374",
         "14": "\u96d9\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f48\u51b7\u537b"
     },
     "bomberDuration": {
         "0": "Bomber Plant Bomb Duration",
         "11": "\u7206\u5f3e\u6301\u7d9a\u6642\u9593",
-        "13": "\u53cc\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f39\u65f6\u957f",
+        "13": "\u5b89\u653e\u70b8\u5f39\u6240\u9700\u65f6\u95f4",
         "14": "\u96d9\u5b50\u7206\u7834\u8005\u653e\u7f6e\u70b8\u5f48\u6642\u9577"
     },
     "bomberCountAsOne": {
@@ -5184,19 +5192,19 @@
     "bomberShowEffects": {
         "0": "Show Bomb Effect",
         "11": "\u7206\u7834\u30a8\u30d5\u30a7\u30af\u30c8\u3092\u8868\u793a",
-        "13": "\u5c55\u793a\u7206\u70b8\u6548\u679c",
+        "13": "\u53cc\u5b50\u7206\u7834\u8005\u7684\u51fb\u6740\u4f1a\u6709\u7206\u70b8\u7279\u6548",
         "14": "\u5c55\u793a\u7206\u70b8\u6548\u679c"
     },
     "bomberIfOneDiesBothDie": {
         "0": "If One Dies Both Dies",
         "11": "\u7247\u65b9\u304c\u6b7b\u3093\u3060\u3089\u4e21\u65b9\u6b7b\u306c",
-        "13": "\u5982\u679c\u4e00\u4e2a\u6b7b\u4ea1\u53e6\u4e00\u4e2a\u4e5f\u6b7b\u4ea1",
+        "13": "\u53cc\u5b50\u7206\u7834\u8005\u5171\u6b7b",
         "14": "\u5982\u679c\u4e00\u500b\u6b7b\u4ea1\u53e6\u4e00\u500b\u4e5f\u6b7b\u4ea1"
     },
     "bomberHasOneVote": {
         "0": "Two Impostors Only Have One Vote",
         "11": "2\u4eba\u30671\u7968\u6271\u3044",
-        "13": "\u4e24\u540d\u5185\u9b3c\u7684\u6295\u7968\u7b97\u4e00\u7968",
+        "13": "\u53cc\u5b50\u7206\u7834\u8005\u603b\u5171\u53ea\u6709\u4e00\u7968\u6295\u7968",
         "14": "\u5169\u540d\u5167\u9b3c\u7684\u6295\u7968\u7b97\u4e00\u7968"
     },
     "bomberAlwaysShowArrow": {
@@ -5536,7 +5544,7 @@
     },
     "evilHackerCanSeeDoorStatus": {
         "0": "Evil Hacker Can See Door Status",
-        "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u53ef\u4ee5\u770b\u89c1\u95e8\u5173\u95ed\u72b6\u6001"
+        "13": "\u90aa\u6076\u7684\u9ed1\u5ba2\u53ef\u4ee5\u786e\u8ba4\u6240\u6709\u95e8\u7684\u72b6\u6001"
     },
     "createdMadmateCanDieToSheriff": {
         "0": "Created Madmate Can Die To Sheriff",
@@ -5649,7 +5657,7 @@
     "trapperBonusTime": {
         "0": "Cooldown Decrease If Trap Player Is Killed",
         "11": "\u30c8\u30e9\u30c3\u30d7\u3067\u30ad\u30eb\u3057\u305f\u6642\u306e\u30ad\u30eb\u30af\u30fc\u30eb\u30c0\u30a6\u30f3\u6e1b\u5c11",
-        "13": "\u8bbe\u9677\u8005\u901a\u5e38\u51fb\u6740\u843d\u5165\u9677\u9631\u7684\u73a9\u5bb6\u7684\u7f29\u51cf\u51b7\u5374",
+        "13": "\u8bbe\u9677\u8005\u51fb\u6740\u843d\u5165\u9677\u9631\u7684\u73a9\u5bb6\u7684\u7f29\u51cf\u51b7\u5374",
         "14": "\u8a2d\u9677\u8005\u901a\u5e38\u64ca\u6bba\u843d\u5165\u9677\u9631\u7684\u73a9\u5bb6\u7684\u7e2e\u6e1b\u51b7\u537b"
     },
     "trapperGotTrapText": {

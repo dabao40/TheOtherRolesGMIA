@@ -2295,7 +2295,13 @@ namespace TheOtherRoles
         {
             meetingFlag = true;
             duration = CustomOptionHolder.fortuneTellerDuration.getFloat();
-            List<Arrow> arrows = new();
+            if (arrows != null)
+            {
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            arrows = new List<Arrow>();
             numTasks = (int)CustomOptionHolder.fortuneTellerNumTasks.getFloat();
             distance = CustomOptionHolder.fortuneTellerDistance.getFloat();
             divineResult = (DivineResults)CustomOptionHolder.fortuneTellerResults.getSelection();
@@ -3646,7 +3652,6 @@ namespace TheOtherRoles
             markStaysOverMeeting = CustomOptionHolder.yoyoMarkStaysOverMeeting.getBool();
             silhouetteVisibility = CustomOptionHolder.yoyoSilhouetteVisibility.getSelection() / 10f;
             markedLocation = null;
-            Silhouette.clearSilhouettes();
         }
     }
 
@@ -6009,7 +6014,8 @@ namespace TheOtherRoles
             RoleId.NiceWatcher,
             RoleId.Busker,
             RoleId.Yasuna,
-            RoleId.Noisemaker
+            RoleId.Noisemaker,
+            RoleId.Archaeologist
         };
 
         public static bool tasksComplete(PlayerControl player)

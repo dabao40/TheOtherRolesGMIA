@@ -2236,7 +2236,7 @@ namespace TheOtherRoles
                 {
                     archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
                     archaeologistExcavateButton.isEffectActive = false;
-                    lightsOutButton.actionButton.graphic.color = Palette.EnabledColor;
+                    archaeologistExcavateButton.actionButton.graphic.color = Palette.EnabledColor;
                     Archaeologist.antiqueTarget = null;
                 },
                 Archaeologist.getExcavateSprite(),
