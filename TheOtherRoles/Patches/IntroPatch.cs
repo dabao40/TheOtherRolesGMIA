@@ -316,6 +316,11 @@ namespace TheOtherRoles.Patches {
             GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
             GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
+            if (AmongUsClient.Instance.AmHost)
+            {
+                LastImpostor.promoteToLastImpostor();
+            }
+
             if (Kataomoi.kataomoi != null)
             {
                 if (FastDestroyableSingleton<HudManager>.Instance != null)
@@ -521,6 +526,8 @@ namespace TheOtherRoles.Patches {
                 {
                     roleInfo = RoleInfo.crewmate;
                 }
+                if (GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors <= 1 && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true
+                    && HandleGuesser.isGuesserGm && LastImpostor.isEnable) modifierInfo.Add(RoleInfo.lastImpostor);
 
                 if (EventUtility.isEnabled) {
                     var roleInfos = RoleInfo.allRoleInfos.Where(x => !x.isModifier).ToList();

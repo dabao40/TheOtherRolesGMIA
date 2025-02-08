@@ -102,7 +102,7 @@ namespace TheOtherRoles.CustomGameModes
                             SetWidget(1);
                         })), 4),
                         gui.LocalizedText(GUIAlignment.Center, roleMaskedTittleAttr, "freePlayModifiersUnequipped"),
-                        gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(r => r.isModifier && r != RoleInfo.cupidLover && r != RoleInfo.lover && r != RoleInfo.mini && !RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).Contains(r)).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
+                        gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(r => r.isModifier && r != RoleInfo.cupidLover && r != RoleInfo.lover && r != RoleInfo.mini && r != RoleInfo.lastImpostor && !RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).Contains(r)).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
                         {
                             RPCProcedure.setModifier((byte)r.roleId, PlayerControl.LocalPlayer.PlayerId, 0);
                             SetWidget(1);

@@ -2428,19 +2428,7 @@ namespace TheOtherRoles.Patches {
                 RPCProcedure.lawyerPromotesToPursuer();
             }
 
-            // Seer show flash and add dead player position
-            if (Seer.seer != null && (PlayerControl.LocalPlayer == Seer.seer || Helpers.shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1) {
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message : ModTranslation.getString("seerInfo"));
-                if (PlayerControl.LocalPlayer == Seer.seer)
-                {
-                    _ = new StaticAchievementToken("seer.common1");
-                    Seer.acTokenChallenge.Value.flash++;
-                }
-            }
-            if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
-
-            // Tracker store body positions
-            if (Tracker.deadBodyPositions != null) Tracker.deadBodyPositions.Add(target.transform.position);
+            Helpers.HandleRoleFlashOnDeath(target);
 
             // Medium add body
             if (Medium.deadBodies != null) {
@@ -2455,6 +2443,11 @@ namespace TheOtherRoles.Patches {
                     Helpers.showFlash(new Color(204f / 255f, 102f / 255f, 0f / 255f));
                 }
             }
+
+            if (target.Data.Role.IsImpostor && AmongUsClient.Instance.AmHost)
+                LastImpostor.promoteToLastImpostor();
+
+            if (__instance == LastImpostor.lastImpostor && target != LastImpostor.lastImpostor && PlayerControl.LocalPlayer == LastImpostor.lastImpostor) LastImpostor.killCounter++;
 
             // Ninja penalize
             if (Ninja.ninja != null && PlayerControl.LocalPlayer == Ninja.ninja && __instance == Ninja.ninja)
@@ -2639,9 +2632,6 @@ namespace TheOtherRoles.Patches {
                 Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("evilTrackerInfo"));
             }
 
-            if (Immoralist.immoralist != null && PlayerControl.LocalPlayer == Immoralist.immoralist && !PlayerControl.LocalPlayer.Data.IsDead)
-                Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
-
             // Plague Doctor infect killer
             if (PlagueDoctor.plagueDoctor != null && target == PlagueDoctor.plagueDoctor && PlagueDoctor.infectKiller)
             {
@@ -2652,8 +2642,6 @@ namespace TheOtherRoles.Patches {
                 RPCProcedure.plagueDoctorInfected(targetId);
             }
 
-            if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
-
             if (__instance.Data.Role.IsImpostor && Spy.spy != null && PlayerControl.LocalPlayer == Spy.spy)
             {
                 if (target == Spy.spy)  _ = new StaticAchievementToken("spy.another1");
@@ -2662,20 +2650,6 @@ namespace TheOtherRoles.Patches {
                     if (!Helpers.AnyNonTriggersBetween(PlayerControl.LocalPlayer.GetTruePosition(), target.GetTruePosition(), out var vec)
                         && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId)) * 0.75f)
                         _ = new StaticAchievementToken("spy.challenge");
-                }
-            }
-
-            if (Noisemaker.noisemaker != null && Noisemaker.target != null && Noisemaker.target == target)
-            {
-                if ((Noisemaker.soundTarget == Noisemaker.SoundTarget.Noisemaker && PlayerControl.LocalPlayer == Noisemaker.noisemaker) ||
-                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Crewmates && !Helpers.isNeutral(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.Role.IsImpostor) ||
-                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Everyone))
-                { Helpers.InstantiateNoisemakerArrow(target.transform.localPosition, true).arrow.SetDuration(Noisemaker.duration); }
-                Noisemaker.target = null;
-                if (PlayerControl.LocalPlayer == Noisemaker.noisemaker)
-                {
-                    _ = new StaticAchievementToken("noisemaker.common1");
-                    Noisemaker.acTokenChallenge.Value++;
                 }
             }
 
@@ -2857,17 +2831,6 @@ namespace TheOtherRoles.Patches {
                 RPCProcedure.bloody(__instance.PlayerId, target.PlayerId);
             }
 
-            // VIP Modifier
-            if (Vip.vip.FindAll(x => x.PlayerId == target.PlayerId).Count > 0) {
-                Color color = Color.yellow;
-                if (Vip.showColor) {
-                    color = Color.white;
-                    if (target.Data.Role.IsImpostor) color = Color.red;
-                    else if (RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault().isNeutral) color = Color.blue;
-                }
-                Helpers.showFlash(color, 1.5f);
-            }
-
             // HideNSeek
             if (HideNSeek.isHideNSeekGM) {
                 int visibleCounter = 0;
@@ -2998,6 +2961,11 @@ namespace TheOtherRoles.Patches {
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.nekoKabochaExile(target.PlayerId);
                 }
+            }
+
+            if (__instance.Data.Role.IsImpostor && AmongUsClient.Instance.AmHost)
+            {
+                LastImpostor.promoteToLastImpostor();
             }
 
             // Handle all suicides
@@ -3134,6 +3102,7 @@ namespace TheOtherRoles.Patches {
                 GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });
                 if (PlayerControl.LocalPlayer == player) Props.clearProps();
             }
+            if (AmongUsClient.Instance.AmHost && player != null && player.Data?.Role?.IsImpostor == true) LastImpostor.promoteToLastImpostor();
         }
     }
 }

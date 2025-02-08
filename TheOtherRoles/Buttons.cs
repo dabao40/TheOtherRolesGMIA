@@ -1564,7 +1564,7 @@ namespace TheOtherRoles
                     if (Prophet.currentTarget != null)
                     {
                         Prophet.acTokenEvil.Value.triggered = true;
-                        Prophet.acTokenEvil.Value.cleared = Helpers.isEvil(Prophet.currentTarget);
+                        Prophet.acTokenEvil.Value.cleared &= Helpers.isEvil(Prophet.currentTarget);
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ProphetExamine, Hazel.SendOption.Reliable, -1);
                         writer.Write(Prophet.currentTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -3592,7 +3592,7 @@ namespace TheOtherRoles
                 () => {
                     return ((EvilHacker.evilHacker != null &&
                       EvilHacker.evilHacker == PlayerControl.LocalPlayer) || EvilHacker.isInherited()) &&
-                      !PlayerControl.LocalPlayer.Data.IsDead;
+                      !PlayerControl.LocalPlayer.Data.IsDead && !mimicAAdminButton.HasButton();
                 },
                 () =>
                 {

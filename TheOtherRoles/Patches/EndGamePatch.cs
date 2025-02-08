@@ -127,7 +127,7 @@ namespace TheOtherRoles.Patches {
             foreach(PlayerControl playerControl in PlayerControl.AllPlayerControls) {
                 var roles = RoleInfo.getRoleInfoForPlayer(playerControl, true, true);
                 var colors = roles.Select(x => x.color).ToList();
-                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data, true);
+                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(playerControl.Data);
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
                 bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId) || playerControl.PlayerId == CreatedMadmate.createdMadmate?.PlayerId;
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
@@ -219,8 +219,11 @@ namespace TheOtherRoles.Patches {
             // Impostors Win
             if (impostorWin)
             {
-                if (SchrodingersCat.schrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.schrodingersCat.Data));
-                if (SchrodingersCat.formerSchrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.formerSchrodingersCat.Data));
+                if (SchrodingersCat.team == SchrodingersCat.Team.Impostor)
+                {
+                    if (SchrodingersCat.schrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.schrodingersCat.Data));
+                    if (SchrodingersCat.formerSchrodingersCat != null) EndGameResult.CachedWinners.Add(new(SchrodingersCat.formerSchrodingersCat.Data));
+                }
             }
 
             // Mini lose

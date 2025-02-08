@@ -103,6 +103,7 @@ namespace TheOtherRoles
         Archaeologist,
         SchrodingersCat,
         Madmate,
+        LastImpostor,
         //Bomber,
         Crewmate,
         Impostor,
@@ -189,7 +190,6 @@ namespace TheOtherRoles
         ThiefStealsRole,
         //SetTrap,
         //TriggerTrap,
-        MayorSetVoteTwice,
         //PlaceBomb,
         //DefuseBomb,
         ShareRoom,
@@ -279,7 +279,9 @@ namespace TheOtherRoles
         BreakArmor,
         PlaceAntique,
         ArchaeologistDetect,
-        ArchaeologistExcavate
+        ArchaeologistExcavate,
+        SyncMeetingResultTimer,
+        ImpostorPromotesToLastImpostor,
     }
 
     public static class RPCProcedure {
@@ -761,6 +763,7 @@ namespace TheOtherRoles
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
                     }
+                    if (Moriarty.moriarty != null && PlayerControl.LocalPlayer == Moriarty.moriarty) moriartyBrainwashButton.Timer = Moriarty.brainwashCooldown;
                 }
             })));
         }
@@ -987,6 +990,10 @@ namespace TheOtherRoles
                         if (playerInfo != null) playerInfo.text = "";
                     }
                 }
+            }
+            if ((TasksHandler.taskInfo(player.Data).Item2 <= 0 || player == Fox.fox) && !PlayerControl.LocalPlayer.Data.IsDead) {
+                    player.clearAllTasks();
+                    if (PlayerControl.LocalPlayer == player) PlayerControl.LocalPlayer.generateNormalTasks();
             }
 
             // Shift role
@@ -1276,7 +1283,17 @@ namespace TheOtherRoles
                 }
             }
 
-            if (isHusk && !oldShifter.Data.IsDead) Husk.husk.Add(oldShifter);
+            if (!oldShifter.Data.IsDead) {
+                if (isHusk) Husk.husk.Add(oldShifter);
+                if (oldShifter == Fox.fox) {
+                    oldShifter.clearAllTasks();
+                    List<byte> taskIdList = new();
+                    Shrine.allShrine.ForEach(shrine => taskIdList.Add((byte)shrine.console.ConsoleId));
+                    taskIdList.Shuffle();
+                    var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
+                    cpt.addTaskToPlayer(PlayerControl.LocalPlayer.PlayerId);
+                }
+            }
 
             // Set cooldowns to max for both players
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
@@ -1625,7 +1642,10 @@ namespace TheOtherRoles
                         }
                     }
                 }
-
+                if (TasksHandler.taskInfo(player.Data).Item2 <= 0 || player == Fox.fox) {
+                    player.clearAllTasks();
+                    if (PlayerControl.LocalPlayer == player) PlayerControl.LocalPlayer.generateNormalTasks();
+                }
                 erasePlayerRoles(player.PlayerId, true);
                 Sidekick.sidekick = player;
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
@@ -1637,11 +1657,11 @@ namespace TheOtherRoles
                     _ = new StaticAchievementToken("sidekick.common1");
                     if (wasImpostor) _ = new StaticAchievementToken("sidekick.common2");
                 }
+                GameStatistics.recordRoleHistory(player);
                 if (HandleGuesser.isGuesserGm && CustomOptionHolder.guesserGamemodeSidekickIsAlwaysGuesser.getBool() && !HandleGuesser.isGuesser(targetId))
                     setGuesserGm(targetId);
             }
             Jackal.canCreateSidekick = false;
-            GameStatistics.recordRoleHistory(player);
         }
 
         public static void sidekickPromotes() {
@@ -1756,6 +1776,7 @@ namespace TheOtherRoles
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
             if (Husk.husk.Any(x => x.PlayerId == player.PlayerId)) Husk.husk.RemoveAll(x => x.PlayerId == player.PlayerId);
+            if (player == LastImpostor.lastImpostor) LastImpostor.lastImpostor = null;
 
             // Modifier
             if (!ignoreModifier)
@@ -2129,27 +2150,7 @@ namespace TheOtherRoles
                 player.MyPhysics.StartCoroutine(player.KillAnimations.First().CoPerformKill(player, player));
                 Busker.deathPosition = player.transform.position;
                 Busker.buskerList.Add(targetId);
-                if (Seer.seer != null && PlayerControl.LocalPlayer == Seer.seer && !Seer.seer.Data.IsDead && Seer.mode <= 1)
-                {
-                    Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("seerInfo"));
-                    if (PlayerControl.LocalPlayer == Seer.seer)
-                    {
-                        _ = new StaticAchievementToken("seer.common1");
-                        Seer.acTokenChallenge.Value.flash++;
-                    }
-                }
-                if (Immoralist.immoralist != null && PlayerControl.LocalPlayer == Immoralist.immoralist && !PlayerControl.LocalPlayer.Data.IsDead)
-                    Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
-                if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead))
-                    PlagueDoctor.checkWinStatus();
-                Tracker.deadBodyPositions?.Add(Busker.deathPosition);
-                if (Vip.vip.FindAll(x => x.PlayerId == player.PlayerId).Count > 0)
-                {
-                    Color color = Color.yellow;
-                    if (Vip.showColor)
-                        color = Color.white;
-                    Helpers.showFlash(color, 1.5f);
-                }
+                Helpers.HandleRoleFlashOnDeath(player);
             }
             else
             {
@@ -2220,13 +2221,9 @@ namespace TheOtherRoles
         {
             if (PlayerControl.LocalPlayer == Mayor.mayor)
             {
-                if (Mayor.acTokenDoubleVote != null)
-                    Mayor.acTokenDoubleVote.Value.doubleVote |= !GameManager.Instance.LogicOptions.GetAnonymousVotes();
-                if (Mayor.acTokenChallenge != null)
-                {
-                    Mayor.acTokenChallenge.Value.doubleVote = true;
-                    Mayor.acTokenChallenge.Value.votedFor = votedFor;
-                }
+                if (!GameManager.Instance.LogicOptions.GetAnonymousVotes())
+                    _ = new StaticAchievementToken("mayor.common1");
+                if (Mayor.acTokenChallenge != null) Mayor.acTokenChallenge.Value.votedFor = votedFor;
             }
         }
 
@@ -2365,6 +2362,7 @@ namespace TheOtherRoles
             {
                 oldTaskMasterPlayer.clearAllTasks();
                 TaskMaster.oldTaskMasterPlayerId = oldTaskMasterPlayerId;
+                if (PlayerControl.LocalPlayer.PlayerId == oldTaskMasterPlayerId) PlayerControl.LocalPlayer.generateNormalTasks();
             }
 
             if (!TaskMaster.isTaskMaster(playerId))
@@ -2414,6 +2412,20 @@ namespace TheOtherRoles
             Cupid.lovers2 = p2;
             Cupid.breakLovers(p1);
             Cupid.breakLovers(p2);
+        }
+
+        public static void impostorPromotesToLastImpostor(byte targetId)
+        {
+            PlayerControl player = Helpers.playerById(targetId);
+            if (!HandleGuesser.isGuesser(targetId)) {
+                setGuesserGm(targetId);
+                LastImpostor.isOriginalGuesser = false;
+            }
+            else LastImpostor.isOriginalGuesser = true;
+            LastImpostor.lastImpostor = player;
+            var g = GuesserGM.guessers.FindLast(x => x.guesser.PlayerId == targetId);
+            if (g == null) return;
+            g.shots = Mathf.Max(g.shots, LastImpostor.numShots);
         }
 
         public static void blackmailPlayer(byte playerId)
@@ -3256,9 +3268,6 @@ namespace TheOtherRoles
                     byte playerId2 = reader.ReadByte();
                     RPCProcedure.swapperSwap(playerId1, playerId2);
                     break;
-                case (byte)CustomRPC.MayorSetVoteTwice:
-                    Mayor.voteTwice = reader.ReadBoolean();
-                    break;
                 case (byte)CustomRPC.MorphlingMorph:
                     RPCProcedure.morphlingMorph(reader.ReadByte());
                     break;
@@ -3325,6 +3334,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.BreakArmor:
                     RPCProcedure.breakArmor();
+                    break;
+                case (byte)CustomRPC.SyncMeetingResultTimer:
+                    MeetingHudPatch.MeetingHudUpdatePatch.ResultTimer = reader.ReadByte();
+                    break;
+                case (byte)CustomRPC.ImpostorPromotesToLastImpostor:
+                    RPCProcedure.impostorPromotesToLastImpostor(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.NinjaStealth:
                     RPCProcedure.ninjaStealth(reader.ReadByte(), reader.ReadBoolean());

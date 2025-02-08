@@ -17,9 +17,8 @@ namespace TheOtherRoles {
                 playerInfo.Role && playerInfo.Role.TasksCountTowardProgress &&
                 !playerInfo.Object.hasFakeTasks() && !playerInfo.Role.IsImpostor
                 ) {
-                bool isOldTaskMasterEx = TaskMaster.taskMaster && TaskMaster.oldTaskMasterPlayerId == playerInfo.PlayerId;
                 bool isTaskMasterEx = TaskMaster.taskMaster && TaskMaster.taskMaster == playerInfo.Object && TaskMaster.isTaskComplete;
-                if (isOldTaskMasterEx || (!isResult && isTaskMasterEx))
+                if (!isResult && isTaskMasterEx)
                 {
                     TotalTasks = CompletedTasks = GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks + 
                     GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks + 
@@ -47,8 +46,9 @@ namespace TheOtherRoles {
                 
                 foreach (var playerInfo in GameData.Instance.AllPlayers.GetFastEnumerator())
                 {
-                    if (playerInfo.Object
-                        && playerInfo.Object.hasAliveKillingLover() // Tasks do not count if a Crewmate has an alive killing Lover
+                    if ((playerInfo.Object
+                        && (playerInfo.Object.hasAliveKillingLover() ||
+                        playerInfo.Object.hasAliveKillingCupidLover())) // Tasks do not count if a Crewmate has an alive killing Lover
                         || playerInfo.PlayerId == Lawyer.lawyer?.PlayerId // Tasks of the Lawyer do not count
                         || (playerInfo.PlayerId == Pursuer.pursuer?.PlayerId && Pursuer.pursuer.Data.IsDead) // Tasks of the Pursuer only count, if he's alive
                         || (playerInfo.PlayerId == Shifter.shifter?.PlayerId && Shifter.isNeutral) // Chain-Shifter has tasks, but they don't count

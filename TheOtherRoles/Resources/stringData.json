@@ -163,12 +163,6 @@
         "13": "\u6ce2\u9c81\u65af\uff1a\u5c06\u751f\u547d\u68c0\u6d4b\u88c5\u7f6e\u79fb\u81f3\u6837\u672c\u5ba4",
         "14": "\u6ce2\u9b6f\u65af\uff1a\u5c07\u751f\u547d\u6aa2\u6e2c\u88dd\u7f6e\u79fb\u81f3\u6a23\u672c\u5ba4"
     },
-    "miraVitals": {
-        "0": "Create Vitals (Mira)",
-        "11": "\u30df\u30e9\u306b\u30d0\u30a4\u30bf\u30eb\u3092\u8ffd\u52a0",
-        "13": "\u7c73\u62c9\u603b\u90e8\uff1a\u589e\u52a0\u751f\u547d\u68c0\u6d4b\u88c5\u7f6e\uff08\u5b9e\u9a8c\u5ba4\uff09",
-        "14": "\u7c73\u62c9\u7e3d\u90e8\uff1a\u589e\u52a0\u751f\u547d\u6aa2\u6e2c\u88dd\u7f6e\uff08\u5be6\u9a57\u5ba4\uff09"
-    },
     "airshipLadder": {
         "0": "Additional Ladder (Airship)",
         "11": "\u30a8\u30a2\u30b7\u30c3\u30d7\u306b\u306f\u3057\u3054\u3092\u8ffd\u52a0\u3059\u308b",
@@ -294,7 +288,7 @@
     "guesserForceThiefGuesser": {
         "0": "Force Thief Guesser",
         "11": "\u30b7\u30fc\u30d5\u30b2\u30c3\u30b5\u30fc\u3092\u6709\u52b9\u5316\u3059\u308b",
-        "13": "\u6307\u5b9a\u7a83\u8d3c\u6210\u4e3a\u8d4c\u602a",
+        "13": "\u6307\u5b9a\u8eab\u4efd\u7a83\u8d3c\u6210\u4e3a\u8d4c\u602a",
         "14": "\u6307\u5b9a\u7aca\u8cca\u6210\u70ba\u8ced\u602a"
     },
     "guesserGamemodeHaveModifier": {
@@ -306,7 +300,7 @@
     "guesserGamemodeNumberOfShots": {
         "0": "Guesser Number Of Shots",
         "11": "\u30b2\u30c3\u30b5\u30fc\u304c\u6253\u3066\u308b\u56de\u6570",
-        "13": "\u8d4c\u602a\u6700\u591a\u731c\u6d4b\u6b21\u6570",
+        "13": "\u8d4c\u602a\u6700\u5927\u731c\u6d4b\u6b21\u6570",
         "14": "\u8ced\u602a\u6700\u591a\u731c\u6e2c\u6b21\u6578"
     },
     "guesserGamemodeHasMultipleShotsPerMeeting": {
@@ -336,6 +330,22 @@
         "11": "\u30b2\u30c3\u30b5\u30fc\u304c\u30bf\u30b9\u30af\u3092\u3059\u3079\u3066\u7d42\u308f\u3089\u305b\u305f\u30b9\u30cb\u30c3\u30c1\u3092\u6483\u3066\u308b\u304b",
         "13": "\u8d4c\u602a\u65e0\u6cd5\u731c\u6d4b\u5b8c\u6210\u6240\u6709\u4efb\u52a1\u7684\u544a\u5bc6\u8005",
         "14": "\u8ced\u602a\u7121\u6cd5\u731c\u6e2c\u5b8c\u6210\u6240\u6709\u4efb\u52d9\u7684\u544a\u5bc6\u8005"
+    },
+    "guesserGamemodeEnableLastImpostor": {
+        "0": "Enable Last Impostor",
+        "13": "\u542f\u7528\u7edd\u5883\u8005"
+    },
+    "guesserGamemodeLastImpostorNumKills": {
+        "0": "Number Of Kills Needed To Unlock Shooting",
+        "13": "\u7edd\u5883\u8005\u89e3\u9501\u731c\u6d4b\u6280\u80fd\u6240\u9700\u51fb\u6740\u6570"
+    },
+    "guesserGamemodeLastImpostorNumShots": {
+        "0": "Last Impostor Number Of Shots",
+        "13": "\u7edd\u5883\u8005\u6700\u5927\u731c\u6d4b\u6b21\u6570"
+    },
+    "guesserGamemodeLastImpostorHasMultipleShots": {
+        "0": "Last Impostor Can Shoot Multiple Times Per Meeting",
+        "13": "\u7edd\u5883\u8005\u53ef\u5728\u540c\u4e00\u8f6e\u4f1a\u8bae\u591a\u6b21\u731c\u6d4b"
     },
     "hideNSeekMap": {
         "0": "Map",
@@ -1414,33 +1424,25 @@
         "14": "\u5e02\u9577"
     },
     "mayorIntroDesc": {
-        "0": "Your vote counts twice",
+        "0": "Your vote counts multiple times",
         "11": "\u81ea\u5206\u306e\u7968\u304c\u4f55\u500d\u3082\u306e\u529b\u3092\u6301\u3063\u3066\u3044\u308b",
         "13": "\u4f60\u7684\u6295\u7968\u66f4\u6709\u5206\u91cf",
         "14": "\u59b3\u7684\u6295\u7968\u66f4\u6709\u5206\u91cf\uff01"
     },
     "mayorShortDesc": {
-        "0": "Your vote counts twice",
+        "0": "Your vote counts multiple times",
         "11": "\u81ea\u5206\u306e\u7968\u304c\u4f55\u500d\u3082\u306e\u529b\u3092\u6301\u3063\u3066\u3044\u308b",
         "13": "\u4f60\u7684\u6295\u7968\u66f4\u6709\u5206\u91cf",
         "14": "\u59b3\u7684\u6295\u7968\u66f4\u6709\u5206\u91cf\uff01"
     },
-    "mayorCanSeeVoteColor": {
-        "0": "Mayor Can See Vote Colors",
-        "11": "\u8ab0\u304c\u3069\u3053\u306b\u5165\u308c\u305f\u304b\u5206\u304b\u308b",
-        "13": "\u5e02\u957f\u80fd\u770b\u5230\u6295\u7968\u73a9\u5bb6\u7684\u989c\u8272",
-        "14": "\u5e02\u9577\u80fd\u770b\u5230\u6295\u7968\u73a9\u5bb6\u7684\u984f\u8272"
-    },
-    "mayorTasksNeededToSeeVoteColors": {
-        "0": "Completed Tasks Needed To See Vote Colors",
-        "11": "\u8ab0\u304c\u3069\u3053\u306b\u5165\u308c\u305f\u304b\u5206\u304b\u308b\u3088\u3046\u306b\u306a\u308b\u30bf\u30b9\u30af\u6570",
-        "13": "\u67e5\u770b\u6295\u7968\u73a9\u5bb6\u989c\u8272\u6240\u9700\u7684\u5df2\u5b8c\u6210\u4efb\u52a1",
-        "14": "\u67e5\u770b\u6295\u7968\u73a9\u5bb6\u984f\u8272\u6240\u9700\u7684\u5df2\u5b8c\u6210\u4efb\u52d9"
+    "mayorNumVotes": {
+        "0": "Number Of Votes",
+        "13": "\u5e02\u957f\u7968\u7684\u7b49\u4ef7\u7968\u6570"
     },
     "mayorMeetingButton": {
         "0": "Mobile Emergency Button",
         "11": "\u3069\u3053\u3067\u3082\u4f1a\u8b70\u30dc\u30bf\u30f3",
-        "13": "\u8fdc\u7a0b\u7d27\u6025\u6309\u94ae",
+        "13": "\u5f00\u542f\u8fdc\u7a0b\u7d27\u6025\u6309\u94ae",
         "14": "\u9060\u7a0b\u7dca\u6025\u6309\u9215"
     },
     "mayorMaxRemoteMeetings": {
@@ -1448,30 +1450,6 @@
         "11": "\u3069\u3053\u3067\u3082\u4f1a\u8b70\u30dc\u30bf\u30f3\u304c\u4f55\u56de\u307e\u3067\u4f7f\u3048\u308b\u304b",
         "13": "\u8fdc\u7a0b\u7d27\u6025\u6309\u94ae\u6b21\u6570",
         "14": "\u9060\u7a0b\u7dca\u6025\u6309\u9215\u6b21\u6578"
-    },
-    "mayorChooseSingleVote": {
-        "0": "Mayor Can Choose Single Vote",
-        "11": "\u6295\u7968\u6a29\u4e00\u500b\u305a\u3064",
-        "13": "\u5e02\u957f\u53ef\u9009\u62e9\u5355\u7968\u5236",
-        "14": "\u5e02\u9577\u53ef\u9078\u64c7\u55ae\u7968\u5236"
-    },
-    "mayorOff": {
-        "0": "Off",
-        "11": "\u30aa\u30d5",
-        "13": "\u5173",
-        "14": "\u95dc"
-    },
-    "mayorBeforeVoting": {
-        "0": "On (Before Voting)",
-        "11": "\u30aa\u30f3(\u6295\u7968\u524d)",
-        "13": "\u5f00\uff08\u6295\u7968\u524d\uff09",
-        "14": "\u958b\uff08\u6295\u7968\u524d\uff09"
-    },
-    "mayorUntilMeetingEnd": {
-        "0": "On (Until Meeting Ends)",
-        "11": "\u30aa\u30f3(\u4f1a\u8b70\u7d42\u4e86\u307e\u3067)",
-        "13": "\u5f00\uff08\u76f4\u81f3\u4f1a\u8bae\u7ed3\u675f\uff09",
-        "14": "\u958b\uff08\u76f4\u81f3\u6703\u8b70\u7d50\u675f\uff09"
     },
     "mayorEmergencyMeetingText": {
         "0": "Meeting",
@@ -1484,24 +1462,6 @@
         "11": "\u7dca\u6025",
         "13": "\u7d27\u6025\u4f1a\u8bae",
         "14": "\u7dca\u6025\u6703\u8b70"
-    },
-    "mayorDoubleVote": {
-        "0": "Double Vote: ",
-        "11": "2\u7968\u5206:",
-        "13": "\u6295\u4e24\u7968\uff1a",
-        "14": "\u6295\u5169\u7968\uff1a"
-    },
-    "mayorDoubleVoteOn": {
-        "0": "On ",
-        "11": "\u30aa\u30f3 ",
-        "13": "\u5f00\u542f",
-        "14": "\u958b\u555f"
-    },
-    "mayorDoubleVoteOff": {
-        "0": "Off",
-        "11": "\u30aa\u30d5",
-        "13": "\u5173\u95ed",
-        "14": "\u95dc\u9589"
     },
     "engineer": {
         "0": "Engineer",
@@ -3366,6 +3326,10 @@
         "11": "\u30e9\u30f3\u30c0\u30e0\u30de\u30c3\u30d7",
         "13": "\u968f\u673a\u5730\u56fe"
     },
+    "headingLastImpostor": {
+        "0": "Last Impostor",
+        "13": "\u7edd\u5883\u8005"
+    },
     "unitSeconds": {
         "0": "{0}s",
         "11": "{0}\u79d2",
@@ -3400,6 +3364,10 @@
         "0": "{0}",
         "11": "{0}\u4eba",
         "13": "{0}\u4eba"
+    },
+    "unitVotes": {
+        "0": "{0}",
+        "13": "{0}\u7968"
     },
     "crewmateRoles": {
         "0": "Crewmate Roles",
@@ -6325,6 +6293,18 @@
         "0": "A role that exists was The {0}",
         "13": "\u672c\u8f6e\u6e38\u620f\u6709\u4e00\u540d\u73a9\u5bb6\u7684\u804c\u4e1a\u4e3a{0}"
     },
+    "lastImpostor": {
+        "0": "LI",
+        "13": "\u7edd\u5883\u8005"
+    },
+    "lastImpostorIntroDesc": {
+        "0": "You are the last of us",
+        "13": "\u4f60\u662f\u5185\u9b3c\u9635\u8425\u6700\u540e\u7684\u5e0c\u671b"
+    },
+    "lastImpostorShortDesc": {
+        "0": "You are the last of us",
+        "13": "\u4f60\u662f\u5185\u9b3c\u9635\u8425\u6700\u540e\u7684\u5e0c\u671b"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -6898,9 +6878,9 @@
         "14": "\u5c0f\u919c\u6c92\u6709\u4efb\u4f55\u4efb\u52d9\u3002\n\u5c0f\u919c\u5728\u6703\u8b70\u4e0a\u88ab\u9a45\u9010\u6642\u76f4\u63a5\u52dd\u5229\u3002"
     },
     "mayorFullDesc": {
-        "0": "The Mayor leads the Crewmates by having a vote that counts\ntwice.\nThe Mayor can always use their meeting, even if the maximum\nnumber of meetings was reached.",
+        "0": "The Mayor leads the Crewmates by having a vote that counts\nmultiple times.\nThe Mayor can always use their meeting, even if the maximum\nnumber of meetings was reached.",
         "11": "\u30fb\u6295\u7968\u6570\u304cn\u7968\u5897\u3048\u308b(\u7968\u6570\u306f\u8a2d\u5b9a\u306b\u3088\u308b)\n",
-        "13": "\u5e02\u957f\u4ee5\u4e00\u7968\u7b97\u4f5c\u4e24\u7968\u7684\u65b9\u5f0f\u9886\u5bfc\u8239\u5458\u8d70\u5411\u80dc\u5229\u3002\n\u5e02\u957f\u6c38\u8fdc\u53ef\u4ee5\u5f00\u542f\u7d27\u6025\u4f1a\u8bae\uff0c\u5373\u4f7f\u6700\u5927\u4f1a\u8bae\u6570\u5df2\u7ecf\u8fbe\u5230\u3002",
+        "13": "\u5e02\u957f\u4ee5\u4e00\u7968\u7b97\u4f5c\u591a\u7968\u7684\u65b9\u5f0f\u9886\u5bfc\u8239\u5458\u8d70\u5411\u80dc\u5229\u3002\n\u5e02\u957f\u6c38\u8fdc\u53ef\u4ee5\u5f00\u542f\u7d27\u6025\u4f1a\u8bae\uff0c\u5373\u4f7f\u6700\u5927\u4f1a\u8bae\u6570\u5df2\u7ecf\u8fbe\u5230\u3002",
         "14": "\u5e02\u9577\u4ee5\u4e00\u7968\u7b97\u4f5c\u5169\u7968\u7684\u65b9\u5f0f\u9818\u5c0e\u8239\u54e1\u8d70\u56ae\u52dd\u5229\u3002\n\u5e02\u9577\u6c38\u9060\u53ef\u4ee5\u958b\u555f\u7dca\u6025\u6703\u8b70\uff0c\u5373\u4f7f\u6700\u5927\u6703\u8b70\u6578\u5df2\u7d93\u9054\u5230\u3002"
     },
     "engineerFullDesc": {
@@ -7417,6 +7397,10 @@
         "13": "\u5931\u660e\u8005\u4f1a\u4f7f\u73a9\u5bb6\u7684\u89c6\u91ce\u4e0b\u964d\u4e00\u5c0f\u90e8\u5206,\u767e\u5206\u6bd4\u53ef\u5728\u8bbe\u7f6e\u4e2d\u4e2d\u8bbe\u7f6e\u3002\n\u5f53\u706f\u7184\u706d\u65f6\uff0c\u5931\u660e\u8005\u7684\u89c6\u91ce\u4e5f\u4f1a\u53d7\u5230\u5f71\u54cd\u3002",
         "14": "\u5931\u660e\u8005\u6703\u4f7f\u73a9\u5bb6\u7684\u8996\u91ce\u4e0b\u964d\u4e00\u5c0f\u90e8\u5206,\u767e\u5206\u6bd4\u53ef\u5728\u8a2d\u7f6e\u4e2d\u4e2d\u8a2d\u7f6e\u3002\n\u7576\u71c8\u7184\u6ec5\u6642\uff0c\u5931\u660e\u8005\u7684\u8996\u91ce\u4e5f\u6703\u53d7\u5230\u5f71\u97ff\u3002"
     },
+    "lastImpostorFullDesc": {
+        "0": "The Last Impostor has the abilty to guess others.",
+        "13": "\u7edd\u5883\u8005\u62e5\u6709\u731c\u6d4b\u7684\u80fd\u529b"
+    },
     "hunterFullDesc": {
         "0": "The Hunter and Hunted player who are still alive are displayed to everyone\nin the bottom left corner (similar to the Arsonist display). When the game starts,\nthe Hunter's movement is disabled for x-seconds (depends on the settings).\nThe Hunter can enable arrows, use the mobile admin, or use the lighter ability\nto hunt down the Hunted. Each Hunter action will lower the timer by a configurable\namount of time.",
         "13": "\u730e\u4eba\u4e0e\u5b58\u6d3b\u7684\u730e\u7269\u90fd\u4f1a\u88ab\u5c55\u793a\u5230\u7c7b\u4f3c\u4e8e\u7eb5\u706b\u72af\u73a9\u5bb6\u663e\u793a\u7684\u5de6\u4e0b\u89d2\u533a\u57df\u3002\u5f53\u6e38\u620f\u5f00\u59cb\u65f6\uff0c\n\u730e\u4eba\u4f1a\u88ab\u5f3a\u5236\u5728x\uff08\u6839\u636e\u8bbe\u7f6e\u53ef\u8c03\u63a7\uff09\u79d2\u949f\u5185\u7acb\u6b63\u7ad9\u597d\u3002\u730e\u4eba\u53ef\u4ee5\u901a\u8fc7\u663e\u793a\u6307\u5411\u730e\u7269\u7684\u7bad\u5934\uff0c\n\u4f7f\u7528\u79fb\u52a8\u7ba1\u7406\u5ba4\u5730\u56fe\u6216\u4f7f\u7528\u70b9\u706f\u6280\u80fd\u6765\u6293\u6355\u730e\u7269\u3002\u6bcf\u4e00\u4e2a\u730e\u4eba\u6240\u505a\u7684\u6293\u6355\u63aa\u65bd\u90fd\u4f1a\u8ba9\u5012\u8ba1\n\u65f6\u7f29\u77ed"
@@ -7480,9 +7464,9 @@
         "14": "[BLANK]"
     },
     "mayorcommon1AchievementGoal": {
-        "0": "Trigger A Double Vote During The Meeting",
+        "0": "Trigger Multiple Vote During The Meeting",
         "11": "\u4e00\u4eba\u3067\u4e8c\u7968\u5206\u306e\u6295\u7968\u3092\u884c\u3046\u3002",
-        "13": "\u5728\u4f1a\u8bae\u671f\u95f4\u89e6\u53d1\u53cc\u500d\u6295\u7968",
+        "13": "\u5728\u4f1a\u8bae\u671f\u95f4\u89e6\u53d1\u66f4\u591a\u6295\u7968",
         "14": "\u5728\u6703\u8b70\u671f\u9593\u89f8\u767c\u96d9\u500d\u6295\u7968"
     },
     "mayorcommon1AchievementTitle": {
@@ -9458,15 +9442,15 @@
         "0": "Working For Nothing",
         "13": "\u767d\u767d\u6253\u5de5\uff01"
     },
-    "thiefcommon1AchievementCond": {
+    "thiefanother1AchievementCond": {
         "0": "You Must Die After The Killing Attempt",
         "13": "\u4f60\u5fc5\u987b\u5728\u8bd5\u56fe\u51fb\u6740\u540e\u6b7b\u4ea1"
     },
-    "thiefcommon1AchievementGoal": {
+    "thiefanother1AchievementGoal": {
         "0": "Fail To Steal Someone's Role",
         "13": "\u8bd5\u56fe\u7a83\u53d6\u8eab\u4efd\u4f46\u5931\u8d25"
     },
-    "thiefcommon1AchievementTitle": {
+    "thiefanother1AchievementTitle": {
         "0": "Tried... But Failed",
         "13": "\u66fe\u7ecf\u5c1d\u8bd5\u8fc7"
     },
@@ -9691,8 +9675,8 @@
         "13": "[BLANK]"
     },
     "moriartychallengeAchievementGoal": {
-        "0": "Kill Enough Players Using Your Brainwash",
-        "13": "\u901a\u8fc7\u6d17\u8111\u6740\u6b7b\u8db3\u591f\u591a\u7684\u73a9\u5bb6"
+        "0": "Win The Game As Moriarty",
+        "13": "\u4ee5\u83ab\u91cc\u4e9a\u8482\u7684\u8eab\u4efd\u8d62\u4e0b\u6e38\u620f"
     },
     "moriartychallengeAchievementTitle": {
         "0": "World Under Control",

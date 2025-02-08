@@ -210,7 +210,7 @@ namespace TheOtherRoles {
 
         public static void handleVampireBiteOnBodyReport() {
             // Murder the bitten player and reset bitten (regardless whether the kill was successful or not)
-            Helpers.checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
+            checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
             writer.Write(byte.MaxValue);
             writer.Write(byte.MaxValue);
@@ -247,7 +247,7 @@ namespace TheOtherRoles {
         {
             if (initalSetCursor)
             {
-                Sprite sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Cursor.png", 115f);
+                Sprite sprite = loadSpriteFromResources("TheOtherRoles.Resources.Cursor.png", 115f);
                 Cursor.SetCursor(sprite.texture, Vector2.zero, CursorMode.Auto);
                 return;
             }
@@ -257,7 +257,7 @@ namespace TheOtherRoles {
             }
             else
             {
-                Sprite sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Cursor.png", 115f);
+                Sprite sprite = loadSpriteFromResources("TheOtherRoles.Resources.Cursor.png", 115f);
                 Cursor.SetCursor(sprite.texture, Vector2.zero, CursorMode.Auto);
             }
         }
@@ -471,6 +471,61 @@ namespace TheOtherRoles {
             player.moveable = true;
             player.currentRoleAnimations.ForEach((Action<RoleEffectAnimation>)((an) => an.ToggleRenderer(true)));
             if (player.AmOwner) player.MyPhysics.inputHandler.enabled = false;
+        }
+
+        public static void generateNormalTasks(this PlayerControl player)
+        {
+            var option = GameOptionsManager.Instance.currentNormalGameOptions;
+            player.generateAndAssignTasks(option.NumCommonTasks, option.NumShortTasks, option.NumLongTasks);
+        }
+
+        public static void HandleRoleFlashOnDeath(PlayerControl target)
+        {
+            if (Noisemaker.noisemaker != null && Noisemaker.target != null && Noisemaker.target == target)
+            {
+                if ((Noisemaker.soundTarget == Noisemaker.SoundTarget.Noisemaker && PlayerControl.LocalPlayer == Noisemaker.noisemaker) ||
+                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Crewmates && !isNeutral(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.Role.IsImpostor) ||
+                    (Noisemaker.soundTarget == Noisemaker.SoundTarget.Everyone))
+                { InstantiateNoisemakerArrow(target.transform.localPosition, true).arrow.SetDuration(Noisemaker.duration); }
+                Noisemaker.target = null;
+                if (PlayerControl.LocalPlayer == Noisemaker.noisemaker)
+                {
+                    _ = new StaticAchievementToken("noisemaker.common1");
+                    Noisemaker.acTokenChallenge.Value++;
+                }
+            }
+            if (Immoralist.immoralist != null && PlayerControl.LocalPlayer == Immoralist.immoralist && !PlayerControl.LocalPlayer.Data.IsDead)
+                showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
+
+            // Seer show flash and add dead player position
+            if (Seer.seer != null && (PlayerControl.LocalPlayer == Seer.seer || shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1)
+            {
+                showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("seerInfo"));
+                if (PlayerControl.LocalPlayer == Seer.seer)
+                {
+                    _ = new StaticAchievementToken("seer.common1");
+                    Seer.acTokenChallenge.Value.flash++;
+                }
+            }
+            if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
+
+            // Tracker store body positions
+            if (Tracker.deadBodyPositions != null) Tracker.deadBodyPositions.Add(target.transform.position);
+
+            // VIP Modifier
+            if (Vip.vip.FindAll(x => x.PlayerId == target.PlayerId).Count > 0)
+            {
+                Color color = Color.yellow;
+                if (Vip.showColor)
+                {
+                    color = Color.white;
+                    if (target.Data.Role.IsImpostor) color = Color.red;
+                    else if (isNeutral(target)) color = Color.blue;
+                }
+                showFlash(color, 1.5f);
+            }
+
+            if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
         }
 
         public static Camera FindCamera(int cameraLayer) => Camera.allCameras.FirstOrDefault(c => (c.cullingMask & (1 << cameraLayer)) != 0);
@@ -1373,7 +1428,7 @@ namespace TheOtherRoles {
             }
 
             // Block Armored with armor kill
-            else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, Sheriff.sheriff == null || killer.PlayerId != Sheriff.sheriff.PlayerId || isEvil(target) && Sheriff.canKillNeutrals || isKiller(target)))
+            else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, Sheriff.sheriff == null || killer.PlayerId != Sheriff.sheriff.PlayerId || (isEvil(target) && Sheriff.canKillNeutrals) || isKiller(target)))
             {
                 return MurderAttemptResult.BlankKill;
             }
@@ -1525,8 +1580,8 @@ namespace TheOtherRoles {
             {
                 var rend = tzGO.transform.Find("Inactive").GetComponent<SpriteRenderer>();
                 var rendActive = tzGO.transform.Find("Active").GetComponent<SpriteRenderer>();
-                rend.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_Button.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_Button.png", 100f);
-                rendActive.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_ButtonActive.png", 100f) : Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Minus_ButtonActive.png", 100f);
+                rend.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_Button.png", 100f) : loadSpriteFromResources("TheOtherRoles.Resources.Minus_Button.png", 100f);
+                rendActive.sprite = zoomOutStatus ? loadSpriteFromResources("TheOtherRoles.Resources.Plus_ButtonActive.png", 100f) : loadSpriteFromResources("TheOtherRoles.Resources.Minus_ButtonActive.png", 100f);
                 tzGO.transform.localScale = new Vector3(1.2f, 1.2f, 1f) * (zoomOutStatus ? 4 : 1);
             }
 

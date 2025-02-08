@@ -219,7 +219,7 @@ namespace TheOtherRoles.Patches {
 
             if (Mayor.mayor != null && PlayerControl.LocalPlayer == Mayor.mayor && exiled != null)
             {
-                Mayor.acTokenChallenge.Value.cleared |= Mayor.acTokenChallenge.Value.votedFor == exiled.PlayerId && Mayor.acTokenChallenge.Value.doubleVote &&
+                Mayor.acTokenChallenge.Value.cleared |= Mayor.acTokenChallenge.Value.votedFor == exiled.PlayerId &&
                     ((Helpers.isEvil(ExileController.Instance.initData.networkedPlayer.Object) && Jester.jester != ExileController.Instance.initData.networkedPlayer.Object) || Madmate.madmate.Any(x => x.PlayerId == exiled.PlayerId)
                 || CreatedMadmate.createdMadmate == ExileController.Instance.initData.networkedPlayer.Object);
             }

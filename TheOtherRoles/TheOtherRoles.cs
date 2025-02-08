@@ -84,6 +84,7 @@ namespace TheOtherRoles
             Trapper.clearAndReload();
             Blackmailer.clearAndReload();
             Yoyo.clearAndReload();
+            LastImpostor.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
             Veteran.clearAndReload();
@@ -226,14 +227,10 @@ namespace TheOtherRoles
             public static Sprite emergencySprite = null;
             public static int remoteMeetingsLeft = 1;
 
-            public static bool canSeeVoteColors = false;
-            public static int tasksNeededToSeeVoteColors;
             public static bool meetingButton = true;
-            public static int mayorChooseSingleVote;
+            public static int numVotes = 2;
 
-            public static bool voteTwice = true;
-            public static AchievementToken<(bool doubleVote, bool cleared)> acTokenDoubleVote = null;
-            public static AchievementToken<(byte votedFor, bool doubleVote, bool cleared)> acTokenChallenge = null;
+            public static AchievementToken<(byte votedFor, bool cleared)> acTokenChallenge = null;
 
             public static Sprite getMeetingSprite()
             {
@@ -245,8 +242,7 @@ namespace TheOtherRoles
             public static void onAchievementActivate()
             {
                 if (mayor == null || PlayerControl.LocalPlayer != mayor) return;
-                acTokenDoubleVote ??= new("mayor.common1", (false, false), (val, _) => val.cleared);
-                acTokenChallenge ??= new("mayor.challenge", (byte.MaxValue, false, false), (val, _) => val.cleared);
+                acTokenChallenge ??= new("mayor.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
             }
 
             public static void unlockAch(byte votedFor)
@@ -262,12 +258,8 @@ namespace TheOtherRoles
                 emergency = null;
                 emergencySprite = null;
 		        remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat()); 
-                canSeeVoteColors = CustomOptionHolder.mayorCanSeeVoteColors.getBool();
-                tasksNeededToSeeVoteColors = (int)CustomOptionHolder.mayorTasksNeededToSeeVoteColors.getFloat();
                 meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
-                mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
-                voteTwice = true;
-                acTokenDoubleVote = null;
+                numVotes = (int)CustomOptionHolder.mayorNumVotes.getFloat();
                 acTokenChallenge = null;
             }
         }
@@ -689,9 +681,8 @@ namespace TheOtherRoles
         }
 
         public static bool existingWithKiller() {
-            return existing() && (lover1 == Jackal.jackal     || lover2 == Jackal.jackal
-                               || lover1 == Sidekick.sidekick || lover2 == Sidekick.sidekick
-                               || lover1.Data.Role.IsImpostor      || lover2.Data.Role.IsImpostor);
+            return existing() && (Helpers.isKiller(lover1) || Helpers.isKiller(lover2)) && !(Thief.thief != null && (lover1 == Thief.thief
+                || lover2 == Thief.thief));
         }
 
         public static bool hasAliveKillingLover(this PlayerControl player) {
@@ -4245,6 +4236,53 @@ namespace TheOtherRoles
         }
     }
 
+    public static class LastImpostor
+    {
+        public static PlayerControl lastImpostor;
+        public static Color color = Palette.ImpostorRed;
+        public static bool isEnable;
+        public static int killCounter;
+        public static int maxKillCounter;
+        public static bool isOriginalGuesser;
+        public static int numShots;
+        public static bool hasMultipleShots;
+
+        public static void promoteToLastImpostor()
+        {
+            if (!isEnable || !HandleGuesser.isGuesserGm) return;
+
+            var impList = new List<PlayerControl>();
+            foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+            {
+                if (p.Data.Role.IsImpostor && !p.Data.Role.IsDead) impList.Add(p);
+            }
+            if (impList.Count == 1)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ImpostorPromotesToLastImpostor, Hazel.SendOption.Reliable, -1);
+                writer.Write(impList[0].PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.impostorPromotesToLastImpostor(impList[0].PlayerId);
+            }
+        }
+
+        public static bool isCounterMax()
+        {
+            if (maxKillCounter <= killCounter) return true;
+            return false;
+        }
+
+        public static void clearAndReload()
+        {
+            lastImpostor = null;
+            isEnable = CustomOptionHolder.guesserGamemodeEnableLastImpostor.getBool();
+            killCounter = 0;
+            maxKillCounter = Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeLastImpostorNumKills.getFloat());
+            isOriginalGuesser = false;
+            numShots = Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeLastImpostorNumShots.getFloat());
+            hasMultipleShots = CustomOptionHolder.guesserGamemodeLastImpostorHasMultipleShots.getBool();
+        }
+    }
+
     public static class EvilTracker
     {
         public static PlayerControl evilTracker;
@@ -5042,6 +5080,23 @@ namespace TheOtherRoles
             if (p == lovers1) return lovers2;
             if (p == lovers2) return lovers1;
             return null;
+        }
+
+        public static bool existing() => lovers1 != null && lovers2 != null && !lovers1.Data.Disconnected && !lovers2.Data.Disconnected;
+
+        public static bool existingAndAlive() => existing() && !lovers1.Data.IsDead && !lovers2.Data.IsDead;
+
+        public static bool existingWithKiller()
+        {
+            return existing() && (Helpers.isKiller(lovers1) || Helpers.isKiller(lovers2)) && !(Thief.thief != null && (lovers1 == Thief.thief
+                || lovers2 == Thief.thief));
+        }
+
+        public static bool hasAliveKillingCupidLover(this PlayerControl player)
+        {
+            if (!existingAndAlive() || !existingWithKiller())
+                return false;
+            return player != null && (player == lovers1 || player == lovers2);
         }
 
         public static void breakLovers(PlayerControl lover)

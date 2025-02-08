@@ -200,7 +200,7 @@ namespace TheOtherRoles {
                 return string.Format(ModTranslation.getString(format), sel);
             }
 
-            if (sel is "optionOn" or "mayorBeforeVoting" or "mayorUntilMeetingEnd" or "deputyOnImmediately" or "deputyOnAfterMeeting")
+            if (sel is "optionOn"  or "deputyOnImmediately" or "deputyOnAfterMeeting")
             {
                 return "<color=#FFFF00FF>" + ModTranslation.getString(sel) + "</color>";
             }

@@ -160,11 +160,9 @@ namespace TheOtherRoles {
         public static CustomOption yoyoSilhouetteVisibility;
 
         public static CustomOption mayorSpawnRate;
-        public static CustomOption mayorCanSeeVoteColors;
-        public static CustomOption mayorTasksNeededToSeeVoteColors;
+        public static CustomOption mayorNumVotes;
         public static CustomOption mayorMeetingButton;
         public static CustomOption mayorMaxRemoteMeetings;
-        public static CustomOption mayorChooseSingleVote;
 
         public static CustomOption portalmakerSpawnRate;
         public static CustomOption portalmakerCooldown;
@@ -542,7 +540,6 @@ namespace TheOtherRoles {
         public static CustomOption airshipOptimize;
         public static CustomOption airshipAdditionalSpawn;
         public static CustomOption fungleElectrical;
-        public static CustomOption miraVitals;
         public static CustomOption randomGameStartPosition;
         public static CustomOption activateProps;
         public static CustomOption numAccelTraps;
@@ -576,6 +573,10 @@ namespace TheOtherRoles {
         public static CustomOption guesserGamemodeCantGuessSnitchIfTaksDone;
         public static CustomOption guesserGamemodeCrewGuesserNumberOfTasks;
         public static CustomOption guesserGamemodeSidekickIsAlwaysGuesser;
+        public static CustomOption guesserGamemodeEnableLastImpostor;
+        public static CustomOption guesserGamemodeLastImpostorNumKills;
+        public static CustomOption guesserGamemodeLastImpostorNumShots;
+        public static CustomOption guesserGamemodeLastImpostorHasMultipleShots;
 
         // Hide N Seek Gamemode
         public static CustomOption hideNSeekHunterCount;
@@ -917,11 +918,9 @@ namespace TheOtherRoles {
             foxNumRepairs = CustomOption.Create(920, Types.Neutral, "foxNumRepair", 1f, 0f, 10f, 1f, foxSpawnRate, false, "unitShots");
 
             mayorSpawnRate = CustomOption.Create(80, Types.Crewmate, cs(Mayor.color, "mayor"), rates, null, true);
-            mayorCanSeeVoteColors = CustomOption.Create(81, Types.Crewmate, "mayorCanSeeVoteColor", false, mayorSpawnRate);
-            mayorTasksNeededToSeeVoteColors = CustomOption.Create(82, Types.Crewmate, "mayorTasksNeededToSeeVoteColors", 5f, 0f, 20f, 1f, mayorCanSeeVoteColors, false, "unitScrews");
+            mayorNumVotes = CustomOption.Create(81, Types.Crewmate, "mayorNumVotes", 2f, 2f, 24f, 1f, mayorSpawnRate, false, "unitVotes");
             mayorMeetingButton = CustomOption.Create(83, Types.Crewmate, "mayorMeetingButton", true, mayorSpawnRate);
             mayorMaxRemoteMeetings = CustomOption.Create(84, Types.Crewmate, "mayorMaxRemoteMeetings", 1f, 1f, 5f, 1f, mayorMeetingButton, false, "unitShots");
-            mayorChooseSingleVote = CustomOption.Create(85, Types.Crewmate, "mayorChooseSingleVote", new string[] { "optionOff", "mayorBeforeVoting", "mayorUntilMeetingEnd" }, mayorSpawnRate);
 
             engineerSpawnRate = CustomOption.Create(90, Types.Crewmate, cs(Engineer.color, "engineer"), rates, null, true);
             engineerNumberOfFixes = CustomOption.Create(91, Types.Crewmate, "engineerNumberOfFixes", 1f, 1f, 6f, 1f, engineerSpawnRate, false, "unitShots");
@@ -1177,10 +1176,14 @@ namespace TheOtherRoles {
             guesserGamemodeHaveModifier = CustomOption.Create(2004, Types.Guesser, "guesserGamemodeHaveModifier", true, null, true, heading: "headingGeneralGuesser");
             guesserGamemodeNumberOfShots = CustomOption.Create(2005, Types.Guesser, "guesserGamemodeNumberOfShots", 3f, 1f, 24f, 1f, null, false, "unitShots");
             guesserGamemodeHasMultipleShotsPerMeeting = CustomOption.Create(2006, Types.Guesser, "guesserGamemodeHasMultipleShotsPerMeeting", false, null);
-            guesserGamemodeCrewGuesserNumberOfTasks = CustomOption.Create(2013, Types.Guesser, "guesserGamemodeCrewGuesserNumberOfTasks", 0f, 0f, 15f, 1f, null);
+            guesserGamemodeCrewGuesserNumberOfTasks = CustomOption.Create(2013, Types.Guesser, "guesserGamemodeCrewGuesserNumberOfTasks", 0f, 0f, 15f, 1f, null, format: "unitScrews");
             guesserGamemodeKillsThroughShield = CustomOption.Create(2008, Types.Guesser, "guesserGamemodeKillsThroughShield", true, null);
             guesserGamemodeEvilCanKillSpy = CustomOption.Create(2009, Types.Guesser, "guesserGamemodeEvilCanKillSpy", true, null);
             guesserGamemodeCantGuessSnitchIfTaksDone = CustomOption.Create(2010, Types.Guesser, "guesserGamemodeCantGuessSnitchIfTaksDone", true, null);
+            guesserGamemodeEnableLastImpostor = CustomOption.Create(2017, Types.Guesser, "guesserGamemodeEnableLastImpostor", false, null, true, heading: "headingLastImpostor");
+            guesserGamemodeLastImpostorNumKills = CustomOption.Create(2016, Types.Guesser, "guesserGamemodeLastImpostorNumKills", 3f, 0f, 24f, 1f, guesserGamemodeEnableLastImpostor, format: "unitPlayers");
+            guesserGamemodeLastImpostorNumShots = CustomOption.Create(2018, Types.Guesser, "guesserGamemodeLastImpostorNumShots", 3f, 1f, 24f, 1f, guesserGamemodeEnableLastImpostor, format: "unitShots");
+            guesserGamemodeLastImpostorHasMultipleShots = CustomOption.Create(2019, Types.Guesser, "guesserGamemodeLastImpostorHasMultipleShots", true, guesserGamemodeEnableLastImpostor);
 
             // Hide N Seek Gamemode (3000 - 3999)
             hideNSeekMap = CustomOption.Create(3020, Types.HideNSeekMain, cs(Color.yellow, "hideNSeekMap"), new string[] { "The Skeld", "Mira", "Polus", "Airship", "Fungle" }, null, true, onChange: () => { int map = hideNSeekMap.selection; if (map >= 3) map++; GameOptionsManager.Instance.currentNormalGameOptions.MapId = (byte)map; });
@@ -1225,7 +1228,6 @@ namespace TheOtherRoles {
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "finishTasksBeforeHauntingOrZoomingOut", true);
             additionalVents = CustomOption.Create(5060, Types.General, "additionalVents", false);
             specimenVital = CustomOption.Create(5061, Types.General, "specimenVital", false);
-            miraVitals = CustomOption.Create(6075, Types.General, "miraVitals", false);
             airshipLadder = CustomOption.Create(6070, Types.General, "airshipLadder", false);
             airshipOptimize = CustomOption.Create(6072, Types.General, "airshipOptimize", false);
             airshipAdditionalSpawn = CustomOption.Create(6073, Types.General, "airshipAdditionalSpawn", false);
