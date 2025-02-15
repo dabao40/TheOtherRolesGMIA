@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
@@ -35,12 +36,12 @@ namespace TheOtherRoles
 
         public static void AddAdditionalVents()
         {
-            if (AdditionalVents.flag) return;
-            AdditionalVents.flag = true;
-            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
-            //System.Console.WriteLine("AddAdditionalVents");
+            if (flag) return;
+            flag = true;
+            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started ||
+                HideNSeek.isHideNSeekGM || GameOptionsManager.Instance.currentGameOptions.GameMode == AmongUs.GameOptions.GameModes.HideNSeek) return;
 
-            // Polus�˥٥�Ȥ�׷�Ӥ���
+            // Polus Vents
             if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool())
             {
                 AdditionalVents vents1 = new(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
@@ -51,19 +52,10 @@ namespace TheOtherRoles
                 vents3.vent.Right = vents1.vent; // Vital - Specimen
                 vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
             }
-
-            // AirShip�˥٥�Ȥ�׷�Ӥ���
-            // if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.additionalVents.getBool()){
-            //     AdditionalVents vents1 = new AdditionalVents(new Vector3(17.086f, 15.24f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // MeetingRoom
-            //     AdditionalVents vents2 = new AdditionalVents(new Vector3(19.137f, -11.32f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Electrical
-            //     vents1.vent.Right = vents2.vent;
-            //     vents2.vent.Left = vents1.vent;
-            // }
         }
 
         public static void clearAndReload()
         {
-            //System.Console.WriteLine("additionalVentsClearAndReload");
             flag = false;
             AllVents = new List<AdditionalVents>();
         }

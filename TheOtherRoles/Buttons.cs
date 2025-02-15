@@ -364,11 +364,11 @@ namespace TheOtherRoles
                 {
                     try
                     {
-                        if (CustomButton.buttons[i].HasButton() && CustomButton.buttons[i] != serialKillerButton && CustomButton.buttons[i] != jekyllAndHydeSuicideButton && CustomButton.buttons[i] != accelAttributeButton && CustomButton.buttons[i] != decelAttributeButton)  // For each custombutton the player has
+                        if (CustomButton.buttons[i].HasButton() && !CustomButton.buttons[i].isSuicide)  // For each custombutton the player has
                         {
                             addReplacementHandcuffedButton(CustomButton.buttons[i]);  // The new buttons are the only non-handcuffed buttons now!
                         }
-                        if (CustomButton.buttons[i] != serialKillerButton && CustomButton.buttons[i] != jekyllAndHydeSuicideButton && CustomButton.buttons[i] != accelAttributeButton && CustomButton.buttons[i] != decelAttributeButton) CustomButton.buttons[i].isHandcuffed = true;
+                        if (!CustomButton.buttons[i].isSuicide) CustomButton.buttons[i].isHandcuffed = true;
                     }
                     catch (NullReferenceException)
                     {
@@ -379,7 +379,7 @@ namespace TheOtherRoles
                 // Kill Button if enabled for the Role
                 if (FastDestroyableSingleton<HudManager>.Instance.KillButton.isActiveAndEnabled) addReplacementHandcuffedButton(arsonistButton, CustomButton.ButtonPositions.upperRowRight, couldUse: () => { return FastDestroyableSingleton<HudManager>.Instance.KillButton.currentTarget != null; });
                 // Vent Button if enabled
-                if (PlayerControl.LocalPlayer.roleCanUseVents()) addReplacementHandcuffedButton(arsonistButton, CustomButton.ButtonPositions.upperRowCenter, couldUse: () => { return FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.currentTarget != null; });
+                if (PlayerControl.LocalPlayer.roleCanUseVents()) addReplacementHandcuffedButton(arsonistButton, FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.transform.localPosition, couldUse: () => { return FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.currentTarget != null; });
                 // Report Button
                 addReplacementHandcuffedButton(arsonistButton, (!PlayerControl.LocalPlayer.Data.Role.IsImpostor) ? new Vector3(-1f, -0.06f, 0): CustomButton.ButtonPositions.lowerRowRight, () => { return FastDestroyableSingleton<HudManager>.Instance.ReportButton.graphic.color == Palette.EnabledColor; });
             }
@@ -2276,7 +2276,8 @@ namespace TheOtherRoles
                 new Vector3(-0.5f, 1f, 0f),
                 __instance,
                 null,
-                true
+                true,
+                isSuicide: true
             );
 
             accelAttributePropTip = accelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
@@ -2295,7 +2296,8 @@ namespace TheOtherRoles
                 new Vector3(0.1f, 1f, 0),
                 __instance,
                 null,
-                true
+                true,
+                isSuicide: true
             );
 
             decelAttributePropTip = decelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
@@ -3817,7 +3819,8 @@ namespace TheOtherRoles
                     // keyboard shortcut
                     KeyCode.None,
                     true,
-                    abilityTexture: CustomButton.ButtonLabelType.UseButton
+                    abilityTexture: CustomButton.ButtonLabelType.UseButton,
+                    isSuicide: true
                 )
                 {
                     Timer = 0.0f,

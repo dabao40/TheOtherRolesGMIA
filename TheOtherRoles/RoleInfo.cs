@@ -94,7 +94,6 @@ namespace TheOtherRoles
         public static RoleInfo trapper = new("trapper", Trapper.color, RoleId.Trapper);
         public static RoleInfo blackmailer = new("blackmailer", Blackmailer.color, RoleId.Blackmailer);
         public static RoleInfo yoyo = new("yoyo", Yoyo.color, RoleId.Yoyo);
-        public static RoleInfo lastImpostor = new("lastImpostor", LastImpostor.color, RoleId.LastImpostor, false, true);
         public static RoleInfo fortuneTeller = new("fortuneTeller", FortuneTeller.color, RoleId.FortuneTeller);
         public static RoleInfo veteran = new("veteran", Veteran.color, RoleId.Veteran);
         public static RoleInfo sprinter = new("sprinter", Sprinter.color, RoleId.Sprinter);
@@ -237,8 +236,7 @@ namespace TheOtherRoles
             invert,
             chameleon,
             armored,
-            cupidLover,
-            lastImpostor
+            cupidLover
             //shifter, 
         };
 
@@ -264,7 +262,6 @@ namespace TheOtherRoles
                 if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
                 if (p == Armored.armored) infos.Add(armored);
-                if (p == LastImpostor.lastImpostor) infos.Add(lastImpostor);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
 
@@ -408,9 +405,10 @@ namespace TheOtherRoles
                 int remainingShots = HandleGuesser.remainingShots(p.PlayerId);
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(p.Data);
                 var color = Color.white;
+                string guesserModifier = p == LastImpostor.lastImpostor ? ModTranslation.getString("lastImpostorGuesserModifier") : ModTranslation.getString("guesserModifier");
                 if ((!Helpers.isEvil(p) && playerCompleted < HandleGuesser.tasksToUnlock) || remainingShots == 0 || (p == LastImpostor.lastImpostor
                     && !LastImpostor.isOriginalGuesser && !LastImpostor.isCounterMax())) color = Color.gray;
-                roleName += useColors ? Helpers.cs(color, ModTranslation.getString("guesserModifier")) : ModTranslation.getString("guesserModifier");
+                roleName += useColors ? Helpers.cs(color, guesserModifier) : guesserModifier;
             }
             if (!suppressGhostInfo && p != null) {
                 if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)

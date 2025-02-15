@@ -1,3 +1,4 @@
+using TheOtherRoles.CustomGameModes;
 using UnityEngine;
 
 namespace TheOtherRoles
@@ -14,15 +15,15 @@ namespace TheOtherRoles
 
         public static void moveVital()
         {
-            if (SpecimenVital.flag) return;
+            if (flag || HideNSeek.isHideNSeekGM || GameOptionsManager.Instance.currentGameOptions.GameMode == AmongUs.GameOptions.GameModes.HideNSeek) return;
             if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2 && CustomOptionHolder.specimenVital.getBool())
             {
                 var panel = GameObject.Find("panel_vitals");
                 if (panel != null)
                 {
                     var transform = panel.GetComponent<Transform>();
-                    transform.SetPositionAndRotation(SpecimenVital.pos, transform.rotation);
-                    SpecimenVital.flag = true;
+                    transform.SetPositionAndRotation(pos, transform.rotation);
+                    flag = true;
                 }
             }
         }

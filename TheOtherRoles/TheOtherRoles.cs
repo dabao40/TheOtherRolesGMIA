@@ -4239,7 +4239,6 @@ namespace TheOtherRoles
     public static class LastImpostor
     {
         public static PlayerControl lastImpostor;
-        public static Color color = Palette.ImpostorRed;
         public static bool isEnable;
         public static int killCounter;
         public static int maxKillCounter;
@@ -4254,7 +4253,7 @@ namespace TheOtherRoles
             var impList = new List<PlayerControl>();
             foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
-                if (p.Data.Role.IsImpostor && !p.Data.Role.IsDead) impList.Add(p);
+                if (p.Data.Role.IsImpostor && !p.Data.IsDead && !p.Data.Disconnected) impList.Add(p);
             }
             if (impList.Count == 1)
             {
@@ -4325,7 +4324,7 @@ namespace TheOtherRoles
         {
             if (PlayerControl.LocalPlayer.Data.IsDead)
             {
-                if (arrows.Count > 0) {
+                if (arrows?.Count > 0) {
                     foreach (var arrow in arrows)
                         if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
                 }
@@ -4452,7 +4451,7 @@ namespace TheOtherRoles
         public static void clearAllArrow()
         {
             if (PlayerControl.LocalPlayer != evilTracker) return;
-            if (arrows.Count > 0) {
+            if (arrows?.Count > 0) {
             foreach (var arrow in arrows)
                 if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
             }
@@ -4711,6 +4710,7 @@ namespace TheOtherRoles
         public static bool highlightAllVents = false;
         public static float reportDelay = 0f;
         public static bool showKillFlash = true;
+        public static bool canBeGuessed = true;
 
         public static bool reported = false;
 
@@ -4729,6 +4729,7 @@ namespace TheOtherRoles
             highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
+            canBeGuessed = CustomOptionHolder.baitCanBeGuessed.getBool();
             acTokenChallenge = null;
         }
     }
@@ -5226,8 +5227,26 @@ namespace TheOtherRoles
             return counter == totalTasks;
         }
 
+        public static void clearAllArrow()
+        {
+            if (PlayerControl.LocalPlayer != fox) return;
+            if (arrows?.Count > 0) {
+                foreach (var arrow in arrows)
+                    if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
+        }
+
         public static void arrowUpdate()
         {
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                if (arrows?.Count > 0) {
+                    foreach (var arrow in arrows)
+                        if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                return;
+            }
+
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -5254,13 +5273,15 @@ namespace TheOtherRoles
                     if (p.Data.IsDead) continue;
                     Arrow arrow;
                     // float distance = Vector2.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
-                    if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == Sheriff.sheriff || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty || p == Thief.thief || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam()))
+                    if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == Sheriff.sheriff || p == JekyllAndHyde.jekyllAndHyde ||
+                        p == Moriarty.moriarty || p == Thief.thief || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate) ||
+                        (p == Sidekick.sidekick && Sidekick.canKill))
                     {
                         if (p.Data.Role.IsImpostor)
                         {
                             arrow = new Arrow(Palette.ImpostorRed);
                         }
-                        else if (p == Jackal.jackal)
+                        else if (p == Jackal.jackal || p == Sidekick.sidekick)
                         {
                             arrow = new Arrow(Jackal.color);
                         }
@@ -5276,7 +5297,7 @@ namespace TheOtherRoles
                         {
                             arrow = new Arrow(Moriarty.color);
                         }
-                        else if (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
+                        else if (p == SchrodingersCat.schrodingersCat)
                         {
                             arrow = new Arrow(RoleInfo.schrodingersCat.color);
                         }
@@ -5379,8 +5400,26 @@ namespace TheOtherRoles
             return buttonSprite;
         }
 
+        public static void clearAllArrow()
+        {
+            if (PlayerControl.LocalPlayer != immoralist) return;
+            if (arrows?.Count > 0) {
+                foreach (var arrow in arrows)
+                    if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
+        }
+
         public static void arrowUpdate()
         {
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                if (arrows?.Count > 0) {
+                    foreach (var arrow in arrows)
+                        if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                return;
+            }
+
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 

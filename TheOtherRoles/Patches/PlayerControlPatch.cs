@@ -944,7 +944,8 @@ namespace TheOtherRoles.Patches {
             foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
                 if (p.Data.Role.IsImpostor || p == Jackal.jackal || p == JekyllAndHyde.jekyllAndHyde || p == Moriarty.moriarty
-                    || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate))
+                    || (p == SchrodingersCat.schrodingersCat && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
+                    || (p == Sidekick.sidekick && Sidekick.canKill))
                 {
                     untargetablePlayers.Add(p);
                 }
@@ -2447,7 +2448,7 @@ namespace TheOtherRoles.Patches {
             if (target.Data.Role.IsImpostor && AmongUsClient.Instance.AmHost)
                 LastImpostor.promoteToLastImpostor();
 
-            if (__instance == LastImpostor.lastImpostor && target != LastImpostor.lastImpostor && PlayerControl.LocalPlayer == LastImpostor.lastImpostor) LastImpostor.killCounter++;
+            if (__instance == LastImpostor.lastImpostor && target != LastImpostor.lastImpostor) LastImpostor.killCounter++;
 
             // Ninja penalize
             if (Ninja.ninja != null && PlayerControl.LocalPlayer == Ninja.ninja && __instance == Ninja.ninja)
@@ -2964,9 +2965,7 @@ namespace TheOtherRoles.Patches {
             }
 
             if (__instance.Data.Role.IsImpostor && AmongUsClient.Instance.AmHost)
-            {
                 LastImpostor.promoteToLastImpostor();
-            }
 
             // Handle all suicides
             foreach (var p in __instance.GetAllRelatedPlayers())
@@ -3102,7 +3101,13 @@ namespace TheOtherRoles.Patches {
                 GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });
                 if (PlayerControl.LocalPlayer == player) Props.clearProps();
             }
-            if (AmongUsClient.Instance.AmHost && player != null && player.Data?.Role?.IsImpostor == true) LastImpostor.promoteToLastImpostor();
+        }
+        public static void Postfix(GameData __instance, PlayerControl player, DisconnectReasons reason)
+        {
+            if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
+            {
+                if (AmongUsClient.Instance.AmHost && player != null && player.Data?.Role?.IsImpostor == true) LastImpostor.promoteToLastImpostor();
+            }
         }
     }
 }

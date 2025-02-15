@@ -480,11 +480,12 @@ namespace TheOtherRoles.Patches {
                 {
                     foreach (var p in Madmate.madmate)
                     {
+                        if (EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == p.Data.PlayerName)) continue;
                         CachedPlayerData wpd = new(p.Data);
                         EndGameResult.CachedWinners.Add(wpd);
                     }
                 }
-                if (CreatedMadmate.createdMadmate != null)
+                if (CreatedMadmate.createdMadmate != null && !EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == CreatedMadmate.createdMadmate.Data.PlayerName))
                 {
                     CachedPlayerData wpd = new(CreatedMadmate.createdMadmate.Data);
                     EndGameResult.CachedWinners.Add(wpd);

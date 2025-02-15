@@ -1,4 +1,4 @@
-﻿using Hazel;
+using Hazel;
 using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Utilities;
@@ -10,6 +10,7 @@ using Reactor.Utilities.Attributes;
 using Reactor.Utilities.Extensions;
 using Rewired.Utils.Platforms.Windows;
 using TMPro;
+using TheOtherRoles.CustomGameModes;
 
 namespace TheOtherRoles.Objects
 {
@@ -307,6 +308,7 @@ namespace TheOtherRoles.Objects
 
         public static void placeProps()
         {
+            if (HideNSeek.isHideNSeekGM || GameOptionsManager.Instance.currentGameOptions.GameMode == AmongUs.GameOptions.GameModes.HideNSeek) return;
             AccelTrap.placeAccelTrap();
             DecelTrap.placeDecelTrap();
         }

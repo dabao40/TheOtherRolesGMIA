@@ -26,8 +26,8 @@ using TheOtherRoles.MetaContext;
 using System.Text;
 using BepInEx.Unity.IL2CPP.UnityEngine;
 using BepInEx.Unity.IL2CPP.Utils;
-
-namespace TheOtherRoles {
+namespace TheOtherRoles
+{
 
     public enum MurderAttemptResult {
         PerformKill,
@@ -374,7 +374,8 @@ namespace TheOtherRoles {
         public static bool hasFakeTasks(this PlayerControl player) {
             return player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole);
+                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole)
+                || player == Immoralist.immoralist;
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -475,8 +476,31 @@ namespace TheOtherRoles {
 
         public static void generateNormalTasks(this PlayerControl player)
         {
+            if (player == null) return;
+            var tasks = new Il2CppSystem.Collections.Generic.List<byte>();
+            var hashSet = new Il2CppSystem.Collections.Generic.HashSet<TaskTypes>();
+
+            List<byte> taskTypeIds = new();
+            var commonTasks = new Il2CppSystem.Collections.Generic.List<NormalPlayerTask>();
+            foreach (var task in ShipStatus.Instance.CommonTasks) {
+                if (ShipStatusPatch.commonTasks.Any(x => x == task.TaskType)) {
+                    commonTasks.Add(task);
+                    TheOtherRolesPlugin.Logger.LogMessage($"Generated {task.TaskType.ToString()} for player {player.Data.PlayerName}");
+                }
+            }
+
+            int start = 0;
+            MapUtilities.CachedShipStatus.AddTasksFromList(ref start, ShipStatusPatch.commonTasks.Count, tasks, hashSet, commonTasks);
+
+            taskTypeIds.AddRange(tasks.ToArray().ToList());
             var option = GameOptionsManager.Instance.currentNormalGameOptions;
-            player.generateAndAssignTasks(option.NumCommonTasks, option.NumShortTasks, option.NumLongTasks);
+            taskTypeIds.AddRange(generateTasks(0, option.NumShortTasks, option.NumLongTasks));
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedSetTasks, Hazel.SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            writer.WriteBytesAndSize(taskTypeIds.ToArray());
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.uncheckedSetTasks(player.PlayerId, taskTypeIds.ToArray());
         }
 
         public static void HandleRoleFlashOnDeath(PlayerControl target)
@@ -526,6 +550,35 @@ namespace TheOtherRoles {
             }
 
             if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
+        }
+
+        public static void HandleRolesOnErase(PlayerControl player)
+        {
+            // Specify shifting onto Lawyer/Akujo
+            if (player == Lawyer.lawyer && Lawyer.target != null)
+            {
+                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
+                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
+                if (playerInfo != null) playerInfo.text = "";
+            }
+            else if (player == Akujo.akujo)
+            {
+                if (Akujo.honmei != null)
+                {
+                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
+                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                    if (playerInfo != null) playerInfo.text = "";
+                }
+                if (Akujo.keeps != null)
+                {
+                    foreach (PlayerControl playerControl in Akujo.keeps)
+                    {
+                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
+                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
+                        if (playerInfo != null) playerInfo.text = "";
+                    }
+                }
+            }
         }
 
         public static Camera FindCamera(int cameraLayer) => Camera.allCameras.FirstOrDefault(c => (c.cullingMask & (1 << cameraLayer)) != 0);

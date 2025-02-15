@@ -266,6 +266,7 @@ namespace TheOtherRoles {
         public static CustomOption baitHighlightAllVents;
         public static CustomOption baitReportDelay;
         public static CustomOption baitShowKillFlash;
+        public static CustomOption baitCanBeGuessed;
 
         public static CustomOption trackerSpawnRate;
         public static CustomOption trackerUpdateIntervall;
@@ -999,6 +1000,7 @@ namespace TheOtherRoles {
             baitHighlightAllVents = CustomOption.Create(1031, Types.Crewmate, "baitHighlightAllVents", false, baitSpawnRate);
             baitReportDelay = CustomOption.Create(1032, Types.Crewmate, "baitReportDelay", 0f, 0f, 10f, 1f, baitSpawnRate, false, "unitSeconds");
             baitShowKillFlash = CustomOption.Create(1033, Types.Crewmate, "baitShowKillFlash", true, baitSpawnRate);
+            baitCanBeGuessed = CustomOption.Create(1034, Types.Crewmate, "baitCanBeGuessed", true, baitSpawnRate);
 
             veteranSpawnRate = CustomOption.Create(4050, Types.Crewmate, cs(Veteran.color, "veteran"), rates, null, true);
             veteranCooldown = CustomOption.Create(4051, Types.Crewmate, "veteranCooldown", 30f, 10f, 60f, 2.5f, veteranSpawnRate, false, "unitSeconds");
@@ -1115,12 +1117,6 @@ namespace TheOtherRoles {
 
             modifierTieBreaker = CustomOption.Create(1020, Types.Modifier, cs(Color.yellow, "tiebreakerLongDesc"), rates, null, true);
 
-            /*modifierBait = CustomOption.Create(1030, Types.Modifier, cs(Color.yellow, "Bait"), rates, null, true);
-            modifierBaitQuantity = CustomOption.Create(1031, Types.Modifier, cs(Color.yellow, "Bait Quantity"), ratesModifier, modifierBait);
-            modifierBaitReportDelayMin = CustomOption.Create(1032, Types.Modifier, "Bait Report Delay Min", 0f, 0f, 10f, 1f, modifierBait);
-            modifierBaitReportDelayMax = CustomOption.Create(1033, Types.Modifier, "Bait Report Delay Max", 0f, 0f, 10f, 1f, modifierBait);
-            modifierBaitShowKillFlash = CustomOption.Create(1034, Types.Modifier, "Warn The Killer With A Flash", true, modifierBait);*/
-
             modifierLover = CustomOption.Create(1040, Types.Modifier, cs(Color.yellow, "lovers"), rates, null, true);
             modifierLoverImpLoverRate = CustomOption.Create(1041, Types.Modifier, "loversImpLoverRate", rates, modifierLover);
             modifierLoverBothDie = CustomOption.Create(1042, Types.Modifier, "loversBothDie", true, modifierLover);
@@ -1148,7 +1144,7 @@ namespace TheOtherRoles {
             modifierChameleonFadeDuration = CustomOption.Create(1093, Types.Modifier, "chameleonFadeDuration", 1f, 0.25f, 10f, 0.25f, modifierChameleon, false, "unitSeconds");
             modifierChameleonMinVisibility = CustomOption.Create(1094, Types.Modifier, "chameleonMinVisibility", new string[] { "0%", "10%", "20%", "30%", "40%", "50%" }, modifierChameleon);
 
-            modifierArmored = CustomOption.Create(1101, Types.Modifier, cs(Color.yellow, "armored"), rates, null, true);
+            modifierArmored = CustomOption.Create(9101, Types.Modifier, cs(Color.yellow, "armored"), rates, null, true);
 
             madmateSpawnRate = CustomOption.Create(4041, Types.Modifier, cs(Color.yellow, "madmate"), rates, null, true);
             madmateQuantity = CustomOption.Create(7005, Types.Modifier, cs(Color.yellow, "madmateQuantity"), ratesModifier, madmateSpawnRate);

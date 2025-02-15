@@ -503,9 +503,8 @@ namespace TheOtherRoles.Patches {
             else if (PlayerControl.LocalPlayer.roleCanUseVents() && !__instance.ImpostorVentButton.isActiveAndEnabled) __instance.ImpostorVentButton.Show();
 
             if (Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))
-                __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + (PlayerControl.LocalPlayer == Engineer.engineer ?
-                    CustomButton.ButtonPositions.lowerRowRight : CustomButton.ButtonPositions.upperRowLeft);
-            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == PlayerControl.LocalPlayer && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = __instance.UseButton.transform.localPosition + CustomButton.ButtonPositions.lowerRowRight;
+                __instance.ImpostorVentButton.transform.localPosition = PlayerControl.LocalPlayer == Engineer.engineer ? CustomButton.ButtonPositions.lowerRowRight : CustomButton.ButtonPositions.upperRowLeft;
+            if (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == PlayerControl.LocalPlayer && CreatedMadmate.canEnterVents) __instance.ImpostorVentButton.transform.localPosition = CustomButton.ButtonPositions.lowerRowRight;
         }
 
         static void updateUseButton(HudManager __instance) {

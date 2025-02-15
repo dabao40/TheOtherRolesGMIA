@@ -522,12 +522,9 @@ namespace TheOtherRoles.Patches {
                 RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
                 List<RoleInfo> modifierInfo = infos.Where(info => info.isModifier).ToList();
 
-                if (roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0)
-                {
+                if (roleInfo == RoleInfo.fortuneTeller && FortuneTeller.numTasks > 0) {
                     roleInfo = RoleInfo.crewmate;
                 }
-                if (GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors <= 1 && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true
-                    && HandleGuesser.isGuesserGm && LastImpostor.isEnable) modifierInfo.Add(RoleInfo.lastImpostor);
 
                 if (EventUtility.isEnabled) {
                     var roleInfos = RoleInfo.allRoleInfos.Where(x => !x.isModifier).ToList();

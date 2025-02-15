@@ -62,7 +62,7 @@ namespace TheOtherRoles.CustomGameModes
                         if (formerRole == r) return; // Do nothing if the same role was given
                         if (formerRole.roleId == RoleId.Jackal) Jackal.clearAndReload();
                         else if (formerRole.roleId == RoleId.Sidekick) Sidekick.clearAndReload();
-                        RPCProcedure.erasePlayerRoles(PlayerControl.LocalPlayer.PlayerId);
+                        RPCProcedure.erasePlayerRoles(PlayerControl.LocalPlayer.PlayerId, generateTasks: false);
                         if (r.isImpostor() && !isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
                         else if (!r.isImpostor() && isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
 
@@ -102,7 +102,7 @@ namespace TheOtherRoles.CustomGameModes
                             SetWidget(1);
                         })), 4),
                         gui.LocalizedText(GUIAlignment.Center, roleMaskedTittleAttr, "freePlayModifiersUnequipped"),
-                        gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(r => r.isModifier && r != RoleInfo.cupidLover && r != RoleInfo.lover && r != RoleInfo.mini && r != RoleInfo.lastImpostor && !RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).Contains(r)).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
+                        gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(r => r.isModifier && r != RoleInfo.cupidLover && r != RoleInfo.lover && r != RoleInfo.mini && !RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer).Contains(r)).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
                         {
                             RPCProcedure.setModifier((byte)r.roleId, PlayerControl.LocalPlayer.PlayerId, 0);
                             SetWidget(1);
@@ -226,17 +226,6 @@ namespace TheOtherRoles.CustomGameModes
         static class CheckEndGameViaTasksPatch
         {
             static bool Prefix(GameManager __instance, ref bool __result)
-            {
-                if (!isFreePlayGM) return true;
-                __result = false;
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-        public static class BlockGameOverPatch
-        {
-            public static bool Prefix(LogicGameFlowNormal __instance, ref bool __result)
             {
                 if (!isFreePlayGM) return true;
                 __result = false;

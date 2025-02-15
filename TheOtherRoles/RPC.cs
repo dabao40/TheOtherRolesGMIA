@@ -103,7 +103,6 @@ namespace TheOtherRoles
         Archaeologist,
         SchrodingersCat,
         Madmate,
-        LastImpostor,
         //Bomber,
         Crewmate,
         Impostor,
@@ -280,7 +279,6 @@ namespace TheOtherRoles
         PlaceAntique,
         ArchaeologistDetect,
         ArchaeologistExcavate,
-        SyncMeetingResultTimer,
         ImpostorPromotesToLastImpostor,
     }
 
@@ -748,14 +746,19 @@ namespace TheOtherRoles
             {
                 if (p == 1f)
                 {
-                    if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))
-                    {
-                        PlayerControl.LocalPlayer.clearAllTasks();
+                    ShipStatusPatch.commonTasks.Clear();
+                    foreach (var task in PlayerControl.LocalPlayer.myTasks) {
+                        if (ShipStatus.Instance.CommonTasks.Any(x => x.TaskType == task.TaskType)) {
+                            ShipStatusPatch.commonTasks.Add(task.TaskType);
+                            TheOtherRolesPlugin.Logger.LogMessage($"Added {task.TaskType.ToString()} for common task");
+                        }
+                    }
+
+                    if (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId)) {
                         PlayerControl.LocalPlayer.generateAndAssignTasks(Madmate.commonTasks, Madmate.shortTasks, Madmate.longTasks);
                     }
                     if (JekyllAndHyde.jekyllAndHyde != null && PlayerControl.LocalPlayer == JekyllAndHyde.jekyllAndHyde)
                     {
-                        PlayerControl.LocalPlayer.clearAllTasks();
                         PlayerControl.LocalPlayer.generateAndAssignTasks(JekyllAndHyde.numCommonTasks, JekyllAndHyde.numShortTasks, JekyllAndHyde.numLongTasks);
                         JekyllAndHyde.oddIsJekyll = rnd.Next(0, 2) == 1;
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetOddIsJekyll, Hazel.SendOption.Reliable, -1);
@@ -973,28 +976,10 @@ namespace TheOtherRoles
                 if (Armored.armored == player) Armored.armored = oldShifter;
             }
 
-            // Specify shifting onto Lawyer/Akujo
-            if (player == Lawyer.lawyer && Lawyer.target != null) {
-                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
-                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-                if (playerInfo != null) playerInfo.text = "";
-            } else if (player == Akujo.akujo) {
-                if (Akujo.honmei != null) {
-                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
-                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                    if (playerInfo != null) playerInfo.text = "";
-                } if (Akujo.keeps != null) {
-                    foreach (PlayerControl playerControl in Akujo.keeps) {
-                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
-                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                        if (playerInfo != null) playerInfo.text = "";
-                    }
-                }
-            }
-            if ((TasksHandler.taskInfo(player.Data).Item2 <= 0 || player == Fox.fox) && !PlayerControl.LocalPlayer.Data.IsDead) {
-                    player.clearAllTasks();
-                    if (PlayerControl.LocalPlayer == player) PlayerControl.LocalPlayer.generateNormalTasks();
-            }
+            Helpers.HandleRolesOnErase(player);
+
+            if ((player.Data.Tasks == null || player.Data.Tasks?.Count == 0 || player == Fox.fox) && !player.Data.IsDead && PlayerControl.LocalPlayer == player)
+                player.generateNormalTasks();
 
             // Shift role
             if (Mayor.mayor != null && Mayor.mayor == player)
@@ -1236,7 +1221,12 @@ namespace TheOtherRoles
             if (player == Thief.thief) Thief.thief = oldShifter;
             if (player == Pursuer.pursuer) Pursuer.pursuer = oldShifter;
             if (player == Vulture.vulture) Vulture.vulture = oldShifter;
-            if (player == Jackal.jackal) Jackal.jackal = oldShifter;
+            if (player == Jackal.jackal) {     // Dead Shifter shifts onto Jackal, promote the Sidekick
+                Jackal.jackal = oldShifter;
+                if (Jackal.jackal.Data.IsDead && Sidekick.promotesToJackal && Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead) {
+                    sidekickPromotes();
+                }
+            }
             if (player == Sidekick.sidekick) Sidekick.sidekick = oldShifter;
             if (Jackal.formerJackals.Contains(player)) {
                 Jackal.formerJackals.Add(oldShifter);
@@ -1244,8 +1234,14 @@ namespace TheOtherRoles
                 isHusk = true;
             }
             if (player == Lawyer.lawyer) Lawyer.lawyer = oldShifter;
-            if (player == Fox.fox) Fox.fox = oldShifter;
-            if (player == Immoralist.immoralist) Immoralist.immoralist = oldShifter;
+            if (player == Fox.fox) {
+                Fox.clearAllArrow();
+                Fox.fox = oldShifter;
+            }
+            if (player == Immoralist.immoralist) {
+                Immoralist.clearAllArrow();
+                Immoralist.immoralist = oldShifter;
+            }
             if (player == Akujo.akujo) Akujo.akujo = oldShifter;
             if (player == Cupid.cupid) Cupid.cupid = oldShifter;
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.jekyllAndHyde = oldShifter;
@@ -1414,31 +1410,6 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(targetId);
 
-            if (player == Lawyer.lawyer && Lawyer.target != null)
-            {
-                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
-                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-                if (playerInfo != null) playerInfo.text = "";
-            }
-            else if (player == Akujo.akujo)
-            {
-                if (Akujo.honmei != null)
-                {
-                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
-                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                    if (playerInfo != null) playerInfo.text = "";
-                }
-                if (Akujo.keeps != null)
-                {
-                    foreach (PlayerControl playerControl in Akujo.keeps)
-                    {
-                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
-                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                        if (playerInfo != null) playerInfo.text = "";
-                    }
-                }
-            }
-
             if (!EvilHacker.canCreateMadmateFromJackal && player == Jackal.jackal)
             {
                 EvilHacker.fakeMadmate = player;
@@ -1452,15 +1423,9 @@ namespace TheOtherRoles
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
 
                 // タスクがないプレイヤーがMadmateになった場合はショートタスクを必要数割り当てる
-                if (Helpers.hasFakeTasks(player))
-                {
-                    if (CreatedMadmate.hasTasks)
-                    {
-                        Helpers.clearAllTasks(player);
-                        player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
-                    }
-                }
-                erasePlayerRoles(player.PlayerId, true, true);
+                erasePlayerRoles(player.PlayerId, true, true, false);
+                if (CreatedMadmate.hasTasks && player == PlayerControl.LocalPlayer)
+                    player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
 
                 // Jackalバグ対応
                 Jackal.formerJackals = tmpFormerJackals;
@@ -1618,35 +1583,7 @@ namespace TheOtherRoles
                 bool wasSpy = Spy.spy != null && player == Spy.spy;
                 bool wasImpostor = player.Data.Role.IsImpostor;  // This can only be reached if impostors can be sidekicked.
                 FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
-                if (player == Lawyer.lawyer && Lawyer.target != null)
-                {
-                    Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
-                    TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-                    if (playerInfo != null) playerInfo.text = "";
-                }
-                else if (player == Akujo.akujo)
-                {
-                    if (Akujo.honmei != null)
-                    {
-                        Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
-                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                        if (playerInfo != null) playerInfo.text = "";
-                    }
-                    if (Akujo.keeps != null)
-                    {
-                        foreach (PlayerControl playerControl in Akujo.keeps)
-                        {
-                            Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
-                            TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                            if (playerInfo != null) playerInfo.text = "";
-                        }
-                    }
-                }
-                if (TasksHandler.taskInfo(player.Data).Item2 <= 0 || player == Fox.fox) {
-                    player.clearAllTasks();
-                    if (PlayerControl.LocalPlayer == player) PlayerControl.LocalPlayer.generateNormalTasks();
-                }
-                erasePlayerRoles(player.PlayerId, true);
+                erasePlayerRoles(player.PlayerId, true, generateTasks: false);
                 Sidekick.sidekick = player;
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
                 if (wasSpy || wasImpostor) Sidekick.wasTeamRed = true;
@@ -1655,7 +1592,10 @@ namespace TheOtherRoles
                 if (player == PlayerControl.LocalPlayer) {
                     SoundEffectsManager.play("jackalSidekick");
                     _ = new StaticAchievementToken("sidekick.common1");
-                    if (wasImpostor) _ = new StaticAchievementToken("sidekick.common2");
+                    if (wasImpostor) {
+                        _ = new StaticAchievementToken("sidekick.common2");
+                        LastImpostor.promoteToLastImpostor();
+                    }
                 }
                 GameStatistics.recordRoleHistory(player);
                 if (HandleGuesser.isGuesserGm && CustomOptionHolder.guesserGamemodeSidekickIsAlwaysGuesser.getBool() && !HandleGuesser.isGuesser(targetId))
@@ -1678,9 +1618,13 @@ namespace TheOtherRoles
             return;
         }
         
-        public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false) {
+        public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false, bool generateTasks = true) {
             PlayerControl player = Helpers.playerById(playerId);
             if (player == null || (!player.canBeErased() && !isCreatedMadmate)) return;
+
+            Helpers.HandleRolesOnErase(player);
+            if ((player.Data.Tasks == null || player.Data.Tasks?.Count == 0 || player == Fox.fox) && !player.Data.IsDead && generateTasks && PlayerControl.LocalPlayer == player)
+                PlayerControl.LocalPlayer.generateNormalTasks();
 
             // Crewmate roles
             if (player == Mayor.mayor) Mayor.clearAndReload();
@@ -1855,34 +1799,10 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(targetId);
             FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
-            erasePlayerRoles(player.PlayerId, true);
+            erasePlayerRoles(player.PlayerId, true, true, false);
+            if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
             Immoralist.immoralist = player;
             player.clearAllTasks();
-
-            if (player == Lawyer.lawyer && Lawyer.target != null)
-            {
-                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
-                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-                if (playerInfo != null) playerInfo.text = "";
-            }
-            else if (player == Akujo.akujo)
-            {
-                if (Akujo.honmei != null)
-                {
-                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
-                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                    if (playerInfo != null) playerInfo.text = "";
-                }
-                if (Akujo.keeps != null)
-                {
-                    foreach (PlayerControl playerControl in Akujo.keeps)
-                    {
-                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
-                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                        if (playerInfo != null) playerInfo.text = "";
-                    }
-                }
-            }
             Fox.canCreateImmoralist = false;
             GameStatistics.recordRoleHistory(player);
         }
@@ -2417,10 +2337,10 @@ namespace TheOtherRoles
         public static void impostorPromotesToLastImpostor(byte targetId)
         {
             PlayerControl player = Helpers.playerById(targetId);
-            if (!HandleGuesser.isGuesser(targetId)) {
-                setGuesserGm(targetId);
-                LastImpostor.isOriginalGuesser = false;
-            }
+            if (LastImpostor.lastImpostor != null && player == LastImpostor.lastImpostor) return;
+            if (LastImpostor.lastImpostor != null && !LastImpostor.isOriginalGuesser) GuesserGM.clear(LastImpostor.lastImpostor.PlayerId);
+            LastImpostor.clearAndReload();
+            if (!HandleGuesser.isGuesser(targetId)) setGuesserGm(targetId);
             else LastImpostor.isOriginalGuesser = true;
             LastImpostor.lastImpostor = player;
             var g = GuesserGM.guessers.FindLast(x => x.guesser.PlayerId == targetId);
@@ -3334,9 +3254,6 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.BreakArmor:
                     RPCProcedure.breakArmor();
-                    break;
-                case (byte)CustomRPC.SyncMeetingResultTimer:
-                    MeetingHudPatch.MeetingHudUpdatePatch.ResultTimer = reader.ReadByte();
                     break;
                 case (byte)CustomRPC.ImpostorPromotesToLastImpostor:
                     RPCProcedure.impostorPromotesToLastImpostor(reader.ReadByte());

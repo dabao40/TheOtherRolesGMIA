@@ -94,6 +94,7 @@ namespace TheOtherRoles.Patches {
         public static float originalNumCrewVisionOption = 0;
         public static float originalNumImpVisionOption = 0;
         public static float originalNumKillCooldownOption = 0;
+        public static System.Collections.Generic.List<TaskTypes> commonTasks = new();
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
