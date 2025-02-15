@@ -1186,14 +1186,12 @@ namespace TheOtherRoles
             }
             if (player == BomberA.bomberA) {
                 if (PlayerControl.LocalPlayer == player) {
-                    resetPoolables();
                     if (BomberA.arrows.FirstOrDefault().arrow != null) BomberA.arrows.FirstOrDefault().arrow.SetActive(false);
                 }
                 BomberA.bomberA = oldShifter;
             }
             if (player == BomberB.bomberB) {
                 if (PlayerControl.LocalPlayer == player) {
-                    resetPoolables();
                     if (BomberB.arrows.FirstOrDefault().arrow != null) BomberB.arrows.FirstOrDefault().arrow.SetActive(false);
                 }
                 BomberB.bomberB = oldShifter;

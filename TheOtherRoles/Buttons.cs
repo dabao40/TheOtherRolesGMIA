@@ -2344,24 +2344,17 @@ namespace TheOtherRoles
                 // OnEffectsEnd
                 () =>
                 {
-                    if ((BomberA.tmpTarget == Mini.mini && !Mini.isGrownUp()) || (BomberB.bombTarget != null && BomberA.tmpTarget == BomberB.bombTarget))
+                    if (BomberA.tmpTarget != null)
                     {
-                        bomberAPlantBombButton.Timer = 0f;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
+                        writer.Write(BomberA.tmpTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        BomberA.bombTarget = BomberA.tmpTarget;
                     }
-                    else
-                    {
-                        if (BomberA.tmpTarget != null)
-                        {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
-                            writer.Write(BomberA.tmpTarget.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            BomberA.bombTarget = BomberA.tmpTarget;
-                        }
-                        _ = new StaticAchievementToken("bomber.common1");
-                        BomberA.tmpTarget = null;
-                        bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
-                        SoundEffectsManager.play("bomberPlantBomb");
-                    }
+                    _ = new StaticAchievementToken("bomber.common1");
+                    BomberA.tmpTarget = null;
+                    bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
+                    SoundEffectsManager.play("bomberPlantBomb");
                 },
                 buttonText: ModTranslation.getString("PlantBombText"),
                 shakeOnEnd: false
@@ -2409,21 +2402,17 @@ namespace TheOtherRoles
                 // OnEffectsEnd
                 () =>
                 {
-                    if ((BomberB.tmpTarget == Mini.mini && !Mini.isGrownUp()) || (BomberA.bombTarget != null && BomberB.tmpTarget == BomberA.bombTarget)) bomberBPlantBombButton.Timer = 0f;
-                    else
+                    if (BomberB.tmpTarget != null)
                     {
-                        if (BomberB.tmpTarget != null)
-                        {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
-                            writer.Write(BomberB.tmpTarget.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            BomberB.bombTarget = BomberB.tmpTarget;
-                        }
-                        _ = new StaticAchievementToken("bomber.common1");
-                        BomberB.tmpTarget = null;
-                        bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
-                        SoundEffectsManager.play("bomberPlantBomb");
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlantBomb, Hazel.SendOption.Reliable, -1);
+                        writer.Write(BomberB.tmpTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        BomberB.bombTarget = BomberB.tmpTarget;
                     }
+                    _ = new StaticAchievementToken("bomber.common1");
+                    BomberB.tmpTarget = null;
+                    bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
+                    SoundEffectsManager.play("bomberPlantBomb");
                 },
                 buttonText: ModTranslation.getString("PlantBombText"),
                 shakeOnEnd: false

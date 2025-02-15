@@ -36,7 +36,7 @@ namespace TheOtherRoles{
             meetingsCount = 0;
             camerasToAdd = new List<SurvCamera>();
             ventsToSeal = new List<Vent>();
-            playerIcons = new Dictionary<byte, PoolablePlayer>(); ;
+            playerIcons = new Dictionary<byte, PoolablePlayer>();
 
             maxNumberOfMeetings = Mathf.RoundToInt(CustomOptionHolder.maxNumberOfMeetings.getSelection());
             blockSkippingInEmergencyMeetings = CustomOptionHolder.blockSkippingInEmergencyMeetings.getBool();

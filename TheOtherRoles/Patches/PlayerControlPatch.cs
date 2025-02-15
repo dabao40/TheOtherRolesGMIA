@@ -1641,14 +1641,9 @@ namespace TheOtherRoles.Patches {
         public static void bomberASetTarget()
         {
             if (PlayerControl.LocalPlayer != BomberA.bomberA || BomberA.bomberA == null || BomberA.bomberA.Data.IsDead) return;
-            List<PlayerControl> untargetables;
+            List<PlayerControl> untargetables = new();
             if (BomberA.tmpTarget != null)
                 untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != BomberA.tmpTarget.PlayerId).ToList();
-            else
-            {
-                untargetables = new List<PlayerControl>();
-                if (BomberA.bombTarget != null) untargetables.Add(BomberA.bombTarget);
-            }
             BomberA.currentTarget = setTarget(untargetablePlayers: untargetables);
             setPlayerOutline(BomberA.currentTarget, Palette.ImpostorRed);
         }
@@ -1656,14 +1651,9 @@ namespace TheOtherRoles.Patches {
         public static void bomberBSetTarget()
         {
             if (PlayerControl.LocalPlayer != BomberB.bomberB || BomberB.bomberB == null || BomberB.bomberB.Data.IsDead) return;
-            List<PlayerControl> untargetables;
+            List<PlayerControl> untargetables = new();
             if (BomberB.tmpTarget != null)
                 untargetables = PlayerControl.AllPlayerControls.ToArray().Where(x => x.PlayerId != BomberB.tmpTarget.PlayerId).ToList();
-            else
-            {
-                untargetables = new List<PlayerControl>();
-                if (BomberB.bombTarget != null) untargetables.Add(BomberB.bombTarget);
-            }
             BomberB.currentTarget = setTarget(untargetablePlayers: untargetables);
             setPlayerOutline(BomberB.currentTarget, Palette.ImpostorRed);
         }

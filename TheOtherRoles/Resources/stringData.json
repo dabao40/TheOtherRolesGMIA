@@ -3467,7 +3467,7 @@
     "pressTabForMore": {
         "0": "\n Press TAB or Page Number for more... ({0}/{1})",
         "11": "\nTab\u30ad\u30fc\u307e\u305f\u306f\u30da\u30fc\u30b8\u756a\u53f7\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044({0}/{1})",
-        "13": "\n \u6309Tab\u952e\u67e5\u770b\u66f4\u591a... ({0}/{1})",
+        "13": "\n \u6309Tab\u6216\u6570\u5b57\u952e\u67e5\u770b\u66f4\u591a... ({0}/{1})",
         "14": "\n \u6309Tab\u9375\u67e5\u770b\u66f4\u591a... ({0}/{1})"
     },
     "page1": {
