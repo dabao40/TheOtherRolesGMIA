@@ -724,6 +724,13 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void doomsayerSetTarget()
+        {
+            if (Doomsayer.doomsayer == null || PlayerControl.LocalPlayer != Doomsayer.doomsayer || PlayerControl.LocalPlayer.Data.IsDead || Doomsayer.cantObserve) return;
+            Doomsayer.currentTarget = setTarget();
+            setPlayerOutline(Doomsayer.currentTarget, Doomsayer.color);
+        }
+
         public static void plagueDoctorUpdate()
         {
             if (MeetingHud.Instance != null)
@@ -2178,6 +2185,8 @@ namespace TheOtherRoles.Patches {
                 // Prophet
                 prophetSetTarget();
                 prophetUpdate();
+                // Doomsayer
+                doomsayerSetTarget();
                 // Plague Doctor
                 plagueDoctorSetTarget();
                 plagueDoctorUpdate();
@@ -2338,7 +2347,7 @@ namespace TheOtherRoles.Patches {
     {
         public static bool Prefix([HarmonyArgument(0)] PlayerControl player, bool specialRolesAllowed)
         {
-            if ((player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()) || (player == Busker.busker && Busker.pseudocideFlag) || FreePlayGM.isFreePlayGM)
+            if ((player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || (player == Busker.busker && Busker.pseudocideFlag) || FreePlayGM.isFreePlayGM)
                 return false;
             return true;
         }
@@ -2984,6 +2993,12 @@ namespace TheOtherRoles.Patches {
                         }
                     }
                 }
+            }
+
+            // Assign the default ghost role to let the Schrodinger's Cat have the haunt button
+            if (__instance == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()) {
+                SchrodingersCat.isExiled = true;
+                if (AmongUsClient.Instance.AmHost) FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(__instance, false);
             }
 
             // Check Plague Doctor status

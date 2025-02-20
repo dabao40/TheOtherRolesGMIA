@@ -118,6 +118,7 @@ namespace TheOtherRoles
         public static RoleInfo immoralist = new("immoralist", Immoralist.color, RoleId.Immoralist, true);
         public static RoleInfo schrodingersCat = new("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
         public static RoleInfo kataomoi = new("kataomoi", Kataomoi.color, RoleId.Kataomoi, true);
+        public static RoleInfo doomsayer = new("doomsayer", Doomsayer.color, RoleId.Doomsayer, true);
 
         public static RoleInfo hunter = new("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new("hunted", Color.white, RoleId.Crewmate);
@@ -193,6 +194,7 @@ namespace TheOtherRoles
             cupid,
             schrodingersCat,
             kataomoi,
+            doomsayer,
             //prosecutor,
             crewmate,
             mayor,
@@ -319,6 +321,7 @@ namespace TheOtherRoles
             if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
             if (p == Archaeologist.archaeologist) infos.Add(archaeologist);
             if (p == Yoyo.yoyo) infos.Add(yoyo);
+            if (p == Doomsayer.doomsayer) infos.Add(doomsayer);
             if (p == FortuneTeller.fortuneTeller)
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)

@@ -10,13 +10,9 @@ using HarmonyLib;
 using Hazel;
 using TheOtherRoles.Utilities;
 using System.Threading.Tasks;
-using System.Net;
 using TheOtherRoles.CustomGameModes;
 using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
-using Innersloth.Assets;
-using MonoMod.Cil;
-using static HarmonyLib.InlineSignature;
 using System.Globalization;
 using TheOtherRoles.Patches;
 using System.Collections;
@@ -24,7 +20,6 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using System.Runtime.InteropServices;
 using TheOtherRoles.MetaContext;
 using System.Text;
-using BepInEx.Unity.IL2CPP.UnityEngine;
 using BepInEx.Unity.IL2CPP.Utils;
 namespace TheOtherRoles
 {
@@ -375,7 +370,7 @@ namespace TheOtherRoles
             return player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
                 (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole)
-                || player == Immoralist.immoralist;
+                || player == Immoralist.immoralist || player == Doomsayer.doomsayer;
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -1364,7 +1359,7 @@ namespace TheOtherRoles
                 roleCouldUse = true;
             else if (Jester.jester != null && Jester.canUseVents && Jester.jester == player)
                 roleCouldUse = true;
-            else if (Thief.canUseVents &&  Thief.thief != null && Thief.thief == player)
+            else if (Thief.canUseVents && Thief.thief != null && Thief.thief == player)
                 roleCouldUse = true;
             else if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat == player && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                 roleCouldUse = true;

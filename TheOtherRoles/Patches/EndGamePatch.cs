@@ -28,7 +28,8 @@ namespace TheOtherRoles.Patches {
         CupidLoversWin = 20,
         LawyerSoloWin = 21,
         FoxWin = 22,
-        KataomoiWin = 23
+        KataomoiWin = 23,
+        DoomsayerWin = 24
         //ProsecutorWin = 16
     }
 
@@ -53,6 +54,7 @@ namespace TheOtherRoles.Patches {
         JekyllAndHydeWin,
         CupidLoversWin,
         KataomoiWin,
+        DoomsayerWin,
         EveryoneDied
         //ProsecutorWin
     }
@@ -131,7 +133,7 @@ namespace TheOtherRoles.Patches {
                 bool isGuesser = HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(playerControl.PlayerId);
                 bool isMadmate = Madmate.madmate.Any(x => x.PlayerId ==  playerControl.PlayerId) || playerControl.PlayerId == CreatedMadmate.createdMadmate?.PlayerId;
                 int? killCount = GameHistory.deadPlayers.FindAll(x => x.killerIfExisting != null && x.killerIfExisting.PlayerId == playerControl.PlayerId).Count;
-                if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief, RoleInfo.moriarty, RoleInfo.jekyllAndHyde }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
+                if (killCount == 0 && !(new List<RoleInfo>() { RoleInfo.sheriff, RoleInfo.jackal, RoleInfo.sidekick, RoleInfo.thief, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, RoleInfo.doomsayer }.Contains(RoleInfo.getRoleInfoForPlayer(playerControl, false).FirstOrDefault()) || playerControl.Data.Role.IsImpostor)) {
                     killCount = null;
                     }
                 byte playerId = playerControl.PlayerId;
@@ -167,6 +169,7 @@ namespace TheOtherRoles.Patches {
             if (Cupid.cupid != null) notWinners.Add(Cupid.cupid);
             if (Fox.fox != null) notWinners.Add(Fox.fox);
             if (Kataomoi.kataomoi != null) notWinners.Add(Kataomoi.kataomoi);
+            if (Doomsayer.doomsayer != null) notWinners.Add(Doomsayer.doomsayer);
             if (Immoralist.immoralist != null) notWinners.Add(Immoralist.immoralist);
             if (SchrodingersCat.schrodingersCat != null) notWinners.Add(SchrodingersCat.schrodingersCat);
             if (SchrodingersCat.formerSchrodingersCat != null) notWinners.Add(SchrodingersCat.formerSchrodingersCat);
@@ -194,9 +197,10 @@ namespace TheOtherRoles.Patches {
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
             bool lawyerSoloWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.LawyerSoloWin;
             bool moriartyWin = Moriarty.moriarty != null && gameOverReason == (GameOverReason)CustomGameOverReason.MoriartyWin;
-            bool akujoWin = Akujo.akujo != null && gameOverReason == (GameOverReason)CustomGameOverReason.AkujoWin && (Akujo.honmei != null && !Akujo.honmei.Data.IsDead && !Akujo.akujo.Data.IsDead);
+            bool akujoWin = Akujo.akujo != null && gameOverReason == (GameOverReason)CustomGameOverReason.AkujoWin && Akujo.honmei != null && !Akujo.honmei.Data.IsDead && !Akujo.akujo.Data.IsDead;
             bool plagueDoctorWin = PlagueDoctor.plagueDoctor != null && gameOverReason == (GameOverReason)CustomGameOverReason.PlagueDoctorWin;
             bool kataomoiWin = Kataomoi.kataomoi != null && gameOverReason == (GameOverReason)CustomGameOverReason.KataomoiWin;
+            bool doomsayerWin = Doomsayer.doomsayer != null && gameOverReason == (GameOverReason)CustomGameOverReason.DoomsayerWin;
             bool foxWin = Fox.fox != null && gameOverReason == (GameOverReason)CustomGameOverReason.FoxWin;
             bool jekyllAndHydeWin = JekyllAndHyde.jekyllAndHyde != null && gameOverReason == (GameOverReason)CustomGameOverReason.JekyllAndHydeWin;
             bool cupidLoversWin = Cupid.lovers1 != null && Cupid.lovers2 != null && !Cupid.lovers1.Data.IsDead && !Cupid.lovers2.Data.IsDead && gameOverReason == (GameOverReason)CustomGameOverReason.CupidLoversWin;
@@ -270,6 +274,14 @@ namespace TheOtherRoles.Patches {
                 CachedPlayerData wpd = new(PlagueDoctor.plagueDoctor.Data);
                 EndGameResult.CachedWinners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.PlagueDoctorWin;
+            }
+
+            else if (doomsayerWin)
+            {
+                if (PlayerControl.LocalPlayer == Doomsayer.doomsayer) _ = new StaticAchievementToken("doomsayer.challenge");
+                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
+                EndGameResult.CachedWinners.Add(new(Doomsayer.doomsayer.Data));
+                AdditionalTempData.winCondition = WinCondition.DoomsayerWin;
             }
 
             // Everyone Died
@@ -678,6 +690,12 @@ namespace TheOtherRoles.Patches {
                 textRenderer.color = Fox.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Fox.color);
             }
+            else if (AdditionalTempData.winCondition == WinCondition.DoomsayerWin)
+            {
+                nonModTranslationText = "doomsayerWin";
+                textRenderer.color = Doomsayer.color;
+                __instance.BackgroundBar.material.SetColor("_Color", Doomsayer.color);
+            }
             else if (AdditionalTempData.winCondition == WinCondition.JekyllAndHydeWin)
             {
                 nonModTranslationText = "jekyllAndHydeWin";
@@ -859,6 +877,7 @@ namespace TheOtherRoles.Patches {
             if (CheckAndEndGameForLawyerMeetingWin(__instance)) return false;
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
             if (CheckAndEndGameForVultureWin(__instance)) return false;
+            if (CheckAndEndGameForDoomsayerWin(__instance)) return false;
             if (CheckAndEndGameForPlagueDoctorWin(__instance)) return false;
             if (CheckAndEndGameForJekyllAndHydeWin(__instance, statistics)) return false;
             if (CheckAndEndGameForMoriartyWin(__instance, statistics)) return false;
@@ -906,6 +925,16 @@ namespace TheOtherRoles.Patches {
             if (Kataomoi.triggerKataomoiWin)
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.KataomoiWin, false);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckAndEndGameForDoomsayerWin(ShipStatus __instance)
+        {
+            if (Doomsayer.triggerWin)
+            {
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.DoomsayerWin, false);
                 return true;
             }
             return false;

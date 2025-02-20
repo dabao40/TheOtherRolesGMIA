@@ -151,6 +151,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Fox, CustomOptionHolder.foxSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.SchrodingersCat, CustomOptionHolder.schrodingersCatSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Kataomoi, CustomOptionHolder.kataomoiSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Doomsayer, CustomOptionHolder.doomsayerSpawnRate.getSelection());
 
             /*if ((rnd.Next(1, 101) <= CustomOptionHolder.lawyerIsProsecutorChance.getSelection() * 10)) // Lawyer or Prosecutor
                 neutralSettings.Add((byte)RoleId.Prosecutor, CustomOptionHolder.lawyerSpawnRate.getSelection());
@@ -671,7 +672,7 @@ namespace TheOtherRoles.Patches {
             List<PlayerControl> neutralPlayer = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
             List<PlayerControl> crewPlayer = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
             impPlayer.RemoveAll(x => !x.Data.Role.IsImpostor);
-            neutralPlayer.RemoveAll(x => !Helpers.isNeutral(x));
+            neutralPlayer.RemoveAll(x => !Helpers.isNeutral(x) || x == Doomsayer.doomsayer); // Remove Doomsayer from Guesser List
             crewPlayer.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x));
             assignGuesserGamemodeToPlayers(crewPlayer, Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeCrewNumber.getFloat()));
             assignGuesserGamemodeToPlayers(neutralPlayer, Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeNeutralNumber.getFloat()), CustomOptionHolder.guesserForceJackalGuesser.getBool(), CustomOptionHolder.guesserForceThiefGuesser.getBool());

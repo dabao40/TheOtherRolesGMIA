@@ -400,6 +400,14 @@ namespace TheOtherRoles {
         public static CustomOption mediumOneTimeUse;
         public static CustomOption mediumChanceAdditionalInfo;
 
+        public static CustomOption doomsayerSpawnRate;
+        public static CustomOption doomsayerObserveCooldown;
+        public static CustomOption doomsayerGuessesToWin;
+        public static CustomOption doomsayerMultipleGuesses;
+        public static CustomOption doomsayerIndicator;
+        public static CustomOption doomsayerMaxMisses;
+        public static CustomOption doomsayerCantObserve;
+
         public static CustomOption lawyerSpawnRate;
         public static CustomOption lawyerTargetKnows;
         //public static CustomOption lawyerIsProsecutorChance;
@@ -887,6 +895,14 @@ namespace TheOtherRoles {
             schrodingersCatJustDieOnKilledByCrew = CustomOption.Create(976, Types.Neutral, "schrodingersCatJustDieOnKilledByCrew", false, schrodingersCatSpawnRate);
             schrodingersCatHideRole = CustomOption.Create(977, Types.Neutral, "schrodingersCatHideRole", false, schrodingersCatSpawnRate);
             schrodingersCatCanChooseImpostor = CustomOption.Create(979, Types.Neutral, "schrodingersCatCanChooseTeam", false, schrodingersCatHideRole);
+
+            doomsayerSpawnRate = CustomOption.Create(9040, Types.Neutral, cs(Doomsayer.color, "doomsayer"), rates, null, true);
+            doomsayerObserveCooldown = CustomOption.Create(9041, Types.Neutral, "doomsayerObserveCooldown", 30f, 5f, 60f, 1f, doomsayerSpawnRate);
+            doomsayerGuessesToWin = CustomOption.Create(9042, Types.Neutral, "doomsayerGuessesToWin", 3f, 1f, 24f, 1f, doomsayerSpawnRate);
+            doomsayerMultipleGuesses = CustomOption.Create(9045, Types.Neutral, "doomsayerMultipleGuesses", true, doomsayerSpawnRate);
+            doomsayerMaxMisses = CustomOption.Create(9046, Types.Neutral, "doomsayerMaxMisses", 3f, 0f, 24f, 1f, doomsayerSpawnRate);
+            doomsayerIndicator = CustomOption.Create(9043, Types.Neutral, "doomsayerIndicator", true, doomsayerSpawnRate);
+            doomsayerCantObserve = CustomOption.Create(9044, Types.Neutral, "doomsayerCantObserve", false, doomsayerSpawnRate);
 
             akujoSpawnRate = CustomOption.Create(8100, Types.Neutral, cs(Akujo.color, "akujo"), rates, null, true);
             akujoTimeLimit = CustomOption.Create(8101, Types.Neutral, "akujoTimeLimit", 300f, 30f, 1200f, 30f, akujoSpawnRate, false, "unitSeconds");

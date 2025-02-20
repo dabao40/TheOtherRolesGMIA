@@ -626,7 +626,7 @@ namespace TheOtherRoles.Patches
                         RoleButtons.ForEach(x => x.GetComponent<SpriteRenderer>().color = x == selectedButton ? Color.red : Color.white);
                     } else {
                         PlayerControl focusedTarget = Helpers.playerById((byte)__instance.playerStates[buttonTarget].TargetPlayerId);
-                        if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted) || focusedTarget == null || HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) <= 0 ) return;
+                        if (!(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted) || focusedTarget == null || (HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) <= 0 && PlayerControl.LocalPlayer != Doomsayer.doomsayer)) return;
 
                         if (!HandleGuesser.killsThroughShield && focusedTarget == Medic.shielded) { // Depending on the options, shooting the shielded player will not allow the guess, notifiy everyone about the kill attempt and close the window
                             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true)); 
@@ -647,11 +647,19 @@ namespace TheOtherRoles.Patches
                         // Reset the GUI
                         __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
                         UnityEngine.Object.Destroy(container.gameObject);
-                        if ((HandleGuesser.hasMultipleShotsPerMeeting || (PlayerControl.LocalPlayer == LastImpostor.lastImpostor && LastImpostor.hasMultipleShots)) &&
-                        HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 1 && dyingTarget != PlayerControl.LocalPlayer)
+                        if ((HandleGuesser.hasMultipleShotsPerMeeting || (PlayerControl.LocalPlayer == LastImpostor.lastImpostor && LastImpostor.hasMultipleShots) || (PlayerControl.LocalPlayer == Doomsayer.doomsayer && Doomsayer.hasMultipleGuesses)) &&
+                        (HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 1 || PlayerControl.LocalPlayer == Doomsayer.doomsayer) && dyingTarget != PlayerControl.LocalPlayer)
                             __instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == dyingTarget.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
                         else
                             __instance.playerStates.ToList().ForEach(x => { if (x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
+
+                        // Handle Doomsayer wrong guess
+                        if (PlayerControl.LocalPlayer == Doomsayer.doomsayer && dyingTarget == PlayerControl.LocalPlayer && Doomsayer.failedGuesses < Doomsayer.maxMisses) {
+                            Helpers.showFlash(Palette.ImpostorRed, duration: 0.5f, ModTranslation.getString("doomsayerWrongGuess"));
+                            SoundEffectsManager.play("fail");
+                            Doomsayer.failedGuesses++;
+                            return;
+                        }
 
                         bool isSpecialRole = roleInfo == RoleInfo.niceshifter || roleInfo == RoleInfo.niceSwapper;
                         // Shoot player and send chat info if activated
@@ -702,7 +710,7 @@ namespace TheOtherRoles.Patches
         class PlayerVoteAreaSelectPatch {
             static bool Prefix(MeetingHud __instance) {
                 //return !(PlayerControl.LocalPlayer != null && ((HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId) && guesserUI != null) || (Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId) && Yasuna.specialVoteTargetPlayerId != byte.MaxValue)));
-                return !(PlayerControl.LocalPlayer != null && HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId) && guesserUI != null);
+                return !(PlayerControl.LocalPlayer != null && (HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId) || PlayerControl.LocalPlayer == Doomsayer.doomsayer) && guesserUI != null);
             }
         }
 
@@ -790,8 +798,8 @@ namespace TheOtherRoles.Patches
                 }
             } */
 
-            bool isGuesser = HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId);
-
+            bool isGuesser = HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId) || PlayerControl.LocalPlayer == Doomsayer.doomsayer;
+            bool isTrackerButton = EvilTracker.canSetTargetOnMeeting && (EvilTracker.target == null || EvilTracker.resetTargetAfterMeeting) && PlayerControl.LocalPlayer == EvilTracker.evilTracker && !PlayerControl.LocalPlayer.Data.IsDead;
             // Add overlay for spelled players
             if (Witch.witch != null && Witch.futureSpelled != null) {
                 foreach (PlayerVoteArea pva in __instance.playerStates) {
@@ -800,7 +808,7 @@ namespace TheOtherRoles.Patches
                         rend.transform.SetParent(pva.transform);
                         rend.gameObject.layer = pva.Megaphone.gameObject.layer;
                         rend.transform.localPosition = new Vector3(-0.5f, -0.03f, -1f);
-                        if (PlayerControl.LocalPlayer == Swapper.swapper && isGuesser) rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
+                        if (((PlayerControl.LocalPlayer == Swapper.swapper && !PlayerControl.LocalPlayer.Data.IsDead) || isTrackerButton) && isGuesser) rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
                         rend.sprite = Witch.getSpelledOverlaySprite();
                         addButtonGuide(rend.gameObject.SetUpButton(), ModTranslation.getString("witchMeetingOverlay"));
                         var collider = rend.gameObject.AddComponent<CircleCollider2D>();
@@ -811,7 +819,6 @@ namespace TheOtherRoles.Patches
             }
 
             // Add Track Button for Evil Tracker
-            bool isTrackerButton = EvilTracker.canSetTargetOnMeeting && (EvilTracker.target == null || EvilTracker.resetTargetAfterMeeting) && PlayerControl.LocalPlayer == EvilTracker.evilTracker && !PlayerControl.LocalPlayer.Data.IsDead;
             if (isTrackerButton)
             {
                 for (int i = 0; i < __instance.playerStates.Length; i++)
@@ -853,7 +860,7 @@ namespace TheOtherRoles.Patches
             int remainingShots = HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId);
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
 
-            if (isGuesser && !PlayerControl.LocalPlayer.Data.IsDead && remainingShots > 0) {
+            if (isGuesser && !PlayerControl.LocalPlayer.Data.IsDead && (remainingShots > 0 || PlayerControl.LocalPlayer == Doomsayer.doomsayer)) {
                 for (int i = 0; i < __instance.playerStates.Length; i++) {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
@@ -950,6 +957,9 @@ namespace TheOtherRoles.Patches
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("evilTrackerCurrentTarget"), EvilTracker.target?.Data?.PlayerName ?? "");
             } if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer == Lawyer.lawyer && Lawyer.winsAfterMeetings) {
                 meetingInfoText.getFirst().text = Lawyer.neededMeetings - Lawyer.meetings > 1 ? string.Format(ModTranslation.getString("lawyerMeetingInfo"), Lawyer.neededMeetings - Lawyer.meetings - 1) : ModTranslation.getString("lawyerAboutToWin");
+            } if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer == Doomsayer.doomsayer) {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("doomsayerGuessesLeft"), Math.Max(0, Doomsayer.guessesToWin - Doomsayer.counter));
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("doomsayerMissesLeft"), Mathf.Max(0, Doomsayer.maxMisses - Doomsayer.failedGuesses));
             }
 
             meetingInfoText[meetingTextIndex].gameObject.SetActive(true);
@@ -1188,6 +1198,52 @@ namespace TheOtherRoles.Patches
                         }
                         FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}", false);
                     }
+                }
+
+                if (Doomsayer.doomsayer != null && Doomsayer.observed != null && (PlayerControl.LocalPlayer == Doomsayer.doomsayer || Helpers.shouldShowGhostInfo()) && !Doomsayer.doomsayer.Data.IsDead)
+                {
+                    string msg = "";
+                    var list = new List<RoleInfo>();
+                    var info = RoleInfo.getRoleInfoForPlayer(Doomsayer.observed, false, true).FirstOrDefault();
+                    if (Doomsayer.Killing.Contains(info)) {
+                        msg = "doomsayerKillingInfo";
+                        list = Doomsayer.Killing;
+                    } else if (Doomsayer.Trick.Contains(info)) {
+                        msg = "doomsayerTrickInfo";
+                        list = Doomsayer.Trick;
+                    } else if (Doomsayer.Detect.Contains(info)) {
+                        msg = "doomsayerDetectInfo";
+                        list = Doomsayer.Detect;
+                    } else if (Doomsayer.Panic.Contains(info)) {
+                        msg = "doomsayerPanicInfo";
+                        list = Doomsayer.Panic;
+                    } else if (Doomsayer.Body.Contains(info)) {
+                        msg = "doomsayerBodyInfo";
+                        list = Doomsayer.Body;
+                    } else if (Doomsayer.Team.Contains(info)) {
+                        msg = "doomsayerTeamInfo";
+                        list = new(Doomsayer.Team);
+                        list.RemoveAll(x => x.roleId == RoleId.BomberB);
+                    } else if (Doomsayer.Protection.Contains(info)) {
+                        msg = "doomsayerProtectionInfo";
+                        list = Doomsayer.Protection;
+                    } else if (Doomsayer.Outlook.Contains(info)) {
+                        msg = "doomsayerOutlookInfo";
+                        list = Doomsayer.Outlook;
+                    } else if (Doomsayer.Hunting.Contains(info)) {
+                        msg = "doomsayerHuntingInfo";
+                        list = Doomsayer.Hunting;
+                    } else if (info.roleId is RoleId.Crewmate or RoleId.Impostor) {
+                        msg = "doomsayerRolelessInfo";
+                        list = new() { RoleInfo.crewmate, RoleInfo.impostor };
+                    }
+                    if (!string.IsNullOrEmpty(msg)) {
+                        msg = string.Format(ModTranslation.getString(msg), Doomsayer.observed.Data.PlayerName) + "\n(" + string.Join(", ", list.Select(x => x.name)) +")";
+                    }
+                    else {
+                        msg = ModTranslation.getString("doomsayerNoneInfo");
+                    }
+                    FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Doomsayer.doomsayer, msg, false);
                 }
 
                 NekoKabocha.meetingKiller = null;

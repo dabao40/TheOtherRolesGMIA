@@ -105,6 +105,7 @@ namespace TheOtherRoles
         public static CustomButton yoyoButton;
         public static CustomButton archaeologistDetectButton;
         public static CustomButton archaeologistExcavateButton;
+        public static CustomButton doomsayerButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
         public static CustomButton freePlayReviveButton;
@@ -212,6 +213,7 @@ namespace TheOtherRoles
             serialKillerButton.MaxTimer = SerialKiller.suicideTimer;
             archaeologistDetectButton.MaxTimer = Archaeologist.cooldown;
             archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
+            doomsayerButton.MaxTimer = Doomsayer.cooldown;
             foreach (var button in fortuneTellerButtons)
             {
                 button.MaxTimer = 0f;
@@ -3683,6 +3685,35 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("MediumText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 shakeOnEnd: false
+            );
+
+            doomsayerButton = new(
+                () =>
+                {
+                    if (Doomsayer.currentTarget != null)
+                    {
+                        if (Helpers.checkSuspendAction(Doomsayer.doomsayer, Doomsayer.currentTarget)) return;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoomsayerObserve, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Doomsayer.currentTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.doomsayerObserve(Doomsayer.currentTarget.PlayerId);
+                        doomsayerButton.Timer = doomsayerButton.MaxTimer;
+                        _ = new StaticAchievementToken("doomsayer.common1");
+                    }
+                },
+                () => { return PlayerControl.LocalPlayer == Doomsayer.doomsayer && Doomsayer.doomsayer != null && !PlayerControl.LocalPlayer.Data.IsDead && !Doomsayer.cantObserve; },
+                () => { return PlayerControl.LocalPlayer.CanMove && Doomsayer.currentTarget != null; },
+                () =>
+                {
+                    Doomsayer.observed = null;
+                    doomsayerButton.Timer = doomsayerButton.MaxTimer = Doomsayer.cooldown;
+                },
+                Doomsayer.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("DoomsayerText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
             // Fortune Teller button

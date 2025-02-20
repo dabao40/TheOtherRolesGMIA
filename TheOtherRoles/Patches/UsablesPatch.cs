@@ -105,7 +105,6 @@ namespace TheOtherRoles.Patches {
                 return false;
             }
             if (Trap.isTrapped(PlayerControl.LocalPlayer)) return false;
-            if (PlayerControl.LocalPlayer == Undertaker.undertaker && Undertaker.disableVent && Undertaker.DraggedBody != null) return false;
 
             bool canUse;
             bool couldUse;

@@ -97,6 +97,7 @@ namespace TheOtherRoles
         Blackmailer,
         Opportunist,
         Yoyo,
+        Doomsayer,
         Kataomoi,
         Busker,
         Noisemaker,
@@ -280,6 +281,7 @@ namespace TheOtherRoles
         ArchaeologistDetect,
         ArchaeologistExcavate,
         ImpostorPromotesToLastImpostor,
+        DoomsayerObserve
     }
 
     public static class RPCProcedure {
@@ -446,6 +448,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Archaeologist:
                         Archaeologist.archaeologist = player;
+                        break;
+                    case RoleId.Doomsayer:
+                        Doomsayer.doomsayer = player;
                         break;
                     case RoleId.Morphling:
                         Morphling.morphling = player;
@@ -1242,6 +1247,7 @@ namespace TheOtherRoles
             }
             if (player == Akujo.akujo) Akujo.akujo = oldShifter;
             if (player == Cupid.cupid) Cupid.cupid = oldShifter;
+            if (player == Doomsayer.doomsayer) Doomsayer.doomsayer = oldShifter;
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.jekyllAndHyde = oldShifter;
             if (player == Moriarty.formerMoriarty) {
                 Moriarty.formerMoriarty = oldShifter;
@@ -1714,6 +1720,7 @@ namespace TheOtherRoles
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
             if (player == Cupid.cupid) Cupid.clearAndReload(false);
             if (player == SchrodingersCat.schrodingersCat) SchrodingersCat.clearAndReload();
+            if (player == Doomsayer.doomsayer) Doomsayer.clearAndReload();
 
             // Always remove the Madmate
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId)) Madmate.madmate.RemoveAll(x => x.PlayerId == player.PlayerId);
@@ -2225,6 +2232,13 @@ namespace TheOtherRoles
             }
         }
 
+        public static void doomsayerObserve(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            if (player == null || Doomsayer.doomsayer == null) return;
+            Doomsayer.observed = player;
+        }
+
         public static void mimicMorph(byte mimicAId, byte mimicBId)
         {
             //if (MimicA.mimicA == null || MimicK.mimicK == null || MimicK.mimicK.Data.IsDead) return;
@@ -2674,6 +2688,17 @@ namespace TheOtherRoles
                 }
             }
 
+            if (killer == Doomsayer.doomsayer && dyingTarget != killer) {
+                if (Doomsayer.indicateGuesses && !PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance) {
+                        FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, ModTranslation.getString("doomsayerGuessedSomeone"), false);
+                    }
+                }
+                Doomsayer.counter++;
+                if (Doomsayer.counter >= Doomsayer.guessesToWin) Doomsayer.triggerWin = true;
+            }
+
             dyingTarget.Exiled();
             GameHistory.overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
 
@@ -2709,7 +2734,8 @@ namespace TheOtherRoles
                 }
 
             // remove shoot button from targets for all guessers and close their guesserUI
-            if (GuesserGM.isGuesser(PlayerControl.LocalPlayer.PlayerId) && PlayerControl.LocalPlayer != guesser && !PlayerControl.LocalPlayer.Data.IsDead && GuesserGM.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 0 && MeetingHud.Instance) {
+            if ((GuesserGM.isGuesser(PlayerControl.LocalPlayer.PlayerId) || PlayerControl.LocalPlayer == Doomsayer.doomsayer) && PlayerControl.LocalPlayer != guesser && !PlayerControl.LocalPlayer.Data.IsDead &&
+                (GuesserGM.remainingShots(PlayerControl.LocalPlayer.PlayerId) > 0 || PlayerControl.LocalPlayer == Doomsayer.doomsayer) && MeetingHud.Instance) {
                 MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == dyingTarget.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
                 if (NekoKabocha.meetingKiller != null && revengeFlag)
                     MeetingHud.Instance.playerStates.ToList().ForEach(x => { if (x.TargetPlayerId == NekoKabocha.meetingKiller.PlayerId && x.transform.FindChild("ShootButton") != null) UnityEngine.Object.Destroy(x.transform.FindChild("ShootButton").gameObject); });
@@ -3252,6 +3278,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.BreakArmor:
                     RPCProcedure.breakArmor();
+                    break;
+                case (byte)CustomRPC.DoomsayerObserve:
+                    RPCProcedure.doomsayerObserve(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.ImpostorPromotesToLastImpostor:
                     RPCProcedure.impostorPromotesToLastImpostor(reader.ReadByte());
