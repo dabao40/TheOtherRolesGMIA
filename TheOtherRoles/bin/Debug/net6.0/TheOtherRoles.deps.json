@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "TheOtherRoles/1.3.1": {
+      "TheOtherRoles/1.3.3": {
         "dependencies": {
           "AmongUs.GameLibs.Steam": "2024.10.29",
           "BepInEx.IL2CPP.MSBuild": "2.1.0-rc.1",
@@ -841,7 +841,7 @@
     }
   },
   "libraries": {
-    "TheOtherRoles/1.3.1": {
+    "TheOtherRoles/1.3.3": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

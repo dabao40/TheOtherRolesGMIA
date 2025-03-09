@@ -418,6 +418,33 @@ namespace TheOtherRoles.Patches {
                         // player.HighlightedFX.enabled = true;
                     }
             }
+            // Bait
+            if (Bait.showBaitFor == 0)
+            {
+                if (PlayerControl.LocalPlayer != null && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer != Helpers.isNeutral(PlayerControl.LocalPlayer) && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait)
+                {
+                    foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                        if (Bait.bait != null && Bait.bait == player)
+                            player.cosmetics.nameText.text = player.Data.PlayerName + $" ({ModTranslation.getString("bait")})";
+                    if (MeetingHud.Instance != null)
+                        foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                            if (Bait.bait != null && player.TargetPlayerId == Bait.bait.PlayerId)
+                                player.NameText.text = player.NameText.text + $" ({ModTranslation.getString("bait")})";
+                }
+            }
+             else if (Bait.showBaitFor == 1)
+            {
+                if (PlayerControl.LocalPlayer != null && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait && PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer == Helpers.isNeutral(PlayerControl.LocalPlayer))
+                {
+                    foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                        if (Bait.bait != null && Bait.bait == player)
+                            player.cosmetics.nameText.text = player.Data.PlayerName + $" ({ModTranslation.getString("bait")})";
+                    if (MeetingHud.Instance != null)
+                        foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                            if (Bait.bait != null && Bait.bait.PlayerId == player.TargetPlayerId)
+                                player.NameText.text = Bait.bait.Data.PlayerName + $" ({ModTranslation.getString("bait")})";
+                }
+            }
         }
 
         static void updateShielded() {
