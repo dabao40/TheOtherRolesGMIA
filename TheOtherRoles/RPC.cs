@@ -281,7 +281,10 @@ namespace TheOtherRoles
         ArchaeologistDetect,
         ArchaeologistExcavate,
         ImpostorPromotesToLastImpostor,
-        DoomsayerObserve
+        DoomsayerObserve,
+        EventKick,
+        DraftModePickOrder,
+        DraftModePick,
     }
 
     public static class RPCProcedure {
@@ -314,12 +317,15 @@ namespace TheOtherRoles
             clearAndReloadRoles();
             clearGameHistory();
             setCustomButtonCooldowns();
+            CustomButton.ReloadHotkeys();
             reloadPluginOptions();
             CustomOverlay.resetOverlays();
             Helpers.toggleZoom(reset : true);
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
             SurveillanceMinigamePatch.nightVisionOverlays = null;
             EventUtility.clearAndReload();
+            HudManagerUpdate.CloseSummary();
+            RoleDraft.isRunning = false;
         }
 
     public static void HandleShareOptions(byte numberOfOptions, MessageReader reader) {            
@@ -353,14 +359,18 @@ namespace TheOtherRoles
 
         public static void shareGamemode(byte gm) {
             TORMapOptions.gameMode = (CustomGamemodes) gm;
-            LobbyViewSettingsPatch.currentButtons?.ForEach(x => x.gameObject?.Destroy());
+            if (LobbyViewSettingsPatch.currentButtons != null)
+                LobbyViewSettingsPatch.currentButtons?.ForEach(x => { if (x != null && x.gameObject != null) x?.gameObject?.Destroy(); });
             LobbyViewSettingsPatch.currentButtons?.Clear();
             LobbyViewSettingsPatch.currentButtonTypes?.Clear();
         }
 
         public static void stopStart(byte playerId)
         {
-            if (AmongUsClient.Instance.AmHost && CustomOptionHolder.anyPlayerCanStopStart.getBool())
+            if (!CustomOptionHolder.anyPlayerCanStopStart.getBool())
+                return;
+            SoundManager.Instance.StopSound(GameStartManager.Instance.gameStartSound);
+            if (AmongUsClient.Instance.AmHost)
             {
                 GameStartManager.Instance.ResetStartState();
                 PlayerControl.LocalPlayer.RpcSendChat(string.Format(ModTranslation.getString("playerStopGameStartText"), Helpers.playerById(playerId).Data.PlayerName));
@@ -909,13 +919,16 @@ namespace TheOtherRoles
             bool isHusk = false;
 
             // Switch shield
-            if (Medic.shielded != null && Medic.shielded == player)
+            if (Shifter.shiftsMedicShield)
             {
-                Medic.shielded = oldShifter;
-            }
-            else if (Medic.shielded != null && Medic.shielded == oldShifter)
-            {
-                Medic.shielded = player;
+                if (Medic.shielded != null && Medic.shielded == player)
+                {
+                    Medic.shielded = oldShifter;
+                }
+                else if (Medic.shielded != null && Medic.shielded == oldShifter)
+                {
+                    Medic.shielded = player;
+                }
             }
 
             if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
@@ -1112,7 +1125,7 @@ namespace TheOtherRoles
                 Noisemaker.noisemaker = oldShifter;
                 Noisemaker.onAchievementActivate();
             }
-            if (Archaeologist.archaeologist != null && Archaeologist.archaeologist == player) Archaeologist.archaeologist = player;
+            if (Archaeologist.archaeologist != null && Archaeologist.archaeologist == player) Archaeologist.archaeologist = oldShifter;
 
             if (player == Godfather.godfather) Godfather.godfather = oldShifter;
             if (player == Mafioso.mafioso) Mafioso.mafioso = oldShifter;
@@ -2172,7 +2185,7 @@ namespace TheOtherRoles
             {
                 if (!Tracker.acTokenChallenge.Value.cleared)
                 {
-                    if (Tracker.acTokenChallenge.Value.ventTime - moveTime >= Tracker.timeUntilUpdate)
+                    if (moveTime - Tracker.acTokenChallenge.Value.ventTime >= Tracker.updateIntervall)
                         Tracker.acTokenChallenge.Value.cleared = true;
                 }
             }
@@ -3576,9 +3589,15 @@ namespace TheOtherRoles
                     byte thiefTargetId = reader.ReadByte();
                     RPCProcedure.thiefStealsRole(thiefTargetId);
                     break;
+                case (byte)CustomRPC.DraftModePickOrder:
+                    RoleDraft.receivePickOrder(reader.ReadByte(), reader);
+                    break;
+                case (byte)CustomRPC.DraftModePick:
+                    RoleDraft.receivePick(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean());
+                    break;
                 //case (byte)CustomRPC.SetTrap:
-                    //RPCProcedure.setTrap(reader.ReadBytesAndSize());
-                    //break;
+                //RPCProcedure.setTrap(reader.ReadBytesAndSize());
+                //break;
                 /*case (byte)CustomRPC.TriggerTrap:
                     byte trappedPlayer = reader.ReadByte();
                     byte trapId = reader.ReadByte();
@@ -3617,6 +3636,11 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.ShareGhostInfo:
                     RPCProcedure.receiveGhostInfo(reader.ReadByte(), reader);
+                    break;
+                case (byte)CustomRPC.EventKick:
+                    byte kickSource = reader.ReadByte();
+                    byte kickTarget = reader.ReadByte();
+                    EventUtility.handleKick(Helpers.playerById(kickSource), Helpers.playerById(kickTarget), reader.ReadSingle());
                     break;
             }
         }

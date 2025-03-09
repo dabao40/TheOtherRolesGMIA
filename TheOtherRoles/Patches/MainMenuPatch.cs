@@ -26,6 +26,9 @@ namespace TheOtherRoles.Modules {
         private static AnnouncementPopUp popUp;
 
         private static void Prefix(MainMenuManager __instance) {
+            // Force Reload of SoundEffectHolder
+            SoundEffectsManager.Load();
+
             var template = GameObject.Find("ExitGameButton");
             var template2 = GameObject.Find("CreditsButton");
             if (template == null || template2 == null) return;

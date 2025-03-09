@@ -109,6 +109,7 @@ namespace TheOtherRoles
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
         public static CustomButton freePlayReviveButton;
+        public static CustomButton eventKickButton;
         //public static CustomButton trapperButton;
         //public static CustomButton bomberButton;
         //public static CustomButton defuseButton;
@@ -140,6 +141,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text moriartyKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
+        public static TMPro.TMP_Text doomsayerUsesText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
@@ -1016,7 +1018,7 @@ namespace TheOtherRoles
                 Tracker.getTrackCorpsesButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowCenter,
                 __instance,
-                KeyCode.Q,
+                KeyCode.G,
                 true,
                 Tracker.corpsesTrackingDuration,
                 () => {
@@ -1226,7 +1228,7 @@ namespace TheOtherRoles
                 Portalmaker.getUsePortalButtonSprite(),
                 new Vector3(0.9f, -0.06f, 0),
                 __instance,
-                KeyCode.H,
+                KeyCode.J,
                 mirror: true,
                 ModTranslation.getString("PortalTeleportText"),
                 CustomButton.ButtonLabelType.UseButton
@@ -1270,7 +1272,7 @@ namespace TheOtherRoles
                 Portalmaker.getUsePortalButtonSprite(),
                 new Vector3(0.9f, 1f, 0),
                 __instance,
-                KeyCode.J,
+                KeyCode.G,
                 mirror: true,
                 ModTranslation.getString("PortalTeleportText"),
                 CustomButton.ButtonLabelType.UseButton
@@ -1559,6 +1561,26 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("MadmateText")
             );
+
+            eventKickButton = new CustomButton(
+                () => {
+                    EventUtility.kickTarget();
+                },
+                () => { return EventUtility.isEnabled && Mini.mini != null && !Mini.mini.Data.IsDead && PlayerControl.LocalPlayer != Mini.mini; },
+                () => { return EventUtility.currentTarget != null; },
+                () => { },
+                EventUtility.getKickButtonSprite(),
+                CustomButton.ButtonPositions.highRowRight,
+                __instance,
+                KeyCode.K,
+                true,
+                3f,
+                () => {
+                    // onEffectEnds
+                    eventKickButton.Timer = 69;
+                },
+                buttonText: "KICK"
+                );
 
             prophetButton = new CustomButton(
                 () =>
@@ -2060,7 +2082,7 @@ namespace TheOtherRoles
                 SecurityGuard.getCamSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                KeyCode.Q,
+                KeyCode.G,
                 true,
                 0f,
                 () => {
@@ -2965,7 +2987,7 @@ namespace TheOtherRoles
                     MimicA.acTokenCommon.Value++;
                 },
                 () => { return MimicA.mimicA != null && PlayerControl.LocalPlayer == MimicA.mimicA && !PlayerControl.LocalPlayer.Data.IsDead && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead; },
-                () => { return PlayerControl.LocalPlayer.CanMove && !PlayerControl.LocalPlayer.Data.IsDead && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead && !Helpers.MushroomSabotageActive(); },
+                () => { return PlayerControl.LocalPlayer.CanMove && !Helpers.MushroomSabotageActive(); },
                 () => { MimicA.acTokenCommon.Value = 0; },
                 MimicA.getMorphSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
@@ -2990,7 +3012,7 @@ namespace TheOtherRoles
                     return MimicA.mimicA != null && PlayerControl.LocalPlayer == MimicA.mimicA && !PlayerControl.LocalPlayer.Data.IsDead
                     && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead;
                 },
-                () => { return PlayerControl.LocalPlayer.CanMove && !PlayerControl.LocalPlayer.Data.IsDead && MimicK.mimicK != null && !MimicK.mimicK.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
                 () => { },
                 MimicA.getAdminSprite(),
                 CustomButton.ButtonPositions.upperRowCenter,
@@ -3139,7 +3161,7 @@ namespace TheOtherRoles
                 },
                 () => { return Kataomoi.kataomoi != null && Kataomoi.kataomoi == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => {
-                    return PlayerControl.LocalPlayer.CanMove;
+                    return PlayerControl.LocalPlayer.CanMove && Kataomoi.target != null;
                 },
                 () => {
                     kataomoiSearchButton.Timer = kataomoiSearchButton.MaxTimer;
@@ -3697,12 +3719,17 @@ namespace TheOtherRoles
                         writer.Write(Doomsayer.currentTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.doomsayerObserve(Doomsayer.currentTarget.PlayerId);
+                        Doomsayer.usesLeft--;
                         doomsayerButton.Timer = doomsayerButton.MaxTimer;
                         _ = new StaticAchievementToken("doomsayer.common1");
                     }
                 },
-                () => { return PlayerControl.LocalPlayer == Doomsayer.doomsayer && Doomsayer.doomsayer != null && !PlayerControl.LocalPlayer.Data.IsDead && !Doomsayer.cantObserve; },
-                () => { return PlayerControl.LocalPlayer.CanMove && Doomsayer.currentTarget != null; },
+                () => { return PlayerControl.LocalPlayer == Doomsayer.doomsayer && Doomsayer.doomsayer != null && !PlayerControl.LocalPlayer.Data.IsDead && Doomsayer.usesLeft > 0; },
+                () =>
+                {
+                    if (doomsayerUsesText != null) doomsayerUsesText.text = Doomsayer.usesLeft.ToString();
+                    return PlayerControl.LocalPlayer.CanMove && Doomsayer.currentTarget != null;
+                },
                 () =>
                 {
                     Doomsayer.observed = null;
@@ -3715,6 +3742,7 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("DoomsayerText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+            doomsayerUsesText = doomsayerButton.ShowUsesIcon(1);
 
             // Fortune Teller button
             fortuneTellerButtons = new List<CustomButton>();

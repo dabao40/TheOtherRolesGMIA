@@ -79,7 +79,7 @@ namespace TheOtherRoles.Modules
 
         static public GameObject AddKeyGuide(GameObject button, KeyCode key, UnityEngine.Vector2 pos, bool removeExistingGuide, string action = null)
         {
-            if (removeExistingGuide) button.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => { if (obj.name == "HotKeyGuide") GameObject.Destroy(obj); }));
+            if (removeExistingGuide) button.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => { if (obj.name == "HotKeyGuide") UnityEngine.Object.Destroy(obj); }));
 
             Sprite numSprite = null;
             if (KeyCodeInfo.AllKeyInfo.ContainsKey(key)) numSprite = KeyCodeInfo.AllKeyInfo[key].Sprite;
@@ -137,7 +137,7 @@ namespace TheOtherRoles.Modules
         {
             if (!show)
             {
-                button.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => { if (obj.name == "MouseAction") GameObject.Destroy(obj); }));
+                button.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => { if (obj.name == "MouseAction") UnityEngine.Object.Destroy(obj); }));
                 return null;
             }
             else
@@ -162,7 +162,7 @@ namespace TheOtherRoles.Modules
         static public GameObject ShowUsesIcon(this ActionButton button)
         {
             Transform template = HudManager.Instance.AbilityButton.transform.GetChild(2);
-            var usesObject = GameObject.Instantiate(template.gameObject);
+            var usesObject = UnityEngine.Object.Instantiate(template.gameObject);
             usesObject.transform.SetParent(button.gameObject.transform);
             usesObject.transform.localScale = template.localScale;
             usesObject.transform.localPosition = template.localPosition * 1.2f;
@@ -180,6 +180,8 @@ namespace TheOtherRoles.Modules
 
         static public void ShowVanillaKeyGuide(this HudManager manager)
         {
+            if (manager == null) return;
+
             //ボタンのガイドを表示
             var keyboardMap = Rewired.ReInput.mapping.GetKeyboardMapInstanceSavedOrDefault(0, 0, 0);
             Il2CppReferenceArray<Rewired.ActionElementMap> actionArray;
@@ -190,7 +192,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.SabotageButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.SabotageButton.gameObject, actionMap.keyCode);
             }
 
             //使用
@@ -198,8 +200,8 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.UseButton.gameObject, actionMap.keyCode);
-                ButtonEffect.SetKeyGuide(HudManager.Instance.PetButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.UseButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.PetButton.gameObject, actionMap.keyCode);
             }
 
             //レポート
@@ -207,7 +209,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.ReportButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.ReportButton.gameObject, actionMap.keyCode);
             }
 
             //キル
@@ -215,7 +217,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.KillButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.KillButton.gameObject, actionMap.keyCode);
             }
 
             //ベント
@@ -223,7 +225,7 @@ namespace TheOtherRoles.Modules
             if (actionArray.Count > 0)
             {
                 actionMap = actionArray[0];
-                ButtonEffect.SetKeyGuide(HudManager.Instance.ImpostorVentButton.gameObject, actionMap.keyCode);
+                SetKeyGuide(manager.ImpostorVentButton.gameObject, actionMap.keyCode);
             }
         }
     }

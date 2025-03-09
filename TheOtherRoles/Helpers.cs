@@ -54,6 +54,7 @@ namespace TheOtherRoles
     public static class Helpers
     {
 
+        public static string previousEndGameSummary = "";
         public static Dictionary<string, Sprite> CachedSprites = new();
 
         public static Sprite loadSpriteFromResources(string path, float pixelsPerUnit) {
@@ -1055,6 +1056,7 @@ namespace TheOtherRoles
             else if (source == target) return false; // Player sees his own name
             else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || (target == Sidekick.sidekick && Sidekick.wasTeamRed) || (target == Jackal.jackal && Jackal.wasTeamRed))) return false; // Members of team Impostors see the names of Impostors/Spies
             else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
+            else if (Cupid.lovers1 != null && Cupid.lovers2 != null && (source == Cupid.lovers1 || source == Cupid.lovers2) && (target == Cupid.lovers1 || target == Cupid.lovers2)) return false; // Members of team Cupid Lovers see the names of each other
             else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
             else if (Deputy.knowsSheriff && (source == Sheriff.sheriff || source == Deputy.deputy) && (target == Sheriff.sheriff || target == Deputy.deputy)) return false; // Sheriff & Deputy see the names of each other
             else if ((source == Fox.fox || source == Immoralist.immoralist) && (target == Fox.fox || target == Immoralist.immoralist)) return false; // Members of team Fox see the names of each other

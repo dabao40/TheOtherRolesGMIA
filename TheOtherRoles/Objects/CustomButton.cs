@@ -1,5 +1,6 @@
 using AmongUs.GameOptions;
 using Il2CppSystem.Runtime.ExceptionServices;
+using Rewired;
 using System;
 using System.Collections.Generic;
 using TheOtherRoles.Modules;
@@ -11,6 +12,9 @@ using static TheOtherRoles.TheOtherRoles;
 namespace TheOtherRoles.Objects {
     public class CustomButton {
         public static List<CustomButton> buttons = new();
+        public static KeyCode Action2Keycode = KeyCode.G;
+        public static KeyCode Action3Keycode = KeyCode.H;
+
         public ActionButton actionButton;
         public Vector3 LocalScale = Vector3.one;
         public GameObject actionButtonGameObject;
@@ -36,6 +40,7 @@ namespace TheOtherRoles.Objects {
         public HudManager hudManager;
         public bool mirror;
         public KeyCode? hotkey;
+        public KeyCode? originalHotkey;
         public string buttonText = "";
         public string actionName = null;
         public bool shakeOnEnd = true;
@@ -51,6 +56,7 @@ namespace TheOtherRoles.Objects {
             public static readonly Vector3 upperRowCenter = new(-1f, 1f, 0f);  // Not usable for imps beacuse of new button positions!
             public static readonly Vector3 upperRowLeft = new(-2f, 1f, 0f);
             public static readonly Vector3 upperRowFarLeft = new(-3f, 1f, 0f);
+            public static readonly Vector3 highRowRight = new(0f, 2.06f, 0f);
         }
 
         public enum ButtonLabelType
@@ -81,6 +87,7 @@ namespace TheOtherRoles.Objects {
             this.actionName = actionName;
             this.shakeOnEnd = shakeOnEnd;
             this.isSuicide = isSuicide;
+            originalHotkey = hotkey;
             Timer = 16.2f;
             buttons.Add(this);
             actionButton = UnityEngine.Object.Instantiate(hudManager.KillButton, hudManager.KillButton.transform.parent);
@@ -168,6 +175,38 @@ namespace TheOtherRoles.Objects {
             }
         }
 
+        // Reload the rebound hotkeys from the among us settings.
+        public static void ReloadHotkeys()
+        {
+            foreach (var button in buttons)
+            {
+                // Q button is used only for killing! This rebinds every button that would use Q to use the currently set killing button in among us.
+                if (button.originalHotkey == KeyCode.Q)
+                {
+                    Player player = Rewired.ReInput.players.GetPlayer(0);
+                    string keycode = player.controllers.maps.GetFirstButtonMapWithAction(8, true).elementIdentifierName;
+                    button.hotkey = (KeyCode)Enum.Parse(typeof(KeyCode), keycode);
+                }
+                // F is the default ability button. All buttons that would use F now use the ability button.
+                if (button.originalHotkey == KeyCode.F)
+                {
+                    Player player = Rewired.ReInput.players.GetPlayer(0);
+                    string keycode = player.controllers.maps.GetFirstButtonMapWithAction(49, true).elementIdentifierName;
+                    button.hotkey = (KeyCode)Enum.Parse(typeof(KeyCode), keycode);
+                }
+
+                if (button.originalHotkey == KeyCode.G)
+                {
+                    button.hotkey = Action2Keycode;
+                }
+                if (button.originalHotkey == KeyCode.H)
+                {
+                    button.hotkey = Action3Keycode;
+                }
+            }
+
+        }
+
         public void setActive(bool isActive) {
             if (isActive) {
                 actionButtonGameObject.SetActive(true);
@@ -230,7 +269,7 @@ namespace TheOtherRoles.Objects {
                 actionButtonMat.SetFloat(Desat, 1f);
             }
         
-            if (Timer >= 0) {
+            if (Timer >= 0 && !RoleDraft.isRunning) {
                 if (HasEffect && isEffectActive) {
                     Timer -= Time.deltaTime;
                     if (Timer <= 3f && Timer > 0f && shakeOnEnd)

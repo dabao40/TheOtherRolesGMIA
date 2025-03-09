@@ -423,8 +423,8 @@ namespace TheOtherRoles.Patches {
                     IsImpostor = false
                 };
                 EndGameResult.CachedWinners.Add(wpd);
-                if (PlayerControl.LocalPlayer == Jackal.jackal) {
-                    var lastDead = GameHistory.deadPlayers.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
+                if (PlayerControl.LocalPlayer == Jackal.jackal && GameHistory.deadPlayers != null && GameHistory.deadPlayers.Count > 0) {
+                    var lastDead = GameHistory.deadPlayers?.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
                     if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == Jackal.jackal) _ = new StaticAchievementToken("jackal.challenge");
                 }
                 // If there is a sidekick. The sidekick also wins
@@ -858,6 +858,7 @@ namespace TheOtherRoles.Patches {
                 var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
                 roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
                 roleSummaryTextMesh.text = roleSummaryText.ToString();
+                Helpers.previousEndGameSummary = $"<size=110%>{roleSummaryText.ToString()}</size>";
             }
             AdditionalTempData.clear();
         }

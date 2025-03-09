@@ -1947,7 +1947,7 @@ namespace TheOtherRoles
                 return;
             }
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -2068,7 +2068,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -2813,7 +2813,7 @@ namespace TheOtherRoles
             }
             if ((bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -3034,7 +3034,7 @@ namespace TheOtherRoles
             }
             if ((BomberA.bombTarget == null || bombTarget == null) && !BomberA.alwaysShowArrow) return;
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -4399,7 +4399,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -4578,6 +4578,7 @@ namespace TheOtherRoles
 
         public static bool isNeutral = false;
         public static bool shiftPastShifters = false;
+        public static bool shiftsMedicShield = false;
 
         public static AchievementToken<(byte shiftId, byte oldShifterId, bool cleared)> niceShifterAcTokenChallenge = null;
 
@@ -4606,6 +4607,7 @@ namespace TheOtherRoles
             futureShift = null;
             shiftModifiers = CustomOptionHolder.shifterShiftsModifiers.getBool();
             shiftPastShifters = CustomOptionHolder.shifterPastShifters.getBool();
+            shiftsMedicShield = CustomOptionHolder.shifterShiftsMedicShield.getBool();
             isNeutral = false;
         }
     }
@@ -4899,7 +4901,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -5309,7 +5311,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -5482,7 +5484,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.fixedDeltaTime;
+            updateTimer -= Time.deltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -5647,10 +5649,11 @@ namespace TheOtherRoles
         public static bool hasMultipleGuesses = true;
         public static float cooldown = 30f;
         public static bool indicateGuesses = true;
-        public static bool cantObserve = false;
+        public static bool canObserve = false;
         public static bool triggerWin = false;
         public static int failedGuesses = 0;
         public static int maxMisses = 3;
+        public static int usesLeft = 3;
 
         public static PlayerControl observed;
         public static PlayerControl currentTarget;
@@ -5772,9 +5775,10 @@ namespace TheOtherRoles
             cooldown = CustomOptionHolder.doomsayerObserveCooldown.getFloat();
             guessesToWin = Mathf.RoundToInt(CustomOptionHolder.doomsayerGuessesToWin.getFloat());
             hasMultipleGuesses = CustomOptionHolder.doomsayerMultipleGuesses.getBool();
-            cantObserve = CustomOptionHolder.doomsayerCantObserve.getBool();
+            canObserve = CustomOptionHolder.doomsayerCanObserve.getBool();
             maxMisses = Mathf.RoundToInt(CustomOptionHolder.doomsayerMaxMisses.getFloat());
             indicateGuesses = CustomOptionHolder.doomsayerIndicator.getBool();
+            usesLeft = canObserve ? Mathf.RoundToInt(CustomOptionHolder.doomsayerNumberOfObserves.getFloat()) : 0;
         }
     }
 

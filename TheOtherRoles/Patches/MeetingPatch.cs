@@ -584,7 +584,7 @@ namespace TheOtherRoles.Patches
                 else if (roleInfo.roleId == RoleId.BomberA && (CustomOptionHolder.bomberSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 2)) continue;
                 if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.deputySpawnRate.getSelection() == 0 || CustomOptionHolder.sheriffSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
-                if (roleInfo.roleId == RoleId.Immoralist && CustomOptionHolder.foxSpawnRate.getSelection() == 0) continue;
+                if (roleInfo.roleId == RoleId.Immoralist && (!CustomOptionHolder.foxCanCreateImmoralist.getBool() || CustomOptionHolder.foxSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Spy && roleData.impostors.Count <= 1) continue;
                 if (roleInfo.roleId == RoleId.BomberB) continue;
                 if (roleInfo.roleId == RoleId.Bait && !Bait.canBeGuessed) continue;
@@ -1241,7 +1241,15 @@ namespace TheOtherRoles.Patches
                         msg = string.Format(ModTranslation.getString(msg), Doomsayer.observed.Data.PlayerName) + "\n(" + string.Join(", ", list.Select(x => x.name)) +")";
                     }
                     else {
-                        msg = ModTranslation.getString("doomsayerNoneInfo");
+                        msg = string.Format(ModTranslation.getString("doomsayerNoneInfo"), Doomsayer.observed.Data.PlayerName);
+                    }
+                    
+                    if (PlayerControl.LocalPlayer == Doomsayer.doomsayer)
+                    {
+                        MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent("doomsayerInfo")),
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(msg)))
+                        , MeetingOverlayHolder.IconsSprite[2], Doomsayer.color);
                     }
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Doomsayer.doomsayer, msg, false);
                 }

@@ -13,10 +13,10 @@ using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles.Patches {
-    [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.BeginForGameplay))]
     [HarmonyPriority(Priority.First)]
     class ExileControllerBeginPatch {
-        public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref ExileController.InitProperties init) {
+        public static void Prefix(ExileController __instance, [HarmonyArgument(0)] ref NetworkedPlayerInfo exiled) {
             // Medic shield
             if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
@@ -80,8 +80,8 @@ namespace TheOtherRoles.Patches {
 
             // Witch execute casted spells
             if (Witch.witch != null && Witch.futureSpelled != null && AmongUsClient.Instance.AmHost) {
-                bool exiledIsWitch = init.networkedPlayer != null && init.networkedPlayer.PlayerId == Witch.witch.PlayerId;
-                bool witchDiesWithExiledLover = init.networkedPlayer != null && init.networkedPlayer.Object.GetAllRelatedPlayers().Contains(Witch.witch);
+                bool exiledIsWitch = exiled != null && exiled.PlayerId == Witch.witch.PlayerId;
+                bool witchDiesWithExiledLover = exiled != null && exiled.Object.GetAllRelatedPlayers().Contains(Witch.witch);
 
                 if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) Witch.futureSpelled = new List<PlayerControl>();
                 foreach (PlayerControl target in Witch.futureSpelled) {

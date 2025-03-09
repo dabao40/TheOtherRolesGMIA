@@ -53,7 +53,7 @@ namespace TheOtherRoles.Objects {
 
         public void Update() {
             if (background != null)
-                background.transform.Rotate(Vector3.forward * 6 * Time.fixedDeltaTime);
+                background.transform.Rotate(Vector3.forward * 6 * Time.deltaTime);
         }
     }
 }

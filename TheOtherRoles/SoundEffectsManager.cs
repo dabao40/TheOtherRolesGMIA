@@ -44,21 +44,23 @@ namespace TheOtherRoles
         {
             // Convenience: As as SoundEffects are stored in the same folder, allow using just the name as well
             //if (!path.Contains(".")) path = "TheOtherRoles.Resources.SoundEffects." + path + ".raw";
-            path = "assets/audio/" + path.ToLower() + ".ogg";
+            if (!path.Contains("assets")) path = "assets/audio/" + path.ToLower() + ".ogg";
             AudioClip returnValue;
             return soundEffects.TryGetValue(path, out returnValue) ? returnValue : null;
         }
 
 
-        public static void play(string path, float volume=0.8f, bool loop = false)
+        public static AudioSource play(string path, float volume=0.8f, bool loop = false, bool musicChannel = false)
         {
-            if (!TORMapOptions.enableSoundEffects) return;
+            if (!TORMapOptions.enableSoundEffects) return null;
             AudioClip clipToPlay = get(path);
             stop(path);
             if (Constants.ShouldPlaySfx() && clipToPlay != null) {
-                AudioSource source = SoundManager.Instance.PlaySound(clipToPlay, false, volume);
+                AudioSource source = SoundManager.Instance.PlaySound(clipToPlay, false, volume, audioMixer: musicChannel ? SoundManager.Instance.MusicChannel : null);
                 source.loop = loop;
+                return source;
             }
+            return null;
         }
         public static void playAtPosition(string path, Vector2 position, float maxDuration = 15f, float range = 5f, bool loop = false) {
             if (!TORMapOptions.enableSoundEffects || !Constants.ShouldPlaySfx()) return;
@@ -85,12 +87,25 @@ namespace TheOtherRoles
         public static void stop(string path) {
             var soundToStop = get(path);
             if (soundToStop != null)
-                if (Constants.ShouldPlaySfx()) SoundManager.Instance.StopSound(soundToStop);
+            {
+                try
+                {
+                    SoundManager.Instance?.StopSound(soundToStop);
+                }
+                catch (Exception e) { TheOtherRolesPlugin.Logger.LogWarning($"Exception in stop sound: {e}"); }
+            }
         }
 
         public static void stopAll() {
             if (soundEffects == null) return;
-            foreach (var path in soundEffects.Keys) stop(path);
+            try
+            {
+                foreach (var path in soundEffects.Keys)
+                {
+                    stop(path);
+                }
+            }
+            catch { }
         }
     }
 }

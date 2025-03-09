@@ -19,6 +19,8 @@ namespace TheOtherRoles
         public bool isNeutral;
         public bool isModifier;
         public string nameKey;
+        public bool isImpostor => color == Palette.ImpostorRed && !(roleId == RoleId.Spy);
+        public static Dictionary<(RoleId, bool), RoleInfo> roleInfoById = new();    // For those that share the same RoleId
 
         public RoleInfo(string name, Color color, RoleId roleId, bool isNeutral = false, bool isModifier = false)
         {
@@ -27,6 +29,7 @@ namespace TheOtherRoles
             this.roleId = roleId;
             this.isNeutral = isNeutral;
             this.isModifier = isModifier;
+            roleInfoById.TryAdd((roleId, nameKey is "niceSwapper" or "niceShifter"), this);
         }
 
         public static RoleInfo jester = new("jester", Jester.color, RoleId.Jester, true);

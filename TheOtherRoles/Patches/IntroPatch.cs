@@ -82,9 +82,6 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            // Force Reload of SoundEffectHolder
-            SoundEffectsManager.Load();
-
             // Place props
             if (CustomOptionHolder.activateProps.getBool() && !FreePlayGM.isFreePlayGM)
             {
@@ -316,8 +313,7 @@ namespace TheOtherRoles.Patches {
             GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
             GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
-            if (AmongUsClient.Instance.AmHost)
-            {
+            if (AmongUsClient.Instance.AmHost) {
                 LastImpostor.promoteToLastImpostor();
             }
 
@@ -329,7 +325,7 @@ namespace TheOtherRoles.Patches {
                     Kataomoi.stareText.alignment = TMPro.TextAlignmentOptions.Center;
                     Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
                     Kataomoi.stareText.transform.localScale = Vector3.one * 0.5f;
-                    Kataomoi.stareText.gameObject.SetActive(PlayerControl.LocalPlayer == Kataomoi.kataomoi);
+                    Kataomoi.stareText.gameObject.SetActive(PlayerControl.LocalPlayer == Kataomoi.kataomoi && Kataomoi.target != null);
 
                     Kataomoi.gaugeRenderer[0] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.graphic, FastDestroyableSingleton<HudManager>.Instance.transform);
                     var killButton = Kataomoi.gaugeRenderer[0].GetComponent<KillButton>();
@@ -482,14 +478,29 @@ namespace TheOtherRoles.Patches {
                 }
                 yourTeam = fakeImpostorTeam;
             }
+
+            // Role draft: If spy is enabled, don't show the team
+            if (RoleDraft.isEnabled && CustomOptionHolder.spySpawnRate.getSelection() > 0 && PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Data.Role.IsImpostor).Count() > 1)
+            {
+                var fakeImpostorTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>(); // The local player always has to be the first one in the list (to be displayed in the center)
+                fakeImpostorTeam.Add(PlayerControl.LocalPlayer);
+                yourTeam = fakeImpostorTeam;
+            }
         }
 
         public static void setupIntroTeam(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
             List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer);
             RoleInfo roleInfo = infos.Where(info => !info.isModifier).FirstOrDefault();
+            var neutralColor = new Color32(76, 84, 78, 255);
+            if (roleInfo == null || roleInfo == RoleInfo.crewmate) {
+                if (RoleDraft.isEnabled && CustomOptionHolder.neutralRolesCountMax.getSelection() > 0) {
+                    __instance.TeamTitle.text = $"<size=60%>{FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Crewmate)}" +
+                        Helpers.cs(Color.white, " / ") + Helpers.cs(neutralColor, ModTranslation.getString("roleIntroNeutral")) + "</size>";
+                }
+                return;
+            }
             if (roleInfo == null) return;
             if (roleInfo.isNeutral && !(PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
-                var neutralColor = new Color32(76, 84, 78, 255);
                 __instance.BackgroundBar.material.color = neutralColor;
                 __instance.TeamTitle.text = ModTranslation.getString("roleIntroNeutral");
                 __instance.TeamTitle.color = neutralColor;

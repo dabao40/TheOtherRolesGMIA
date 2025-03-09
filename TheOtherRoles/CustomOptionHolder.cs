@@ -23,8 +23,19 @@ namespace TheOtherRoles {
         public static CustomOption modifiersCountMin;
         public static CustomOption modifiersCountMax;
 
-        public static CustomOption enableEventMode;
+        public static CustomOption isDraftMode;
+        public static CustomOption draftModeAmountOfChoices;
+        public static CustomOption draftModeTimeToChoose;
+        public static CustomOption draftModeShowRoles;
+        public static CustomOption draftModeHideCrewRoles;
+        public static CustomOption draftModeHideImpRoles;
+        public static CustomOption draftModeHideNeutralRoles;
+
         public static CustomOption anyPlayerCanStopStart;
+        public static CustomOption enableEventMode;
+        public static CustomOption eventReallyNoMini;
+        public static CustomOption eventKicksPerRound;
+        public static CustomOption eventHeavyAge;
         public static CustomOption freePlayGameModeNumDummies;
 
         public static CustomOption mafiaSpawnRate;
@@ -290,6 +301,7 @@ namespace TheOtherRoles {
         public static CustomOption shifterSpawnRate;
         public static CustomOption shifterIsNeutralRate;
         public static CustomOption shifterShiftsModifiers;
+        public static CustomOption shifterShiftsMedicShield;
         public static CustomOption shifterPastShifters;
 
         public static CustomOption spySpawnRate;
@@ -401,12 +413,13 @@ namespace TheOtherRoles {
         public static CustomOption mediumChanceAdditionalInfo;
 
         public static CustomOption doomsayerSpawnRate;
+        public static CustomOption doomsayerCanObserve;
         public static CustomOption doomsayerObserveCooldown;
+        public static CustomOption doomsayerNumberOfObserves;
         public static CustomOption doomsayerGuessesToWin;
         public static CustomOption doomsayerMultipleGuesses;
         public static CustomOption doomsayerIndicator;
         public static CustomOption doomsayerMaxMisses;
-        public static CustomOption doomsayerCantObserve;
 
         public static CustomOption lawyerSpawnRate;
         public static CustomOption lawyerTargetKnows;
@@ -653,6 +666,14 @@ namespace TheOtherRoles {
             modifiersCountMax = CustomOption.Create(307, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "modifiersCountMax"), 24f, 0f, 24f, 1f, format: "unitPlayers");
             crewmateRolesFill = CustomOption.Create(308, Types.General, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesFill"), false);
 
+            isDraftMode = CustomOption.Create(600, Types.General, cs(Color.yellow, "enableDraftMode"), false, null, true, heading: "headingRoleDraft");
+            draftModeAmountOfChoices = CustomOption.Create(601, Types.General, cs(Color.yellow, "draftModeAmountOfChoices"), 3f, 2f, 6f, 1f, isDraftMode, false, format: "unitScrews");
+            draftModeTimeToChoose = CustomOption.Create(602, Types.General, cs(Color.yellow, "draftModeTimeToChoose"), 5f, 3f, 20f, 1f, isDraftMode, false, format: "unitSeconds");
+            draftModeShowRoles = CustomOption.Create(603, Types.General, cs(Color.yellow, "draftModeShowRoles"), false, isDraftMode, false);
+            draftModeHideCrewRoles = CustomOption.Create(606, Types.General, cs(Color.yellow, "draftModeHideCrewRoles"), false, draftModeShowRoles, false);
+            draftModeHideImpRoles = CustomOption.Create(604, Types.General, cs(Color.yellow, "draftModeHideImpRoles"), false, draftModeShowRoles, false);
+            draftModeHideNeutralRoles = CustomOption.Create(605, Types.General, cs(Color.yellow, "draftModeHideNeutralRoles"), false, draftModeShowRoles, false);
+
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "mafia"), rates, null, true);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "janitorCooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate, false, "unitSeconds");
 
@@ -865,6 +886,7 @@ namespace TheOtherRoles {
             shifterSpawnRate = CustomOption.Create(1100, Types.Neutral, cs(Shifter.color, "shifter"), rates, null, true);
             shifterIsNeutralRate = CustomOption.Create(6007, Types.Neutral, "shifterIsNeutralRate", rates, shifterSpawnRate);
             shifterShiftsModifiers = CustomOption.Create(1101, Types.Neutral, "shifterShiftsModifiers", false, shifterSpawnRate);
+            shifterShiftsMedicShield = CustomOption.Create(1102, Types.Neutral, "shifterShiftsMedicShield", false, shifterSpawnRate);
             shifterPastShifters = CustomOption.Create(6008, Types.Neutral, "shifterPastShifters", false, shifterSpawnRate);
 
             opportunistSpawnRate = CustomOption.Create(4003, Types.Neutral, cs(Opportunist.color, "opportunist"), rates, null, true);
@@ -897,12 +919,13 @@ namespace TheOtherRoles {
             schrodingersCatCanChooseImpostor = CustomOption.Create(979, Types.Neutral, "schrodingersCatCanChooseTeam", false, schrodingersCatHideRole);
 
             doomsayerSpawnRate = CustomOption.Create(9040, Types.Neutral, cs(Doomsayer.color, "doomsayer"), rates, null, true);
-            doomsayerObserveCooldown = CustomOption.Create(9041, Types.Neutral, "doomsayerObserveCooldown", 30f, 5f, 60f, 1f, doomsayerSpawnRate);
-            doomsayerGuessesToWin = CustomOption.Create(9042, Types.Neutral, "doomsayerGuessesToWin", 3f, 1f, 24f, 1f, doomsayerSpawnRate);
+            doomsayerCanObserve = CustomOption.Create(9044, Types.Neutral, "doomsayerCanObserve", true, doomsayerSpawnRate);
+            doomsayerObserveCooldown = CustomOption.Create(9041, Types.Neutral, "doomsayerObserveCooldown", 30f, 5f, 60f, 1f, doomsayerCanObserve, format: "unitSeconds");
+            doomsayerNumberOfObserves = CustomOption.Create(9047, Types.Neutral, "doomsayerNumberOfObserves", 3f, 1f, 10f, 1f, doomsayerCanObserve, format: "unitShots");
+            doomsayerGuessesToWin = CustomOption.Create(9042, Types.Neutral, "doomsayerGuessesToWin", 3f, 1f, 24f, 1f, doomsayerSpawnRate, format: "unitScrews");
             doomsayerMultipleGuesses = CustomOption.Create(9045, Types.Neutral, "doomsayerMultipleGuesses", true, doomsayerSpawnRate);
-            doomsayerMaxMisses = CustomOption.Create(9046, Types.Neutral, "doomsayerMaxMisses", 3f, 0f, 24f, 1f, doomsayerSpawnRate);
+            doomsayerMaxMisses = CustomOption.Create(9046, Types.Neutral, "doomsayerMaxMisses", 3f, 0f, 24f, 1f, doomsayerSpawnRate, format: "unitShots");
             doomsayerIndicator = CustomOption.Create(9043, Types.Neutral, "doomsayerIndicator", true, doomsayerSpawnRate);
-            doomsayerCantObserve = CustomOption.Create(9044, Types.Neutral, "doomsayerCantObserve", false, doomsayerSpawnRate);
 
             akujoSpawnRate = CustomOption.Create(8100, Types.Neutral, cs(Akujo.color, "akujo"), rates, null, true);
             akujoTimeLimit = CustomOption.Create(8101, Types.Neutral, "akujoTimeLimit", 300f, 30f, 1200f, 30f, akujoSpawnRate, false, "unitSeconds");
@@ -1145,6 +1168,12 @@ namespace TheOtherRoles {
             modifierMini = CustomOption.Create(1061, Types.Modifier, cs(Color.yellow, "mini"), rates, null, true);
             modifierMiniGrowingUpDuration = CustomOption.Create(1062, Types.Modifier, "miniGrowingUpDuration", 400f, 100f, 1500f, 100f, modifierMini, false, "unitSeconds");
             modifierMiniGrowingUpInMeeting = CustomOption.Create(1063, Types.Modifier, "miniGrowingUpInMeeting", true, modifierMini);
+            if (Utilities.EventUtility.canBeEnabled || Utilities.EventUtility.isEnabled)
+            {
+                eventKicksPerRound = CustomOption.Create(10424, Types.Modifier, cs(Color.green, "eventKicksPerRound"), 4f, 0f, 14f, 1f, modifierMini);
+                eventHeavyAge = CustomOption.Create(10425, Types.Modifier, cs(Color.green, "eventHeavyAge"), 12f, 6f, 18f, 0.5f, modifierMini);
+                eventReallyNoMini = CustomOption.Create(10426, Types.Modifier, cs(Color.green, "eventReallyNoMini"), false, modifierMini, invertedParent: true);
+            }
 
             modifierVip = CustomOption.Create(1070, Types.Modifier, cs(Color.yellow, "vip"), rates, null, true);
             modifierVipQuantity = CustomOption.Create(1071, Types.Modifier, cs(Color.yellow, "vipQuantity"), ratesModifier, modifierVip);

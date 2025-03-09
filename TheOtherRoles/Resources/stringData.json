@@ -83,6 +83,34 @@
         "13": "\u586b\u5145\uff1a",
         "14": "\u586b\u5145\uff1a"
     },
+    "enableDraftMode": {
+        "0": "Enable Role Draft",
+        "13": "\u5f00\u542f\u8f6e\u62bd\u9009\u89d2\u6a21\u5f0f"
+    },
+    "draftModeAmountOfChoices": {
+        "0": "Max Amount Of Roles\nTo Choose From",
+        "13": "\u6700\u5927\u53ef\u9009\u62e9\u804c\u4e1a\u6570\u91cf"
+    },
+    "draftModeTimeToChoose": {
+        "0": "Time For Selection",
+        "13": "\u9009\u62e9\u804c\u4e1a\u6301\u7eed\u65f6\u95f4"
+    },
+    "draftModeShowRoles": {
+        "0": "Show Picked Roles",
+        "13": "\u663e\u793a\u88ab\u9009\u62e9\u7684\u804c\u4e1a"
+    },
+    "draftModeHideCrewRoles": {
+        "0": "Hide Crewmate Roles",
+        "13": "\u9690\u85cf\u5df2\u9009\u62e9\u7684\u8239\u5458\u804c\u4e1a"
+    },
+    "draftModeHideImpRoles": {
+        "0": "Hide Impostor Roles",
+        "13": "\u9690\u85cf\u5df2\u9009\u62e9\u7684\u5185\u9b3c\u804c\u4e1a"
+    },
+    "draftModeHideNeutralRoles": {
+        "0": "Hide Neutral Roles",
+        "13": "\u9690\u85cf\u5df2\u9009\u62e9\u7684\u4e2d\u7acb\u804c\u4e1a"
+    },
     "maxNumberOfMeetings": {
         "0": "Number Of Meetings (excluding Mayor meeting)",
         "11": "\u7dca\u6025\u4f1a\u8b70\u306e\u56de\u6570\uff08\u30e1\u30a4\u30e4\u30fc\u4f1a\u8b70\u3092\u9664\u304f\uff09",
@@ -999,6 +1027,18 @@
         "13": "\u8ff7\u4f60\u8239\u5458\u5728\u4f1a\u8bae\u4e0a\u6210\u957f",
         "14": "\u8ff7\u59b3\u8239\u54e1\u5728\u6703\u8b70\u4e0a\u6210\u9577"
     },
+    "eventKicksPerRound": {
+        "0": "Maximum Kicks Mini Suffers",
+        "13": "\u8ff7\u4f60\u8239\u5458\u5141\u8bb8\u88ab\u8e22\u6700\u5927\u6b21\u6570"
+    },
+    "eventHeavyAge": {
+        "0": "Age At Which Mini Is Heavy",
+        "13": "\u8ff7\u4f60\u8239\u5458\u53d8\u5f97\u6c89\u91cd\u7684\u5e74\u9f84"
+    },
+    "eventReallyNoMini": {
+        "0": "Really No Mini",
+        "13": "\u7981\u7528\u8ff7\u4f60\u8239\u5458"
+    },
     "lovers": {
         "0": "Lovers",
         "11": "\u30e9\u30d0\u30fc\u30ba",
@@ -1410,6 +1450,10 @@
         "11": "\u30b7\u30d5\u30bf\u30fc\u306f\u5c5e\u6027\u3082\u596a\u3046\u304b",
         "13": "\u53ef\u4ee5\u4ea4\u6362\u526f\u804c\u4e1a",
         "14": "\u4ea4\u63db\u526f\u8077\u696d"
+    },
+    "shifterShiftsMedicShield": {
+        "0": "Can Shift Medic Shield",
+        "13": "\u53ef\u4ee5\u4ea4\u6362\u533b\u751f\u7684\u62a4\u76fe"
     },
     "shifterPastShifters": {
         "0": "Can Shift Former Shifters",
@@ -3333,6 +3377,62 @@
     "headingLastImpostor": {
         "0": "Last Impostor",
         "13": "\u7edd\u5883\u8005"
+    },
+    "headingRoleDraft": {
+        "0": "Role Draft",
+        "13": "\u8f6e\u62bd\u9009\u89d2"
+    },
+    "roleDraftAnonymousPlayer": {
+        "0": "Anonymous Player {0}",
+        "13": "\u533f\u540d\u73a9\u5bb6{0}"
+    },
+    "roleDraftWelcome": {
+        "0": "Welcome to the Role Draft!",
+        "13": "\u6b22\u8fce\u6765\u5230\u8f6e\u62bd\u9009\u89d2!"
+    },
+    "roleDraftCurrent": {
+        "0": "Currently Picking:",
+        "13": "\u5f53\u524d\u73a9\u5bb6:"
+    },
+    "roleDraftPicks": {
+        "0": "Player's Picks:",
+        "13": "\u5df2\u9009\u62e9\u804c\u4e1a:"
+    },
+    "roleDraftTurns": {
+        "0": "{0} rounds until your turn",
+        "13": "\u8fd8\u6709{0}\u540d\u73a9\u5bb6\u5230\u4f60\u9009\u62e9"
+    },
+    "roleDraftRandomSelection": {
+        "0": "Random Selection In... {0}",
+        "13": "\u5728{0}\u79d2\u540e\u9009\u62e9\u968f\u673a\u804c\u4e1a"
+    },
+    "roleDraftMusic": {
+        "0": "\u266b Music: GMIA Theme Song \u266b",
+        "13": "\u266b \u80cc\u666f\u97f3\u4e50: GMIA\u4e3b\u9898\u66f2 \u266b"
+    },
+    "roleDraftUnknown": {
+        "0": "Unknown Role",
+        "13": "\u672a\u77e5\u804c\u4e1a"
+    },
+    "roleDraftImpostor": {
+        "0": "Impostor Role",
+        "13": "\u5185\u9b3c\u804c\u4e1a"
+    },
+    "roleDraftNeutral": {
+        "0": "Neutral Role",
+        "13": "\u4e2d\u7acb\u804c\u4e1a"
+    },
+    "roleDraftCrewmate": {
+        "0": "Crewmate Role",
+        "13": "\u8239\u5458\u804c\u4e1a"
+    },
+    "roleDraftRandom": {
+        "0": "Random",
+        "13": "\u968f\u673a\u804c\u4e1a"
+    },
+    "roleDraftYou": {
+        "0": "You",
+        "13": "\u4f60"
     },
     "unitSeconds": {
         "0": "{0}s",
@@ -6342,9 +6442,13 @@
         "0": "Indicate Doomsayer Guesses",
         "13": "\u7279\u522b\u63d0\u793a\u672b\u65e5\u9884\u8a00\u5bb6\u7684\u731c\u6d4b"
     },
-    "doomsayerCantObserve": {
-        "0": "Disable Doomsayer Observe",
-        "13": "\u7981\u6b62\u672b\u65e5\u9884\u8a00\u5bb6\u4f7f\u7528\u6d1e\u5bdf"
+    "doomsayerCanObserve": {
+        "0": "Doomsayer Can Observe",
+        "13": "\u53ef\u4ee5\u4f7f\u7528\u6d1e\u5bdf\u6280\u80fd"
+    },
+    "doomsayerNumberOfObserves": {
+        "0": "Number Of Observes",
+        "13": "\u672b\u65e5\u9884\u8a00\u5bb6\u6d1e\u5bdf\u6b21\u6570"
     },
     "doomsayerGuessesLeft": {
         "0": "Guesses To Win: {0}",
@@ -6382,7 +6486,7 @@
         "0": "You discover that {0} hides to guard themself or others",
         "13": "\u4f60\u89c9\u5bdf{0}\u5728\u6697\u4e2d\u4fdd\u62a4\u7740\u81ea\u5df1\u6216\u4ed6\u4eba"
     },
-    "doomsayerOutlookInto": {
+    "doomsayerOutlookInfo": {
         "0": "You discover that {0} has an altered perception of reality",
         "13": "\u4f60\u89c9\u5bdf{0}\u62e5\u6709\u4e0d\u540c\u5bfb\u5e38\u7684\u4e16\u754c\u89c2"
     },
@@ -6405,6 +6509,10 @@
     "doomsayerGuessedSomeone": {
         "0": "The Doomsayer has guessed someone!",
         "13": "\u672b\u65e5\u9884\u8a00\u5bb6\u8d4c\u6740\u4e86\u4e00\u540d\u73a9\u5bb6\uff01"
+    },
+    "doomsayerInfo": {
+        "0": "Doomsayer Info",
+        "13": "\u672b\u65e5\u9884\u8a00\u5bb6\u4fe1\u606f"
     },
     "colorSalmon": {
         "0": "Salmon",
@@ -6730,13 +6838,13 @@
         "14": "\u4e0b\u5492"
     },
     "NinjaText": {
-        "0": "[BLANK]",
+        "0": "Stealth",
         "11": "\u5fcd\u8853",
         "13": "\u9690\u8eab",
         "14": "\u96b1\u8eab"
     },
     "NinjaUnstealthText": {
-        "0": "[BLANK]",
+        "0": "Unstealth",
         "11": "\u89e3\u9664",
         "13": "\u89e3\u9664",
         "14": "\u89e3\u9664"
@@ -6760,31 +6868,31 @@
         "14": "\u50b3\u9001"
     },
     "DrugText": {
-        "0": "[BLANK]",
+        "0": "Drug",
         "11": "\u85ac",
         "13": "\u79d8\u836f",
         "14": "\u79d8\u85e5"
     },
     "InfectText": {
-        "0": "[BLANK]",
+        "0": "Infect",
         "11": "\u611f\u67d3",
         "13": "\u611f\u67d3",
         "14": "\u611f\u67d3"
     },
     "MadmateText": {
-        "0": "[BLANK]",
+        "0": "Madmate",
         "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8",
         "13": "\u53db\u5f92",
         "14": "\u53db\u5f92"
     },
     "PlaceTrapText": {
-        "0": "[BLANK]",
+        "0": "Set Trap",
         "11": "\u30c8\u30e9\u30c3\u30d7",
         "13": "\u5e03\u4e0b\u9677\u9631",
         "14": "\u4f48\u4e0b\u9677\u9631"
     },
     "BrainwashText": {
-        "0": "[BLANK]",
+        "0": "Brainwash",
         "11": "\u6d17\u8133",
         "13": "\u6d17\u8111",
         "14": "\u6d17\u8166"
@@ -6796,13 +6904,13 @@
         "14": "\u8b66\u6212"
     },
     "PlantBombText": {
-        "0": "[BLANK]",
+        "0": "Plant Bomb",
         "11": "\u7206\u5f3e\u8a2d\u7f6e",
         "13": "\u653e\u7f6e\u70b8\u5f39",
         "14": "\u653e\u7f6e\u70b8\u5f48"
     },
     "ReleaseBombText": {
-        "0": "[BLANK]",
+        "0": "Detonate",
         "11": "\u8d77\u7206",
         "13": "\u5f15\u7206",
         "14": "\u5f15\u7206"
@@ -6820,40 +6928,34 @@
         "14": "\u653e\u4e0b"
     },
     "InvestigateText": {
-        "0": "[BLANK]",
+        "0": "Investigate",
         "11": "\u8abf\u67fb",
         "13": "\u8c03\u67e5",
         "14": "\u8abf\u67e5"
     },
     "AkujoHonmeiText": {
-        "0": "[BLANK]",
+        "0": "True Love",
         "11": "\u672c\u547d\u306b\u3059\u308b",
         "13": "\u9009\u4e3a\u771f\u7231",
         "14": "\u9078\u70ba\u771f\u611b"
     },
     "AkujoBackupText": {
-        "0": "[BLANK]",
+        "0": "Backup",
         "11": "\u30ad\u30fc\u30d7\u306b\u3059\u308b",
         "13": "\u9009\u4e3a\u5907\u80ce",
         "14": "\u9078\u70ba\u5099\u80ce"
     },
     "SprintText": {
-        "0": "[BLANK]",
+        "0": "Sprint",
         "11": "\u30b9\u30d7\u30ea\u30f3\u30c8",
         "13": "\u51b2\u523a",
         "14": "\u6c96\u523a"
     },
     "SprinterStopText": {
-        "0": "[BLANK]",
+        "0": "Rest",
         "11": "\u4f11\u3080",
         "13": "\u505c\u4e0b",
         "14": "\u505c\u4e0b"
-    },
-    "TeleporterSampleText": {
-        "0": "[BLANK]",
-        "11": "\u30b5\u30f3\u30d7\u30eb",
-        "13": "\u9009\u62e9\u5bf9\u8c61",
-        "14": "\u9078\u64c7\u5c0d\u8c61"
     },
     "TeleporterTeleportText": {
         "0": "[BLANK]",
@@ -6862,7 +6964,7 @@
         "14": "\u50b3\u9001"
     },
     "CupidArrowText": {
-        "0": "[BLANK]",
+        "0": "Arrow",
         "11": "\u604b\u306e\u77e2",
         "13": "\u7231\u4e4b\u7bad",
         "14": "\u611b\u4e4b\u7bad"
@@ -6886,32 +6988,32 @@
         "14": "\u986f\u793a\u7bad\u982d"
     },
     "FoxStealthText": {
-        "0": "[BLANK]",
+        "0": "Hide",
         "11": "\u96a0\u308c\u308b",
         "13": "\u9690\u8eab"
     },
     "FoxUnstealthText": {
-        "0": "[BLANK]",
+        "0": "Unhide",
         "11": "\u89e3\u9664",
         "13": "\u89e3\u9664"
     },
     "ImmoralistSuicideText": {
-        "0": "[BLANK]",
+        "0": "Suicide",
         "11": "\u81ea\u6bba",
         "13": "\u81ea\u5c3d"
     },
     "FoxImmoralistText": {
-        "0": "[BLANK]",
+        "0": "Immoralist",
         "11": "\u80cc\u5fb3\u8005",
         "13": "\u8bf1\u60d1"
     },
     "PseudocideText": {
-        "0": "[BLANK]",
+        "0": "Pseudocide",
         "11": "\u507d\u88c5\u6b7b",
         "13": "\u5047\u6b7b"
     },
     "ReviveText": {
-        "0": "[BLANK]",
+        "0": "Revive",
         "11": "\u5fa9\u6d3b",
         "13": "\u590d\u6d3b"
     },
@@ -6949,7 +7051,7 @@
         "13": "\u9690\u8eab"
     },
     "SwitchTeamText": {
-        "0": "Switch Team",
+        "0": "Choose Team",
         "13": "\u9009\u62e9\u9635\u8425"
     },
     "BlinkText": {
@@ -9204,6 +9306,18 @@
         "0": "Traps",
         "11": "\u3053\u308c\u306f\u7f60\u3060\uff01",
         "13": "\u8bbe\u9677\uff01"
+    },
+    "trapperanother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "trapperanother1AchievementGoal": {
+        "0": "Kill An Impostor With Your Trap",
+        "13": "\u7528\u4f60\u7684\u9677\u9631\u51fb\u6740\u4e00\u540d\u5185\u9b3c"
+    },
+    "trapperanother1AchievementTitle": {
+        "0": "What Have I Done!",
+        "13": "\u6211\u5e72\u4e86\u4e9b\u4ec0\u4e48!"
     },
     "trapperchallengeAchievementCond": {
         "0": "[BLANK]",
