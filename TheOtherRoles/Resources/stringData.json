@@ -2393,6 +2393,26 @@
         "0": "Bait Can Be Guessed",
         "13": "\u8bf1\u9975\u53ef\u4ee5\u88ab\u8d4c\u602a\u731c\u6d4b"
     },
+    "baitShowBaitFor": {
+        "0": "Show Who Was Bait For",
+        "13": "\u5bf9\u8c01\u663e\u793a\u8bf1\u9975",
+        "14": "\u5c0d\u8ab0\u986f\u793a\u8a98\u990c"
+    },
+    "baitShowBaitForCrew": {
+        "0": "Crewmate",
+        "13": "\u8239\u5458",
+        "14": "\u8239\u54e1"
+    },
+    "baitShowBaitForEveryone": {
+        "0": "Everyone",
+        "13": "\u6240\u6709\u4eba",
+        "14": "\u6240\u6709\u4eba"
+    },
+    "baitShowBaitForNone": {
+        "0": "None",
+        "13": "\u6ca1\u6709\u4eba",
+        "14": "\u6c92\u6709\u4eba"
+    },
     "madmate": {
         "0": "Madmate",
         "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8",
