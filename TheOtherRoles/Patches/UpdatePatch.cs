@@ -421,7 +421,7 @@ namespace TheOtherRoles.Patches {
             // Bait
             if (Bait.showBaitFor == 0)
             {
-                if (PlayerControl.LocalPlayer != null && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer != Helpers.isNeutral(PlayerControl.LocalPlayer) && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait)
+                if (PlayerControl.LocalPlayer != null && !PlayerControl.LocalPlayer.Data.Role.IsImpostor &&  !Helpers.isNeutral(PlayerControl.LocalPlayer) && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait)
                 {
                     foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                         if (Bait.bait != null && Bait.bait == player)
@@ -434,7 +434,7 @@ namespace TheOtherRoles.Patches {
             }
              else if (Bait.showBaitFor == 1)
             {
-                if (PlayerControl.LocalPlayer != null && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait && PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer == Helpers.isNeutral(PlayerControl.LocalPlayer))
+                if (PlayerControl.LocalPlayer != null && Bait.bait != null && PlayerControl.LocalPlayer != Bait.bait)
                 {
                     foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                         if (Bait.bait != null && Bait.bait == player)
