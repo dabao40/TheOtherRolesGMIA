@@ -251,6 +251,7 @@ namespace TheOtherRoles.Patches {
             }
             if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal) untargetablePlayers.Add(SchrodingersCat.schrodingersCat);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
+            if (Bait.showBaitFor != 2) untargetablePlayers.Add(Bait.bait);
             Jackal.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             setPlayerOutline(Jackal.currentTarget, Palette.ImpostorRed);
         }
@@ -712,6 +713,7 @@ namespace TheOtherRoles.Patches {
                     untargetablePlayers.Add(p);
                 }
             }
+            if (Bait.showBaitFor != 2) untargetablePlayers.Add(Bait.bait);
             Fox.currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
             if (Fox.canCreateImmoralist) setPlayerOutline(Fox.currentTarget, Fox.color);
         }
