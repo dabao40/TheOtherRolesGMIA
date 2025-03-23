@@ -4774,6 +4774,7 @@ namespace TheOtherRoles
         public static float reportDelay = 0f;
         public static bool showKillFlash = true;
         public static bool canBeGuessed = true;
+        public static int showBaitFor = 0;
 
         public static bool reported = false;
 
@@ -4793,6 +4794,7 @@ namespace TheOtherRoles
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
             canBeGuessed = CustomOptionHolder.baitCanBeGuessed.getBool();
+            showBaitFor = CustomOptionHolder.baitShowBaitFor.getSelection();
             acTokenChallenge = null;
         }
     }
