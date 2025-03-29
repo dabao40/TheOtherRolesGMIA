@@ -439,14 +439,14 @@ namespace TheOtherRoles
             return lines.ToList();
         }
 
-        public static string camelString(this string input)
+        static public TitleShower GetTitleShower(this PlayerControl player)
         {
-            if (string.IsNullOrEmpty(input))
-                return input;
-
-            string firstLetter = input[..1].ToUpper();
-            string remainingLetters = input[1..].ToLower();
-            return firstLetter + remainingLetters;
+            if (player.TryGetComponent<TitleShower>(out var result))
+                return result;
+            else
+            {
+                return player?.gameObject.AddComponent<TitleShower>();
+            }
         }
 
         public static string HeadLower(this string text) => char.ToLower(text[0]) + text[1..];

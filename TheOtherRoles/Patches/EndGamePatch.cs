@@ -620,7 +620,7 @@ namespace TheOtherRoles.Patches {
                 poolablePlayer.cosmetics.nameText.transform.localPosition = new Vector3(poolablePlayer.cosmetics.nameText.transform.localPosition.x, poolablePlayer.cosmetics.nameText.transform.localPosition.y, -15f);
                 poolablePlayer.cosmetics.nameText.text = CachedPlayerData2.PlayerName;
 
-                foreach(var data in AdditionalTempData.playerRoles) {
+                foreach (var data in AdditionalTempData.playerRoles) {
                     if (data.PlayerName != CachedPlayerData2.PlayerName) continue;
                     var roles =
                     //poolablePlayer.cosmetics.nameText.text += $"\n{string.Join("\n", data.Roles.Select(x => Helpers.cs(x.color, x.name)))}";

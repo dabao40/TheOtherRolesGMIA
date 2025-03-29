@@ -136,7 +136,7 @@ namespace TheOtherRoles.Objects
                         target.moveable = true;
                         return;
                     }
-                    else if ((p == 1f) && !target.Data.IsDead)
+                    else if (p == 1f)
                     { // 正常にキルが発生する場合の処理
                         target.moveable = true;
                         if (PlayerControl.LocalPlayer == Trapper.trapper)
@@ -200,18 +200,14 @@ namespace TheOtherRoles.Objects
                 trap.Value.audioSource.Stop();
                 if (trap.Value.target != null)
                 {
-
                     if (PlayerControl.LocalPlayer == Trapper.trapper)
                     {
-                        if (!trap.Value.target.Data.IsDead)
-                        {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
-                            writer.Write(trap.Key);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.Write(trap.Value.target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.trapperKill(trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId);
-                        }
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                        writer.Write(trap.Key);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(trap.Value.target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.trapperKill(trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId);
                     }
 
                 }
@@ -251,14 +247,23 @@ namespace TheOtherRoles.Objects
             var audioSource = trap.audioSource;
             audioSource.Stop();
             audioSource.maxDistance = Trapper.maxDistance;
-            audioSource.PlayOneShot(kill);
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(kill.length, new Action<float>((p) =>
+            var murder = Helpers.checkMuderAttempt(trapper, target);
+            if (murder == MurderAttemptResult.ReverseKill) target.MurderPlayer(trapper, MurderResultFlags.Succeeded);
+            if (murder == MurderAttemptResult.PerformKill)
             {
-                if (p == 1f)
+                audioSource.PlayOneShot(kill);
+                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(kill.length, new Action<float>((p) =>
                 {
-                    clearAllTraps();
-                }
-            })));
+                    if (p == 1f)
+                    {
+                        clearAllTraps();
+                    }
+                })));
+            }
+            else {
+                clearAllTraps();
+                return;
+            }
             Trapper.isTrapKill = true;
             KillAnimationCoPerformKillPatch.hideNextAnimation = true;
             trapper.MurderPlayer(target, MurderResultFlags.Succeeded);

@@ -2357,7 +2357,7 @@ namespace TheOtherRoles
         public static PlayerControl yasuna;
         public static Color color = new Color32(90, 255, 25, byte.MaxValue);
         public static byte specialVoteTargetPlayerId = byte.MaxValue;
-        private static int _remainingSpecialVotes = 1;
+        public static int _remainingSpecialVotes = 1;
         private static Sprite targetSprite;
 
         public static AchievementToken<(byte targetId, bool cleared)> yasunaAcTokenChallenge = null;
@@ -5408,7 +5408,6 @@ namespace TheOtherRoles
                 }
             }
             arrows = new List<Arrow>();
-            Immoralist.clearAndReload();
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
@@ -5963,7 +5962,7 @@ namespace TheOtherRoles
 
         public static void setSprinting(PlayerControl player, bool sprinting = true)
         {
-            if (player == sprinter && !sprinter.Data.IsDead)
+            if (sprinter != null && player == sprinter)
             {
                 Sprinter.sprinting = sprinting;
                 sprintAt = DateTime.UtcNow;

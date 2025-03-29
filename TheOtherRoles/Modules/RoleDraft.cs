@@ -317,7 +317,7 @@ namespace TheOtherRoles.Modules
                                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.setShifterType(shifterIsNeutral);
                             }
-                            sendPick((byte)randomRole.roleId, true, randomRole == RoleInfo.niceshifter || randomRole == RoleInfo.niceSwapper);
+                            sendPick((byte)randomRole.roleId, originalAvailable.Count > 1, randomRole == RoleInfo.niceshifter || randomRole == RoleInfo.niceSwapper);
                         }
 
 

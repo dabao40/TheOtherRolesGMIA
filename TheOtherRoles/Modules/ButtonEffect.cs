@@ -175,6 +175,8 @@ namespace TheOtherRoles.Modules
             var renderer = result.GetComponent<SpriteRenderer>();
             renderer.sprite = textureUsesIconsSprite.GetSprite(iconVariation);
             text = result.transform.GetChild(0).GetComponent<TMPro.TextMeshPro>();
+            text.transform.localScale *= 0.85f;
+            text.transform.SetLocalY(text.transform.localPosition.y - 0.01f);
             return result;
         }
 

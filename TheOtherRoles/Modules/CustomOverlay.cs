@@ -209,9 +209,12 @@ public class CustomOverlay
         {
             ChatController cc = FastDestroyableSingleton<HudManager>.Instance.Chat;
             bool isOpen = cc != null && cc?.IsOpenOrOpening == true;
-            if (Input.GetKeyDown(KeyCode.H) && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && !isOpen && !Minigame.Instance && !ExileController.Instance)
+            if (Input.GetKeyDown(KeyCode.H) && !isOpen)
             {
-                toggleInfoOverlay();
+                if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && !Minigame.Instance && !ExileController.Instance)
+                    toggleInfoOverlay();
+                else if (PlayerControl.LocalPlayer && LobbyBehaviour.Instance && !ShipStatus.Instance)
+                    HelpMenu.TryOpenHelpScreen(HelpMenu.HelpTab.Objects);
             }
         }
     }

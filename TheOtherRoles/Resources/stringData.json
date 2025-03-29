@@ -7664,6 +7664,30 @@
         "13": "[\u83b7\u53d6\u6761\u4ef6]",
         "14": "[\u7372\u5f97\u689d\u4ef6]"
     },
+    "achievementUnselected": {
+        "0": "(Unselected)",
+        "13": "(\u672a\u9009\u62e9)"
+    },
+    "achievementUnselectedDetail": {
+        "0": "Click To Select An Achievement",
+        "13": "\u70b9\u51fb\u4ee5\u8bbe\u7f6e\u6210\u5c31\u5934\u8854"
+    },
+    "achievementCleared": {
+        "0": "[Cleared]",
+        "13": "[\u5df2\u83b7\u5f97]"
+    },
+    "achievementEquipped": {
+        "0": "[Equipped]",
+        "13": "[\u5df2\u88c5\u5907]"
+    },
+    "achievementEquip": {
+        "0": "Click To Equip This Achievement",
+        "13": "\u70b9\u51fb\u4ee5\u4f69\u6234\u8be5\u6210\u5c31"
+    },
+    "achievementUnequip": {
+        "0": "Click To Unequip This Achievement",
+        "13": "\u70b9\u51fb\u4ee5\u53d6\u6d88\u4f69\u6234\u8be5\u6210\u5c31"
+    },
     "mayorcommon1AchievementCond": {
         "0": "With Anonymous Votes Off",
         "11": "\u533f\u540d\u6295\u7968\u304c\u30aa\u30d5\u3067\u3042\u308b\u3053\u3068",
@@ -10033,6 +10057,14 @@
         "0": "About Section",
         "13": "\u5173\u4e8e\u672c\u6a21\u7ec4"
     },
+    "helpObjectsKey": {
+        "0": "Objects",
+        "13": "\u6e38\u620f\u5185\u7269\u54c1"
+    },
+    "helpAchievementsKey": {
+        "0": "Achievements",
+        "13": "\u6210\u5c31"
+    },
     "hintHelpInGameDetail": {
         "0": "You can press key H to view the descriptions of your role in the game.\nYou may also use your scroller if your description is too long.",
         "13": "\u4f60\u53ef\u4ee5\u901a\u8fc7\u5728\u6e38\u620f\u4e2d\u6309H\u952e\u6765\u67e5\u770b\u81ea\u5df1\u89d2\u8272\u7684\u529f\u80fd\n\u5982\u679c\u4f60\u7684\u804c\u4e1a\u4ecb\u7ecd\u592a\u957f\uff0c\u4f60\u8fd8\u53ef\u4ee5\u4f7f\u7528\u6eda\u8f6e\u6765\u7ffb\u9875"
@@ -10056,5 +10088,45 @@
     "hintAboutSectionDetail": {
         "0": "The About Section is located under the GMIA button.\nYou can see what our contributors and developers have to say and join us!",
         "13": "\u5173\u4e8e\u672c\u6a21\u7ec4\u5185\u5bb9\u5728GMIA\u6309\u94ae\u4e0b\n\u4f60\u53ef\u4ee5\u67e5\u770b\u5f00\u53d1\u8005\u548c\u8d21\u732e\u8005\u60f3\u8bf4\u7684\u8bdd\u5e76\u52a0\u5165\u6211\u4eec\uff01"
+    },
+    "garlicObjectHint": {
+        "0": "The Garlic can be placed once per player.\nThe Vampire can either perform normal kills or can't kill at all near Garlics.",
+        "13": "\u6bcf\u540d\u73a9\u5bb6\u53ea\u80fd\u5728\u6bcf\u5c40\u6e38\u620f\u4e2d\u653e\u7f6e\u4e00\u4e2a\u5927\u849c\n\u5438\u8840\u9b3c\u5728\u5927\u849c\u5185\u53ea\u80fd\u8fdb\u884c\u666e\u901a\u51fb\u6740\u6216\u6839\u672c\u4e0d\u80fd\u51fb\u6740"
+    },
+    "foxShrineHint": {
+        "0": "The Shrine is a Fox-only console where the Fox has to complete tasks.",
+        "13": "\u9e1f\u5c45\u662f\u4e00\u4e2a\u53ea\u6709\u72d0\u5996\u53ef\u4ee5\u4f7f\u7528\u7684\u4efb\u52a1"
+    },
+    "bombEffectHint": {
+        "0": "The Bomb Effect is a trace that the Bomber leaves after killing.",
+        "13": "\u53cc\u5b50\u7206\u7834\u8005\u8fdb\u884c\u7206\u7834\u51fb\u6740\u540e\u4f1a\u5728\u5c38\u4f53\u5904\u7559\u4e0b\u7206\u7834\u75d5\u8ff9"
+    },
+    "portalHint": {
+        "0": "The Portal is a fast teleporter that is placed by the Portalmaker.",
+        "13": "\u4f20\u9001\u95e8\u662f\u4e00\u4e2a\u88ab\u5b88\u95e8\u4eba\u653e\u7f6e\u7684\u5feb\u901f\u79fb\u52a8\u5de5\u5177"
+    },
+    "tricksterBoxHint": {
+        "0": "The Trickster boxes are 3 boxes that are connected and turned into vents.",
+        "13": "\u9a97\u672f\u7bb1\u662f\u7531\u9a97\u672f\u5e08\u653e\u7f6e\u7684\u8fde\u6210\u7ba1\u9053\u76843\u4e2a\u76d2\u5b50"
+    },
+    "silhouetteHint": {
+        "0": "The Silhouette is a trace the Yo-Yo leaves after blinking and returning.",
+        "13": "\u60a0\u60a0\u7403\u5728\u95ea\u73b0\u548c\u8fd4\u56de\u540e\u4f1a\u7559\u4e0b\u9634\u5f71"
+    },
+    "assassinTraceHint": {
+        "0": "The Assassin Trace will be placed in the position of the assassination.",
+        "13": "\u523a\u5ba2\u5728\u523a\u6740\u5b8c\u540e\u4f1a\u5728\u539f\u5730\u548c\u5c38\u4f53\u5904\u7559\u4e0b\u6811\u53f6"
+    },
+    "antiqueHint": {
+        "0": "The Antiques are clues the Archaeologists use to discover roles.",
+        "13": "\u8003\u53e4\u5b66\u5bb6\u6316\u6398\u6587\u7269\u53ef\u4ee5\u83b7\u5f97\u76f8\u5e94\u7684\u7ebf\u7d22"
+    },
+    "trapHint": {
+        "0": "The Traps are a way of killing players for the Trapper.\nPlayers in the trap will die if not being rescued.",
+        "13": "\u8bbe\u9677\u8005\u53ef\u4ee5\u901a\u8fc7\u653e\u7f6e\u9677\u9631\u6765\u51fb\u6740\n\u5728\u4e00\u5b9a\u65f6\u95f4\u5185\u88ab\u5939\u4f4f\u7684\u73a9\u5bb6\u82e5\u6ca1\u6709\u88ab\u62ef\u6551\u5219\u4f1a\u6b7b\u4ea1"
+    },
+    "ventSealedHint": {
+        "0": "Vents can no longer be accessed if being sealed.",
+        "13": "\u88ab\u5c01\u9501\u7684\u7ba1\u9053\u4e0d\u80fd\u518d\u88ab\u4f7f\u7528"
     }
 }

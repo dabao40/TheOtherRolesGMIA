@@ -1,5 +1,6 @@
 using BepInEx.Unity.IL2CPP.Utils;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using Hazel;
 using Innersloth.IO;
 using System;
 using System.Collections;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using TheOtherRoles.MetaContext;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SocialPlatforms.Impl;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Modules
@@ -177,6 +179,12 @@ namespace TheOtherRoles.Modules
     {
         public override int Parse(string str) { return int.Parse(str); }
         public IntegerDataEntry(string name, DataSaver saver, int defaultValue) : base(name, saver, defaultValue) { }
+    }
+
+    public class StringDataEntry : DataEntry<string>
+    {
+        public override string Parse(string str) { return str; }
+        public StringDataEntry(string name, DataSaver saver, string defaultValue) : base(name, saver, defaultValue) { }
     }
 
     public class AchievementType
@@ -360,9 +368,47 @@ namespace TheOtherRoles.Modules
         }
 
         static private Dictionary<string, Achievement> achievements = new();
+        static public Dictionary<byte, Achievement> TitleMap = new();
+
         public static IEnumerable<Achievement> allAchievements => achievements.Values;
         public static List<AchievementTokenBase> allAchievementTokens = new();
         static public DataSaver AchievementDataSaver = new("Progress");
+        static private StringDataEntry myTitleEntry = new("MyTitle", AchievementDataSaver, "-");
+
+        static public Achievement MyTitle
+        {
+            get
+            {
+                if (GetAchievement(myTitleEntry.Value, out var achievement) && achievement.IsCleared)
+                    return achievement;
+                return null;
+            }
+            set
+            {
+                if (value?.IsCleared ?? false)
+                    myTitleEntry.Value = value.Id;
+                else
+                    myTitleEntry.Value = "-";
+
+                if (PlayerControl.LocalPlayer && !ShipStatus.Instance && PlayerControl.LocalPlayer.AmOwner)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareAchievement, SendOption.Reliable);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(myTitleEntry.Value);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.shareAchievement(PlayerControl.LocalPlayer.PlayerId, myTitleEntry.Value);
+                }
+            }
+        }
+
+        static public void SetOrToggleTitle(Achievement achievement)
+        {
+            if (achievement == null || MyTitle == achievement)
+                MyTitle = null;
+            else
+                MyTitle = achievement;
+        }
+
         public enum ClearState
         {
             Clear,
@@ -418,18 +464,46 @@ namespace TheOtherRoles.Modules
                 return null;
         }
 
-        public GUIContext GetOverlayContext()
+        public GUIContext GetOverlayContext(bool hiddenNotClearedAchievement = true, bool showCleared = false, bool showTitleInfo = false, bool showTorophy = false)
         {
-            var gui = TORGUIContextEngine.Instance;
+            var gui = TORGUIContextEngine.API;
 
             var attr = new TextAttributes(gui.GetAttribute(AttributeParams.OblongLeft)) { FontSize = new(1.6f) };
             var detailTitleAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
             var detailDetailAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
 
-            return new VerticalContextsHolder(GUIAlignment.Left,
-                            new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetHeaderComponent()),
-                            new TORGUIText(GUIAlignment.Left, detailTitleAttr, GetTitleComponent(HiddenDescriptiveComponent)),
-                            new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetDetailComponent()));
+            List<GUIContext> list = new()
+            {
+                new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetHeaderComponent())
+            };
+            List<GUIContext> titleList = new();
+            if (showTorophy)
+            {
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(-0.04f, 0.2f)));
+                titleList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => TrophySprite.GetSprite(Trophy)), new(0.3f, 0.3f)));
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.05f, 0.2f)));
+            }
+            titleList.Add(new TORGUIText(GUIAlignment.Left, detailTitleAttr, GetTitleComponent(hiddenNotClearedAchievement ? HiddenDescriptiveComponent : null)));
+
+            if (showCleared && IsCleared)
+            {
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.2f, 0.2f)));
+                titleList.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, gui.TextComponent(new(1f, 1f, 0f), "achievementCleared")));
+            }
+
+            list.Add(new HorizontalContextsHolder(GUIAlignment.Left, titleList));
+            list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetDetailComponent()));
+
+            if (showTitleInfo && IsCleared)
+            {
+                list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.2f)));
+                list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, new LazyTextComponent(() =>
+                (MyTitle == this) ?
+                ("<b>" + ModTranslation.getString("achievementEquipped").Color(Color.green) + "</b><br>" + ModTranslation.getString("achievementUnequip")) :
+                ModTranslation.getString("achievementEquip"))));
+            }
+
+            return new VerticalContextsHolder(GUIAlignment.Left, list);
         }
 
         public TextComponent GetTitleComponent(TextComponent hiddenComponent)
@@ -525,8 +599,13 @@ namespace TheOtherRoles.Modules
                 collider.isTrigger = true;
                 collider.size = new Vector2(2.6f, 0.55f);
                 var button = billboard.SetUpButton();
-                button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext())));
+                button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(showTitleInfo: true))));
                 button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+                button.OnClick.AddListener((Action)(() => {
+                    SetOrToggleTitle(achievement);
+                    button.OnMouseOut.Invoke();
+                    button.OnMouseOver.Invoke();
+                }));
 
                 white.material.shader = materialShader;
                 icon.sprite = trophySprite.GetSprite(achievement.Trophy);

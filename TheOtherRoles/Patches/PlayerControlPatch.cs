@@ -882,6 +882,84 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void accelTrapUpdate()
+        {
+            if (!CustomOptionHolder.activateProps.getBool()) return;
+            if (Props.AccelTrap.accels == null || Props.AccelTrap.accels.Count == 0 || MeetingHud.Instance) return;
+            try
+            {
+                foreach (var acce in Props.AccelTrap.accels)
+                {
+                    if (acce.accelTrap == null) return;
+                    if (!PlayerControl.LocalPlayer.Data.IsDead && acce.accelTrap.transform != null
+                        && Vector3.Distance(PlayerControl.LocalPlayer.transform.position, acce.accelTrap.transform.position) < 0.25f &&
+                        !PlayerControl.LocalPlayer.inVent)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ActivateAccel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.activateAccel(PlayerControl.LocalPlayer.PlayerId);
+                    }
+                }
+                if (Props.AccelTrap.acceled.ContainsKey(PlayerControl.LocalPlayer) && DateTime.UtcNow.Subtract(Props.AccelTrap.acceled[PlayerControl.LocalPlayer]).TotalSeconds >
+                        CustomOptionHolder.accelerationDuration.getFloat())
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DeactivateAccel, Hazel.SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.deactivateAccel(PlayerControl.LocalPlayer.PlayerId);
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                TheOtherRolesPlugin.Logger.LogWarning(e.Message);
+            }
+        }
+
+        static void decelTrapUpdate()
+        {
+            if (!CustomOptionHolder.activateProps.getBool()) return;
+            if (Props.DecelTrap.decels == null || Props.DecelTrap.decels.Count == 0 || MeetingHud.Instance) return;
+            try
+            {
+                foreach (var decel in Props.DecelTrap.decels)
+                {
+                    if (decel.decelTrap == null) return;
+                    if (!PlayerControl.LocalPlayer.Data.IsDead && decel.decelTrap.transform != null
+                        && Vector3.Distance(PlayerControl.LocalPlayer.transform.position, decel.decelTrap.transform.position) < 0.6f &&
+                        !PlayerControl.LocalPlayer.inVent && !decel.isTriggered)
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ActivateDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Props.DecelTrap.getId(decel));
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.activateDecel(Props.DecelTrap.getId(decel), PlayerControl.LocalPlayer.PlayerId);
+                    }
+
+                    if (decel.isTriggered && DateTime.UtcNow.Subtract(decel.activateTime).TotalSeconds >= CustomOptionHolder.decelUpdateInterval.getFloat())
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UntriggerDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Props.DecelTrap.getId(decel));
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.untriggerDecel(Props.DecelTrap.getId(decel));
+                    }
+
+                    if (Props.DecelTrap.deceled.ContainsKey(PlayerControl.LocalPlayer) && DateTime.UtcNow.Subtract(Props.DecelTrap.deceled[PlayerControl.LocalPlayer]).TotalSeconds >
+                        CustomOptionHolder.decelerationDuration.getFloat())
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DeactivateDecel, Hazel.SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.deactivateDecel(PlayerControl.LocalPlayer.PlayerId);
+                    }
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                TheOtherRolesPlugin.Logger.LogWarning(e.Message);
+            }
+        }
+
         public static void mediumSetTarget() {
             if (Medium.medium == null || Medium.medium != PlayerControl.LocalPlayer || Medium.medium.Data.IsDead || Medium.deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
 
@@ -1302,13 +1380,20 @@ namespace TheOtherRoles.Patches {
                 // -- MODIFIER--
                 // Bloody
                 bloodyUpdate();
+                // Chameleon (invis stuff, timers)
+                Chameleon.update();
                 // mini (for the cooldowns)
                 miniCooldownUpdate();
-                //Bomb.update();
+                // Garlic
+                Garlic.UpdateAll();
                 // Bomber
                 BombEffect.UpdateAll();
                 // Yo-yo
                 Silhouette.UpdateAll();
+
+                // Props
+                accelTrapUpdate();
+                decelTrapUpdate();
 
                 // -- GAME MODE --
                 hunterUpdate();
@@ -2171,6 +2256,7 @@ namespace TheOtherRoles.Patches {
         public static void Prefix(GameData __instance, PlayerControl player, DisconnectReasons reason) {
             if (MeetingHud.Instance) {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, player.PlayerId);
+                MeetingHudPatch.yasunaCheckAndReturnSpecialVote(MeetingHud.Instance, player.PlayerId);
             }
             if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && GameStatistics.roleHistory != null) {
                 GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });

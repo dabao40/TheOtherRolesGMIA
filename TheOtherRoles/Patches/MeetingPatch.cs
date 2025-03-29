@@ -238,7 +238,8 @@ namespace TheOtherRoles.Patches
                     __instance.StartCoroutine(Effects.Slide3D(swapped2.transform, swapped2.transform.localPosition, swapped1.transform.localPosition, 1.5f));
                 }
 
-                //if (Yasuna.specialVoteTargetPlayerId == swapped1.TargetPlayerId || Yasuna.specialVoteTargetPlayerId == swapped2.TargetPlayerId) Swapper.charges++;
+                if (Yasuna.yasuna != null && Yasuna.specialVoteTargetPlayerId != byte.MaxValue && (Yasuna.specialVoteTargetPlayerId == Swapper.playerId1 ||
+                    Yasuna.specialVoteTargetPlayerId == Swapper.playerId2) && PlayerControl.LocalPlayer == Swapper.swapper) Swapper.charges++;
 
                 __instance.TitleText.text = FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingResults, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                 int num = 0;
@@ -448,6 +449,25 @@ namespace TheOtherRoles.Patches
 
         }
 
+        public static void yasunaCheckAndReturnSpecialVote(MeetingHud __instance, byte dyingPlayerId)
+        {
+            if (Yasuna.yasuna == null || __instance.state == MeetingHud.VoteStates.Results) return;
+            bool reset = false;
+            if (dyingPlayerId == Yasuna.specialVoteTargetPlayerId) {
+                reset = true;
+                Yasuna.specialVoteTargetPlayerId = byte.MaxValue;
+            }
+            if (PlayerControl.LocalPlayer != Yasuna.yasuna || !reset) return;
+
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea voteArea = __instance.playerStates[i];
+                Transform t = voteArea.transform.FindChild("SpecialVoteButton");
+                if (t != null) t.gameObject.SetActive(!voteArea.AmDead);
+            }
+            Yasuna._remainingSpecialVotes++;
+        }
+
         public static GameObject guesserUI;
         public static PassiveButton guesserUIExitButton;
         public static byte guesserCurrentTarget;
@@ -568,13 +588,13 @@ namespace TheOtherRoles.Patches
 
             Transform selectedButton = null;
 
+            RoleManagerSelectRolesPatch.RoleAssignmentData roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
             foreach (RoleInfo roleInfo in RoleInfo.allRoleInfos) {
                 RoleId guesserRole = (Guesser.niceGuesser != null && PlayerControl.LocalPlayer.PlayerId == Guesser.niceGuesser.PlayerId) ? RoleId.NiceGuesser :  RoleId.EvilGuesser;
                 if (roleInfo.isModifier || roleInfo.roleId == guesserRole || (!HandleGuesser.evilGuesserCanGuessSpy && guesserRole == RoleId.EvilGuesser && roleInfo.roleId == RoleId.Spy && !HandleGuesser.isGuesserGm)) continue; // Not guessable roles & modifier
                 if (HandleGuesser.isGuesserGm && (roleInfo.roleId == RoleId.NiceGuesser || roleInfo.roleId == RoleId.EvilGuesser)) continue; // remove Guesser for guesser game mode
                 if (HandleGuesser.isGuesserGm && PlayerControl.LocalPlayer.Data.Role.IsImpostor && !HandleGuesser.evilGuesserCanGuessSpy && roleInfo.roleId == RoleId.Spy) continue;
                 // remove all roles that cannot spawn due to the settings from the ui.
-                RoleManagerSelectRolesPatch.RoleAssignmentData roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
                 if (roleData.neutralSettings.ContainsKey((byte)roleInfo.roleId) && roleData.neutralSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.impSettings.ContainsKey((byte)roleInfo.roleId) && roleData.impSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId] == 0) continue;
@@ -703,6 +723,14 @@ namespace TheOtherRoles.Patches
             if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor) Yasuna.yasunaAcTokenChallenge.Value.targetId = targetId;
             else Yasuna.evilYasunaAcTokenChallenge.Value.targetId = targetId;
 
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                PlayerVoteArea voteArea = __instance.playerStates[i];
+                Transform t = voteArea.transform.FindChild("SpecialVoteButton");
+                if (t != null && voteArea.TargetPlayerId != targetId)
+                    t.gameObject.SetActive(false);
+            }
+
             __instance.playerStates[buttonTarget].VoteForMe();
         }
 
@@ -808,7 +836,8 @@ namespace TheOtherRoles.Patches
                         rend.transform.SetParent(pva.transform);
                         rend.gameObject.layer = pva.Megaphone.gameObject.layer;
                         rend.transform.localPosition = new Vector3(-0.5f, -0.03f, -1f);
-                        if (((PlayerControl.LocalPlayer == Swapper.swapper && !PlayerControl.LocalPlayer.Data.IsDead) || isTrackerButton) && isGuesser) rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
+                        if (((PlayerControl.LocalPlayer == Swapper.swapper && !PlayerControl.LocalPlayer.Data.IsDead) || isTrackerButton || (PlayerControl.LocalPlayer == Yasuna.yasuna && !PlayerControl.LocalPlayer.Data.IsDead)) && isGuesser)
+                            rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
                         rend.sprite = Witch.getSpelledOverlaySprite();
                         addButtonGuide(rend.gameObject.SetUpButton(), ModTranslation.getString("witchMeetingOverlay"));
                         var collider = rend.gameObject.AddComponent<CircleCollider2D>();
@@ -898,7 +927,7 @@ namespace TheOtherRoles.Patches
                     PassiveButton button = targetBox.GetComponent<PassiveButton>();
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
-                    button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => yasunaOnClick(copiedIndex, __instance)));
+                    button.OnClick.AddListener((Action)(() => yasunaOnClick(copiedIndex, __instance)));
                     addButtonGuide(button, string.Format(ModTranslation.getString("buttonLeftClick"), ModTranslation.getString("buttonForceExile")));
                 }
             }

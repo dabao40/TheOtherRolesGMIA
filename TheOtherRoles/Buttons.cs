@@ -1545,6 +1545,8 @@ namespace TheOtherRoles
                     writer.Write(EvilHacker.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.evilHackerCreatesMadmate(EvilHacker.currentTarget.PlayerId);
+                    _ = new StaticAchievementToken("evilHacker.common1");
+
                 },
                 () =>
                 {
@@ -1990,10 +1992,18 @@ namespace TheOtherRoles
                         Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
                         Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
 
+                        byte roomId;
+                        try {
+                            roomId = (byte)FastDestroyableSingleton<HudManager>.Instance.roomTracker.LastRoom.RoomId;
+                        } catch {
+                            roomId = (byte)SystemTypes.Outside;
+                        }
+
                         MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceCamera, Hazel.SendOption.Reliable);
                         writer.WriteBytesAndSize(buff);
+                        writer.Write(roomId);
                         writer.EndMessage();
-                        RPCProcedure.placeCamera(buff); 
+                        RPCProcedure.placeCamera(buff, roomId); 
                     }
                     SoundEffectsManager.play("securityGuardPlaceCam");  // Same sound used for both types (cam or vent)!
                     securityGuardButton.Timer = securityGuardButton.MaxTimer;

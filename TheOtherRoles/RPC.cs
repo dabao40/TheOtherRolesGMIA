@@ -285,6 +285,7 @@ namespace TheOtherRoles
         EventKick,
         DraftModePickOrder,
         DraftModePick,
+        ShareAchievement
     }
 
     public static class RPCProcedure {
@@ -782,6 +783,19 @@ namespace TheOtherRoles
                         jekyllAndHydeSuicideButton.Timer = JekyllAndHyde.suicideTimer;
                     }
                     if (Moriarty.moriarty != null && PlayerControl.LocalPlayer == Moriarty.moriarty) moriartyBrainwashButton.Timer = Moriarty.brainwashCooldown;
+
+                    ShipStatus.Instance.AllCameras.Do
+                    (
+                        x =>
+                        {
+                            if (x.CamName == "South") x.NewName = StringNames.CamSouth;
+                            else if (x.CamName == "Central") x.NewName = StringNames.CamCentral;
+                            else if (x.CamName == "Northeast") x.NewName = StringNames.CamNortheast;
+                            else if (x.CamName == "Northwest") x.NewName = StringNames.CamNorthwest;
+                            else if (x.CamName == "Southwest") x.NewName = StringNames.CamSouthwest;
+                            else if (x.CamName == "East") x.NewName = StringNames.CamEast;
+                        }
+                    );
                 }
             })));
         }
@@ -1423,6 +1437,11 @@ namespace TheOtherRoles
                     Tracker.tracked = player;
         }
 
+        public static void shareAchievement(byte playerId, string achievement)
+        {
+            Achievement.TitleMap[playerId] = Helpers.playerById(playerId)?.GetTitleShower().SetAchievement(achievement);
+        }
+
         public static void evilHackerCreatesMadmate(byte targetId)
         {
             PlayerControl player = Helpers.playerById(targetId);
@@ -1433,8 +1452,7 @@ namespace TheOtherRoles
             }
             else
             {
-                if (PlayerControl.LocalPlayer == EvilHacker.evilHacker)
-                    _ = new StaticAchievementToken("evilHacker.common1");
+                FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
 
                 // Jackalバグ対応
                 List<PlayerControl> tmpFormerJackals = new(Jackal.formerJackals);
@@ -1600,7 +1618,7 @@ namespace TheOtherRoles
                 bool wasSpy = Spy.spy != null && player == Spy.spy;
                 bool wasImpostor = player.Data.Role.IsImpostor;  // This can only be reached if impostors can be sidekicked.
                 FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
-                erasePlayerRoles(player.PlayerId, true, generateTasks: false);
+                erasePlayerRoles(player.PlayerId, true, true, false);
                 Sidekick.sidekick = player;
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
                 if (wasSpy || wasImpostor) Sidekick.wasTeamRed = true;
@@ -1728,7 +1746,14 @@ namespace TheOtherRoles
             if (player == Moriarty.moriarty) Moriarty.clearAndReload();
             if (player == JekyllAndHyde.jekyllAndHyde) JekyllAndHyde.clearAndReload();
             if (player == Akujo.akujo) Akujo.clearAndReload();
-            if (player == Fox.fox) Fox.clearAndReload();
+            if (player == Fox.fox) {
+                if (Immoralist.immoralist != null && !Immoralist.immoralist.Data.IsDead) {
+                    if (PlayerControl.LocalPlayer == Immoralist.immoralist)
+                        PlayerControl.LocalPlayer.generateNormalTasks();
+                    Immoralist.clearAndReload();
+                }
+                Fox.clearAndReload();
+            }
             if (player == Immoralist.immoralist) Immoralist.clearAndReload();
             if (player == PlagueDoctor.plagueDoctor) PlagueDoctor.clearAndReload();
             if (player == Cupid.cupid) Cupid.clearAndReload(false);
@@ -2015,6 +2040,7 @@ namespace TheOtherRoles
                         pva.SetDead(pva.DidReport, true);
                         pva.Overlay.gameObject.SetActive(true);
                         MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, targetId);
+                        MeetingHudPatch.yasunaCheckAndReturnSpecialVote(MeetingHud.Instance, targetId);
                     }
 
                     // Give players back their vote if target is shot dead
@@ -2463,9 +2489,6 @@ namespace TheOtherRoles
                 _ = new StaticAchievementToken("trapper.common1");
                 Trapper.acTokenChallenge.Value++;
             }
-            var murder = Helpers.checkMuderAttempt(trapper, target);
-            if (murder == MurderAttemptResult.ReverseKill) target.MurderPlayer(trapper, MurderResultFlags.Succeeded);
-            if (murder != MurderAttemptResult.PerformKill) return;
             Trap.trapKill(trapId, trapper, target);
         }
 
@@ -2566,7 +2589,7 @@ namespace TheOtherRoles
             bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
         }
 
-        public static void placeCamera(byte[] buff) {
+        public static void placeCamera(byte[] buff, byte roomId) {
             var referenceCamera = UnityEngine.Object.FindObjectOfType<SurvCamera>(); 
             if (referenceCamera == null) return; // Mira HQ
 
@@ -2581,7 +2604,58 @@ namespace TheOtherRoles
             camera.transform.position = new Vector3(position.x, position.y, referenceCamera.transform.position.z - 1f);
             camera.CamName = $"Security Camera {SecurityGuard.placedCameras}";
             camera.Offset = new Vector3(0f, 0f, camera.Offset.z);
-            if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4) camera.transform.localRotation = new Quaternion(0, 0, 1, 1); // Polus and Airship 
+
+            camera.NewName = (SystemTypes)roomId switch
+            {
+                SystemTypes.Hallway => StringNames.Hallway,
+                SystemTypes.Storage => StringNames.Storage,
+                SystemTypes.Cafeteria => StringNames.Cafeteria,
+                SystemTypes.Reactor => StringNames.Reactor,
+                SystemTypes.UpperEngine => StringNames.UpperEngine,
+                SystemTypes.Nav => StringNames.Nav,
+                SystemTypes.Admin => StringNames.Admin,
+                SystemTypes.Electrical => StringNames.Electrical,
+                SystemTypes.LifeSupp => StringNames.LifeSupp,
+                SystemTypes.Shields => StringNames.Shields,
+                SystemTypes.MedBay => StringNames.MedBay,
+                SystemTypes.Security => StringNames.Security,
+                SystemTypes.Weapons => StringNames.Weapons,
+                SystemTypes.LowerEngine => StringNames.LowerEngine,
+                SystemTypes.Comms => StringNames.Comms,
+                SystemTypes.Decontamination => StringNames.Decontamination,
+                SystemTypes.Launchpad => StringNames.Launchpad,
+                SystemTypes.LockerRoom => StringNames.LockerRoom,
+                SystemTypes.Laboratory => StringNames.Laboratory,
+                SystemTypes.Balcony => StringNames.Balcony,
+                SystemTypes.Office => StringNames.Office,
+                SystemTypes.Greenhouse => StringNames.Greenhouse,
+                SystemTypes.Dropship => StringNames.Dropship,
+                SystemTypes.Decontamination2 => StringNames.Decontamination2,
+                SystemTypes.Decontamination3 => StringNames.Decontamination3,
+                SystemTypes.Outside => StringNames.Outside,
+                SystemTypes.Specimens => StringNames.Specimens,
+                SystemTypes.BoilerRoom => StringNames.BoilerRoom,
+                SystemTypes.VaultRoom => StringNames.VaultRoom,
+                SystemTypes.Cockpit => StringNames.Cockpit,
+                SystemTypes.Armory => StringNames.Armory,
+                SystemTypes.Kitchen => StringNames.Kitchen,
+                SystemTypes.ViewingDeck => StringNames.ViewingDeck,
+                SystemTypes.HallOfPortraits => StringNames.HallOfPortraits,
+                SystemTypes.CargoBay => StringNames.CargoBay,
+                SystemTypes.Ventilation => StringNames.Ventilation,
+                SystemTypes.Showers => StringNames.Showers,
+                SystemTypes.Engine => StringNames.Engine,
+                SystemTypes.Brig => StringNames.Brig,
+                SystemTypes.MeetingRoom => StringNames.MeetingRoom,
+                SystemTypes.Records => StringNames.Records,
+                SystemTypes.Lounge => StringNames.Lounge,
+                SystemTypes.GapRoom => StringNames.GapRoom,
+                SystemTypes.MainHall => StringNames.MainHall,
+                SystemTypes.Medical => StringNames.Medical,
+                _ => StringNames.None,
+            };
+
+            if (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 2 or 4) camera.transform.localRotation = new Quaternion(0, 0, 1, 1); // Polus and Airship 
 
             if (SubmergedCompatibility.IsSubmerged) {
                 // remove 2d box collider of console, so that no barrier can be created. (irrelevant for now, but who knows... maybe we need it later)
@@ -3484,6 +3558,9 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.YasunaSpecialVote_DoCastVote:
                     RPCProcedure.yasunaSpecialVote_DoCastVote();
                     break;
+                case (byte)CustomRPC.ShareAchievement:
+                    RPCProcedure.shareAchievement(reader.ReadByte(), reader.ReadString());
+                    break;
                 case (byte)CustomRPC.TaskMasterSetExTasks:
                     playerId = reader.ReadByte();
                     byte oldTaskMasterPlayerId = reader.ReadByte();
@@ -3535,7 +3612,7 @@ namespace TheOtherRoles
                     RPCProcedure.bomberKill(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlaceCamera:
-                    RPCProcedure.placeCamera(reader.ReadBytesAndSize());
+                    RPCProcedure.placeCamera(reader.ReadBytesAndSize(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.SealVent:
                     RPCProcedure.sealVent(reader.ReadPackedInt32());
