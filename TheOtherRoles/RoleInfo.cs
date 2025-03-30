@@ -122,6 +122,7 @@ namespace TheOtherRoles
         public static RoleInfo schrodingersCat = new("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
         public static RoleInfo kataomoi = new("kataomoi", Kataomoi.color, RoleId.Kataomoi, true);
         public static RoleInfo doomsayer = new("doomsayer", Doomsayer.color, RoleId.Doomsayer, true);
+        public static RoleInfo timeeater = new("timeeater", Color.yellow, RoleId.TimeEater, false, true);//ModifierBelongs
 
         public static RoleInfo hunter = new("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new("hunted", Color.white, RoleId.Crewmate);
@@ -140,6 +141,7 @@ namespace TheOtherRoles
         public static RoleInfo invert = new("invert", Color.yellow, RoleId.Invert, false, true);
         public static RoleInfo chameleon = new("chameleon", Color.yellow, RoleId.Chameleon, false, true);
         public static RoleInfo armored = new ("armored", Color.yellow, RoleId.Armored, false, true);
+
         //public static RoleInfo shifter = new RoleInfo("Shifter", Color.yellow, "Shift your role", "Shift your role", RoleId.Shifter, false, true);
 
 
@@ -205,7 +207,7 @@ namespace TheOtherRoles
             engineer,
             sheriff,
             deputy,
-            niceshifter, 
+            niceshifter,
             bait,
             lighter,
             detective,
@@ -241,8 +243,9 @@ namespace TheOtherRoles
             invert,
             chameleon,
             armored,
+            timeeater,
             cupidLover
-            //shifter, 
+            //shifter,
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false) {
@@ -267,6 +270,7 @@ namespace TheOtherRoles
                 if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
                 if (p == Armored.armored) infos.Add(armored);
+                if (p == TimeEater.timeeater) infos.Add(timeeater);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
 
@@ -403,7 +407,7 @@ namespace TheOtherRoles
                 }
             }
 
-            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target) 
+            if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target)
                 roleName += useColors ? Helpers.cs(Pursuer.color, " §") : " §";
             if (Husk.husk.Any(x => x.PlayerId == p.PlayerId)) roleName += $" ({ModTranslation.getString("husk")})";
             if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId))

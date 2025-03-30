@@ -154,7 +154,7 @@ namespace TheOtherRoles
                 canUseVents = CustomOptionHolder.jesterCanVent.getBool();
             }
         }
-        
+
         public static class Portalmaker {
             public static PlayerControl portalmaker;
             public static Color color = new Color32(69, 69, 169, byte.MaxValue);
@@ -258,7 +258,7 @@ namespace TheOtherRoles
                 mayor = null;
                 emergency = null;
                 emergencySprite = null;
-		        remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat()); 
+		        remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat());
                 meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
                 numVotes = (int)CustomOptionHolder.mayorNumVotes.getFloat();
                 acTokenChallenge = null;
@@ -270,7 +270,7 @@ namespace TheOtherRoles
             public static Color color = new Color32(0, 40, 245, byte.MaxValue);
             private static Sprite buttonSprite;
 
-            public static int remainingFixes = 1;           
+            public static int remainingFixes = 1;
             public static bool highlightForImpostors = true;
             public static bool highlightForTeamJackal = true;
 
@@ -394,7 +394,7 @@ namespace TheOtherRoles
 
             private static Sprite buttonSprite;
             private static Sprite handcuffedSprite;
-            
+
             public static Sprite getButtonSprite()
             {
                 if (buttonSprite) return buttonSprite;
@@ -431,7 +431,7 @@ namespace TheOtherRoles
                     HudManagerStartPatch.setAllButtonsHandcuffedStatus(active);
                     SoundEffectsManager.play("deputyHandcuff");
 		}
- 
+
 	    }
 
             public static void clearAndReload()
@@ -454,7 +454,7 @@ namespace TheOtherRoles
         public static class Lighter {
             public static PlayerControl lighter;
             public static Color color = new Color32(238, 229, 190, byte.MaxValue);
-            
+
             public static float lighterModeLightsOnVision = 2f;
             public static float lighterModeLightsOffVision = 0.75f;
             public static float flashlightWidth = 0.75f;
@@ -545,7 +545,7 @@ namespace TheOtherRoles
         public static PlayerControl medic;
         public static PlayerControl shielded;
         public static PlayerControl futureShielded;
-        
+
         public static Color color = new Color32(126, 251, 194, byte.MaxValue);
         public static bool usedShield;
 
@@ -616,7 +616,7 @@ namespace TheOtherRoles
         public static int charges;
         public static float rechargeTasksNumber;
         public static float rechargedTasks;
- 
+
         public static byte playerId1 = Byte.MaxValue;
         public static byte playerId2 = Byte.MaxValue;
 
@@ -750,7 +750,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
-    
+
         public static float cooldown = 30f;
         public static float duration = 10f;
 
@@ -802,7 +802,7 @@ namespace TheOtherRoles
     public static class Camouflager {
         public static PlayerControl camouflager;
         public static Color color = Palette.ImpostorRed;
-    
+
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
@@ -1011,7 +1011,7 @@ namespace TheOtherRoles
         public static bool garlicsActive = true;
 
         public static PlayerControl currentTarget;
-        public static PlayerControl bitten; 
+        public static PlayerControl bitten;
         public static bool targetNearGarlic = false;
 
         public static AchievementToken<(DateTime deathTime, bool cleared)> acTokenChallenge;
@@ -1080,7 +1080,7 @@ namespace TheOtherRoles
         public static PlayerControl fakeSidekick;
         public static PlayerControl currentTarget;
         public static List<PlayerControl> formerJackals = new();
-        
+
         public static float cooldown = 30f;
         public static float createSidekickCooldown = 30f;
         public static bool canUseVents = true;
@@ -1124,7 +1124,7 @@ namespace TheOtherRoles
             wasTeamRed = wasImpostor = wasSpy = false;
             canSabotageLights = CustomOptionHolder.jackalCanSabotageLights.getBool();
         }
-        
+
     }
 
     public static class Sidekick {
@@ -1194,7 +1194,7 @@ namespace TheOtherRoles
             acTokenChallenge = null;
         }
     }
-    
+
     public static class Spy {
         public static PlayerControl spy;
         public static Color color = Palette.ImpostorRed;
@@ -1495,7 +1495,7 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             arsonist = null;
             currentTarget = null;
-            douseTarget = null; 
+            douseTarget = null;
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
             TORMapOptions.resetPoolables();
@@ -1736,7 +1736,7 @@ namespace TheOtherRoles
             if (target == Sidekick.sidekick && (killer == Jackal.jackal || Jackal.formerJackals.Any(x => x.PlayerId == killer.PlayerId))) infos.Add(SpecialMediumInfo.JackalKillsSidekick);
             if (target == Lawyer.lawyer && killer == Lawyer.target) infos.Add(SpecialMediumInfo.LawyerKilledByClient);
             if (Medium.target.wasCleaned) infos.Add(SpecialMediumInfo.BodyCleaned);
-            
+
             if (infos.Count > 0) {
                 var selectedInfo = infos[rnd.Next(infos.Count)];
                 switch (selectedInfo) {
@@ -4566,6 +4566,20 @@ namespace TheOtherRoles
         }
     }
 
+    public static class TimeEater
+    {
+        public static PlayerControl timeeater;
+        public static float timeeatereatchance;
+        public static float cooldown;
+
+        public static void clearAndReload()
+        {
+            timeeater = null;
+            timeeatereatchance = CustomOptionHolder.modifierTimeEatereatchance.getFloat();
+            cooldown = CustomOptionHolder.modifierTimeEatercooldown.getFloat();
+        }
+    }
+
     public static class Shifter
     {
         public static PlayerControl shifter;
@@ -6055,7 +6069,7 @@ namespace TheOtherRoles
         }
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
-            return killer == thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : 
+            return killer == thief && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat :
                 null}.Contains(targetRole);
         }
     }
@@ -6073,7 +6087,7 @@ namespace TheOtherRoles
         public static List<PlayerControl> playersOnMap = new List<PlayerControl>();
         public static bool anonymousMap = false;
         public static int infoType = 0; // 0 = Role, 1 = Good/Evil, 2 = Name
-        public static float trapDuration = 5f; 
+        public static float trapDuration = 5f;
 
         private static Sprite trapButtonSprite;
 
@@ -6287,7 +6301,7 @@ namespace TheOtherRoles
         public static int shortTasks;
         public static int longTasks;
         public static RoleId fixedRole;
-        
+
         public static string fullName { get { return ModTranslation.getString("madmate"); } }
         public static string prefix { get { return ModTranslation.getString("madmatePrefix"); } }
 
@@ -6417,7 +6431,7 @@ namespace TheOtherRoles
                     //chameleonPlayer.cosmetics.currentPet.shadows[0].color = chameleonPlayer.cosmetics.currentPet.shadows[0].color.SetAlpha(petVisibility);
                 } catch { }
             }
-                
+
         }
 
         public static void removeChameleonFully(PlayerControl player) {
