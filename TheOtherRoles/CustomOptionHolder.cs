@@ -510,7 +510,7 @@ namespace TheOtherRoles {
         public static CustomOption modifierSunglasses;
         public static CustomOption modifierSunglassesQuantity;
         public static CustomOption modifierSunglassesVision;
-        
+
         public static CustomOption modifierMini;
         public static CustomOption modifierMiniGrowingUpDuration;
         public static CustomOption modifierMiniGrowingUpInMeeting;
@@ -530,6 +530,10 @@ namespace TheOtherRoles {
         public static CustomOption modifierChameleonMinVisibility;
 
         public static CustomOption modifierArmored;
+
+        public static CustomOption modifierTimeEater;
+        public static CustomOption modifierTimeEatercooldown;
+        public static CustomOption modifierTimeEatereatchance;
 
         public static CustomOption madmateSpawnRate;
         public static CustomOption madmateQuantity;
@@ -636,7 +640,7 @@ namespace TheOtherRoles {
         public static string cs(Color c, string s) {
             return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), s);
         }
- 
+
         private static byte ToByte(float f) {
             f = Mathf.Clamp01(f);
             return (byte)(f * 255);
@@ -876,7 +880,7 @@ namespace TheOtherRoles {
             lawyerTargetKnows = CustomOption.Create(351, Types.Neutral, "lawyerTargetKnows", true, lawyerSpawnRate);
             //lawyerIsProsecutorChance = CustomOption.Create(358, Types.Neutral, "Chance That The Lawyer Is Prosecutor", rates, lawyerSpawnRate);
             lawyerVision = CustomOption.Create(354, Types.Neutral, "lawyerVision", 1f, 0.25f, 3f, 0.25f, lawyerSpawnRate, false, "unitTimes");
-            lawyerKnowsRole = CustomOption.Create(355, Types.Neutral, "lawyerKnowsRole", false, lawyerSpawnRate); 
+            lawyerKnowsRole = CustomOption.Create(355, Types.Neutral, "lawyerKnowsRole", false, lawyerSpawnRate);
             lawyerWinsAfterMeetings = CustomOption.Create(352, Types.Neutral, "lawyerWinsMeeting", false, lawyerSpawnRate);
             lawyerNeededMeetings = CustomOption.Create(353, Types.Neutral, "lawyerMeetingsNeeded", 5f, 1f, 15f, 1f, lawyerWinsAfterMeetings, false, "unitShots");
             lawyerTargetCanBeJester = CustomOption.Create(351, Types.Neutral, "lawyerTargetCanBeJester", false, lawyerSpawnRate);
