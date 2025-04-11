@@ -636,7 +636,7 @@ namespace TheOtherRoles {
                 i++;
             }
             float actual_spacing = (headers * 1.05f + lines * 0.85f) / (headers + lines) * 1.01f;
-            __instance.scrollBar.CalculateAndSetYBounds((float)(__instance.settingsInfo.Count + singles * 2 + headers), 2f, 6f, actual_spacing);
+            __instance.scrollBar.CalculateAndSetYBounds(__instance.settingsInfo.Count + singles * 2 + headers, 2f, 6f, actual_spacing);
 
         }
         private static Tuple<string, string> handleSpecialOptionsView(CustomOption option, string defaultString, string defaultVal)
@@ -745,19 +745,6 @@ namespace TheOtherRoles {
         }
     }
 
-    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Initialize))]
-    class GameOptionsMenuInitializePatch
-    {
-        public static void Postfix(GameOptionsMenu __instance)
-        {
-            if (Helpers.isCustomServer() || (AmongUsClient.Instance?.AmLocalHost ?? false))
-            {
-                var impostorsOption = __instance.Children.Find((Il2CppSystem.Predicate<OptionBehaviour>)(x => x.TryGetComponent<NumberOption>(out var op) && op.intOptionName == AmongUs.GameOptions.Int32OptionNames.NumImpostors))?.TryCast<NumberOption>();
-                if (impostorsOption != null) impostorsOption.ValidRange = new FloatRange(1f, 6f);
-            }
-        }
-    }
-
     class CreateGameOptionsTORBehaviour : MonoBehaviour
     {
         static CreateGameOptionsTORBehaviour() => ClassInjector.RegisterTypeInIl2Cpp<CreateGameOptionsTORBehaviour>();
@@ -813,7 +800,7 @@ namespace TheOtherRoles {
                 for (int i = 4; i <= (isCustomServer ? 24 : 15); i++)
                 {
                     SpriteRenderer spriteRenderer = GameObject.Instantiate<SpriteRenderer>(MyPicker.MaxPlayerButtonPrefab, MyPicker.MaxPlayersRoot);
-                    spriteRenderer.transform.localPosition = new Vector3((float)((i - 4) % 12) * 0.5f, (float)(i / 16) * -0.47f, 0f);
+                    spriteRenderer.transform.localPosition = new Vector3((i - 4) % 12 * 0.5f, i / 16 * -0.47f, 0f);
                     int numPlayers = i;
                     spriteRenderer.name = numPlayers.ToString();
                     PassiveButton component = spriteRenderer.GetComponent<PassiveButton>();
@@ -832,13 +819,19 @@ namespace TheOtherRoles {
             for (int i = 4; i <= 6; i++) MyPicker.ImpostorButtons[i - 1].gameObject.SetActive(isCustomServer);
 
             var options = MyPicker.GetTargetOptions();
-            if (!isCustomServer)
-            {
-                if (options.MaxPlayers > 15) MyPicker.SetMaxPlayersButtons(15);
-                if (options.NumImpostors > 3) MyPicker.SetImpostorButtons(3);
-            }
+            MyPicker.SetMaxPlayersButtons(isCustomServer ? 24 : 15);
+        }
+    }
 
-            MyPicker.Refresh();
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.UpdateServerText))]
+    public static class CreateGameOptionsUpdateRegionPatch
+    {
+        private static void Postfix(CreateGameOptions __instance)
+        {
+            __instance.capacityOption.ValidRange.max = Helpers.isCustomServer() ? 24f : 15f;
+            __instance.capacityOption.Value = __instance.capacityOption.ValidRange.Clamp(__instance.capacityOption.Value);
+            __instance.capacityOption.UpdateValue();
+            __instance.capacityOption.AdjustButtonsActiveState();
         }
     }
 
@@ -847,34 +840,33 @@ namespace TheOtherRoles {
     {
         public static bool Prefix(CreateOptionsPicker __instance)
         {
-            //各種設定の配列長を24人分まで伸ばす
-            NormalGameOptionsV07.MaxImpostors = NormalGameOptionsV08.MaxImpostors = new int[] {
-            0,
-            0, 0, 0, 1, 1,
-            1, 2, 2, 3, 3,
-            3, 3, 4, 4, 5,
-            5, 5, 6, 6, 6,
-            6, 6, 6, 6
-            };
-            NormalGameOptionsV07.RecommendedImpostors = NormalGameOptionsV08.RecommendedImpostors = new int[] {
-            0,
-            0, 0, 0, 1, 1,
-            1, 2, 2, 2, 2,
-            2, 3, 3, 3, 3,
-            3, 4, 4, 4, 4,
-            5, 5, 5, 5
-            };
-            NormalGameOptionsV07.RecommendedKillCooldown = NormalGameOptionsV08.RecommendedKillCooldown = new int[] {
-            0,
-            0, 0, 0, 45, 30,
-            15, 35, 30, 25, 20,
-            20, 20, 20, 20, 20,
-            20, 20, 20, 20, 20,
-            20, 20, 20, 20
-            };
-            NormalGameOptionsV07.MinPlayers = NormalGameOptionsV08.MinPlayers = new int[] {
-            4, 4, 7, 9, 13, 15, 18
-            };
+            // Set MaxImpostors values
+            int[] maxImpostors = Helpers.MaxImpostors;
+            LegacyGameOptions.MaxImpostors = maxImpostors;
+            NormalGameOptionsV09.MaxImpostors = maxImpostors;
+            NormalGameOptionsV08.MaxImpostors = maxImpostors;
+            NormalGameOptionsV07.MaxImpostors = maxImpostors;
+
+            // Set RecommendedImpostors values
+            int[] recommendedImpostors = Helpers.RecommendedImpostors;
+            LegacyGameOptions.RecommendedImpostors = recommendedImpostors;
+            NormalGameOptionsV09.RecommendedImpostors = recommendedImpostors;
+            NormalGameOptionsV08.RecommendedImpostors = recommendedImpostors;
+            NormalGameOptionsV07.RecommendedImpostors = recommendedImpostors;
+
+            // Set RecommendedKillCooldown values
+            int[] recommendedKillCooldown = Helpers.RecommendedKillCooldown;
+            LegacyGameOptions.RecommendedKillCooldown = recommendedKillCooldown;
+            NormalGameOptionsV09.RecommendedKillCooldown = recommendedKillCooldown;
+            NormalGameOptionsV08.RecommendedKillCooldown = recommendedKillCooldown;
+            NormalGameOptionsV07.RecommendedKillCooldown = recommendedKillCooldown;
+
+            // Set MinPlayers values
+            int[] minPlayers = Helpers.MinPlayers;
+            LegacyGameOptions.MinPlayers = minPlayers;
+            NormalGameOptionsV09.MinPlayers = minPlayers;
+            NormalGameOptionsV08.MinPlayers = minPlayers;
+            NormalGameOptionsV07.MinPlayers = minPlayers;
 
             //ゲームモードはノーマル固定
             DataManager.Settings.Multiplayer.LastPlayedGameMode = AmongUs.GameOptions.GameModes.Normal;
@@ -883,6 +875,88 @@ namespace TheOtherRoles {
 
             __instance.gameObject.AddComponent<CreateGameOptionsTORBehaviour>();
 
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.Refresh))]
+    internal class CreateGameOptionsStartPatch
+    {
+        private static int impostors = 1;
+
+        public static void Prefix(CreateOptionsPicker __instance)
+        {
+            impostors = GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors);
+            Debug.Log("Impostors(A): " + impostors.ToString());
+        }
+
+        public static void Postfix(CreateOptionsPicker __instance)
+        {
+            impostors = Math.Min(impostors, Helpers.isCustomServer() ? 6 : 3);
+            __instance.SetImpostorButtons(impostors);
+            Debug.Log("Impostors(B): " + impostors.ToString());
+        }
+    }
+
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Confirm))]
+    public static class CreateGameOptionsConfirmPatch
+    {
+        private static bool Prefix(CreateGameOptions __instance)
+        {
+            if (!DestroyableSingleton<MatchMaker>.Instance.Connecting(__instance))
+                return false;
+            GameOptionsManager.Instance.GameHostOptions.TryGetInt(Int32OptionNames.MaxPlayers, out int index);
+            int[] maxImpostors = Helpers.MaxImpostors;
+            GameOptionsManager.Instance.GameHostOptions.TryGetInt(Int32OptionNames.NumImpostors, out int num);
+            if (num > maxImpostors[index])
+                GameOptionsManager.Instance.GameHostOptions.SetInt(Int32OptionNames.NumImpostors, maxImpostors[index]);
+            if (num == 0)
+                GameOptionsManager.Instance.GameHostOptions.SetInt(Int32OptionNames.NumImpostors, 1);
+            __instance.CoStartGame();
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]
+    public static class CreateGameOptionsPatch
+    {
+        private static void Postfix(CreateGameOptions __instance)
+        {
+            __instance.tooltip.transform.parent.gameObject.SetActive(false);
+            __instance.SelectMode(0, true);
+            __instance.modeButtons[0].transform.parent.gameObject.SetActive(false);
+            __instance.mapPicker.transform.SetLocalY(-1.245f);
+            __instance.capacityOption.transform.SetLocalY(-1.15f);
+            __instance.levelButtons[0].transform.parent.gameObject.SetActive(false);
+            __instance.serverButton.transform.parent.SetLocalY(-1.84f);
+            __instance.serverDropdown.transform.SetLocalY(-2.63f);
+        }
+    }
+
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.SetUpFromData))]
+    public static class TryGetIntArrayV09Patch
+    {
+        private static bool Prefix(NumberOption __instance, [HarmonyArgument(0)] BaseGameSetting data, [HarmonyArgument(1)] int maskLayer)
+        {
+            if (data.Type != OptionTypes.Int || data.Title != StringNames.GameNumImpostors)
+                return true;
+            __instance.data = data;
+            __instance.GetComponentsInChildren<SpriteRenderer>(true).Do(r => r.material.SetInt(PlayerMaterial.MaskLayer, maskLayer));
+            __instance.GetComponentsInChildren<TextMeshPro>(true).Do(t =>
+            {
+                t.fontMaterial.SetFloat("_StencilComp", 3f);
+                t.fontMaterial.SetFloat("_Stencil", maskLayer);
+            });
+            IntGameSetting intGameSetting = data.Cast<IntGameSetting>();
+            __instance.Title = intGameSetting.Title;
+            __instance.Value = intGameSetting.Value;
+            __instance.Increment = intGameSetting.Increment;
+            GameOptionsManager.Instance.CurrentGameOptions.TryGetInt(Int32OptionNames.MaxPlayers, out int index);
+            __instance.ValidRange = new FloatRange(intGameSetting.ValidRange.min, AmongUsClient.Instance?.AmLocalHost ?? false ? 6f : Helpers.MaxImpostors[index]);
+            __instance.FormatString = intGameSetting.FormatString;
+            __instance.ZeroIsInfinity = intGameSetting.ZeroIsInfinity;
+            __instance.SuffixType = intGameSetting.SuffixType;
+            __instance.intOptionName = intGameSetting.OptionName;
             return false;
         }
     }
@@ -996,7 +1070,7 @@ namespace TheOtherRoles {
                 foreach (TextMeshPro textMeshPro in optionBehaviour.GetComponentsInChildren<TextMeshPro>(true))
                 {
                     textMeshPro.fontMaterial.SetFloat("_StencilComp", 3f);
-                    textMeshPro.fontMaterial.SetFloat("_Stencil", (float)20);
+                    textMeshPro.fontMaterial.SetFloat("_Stencil", 20);
                 }
 
                 var stringOption = optionBehaviour as StringOption;

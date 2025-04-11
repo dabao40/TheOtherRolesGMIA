@@ -95,10 +95,10 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public static class OnGameEndPatch
     {
-        public static GameOverReason gameOverReason = GameOverReason.HumansByTask;
+        public static GameOverReason gameOverReason = GameOverReason.CrewmatesByTask;
         public static void Prefix(AmongUsClient __instance, [HarmonyArgument(0)]ref EndGameResult endGameResult) {
             gameOverReason = endGameResult.GameOverReason;
-            if ((int)endGameResult.GameOverReason >= 10) endGameResult.GameOverReason = GameOverReason.ImpostorByKill;
+            if ((int)endGameResult.GameOverReason >= 10) endGameResult.GameOverReason = GameOverReason.ImpostorsByKill;
 
             // Reset zoomed out ghosts
             Helpers.toggleZoom(reset: true);
@@ -110,15 +110,15 @@ namespace TheOtherRoles.Patches {
             bool foxTaskComplete = Fox.tasksComplete();
             if (foxTaskComplete)
             {
-                if (gameOverReason == GameOverReason.HumansByTask && !Fox.crewWinsByTasks)
+                if (gameOverReason == GameOverReason.CrewmatesByTask && !Fox.crewWinsByTasks)
                 {
                     gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
                 }
-                else if (gameOverReason == GameOverReason.ImpostorBySabotage && !Fox.impostorWinsBySabotage)
+                else if (gameOverReason == GameOverReason.ImpostorsBySabotage && !Fox.impostorWinsBySabotage)
                 {
                     gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
                 }
-                else if (gameOverReason is GameOverReason.HumansByVote or GameOverReason.ImpostorByKill or GameOverReason.ImpostorByVote)
+                else if (gameOverReason is GameOverReason.CrewmatesByVote or GameOverReason.ImpostorsByKill or GameOverReason.ImpostorsByVote)
                 {
                     gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
                 }
@@ -185,9 +185,9 @@ namespace TheOtherRoles.Patches {
             foreach (var winner in winnersToRemove) EndGameResult.CachedWinners.Remove(winner);
 
             // Putting them all in one doesn't work
-            bool saboWin = gameOverReason == GameOverReason.ImpostorBySabotage;
-            bool impostorWin = gameOverReason is GameOverReason.ImpostorByKill or GameOverReason.ImpostorBySabotage or GameOverReason.ImpostorDisconnect or GameOverReason.ImpostorByVote;
-            bool crewmateWin = gameOverReason is GameOverReason.HumansByTask or GameOverReason.HumansByVote or GameOverReason.HumansDisconnect;
+            bool saboWin = gameOverReason == GameOverReason.ImpostorsBySabotage;
+            bool impostorWin = gameOverReason is GameOverReason.ImpostorsByKill or GameOverReason.ImpostorsBySabotage or GameOverReason.ImpostorDisconnect or GameOverReason.ImpostorsByVote;
+            bool crewmateWin = gameOverReason is GameOverReason.CrewmatesByTask or GameOverReason.CrewmatesByVote or GameOverReason.CrewmateDisconnect;
 
             bool jesterWin = Jester.jester != null && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
             bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
@@ -756,32 +756,32 @@ namespace TheOtherRoles.Patches {
                         nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
-                    case GameOverReason.ImpostorByKill:
+                    case GameOverReason.ImpostorsByKill:
                         textRenderer.text = ModTranslation.getString("impostorByKill");
                         nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
-                    case GameOverReason.ImpostorBySabotage:
+                    case GameOverReason.ImpostorsBySabotage:
                         textRenderer.text = ModTranslation.getString("impostorBySabotage");
                         nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
-                    case GameOverReason.ImpostorByVote:
+                    case GameOverReason.ImpostorsByVote:
                         textRenderer.text = ModTranslation.getString("impostorByVote");
                         nonModTranslationText = "impostorWin";
                         textRenderer.color = Color.red;
                         break;
-                    case GameOverReason.HumansByTask:
+                    case GameOverReason.CrewmatesByTask:
                         textRenderer.text = ModTranslation.getString("humansByTask");
                         nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
                         break;
-                    case GameOverReason.HumansDisconnect:
+                    case GameOverReason.CrewmateDisconnect:
                         textRenderer.text = ModTranslation.getString("humansDisconnect");
                         nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
                         break;
-                    case GameOverReason.HumansByVote:
+                    case GameOverReason.CrewmatesByVote:
                         textRenderer.text = ModTranslation.getString("humansByVote");
                         nonModTranslationText = "crewWin";
                         textRenderer.color = Color.white;
@@ -1011,7 +1011,7 @@ namespace TheOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM && !HideNSeek.taskWinPossible) return false;
             if ((GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) || (TaskMaster.triggerTaskMasterWin && TaskMaster.taskMaster != null)) {
                 //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, false);
+                GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByTask, false);
                 return true;
             }
             return false;
@@ -1083,13 +1083,13 @@ namespace TheOtherRoles.Patches {
                 GameOverReason endReason;
                 switch (GameData.LastDeathReason) {
                     case DeathReason.Exile:
-                        endReason = GameOverReason.ImpostorByVote;
+                        endReason = GameOverReason.ImpostorsByVote;
                         break;
                     case DeathReason.Kill:
-                        endReason = GameOverReason.ImpostorByKill;
+                        endReason = GameOverReason.ImpostorsByKill;
                         break;
                     default:
-                        endReason = GameOverReason.ImpostorByVote;
+                        endReason = GameOverReason.ImpostorsByVote;
                         break;
                 }
                 GameManager.Instance.RpcEndGame(endReason, false);
@@ -1101,12 +1101,12 @@ namespace TheOtherRoles.Patches {
         private static bool CheckAndEndGameForCrewmateWin(ShipStatus __instance, PlayerStatistics statistics) {
             if (HideNSeek.isHideNSeekGM && HideNSeek.timer <= 0 && !HideNSeek.isWaitingTimer) {
                 //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
+                GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
                 return true;
             }
             if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 && statistics.TeamAkujoAlive <= 1) {
                 //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
+                GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
                 return true;
             }
             return false;
@@ -1114,7 +1114,7 @@ namespace TheOtherRoles.Patches {
 
         private static void EndGameForSabotage(ShipStatus __instance) {
             //__instance.enabled = false;
-            GameManager.Instance.RpcEndGame(GameOverReason.ImpostorBySabotage, false);
+            GameManager.Instance.RpcEndGame(GameOverReason.ImpostorsBySabotage, false);
             return;
         }
 

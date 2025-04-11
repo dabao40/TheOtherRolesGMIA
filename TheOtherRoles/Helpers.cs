@@ -329,6 +329,37 @@ namespace TheOtherRoles
             return n is not StringNames.ServerNA and not StringNames.ServerEU and not StringNames.ServerAS;
         }
 
+        public static int[] MinPlayers = new int[7] {
+            4, 4, 7, 9, 13, 15, 18
+            };
+
+        public static int[] RecommendedKillCooldown = new int[25] {
+            0,
+            0, 0, 0, 45, 30,
+            15, 35, 30, 25, 20,
+            20, 20, 20, 20, 20,
+            20, 20, 20, 20, 20,
+            20, 20, 20, 20
+            };
+
+        public static int[] RecommendedImpostors = new int[25] {
+            0,
+            0, 0, 0, 1, 1,
+            1, 2, 2, 2, 2,
+            2, 3, 3, 3, 3,
+            3, 4, 4, 4, 4,
+            5, 5, 5, 5
+            };
+
+        public static int[] MaxImpostors = new int[25] {
+            0,
+            0, 0, 0, 1, 1,
+            1, 2, 2, 3, 3,
+            3, 3, 4, 4, 5,
+            5, 5, 6, 6, 6,
+            6, 6, 6, 6
+            };
+
         static public int[] Sequential(int length)
         {
             var array = new int[length];

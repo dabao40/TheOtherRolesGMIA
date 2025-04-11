@@ -24,6 +24,7 @@ using TheOtherRoles.Modules.CustomHats;
 using TheOtherRoles.Objects;
 using TheOtherRoles.MetaContext;
 using UnityEngine.SceneManagement;
+using AmongUs.Data.Player;
 
 namespace TheOtherRoles
 {
@@ -160,7 +161,7 @@ namespace TheOtherRoles
     }
 
     // Deactivate bans, since I always leave my local testing game and ban myself
-    [HarmonyPatch(typeof(StatsManager), nameof(StatsManager.AmBanned), MethodType.Getter)]
+    [HarmonyPatch(typeof(PlayerBanData), nameof(PlayerBanData.IsBanned), MethodType.Getter)]
     public static class AmBannedPatch
     {
         public static void Postfix(out bool __result)

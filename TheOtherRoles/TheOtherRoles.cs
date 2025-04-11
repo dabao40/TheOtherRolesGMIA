@@ -1947,7 +1947,7 @@ namespace TheOtherRoles
                 return;
             }
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -2068,7 +2068,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -2813,7 +2813,7 @@ namespace TheOtherRoles
             }
             if ((bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -3034,7 +3034,7 @@ namespace TheOtherRoles
             }
             if ((BomberA.bombTarget == null || bombTarget == null) && !BomberA.alwaysShowArrow) return;
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -4399,7 +4399,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -4901,7 +4901,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -5311,7 +5311,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)
@@ -5483,7 +5483,7 @@ namespace TheOtherRoles
             }
 
             // 前フレームからの経過時間をマイナスする
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.fixedDeltaTime;
 
             // 1秒経過したらArrowを更新
             if (updateTimer <= 0.0f)

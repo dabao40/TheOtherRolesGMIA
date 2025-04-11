@@ -217,7 +217,8 @@ TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option men
     {
         public static void Postfix(VersionShower __instance)
         {
-            __instance.text.text = $"Among Us v{Application.version} - {Helpers.GradientColorText("FFD700", "FF0000", $"The Other Roles GM IA")} <color=#FCCE03FF>v{TheOtherRolesPlugin.VersionString + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}</color>";
+            __instance.text.text = $"Among Us v{DestroyableSingleton<ReferenceDataManager>.Instance.Refdata.userFacingVersion} - " +
+                $"{Helpers.GradientColorText("FFD700", "FF0000", $"The Other Roles GM IA")} <color=#FCCE03FF>v{TheOtherRolesPlugin.VersionString + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}</color>";
         }
     }
 
