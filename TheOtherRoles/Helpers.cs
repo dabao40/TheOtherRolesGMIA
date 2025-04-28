@@ -929,6 +929,64 @@ namespace TheOtherRoles
             return (byte)(f * 255);
         }
 
+        public struct TextFeatures
+        {
+            public float fontSizeMultiplier;
+            public float lineSpacingOffset;
+            public float heightMultiplier;
+            public float topMarginMultiplier;
+            public float scrollSpeedMultiplier;
+        }
+
+        public static TextFeatures AnalyzeTextFeatures(string text)
+        {
+            TextFeatures features = new()
+            {
+                fontSizeMultiplier = 1f,
+                lineSpacingOffset = 0f,
+                heightMultiplier = 1f,
+                topMarginMultiplier = 1f,
+                scrollSpeedMultiplier = 0.08f
+            };
+
+            bool hasCJK = System.Text.RegularExpressions.Regex.IsMatch(
+                text, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]");
+
+            bool hasComplexScript = System.Text.RegularExpressions.Regex.IsMatch(
+                text, @"[\p{IsArabic}\p{IsThai}]");
+
+            if (hasCJK)
+            {
+                features.fontSizeMultiplier = 0.85f;
+                features.lineSpacingOffset = -20f;
+                features.heightMultiplier = 1.15f;
+                features.scrollSpeedMultiplier = 0.05f;
+
+                bool hasKana = text.Any(c => c >= '\u3040' && c <= '\u30FF');
+                if (hasKana)
+                {
+                    features.topMarginMultiplier = 0.8f;
+                    features.heightMultiplier = 1.25f;
+                }
+            }
+            else if (hasComplexScript)
+            {
+                features.fontSizeMultiplier = 0.9f;
+                features.lineSpacingOffset = -10f;
+                features.heightMultiplier = 1.2f;
+                features.scrollSpeedMultiplier = 0.06f;
+            }
+
+            float avgLineLength = (float)text.Split('\n').Average(line => line.Length);
+            if (avgLineLength > 60)
+            {
+                features.fontSizeMultiplier *= 0.95f;
+                features.lineSpacingOffset -= 5f;
+            }
+
+            return features;
+        }
+
         public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie) {
             tie = true;
             KeyValuePair<byte, int> result = new(byte.MaxValue, int.MinValue);
@@ -1144,8 +1202,10 @@ namespace TheOtherRoles
 
         public static void showFlash(Color color, float duration = 1f, string message = "") {
             if (FastDestroyableSingleton<HudManager>.Instance == null || FastDestroyableSingleton<HudManager>.Instance.FullScreen == null) return;
-            FastDestroyableSingleton<HudManager>.Instance.FullScreen.gameObject.SetActive(true);
-            FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
+            var renderer = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.FullScreen, HudManager.Instance.transform);
+            renderer.gameObject.SetActive(true);
+            renderer.enabled = true;
+
             // Message Text
             TMPro.TextMeshPro messageText = GameObject.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
             messageText.text = message;
@@ -1154,7 +1214,6 @@ namespace TheOtherRoles
             messageText.transform.localPosition += new Vector3(0f, 2f, -69f);
             messageText.gameObject.SetActive(true);
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) => {
-                var renderer = FastDestroyableSingleton<HudManager>.Instance.FullScreen;
 
                 if (p < 0.5) {
                     if (renderer != null)
@@ -1353,6 +1412,13 @@ namespace TheOtherRoles
                 }
             }
             return null;
+        }
+
+        public static Vector3 AsVector3(this Vector2 vec, float z)
+        {
+            Vector3 result = vec;
+            result.z = z;
+            return result;
         }
 
         public static bool roleCanUseSabotage(this PlayerControl player) {

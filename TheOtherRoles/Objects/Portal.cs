@@ -20,10 +20,14 @@ namespace TheOtherRoles.Objects {
             public byte playerId;
             public string name;
             public DateTime time;
-            public tpLogEntry(byte playerId, string name, DateTime time) {
+            public string startingRoom;
+            public string endingRoom;
+            public tpLogEntry(byte playerId, string name, DateTime time, string startingRoom, string endingRoom) {
                 this.playerId = playerId;
                 this.time = time;
                 this.name = name;
+                this.startingRoom = startingRoom;
+                this.endingRoom = endingRoom;
             }
         }
 
@@ -59,8 +63,12 @@ namespace TheOtherRoles.Objects {
                 colorId = 6;
             }
             
-            if (!playerControl.Data.IsDead)
-                teleportedPlayers.Add(new tpLogEntry(playerId, playerNameDisplay, DateTime.UtcNow));
+            if (!playerControl.Data.IsDead) {
+                var startingRoom = Helpers.getPlainShipRoom(playerControl);
+                teleportedPlayers.Add(new tpLogEntry(playerId, playerNameDisplay, DateTime.UtcNow,
+                    DestroyableSingleton<TranslationController>.Instance.GetString(startingRoom != null ? startingRoom.RoomId : SystemTypes.Outside),
+                    exit == 2 ? secondPortal.room : findExit(playerControl.transform.position).room));
+            }
             
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(teleportDuration, new Action<float>((p) => {
                 if (firstPortal != null && firstPortal.animationFgRenderer != null && secondPortal != null && secondPortal.animationFgRenderer != null) {
@@ -129,10 +137,10 @@ namespace TheOtherRoles.Objects {
             return true;
         }
 
-        public static Vector2 findExit(Vector2 p) {
+        public static Portal findExit(Vector2 p) {
             var dist1 = Vector2.Distance(p, firstPortal.portalGameObject.transform.position);
             var dist2 = Vector2.Distance(p, secondPortal.portalGameObject.transform.position);
-            return dist1 < dist2 ? secondPortal.portalGameObject.transform.position : firstPortal.portalGameObject.transform.position;
+            return dist1 < dist2 ? secondPortal : firstPortal;
         }
 
         public static Vector2 findEntry(Vector2 p) {

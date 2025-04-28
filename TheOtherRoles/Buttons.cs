@@ -1182,7 +1182,7 @@ namespace TheOtherRoles
             usePortalButton = new CustomButton(
                 () => {
                     bool didTeleport = false;
-                    Vector3 exit = Portal.findExit(PlayerControl.LocalPlayer.transform.position);
+                    Vector3 exit = Portal.findExit(PlayerControl.LocalPlayer.transform.position).portalGameObject.transform.position;
                     Vector3 entry = Portal.findEntry(PlayerControl.LocalPlayer.transform.position);
 
                     bool portalMakerSoloTeleport = !Portal.locationNearEntry(PlayerControl.LocalPlayer.transform.position);
@@ -2789,7 +2789,11 @@ namespace TheOtherRoles
 
                     return PlayerControl.LocalPlayer.CanMove && Sherlock.numUsed < Sherlock.getNumInvestigate();
                 },
-                () => { sherlockInvestigateButton.Timer = sherlockInvestigateButton.MaxTimer; },
+                () =>
+                {
+                    sherlockInvestigateButton.Timer = sherlockInvestigateButton.MaxTimer;
+                    Sherlock.killLog.Clear();
+                },
                 Sherlock.getInvestigateIcon(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,

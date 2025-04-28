@@ -182,13 +182,13 @@ namespace TheOtherRoles.Patches
         class MeetingHudBloopAVoteIconPatch {
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)]NetworkedPlayerInfo voterPlayer, [HarmonyArgument(1)]int index, [HarmonyArgument(2)]Transform parent) {
                 var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+                bool localIsWatcher = PlayerControl.LocalPlayer == Watcher.nicewatcher || PlayerControl.LocalPlayer == Watcher.evilwatcher;
                 var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
-                                     (PlayerControl.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) ||
-                                     PlayerControl.LocalPlayer == Watcher.nicewatcher ||
-                                     PlayerControl.LocalPlayer == Watcher.evilwatcher;
+                                     (PlayerControl.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) || localIsWatcher;
                 if (showVoteColors)
                 {
-                    PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
+                    PlayerMaterial.SetColors(localIsWatcher && Watcher.canSeeYasunaVotes && Yasuna.yasuna != null && Yasuna.specialVoteTargetPlayerId != byte.MaxValue ? 
+                        Yasuna.yasuna.Data.DefaultOutfit.ColorId : voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
                 }
                 else
                 {
@@ -1223,7 +1223,7 @@ namespace TheOtherRoles.Patches
                         foreach (var entry in Portal.teleportedPlayers) {
                             float timeBeforeMeeting = ((float)(DateTime.UtcNow - entry.time).TotalMilliseconds) / 1000;
                             msg += Portalmaker.logShowsTime ? string.Format(ModTranslation.getString("portalmakerLogTime"), (int)timeBeforeMeeting) : "";
-                            msg = msg + string.Format(ModTranslation.getString("portalmakerLogName"), entry.name);
+                            msg = msg + string.Format(ModTranslation.getString("portalmakerLogName"), entry.name, entry.startingRoom, entry.endingRoom);
                         }
                         FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(Portalmaker.portalmaker, $"{msg}", false);
                     }

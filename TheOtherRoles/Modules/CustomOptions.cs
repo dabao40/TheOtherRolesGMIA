@@ -1504,10 +1504,8 @@ namespace TheOtherRoles {
             string curBlock;
             int j = 0;
             for (int i = 0; i < blocks.Length; i++) {
-                if (AmongUs.Data.DataManager.Settings.Language.CurrentLanguage != SupportedLangs.English)
-                    blocks[i] = "<line-height=97%>" + blocks[i] + "</line-height>";
                 curBlock = blocks[i];
-                if (Helpers.lineCount(curBlock) + Helpers.lineCount(curString) < (AmongUs.Data.DataManager.Settings.Language.CurrentLanguage == SupportedLangs.English ? 46 : 42)) { // original: 43
+                if (Helpers.lineCount(curBlock) + Helpers.lineCount(curString) < 46) { // original: 43
                     curString += curBlock + "\n\n";
                 } else {
                     settingsTMPs[j].text = curString;
@@ -1524,7 +1522,10 @@ namespace TheOtherRoles {
                     blockCount++;
             }
             for (int i = 0; i < blockCount; i++) {
-                settingsTMPs[i].transform.localPosition = new Vector3(- blockCount * 1.26f + 2.7f * i, 2.2f, -800f);
+                settingsTMPs[i].transform.localPosition = new Vector3(- blockCount * 1.26f + 2.7f * i, 2.4f, -800f);
+                Helpers.TextFeatures features = Helpers.AnalyzeTextFeatures(settingsTMPs[i].text);
+                settingsTMPs[i].fontSize = 3f * features.fontSizeMultiplier;
+                settingsTMPs[i].lineSpacing = features.lineSpacingOffset;
             }
         }
 

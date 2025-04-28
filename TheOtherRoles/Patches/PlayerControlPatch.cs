@@ -416,7 +416,7 @@ namespace TheOtherRoles.Patches {
                     if (Jackal.jackal != null) untargetables.Add(Jackal.jackal);
                     if (Sidekick.sidekick != null) untargetables.Add(Sidekick.sidekick);
                     SchrodingersCat.currentTarget = setTarget(untargetablePlayers: untargetables);
-                    setPlayerOutline(SchrodingersCat.currentTarget, Jackal.color);
+                    setPlayerOutline(SchrodingersCat.currentTarget, Palette.ImpostorRed);
                 }
             }
             if (SchrodingersCat.schrodingersCat == PlayerControl.LocalPlayer && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)

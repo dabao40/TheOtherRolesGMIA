@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TheOtherRoles.Modules
 {
@@ -26,11 +27,50 @@ namespace TheOtherRoles.Modules
             gameObject.SetActive(true);
             GameObject screen = Helpers.CreateObject("Screen", transform, new Vector3(0, -0.1f, -10f));
             var roleText = screen.AddComponent<TextMeshPro>();
-            roleText.SetText($"<size=120%>{ModTranslation.getString("modHowToPlay")}</size>\n\n<size=50%>{ModTranslation.getString("howToPlayCrewmate")}\n\n{ModTranslation.getString("howToPlayImpostor")}\n\n{ModTranslation.getString("howToPlayNeutral")}\n\n{ModTranslation.getString("howToPlayMadmate")}</size>");
+            string content = $"<size=90%>{ModTranslation.getString("modHowToPlay")}\n\n</size><size=50%>{ModTranslation.getString("howToPlayCrewmate")}\n\n{ModTranslation.getString("howToPlayImpostor")}\n\n{ModTranslation.getString("howToPlayNeutral")}\n\n{ModTranslation.getString("howToPlayMadmate")}</size>";
+            roleText.SetText(content);
+            roleText.alignment = TextAlignmentOptions.Top;
+            roleText.enableWordWrapping = true;
+            roleText.autoSizeTextContainer = true;
+            Helpers.TextFeatures features = Helpers.AnalyzeTextFeatures(content);
+
+            roleText.fontSize = 3f * features.fontSizeMultiplier;
+            roleText.lineSpacing = features.lineSpacingOffset;
+            roleText.ForceMeshUpdate();
+
+            float textHeight = roleText.preferredHeight * features.heightMultiplier;
+            float screenHeight = Camera.main.orthographicSize * 2f;
+            float visibleHeight = screenHeight * 0.8f;
+
+            GameObject centerContainer = Helpers.CreateObject("CenterContainer", screen.transform, new Vector3(0, 0f, -10f));
+            var containerRect = centerContainer.AddComponent<RectTransform>();
+            containerRect.sizeDelta = new Vector2(screenHeight * Camera.main.aspect * 0.9f, visibleHeight);
+
+            roleText.transform.SetParent(centerContainer.transform);
+            roleText.rectTransform.anchoredPosition = Vector2.zero;
+            roleText.rectTransform.sizeDelta = containerRect.sizeDelta;
+            roleText.ForceMeshUpdate();
+            textHeight = roleText.preferredHeight * features.heightMultiplier;
+
+            var scroller = screen.AddComponent<Scroller>();
+            scroller.Inner = containerRect;
+            scroller.allowY = true;
+            scroller.velocity = Vector2.zero;
+
+            if (textHeight > visibleHeight)
+            {
+                float scrollRange = (textHeight - visibleHeight) / 2f;
+                scroller.ContentYBounds = new FloatRange(-scrollRange, scrollRange);
+                scroller.ScrollWheelSpeed = Mathf.Clamp(textHeight * 0.05f, 0.5f, 3f);
+                containerRect.anchoredPosition = Vector2.zero;
+            }
+            else
+            {
+                scroller.enabled = false;
+                containerRect.anchoredPosition = Vector2.zero;
+            }
+
             roleText.alignment = TextAlignmentOptions.Center;
-            roleText.fontSize *= 0.1f;
-            roleText.transform.SetParent(screen.transform);
-            roleText.transform.localPosition = new Vector3(0f, 0.2f);
         }
 
         protected void Close()

@@ -193,7 +193,9 @@ namespace TheOtherRoles.Patches {
             bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
             bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (GameManager.Instance.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
-            bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
+            bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin;
+            /* && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead) ||
+                (SchrodingersCat.schrodingersCat != null && SchrodingersCat.team == SchrodingersCat.Team.Jackal && !SchrodingersCat.schrodingersCat.Data.IsDead));*/
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
             bool lawyerSoloWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.LawyerSoloWin;
             bool moriartyWin = Moriarty.moriarty != null && gameOverReason == (GameOverReason)CustomGameOverReason.MoriartyWin;
@@ -418,14 +420,18 @@ namespace TheOtherRoles.Patches {
                 // Jackal wins if nobody except jackal is alive
                 AdditionalTempData.winCondition = WinCondition.JackalWin;
                 EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
-                CachedPlayerData wpd = new(Jackal.jackal.Data)
+                if (Jackal.jackal != null)
                 {
-                    IsImpostor = false
-                };
-                EndGameResult.CachedWinners.Add(wpd);
-                if (PlayerControl.LocalPlayer == Jackal.jackal && GameHistory.deadPlayers != null && GameHistory.deadPlayers.Count > 0) {
-                    var lastDead = GameHistory.deadPlayers?.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
-                    if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == Jackal.jackal) _ = new StaticAchievementToken("jackal.challenge");
+                    CachedPlayerData wpd = new(Jackal.jackal.Data)
+                    {
+                        IsImpostor = false
+                    };
+                    EndGameResult.CachedWinners.Add(wpd);
+                    if (PlayerControl.LocalPlayer == Jackal.jackal && GameHistory.deadPlayers != null && GameHistory.deadPlayers.Count > 0)
+                    {
+                        var lastDead = GameHistory.deadPlayers?.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
+                        if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == Jackal.jackal) _ = new StaticAchievementToken("jackal.challenge");
+                    }
                 }
                 // If there is a sidekick. The sidekick also wins
                 if (Sidekick.sidekick != null) {

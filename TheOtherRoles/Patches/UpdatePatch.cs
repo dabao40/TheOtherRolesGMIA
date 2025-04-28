@@ -561,6 +561,7 @@ namespace TheOtherRoles.Patches {
             updateMapButton(__instance);
             if (!MeetingHud.Instance) __instance.AbilityButton?.Update();
             GameStatistics.updateTimer();
+            Sherlock.UpdateArrow();
 
             // Fix dead player's pets being visible by just always updating whether the pet should be visible at all.
             foreach (PlayerControl target in PlayerControl.AllPlayerControls) {

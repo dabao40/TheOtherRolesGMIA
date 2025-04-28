@@ -71,6 +71,7 @@ namespace TheOtherRoles {
         public static CustomOption watcherSpawnRate;
         public static CustomOption watcherisImpWatcherRate;
         public static CustomOption watcherSeeGuesses;
+        public static CustomOption watcherSeeYasunaVotes;
         public static CustomOption watcherSpawnBothRate;
 
         public static CustomOption jesterSpawnRate;
@@ -291,6 +292,7 @@ namespace TheOtherRoles {
         public static CustomOption archaeologistCooldown;
         public static CustomOption archaeologistExploreDuration;
         public static CustomOption archaeologistArrowDuration;
+        public static CustomOption archaeologistNumCandidates;
         public static CustomOption archaeologistRevealAntiqueMode;
 
         public static CustomOption snitchSpawnRate;
@@ -836,6 +838,7 @@ namespace TheOtherRoles {
             watcherSpawnRate = CustomOption.Create(1035, Types.Neutral, cs(Watcher.color, "watcher"), rates, null, true);
             watcherisImpWatcherRate = CustomOption.Create(1036, Types.Neutral, "watcherisImpWatcherRate", rates, watcherSpawnRate);
             watcherSeeGuesses = CustomOption.Create(5080, Types.Neutral, "watcherSeeGuesses", true, watcherSpawnRate);
+            watcherSeeYasunaVotes = CustomOption.Create(5081, Types.Neutral, "watcherSeeYasunaVotes", true, watcherSpawnRate);
             watcherSpawnBothRate = CustomOption.Create(1037, Types.Neutral, "watcherSpawnBothRate", rates, watcherSpawnRate);
 
             yasunaSpawnRate = CustomOption.Create(6040, Types.Neutral, cs(Yasuna.color, "yasuna"), rates, null, true);
@@ -1085,6 +1088,7 @@ namespace TheOtherRoles {
             archaeologistCooldown = CustomOption.Create(7031, Types.Crewmate, "archaeologistCooldown", 20f, 5f, 60f, 1f, archaeologistSpawnRate, format: "unitSeconds");
             archaeologistArrowDuration = CustomOption.Create(7034, Types.Crewmate, "archaeologistArrowDuration", 5f, 1f, 60f, 1f, archaeologistSpawnRate, format: "unitSeconds");
             archaeologistExploreDuration = CustomOption.Create(7032, Types.Crewmate, "archaeologistExploreDuration", 3f, 0f, 15f, 1f, archaeologistSpawnRate, format: "unitSeconds");
+            archaeologistNumCandidates = CustomOption.Create(7036, Types.Crewmate, "archaeologistNumCandidates", 3f, 2f, 6f, 1f, archaeologistSpawnRate, format: "unitPlayers");
             archaeologistRevealAntiqueMode = CustomOption.Create(7035, Types.Crewmate, "archaeologistRevealAntiqueMode", new string[] { "archaeologistModeNever", "archaeologistModeImmediately", "archaeologistModeAfterMeeting" }, archaeologistSpawnRate);
 
             spySpawnRate = CustomOption.Create(240, Types.Crewmate, cs(Spy.color, "spy"), rates, null, true);

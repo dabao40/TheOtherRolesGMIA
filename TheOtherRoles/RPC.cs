@@ -17,6 +17,7 @@ using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils;
 using TheOtherRoles.Modules;
 using Reactor.Utilities.Extensions;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles
 {
@@ -285,7 +286,8 @@ namespace TheOtherRoles
         EventKick,
         DraftModePickOrder,
         DraftModePick,
-        ShareAchievement
+        ShareAchievement,
+        SherlockReceiveDetect
     }
 
     public static class RPCProcedure {
@@ -1498,6 +1500,21 @@ namespace TheOtherRoles
             }
         }
 
+        public static void sherlockReceiveDetect(byte[] buff)
+        {
+            Vector3 position = Vector3.zero;
+            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
+            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
+            if (Sherlock.sherlock != null && PlayerControl.LocalPlayer == Sherlock.sherlock)
+            {
+                var arrow = new Sherlock.SherlockDetectArrow(Sherlock.getDetectIcon(), true)
+                {
+                    TargetPos = position
+                };
+                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Sequence(Effects.Wait(7f), Effects.Action((Action)(() => arrow.MarkAsDisappering()))));
+            }
+        }
+
         /// <summary>
         /// Resets all the AchievementTokenBases and reactivates the achievements <br></br>
         /// On game end the achievements will not be activated again
@@ -1574,10 +1591,14 @@ namespace TheOtherRoles
             antique.spriteRenderer.sprite = Antique.getBrokenSprite();
             if (PlayerControl.LocalPlayer == Archaeologist.archaeologist)
             {
-                var info = Archaeologist.getRoleInfo();
-                RolloverMessage rolloverMessage = RolloverMessage.Create(antique.gameObject.transform.position, true,
-                    string.Format(ModTranslation.getString("archaeologistClue"), Helpers.cs(info.color, info.name)), 5f, 0.5f, 2f, 1f, Color.white);
+                (var names, var role) = Archaeologist.getRoleInfo();
+                var content = string.Format(ModTranslation.getString("archaeologistClue"), Helpers.cs(role.color, role.name), names);
+                RolloverMessage rolloverMessage = RolloverMessage.Create(antique.gameObject.transform.position, true, content, 5f, 0.5f, 2f, 1f, Color.white);
                 rolloverMessage.velocity = new Vector3(0f, 0.1f);
+                MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
+                    new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent("archaeologistDetectInfo")),
+                    new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(content)))
+                    , MeetingOverlayHolder.IconsSprite[2], Archaeologist.color);
                 _ = new StaticAchievementToken("archaeologist.challenge");
                 if (archaeologistDetectButton.isEffectActive && antique.isDetected) archaeologistDetectButton.Timer = 0f;
             }
@@ -3392,6 +3413,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.ArchaeologistExcavate:
                     RPCProcedure.archaeologistExcavate(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.SherlockReceiveDetect:
+                    RPCProcedure.sherlockReceiveDetect(reader.ReadBytesAndSize());
                     break;
                 case (byte)CustomRPC.FortuneTellerUsedDivine:
                     byte fId = reader.ReadByte();
