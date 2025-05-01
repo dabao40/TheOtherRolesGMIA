@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-lastet
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/cache@v4
