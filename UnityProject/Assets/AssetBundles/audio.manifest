@@ -1,0 +1,63 @@
+ManifestFileVersion: 0
+CRC: 93473923
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d2febb95bfe4cb65081a932e1d42ba97
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AUDIO/morphlingMorph.ogg
+- Assets/AUDIO/timemasterShield.ogg
+- Assets/AUDIO/vultureEat.ogg
+- Assets/AUDIO/hackerHack.ogg
+- Assets/AUDIO/GMIATheme.ogg
+- Assets/AUDIO/fail.ogg
+- Assets/AUDIO/tricksterPlaceBox.ogg
+- Assets/AUDIO/pursuerBlank.ogg
+- Assets/AUDIO/witchSpell.ogg
+- Assets/AUDIO/warlockCurse.ogg
+- Assets/AUDIO/bombExplosion.ogg
+- Assets/AUDIO/portalUse.ogg
+- Assets/AUDIO/teleporterSample.ogg
+- Assets/AUDIO/arsonistDouse.ogg
+- Assets/AUDIO/jekyllAndHydeDrug.ogg
+- Assets/AUDIO/bombTick.ogg
+- Assets/AUDIO/ninjaStealth.ogg
+- Assets/AUDIO/knockKnock.ogg
+- Assets/AUDIO/veteranAlert.ogg
+- Assets/AUDIO/vampireBite.ogg
+- Assets/AUDIO/engineerRepair.ogg
+- Assets/AUDIO/mediumAsk.ogg
+- Assets/AUDIO/garlic.ogg
+- Assets/AUDIO/SoundEffectSourcesAndLicenses.ogg
+- Assets/AUDIO/morphlingSample.ogg
+- Assets/AUDIO/triggerDeceleration.ogg
+- Assets/AUDIO/lighterLight.ogg
+- Assets/AUDIO/untriggerDeceleration.ogg
+- Assets/AUDIO/trapperTrap.ogg
+- Assets/AUDIO/bombDefused.ogg
+- Assets/AUDIO/securityGuardPlaceCam.ogg
+- Assets/AUDIO/trackerTrackCorpses.ogg
+- Assets/AUDIO/bomberPlantBomb.ogg
+- Assets/AUDIO/jackalSidekick.ogg
+- Assets/AUDIO/teleporterTeleport.ogg
+- Assets/AUDIO/eraserErase.ogg
+- Assets/AUDIO/moriartyBrainwash.ogg
+- Assets/AUDIO/tricksterUseBoxVent.ogg
+- Assets/AUDIO/blackmailerSilence.ogg
+- Assets/AUDIO/sherlockInvestigate.ogg
+- Assets/AUDIO/trackerTrackPlayer.ogg
+- Assets/AUDIO/bombFuseBurning.ogg
+- Assets/AUDIO/shifterShift.ogg
+- Assets/AUDIO/plagueDoctorSyringe.ogg
+- Assets/AUDIO/cleanerClean.ogg
+- Assets/AUDIO/deputyHandcuff.ogg
+- Assets/AUDIO/medicShield.ogg
+Dependencies: []
