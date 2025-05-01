@@ -318,14 +318,6 @@ namespace TheOtherRoles {
         public static CustomOption taskMasterExtraShortTasks;
         public static CustomOption taskMasterExtraLongTasks;
 
-        public static CustomOption prophetSpawnRate;
-        public static CustomOption prophetCooldown;
-        public static CustomOption prophetNumExamines;
-        public static CustomOption prophetAccuracy;
-        public static CustomOption prophetCanCallEmergency;
-        public static CustomOption prophetIsRevealed;
-        public static CustomOption prophetExaminesToBeRevealed;
-
         public static CustomOption buskerSpawnRate;
         public static CustomOption buskerCooldown;
         public static CustomOption buskerDuration;
@@ -756,7 +748,7 @@ namespace TheOtherRoles {
             evilTrackerResetTargetAfterMeeting = CustomOption.Create(4028, Types.Impostor, "evilTrackerResetTargetAfterMeeting", true, evilTrackerSpawnRate);
             evilTrackerCanSeeDeathFlash = CustomOption.Create(4029, Types.Impostor, "evilTrackerCanSeeDeathFlash", true, evilTrackerSpawnRate);
             evilTrackerCanSeeTargetPosition = CustomOption.Create(4031, Types.Impostor, "evilTrackerCanSeeTargetPosition", true, evilTrackerSpawnRate);
-            evilTrackerCanSeeTargetTask = CustomOption.Create(4030, Types.Impostor, "evilTrackerCanSeeTargetTask", false, evilTrackerSpawnRate);
+            evilTrackerCanSeeTargetTask = CustomOption.Create(4030, Types.Impostor, "evilTrackerCanSeeTargetTask", true, evilTrackerSpawnRate);
             evilTrackerCanSetTargetOnMeeting = CustomOption.Create(4032, Types.Impostor, "evilTrackerCanSetTargetOnMeeting", true, evilTrackerSpawnRate);
 
             undertakerSpawnRate = CustomOption.Create(4056, Types.Impostor, cs(Undertaker.color, "undertaker"), rates, null, true);
@@ -1053,14 +1045,6 @@ namespace TheOtherRoles {
             buskerCooldown = CustomOption.Create(8041, Types.Crewmate, "buskerCooldown", 20f, 5f, 60f, 2.5f, buskerSpawnRate, false, "unitSeconds");
             buskerDuration = CustomOption.Create(8042, Types.Crewmate, "buskerDuration", 10f, 5f, 30f, 2.5f, buskerSpawnRate, false, "unitSeconds");
             buskerRestrictInformation = CustomOption.Create(8043, Types.Crewmate, "buskerRestrictInformation", true, buskerSpawnRate);
-
-            prophetSpawnRate = CustomOption.Create(9005, Types.Crewmate, cs(Prophet.color, "prophet"), rates, null, true);
-            prophetCooldown = CustomOption.Create(9011, Types.Crewmate, "prophetCooldown", 30f, 5f, 60f, 1f, prophetSpawnRate, false, "unitSeconds");
-            prophetNumExamines = CustomOption.Create(9006, Types.Crewmate, "prophetNumExamines", 4f, 1f, 10f, 1f, prophetSpawnRate, false, "unitScrews");
-            prophetCanCallEmergency = CustomOption.Create(9007, Types.Crewmate, "prophetCanCallEmergency", false, prophetSpawnRate);
-            prophetIsRevealed = CustomOption.Create(9012, Types.Crewmate, "prophetIsRevealed", true, prophetSpawnRate);
-            prophetExaminesToBeRevealed = CustomOption.Create(9008, Types.Crewmate, "prophetExaminesToBeRevealed", 3f, 1f, 10f, 1f, prophetIsRevealed, false, "unitScrews");
-            prophetAccuracy = CustomOption.Create(9009, Types.Crewmate, "prophetAccuracy", 30f, 0f, 100f, 5f, prophetSpawnRate, format: "unitPercent");
 
             teleporterSpawnRate = CustomOption.Create(9000, Types.Crewmate, cs(Teleporter.color, "teleporter"), rates, null, true);
             teleporterCooldown = CustomOption.Create(9001, Types.Crewmate, "teleporterCooldown", 30f, 5f, 120f, 5f, teleporterSpawnRate, false, "unitSeconds");

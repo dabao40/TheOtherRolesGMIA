@@ -559,13 +559,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        static void prophetSetTarget()
-        {
-            if (Prophet.prophet == null ||PlayerControl.LocalPlayer != Prophet.prophet) return;
-            Prophet.currentTarget = setTarget();
-            if (Prophet.examinesLeft > 0) setPlayerOutline(Prophet.currentTarget, Prophet.color);
-        }
-
         static void plagueDoctorSetTarget()
         {
             if (PlagueDoctor.plagueDoctor == null || PlayerControl.LocalPlayer != PlagueDoctor.plagueDoctor) return;
@@ -1424,25 +1417,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        static void prophetUpdate()
-        {
-            if (Prophet.arrows == null) return;
-
-            foreach (var arrow in Prophet.arrows) arrow.arrow.SetActive(false);
-
-            if (Prophet.prophet == null || Prophet.prophet.Data.IsDead) return;
-
-            if (Prophet.isRevealed && Helpers.isKiller(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                if (Prophet.arrows.Count == 0) Prophet.arrows.Add(new Arrow(Prophet.color));
-                if (Prophet.arrows.Count != 0 && Prophet.arrows[0] != null)
-                {
-                    Prophet.arrows[0].arrow.SetActive(true);
-                    Prophet.arrows[0].Update(Prophet.prophet.transform.position);
-                }
-            }
-        }
-
         public static void bomberAUpdate()
         {
             if (PlayerControl.LocalPlayer == BomberA.bomberA)
@@ -2157,9 +2131,6 @@ namespace TheOtherRoles.Patches {
                 cupidUpdate();
                 // Blackmailer
                 blackmailerSetTarget();
-                // Prophet
-                prophetSetTarget();
-                prophetUpdate();
                 // Doomsayer
                 doomsayerSetTarget();
                 // Plague Doctor

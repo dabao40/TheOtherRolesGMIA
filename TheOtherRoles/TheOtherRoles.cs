@@ -92,7 +92,6 @@ namespace TheOtherRoles
             Sherlock.clearAndReload();
             TaskMaster.clearAndReload();
             Yasuna.clearAndReload();
-            Prophet.clearAndReload();
             Madmate.clearAndReload();
             CreatedMadmate.clearAndReload();
             Teleporter.clearAndReload();
@@ -4372,69 +4371,6 @@ namespace TheOtherRoles
         }
     }
 
-    public static class Prophet
-    {
-        public static PlayerControl prophet;
-        public static Color32 color = new(255, 204, 127, byte.MaxValue);
-
-        public static float cooldown = 30f;
-        public static float accuracy = 20f;
-        public static bool canCallEmergency = false;
-        public static int examineNum = 3;
-        public static int examinesToBeRevealed = 1;
-        public static int examinesLeft;
-        public static bool revealProphet = true;
-        public static bool isRevealed = false;
-        public static List<Arrow> arrows = new();
-
-        public static Dictionary<PlayerControl, bool> examined = new();
-        public static PlayerControl currentTarget;
-        public static AchievementToken<(bool triggered, bool cleared)> acTokenEvil = null;
-
-        public static void onAchievementActivate()
-        {
-            if (prophet == null || PlayerControl.LocalPlayer != prophet) return;
-            acTokenEvil ??= new("prophet.challenge2", (false, true), (val, _) => val.triggered && val.cleared);
-        }
-
-        private static Sprite buttonSprite;
-        public static Sprite getButtonSprite()
-        {
-            if (buttonSprite) return buttonSprite;
-            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SeerButton.png", 115f);
-            return buttonSprite;
-        }
-
-        public static bool isKiller(PlayerControl p)
-        {
-            var rand = rnd.Next(1, 101);
-            return (Helpers.isEvil(p) && rand <= accuracy) || (!Helpers.isEvil(p) && rand > accuracy);
-        }
-
-        public static void clearAndReload()
-        {
-            prophet = null;
-            currentTarget = null;
-            isRevealed = false;
-            examined = new Dictionary<PlayerControl, bool>();
-            revealProphet = CustomOptionHolder.prophetIsRevealed.getBool();
-            cooldown = CustomOptionHolder.prophetCooldown.getFloat();
-            examineNum = Mathf.RoundToInt(CustomOptionHolder.prophetNumExamines.getFloat());
-            accuracy = CustomOptionHolder.prophetAccuracy.getFloat();
-            canCallEmergency = CustomOptionHolder.prophetCanCallEmergency.getBool();
-            examinesToBeRevealed = Math.Min(examineNum, Mathf.RoundToInt(CustomOptionHolder.prophetExaminesToBeRevealed.getFloat()));
-            examinesLeft = examineNum;
-            if (arrows != null)
-            {
-                foreach (Arrow arrow in arrows)
-                    if (arrow?.arrow != null)
-                        UnityEngine.Object.Destroy(arrow.arrow);
-            }
-            arrows = new List<Arrow>();
-            acTokenEvil = null;
-        }
-    }
-
     public static class LastImpostor
     {
         public static PlayerControl lastImpostor;
@@ -4806,8 +4742,8 @@ namespace TheOtherRoles
         {
             var list = new List<PlayerControl>(PlayerControl.AllPlayerControls.ToArray().ToList());
             list.Shuffle();
-            var role = RoleInfo.getRoleInfoForPlayer(list[0], false, true).FirstOrDefault();
             while (list.Count > numCandidates) list.Remove(list.LastOrDefault());
+            var role = RoleInfo.getRoleInfoForPlayer(list[rnd.Next(list.Count)], false, true).FirstOrDefault();
             string playerNames = string.Join(",", list.Select(p => p.Data.PlayerName));
             return (playerNames, role);
         }
@@ -5851,7 +5787,7 @@ namespace TheOtherRoles
             RoleInfo.teleporter,
             RoleInfo.yasuna,
             RoleInfo.evilYasuna,
-            RoleInfo.prophet,
+            RoleInfo.fortuneTeller,
             RoleInfo.trapper,
             RoleInfo.plagueDoctor,
             RoleInfo.eraser,

@@ -256,7 +256,6 @@ namespace TheOtherRoles.Modules
             Sherlock.onAchievementActivate();
             Yasuna.yasunaOnAchievementActivate();
             Teleporter.onAchievementActivate();
-            Prophet.onAchievementActivate();
             Busker.onAchievementActivate();
             Morphling.onAchievementActivate();
             Camouflager.onAchievementActivate();

@@ -275,12 +275,6 @@ namespace TheOtherRoles.Patches {
                 roleCanCallEmergency = false;
                 statusText = ModTranslation.getString("fortuneTellerMeetingButton");
             }
-            // Potentially deactivate emergency button for Prophet
-            if (Prophet.prophet != null && Prophet.prophet == PlayerControl.LocalPlayer && !Prophet.canCallEmergency)
-            {
-                roleCanCallEmergency = false;
-                statusText = ModTranslation.getString("prophetMeetingButton");
-            }
 
             if (!roleCanCallEmergency) {
                 __instance.StatusText.text = statusText;

@@ -4317,11 +4317,6 @@
         "11": "(\u5360\u3044\u6e08\u307f)",
         "13": "(\u88ab\u5360\u535c) "
     },
-    "roleInfoExamined": {
-        "0": "(examined) ",
-        "11": "(\u635c\u67fb\u6e08\u307f)",
-        "13": "(\u88ab\u67e5\u9a8c) "
-    },
     "roleInfoKataomoiTarget": {
         "0": "(K target) ",
         "13": "(\u51dd\u89c6\u5bf9\u8c61) "
@@ -6987,12 +6982,6 @@
         "13": "\u52d2\u7d22",
         "14": "\u52d2\u7d22"
     },
-    "ProphetText": {
-        "0": "[BLANK]",
-        "11": "\u898b\u305b\u308b",
-        "13": "\u63ed\u793a",
-        "14": "\u63ed\u793a"
-    },
     "HunterArrowText": {
         "0": "[BLANK]",
         "11": "\u77e2\u5370\u3092\u8868\u793a",
@@ -7510,12 +7499,6 @@
         "11": "\u30fb\u4e8c\u4eba\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u30bf\u30fc\u30b2\u30c3\u30c8\u3068\u3057\u3066\u9078\u3076\u3053\u3068\u304c\u3067\u304d\u3001\u4e8c\u4eba\u306e\u4f4d\u7f6e\u3092\u5165\u308c\u66ff\u3048\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
         "13": "\u4f20\u9001\u5e08\u662f\u4e00\u4e2a\u8239\u5458\u804c\u4e1a\uff0c\u4ed6\u53ef\u4ee5\u9009\u4e2d\u4e24\u4e2a\u76ee\u6807\u73a9\u5bb6\uff0c\u7b49\u5230\u51b7\u5374\u7ed3\u675f\u540e,\n\u4f20\u9001\u5e08\u53ef\u4ee5\u4ea4\u6362\u4e24\u4e2a\u73a9\u5bb6\u7684\u4f4d\u7f6e\u3002",
         "14": "\u50b3\u9001\u5e2b\u662f\u4e00\u500b\u8239\u54e1\u8077\u696d\uff0c\u4ed6\u53ef\u4ee5\u9078\u4e2d\u5169\u500b\u76ee\u6a19\u73a9\u5bb6\uff0c\u7b49\u5230\u51b7\u537b\u7d50\u675f\u5f8c,\n\u50b3\u9001\u5e2b\u53ef\u4ee5\u4ea4\u63db\u5169\u500b\u73a9\u5bb6\u7684\u4f4d\u7f6e\u3002"
-    },
-    "prophetFullDesc": {
-        "0": "The Prophet is a Crewmate that has the ability to examine several\nplayers. If that player is capable is evil, that player's name will be\nshown as red in the Prophet's pov. Depending on the options,\nThe Prophet has an accuracy, meaning that a regular Crew may be\nshown as evil, and an evil player may be shown as innocent.\nThe Prophet may not be able to start an emergency meeting depending\non the options, and may be revealed to those who can kill after\nseveral examinations.",
-        "11": "\u30fb\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u691c\u67fb\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308b\n\u30fb\u691c\u67fb\u3057\u305f\u30d7\u30ec\u30a4\u30e4\u30fc\u304c\u30ad\u30eb\u80fd\u529b\u3092\u6301\u3063\u3066\u3044\u308b\u5834\u5408\u3001\u305d\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u540d\u524d\u304c\u8d64\u304f\u8868\u793a\u3055\u308c\u308b\n\u30fb\u8a2d\u5b9a\u306b\u3088\u3063\u3066\u306f\u9810\u8a00\u8005\u306f\u7dca\u6025\u4f1a\u8b70\u3092\u958b\u3051\u306a\u3044",
-        "13": "\u9884\u8a00\u5bb6\u662f\u4e00\u4e2a\u6709\u80fd\u529b\u63ed\u793a\u51e0\u4e2a\u73a9\u5bb6\u804c\u4e1a\u7684\u8239\u5458\u3002\u5982\u679c\u8be5\u73a9\u5bb6\u4e3a\u90aa\u6076\u73a9\u5bb6\uff0c\n\u8be5\u73a9\u5bb6\u7684\u540d\u5b57\u5c06\u5728\u9884\u8a00\u5bb6\u7684\u89c6\u91ce\u4e2d\u663e\u793a\u4e3a\u7ea2\u8272\u3002\u6839\u636e\u8bbe\u7f6e\uff0c\u63ed\u793a\u5177\u6709\u4e00\u5b9a\n\u51c6\u786e\u7387\uff0c\u9884\u8a00\u5bb6\u53ef\u80fd\u8ba4\u4e3a\u8239\u5458\u4e3a\u7ea2\u540d\uff0c\u6216\u90aa\u6076\u73a9\u5bb6\u4e3a\u7eff\u540d\u3002\u9884\u8a00\u5bb6\u53ef\u80fd\u65e0\u6cd5\n\u542f\u52a8\u7d27\u6025\u4f1a\u8bae\uff0c\u5e76\u4e14\u6839\u636e\u8bbe\u7f6e\uff0c\u53ef\u80fd\u4f1a\u5728\u51e0\u6b21\u9884\u8a00\u540e\u88ab\u5e26\u53e8\u73a9\u5bb6\u53d1\u73b0\u3002",
-        "14": "\u9810\u8a00\u5bb6\u662f\u4e00\u500b\u6709\u80fd\u529b\u9810\u8a00\u5e7e\u500b\u73a9\u5bb6\u8077\u696d\u7684\u8239\u54e1\u8239\u54e1\u3002\u5982\u679c\u8a72\u73a9\u5bb6\u5e36\u5200\n\uff08\u6216\u662f\u4e2d\u7acb\u8077\u696d\u6216\u662f\u5e36\u5200\u7684\u8239\u54e1\u8077\u696d\uff09\uff0c\u8a72\u73a9\u5bb6\u7684\u540d\u5b57\u5c07\u5728\u9810\u8a00\u5bb6\u7684\n\u8996\u91ce\u4e2d\u986f\u793a\u70ba\u7d05\u8272\u3002\u9810\u8a00\u5bb6\u53ef\u80fd\u7121\u6cd5\u555f\u52d5\u7dca\u6025\u6703\u8b70\uff0c\u9019\u53d6\u6c7a\u65bc\u8a2d\u7f6e\uff0c\n\u4f75\u4e14\u53ef\u80fd\u6703\u5728\u5e7e\u6b21\u8a9e\u8a00\u5f8c\u88ab\u5e36\u5200\u73a9\u5bb6\u767c\u73fe\u3002"
     },
     "noisemakerFullDesc": {
         "0": "The Noisemaker is a Crewmate who can select another player as their\ntarget. If their target is killed, a certain group of players will get notified\nof the target's death by an arrow similar to the original Noisemaker arrow\nin the Vanilla game. Depending on the options, the group of players\nmight be the Noisemaker themselves, all Crewmates or everyone.",
@@ -8553,36 +8536,6 @@
         "0": "Crew Saving",
         "11": "\u30af\u30eb\u30fc\u306e\u6551\u4e16\u4e3b",
         "13": "\u4fdd\u6c11\u5b98"
-    },
-    "prophetchallenge1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]"
-    },
-    "prophetchallenge1AchievementGoal": {
-        "0": "Use All Your Examines",
-        "11": "\u635c\u67fb\u3092\u3059\u3079\u3066\u4f7f\u3044\u5207\u308b\u3002",
-        "13": "\u7528\u5b8c\u4f60\u6240\u6709\u7684\u67e5\u9a8c\u6280\u80fd"
-    },
-    "prophetchallenge1AchievementTitle": {
-        "0": "Qualified Examiner",
-        "11": "\u6709\u8cc7\u683c\u5be9\u67fb\u54e1",
-        "13": "\u5408\u683c\u7684\u68c0\u9a8c\u5e08"
-    },
-    "prophetchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]"
-    },
-    "prophetchallenge2AchievementGoal": {
-        "0": "All Your Examines Must Be Used On Evil Players",
-        "11": "\u3059\u3079\u3066\u306e\u635c\u67fb\u3092\u4eba\u5916\u306b\u4f7f\u3046\u3002",
-        "13": "\u5c06\u4f60\u7684\u6240\u6709\u6280\u80fd\u90fd\u7528\u5728\u90aa\u6076\u73a9\u5bb6\u4e0a"
-    },
-    "prophetchallenge2AchievementTitle": {
-        "0": "Discover Them All",
-        "11": "\u5168\u54e1\u767a\u898b",
-        "13": "\u5168\u90fd\u6293\u4f4f\uff01"
     },
     "buskercommon1AchievementCond": {
         "0": "[BLANK]",

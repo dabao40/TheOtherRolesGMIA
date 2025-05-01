@@ -66,7 +66,6 @@ namespace TheOtherRoles
         Medium,
         Shifter, 
         Yasuna,
-        Prophet,
         TaskMaster,
         Teleporter,
         EvilYasuna,
@@ -246,7 +245,6 @@ namespace TheOtherRoles
         SetCupidShield,
         BlackmailPlayer,
         UnblackmailPlayer,
-        ProphetExamine,
         ShareRealTasks,
         PlaceAccel,
         ActivateAccel,
@@ -563,9 +561,6 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Blackmailer:
                         Blackmailer.blackmailer = player;
-                        break;
-                    case RoleId.Prophet:
-                        Prophet.prophet = player;
                         break;
                     case RoleId.SecurityGuard:
                         SecurityGuard.securityGuard = player;
@@ -1129,10 +1124,6 @@ namespace TheOtherRoles
                 Teleporter.teleporter = oldShifter;
                 Teleporter.onAchievementActivate();
             }
-            if (Prophet.prophet != null && Prophet.prophet == player) {
-                Prophet.prophet = oldShifter;
-                Prophet.onAchievementActivate();
-            }
             if (Busker.busker != null && Busker.busker == player) {
                 Busker.busker = oldShifter;
                 Busker.onAchievementActivate();
@@ -1474,16 +1465,6 @@ namespace TheOtherRoles
             return;
         }
 
-        public static void prophetExamine(byte targetId)
-        {
-            var target = Helpers.playerById(targetId);
-            if (target == null) return;
-            if (Prophet.examined.ContainsKey(target)) Prophet.examined.Remove(target);
-            Prophet.examined.Add(target, Prophet.isKiller(target));
-            Prophet.examinesLeft--;
-            if ((Prophet.examineNum - Prophet.examinesLeft >= Prophet.examinesToBeRevealed) && Prophet.revealProphet) Prophet.isRevealed = true;
-        }
-
         public static void shareRealTasks(MessageReader reader)
         {
             byte count = reader.ReadByte();
@@ -1709,7 +1690,6 @@ namespace TheOtherRoles
             if (player == TaskMaster.taskMaster) TaskMaster.clearAndReload();
             if (player == CreatedMadmate.createdMadmate) CreatedMadmate.clearAndReload();
             if (player == Teleporter.teleporter) Teleporter.clearAndReload();
-            if (player == Prophet.prophet) Prophet.clearAndReload();
             if (player == Busker.busker) Busker.clearAndReload();
             if (player == Noisemaker.noisemaker) Noisemaker.clearAndReload();
             if (player == Archaeologist.archaeologist) Archaeologist.clearAndReload();
@@ -3460,9 +3440,6 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.EvilHackerCreatesMadmate:
                     RPCProcedure.evilHackerCreatesMadmate(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.ProphetExamine:
-                    RPCProcedure.prophetExamine(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.VeteranAlert:
                     RPCProcedure.veteranAlert();

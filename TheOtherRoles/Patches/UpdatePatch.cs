@@ -152,17 +152,6 @@ namespace TheOtherRoles.Patches {
             {
                 setPlayerNameColor(Yasuna.yasuna, localPlayer.Data.Role.IsImpostor ? Palette.ImpostorRed : Yasuna.color);
             }
-            else if (Prophet.prophet != null && Prophet.prophet == localPlayer)
-            {
-                setPlayerNameColor(Prophet.prophet, Prophet.color);
-                if (Prophet.examined != null && !localPlayer.Data.IsDead) // Reset the name tags when Prophet is dead
-                {
-                    foreach (var p in Prophet.examined)
-                    {
-                        setPlayerNameColor(p.Key, p.Value ? Palette.ImpostorRed : Color.green);
-                    }
-                }
-            }
             else if (Kataomoi.kataomoi != null && Kataomoi.kataomoi == localPlayer)
             {
                 setPlayerNameColor(Kataomoi.kataomoi, Kataomoi.color);

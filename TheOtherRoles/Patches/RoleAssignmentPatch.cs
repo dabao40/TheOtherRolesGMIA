@@ -181,7 +181,6 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Noisemaker, CustomOptionHolder.noisemakerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.TaskMaster, CustomOptionHolder.taskMasterSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Teleporter, CustomOptionHolder.teleporterSpawnRate.getSelection());
-            crewSettings.Add((byte)RoleId.Prophet, CustomOptionHolder.prophetSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Busker, CustomOptionHolder.buskerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Archaeologist, CustomOptionHolder.archaeologistSpawnRate.getSelection());
             //crewSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.getSelection());
@@ -599,7 +598,7 @@ namespace TheOtherRoles.Patches {
 
             var crewPlayerMadmate = new List<PlayerControl>(players);
             crewPlayerMadmate.RemoveAll(x => x.Data.Role.IsImpostor || Helpers.isNeutral(x) || x == Spy.spy || x == FortuneTeller.fortuneTeller || x == Sprinter.sprinter || x == Veteran.veteran
-            || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter || x == Prophet.prophet);
+            || x == Deputy.deputy || x == Portalmaker.portalmaker || x == TaskMaster.taskMaster || x == Sherlock.sherlock || x == Snitch.snitch || x == Teleporter.teleporter);
 
             // Always remember to remove the Mad Sheriff if Deputy is assigned
             if (Deputy.deputy != null && Sheriff.sheriff != null) crewPlayerMadmate.RemoveAll(x => x == Sheriff.sheriff);
