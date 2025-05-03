@@ -9,7 +9,6 @@ using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using TheOtherRoles.CustomGameModes;
-using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
 using TheOtherRoles.Modules;
@@ -1947,7 +1946,7 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.witchSpellButton.MaxTimer = (Witch.cooldown + Witch.currentCooldownAddition) * multiplier;
                 HudManagerStartPatch.assassinButton.MaxTimer = Assassin.cooldown * multiplier;
                 HudManagerStartPatch.thiefKillButton.MaxTimer = Thief.cooldown * multiplier;
-                HudManagerStartPatch.serialKillerButton.MaxTimer = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 2f : 1f);
+                HudManagerStartPatch.serialKillerButton.EffectDuration = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 1f : 2f);
                 HudManagerStartPatch.schrodingersCatKillButton.MaxTimer = SchrodingersCat.killCooldown * multiplier;
             }
         }
@@ -2376,6 +2375,27 @@ namespace TheOtherRoles.Patches {
                 Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(deadPlayer, target.transform.position));
             }
 
+            if (Seer.seer != null && PlayerControl.LocalPlayer == Seer.seer && !Seer.seer.Data.IsDead && Seer.canSeeKillTeams) {
+                switch (__instance)
+                {
+                    case var _ when __instance.Data.Role.IsImpostor:
+                        Seer.killTeams.impostor++;
+                        break;
+                    case var _ when __instance == Jackal.jackal || __instance == Sidekick.sidekick || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Jackal):
+                        Seer.killTeams.jackal++;
+                        break;
+                    case var _ when __instance == JekyllAndHyde.jekyllAndHyde || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde):
+                        Seer.killTeams.jekyllAndHyde++;
+                        break;
+                    case var _ when __instance == Moriarty.moriarty || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Moriarty):
+                        Seer.killTeams.moriarty++;
+                        break;
+                    case var _ when !Helpers.isNeutral(__instance):
+                        Seer.killTeams.crewmate++;
+                        break;
+                }
+            }
+
             // Show flash on bait kill to the killer if enabled
             if (Bait.bait != null && target == Bait.bait)
             {
@@ -2522,7 +2542,7 @@ namespace TheOtherRoles.Patches {
             {
                 _ = new StaticAchievementToken("serialKiller.common1");
                 SerialKiller.serialKiller.SetKillTimerUnchecked(SerialKiller.killCooldown);
-                HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
+                HudManagerStartPatch.serialKillerButton.Timer = HudManagerStartPatch.serialKillerButton.EffectDuration;
                 SerialKiller.isCountDown = true;
             }
 

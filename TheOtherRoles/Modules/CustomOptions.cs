@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using System.Reflection;
 using System.Text;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
@@ -16,9 +15,6 @@ using AmongUs.GameOptions;
 using TMPro;
 using TheOtherRoles.Modules;
 using AmongUs.Data;
-using Rewired.Utils.Platforms.Windows;
-using static Il2CppSystem.Xml.Schema.FacetsChecker.FacetsCompiler;
-using TheOtherRoles;
 
 namespace TheOtherRoles {
     public class CustomOption {
@@ -917,19 +913,106 @@ namespace TheOtherRoles {
         }
     }
 
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.OpenConfirmPopup))]
+    static class CreateGameOptionsOpenConfirmPopupPatch
+    {
+        static void Postfix(CreateGameOptions __instance)
+        {
+            __instance.containerConfirm.GetChild(10).gameObject.SetActive(false);
+            __instance.containerConfirm.GetChild(8).localPosition = new(4f, - 0.47f, - 0.1f);
+            __instance.containerConfirm.GetChild(5).GetChild(2).GetComponent<TextMeshPro>().SetText(
+                TORMapOptions.gameMode is CustomGamemodes.Classic ? DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameTypeClassic) :
+                (TORMapOptions.gameMode is CustomGamemodes.Guesser ? ModTranslation.getString("gamemodeGuesser") : ModTranslation.getString("gamemodeHideNSeek")));
+        }
+    }
+
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
+    static class CreateGameOptionsOpenShowPatch
+    {
+        static void Postfix(CreateGameOptions __instance)
+        {
+            if ((CreateGameOptionsPatch.modeButtonGS != null && CreateGameOptionsPatch.modeButtonGS.IsSelected()) ||
+                (CreateGameOptionsPatch.modeButtonHK != null && CreateGameOptionsPatch.modeButtonHK.IsSelected()))
+                __instance.modeButtons[0].SelectButton(false);
+        }
+    }
+
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]
     public static class CreateGameOptionsPatch
     {
+        public static PassiveButton modeButtonGS;
+        public static PassiveButton modeButtonHK;
+
         private static void Postfix(CreateGameOptions __instance)
         {
             __instance.tooltip.transform.parent.gameObject.SetActive(false);
-            __instance.SelectMode(0, true);
-            __instance.modeButtons[0].transform.parent.gameObject.SetActive(false);
             __instance.mapPicker.transform.SetLocalY(-1.245f);
             __instance.capacityOption.transform.SetLocalY(-1.15f);
             __instance.levelButtons[0].transform.parent.gameObject.SetActive(false);
             __instance.serverButton.transform.parent.SetLocalY(-1.84f);
             __instance.serverDropdown.transform.SetLocalY(-2.63f);
+            __instance.modeButtons[0].transform.parent.SetLocalY(-2.55f);
+            __instance.modeButtons[1].gameObject.SetActive(false);
+
+            TORMapOptions.gameMode = CustomGamemodes.Classic;
+
+            modeButtonGS = UnityEngine.Object.Instantiate(__instance.modeButtons[0], __instance.modeButtons[0].transform);
+            modeButtonGS.name = "TORGUESSER";
+            changeButtonText(modeButtonGS, ModTranslation.getString("torGuesser"));
+            modeButtonGS.transform.localPosition = new Vector3(5.8f, 0f, -3f);
+            modeButtonGS.OnClick.RemoveAllListeners();
+            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => modeButtonGS.SelectButton(false))));
+            modeButtonGS.OnClick.AddListener((Action)(() =>
+            {
+                TORMapOptions.gameMode = CustomGamemodes.Guesser;
+                modeButtonGS.SelectButton(true);
+                __instance.modeButtons[0].SelectButton(false);
+                modeButtonHK.SelectButton(false);
+            }
+            ));
+
+            modeButtonHK = UnityEngine.Object.Instantiate(modeButtonGS, __instance.modeButtons[0].transform);
+            modeButtonHK.name = "TORHIDENSEEK";
+            changeButtonText(modeButtonHK, ModTranslation.getString("torHideNSeek"));
+            modeButtonHK.transform.localPosition = new Vector3(2.91f, 0f, -3f);
+            modeButtonHK.OnClick.RemoveAllListeners();
+            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p => modeButtonHK.SelectButton(false))));
+            modeButtonHK.OnClick.AddListener((Action)(() =>
+            {
+                TORMapOptions.gameMode = CustomGamemodes.HideNSeek;
+                modeButtonHK.SelectButton(true);
+                __instance.modeButtons[0].SelectButton(false);
+                modeButtonGS.SelectButton(false);
+            }
+            ));
+
+            __instance.modeButtons[0].OnClick.AddListener((Action)(() =>
+            {
+                TORMapOptions.gameMode = CustomGamemodes.Classic;
+                modeButtonGS.SelectButton(false);
+                modeButtonHK.SelectButton(false);
+            }
+            ));
+        }
+
+        private static void changeButtonText(PassiveButton passiveButton, string buttonText)
+        {
+            var selectedInactive = passiveButton.transform.FindChild("SelectedInactive/ClassicText");
+            var inactive = passiveButton.transform.FindChild("Inactive/ClassicText");
+            var highlight = passiveButton.transform.FindChild("Highlight/ClassicText");
+            var selectedHighlight = passiveButton.transform.FindChild("SelectedHighlight/ClassicText");
+
+            selectedInactive.gameObject.GetComponentInChildren<TextTranslatorTMP>().Destroy();
+            selectedInactive.gameObject.GetComponentInChildren<TMP_Text>().SetText(buttonText);
+
+            inactive.gameObject.GetComponentInChildren<TextTranslatorTMP>().Destroy();
+            inactive.gameObject.GetComponentInChildren<TMP_Text>().SetText(buttonText);
+
+            highlight.gameObject.GetComponentInChildren<TextTranslatorTMP>().Destroy();
+            highlight.gameObject.GetComponentInChildren<TMP_Text>().SetText(buttonText);
+
+            selectedHighlight.gameObject.GetComponentInChildren<TextTranslatorTMP>().Destroy();
+            selectedHighlight.gameObject.GetComponentInChildren<TMP_Text>().SetText(buttonText);
         }
     }
 

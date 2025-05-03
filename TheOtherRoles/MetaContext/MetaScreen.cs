@@ -105,6 +105,20 @@ namespace TheOtherRoles.MetaContext
             catch { }
         }
 
+        static public PassiveButton InstantiateCloseButton(Transform parent, Vector3 localPos)
+        {
+            var collider = Helpers.CreateObject<CircleCollider2D>("CloseButton", parent, localPos);
+            collider.isTrigger = true;
+            collider.gameObject.layer = LayerMask.NameToLayer("UI");
+            collider.radius = 0.25f;
+            SpriteRenderer renderer = null;
+            renderer = collider.gameObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = VanillaAsset.CloseButtonSprite;
+            var button = collider.gameObject.SetUpButton(true, renderer);
+
+            return button;
+        }
+
         static public MetaScreen GenerateScreen(Vector2 size, Transform parent, Vector3 localPos, bool withBackground, bool withBlackScreen, bool withClickGuard)
         {
             var window = Helpers.CreateObject("MetaWindow", parent, localPos);

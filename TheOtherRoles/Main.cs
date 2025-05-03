@@ -151,8 +151,6 @@ namespace TheOtherRoles
             {
                 new GameObject("TORManager").AddComponent<TORGUIManager>();
             });
-
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(FoxTask));
         }
         public static Sprite GetModStamp() {
             if (ModStamp) return ModStamp;

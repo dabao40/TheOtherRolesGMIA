@@ -1229,6 +1229,31 @@ namespace TheOtherRoles.Patches
                     }
                 }
 
+                if (Seer.seer != null && (Seer.seer == PlayerControl.LocalPlayer || Helpers.shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.canSeeKillTeams) {
+                    var killList = new List<string>();
+                    var teamInfos = new (Func<Seer.KillInfo, int> selector, Color color, string name)[]
+                    {
+                        (kt => kt.impostor, Palette.ImpostorRed, "impostor"),
+                        (kt => kt.crewmate, Color.white, "crewmate"),
+                        (kt => kt.jackal, Jackal.color, "jackal"),
+                        (kt => kt.jekyllAndHyde, JekyllAndHyde.color, "jekyllAndHyde"),
+                        (kt => kt.moriarty, Moriarty.color, "moriarty")
+                    };
+                    foreach (var (selector, color, name) in teamInfos) {
+                        if (selector(Seer.killTeams) > 0) {
+                            killList.Add(Helpers.cs(color, ModTranslation.getString(name)) + ": " + selector(Seer.killTeams).ToString());
+                        }
+                    }
+                    if (killList.Count > 0)
+                    {
+                        MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent("seerMeetingInfo")),
+                        new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(string.Join("\n", killList))))
+                        , MeetingOverlayHolder.IconsSprite[3], Seer.color);
+                    }
+                    Seer.killTeams = new();
+                }
+
                 if (Doomsayer.doomsayer != null && Doomsayer.observed != null && (PlayerControl.LocalPlayer == Doomsayer.doomsayer || Helpers.shouldShowGhostInfo()) && !Doomsayer.doomsayer.Data.IsDead)
                 {
                     string msg = "";

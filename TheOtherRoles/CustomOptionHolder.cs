@@ -225,6 +225,8 @@ namespace TheOtherRoles {
         public static CustomOption detectiveFootprintDuration;
         public static CustomOption detectiveReportNameDuration;
         public static CustomOption detectiveReportColorDuration;
+        public static CustomOption detectiveInspectCooldown;
+        public static CustomOption detectiveInspectDuration;
 
         public static CustomOption timeMasterSpawnRate;
         public static CustomOption timeMasterCooldown;
@@ -265,6 +267,7 @@ namespace TheOtherRoles {
         public static CustomOption seerMode;
         public static CustomOption seerSoulDuration;
         public static CustomOption seerLimitSoulDuration;
+        public static CustomOption seerCanSeeKillTeams;
 
         public static CustomOption hackerSpawnRate;
         public static CustomOption hackerCooldown;
@@ -992,6 +995,8 @@ namespace TheOtherRoles {
             detectiveFootprintDuration = CustomOption.Create(123, Types.Crewmate, "detectiveFootprintDuration", 5f, 0.25f, 10f, 0.25f, detectiveSpawnRate, false, "unitSeconds");
             detectiveReportNameDuration = CustomOption.Create(124, Types.Crewmate, "detectiveReportNameDuration", 0, 0, 60, 2.5f, detectiveSpawnRate, false, "unitSeconds");
             detectiveReportColorDuration = CustomOption.Create(125, Types.Crewmate, "detectiveReportColorDuration", 20, 0, 120, 2.5f, detectiveSpawnRate, false, "unitSeconds");
+            detectiveInspectCooldown = CustomOption.Create(126, Types.Crewmate, "detectiveInspectCooldown", 15f, 5f, 60f, 1f, detectiveSpawnRate, format: "unitSeconds");
+            detectiveInspectDuration = CustomOption.Create(127, Types.Crewmate, "detectiveInspectDuration", 10f, 3f, 60f, 1f, detectiveSpawnRate, false, "unitSeconds");
 
             timeMasterSpawnRate = CustomOption.Create(130, Types.Crewmate, cs(TimeMaster.color, "timeMaster"), rates, null, true);
             timeMasterCooldown = CustomOption.Create(131, Types.Crewmate, "timeMasterCooldown", 30f, 10f, 120f, 2.5f, timeMasterSpawnRate, false, "unitSeconds");
@@ -1015,6 +1020,7 @@ namespace TheOtherRoles {
             seerMode = CustomOption.Create(161, Types.Crewmate, "seerMode", new string[] { "seerModeBoth", "seerModeFlash", "seerModeSouls" }, seerSpawnRate);
             seerLimitSoulDuration = CustomOption.Create(163, Types.Crewmate, "seerLimitSoulDuration", false, seerSpawnRate);
             seerSoulDuration = CustomOption.Create(162, Types.Crewmate, "seerSoulDuration", 15f, 0f, 120f, 5f, seerLimitSoulDuration, false, "unitSeconds");
+            seerCanSeeKillTeams = CustomOption.Create(164, Types.Crewmate, "seerCanSeeKillTeams", true, seerSpawnRate);
 
             hackerSpawnRate = CustomOption.Create(170, Types.Crewmate, cs(Hacker.color, "hacker"), rates, null, true);
             hackerCooldown = CustomOption.Create(171, Types.Crewmate, "hackerCooldown", 30f, 5f, 60f, 5f, hackerSpawnRate, false, "unitSeconds");

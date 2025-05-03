@@ -479,9 +479,20 @@ namespace TheOtherRoles
             public static float reportNameDuration = 0f;
             public static float reportColorDuration = 20f;
             public static float timer = 6.2f;
+            public static float inspectCooldown = 15f;
+            public static float inspectDuration = 10f;
 
             public static AchievementToken<bool> acTokenCommon = null;
             public static AchievementToken<(bool reported, byte votedFor, byte killerId, bool cleared)> acTokenChallenge = null;
+            public static SpriteLoader detectiveIcon = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrow.png", 100f);
+
+            private static Sprite buttonSprite;
+            public static Sprite getButtonSprite()
+            {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DetectiveButton.png", 115f);
+                return buttonSprite;
+            }
 
             public static void onAchievementActivate()
             {
@@ -505,6 +516,8 @@ namespace TheOtherRoles
                 footprintDuration = CustomOptionHolder.detectiveFootprintDuration.getFloat();
                 reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
                 reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
+                inspectCooldown = CustomOptionHolder.detectiveInspectCooldown.getFloat();
+                inspectDuration = CustomOptionHolder.detectiveInspectDuration.getFloat();
                 timer = 6.2f;
                 acTokenCommon = null;
                 acTokenChallenge = null;
@@ -719,6 +732,22 @@ namespace TheOtherRoles
         public static float soulDuration = 15f;
         public static bool limitSoulDuration = false;
         public static int mode = 0;
+        public static bool canSeeKillTeams = true;
+
+        public struct KillInfo
+        {
+            public int impostor;
+            public int crewmate;
+            public int jackal;
+            public int moriarty;
+            public int jekyllAndHyde;
+
+            public KillInfo() {
+                impostor = crewmate = jackal = moriarty = jekyllAndHyde = 0;
+            }
+        }
+
+        public static KillInfo killTeams = new();
 
         public static AchievementToken<(byte flash, bool cleared)> acTokenChallenge = null;
 
@@ -741,6 +770,8 @@ namespace TheOtherRoles
             limitSoulDuration = CustomOptionHolder.seerLimitSoulDuration.getBool();
             soulDuration = CustomOptionHolder.seerSoulDuration.getFloat();
             mode = CustomOptionHolder.seerMode.getSelection();
+            canSeeKillTeams = CustomOptionHolder.seerCanSeeKillTeams.getBool();
+            killTeams = new();
             acTokenChallenge = null;
         }
     }

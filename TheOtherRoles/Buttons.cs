@@ -12,6 +12,7 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Modules;
 using TheOtherRoles.MetaContext;
 using Reactor.Utilities;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles
 {
@@ -88,6 +89,7 @@ namespace TheOtherRoles
         public static CustomButton jekyllAndHydeDrugButton;
         public static CustomButton jekyllAndHydeSuicideButton;
         public static CustomButton teleporterTeleportButton;
+        public static CustomButton detectiveButton;
         public static CustomButton kataomoiButton;
         public static CustomButton kataomoiStalkingButton;
         public static CustomButton kataomoiSearchButton;
@@ -202,6 +204,7 @@ namespace TheOtherRoles
             kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
             kataomoiSearchButton.MaxTimer = Kataomoi.searchCooldown;
             vultureEatButton.MaxTimer = Vulture.cooldown;
+            detectiveButton.MaxTimer = Detective.inspectCooldown;
             mediumButton.MaxTimer = Medium.cooldown;
             pursuerButton.MaxTimer = Pursuer.cooldown;
             trackerTrackCorpsesButton.MaxTimer = Tracker.corpsesTrackingCooldown;
@@ -308,6 +311,7 @@ namespace TheOtherRoles
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             foxStealthButton.EffectDuration = Fox.stealthDuration;
+            detectiveButton.EffectDuration = Detective.inspectDuration;
             buskerButton.EffectDuration = Busker.duration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
             hunterArrowButton.EffectDuration = Hunter.ArrowDuration;
@@ -1022,6 +1026,46 @@ namespace TheOtherRoles
                     trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
                 },
                 buttonText: ModTranslation.getString("PathfindText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+
+            detectiveButton = new CustomButton(
+                () =>
+                {
+                    foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask)) {
+                        if (collider2D.tag == "DeadBody") {
+                            DeadBody component = collider2D.GetComponent<DeadBody>();
+                            if (component && !component.Reported) {
+                                Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                                Vector2 truePosition2 = component.TruePosition;
+                                if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false)) {
+                                    NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
+                                    var dp = GameHistory.deadPlayers?.Where(x => x.player?.PlayerId == playerInfo.PlayerId)?.FirstOrDefault();
+                                    if (dp != null && dp.killerIfExisting != null)
+                                        TORGUIManager.Instance.StartCoroutine(Helpers.CoAnimIcon(dp.killerIfExisting).WrapToIl2Cpp());
+                                    Detective.inspectCooldown = detectiveButton.Timer = detectiveButton.MaxTimer;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                },
+                () => { return Detective.detective && PlayerControl.LocalPlayer == Detective.detective && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove && __instance.ReportButton.graphic.color == Palette.EnabledColor; },
+                () =>
+                {
+                    detectiveButton.Timer = detectiveButton.MaxTimer;
+                    detectiveButton.isEffectActive = false;
+                    detectiveButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                },
+                Detective.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                true,
+                Detective.inspectDuration,
+                () => { detectiveButton.Timer = detectiveButton.MaxTimer; },
+                buttonText: ModTranslation.getString("InspectText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
     

@@ -7,34 +7,39 @@ using TheOtherRoles.Modules;
 using TheOtherRoles;
 using static TheOtherRoles.TheOtherRoles;
 using System;
+using TheOtherRoles.MetaContext;
+using System.Collections;
+using Il2CppSystem.Collections;
 
 namespace TheOtherRoles.Objects
 {
     public sealed class FoxTask : Minigame
     {
+        static FoxTask() => ClassInjector.RegisterTypeInIl2Cpp<FoxTask>();
+        public FoxTask(System.IntPtr ptr) : base(ptr) { }
+        public FoxTask() : base(ClassInjector.DerivedConstructorPointer<FoxTask>())
+        { ClassInjector.DerivedConstructorBody(this); }
+
         private GameObject obj;
         private TextMeshProUGUI RemainingTime;
         private TextMeshProUGUI TaskText;
-        private Button closeButton;
         private bool completed = false;
         private float timer = 0;
         public static GameObject prefab;
         public static Sprite shrine;
 
-        public void Awake()
+        public override void Begin(PlayerTask task)
         {
-            if (obj != null) {
-                Destroy(obj);
-            }
+            this.BeginInternal(task);
             obj = Instantiate(prefab, transform);
+            // new(-2.35f, 1.18f, -1000f)
+            MetaScreen.InstantiateCloseButton(obj.transform, new(-3.3f, 1.8f, -0.5f)).OnClick.AddListener((Action)(() => Close()));
             List<TextMeshProUGUI> texts = obj.GetComponentsInChildren<TextMeshProUGUI>().ToList();
             RemainingTime = texts.FirstOrDefault(x => x.name == "RemainingTime");
             TaskText = texts.FirstOrDefault(x => x.name == "TaskText");
             TaskText.text = ModTranslation.getString("foxTaskPray");
-            closeButton = obj.GetComponentsInChildren<Button>().ToList().FirstOrDefault(x => x.name == "CloseButton");
-            closeButton.onClick = new Button.ButtonClickedEvent();
-            closeButton.onClick.AddListener((Action)(() => onClick()));
-            obj.SetActive(true);
+            timer = Fox.stayTime;
+            completed = false;
             enabled = true;
         }
 
@@ -56,25 +61,13 @@ namespace TheOtherRoles.Objects
                     var console = ShipStatus.Instance.AllConsoles.FirstOrDefault(x => x.ConsoleId == MyNormTask.Data[MyNormTask.taskStep]);
                     MyNormTask.StartAt = console.Room;
                 }
-                StartCoroutine(CoDestroySelf());
+                Close();
             }
         }
 
-        public void OnEnable()
+        public override void Close()
         {
-            enabled = true;
-            completed = false;
-            timer = Fox.stayTime;
-        }
-
-        public void OnDisable()
-        {
-            obj.SetActive(false);
-        }
-
-        void onClick()
-        {
-            StartCoroutine(CoDestroySelf());
+            this.CloseInternal();
         }
     }
 }
