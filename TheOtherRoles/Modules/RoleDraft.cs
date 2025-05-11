@@ -496,7 +496,8 @@ namespace TheOtherRoles.Modules
                 }
                 roleString = isRandom ? Helpers.cs(Color.green, ModTranslation.getString("roleDraftRandom")) + suffix : roleString;
                 string line = $"{(localIsPlayer ? ModTranslation.getString("roleDraftYou") : alreadyPicked.Count)}:";
-                line = line + string.Concat(Enumerable.Repeat(" ", 6 - line.Length)) + roleString;
+                int spaceCount = Math.Max(0, 6 - line.Length);
+                line += string.Concat(Enumerable.Repeat(" ", spaceCount)) + roleString;
                 feedText.text += line + "\n";
                 scroller.ContentYBounds = new FloatRange(2f, 2f + feedText.text.Count(c => c == '\n') * 0.06f);
                 SoundEffectsManager.play("select");

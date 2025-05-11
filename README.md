@@ -17,18 +17,19 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 16.0.4s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
 | 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
 | 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
 | 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
-| 2024.6.18s        | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
-| 2024.6.18s        | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
-| 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
+| 2024.6.18s         | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
+| 2024.6.18s         | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
 
 <details>
   <summary>Click to show older versions</summary>
   
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
 | 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.7) |
 | 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
 | 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
@@ -48,6 +49,31 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.3.3**
+ - Updated to Among Us version v16.0.4
+ - Added new role Doomsayer, thanks to Tukuai
+ - Added new mode Draft Mode
+ - Added new modifier for the Guesser gamemode, Last Impostor
+ - Added a last game summary in the lobby
+ - Added new option to allow the Shifter to shift the medic shield as well
+ - Added new option for the Seer to see the teams of the flashes
+ - Added new option to allow the Bait to be unguessable
+ - Added new option for the Watcher to see the Yasuna votes in the voter's color
+ - Added new option for the Detective to track the killer's movements
+ - Added new option to allow the Archaeologist to reveal a certain role for a configurable amount of players
+ - Added a new achievement for the Trapper
+ - Added a page button for the Guesser
+ - The Archaeologist can now become a Madmate
+ - The Sherlock can now see the usage of the buttons indicated with an arrow of the Impostors
+ - The Bomber can now plant bomb on their partner's target
+ - The Portalmaker can now see the teleportation places of the users
+ - Fixed a bug where the Impostors will replace the Jackal's victory if only the Schrodinger's Cat is alive
+ - Reworked Mayor and it now can now vote a configurable amount of votes
+ - Fixed a bug where the Fox crashes the game
+ - Deleted Prophet as it works like the Fortune Teller
+ - Deleted the option for everyone to notice extra victims
+ - Deleted the option to add a vitals on Mira
 
   **Version v1.3.2**
  - Updated to Among Us version v2024.11.26, thanks to @XiezibanWrite

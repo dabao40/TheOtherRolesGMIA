@@ -21,7 +21,7 @@ public static class CustomHatManager
         get
         {
             var (owner, repository) = Repository;
-            return Helpers.isChinese() ? "http://sq.fangkuai.fun:33050/ModFiles/TheOtherRolesGMIA/TheOtherHats" : $"https://raw.githubusercontent.com/{owner}/{repository}/master";
+            return Helpers.isChinese() ? $"http://api.fangkuai.fun:22022/{owner}/{repository}/master" : $"https://raw.githubusercontent.com/{owner}/{repository}/master";
         }
     }
 

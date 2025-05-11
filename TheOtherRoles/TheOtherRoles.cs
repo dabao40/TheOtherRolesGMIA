@@ -4052,7 +4052,7 @@ namespace TheOtherRoles
                     smallRenderer.transform.eulerAngles = new Vector3(0f, 0f, angle);
                 }
 
-                if (IsDisappearing)
+                if (IsDisappearing || MeetingHud.Instance)
                 {
                     float a = 1f - disappearProgress;
 
