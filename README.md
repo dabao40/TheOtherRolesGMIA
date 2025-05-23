@@ -1,13 +1,19 @@
-This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
-
 ![LOGO](https://github.com/dabao40/TheOtherRolesGMIA/assets/73883362/12d1b24d-62c9-421b-9298-592a3a031225)  
 [![Discord](./Images/TOR_server.png)](https://discord.gg/w7msq53dq7)
+
+
+[English]  | [简体中文](README_ZH.md) 
+
 
 <p align="center">
 <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=B1eTAqyBucDuZaNhwZQmAOhGr-xICjkE&authKey=tpxOfUFuEVGSfHRZx9hkpvZ%2FYSwPTrGwyAcdpmmoo%2FXB4jqCb4OyJN%2BYl5Cs8hvR&noverify=0&group_code=787132035" target="_blank"><img src="https://img.shields.io/badge/QQ%20-%231DA1F2.svg?&style=for-the-badge&logo=Tencent+QQ&logoColor=white&color=1e6fff"/></a>  
 <a href="mailto:dabaoliu2019@163.com" target="_blank"><img src="https://img.shields.io/badge/Gmail%20-%231DA1F2.svg?&style=for-the-badge&logo=gmail&logoColor=white&color=ea4335"/></a></p>
 <p align="center">
 <a href="https://github.com/dabao40/TheOtherRolesGMIA/releases/"><img src="https://badgen.net/github/release/dabao40/theotherrolesgmia"></a></p>
+
+
+> [!note]
+ >This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
 
 
 This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
