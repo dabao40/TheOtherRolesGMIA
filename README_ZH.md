@@ -2,7 +2,7 @@
 [![Discord](./Images/TOR_server.png)](https://discord.gg/w7msq53dq7)
 
 
-** [English](README.md) | [简体中文] **
+
 
 
 <p align="center">
@@ -11,17 +11,21 @@
 <p align="center">
 <a href="https://github.com/dabao40/TheOtherRolesGMIA/releases/"><img src="https://badgen.net/github/release/dabao40/theotherrolesgmia"></a></p>
 
+**[English](README.md)|简体中文**
+
+>[!note]
+  此FDZDME文件由[TAIKongguo](https://github.com/TAIKgroup/)进行了初步翻译
 
 > [!note]
 > 本模组不隶属于 Among Us 或 Innersloth LLC，其包含的内容也未得到 Innersloth LLC 的认可或以其他方式赞助。\
 > 此处包含的部分材料是Innersloth LLC的财产。\
 > © Innersloth LLC.
 
-
 此模组基于模组[The Other Roles GM H rebuild](https://github.com/haoming37/GMH)模组作者：[haoming37](https://github.com/haoming37)  
+
 我们只是一个青少年团队，我们无法像其他模组作者：一样制作模组。你可以随时提出建议或撤回任何请求。
 
-# Releases
+# 资源
 
 | Among Us - 版本 | 模组版本 | 链接                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |

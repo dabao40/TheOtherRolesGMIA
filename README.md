@@ -2,7 +2,7 @@
 [![Discord](./Images/TOR_server.png)](https://discord.gg/w7msq53dq7)
 
 
-[English]  | [简体中文](README_ZH.md) 
+
 
 
 <p align="center">
@@ -11,6 +11,7 @@
 <p align="center">
 <a href="https://github.com/dabao40/TheOtherRolesGMIA/releases/"><img src="https://badgen.net/github/release/dabao40/theotherrolesgmia"></a></p>
 
+**English|[简体中文](README_ZH.md)** 
 
 > [!note]
  >This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
@@ -2287,6 +2288,7 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 - [yuunozikkyou](https://github.com/yuunozikkyou)
 - [unhappyset](https://github.com/unhappyset)
 - [KS](https://github.com/Ks-777)
+- [TAIKongguo](https://github.com/TAIKgroup/)
 
 # Credits & Resources
 
