@@ -11,255 +11,263 @@
 <p align="center">
 <a href="https://github.com/dabao40/TheOtherRolesGMIA/releases/"><img src="https://badgen.net/github/release/dabao40/theotherrolesgmia"></a></p>
 
-**English|[简体中文](README_ZH.md)** 
+
+
+**[English](README.md)|简体中文**
+
+  >[!note]
+    此FDZDME文件由[TAIKongguo](https://github.com/TAIKgroup/)进行了初步翻译
 
 > [!note]
- >This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.  
+> 本模组不隶属于 Among Us 或 Innersloth LLC，其包含的内容也未得到 Innersloth LLC 的认可或以其他方式赞助。\
+> 此处包含的部分材料是Innersloth LLC的财产。\
+> © Innersloth LLC.
 
+此模组基于模组[The Other Roles GM H rebuild](https://github.com/haoming37/GMH)模组作者：[haoming37](https://github.com/haoming37)  
 
-This mod is based on the mod [The Other Roles GM H rebuild](https://github.com/haoming37/GMH) made by [haoming37](https://github.com/haoming37)  
-We are only a team of teenagers, and we may not be able to make this mod like any other mods. Feel free to give suggestions or to pull any requests.  
+我们只是一个青少年团队，我们无法像其他模组作者：一样制作模组。你可以随时提出建议或撤回任何请求。
 
-# Releases
+# 资源
 
-| Among Us - Version | Mod Version | Link                                                         |
+| Among Us - 版本 | 模组版本 | 链接                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 16.0.4s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
-| 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
-| 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
-| 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
-| 2024.6.18s         | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
-| 2024.6.18s         | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
+| 16.0.2s            | v1.3.3     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
+| 2024.11.26s        | v1.3.2     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
+| 2024.11.26s        | v1.3.1     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
+| 2024.10.29s        | v1.3.0     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
+| 2024.6.18s         | v1.2.9     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
+| 2024.6.18s         | v1.2.7     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
 
 <details>
-  <summary>Click to show older versions</summary>
+  <summary>单击以显示旧版本</summary>
   
-| Among Us - Version | Mod Version | Link                                                                       |
+| Among Us - 版本 | 模组版本 | 链接                                                                       |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
-| 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.7) |
-| 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
-| 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
-| 2023.10.24s        | v1.1.26     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.26) |
-| 2023.7.12s         | v1.1.0      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0) |
-| 2023.7.12s         | v1.0.9      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.9) |
-| 2023.7.12s         | v1.0.8      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.8) |
-| 2023.7.12s         | v1.0.7      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.7) |
-| 2023.7.12s         | v1.0.6      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.6) |
-| 2023.7.12s         | v1.0.5      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5) |
-| 2023.7.12s         | v1.0.4      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.4) |
-| 2023.7.12s         | v1.0.3      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.3) |
-| 2023.7.12s         | v1.0.2      | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2) | 
+| 2024.3.5s          | v1.2.3     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
+| 2023.11.28s        | v1.1.7     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.7) |
+| 2023.11.28s        | v1.1.4     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
+| 2023.10.24s        | v1.1.3     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
+| 2023.10.24s        | v1.1.26     | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.26) |
+| 2023.7.12s         | v1.1.0      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.0) |
+| 2023.7.12s         | v1.0.9      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.9) |
+| 2023.7.12s         | v1.0.8      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.8) |
+| 2023.7.12s         | v1.0.7      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.7) |
+| 2023.7.12s         | v1.0.6      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.6) |
+| 2023.7.12s         | v1.0.5      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.5) |
+| 2023.7.12s         | v1.0.4      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.4) |
+| 2023.7.12s         | v1.0.3      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.3) |
+| 2023.7.12s         | v1.0.2      | [安装](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.0.2) | 
 </details>
 
-# Changelog
+# 日志
 
 <details>
-  <summary>Click to show the Changelog</summary>
+  <summary>单击以显示更新日志</summary>
 
-  **Version v1.3.3**
- - Updated to Among Us version v16.0.4
- - Added new role Doomsayer, thanks to Tukuai
- - Added new mode Draft Mode
- - Added new modifier for the Guesser gamemode, Last Impostor
- - Added a last game summary in the lobby
- - Added new option to allow the Shifter to shift the medic shield as well
- - Added new option for the Seer to see the teams of the flashes
- - Added new option to allow the Bait to be unguessable
- - Added new option for the Watcher to see the Yasuna votes in the voter's color
- - Added new option for the Detective to track the killer's movements
- - Added new option to allow the Archaeologist to reveal a certain role for a configurable amount of players
- - Added a new achievement for the Trapper
- - Added a page button for the Guesser
- - The Archaeologist can now become a Madmate
- - The Sherlock can now see the usage of the buttons indicated with an arrow of the Impostors
- - The Bomber can now plant bomb on their partner's target
- - The Portalmaker can now see the teleportation places of the users
- - Fixed a bug where the Impostors will replace the Jackal's victory if only the Schrodinger's Cat is alive
- - Reworked Mayor and it now can now vote a configurable amount of votes
- - Fixed a bug where the Fox crashes the game
- - Deleted Prophet as it works like the Fortune Teller
- - Deleted the option for everyone to notice extra victims
- - Deleted the option to add a vitals on Mira
+  **版本 v1.3.3**
+ - 升级至Among Us v16.0.2
+ - 增加新职业末日预言家，感谢土块
+ - 增加新模式轮抽选角
+ - 增加赌怪模式新副职业绝境赌怪
+ - 增加大厅可见的复盘信息
+ - 增加新选项“交换师可以交换护盾”
+ - 增加新选项“灵媒可以区分击杀阵营”
+ - 增加新选项“诱饵可以被猜测”
+ - 增加新选项“窥视者可以看见裁决者特殊投票”
+ - 增加新选项“侦探追凶”
+ - 增加新选项“考古学家发掘文物出现人数”
+ - 增加设陷者成就
+ - 增加会议中赌怪猜测UI的翻页按钮
+ - 考古学家现在可以变成叛徒（即原生背叛的考古学家）
+ - 福尔摩斯可以通过箭头检测内鬼阵营的异常行为
+ - 双子爆破者现在可以向迷你船员或另一个双子爆破者的爆破目标放置炸弹
+ - 守门人可以在会议信息中检测玩家的传送地点
+ - 修复豺狼阵营的薛定谔的猫杀死内鬼后内鬼会胜利的问题
+ - 修复狐妖会使游戏崩溃的问题
+ - 市长现在拥有更多的票数
+ - 删除与占卜师重复的预言家
+ - 删除“注意额外死亡玩家”的设置
+ - 删除“在米拉总部增加心电图”的设置
 
-  **Version v1.3.2**
- - Updated to Among Us version v2024.11.26, thanks to @XiezibanWrite
- - Added new role Archaeologist, thanks to Windy_BaiLan
- - Added new modifier Armored
- - Added the possibility to use the shift keys to (re-)join a lobby, if you just left a lobby or you have a lobby code copied to the clipboard
- - Added a setting to Guesser Mode: "Number Of Tasks Needed To Unlock Shooting For Crew Guesser"
- - Fixed a bug with the Tracker's Proximity Meter - it now disappears after the meeting if the target is dead and no new target can be tracked
- - Fixed a bug with the "Fill Crewmates" option, where selecting a range for min/max neutral roles would often lead to players being plain crewmates without a role
- - Fixed a bug where a passive lover death of a role that can suicide would sometimes give the medium incorrect info
- - Fixed a bug where the zoom out button would be shown to ghosts during meetings
- - Changed the way options are shown in the menu: Disabling an option (e.g. a role or modifier spawn chance) will now hide its depending sub-options again
- - Change: Significantly decreased the size of our mod by using compression, thanks to @FangkuaiYa
+  **版本 v1.3.2**
+ - 升级至Among Us v2024.11.26，感谢 @XiezibanWrite
+ - 增加新职业考古学家，感谢摆烂的风
+ - 增加新副职业装甲兵
+ - 可以使用Shift键复制或重新加入已经退出的游戏房间
+ - 增加新选项：船员赌怪解锁技能所需完成任务数
+ - 修复追踪者的危险警示器在会议后因追踪目标死亡不会消失的问题
+ - 修复填充船员职业导致所有玩家没有职业的问题
+ - 修复警长自杀导致通灵师信息错误的问题
+ - 修复千里眼可以在会议或在放逐环节显示的问题
+ - 未被使用或打开的设置现在可以被隐藏
+ - 极大减小了模组的占用内存，感谢 @FangkuaiYa
 
-  **Version v1.3.1**
- - Added new role Yo-Yo
- - Added new guides for newcomers, hover your mouse over the buttons to see the uses
- - Added the achievements for Lighter, Mimic, Bomber and Thief
- - Added new option "Madmate Fixed Role"
- - Added new option "Evil Hacker Can See Door Status"
- - Added new option "Notice Extra Victims"
- - Added new option "Sprinter Speed Bonus"
- - Added new option "Eraser Cooldown Penalty"
- - Allows players to see the vent layouts on maps
- - Madmate can now have a second modifier
- - Optimized the arrows to make them look better
- - Replaced the Light/Dark color tag with white/black buttons during meetings
- - Removed the old Prophet examination results and added an accuracy
- - Removed the dead bodies of players who have died during meetings
- - Reverted Snitch to the version with arrows
- - Fixed the Witch not being able to execute spelled targets
- - Fixed the Busker being kicked out of the game when failed to revive
- - Fixed the Teleporter kicking everyone out when trying to swap positions
- - Fixed the Task Master resulting in the Crew win when only 1 task completed
- - Fixed the Mad Engineer having wrong button alignments
- - Fixed the new ladders on Airship having no climb animation
- - Fixed the Arsonist's poolable indicators
- - Fixed the kill cooldown not being arraged properly
- - Fixed the Chameleon not being removed fully when being shifted from
- - Adjusted the Medium's questions and answers
- - Resorted the alignments of players during meetings
+  **版本 v1.3.1**
+ - 增加新职业悠悠球
+ - 增加新手指导，可以通过将鼠标悬停在按键上来查看帮助
+ - 增加执灯人，模仿者，双子爆破者和身份窃贼的成就
+ - 增加选项“固定叛徒职业”
+ - 增加选项“邪恶的黑客可以看见大门关闭状态”
+ - 增加选项“显示额外死亡玩家提示”
+ - 增加选项“彗星之子冲刺速度倍率”
+ - 增加选项“抹除者抹除追加冷却”
+ - 增加自定义选项“在地图上显示管道位置”
+ - 叛徒可以用第二个副职业
+ - 死亡或不再拥有某些职业时该职业箭头会消失
+ - 用黑或白色的原点代替深浅的标明
+ - 移除预言家的额外选项并增加揭示准确率
+ - 在会议后移除在会议中被击杀玩家的尸体
+ - 将告密者改回拥有箭头的版本
+ - 修复女巫不能正确击杀被下咒玩家
+ - 修复灵化使在自毙时会被踢出房间
+ - 修复传送师传送时会将所有人踢出房间
+ - 修复任务大师在只做完一个任务时就可以获胜
+ - 修复背叛的工程师按键重合问题
+ - 修复在飞艇中追加的梯子没有动画
+ - 修复纵火犯在会议后所有小人均被点亮
+ - 修复某些职业的击杀冷却会被错误地计算
+ - 修复变色龙被交换时副职业不会被完全移除
+ - 更改了部分通灵师的问题和答案
+ - 重新排序了会议中玩家的排列顺序
   
-  **Version v1.3.0**
- - Added compatibility to Among Us v2024.10.29
- - Added new role Kataomoi
- - Added new join lobby UI
- - Added some new achievements to the Neutral roles
- - Added some meeting clues to make memorizing the texts easier
- - Adjusted the Moriarty Indicator and made the UI more beautiful
- - Added the uses icons to some buttons
- - Added the info icons to some suicidal buttons
- - Added the Husk info for Shifters shifting onto dead Sheriff/Jackal etc.
- - Added new types of button label texts as well as the uses texts
- - Adjusted the Teleporter swapping by using the Shapeshifter menu
- - The Madmate can now be assigned with another modifier
- - The number of dummies can now be selected to 0
- - The Cupid Lovers and the Lovers' chat channel won't interfere with each other now
- - The Busker no longer gets to see the dead players' chats while pseudociding
- - The Task Texts won't be visible during comms sabotage
- - Fixed a bug where the dead Shifter could revive upon shifting someone alive
- - Fixed a bug where the Jackal cannot be shifted
- - Fixed a bug where the Fox would cause a game crash
- - Fixed a bug where the Shifter can shift anyone upon death
- - Fixed a bug where the Busker could not revive
- - Fixed a bug where the Task Master's extra tasks are displayed wrongly
- - Fixed a bug where the Moriarty's fake kill could be counted
- - Fixed a bug where the Trapper's target can still move even when trapped
- - Fixed a bug where the option "Trapper Hear Range" is useless
- - Fixed a bug where the Madmate's tasks are not assigned properly
- - Fixed a bug where the Janitor could stll sabotage
- - Fixed a bug where switching gamemodes in Free Play would still work
- - Fixed a bug where the "Crewmate" screen may still be shown during Intro
- - Fixed a bug where the Schrodinger's Cat's role color will not change
- - Fixed a bug where the option "Number Of Dummies" is still visible even not in Free Play
- - Fixed a bug where the Swapper's charges would zoom up upon the death of a selected target
- - Fixed a bug where the Akujo and the Cupid timer would still be visible during the meeting even if the target has been selected
+  **版本 v1.3.0**
+ - 更新适配至Among Us v2024.10.29
+ - 加入新角色凝视者
+ - 加入进入大厅时展示的UI
+ - 增加中立职业的成就
+ - 在会议上增加方便记忆的会议线索
+ - 增加了更优美的莫里亚蒂击杀提示UI
+ - 在一些有次数限制的图标上增加图标显示
+ - 在一些自杀倒计时图标增加额外线索
+ - 增加在交换师交换死亡的警长/豺狼时的空壳
+ - 运用新型技能图标文字
+ - 传送师现在使用类似于变形者的技能面板
+ - 叛徒可以被选为另外副职业的拥有者
+ - 自由模式假人数量可被选为0
+ - 丘比特和恋人聊天不再会交叉
+ - 灵化使在假死期间不再能看见死亡玩家的发言
+ - 任务完成程度在通讯破坏时不可见
+ - 修复死亡的交换师可以通过换取活人复活
+ - 修复已死亡的豺狼不可被交换
+ - 修复灵化使不可复活
+ - 修复交换师在死亡后可以随意交换玩家
+ - 修复任务大师额外任务会被错误地展示
+ - 修复莫里亚蒂没有成功的击杀会被计算进莫里亚蒂总击杀数
+ - 修复被陷阱夹住的玩家还可以移动
+ - 修复选项"设陷者声效有效范围"
+ - 修复叛徒任务不被正确分配
+ - 修复清洁工还可以使用破坏
+ - 修复在自由模式下仍可以切换游戏模式
+ - 修复在开始游戏时有些职业还被显示为"船员"
+ - 修复薛定谔的猫颜色不会在切换阵营后改变
+ - 修复"假人数量"选项在非自由模式下仍可见
+ - 修复换票师交换次数会在已确认换票的玩家死亡后飙升
+ - 修复魅魔、丘比特的自杀倒计时即使已选择目标仍会在会议上显示
 
-  **Version v1.2.3**
- - Fixed several bugs with the colors/footprints of the Mimic (both Killer and Assistant).  
- - Changed the implementation of the detective footprints.  
- - Added new option: Evil Tracker can see target tasks during meetings.  
- - Changed and now the target of the Evil Tracker will reset after the meeting.  
- - Fixed a bug where the Akujo may still see the roles of the True Love and the Backup even if the former has been sidekicked.
+  **版本 v1.2.3**
+ - 修复了大量有关模仿者的颜色/脚印的问题
+ - 更改了侦探脚印的出现方式
+ - 增加新选项：邪恶的追踪者可以在会议上设定目标
+ - 邪恶的追踪者的目标现在会在会议后重制
+ - 修复了被招募的魅魔仍然可以看见真爱和备胎职业的问题
   
-  **Version v1.1.7**
- - Added some sound effects to the game. Now most roles have a sound!
- - Added the compatibility to the new map The Fungle.
- - Added the button label texts.
- - Now that the Assassin will no longer be capable of assassinating someone while their target is using a transporation tool.
- - Fixed a bug where the Sprinter will not turn visible after a meeting.
- - Fixed some translation errors.
+  **版本 v1.1.7**
+ - 为游戏添加了一些音效。现在大多数角色都有声音了！
+ - 兼容地图The Fungle
+ - 添加了专门的按钮标签
+ - 现在刺客无法在使用任何东西时使用技能
+ - 修复了彗星之子在会议后仍然隐身的问题
+ - 修复了一些翻译错误
 
-  **Version v1.1.26**
+  **版本 v1.1.26**
 
-  - Updated to the latest version of Among Us
-  - Fixed a bug where the Custom Hats are not working
-  - Added new modifier Madmate
-  - Most of the texts now have a Chinese translation
+  - 已更新至最新版Among Us
+  - 修复了模组帽子无法正常使用的错误
+  - 添加了新的副职业：叛徒
+  - 翻译了更多的语言文件为中文
 
-  **Version 1.1.0**
+  **版本 1.1.0**
 
-  - Added new role Bomber
-  - Added new role Task Master
-  - Fixed some bugs that have existed for more than 3 versions
-  - Supported translation into Japanese and Chines, thanks to our translators
+  - 添加了新的内鬼职业：双子爆破者
+  - 添加了新的船员职业：任务大师
+  - 修复了近3个版本存在的一些错误
+  - 感谢我们的翻译人员，我们翻译了部分日语和中文
 
- **Version 1.0.8**
+ **版本 1.0.8**
 
- - Added role Veteran
- - Added role Sherlock
- - Added role Undertaker
- - Added role Mimic
+ - 添加了新的船员职业：老兵
+ - 添加了新的船员职业：福尔摩斯
+ - 添加了新的内鬼职业：送葬者
+ - 添加了新的内鬼职业：模仿者（杀手）&模仿者（助手）
  - Re-added Shifter and Chain-Shifter
- - Fixed a bug where the Ninja and the Bloody are not assigned properly
- - Fixed a bug where the Fortune Teller's progress will not grow after a meeting
- - Fixed a bug where the Serial Killer can vent to prevent the suicide timer from going  
+ - 修复了部分职业分配错误的问题
+ - 修复了占卜师在会议结束后占卜进度无法正常增长的问题
+ - 修复了嗜血杀手自述倒计时不正常进行的错误
 
- **Version 1.0.7**  
+ **版本 1.0.7**  
 
-- Added role Evil Tracker
-- Added role Serial Killer
-- Fixed a bug where the camouflage, morph etc. will not end even if the timer is up  
-- Added game option: Deputy Stops Game End  
-- Updated BepInEx to 671, thanks to [K](https://github.com/vdpcool)
+- 添加了新的内鬼职业：邪恶的追踪者
+- 添加了新的内鬼职业：嗜血杀手
+- 修复了以因为计时器错误导致部分技能无法正常结束的错误
+- 新增游戏选项：捕快禁止捕快阻止游戏结束
+- 更新了BepInEx版本至671, 感谢[K](https://github.com/vdpcool)
 
 </details>
 
 <details>
-  <summary>Click to show the features of TheOtherRoles GM H</summary>
+  <summary>单击按钮显示与 TheOtherRoles GM H 有关的内容 </summary>
   
-## Map modification features(Polus)
+## 地图修改功能(Polus)
 
-- Random Respawn
-- Additional Vents
-- Move Vital to Specimen
+- 随机出生点
+- 额外通风口
+- 更改心电图位置
 
 ![images/](Images/image.png)
 
-## Map modification features(AirShip)
+## 地图修改功能(AirShip)
 
-- Add Wall Check on Certain Tasks(AirShip)  # original idea from [AuShipMod](https://github.com/tomarai/AUShipMod)
+- 追加新的任务地点(AirShip)  # 最初的想法来自[AuShipMod](https://github.com/tomarai/AUShipMod)
 
-## Original Roles
+## 早期职业
 
-Description of Roles I created.(some of them are exported to The Other Roles GM)
+我创建的角色描述(其中的一些与The Other Roles GM有关)
 
-| Impostors                                                    | Crewmates                                 | Neutral                               | Other |
+| 内鬼                                                    | 船员                                 | 中立                               | 其他 |
 | ------------------------------------------------------------ | ----------------------------------------- | ------------------------------------- | ----- |
-| [SerialKiller(exported)](#SerialKiller)                      | [FortuneTeller(exported)](#FortuneTeller) | [Fox(exported)](#Fox)                 |       |
-| [EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles) | [Incompetent](#Incompetent)               | [Immoralist(exported)](#Immoralist)   |       |
-| [LastImpostor](#LastImpostor)                                | [Sherlock](#Sherlock)                     | [Schrodinger's Cat](#schrodingerscat) |       |
-| [Trapper(experimental)](#Trapper)                            |                                           | [Puppeteer(experimental)](#Puppeteer) |       |
-| [Bomber(experimental)](#Bomber)                              |                                           | [Moriarty](#Moriarty)                 |       |
+| [嗜血杀手(exported)](#嗜血杀手)                      | [FortuneTeller(exported)](#FortuneTeller) | [狐妖(exported)](#Fox)                 |       |
+| [邪恶的黑客](#邪恶的黑客) # original idead from [here](https://github.com/tomarai/TheOtherRoles) | [Incompetent](#Incompetent)               | [Immoralist(exported)](#Immoralist)   |       |
+| [绝境者](#绝境者)                                | [Sherlock](#Sherlock)                     | [薛定谔的猫](#schrodingerscat) |       |
+| [设陷者(experimental)](#设陷者)                            |                                           | [Puppeteer(experimental)](#Puppeteer) |       |
+| [双子爆破者(experimental)](#双子爆破者)                              |                                           | [Moriarty](#Moriarty)                 |       |
 | [EvilTracker](#EvilTracker)                                  |                                           | [Jekyll and Hyde](#Jekyll-and-Hyde)   |       |
 | [Mimic](#Mimic)                                              |                                           |                                       |       |
 
-### SerialKiller
+### 嗜血杀手
 
-SerialKiller is an impostor who has shorter kill cooldown.  
-After first kill, suicide timer starts and if it becomes 0 he kills yourself.  
-If you make a kill, The time is reset.  
-The timer is reset afteremergency meeting(option)  
+嗜血杀手拥有极短的击杀冷却，但他渴望鲜血，
 
-### EvilHacker
+在首次击杀后会获得击杀倒计时，再次击杀后重置
 
-Evil Hacker is an impostor who has two ability.
+### 邪恶的黑客
 
-1. He can see admin anywhere.
-2. He can creates Madmate from chosen player.
+邪恶的黑客是一个强大的内鬼职业
 
-### LastImpostor
+1. 他可以在任意位置使用管理地图
+2. 他可以让任何一个玩家变成叛徒
 
-Last impostor is an impostor role that the last living impostor acquires.  
-last impostor gets additional ability if he kills number of players is set in settings.  
-last impostor can  use guesser or divination ability.  (otpion)
+### 绝境者
 
-### Trapper
+最后一个活着的内鬼玩家会成为绝境者
 
-Trapper is an impostor role who has ability to set a trap.  
+如果绝境者杀死了一些玩家，他会获得一些额外的能力
+
+绝境者可以使用猜测或占卜能力(可选的)
+
+### 设陷者
+
+设陷者是一个可以安装陷阱的内鬼职业
+
 Trapper can also make normal kill but it makes penalty time to cooldown.  
 When Trapper set trap, it makes sounds and trap becomes visible for few secs.  
 If player get caught by trap, trap will starts countdown to kill.  
@@ -267,12 +275,11 @@ After certain time, player will be killed with sound.
 If other player contact to trapped player, trap will be disabled.  
 If trapper kills trapped player directly, trapper get bonus cooldown time.  
 
-Note
+  > [!note]
+  1. If Trapper makes normal kill, trap will be disabled
+  2. If next trap is set, first one will be disabled
 
-1. If Trapper makes normal kill, trap will be disabled
-2. If next trap is set, first one will be disabled
-
-### Bomber
+### 双子爆破者
 
 Bomber is 2 pair of impostor role who has bomb ability.  
 Both Bomber can plant bomb to player.  
@@ -559,30 +566,30 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 | Among Us - Version            | Mod Version | Link                                                         |
 | ----------------------------- | ----------- | ------------------------------------------------------------ |
-| 2022.2.24s                    | v3.5.4 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.5.4/TheOtherRoles-GM.v3.5.4.zip) |
-| 2022.2.24s                    | v3.5.3 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.5.3/TheOtherRoles-GM.v3.5.3.zip) |
-| 2022.2.8s                     | v3.5.2 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.5.2/TheOtherRoles-GM.v3.5.2.zip) |
-| 2021.12.15s (build num: 1421) | v3.5.1 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.5.1/TheOtherRoles-GM.v3.5.1.zip) |
-| 2021.12.15s (build num: 1421) | v3.5.0 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.5.0/TheOtherRoles-GM.v3.5.0.zip) |
-| 2021.12.15s (build num: 1421) | v3.4.1 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.4.1/TheOtherRoles-GM.v3.4.1.zip) |
-| 2021.12.15s (build num: 1421) | v3.4.0 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.4.0/TheOtherRoles-GM.v3.4.0.zip) |
-| 2021.12.15s (build num: 1421) | v3.3.3.1 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.3.3.1/TheOtherRoles-GM.v3.3.3.1.zip) |
-| 2021.12.15s (build num: 1421) | v3.3.2 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.3.2/TheOtherRoles-GM.v3.3.2.zip) |
-| 2021.12.15s (build num: 1421) | v3.3.1 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.3.1/TheOtherRoles-GM.v3.3.1.zip) |
-| 2021.12.15s (build num: 1421) | v3.3.0 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.3.0/TheOtherRoles-GM.v3.3.0.zip) |
-| 2021.12.15s (build num: 1421) | v3.2.6 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.6/TheOtherRoles-GM.v3.2.6.zip) |
-| 2021.12.14s (build num: 1402) | v3.2.5.3 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.5.3/TheOtherRoles-GM.v3.2.5.3.zip) |
-| 2021.11.9.5s                  | v3.2.5.2 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.5.2/TheOtherRoles-GM.v3.2.5.2.zip) |
-| 2021.11.9.5s                  | v3.2.5.1 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.5.1/TheOtherRoles-GM.v3.2.5.1.zip) |
-| 2021.11.9.5s                  | v3.2.5 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.5/TheOtherRoles-GM.v3.2.5.zip) |
-| 2021.11.9.5s                  | v3.2.4 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.4/TheOtherRoles-GM.v3.2.4.zip) |
-| 2021.11.9.5s                  | v3.2.3 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.2.3/TheOtherRolesGM.dll) |
-| 2021.11.9.5s                  | v3.2.2 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/3.2.2/TheOtherRoles-GM.v3.2.2.zip) |
-| 2021.11.9.5s                  | v3.1.2.1 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.1.2.1/TheOtherRoles-GM.v3.1.2.1.zip) |
-| 2021.11.9.5s                  | v3.1.2 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v3.1.2/TheOtherRoles-GM.v3.1.2.zip) |
-| 2021.6.30s                    | v2.9.2.1 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v2.9.2.1/TheOtherRoles-GM.v2.9.2.1.zip) |
-| 2021.6.30s                    | v2.9.2 GM   | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v2.9.2/TheOtherRoles-GM.v2.9.2.zip) |
-| 2021.6.30s                    | v2.9.0.1 GM | [Download](https://github.com/yukinogatari/TheOtherRoles-GM/releases/download/v2.9.0/TheOtherRoles-GM.v2.9.0.1.zip) |
+| 2022.2.24s                    | v3.5.4 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.5.4/TheOtherRoles-GM.v3.5.4.zip) |
+| 2022.2.24s                    | v3.5.3 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.5.3/TheOtherRoles-GM.v3.5.3.zip) |
+| 2022.2.8s                     | v3.5.2 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.5.2/TheOtherRoles-GM.v3.5.2.zip) |
+| 2021.12.15s (build num: 1421) | v3.5.1 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.5.1/TheOtherRoles-GM.v3.5.1.zip) |
+| 2021.12.15s (build num: 1421) | v3.5.0 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.5.0/TheOtherRoles-GM.v3.5.0.zip) |
+| 2021.12.15s (build num: 1421) | v3.4.1 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.4.1/TheOtherRoles-GM.v3.4.1.zip) |
+| 2021.12.15s (build num: 1421) | v3.4.0 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.4.0/TheOtherRoles-GM.v3.4.0.zip) |
+| 2021.12.15s (build num: 1421) | v3.3.3.1 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.3.3.1/TheOtherRoles-GM.v3.3.3.1.zip) |
+| 2021.12.15s (build num: 1421) | v3.3.2 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.3.2/TheOtherRoles-GM.v3.3.2.zip) |
+| 2021.12.15s (build num: 1421) | v3.3.1 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.3.1/TheOtherRoles-GM.v3.3.1.zip) |
+| 2021.12.15s (build num: 1421) | v3.3.0 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.3.0/TheOtherRoles-GM.v3.3.0.zip) |
+| 2021.12.15s (build num: 1421) | v3.2.6 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.6/TheOtherRoles-GM.v3.2.6.zip) |
+| 2021.12.14s (build num: 1402) | v3.2.5.3 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.5.3/TheOtherRoles-GM.v3.2.5.3.zip) |
+| 2021.11.9.5s                  | v3.2.5.2 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.5.2/TheOtherRoles-GM.v3.2.5.2.zip) |
+| 2021.11.9.5s                  | v3.2.5.1 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.5.1/TheOtherRoles-GM.v3.2.5.1.zip) |
+| 2021.11.9.5s                  | v3.2.5 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.5/TheOtherRoles-GM.v3.2.5.zip) |
+| 2021.11.9.5s                  | v3.2.4 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.4/TheOtherRoles-GM.v3.2.4.zip) |
+| 2021.11.9.5s                  | v3.2.3 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.2.3/TheOtherRolesGM.dll) |
+| 2021.11.9.5s                  | v3.2.2 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/3.2.2/TheOtherRoles-GM.v3.2.2.zip) |
+| 2021.11.9.5s                  | v3.1.2.1 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.1.2.1/TheOtherRoles-GM.v3.1.2.1.zip) |
+| 2021.11.9.5s                  | v3.1.2 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v3.1.2/TheOtherRoles-GM.v3.1.2.zip) |
+| 2021.6.30s                    | v2.9.2.1 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v2.9.2.1/TheOtherRoles-GM.v2.9.2.1.zip) |
+| 2021.6.30s                    | v2.9.2 GM   | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v2.9.2/TheOtherRoles-GM.v2.9.2.zip) |
+| 2021.6.30s                    | v2.9.0.1 GM | [安装](https://github.com/yukinogatari/TheOtherRoles-GM/releases/安装/v2.9.0/TheOtherRoles-GM.v2.9.0.1.zip) |
 
 # Changelog
 
@@ -590,7 +597,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
   <summary>Click to show the Changelog</summary>
 
 
-**Version 3.4.3**
+**版本 3.4.3**
 
 - Fixed a bug where "Guesser Is Impostor Chance" crashed the role system
 - Fixed a bug where a sidekicked Hacker was stuck
@@ -600,15 +607,15 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Changed that Cleaner & Vulture exclude each other
 - Changed that the lighter/darker color indicator can be displayed as dead
 
-**Version 3.4.2**
+**版本 3.4.2**
 
 - Fixed a game breaking bug
 
-**Version 3.4.2**
+**版本 3.4.2**
 
 - Fixed a game breaking bug
 
-**Version 3.4.1**
+**版本 3.4.1**
 
 - Added a new mod option "Show Lighter/Darker" for meetings
 - Added options for choosing which maps are enabled for random maps thanks [EvilScum](https://github.com/JustASysAdmin)
@@ -619,21 +626,21 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where the Security Guard could not access cams on Skeld, dlekS & Airship
 - Changed Tracker update interval to a minimum of 1 thanks [LaicosVK](https://github.com/LaicosVK)
 
-**Version 3.4.0**
+**版本 3.4.0**
 
 - Added new Role [Deputy](#deputy) thanks [gendelo3](https://github.com/gendelo3)
 - Added Hacker option "Cant Move During Mobile Gadget Duration"
 - Added Security Guard mobile cams after placing all screws
 - Added Lover option "Enable Lover Chat"
 - Added return votes in meetings: You'll now get your votes back if your target got shot by the Guesser
-- Added New Option for Guesser: Guesser can't guess Snitch if they has done all tasks (created by [MaximeGillot](https://github.com/MaximeGillot))
+- Added New Option for Guesser: Guesser can't guess Snitch if they has done all tasks (作者：[MaximeGillot](https://github.com/MaximeGillot))
 - Added The Other Roles changelog announcement popup
 - Changed that the Bounty Hunter exclude their Lover
 - Changed the position of the Witch icon in meetings for better visibility
 - Fixed a bug where the spy had a white name for Impostors in chat
 - Fixed a bug where the Guesser and Swapper UI in meetings was behind the visor cosmetics
 
-**Version 3.3.3**
+**版本 3.3.3**
 
 - Fixed a bug where a guessed Guesser could guess
 - Fixed a bug where buttons were visible during the meeting
@@ -641,15 +648,15 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Changed the Guesser option "Other Guesser Spawn Rate" to "Both Guesser Spawn Rate" (now only take effect when the chance for the first guesser was successful)
 - Changed Hacker vitals to doorlog for MIRA HQ
 
-**Version 3.3.2**
+**版本 3.3.2**
 
 - Fixed a bug where you can't create a lobby on Among Us 2021.12.15
 
-**Version 3.3.1**
+**版本 3.3.1**
 
 - Fixed a bug where sometimes the Evil Guesser could not guess. Thanks @tomarai
 
-**Version 3.3.0**
+**版本 3.3.0**
 
 - Update to Among Us version 2021.12.14s
 - Fixed a bug where the Pursuer won if the Pursuer was the last killed or voted player
@@ -661,7 +668,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - New option for the Hacker "Number Of Tasks Needed For Recharging"
 - Fixed some UI bugs during the meeting  
 
-**Version 3.2.5 (GM)**
+**版本 3.2.5 (GM)**
 
 - Allow hiding nameplates on an individual basis
 - A failed Shifter is marked as a suicide now
@@ -670,22 +677,22 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Hide the kill button on the meeting screen
 - Fix for non-Vampire/Warlock kills sometimes happening without a warp
 
-**Version 3.2.4**
+**版本 3.2.4**
 
 - Fixed a bug where the Vampire teleported when the bitten player died
 - The settings UI has been improved by [Amsyar Rasyiq](https://github.com/amsyarasyiq)
-- New option to the Bait "Warn The Killer With A Flash", created by [gendelo3](https://github.com/gendelo3)
+- New option to the Bait "Warn The Killer With A Flash", 作者：[gendelo3](https://github.com/gendelo3)
 
-**Version 3.2.3**
+**版本 3.2.3**
 
 - Fixed a bug where the role of a dead client was visible to the Pursuer
 - Fixed a bug where the Morphling changed their color when killing players
 - Fixed a bug where voting the Lover partner of a Lover Witch did not safe the spellbound players
 - When the Lawyer dies, the client doesn't have the client mark (§) anymore, making the client aware of the fact that the Lawyer can't steal the win anymore (only relevant if the "Client Knows" option is on)
 
-**Version 3.2.2**
+**版本 3.2.2**
 
-- Add new option "Play On A Random Map" created by [Alex2911](https://github.com/Alex2911)
+- Add new option "Play On A Random Map" 作者：[Alex2911](https://github.com/Alex2911)
 - Add Witch option "Voting The Witch Saves All The Targets"
 - Add Lawyer option "Lawyer Knows Target Role"
 - We changed the win conditions of the [Lawyer](#lawyer), to make it more viable
@@ -693,14 +700,14 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - The name and the role of all winners is now being displayed on the end screen
 - We changed the way settings are being shared among the players (which caused some people to be unable to join the lobby). This might resolve the problem or make it even worse... we'll see.
 
-**Version 3.2.1**
+**版本 3.2.1**
 
 - Hotfix for 3.2.0
 - Bug fix: The Warlock is again able to kill with the curse abilty
 
-**Version 3.2.0**
+**版本 3.2.0**
 
-- **New Role:** [Witch](#witch) created by [Alex2911](https://github.com/Alex2911)
+- **New Role:** [Witch](#witch) 作者：[Alex2911](https://github.com/Alex2911)
 - **New Role:** [Lawyer](#lawyer)
 - Bug fix: Choosing an Impostor as a Sidekick won't resulted in an Impostor/Sidekick mix anymore.
 - Bug fix: The Guesser info now shows the right information, when the Guesser guesses the wrong role and kills himself.
@@ -718,7 +725,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Bug fix: The position of the Spy on the intro screen is again random
 - Bug fix: Re-added some venting rules that were lost (Spy can't move between vents, only Trickster can use boxes, ...)
 
-**Version 3.1.0**
+**版本 3.1.0**
 
 - Hopefully temporary fixing the issue of being kicked by Innersloth servers for regular kills, until Innersloth fixes it on their side.
 - **NOTE:** Do not combine modded and unmodded versions of the game (even if you don't activate anything). Because of the kicking fix, your kills won't be performed for players that do not share the exact same modded version. Due to this you now can't start a game as the host, if not everyone in the lobby has the same version of the mod. Additionally you'll be kicked out of a lobby after 10 seconds, if the host doesn't have the mod installed (or the same mod version).
@@ -732,7 +739,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Bug fix: The Trickster vent button now doesn't show the text "vent" twice anymore
 - Bug fix: Fixed the visual bug where both Lovers always showed dead during the meeting after a correct guess of one of them even if the option "Both Lovers Die" was disabled
 
-**Version 3.0.0**
+**版本 3.0.0**
 
 - Updated to Among Us version v2021.11.9.5s
 - **Note:** We wanted to update as fast as possible, that's why you can't use both the Innersloth and mod roles at the same time. We'll make that possible in the future, but there are various things that need to be modified (e.g. Shifter, Guesser, ...) to make that work, so that'll take a little longer. Also, be aware that this version might contain more bugs than usual because Innersloth changed a lot of things and we might have missed some of them.
@@ -744,7 +751,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 - Fix for Morphing/Camoflauger's powers not properly ending when the timer ran out.
 
-**Version 2.9.2**
+**版本 2.9.2**
 
 - Merged from upstream
 - **New Role:** [Medium](#medium)
@@ -799,14 +806,14 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **Hotfix 2.9.0.1**
 
-- **New Role:** [Opportunist](#opportunist) (created by [libhalt](https://twitter.com/libhalt))
+- **New Role:** [Opportunist](#opportunist) (作者：[libhalt](https://twitter.com/libhalt))
 - Fixed a bug causing the Guesser to be unable to shoot
 - Added support for a second repository for custom hats
 
-**Version 2.9.0**
+**版本 2.9.0**
 
-- **New Role:** [Madmate](#madmate) (created by [tomarai](https://github.com/tomarai))
-- **New Role:** [GM](#gm) (created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk))
+- **New Role:** [Madmate](#madmate) (作者：[tomarai](https://github.com/tomarai))
+- **New Role:** [GM](#gm) (作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk))
 - Added Lovers Options: "Lovers Can Win With Crew", "Lovers Tasks Are Counted"
 - Added Sheriff Options: "Number of Shots"
 - Changed [Mafia](#mafia) so that if only the Janitor and crew remain, the game automatically ends, as the Janitor is unable to kill.
@@ -821,14 +828,14 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 - Fixed a game breaking bug where killing the Bait resulted in a ban of the Bait
 
-**Version 2.8.0**
+**版本 2.8.0**
 
 - **New Role:** [Bait](#bait)
-- Added Tracker Option: "Tracker Reset Target After Meeting" (feature created by [MaximeGillot](https://github.com/MaximeGillot))
+- Added Tracker Option: "Tracker Reset Target After Meeting" (feature 作者：[MaximeGillot](https://github.com/MaximeGillot))
 - Added Snitch Options: "Include Team Jackal" and "Use Different Arrow Color For Team Jackal"
 - Added Medic Option: "Shield Will Be Set After Next Meeting"
 
-**Version 2.7.3**
+**版本 2.7.3**
 
 - Updated to Among Us v2021.6.30
 - Updated BepInEx version
@@ -837,14 +844,14 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Added /size command for Lobby
 - Added /color and /murder command to Freeplay (for the Hat Designers)
 
-**Version 2.7.1**
+**版本 2.7.1**
 
 - Fixed a bug where [swapped](#swapper) votes were sometimes counted wrongly
 - Fixed the positioning of the player name while [morphed](#morphling)
 - Fixed a bug where the window of the [Guesser](#guesser) sometimes showed no "close button"
 - Fixed a bug where the [garlics](#vampire) were not displayed properly
 
-**Version 2.7.0**
+**版本 2.7.0**
 
 - **New Role:** [Bounty Hunter](#bounty-hunter)
 - Added more new [colors](#colors) (Thanks to [Drakoni](https://twitter.com/Drakoni13) for sorting them)
@@ -856,7 +863,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where a [lover partner](#lovers) would not be shown as dead when killed by the [Guesser](#guesser)
 - Fixed a bug on the Airship, where the [Jester](#jester) win was not triggered in some cases
 
-**Version 2.6.7**
+**版本 2.6.7**
 
 - **New Role:** [Guesser](#guesser)
 - We changed the colors of some of our roles
@@ -864,11 +871,11 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where a Jester win was triggered, when the partner of a Jester Lover was voted out
 - Fixed a bug where a Mini lose was triggered, when the partner of a Crew Mini Lover was voted out
 
-**Version 2.6.6**
+**版本 2.6.6**
 
 - Fixed a bug introduced in v2.6.5 that caused all player to be able to use vents when the new option for spy was enabled
 
-**Version 2.6.5**
+**版本 2.6.5**
 
 - Added the ability to increase the number of tasks assigned to crewmates
 - New option: A role summary in the end screen (Client option)
@@ -877,7 +884,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug causing a crewmate task win when lovers were in the game even when not all crewmates had completed all their tasks
 - Restored the original Among Us color for crewmates in the intro cutscene
 
-**Version 2.6.4**
+**版本 2.6.4**
 
 - **[Lovers](#lovers):** You can now select that Lovers may have a second role (could be a Crewmate, Neutral or Impostor role)
 - **[Seer](#seer):** Fixed souls and flash sometimes not being visible (Thanks to [orangeNKeks](https://github.com/orangeNKeks))
@@ -888,25 +895,25 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Changed Freeplay mode to not assign custom roles anymore
 - Fixed a bug with directional hats not using their flip image after a while
 
-**Version 2.6.3**
+**版本 2.6.3**
 
 - Changed the role limits options to allow for minimum and maximum bounds
 - Changed the role assignment to be more random when assigning roles (previously assigned the neutral roles before assigning the crewmate roles)
 - Added new `flip` option to [Custom Hats](#custom-hats)
 
-**Version 2.6.2**
+**版本 2.6.2**
 
 - The Other Roles now supports the new Among Us version **2021.5.10s**
 - Added a chat command to kick players as the host of a lobby (`/kick playerName`)
 
-**Version 2.6.1**
+**版本 2.6.1**
 
 - Fixed a bug where the Sheriff was unable to kill the Arsonist
 - Fixed a bug in the role assignment system
 - Added the option to select the Dleks map
 - Improved the overlay of the Arsonist
 
-**Version 2.6.0**
+**版本 2.6.0**
 
 - **New Role:** [Arsonist](#arsonist)
 - Added an In-Game Updater, to make it easier to update the Mod
@@ -920,7 +927,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed an Among Us bug, which made the selected region always show "North America"
 - Fixed an Among Us bug, which made the disconnect info be off-screen. (hopefully)
 
-**Version 2.5.1**
+**版本 2.5.1**
 
 - **New Hats:** We added the support for custom hats and there are already a few hats inside the game. We can add new hats without updating the mod and we're awaiting your hat designs on our discord server.
 - Changed Lovers to ignore Lover's Tasks for task win, while an ImpLover is alive
@@ -928,13 +935,13 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - The Security Guard can't place cameras on MiraHQ anymore
 - Fixed a bug on the Airship, where the view of the cameras that the Security Guard placed wasn't centered on the camera.
 
-**Version 2.5.0**
+**版本 2.5.0**
 
 - **New Role:** [Security Guard](#security-guard)
 - Fixed a bug where the game would stop after the first meeting
 - Fixed a bug where killing with the hotkey Q ignored shields
 
-**Version 2.4.0**
+**版本 2.4.0**
 
 - **New Role:** [Warlock](#warlock)
 - Added an option that allows ghosts to see the roles and remaining tasks of other players
@@ -947,7 +954,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where changes to the server ip and port would only be applied if the game was restarted
 - Added a way to get the 2 Hidden [Colors](#colors)
 
-**Version 2.3.0**
+**版本 2.3.0**
 
 - **New Role:** [Cleaner](#cleaner)
 - Added 12 new [Colors](#colors)
@@ -965,12 +972,12 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug which prevented to play in Freeplay mode
 - Fixed a bug which moved the Ping info off-screen
 
-**Version 2.2.2**
+**版本 2.2.2**
 
 - Among Us version 2021.4.14s compatibility
 - Improved the block votes on emergency meeting option
 
-**Version 2.2.1**
+**版本 2.2.1**
 
 - Trickster: The vent button now has a custom texture. Fixed a bug where the Trickster could clip out of bounds when their box was close to a wall.
 - Fixed a bug where the Bad Mini's kill button went on cooldown when someone else performed a kill
@@ -978,7 +985,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where the Mini was banned for hacking (because of its reduced kill cooldown)
 - Improved the version handshake
 
-**Version 2.2.0**
+**版本 2.2.0**
 
 - **Works with the latest Among Us version (2021.4.12s)**
 - **Added support for 10+ player lobbies on custom servers:** Check the [Custom Servers and 10+ Players](#Custom-Servers-and-10+-Players) section. During meetings use the up/down keys, on vitals use the left/right keys.
@@ -995,7 +1002,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Fixed a bug where the Vampire/Janitor/Mafioso would lose their kill button after being erased
 - The Mini is now able to use ladders and it can do all the tasks right away
 
-**Version 2.1.0**
+**版本 2.1.0**
 
 - **New Role:** [Spy](#spy)
 - **Eraser:** The Eraser can now also remove the role of other Impostors. This enables them to reveal the Spy, but might result in removing the special ability of their partner.
@@ -1012,8 +1019,8 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **Changes in 2.0.0**
 
-- **New button art** created by **Bavari**
-- **New mod updater/installer tool** created by [Narua](https://github.com/Narua2010) and [Jolle](https://github.com/joelweih). Check the [Installation](#installation) section for more details.
+- **New button art** 作者：**Bavari**
+- **New mod updater/installer tool** 作者：[Narua](https://github.com/Narua2010) and [Jolle](https://github.com/joelweih). Check the [Installation](#installation) section for more details.
 - **Custom options:** Introduced customizable presets. Starting with 2.0.0, settings can be copied and used with higher versions (2.0.0).
 - **Time Master rework:** Check [Time Master](#time-master) for more information
 - **Medic:** The Medic report changed, it only shows the time since death (see Detective)
@@ -1481,7 +1488,7 @@ Depending on the options you can choose whether voting the Witch out will save a
 
 ### **Team: Impostors**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 Original Idea by [うるさくてすみま船](https://twitter.com/nakanocchi2)
 
 The Ninja is an Impostor that can turn invisible. While stealthed, the Ninja moves faster than a normal Crewmate, and kills don't cause them to warp. However, using their stealth ability increases their kill cooldown--a penalty for killing while invisible, and a short penalty applied after unstealthing.
@@ -1490,7 +1497,7 @@ The Ninja is an Impostor that can turn invisible. While stealthed, the Ninja mov
 
 ### **Team: Impostors**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Serial Killer is an Impostor that has a reduced kill cooldown at the cost of their own life. Once the Serial Killer has their first taste of blood, they must kill again within a set time or be driven crazy by bloodlust and commit suicide.
 
@@ -1498,7 +1505,7 @@ The Serial Killer is an Impostor that has a reduced kill cooldown at the cost of
 
 ### **Team: Impostors**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
 The Neko-Kabocha is an Impostor capable of taking revenge on their killer. If killed by a Sheriff, Jackal, or other player, the killer will die alongside the Neko-Kabocha.
 
@@ -2102,7 +2109,7 @@ an outline or all vents do).
 
 ### **Team: N/A**
 
-Created by [libhalt](https://twitter.com/libhalt)
+作者：[libhalt](https://twitter.com/libhalt)
 
 The Opportunist is a outsider role. So long as they are alive at the end of the game, they win alongside the victorious team. They can choose to side with any team they wish to ensure their own survival.
 
@@ -2110,7 +2117,7 @@ The Opportunist is a outsider role. So long as they are alive at the end of the 
 
 ### **Team: N/A**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
 The GM (Game Master) is an observer role. Their presence has no effect on the game itself, and all players know who the GM is at all times. The GM cannot be targeted by other players, cannot fix sabotages, and cannot vote or be voted for. They are a completely external presence, provided with a range of tools at their disposal to efficiently observe the flow of the game.
 
@@ -2218,7 +2225,7 @@ The Pursuer has tasks (which can already be done while being a Lawyer), that cou
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Plague Doctor is a neutral role whose goal is to infect every living player. They start by choosing one player to infect, after which anyone who spends a set amount of time in range of the infected player becomes infected themselves. Infection progress is cumulative, and does not reset with distance or after meetings.
 
@@ -2230,7 +2237,7 @@ A set period of time after each meeting, players are immune from infection, lett
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Fox is a Neutral role whose goal is to keep themselves hidden from both the Crew and Impostors while completing their own tasks. The Fox is always aware of where any threats are, and has numerous abilities to protect themselves.
 
@@ -2238,51 +2245,57 @@ The Fox is a Neutral role whose goal is to keep themselves hidden from both the 
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Immoralist's objective is to support the Fox in any way they can, even if it means sacrificing their own life.
 
-## Fortune Teller
+## 占卜师
 
-### **Team: Crewmate**
+### **船员阵营**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
-The Fortune Teller is a Crewmate with the power to divine a single player's role. They start out believing themselves to be an ordinary Crewmate, only awakening to their powers after completing a designated number of tasks.
+占卜师是一名船员角色，最开始他只是普通船员，在完成一定任务后得知自己的身份，跟其他玩家接触达一段时间，可以占卜其他人的身份
 
-## Watcher
+## 窥视者
 
-### **Team: Crewmate or Impostors**
+### **船员阵营或内鬼阵营**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
-The Watcher is a player capable of seeing everyone's votes during meetings.
+窥视者是一个能够在会议期间看到每个人投票的玩家。
 </details>
 
-# Installation
-For steam users, you have to follow the following steps.  
-**1.** Download the latest release [here](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)  
-**2.** Open up your Steam, right click on Libraries and find your Among Us folder  
-**3.** *REALLY IMPORTANT* Go to the ```common``` directory and copy the whole Among Us folder  
-**4.** Place the folder in whatever place you want and put the zip file you have just downloaded into it  
-**5.** Unzip the files and double click on ```Among Us.exe```  
-**6.** The first launch will take a while. When the game has been fully launched, you will be able to enjoy the mod!
+# 模组安装
+对于steam用户，您应该遵循以下步骤
 
-If the installation isn't working, you can try using the [TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/) created by [Fangkuai](https://github.com/FangkuaiYa)
+**1.** 安装[最新版本](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)模组
 
-# Roles
-For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
+**2.** 开启你的steam，在Among Us中的设置按钮中选择浏览本地文件
 
-# The Other Roles GM IA Team
+**3.** *非常重要* 转到```common```文件夹并复制Among Us文件夹
 
-## Developers
+**4.** 将文件夹复制在你想放在的任何地方，并将你所下载的模组文件压缩包解压至此
+
+**5.** 允许 ```Among Us.exe```  
+
+**6.** 首次启动需要一段时间，这是正常的。当游戏完全启动后，您将可以享受此模组带来的一切。
+
+如果安装不启作用，您可以尝试使用[TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/)作者：[Fangkuai](https://github.com/FangkuaiYa)
+
+# 职业
+有关于TheOtherRoles GM IA, 请访问我们的[Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
+
+# The Other Roles GM IA 制作团队
+
+## 开发人员
 - [Imp11](https://github.com/dabao40)  
 - [Among us](https://github.com/XiezibanWrite)
 
-## Artists
+## 美术人员
 - [Fangkuai](https://github.com/FangkuaiYa)
 
-## Translators
+## 翻译人员
 - [LezaiYa](https://github.com/LezaiYa)  
 - [Fangkuai](https://github.com/FangkuaiYa)
 - [yuunozikkyou](https://github.com/yuunozikkyou)
@@ -2290,31 +2303,31 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 - [KS](https://github.com/Ks-777)
 - [TAIKongguo](https://github.com/TAIKgroup/)
 
-# Credits & Resources
+# Credits & 资源
 
-Firstly, credits to The Other Roles, since this mod is based on their developement.  
-Also credits to The Other Roles GM and The Other Roles GM H, for some of the roles are based on their ideas.  
-OxygenFilter - For the versions v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation  
-Reactor - The framework used for all versions before v2.0.0, and again since 4.2.0  
-BepInEx - Used to hook game functions  
-Essentials - Custom game options by DorCoMaNdO:  
+首先，感谢The Other Roles，因为这个模组基于它 
+同时，感谢The Other Roles GM 和 The Other Roles GM H,因为有一些角色是来自它们
+OxygenFilter - 对于版本 v2.3.0 至 v2.6.1, 我们正在使用OxygenFilter用于模组的一些功能
+Reactor - 用于v2.0.0之前以及4.2.0之后的所有版本的框架
+BepInEx - 用于基础的开发框架
+Essentials - 自定义游戏选项来自 DorCoMaNdO:  
 Before v1.6: We used the default Essentials release  
 v1.6-v1.8: We slightly changed the default Essentials.  
-Nebula-On-The-Ship: Partly code of the UIs are from Dolly  
-Four-Han-sinicization-group - Some of the pictures are made by them  
-Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard  
-Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
-Jester - Idea for the Jester role came from Maartii  
-ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.  
+Nebula-On-The-Ship: 部分UI的代码来自 Dolly  
+Four-Han-sinicization-group - 有些照片来自于他们
+Jackal and Sidekick - 豺狼和跟班的最初想法来自Dhalucard  
+Among-Us-Love-Couple-Mod - 恋人副职业的想法来自Woodi-dev  
+Jester - 小丑的想法来自Maartii  
+ExtraRolesAmongUs - 工程师和医生的想法来自NotHunter101.还使用了它们的一些代码片段
 Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev  
-TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.  
-TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose  
-Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottomated  
-Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
-Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
+TooManyRolesMods - 侦探和时间之主的想法来自Hardel-DW.还使用了它们的一些代码片段
+TownOfUs - 换票师、警长、纵火犯等职业的想法来自Slushiegoose  
+Ottomated - 一些内鬼职业的想法来自Ottomated  
+Crowded-Mod - 提升模组等待大厅人数上限的想法来自Crowded Mod
+Goose-Goose-Duck - 秃鹫的想法来自Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-Town-Of-Host-Enhanced - Gradient color (full code)
+Town-Of-Host-Enhanced - 渐变色（完整代码）
 
-# Translation
+# 语言翻译
 
-As of v1.1.0, The Other Roles GM IA now supports translation into other languages. To add a new language, add translations to [Strings.xlsx](/Strings.xlsx) and submit a pull request.
+自The Other Roles GM IA v1.1.0版本启，您可以通过[Strings.xlsx](/Strings.xlsx)中进行语言文件的翻译和添加新的语言，随后您可以发起一个pull request.
