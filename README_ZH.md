@@ -2,7 +2,7 @@
 [![Discord](./Images/TOR_server.png)](https://discord.gg/w7msq53dq7)
 
 
-[English](README.md) | [简体中文]
+** [English](README.md) | [简体中文] **
 
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 
 此模组基于模组[The Other Roles GM H rebuild](https://github.com/haoming37/GMH)模组作者：[haoming37](https://github.com/haoming37)  
-我们只是一个青少年团队，我们无法像其他模组作者一样制作模组。你可以随时提出建议或撤回任何请求。
+我们只是一个青少年团队，我们无法像其他模组作者：一样制作模组。你可以随时提出建议或撤回任何请求。
 
 # Releases
 
@@ -166,100 +166,102 @@
  - 修复了被招募的魅魔仍然可以看见真爱和备胎职业的问题
   
   **版本 v1.1.7**
- - Added some sound effects to the game. Now most roles have a sound!
- - Added the compatibility to the new map The Fungle.
- - Added the button label texts.
- - Now that the Assassin will no longer be capable of assassinating someone while their target is using a transporation tool.
- - Fixed a bug where the Sprinter will not turn visible after a meeting.
- - Fixed some translation errors.
+ - 为游戏添加了一些音效。现在大多数角色都有声音了！
+ - 兼容地图The Fungle
+ - 添加了专门的按钮标签
+ - 现在刺客无法在使用任何东西时使用技能
+ - 修复了彗星之子在会议后仍然隐身的问题
+ - 修复了一些翻译错误
 
   **版本 v1.1.26**
 
-  - Updated to the latest version of Among Us
-  - Fixed a bug where the Custom Hats are not working
-  - Added new modifier Madmate
-  - Most of the texts now have a Chinese translation
+  - 已更新至最新版Among Us
+  - 修复了模组帽子无法正常使用的错误
+  - 添加了新的副职业：叛徒
+  - 翻译了更多的语言文件为中文
 
   **版本 1.1.0**
 
-  - Added new role Bomber
-  - Added new role Task Master
-  - Fixed some bugs that have existed for more than 3 versions
-  - Supported translation into Japanese and Chines, thanks to our translators
+  - 添加了新的内鬼职业：双子爆破者
+  - 添加了新的船员职业：任务大师
+  - 修复了近3个版本存在的一些错误
+  - 感谢我们的翻译人员，我们翻译了部分日语和中文
 
  **版本 1.0.8**
 
- - Added role Veteran
- - Added role Sherlock
- - Added role Undertaker
- - Added role Mimic
+ - 添加了新的船员职业：老兵
+ - 添加了新的船员职业：福尔摩斯
+ - 添加了新的内鬼职业：送葬者
+ - 添加了新的内鬼职业：模仿者（杀手）&模仿者（助手）
  - Re-added Shifter and Chain-Shifter
- - Fixed a bug where the Ninja and the Bloody are not assigned properly
- - Fixed a bug where the Fortune Teller's progress will not grow after a meeting
- - Fixed a bug where the Serial Killer can vent to prevent the suicide timer from going  
+ - 修复了部分职业分配错误的问题
+ - 修复了占卜师在会议结束后占卜进度无法正常增长的问题
+ - 修复了嗜血杀手自述倒计时不正常进行的错误
 
  **版本 1.0.7**  
 
-- Added role Evil Tracker
-- Added role Serial Killer
-- Fixed a bug where the camouflage, morph etc. will not end even if the timer is up  
-- Added game option: Deputy Stops Game End  
-- Updated BepInEx to 671, thanks to [K](https://github.com/vdpcool)
+- 添加了新的内鬼职业：邪恶的追踪者
+- 添加了新的内鬼职业：嗜血杀手
+- 修复了以因为计时器错误导致部分技能无法正常结束的错误
+- 新增游戏选项：捕快禁止捕快阻止游戏结束
+- 更新了BepInEx版本至671, 感谢[K](https://github.com/vdpcool)
 
 </details>
 
 <details>
-  <summary>Click to show the features of TheOtherRoles GM H</summary>
+  <summary>单击按钮显示与 TheOtherRoles GM H 有关的内容 </summary>
   
-## Map modification features(Polus)
+## 地图修改功能(Polus)
 
-- Random Respawn
-- Additional Vents
-- Move Vital to Specimen
+- 随机出生点
+- 额外通风口
+- 更改心电图位置
 
 ![images/](Images/image.png)
 
-## Map modification features(AirShip)
+## 地图修改功能(AirShip)
 
-- Add Wall Check on Certain Tasks(AirShip)  # original idea from [AuShipMod](https://github.com/tomarai/AUShipMod)
+- 追加新的任务地点(AirShip)  # 最初的想法来自[AuShipMod](https://github.com/tomarai/AUShipMod)
 
-## Original Roles
+## 早期职业
 
-Description of Roles I created.(some of them are exported to The Other Roles GM)
+我创建的角色描述(其中的一些与The Other Roles GM有关)
 
-| Impostors                                                    | Crewmates                                 | Neutral                               | Other |
+| 内鬼                                                    | 船员                                 | 中立                               | 其他 |
 | ------------------------------------------------------------ | ----------------------------------------- | ------------------------------------- | ----- |
-| [SerialKiller(exported)](#SerialKiller)                      | [FortuneTeller(exported)](#FortuneTeller) | [Fox(exported)](#Fox)                 |       |
-| [EvilHacker](#EvilHacker) # original idead from [here](https://github.com/tomarai/TheOtherRoles) | [Incompetent](#Incompetent)               | [Immoralist(exported)](#Immoralist)   |       |
-| [LastImpostor](#LastImpostor)                                | [Sherlock](#Sherlock)                     | [Schrodinger's Cat](#schrodingerscat) |       |
-| [Trapper(experimental)](#Trapper)                            |                                           | [Puppeteer(experimental)](#Puppeteer) |       |
-| [Bomber(experimental)](#Bomber)                              |                                           | [Moriarty](#Moriarty)                 |       |
+| [嗜血杀手(exported)](#嗜血杀手)                      | [FortuneTeller(exported)](#FortuneTeller) | [狐妖(exported)](#Fox)                 |       |
+| [邪恶的黑客](#邪恶的黑客) # original idead from [here](https://github.com/tomarai/TheOtherRoles) | [Incompetent](#Incompetent)               | [Immoralist(exported)](#Immoralist)   |       |
+| [绝境者](#绝境者)                                | [Sherlock](#Sherlock)                     | [薛定谔的猫](#schrodingerscat) |       |
+| [设陷者(experimental)](#设陷者)                            |                                           | [Puppeteer(experimental)](#Puppeteer) |       |
+| [双子爆破者(experimental)](#双子爆破者)                              |                                           | [Moriarty](#Moriarty)                 |       |
 | [EvilTracker](#EvilTracker)                                  |                                           | [Jekyll and Hyde](#Jekyll-and-Hyde)   |       |
 | [Mimic](#Mimic)                                              |                                           |                                       |       |
 
-### SerialKiller
+### 嗜血杀手
 
-SerialKiller is an impostor who has shorter kill cooldown.  
-After first kill, suicide timer starts and if it becomes 0 he kills yourself.  
-If you make a kill, The time is reset.  
-The timer is reset afteremergency meeting(option)  
+嗜血杀手拥有极短的击杀冷却，但他渴望鲜血，
 
-### EvilHacker
+在首次击杀后会获得击杀倒计时，再次击杀后重置
 
-Evil Hacker is an impostor who has two ability.
+### 邪恶的黑客
 
-1. He can see admin anywhere.
-2. He can creates Madmate from chosen player.
+邪恶的黑客是一个强大的内鬼职业
 
-### LastImpostor
+1. 他可以在任意位置使用管理地图
+2. 他可以让任何一个玩家变成叛徒
 
-Last impostor is an impostor role that the last living impostor acquires.  
-last impostor gets additional ability if he kills number of players is set in settings.  
-last impostor can  use guesser or divination ability.  (otpion)
+### 绝境者
 
-### Trapper
+最后一个活着的内鬼玩家会成为绝境者
 
-Trapper is an impostor role who has ability to set a trap.  
+如果绝境者杀死了一些玩家，他会获得一些额外的能力
+
+绝境者可以使用猜测或占卜能力(可选的)
+
+### 设陷者
+
+设陷者是一个可以安装陷阱的内鬼职业
+
 Trapper can also make normal kill but it makes penalty time to cooldown.  
 When Trapper set trap, it makes sounds and trap becomes visible for few secs.  
 If player get caught by trap, trap will starts countdown to kill.  
@@ -267,12 +269,11 @@ After certain time, player will be killed with sound.
 If other player contact to trapped player, trap will be disabled.  
 If trapper kills trapped player directly, trapper get bonus cooldown time.  
 
-Note
+  > [!note]
+  1. If Trapper makes normal kill, trap will be disabled
+  2. If next trap is set, first one will be disabled
 
-1. If Trapper makes normal kill, trap will be disabled
-2. If next trap is set, first one will be disabled
-
-### Bomber
+### 双子爆破者
 
 Bomber is 2 pair of impostor role who has bomb ability.  
 Both Bomber can plant bomb to player.  
@@ -626,7 +627,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 - Added Security Guard mobile cams after placing all screws
 - Added Lover option "Enable Lover Chat"
 - Added return votes in meetings: You'll now get your votes back if your target got shot by the Guesser
-- Added New Option for Guesser: Guesser can't guess Snitch if they has done all tasks (created by [MaximeGillot](https://github.com/MaximeGillot))
+- Added New Option for Guesser: Guesser can't guess Snitch if they has done all tasks (作者：[MaximeGillot](https://github.com/MaximeGillot))
 - Added The Other Roles changelog announcement popup
 - Changed that the Bounty Hunter exclude their Lover
 - Changed the position of the Witch icon in meetings for better visibility
@@ -674,7 +675,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 - Fixed a bug where the Vampire teleported when the bitten player died
 - The settings UI has been improved by [Amsyar Rasyiq](https://github.com/amsyarasyiq)
-- New option to the Bait "Warn The Killer With A Flash", created by [gendelo3](https://github.com/gendelo3)
+- New option to the Bait "Warn The Killer With A Flash", 作者：[gendelo3](https://github.com/gendelo3)
 
 **版本 3.2.3**
 
@@ -685,7 +686,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **版本 3.2.2**
 
-- Add new option "Play On A Random Map" created by [Alex2911](https://github.com/Alex2911)
+- Add new option "Play On A Random Map" 作者：[Alex2911](https://github.com/Alex2911)
 - Add Witch option "Voting The Witch Saves All The Targets"
 - Add Lawyer option "Lawyer Knows Target Role"
 - We changed the win conditions of the [Lawyer](#lawyer), to make it more viable
@@ -700,7 +701,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **版本 3.2.0**
 
-- **New Role:** [Witch](#witch) created by [Alex2911](https://github.com/Alex2911)
+- **New Role:** [Witch](#witch) 作者：[Alex2911](https://github.com/Alex2911)
 - **New Role:** [Lawyer](#lawyer)
 - Bug fix: Choosing an Impostor as a Sidekick won't resulted in an Impostor/Sidekick mix anymore.
 - Bug fix: The Guesser info now shows the right information, when the Guesser guesses the wrong role and kills himself.
@@ -799,14 +800,14 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **Hotfix 2.9.0.1**
 
-- **New Role:** [Opportunist](#opportunist) (created by [libhalt](https://twitter.com/libhalt))
+- **New Role:** [Opportunist](#opportunist) (作者：[libhalt](https://twitter.com/libhalt))
 - Fixed a bug causing the Guesser to be unable to shoot
 - Added support for a second repository for custom hats
 
 **版本 2.9.0**
 
-- **New Role:** [Madmate](#madmate) (created by [tomarai](https://github.com/tomarai))
-- **New Role:** [GM](#gm) (created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk))
+- **New Role:** [Madmate](#madmate) (作者：[tomarai](https://github.com/tomarai))
+- **New Role:** [GM](#gm) (作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk))
 - Added Lovers Options: "Lovers Can Win With Crew", "Lovers Tasks Are Counted"
 - Added Sheriff Options: "Number of Shots"
 - Changed [Mafia](#mafia) so that if only the Janitor and crew remain, the game automatically ends, as the Janitor is unable to kill.
@@ -824,7 +825,7 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 **版本 2.8.0**
 
 - **New Role:** [Bait](#bait)
-- Added Tracker Option: "Tracker Reset Target After Meeting" (feature created by [MaximeGillot](https://github.com/MaximeGillot))
+- Added Tracker Option: "Tracker Reset Target After Meeting" (feature 作者：[MaximeGillot](https://github.com/MaximeGillot))
 - Added Snitch Options: "Include Team Jackal" and "Use Different Arrow Color For Team Jackal"
 - Added Medic Option: "Shield Will Be Set After Next Meeting"
 
@@ -1012,8 +1013,8 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 **Changes in 2.0.0**
 
-- **New button art** created by **Bavari**
-- **New mod updater/installer tool** created by [Narua](https://github.com/Narua2010) and [Jolle](https://github.com/joelweih). Check the [Installation](#installation) section for more details.
+- **New button art** 作者：**Bavari**
+- **New mod updater/installer tool** 作者：[Narua](https://github.com/Narua2010) and [Jolle](https://github.com/joelweih). Check the [Installation](#installation) section for more details.
 - **Custom options:** Introduced customizable presets. Starting with 2.0.0, settings can be copied and used with higher versions (2.0.0).
 - **Time Master rework:** Check [Time Master](#time-master) for more information
 - **Medic:** The Medic report changed, it only shows the time since death (see Detective)
@@ -1481,7 +1482,7 @@ Depending on the options you can choose whether voting the Witch out will save a
 
 ### **Team: Impostors**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 Original Idea by [うるさくてすみま船](https://twitter.com/nakanocchi2)
 
 The Ninja is an Impostor that can turn invisible. While stealthed, the Ninja moves faster than a normal Crewmate, and kills don't cause them to warp. However, using their stealth ability increases their kill cooldown--a penalty for killing while invisible, and a short penalty applied after unstealthing.
@@ -1490,7 +1491,7 @@ The Ninja is an Impostor that can turn invisible. While stealthed, the Ninja mov
 
 ### **Team: Impostors**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Serial Killer is an Impostor that has a reduced kill cooldown at the cost of their own life. Once the Serial Killer has their first taste of blood, they must kill again within a set time or be driven crazy by bloodlust and commit suicide.
 
@@ -1498,7 +1499,7 @@ The Serial Killer is an Impostor that has a reduced kill cooldown at the cost of
 
 ### **Team: Impostors**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
 The Neko-Kabocha is an Impostor capable of taking revenge on their killer. If killed by a Sheriff, Jackal, or other player, the killer will die alongside the Neko-Kabocha.
 
@@ -2102,7 +2103,7 @@ an outline or all vents do).
 
 ### **Team: N/A**
 
-Created by [libhalt](https://twitter.com/libhalt)
+作者：[libhalt](https://twitter.com/libhalt)
 
 The Opportunist is a outsider role. So long as they are alive at the end of the game, they win alongside the victorious team. They can choose to side with any team they wish to ensure their own survival.
 
@@ -2110,7 +2111,7 @@ The Opportunist is a outsider role. So long as they are alive at the end of the 
 
 ### **Team: N/A**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
 The GM (Game Master) is an observer role. Their presence has no effect on the game itself, and all players know who the GM is at all times. The GM cannot be targeted by other players, cannot fix sabotages, and cannot vote or be voted for. They are a completely external presence, provided with a range of tools at their disposal to efficiently observe the flow of the game.
 
@@ -2218,7 +2219,7 @@ The Pursuer has tasks (which can already be done while being a Lawyer), that cou
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Plague Doctor is a neutral role whose goal is to infect every living player. They start by choosing one player to infect, after which anyone who spends a set amount of time in range of the infected player becomes infected themselves. Infection progress is cumulative, and does not reset with distance or after meetings.
 
@@ -2230,7 +2231,7 @@ A set period of time after each meeting, players are immune from infection, lett
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Fox is a Neutral role whose goal is to keep themselves hidden from both the Crew and Impostors while completing their own tasks. The Fox is always aware of where any threats are, and has numerous abilities to protect themselves.
 
@@ -2238,82 +2239,83 @@ The Fox is a Neutral role whose goal is to keep themselves hidden from both the 
 
 ### **Team: Neutral**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
 The Immoralist's objective is to support the Fox in any way they can, even if it means sacrificing their own life.
 
-## Fortune Teller
+## 占卜师
 
-### **Team: Crewmate**
+### **船员阵营**
 
-Created by [haoming37](https://github.com/haoming37)
+作者：[haoming37](https://github.com/haoming37)
 
-The Fortune Teller is a Crewmate with the power to divine a single player's role. They start out believing themselves to be an ordinary Crewmate, only awakening to their powers after completing a designated number of tasks.
+占卜师是一名船员角色，最开始他只是普通船员，在完成一定任务后得知自己的身份，跟其他玩家接触达一段时间，可以占卜其他人的身份
 
-## Watcher
+## 窥视者
 
-### **Team: Crewmate or Impostors**
+### **船员阵营或内鬼阵营**
 
-Created by [Virtual_Dusk](https://twitter.com/Virtual_Dusk)
+作者：[Virtual_Dusk](https://twitter.com/Virtual_Dusk)
 
-The Watcher is a player capable of seeing everyone's votes during meetings.
+窥视者是一个能够在会议期间看到每个人投票的玩家。
 </details>
 
-# Installation
-For steam users, you have to follow the following steps.  
-**1.** 安装 the latest release [here](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)  
-**2.** Open up your Steam, right click on Libraries and find your Among Us folder  
-**3.** *REALLY IMPORTANT* Go to the ```common``` directory and copy the whole Among Us folder  
-**4.** Place the folder in whatever place you want and put the zip file you have just 安装ed into it  
-**5.** Unzip the files and double click on ```Among Us.exe```  
-**6.** The first launch will take a while. When the game has been fully launched, you will be able to enjoy the mod!
+# 模组安装
+对于steam用户，您应该遵循以下步骤
+**1.** 安装[最新版本](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)模组
+**2.** 开启你的steam，在Among Us中的设置按钮中选择浏览本地文件
+**3.** *非常重要* 转到```common```文件夹并复制Among Us文件夹
+**4.** 将文件夹复制在你想放在的任何地方，并将你所下载的模组文件压缩包解压至此
+**5.** 允许 ```Among Us.exe```  
+**6.** 首次启动需要一段时间，这是正常的。当游戏完全启动后，您将可以享受此模组带来的一切。
 
-If the installation isn't working, you can try using the [TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/) created by [Fangkuai](https://github.com/FangkuaiYa)
+如果安装不启作用，您可以尝试使用[TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/)作者：[Fangkuai](https://github.com/FangkuaiYa)
 
-# Roles
-For the functionality of the roles in TheOtherRoles GM IA, please take a look at our [Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
+# 职业
+有关于TheOtherRoles GM IA, 请访问我们的[Wiki](https://github.com/dabao40/TheOtherRolesGMIA/wiki)
 
-# The Other Roles GM IA Team
+# The Other Roles GM IA 制作团队
 
-## Developers
+## 开发人员
 - [Imp11](https://github.com/dabao40)  
 - [Among us](https://github.com/XiezibanWrite)
 
-## Artists
+## 美术人员
 - [Fangkuai](https://github.com/FangkuaiYa)
 
-## Translators
+## 翻译人员
 - [LezaiYa](https://github.com/LezaiYa)  
 - [Fangkuai](https://github.com/FangkuaiYa)
 - [yuunozikkyou](https://github.com/yuunozikkyou)
 - [unhappyset](https://github.com/unhappyset)
 - [KS](https://github.com/Ks-777)
+- [TAIKongguo](https://github.com/TAIKgroup/)
 
-# Credits & Resources
+# Credits & 资源
 
-Firstly, credits to The Other Roles, since this mod is based on their developement.  
-Also credits to The Other Roles GM and The Other Roles GM H, for some of the roles are based on their ideas.  
-OxygenFilter - For the versions v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation  
-Reactor - The framework used for all versions before v2.0.0, and again since 4.2.0  
-BepInEx - Used to hook game functions  
-Essentials - Custom game options by DorCoMaNdO:  
+首先，感谢The Other Roles，因为这个模组基于它 
+同时，感谢The Other Roles GM 和 The Other Roles GM H,因为有一些角色是来自它们
+OxygenFilter - 对于版本 v2.3.0 至 v2.6.1, 我们正在使用OxygenFilter用于模组的一些功能
+Reactor - 用于v2.0.0之前以及4.2.0之后的所有版本的框架
+BepInEx - 用于基础的开发框架
+Essentials - 自定义游戏选项来自 DorCoMaNdO:  
 Before v1.6: We used the default Essentials release  
 v1.6-v1.8: We slightly changed the default Essentials.  
-Nebula-On-The-Ship: Partly code of the UIs are from Dolly  
-Four-Han-sinicization-group - Some of the pictures are made by them  
-Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard  
-Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
-Jester - Idea for the Jester role came from Maartii  
-ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.  
+Nebula-On-The-Ship: 部分UI的代码来自 Dolly  
+Four-Han-sinicization-group - 有些照片来自于他们
+Jackal and Sidekick - 豺狼和跟班的最初想法来自Dhalucard  
+Among-Us-Love-Couple-Mod - 恋人副职业的想法来自Woodi-dev  
+Jester - 小丑的想法来自Maartii  
+ExtraRolesAmongUs - 工程师和医生的想法来自NotHunter101.还使用了它们的一些代码片段
 Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev  
-TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.  
-TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose  
-Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottomated  
-Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
-Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
+TooManyRolesMods - 侦探和时间之主的想法来自Hardel-DW.还使用了它们的一些代码片段
+TownOfUs - 换票师、警长、纵火犯等职业的想法来自Slushiegoose  
+Ottomated - 一些内鬼职业的想法来自Ottomated  
+Crowded-Mod - 提升模组等待大厅人数上限的想法来自Crowded Mod
+Goose-Goose-Duck - 秃鹫的想法来自Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-Town-Of-Host-Enhanced - Gradient color (full code)
+Town-Of-Host-Enhanced - 渐变色（完整代码）
 
-# Translation
+# 语言翻译
 
-As of v1.1.0, The Other Roles GM IA now supports translation into other languages. To add a new language, add translations to [Strings.xlsx](/Strings.xlsx) and submit a pull request.
+自The Other Roles GM IA v1.1.0版本启，您可以通过[Strings.xlsx](/Strings.xlsx)中进行语言文件的翻译和添加新的语言，随后您可以发起一个pull request.
