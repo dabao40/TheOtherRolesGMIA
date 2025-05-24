@@ -11,10 +11,12 @@
 <p align="center">
 <a href="https://github.com/dabao40/TheOtherRolesGMIA/releases/"><img src="https://badgen.net/github/release/dabao40/theotherrolesgmia"></a></p>
 
+
+
 **[English](README.md)|简体中文**
 
->[!note]
-  此FDZDME文件由[TAIKongguo](https://github.com/TAIKgroup/)进行了初步翻译
+  >[!note]
+    此FDZDME文件由[TAIKongguo](https://github.com/TAIKgroup/)进行了初步翻译
 
 > [!note]
 > 本模组不隶属于 Among Us 或 Innersloth LLC，其包含的内容也未得到 Innersloth LLC 的认可或以其他方式赞助。\
@@ -2266,11 +2268,17 @@ The Immoralist's objective is to support the Fox in any way they can, even if it
 
 # 模组安装
 对于steam用户，您应该遵循以下步骤
+
 **1.** 安装[最新版本](https://github.com/dabao40/TheOtherRolesGMIA/releases/latest)模组
+
 **2.** 开启你的steam，在Among Us中的设置按钮中选择浏览本地文件
+
 **3.** *非常重要* 转到```common```文件夹并复制Among Us文件夹
+
 **4.** 将文件夹复制在你想放在的任何地方，并将你所下载的模组文件压缩包解压至此
+
 **5.** 允许 ```Among Us.exe```  
+
 **6.** 首次启动需要一段时间，这是正常的。当游戏完全启动后，您将可以享受此模组带来的一切。
 
 如果安装不启作用，您可以尝试使用[TheOtherRolesGMIA-Installer](https://github.com/FangkuaiYa/TheOtherRolesGMIA-Installer/)作者：[Fangkuai](https://github.com/FangkuaiYa)
