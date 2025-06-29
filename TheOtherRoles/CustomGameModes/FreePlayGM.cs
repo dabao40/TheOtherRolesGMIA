@@ -72,7 +72,7 @@ namespace TheOtherRoles.CustomGameModes
 
                         if (r.roleId == RoleId.Fox) {
                             PlayerControl.LocalPlayer.clearAllTasks();
-                            if (Shrine.allShrine?.FirstOrDefault() == null){
+                            if (Shrine.allShrine == null || Shrine.allShrine.Count == 0){
                                 Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
                             }
                             List<Byte> taskIdList = new();

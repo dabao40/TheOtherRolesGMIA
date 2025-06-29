@@ -12,6 +12,7 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Modules;
 using TheOtherRoles.MetaContext;
 using Reactor.Utilities;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace TheOtherRoles
 {
@@ -66,7 +67,6 @@ namespace TheOtherRoles
         public static CustomButton fortuneTellerRightButton;
         public static CustomButton veteranAlertButton;
         public static CustomButton undertakerDragButton;
-        public static CustomButton prophetButton;
         public static CustomButton mimicAAdminButton;
         public static CustomButton mimicAMorphButton;
         public static CustomButton sherlockInvestigateButton;
@@ -89,6 +89,7 @@ namespace TheOtherRoles
         public static CustomButton jekyllAndHydeDrugButton;
         public static CustomButton jekyllAndHydeSuicideButton;
         public static CustomButton teleporterTeleportButton;
+        public static CustomButton detectiveButton;
         public static CustomButton kataomoiButton;
         public static CustomButton kataomoiStalkingButton;
         public static CustomButton kataomoiSearchButton;
@@ -149,7 +150,6 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text cupidLoversText;
         public static TMPro.TMP_Text plagueDoctornumInfectionsText;
         public static TMPro.TMP_Text teleporterNumLeftText;
-        public static TMPro.TMP_Text prophetButtonText;
         public static TMPro.TMP_Text noisemakerButtonText;
         //public static TMPro.TMP_Text trapperChargesText;
         public static TMPro.TMP_Text portalmakerButtonText1;
@@ -204,6 +204,7 @@ namespace TheOtherRoles
             kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
             kataomoiSearchButton.MaxTimer = Kataomoi.searchCooldown;
             vultureEatButton.MaxTimer = Vulture.cooldown;
+            detectiveButton.MaxTimer = Detective.inspectCooldown;
             mediumButton.MaxTimer = Medium.cooldown;
             pursuerButton.MaxTimer = Pursuer.cooldown;
             trackerTrackCorpsesButton.MaxTimer = Tracker.corpsesTrackingCooldown;
@@ -264,7 +265,6 @@ namespace TheOtherRoles
             jekyllAndHydeDrugButton.Timer = 0f;
             akujoHonmeiButton.MaxTimer = 0f;
             akujoBackupButton.MaxTimer = 0f;
-            prophetButton.MaxTimer = Prophet.cooldown;
             foxStealthButton.MaxTimer = Fox.stealthCooldown;
             foxRepairButton.MaxTimer = 0f;
             foxImmoralistButton.MaxTimer = 20f;
@@ -311,6 +311,7 @@ namespace TheOtherRoles
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
             foxStealthButton.EffectDuration = Fox.stealthDuration;
+            detectiveButton.EffectDuration = Detective.inspectDuration;
             buskerButton.EffectDuration = Busker.duration;
             hunterLighterButton.EffectDuration = Hunter.lightDuration;
             hunterArrowButton.EffectDuration = Hunter.ArrowDuration;
@@ -1027,6 +1028,46 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("PathfindText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+
+            detectiveButton = new CustomButton(
+                () =>
+                {
+                    foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask)) {
+                        if (collider2D.tag == "DeadBody") {
+                            DeadBody component = collider2D.GetComponent<DeadBody>();
+                            if (component && !component.Reported) {
+                                Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                                Vector2 truePosition2 = component.TruePosition;
+                                if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false)) {
+                                    NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
+                                    var dp = GameHistory.deadPlayers?.Where(x => x.player?.PlayerId == playerInfo.PlayerId)?.FirstOrDefault();
+                                    if (dp != null && dp.killerIfExisting != null)
+                                        TORGUIManager.Instance.StartCoroutine(Helpers.CoAnimIcon(dp.killerIfExisting).WrapToIl2Cpp());
+                                    Detective.inspectCooldown = detectiveButton.Timer = detectiveButton.MaxTimer;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                },
+                () => { return Detective.detective && PlayerControl.LocalPlayer == Detective.detective && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove && __instance.ReportButton.graphic.color == Palette.EnabledColor; },
+                () =>
+                {
+                    detectiveButton.Timer = detectiveButton.MaxTimer;
+                    detectiveButton.isEffectActive = false;
+                    detectiveButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                },
+                Detective.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                true,
+                Detective.inspectDuration,
+                () => { detectiveButton.Timer = detectiveButton.MaxTimer; },
+                buttonText: ModTranslation.getString("InspectText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
     
             vampireKillButton = new CustomButton(
                 () => {
@@ -1583,43 +1624,6 @@ namespace TheOtherRoles
                 },
                 buttonText: "KICK"
                 );
-
-            prophetButton = new CustomButton(
-                () =>
-                {
-                    if (Prophet.currentTarget != null)
-                    {
-                        Prophet.acTokenEvil.Value.triggered = true;
-                        Prophet.acTokenEvil.Value.cleared &= Helpers.isEvil(Prophet.currentTarget);
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ProphetExamine, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Prophet.currentTarget.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.prophetExamine(Prophet.currentTarget.PlayerId);
-                        if (Prophet.examinesLeft == 0) _ = new StaticAchievementToken("prophet.challenge1");
-                        prophetButton.Timer = prophetButton.MaxTimer;
-                    }
-                },
-                () => { return Prophet.prophet != null && PlayerControl.LocalPlayer == Prophet.prophet && !PlayerControl.LocalPlayer.Data.IsDead && Prophet.examinesLeft > 0; },
-                () =>
-                {
-                    if (prophetButtonText != null)
-                    {
-                        if (Prophet.examinesLeft > 0)
-                            prophetButtonText.text = $"{Prophet.examinesLeft}";
-                        else
-                            prophetButtonText.text = "";
-                    }
-                    return Prophet.currentTarget != null && PlayerControl.LocalPlayer.CanMove;
-                },
-                () => { prophetButton.Timer = prophetButton.MaxTimer; },
-                Prophet.getButtonSprite(),
-                CustomButton.ButtonPositions.lowerRowRight,
-                __instance,
-                KeyCode.F,
-                buttonText: ModTranslation.getString("ProphetText"),
-                abilityTexture: CustomButton.ButtonLabelType.UseButton
-            );
-            prophetButtonText = prophetButton.ShowUsesIcon(3);
 
             blackmailerButton = new CustomButton(
                () => { // Action when Pressed

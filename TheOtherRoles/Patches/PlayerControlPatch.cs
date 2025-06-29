@@ -9,7 +9,6 @@ using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using TheOtherRoles.CustomGameModes;
-using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using Sentry.Internal.Extensions;
 using TheOtherRoles.Modules;
@@ -557,13 +556,6 @@ namespace TheOtherRoles.Patches {
                 Warlock.curseVictimTarget = setTarget(targetingPlayer: Warlock.curseVictim);
                 setPlayerOutline(Warlock.curseVictimTarget, Warlock.color);
             }
-        }
-
-        static void prophetSetTarget()
-        {
-            if (Prophet.prophet == null ||PlayerControl.LocalPlayer != Prophet.prophet) return;
-            Prophet.currentTarget = setTarget();
-            if (Prophet.examinesLeft > 0) setPlayerOutline(Prophet.currentTarget, Prophet.color);
         }
 
         static void plagueDoctorSetTarget()
@@ -1424,25 +1416,6 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        static void prophetUpdate()
-        {
-            if (Prophet.arrows == null) return;
-
-            foreach (var arrow in Prophet.arrows) arrow.arrow.SetActive(false);
-
-            if (Prophet.prophet == null || Prophet.prophet.Data.IsDead) return;
-
-            if (Prophet.isRevealed && Helpers.isKiller(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                if (Prophet.arrows.Count == 0) Prophet.arrows.Add(new Arrow(Prophet.color));
-                if (Prophet.arrows.Count != 0 && Prophet.arrows[0] != null)
-                {
-                    Prophet.arrows[0].arrow.SetActive(true);
-                    Prophet.arrows[0].Update(Prophet.prophet.transform.position);
-                }
-            }
-        }
-
         public static void bomberAUpdate()
         {
             if (PlayerControl.LocalPlayer == BomberA.bomberA)
@@ -1973,7 +1946,7 @@ namespace TheOtherRoles.Patches {
                 HudManagerStartPatch.witchSpellButton.MaxTimer = (Witch.cooldown + Witch.currentCooldownAddition) * multiplier;
                 HudManagerStartPatch.assassinButton.MaxTimer = Assassin.cooldown * multiplier;
                 HudManagerStartPatch.thiefKillButton.MaxTimer = Thief.cooldown * multiplier;
-                HudManagerStartPatch.serialKillerButton.MaxTimer = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 2f : 1f);
+                HudManagerStartPatch.serialKillerButton.EffectDuration = SerialKiller.suicideTimer * (Mini.isGrownUp() ? 1f : 2f);
                 HudManagerStartPatch.schrodingersCatKillButton.MaxTimer = SchrodingersCat.killCooldown * multiplier;
             }
         }
@@ -2157,9 +2130,6 @@ namespace TheOtherRoles.Patches {
                 cupidUpdate();
                 // Blackmailer
                 blackmailerSetTarget();
-                // Prophet
-                prophetSetTarget();
-                prophetUpdate();
                 // Doomsayer
                 doomsayerSetTarget();
                 // Plague Doctor
@@ -2405,6 +2375,27 @@ namespace TheOtherRoles.Patches {
                 Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(deadPlayer, target.transform.position));
             }
 
+            if (Seer.seer != null && PlayerControl.LocalPlayer == Seer.seer && !Seer.seer.Data.IsDead && Seer.canSeeKillTeams) {
+                switch (__instance)
+                {
+                    case var _ when __instance.Data.Role.IsImpostor:
+                        Seer.killTeams.impostor++;
+                        break;
+                    case var _ when __instance == Jackal.jackal || __instance == Sidekick.sidekick || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Jackal):
+                        Seer.killTeams.jackal++;
+                        break;
+                    case var _ when __instance == JekyllAndHyde.jekyllAndHyde || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde):
+                        Seer.killTeams.jekyllAndHyde++;
+                        break;
+                    case var _ when __instance == Moriarty.moriarty || (__instance == SchrodingersCat.schrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Moriarty):
+                        Seer.killTeams.moriarty++;
+                        break;
+                    case var _ when !Helpers.isNeutral(__instance):
+                        Seer.killTeams.crewmate++;
+                        break;
+                }
+            }
+
             // Show flash on bait kill to the killer if enabled
             if (Bait.bait != null && target == Bait.bait)
             {
@@ -2551,7 +2542,7 @@ namespace TheOtherRoles.Patches {
             {
                 _ = new StaticAchievementToken("serialKiller.common1");
                 SerialKiller.serialKiller.SetKillTimerUnchecked(SerialKiller.killCooldown);
-                HudManagerStartPatch.serialKillerButton.Timer = SerialKiller.suicideTimer;
+                HudManagerStartPatch.serialKillerButton.Timer = HudManagerStartPatch.serialKillerButton.EffectDuration;
                 SerialKiller.isCountDown = true;
             }
 

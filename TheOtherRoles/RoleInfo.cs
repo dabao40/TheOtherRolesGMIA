@@ -104,7 +104,6 @@ namespace TheOtherRoles
         public static RoleInfo yasuna = new("niceYasuna", Yasuna.color, RoleId.Yasuna);
         public static RoleInfo taskMaster = new("taskMaster", TaskMaster.color, RoleId.TaskMaster);
         public static RoleInfo teleporter = new("teleporter", Teleporter.color, RoleId.Teleporter);
-        public static RoleInfo prophet = new("prophet", Prophet.color, RoleId.Prophet);
         public static RoleInfo busker = new("busker", Busker.color, RoleId.Busker);
         public static RoleInfo noisemaker = new("noisemaker", Noisemaker.color, RoleId.Noisemaker);
         public static RoleInfo archaeologist = new("archaeologist", Archaeologist.color, RoleId.Archaeologist);
@@ -227,7 +226,6 @@ namespace TheOtherRoles
             yasuna,
             taskMaster,
             teleporter,
-            prophet,
             busker,
             noisemaker,
             archaeologist,
@@ -316,7 +314,6 @@ namespace TheOtherRoles
             if (p == Teleporter.teleporter) infos.Add(teleporter);
             if (p == Cupid.cupid) infos.Add(cupid);
             if (p == Blackmailer.blackmailer) infos.Add(blackmailer);
-            if (p == Prophet.prophet) infos.Add(prophet);
             if (p == Fox.fox) infos.Add(fox);
             if (p == Kataomoi.kataomoi) infos.Add(kataomoi);
             if (p == Immoralist.immoralist) infos.Add(immoralist);
@@ -438,8 +435,6 @@ namespace TheOtherRoles
                         roleName = Helpers.cs(Pursuer.color, ModTranslation.getString("roleInfoBlanked")) + roleName;
                     if (p == FortuneTeller.divineTarget)
                         roleName = Helpers.cs(FortuneTeller.color, ModTranslation.getString("roleInfoDivined")) + roleName;
-                    if (Prophet.examined.ContainsKey(p))
-                        roleName = Helpers.cs(Prophet.color, ModTranslation.getString("roleInfoExamined")) + roleName;
                     if (Witch.futureSpelled.Contains(p) && !MeetingHud.Instance) // This is already displayed in meetings!
                         roleName = Helpers.cs(Witch.color, "☆ ") + roleName;
                     if (BountyHunter.bounty == p)

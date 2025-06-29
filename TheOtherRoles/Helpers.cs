@@ -1,26 +1,29 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Reflection;
-using UnityEngine;
 using System.Linq;
-using static TheOtherRoles.TheOtherRoles;
-using TheOtherRoles.Modules;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using AmongUs.GameOptions;
+using BepInEx.Unity.IL2CPP.Utils;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
-using TheOtherRoles.Utilities;
-using System.Threading.Tasks;
-using TheOtherRoles.CustomGameModes;
 using Reactor.Utilities.Extensions;
-using AmongUs.GameOptions;
-using System.Globalization;
-using TheOtherRoles.Patches;
-using System.Collections;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
-using System.Runtime.InteropServices;
+using Rewired.Utils.Platforms.Windows;
+using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.MetaContext;
-using System.Text;
-using BepInEx.Unity.IL2CPP.Utils;
+using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
+using TheOtherRoles.Patches;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using static TheOtherRoles.TheOtherRoles;
+
 namespace TheOtherRoles
 {
 
@@ -886,9 +889,41 @@ namespace TheOtherRoles
             return filter;
         }
 
+        static public void CloseInternal(this Minigame minigame)
+        {
+            if (minigame.amClosing != Minigame.CloseState.Closing)
+            {
+                if (minigame.CloseSound && Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(minigame.CloseSound, false, 1f, null);
+                if (PlayerControl.LocalPlayer) PlayerControl.HideCursorTemporarily();
+
+                minigame.amClosing = Minigame.CloseState.Closing;
+                minigame.StartCoroutine(minigame.CoDestroySelf());
+            }
+            else
+            {
+                GameObject.Destroy(minigame.gameObject);
+            }
+        }
+
+        static public void BeginInternal(this Minigame minigame, PlayerTask task)
+        {
+            Minigame.Instance = minigame;
+            minigame.MyTask = task;
+            if (task && task.TryGetComponent<NormalPlayerTask>(out var normalTask)) minigame.MyNormTask = normalTask;
+            minigame.timeOpened = Time.realtimeSinceStartup;
+            if (PlayerControl.LocalPlayer)
+            {
+                if (MapBehaviour.Instance) MapBehaviour.Instance.Close();
+                PlayerControl.LocalPlayer.MyPhysics.SetNormalizedVelocity(Vector2.zero);
+            }
+            minigame.TransType = TransitionType.None;
+            minigame.StartCoroutine(minigame.CoAnimateOpen());
+            minigame.CloseSound = ShipStatus.Instance.ShortTasks.First().MinigamePrefab.CloseSound;
+        }
+
         public static RenderTexture SetCameraRenderTexture(this Camera camera, int textureX, int textureY)
         {
-            if (camera.targetTexture) GameObject.Destroy(camera.targetTexture);
+            if (camera.targetTexture) UnityEngine.Object.Destroy(camera.targetTexture);
             camera.targetTexture = new RenderTexture(textureX, textureY, 32, RenderTextureFormat.ARGB32);
 
             return camera.targetTexture;
@@ -1269,6 +1304,91 @@ namespace TheOtherRoles
         {
             text.TargetText = (StringNames)short.MaxValue;
             text.defaultStr = translationKey;
+        }
+
+        public static PlayerDisplay GetPlayerDisplay()
+        {
+            AmongUsClient.Instance.PlayerPrefab.gameObject.SetActive(false);
+            var display = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab.gameObject);
+            AmongUsClient.Instance.PlayerPrefab.gameObject.SetActive(true);
+
+            UnityEngine.Object.Destroy(display.GetComponent<PlayerControl>());
+            UnityEngine.Object.Destroy(display.GetComponent<PlayerPhysics>());
+            UnityEngine.Object.Destroy(display.GetComponent<Rigidbody2D>());
+            UnityEngine.Object.Destroy(display.GetComponent<CircleCollider2D>());
+            UnityEngine.Object.Destroy(display.GetComponent<CustomNetworkTransform>());
+            UnityEngine.Object.Destroy(display.GetComponent<BoxCollider2D>());
+            UnityEngine.Object.Destroy(display.GetComponent<DummyBehaviour>());
+            UnityEngine.Object.Destroy(display.GetComponent<AudioSource>());
+            UnityEngine.Object.Destroy(display.GetComponent<PassiveButton>());
+            UnityEngine.Object.Destroy(display.GetComponent<HnSImpostorScreamSfx>());
+
+            display.gameObject.SetActive(true);
+
+            return display.AddComponent<PlayerDisplay>();
+        }
+
+        public static void ForEachAllChildren(this GameObject gameObject, Action<GameObject> todo)
+        {
+            gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((obj) => {
+                todo.Invoke(obj);
+                obj.ForEachAllChildren(todo);
+            }));
+        }
+
+        public static IEnumerator CoAnimIcon(PlayerControl target)
+        {
+            var holder = CreateObject("AnimHolder", HudManager.Instance.transform, new(0f, -1.85f, -10f));
+
+            var display = GetPlayerDisplay();
+            display.transform.SetParent(holder.transform);
+            display.transform.localPosition = new(0.4f, -0.2f, -1f);
+            display.transform.localScale = new(0.45f, 0.45f, 1f);
+            display.gameObject.ForEachAllChildren(obj => obj.layer = LayerMask.NameToLayer("UI"));
+            display.Cosmetics.SetColor(6);
+            display.Animations.PlayRunAnimation();
+
+            var currentBody = display.Cosmetics.currentBodySprite.BodySprite;
+
+            var arrow = CreateObject<SpriteRenderer>("Arrow", holder.transform, new(0f, 0f, -0.5f));
+            arrow.sprite = Detective.detectiveIcon.GetSprite();
+
+            Color arrowNormalColor = new(0.25f, 0.4f, 0.7f);
+
+            float p = 0f;
+            while (p < 1f)
+            {
+                currentBody.color = Color.white.AlphaMultiplied(p);
+                arrow.color = arrowNormalColor.AlphaMultiplied(p);
+                p += Time.deltaTime / 0.35f;
+                yield return null;
+            }
+
+            yield return Effects.Wait(0.12f);
+
+            SpriteRenderer additionalRenderer = null;
+            p = 0f;
+            while (p < Detective.inspectDuration && !MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                if (target == null) break;
+                Vector2 del = target.transform.position - FindCamera(LayerMask.NameToLayer("UI")).transform.position;
+                arrow.transform.localScale = Vector3.one;
+                arrow.transform.localEulerAngles = new(0f, 0f, Mathf.Atan2(del.y, del.x) * 180f / Mathf.PI);
+                p += Time.deltaTime;
+                yield return null;
+            }
+
+            p = 0f;
+            while (p < 1f)
+            {
+                currentBody.color = Color.white.AlphaMultiplied(1f - p);
+                arrow.color = arrowNormalColor.AlphaMultiplied(1f - p);
+                if (additionalRenderer != null) additionalRenderer.color = Color.white.AlphaMultiplied(1f - p);
+                p += Time.deltaTime / 0.8f;
+                yield return null;
+            }
+
+            GameObject.Destroy(holder.gameObject);
         }
 
         public static R GetRolePrefab<R>() where R : RoleBehaviour

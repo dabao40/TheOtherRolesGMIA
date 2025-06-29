@@ -391,7 +391,7 @@ namespace TheOtherRoles.Patches {
             // Add Electrical
             FungleAdditionalElectrical.CreateElectrical();
 
-            if (CustomOptionHolder.foxSpawnRate.getSelection() > 0)
+            if (CustomOptionHolder.foxSpawnRate.getSelection() > 0 && (Shrine.allShrine == null || Shrine.allShrine.Count == 0))
             {
                 Shrine.activateShrines(GameOptionsManager.Instance.currentNormalGameOptions.MapId);
                 List<Byte> taskIdList = new();
