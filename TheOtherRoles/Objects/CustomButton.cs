@@ -131,9 +131,9 @@ namespace TheOtherRoles.Objects {
                     byte[] buff = new byte[sizeof(float) * 2];
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SherlockReceiveDetect, Hazel.SendOption.Reliable);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SherlockReceiveDetect, Hazel.SendOption.Reliable);
                     writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.sherlockReceiveDetect(buff);
                 }
             }

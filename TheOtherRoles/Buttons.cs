@@ -1171,9 +1171,9 @@ namespace TheOtherRoles
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceGarlic, Hazel.SendOption.Reliable);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceGarlic, Hazel.SendOption.Reliable);
                     writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.placeGarlic(buff);
                     SoundEffectsManager.play("garlic");
                 },
@@ -1198,9 +1198,9 @@ namespace TheOtherRoles
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlacePortal, Hazel.SendOption.Reliable);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlacePortal, Hazel.SendOption.Reliable);
                     writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.placePortal(buff);
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
@@ -1811,9 +1811,9 @@ namespace TheOtherRoles
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
                     Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceJackInTheBox, Hazel.SendOption.Reliable);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceJackInTheBox, Hazel.SendOption.Reliable);
                     writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.placeJackInTheBox(buff);
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
@@ -1982,9 +1982,9 @@ namespace TheOtherRoles
                     if (SecurityGuard.ventTarget != null) { // Seal vent
                         SecurityGuard.acTokenCommon.Value.vent = true;
 
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SealVent, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SealVent, Hazel.SendOption.Reliable);
                         writer.WritePacked(SecurityGuard.ventTarget.Id);
-                        writer.EndMessage();
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.sealVent(SecurityGuard.ventTarget.Id);
                         SecurityGuard.ventTarget = null;
                         
@@ -2003,10 +2003,10 @@ namespace TheOtherRoles
                             roomId = (byte)SystemTypes.Outside;
                         }
 
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceCamera, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceCamera, Hazel.SendOption.Reliable);
                         writer.WriteBytesAndSize(buff);
                         writer.Write(roomId);
-                        writer.EndMessage();
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.placeCamera(buff, roomId); 
                     }
                     SoundEffectsManager.play("securityGuardPlaceCam");  // Same sound used for both types (cam or vent)!
@@ -3405,9 +3405,9 @@ namespace TheOtherRoles
                     if (Yoyo.markedLocation == null)
                     {
                         TheOtherRolesPlugin.Logger.LogMessage($"marked location is null in button press");
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoMarkLocation, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoMarkLocation, Hazel.SendOption.Reliable);
                         writer.WriteBytesAndSize(buff);
-                        writer.EndMessage();
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.yoyoMarkLocation(buff);
                         SoundEffectsManager.play("tricksterPlaceBox");
                         yoyoButton.Sprite = Yoyo.getBlinkButtonSprite();
@@ -3425,10 +3425,10 @@ namespace TheOtherRoles
                         {
                             SubmergedCompatibility.ChangeFloor(exit.y > -7);
                         }
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
                         writer.Write(Byte.MaxValue);
                         writer.WriteBytesAndSize(buff);
-                        writer.EndMessage();
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.yoyoBlink(true, buff);
                         yoyoButton.EffectDuration = Yoyo.blinkDuration;
                         yoyoButton.Timer = 10f;
@@ -3482,10 +3482,10 @@ namespace TheOtherRoles
                     {
                         SubmergedCompatibility.ChangeFloor(exit.y > -7);
                     }
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
                     writer.Write((byte)0);
                     writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.yoyoBlink(false, buff);
 
                     yoyoButton.Timer = yoyoButton.MaxTimer;
@@ -4119,9 +4119,9 @@ namespace TheOtherRoles
                             Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                             Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                            writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
+                            writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
                             writer.WriteBytesAndSize(buff);
-                            writer.EndMessage();
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
                             RPCProcedure.placeAssassinTrace(buff);
 
                             /*MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetInvisible, Hazel.SendOption.Reliable, -1);
@@ -4148,7 +4148,7 @@ namespace TheOtherRoles
                             Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                             Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                            MessageWriter writer3 = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
+                            MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
                             writer3.WriteBytesAndSize(buff);
                             writer3.EndMessage();
                             RPCProcedure.placeAssassinTrace(buff);
@@ -4243,9 +4243,9 @@ namespace TheOtherRoles
                 Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                 Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTrap, Hazel.SendOption.Reliable);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTrap, Hazel.SendOption.Reliable);
                 writer.WriteBytesAndSize(buff);
-                writer.EndMessage();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.setTrap(buff);
 
                 SoundEffectsManager.play("trapperTrap");
@@ -4272,9 +4272,9 @@ namespace TheOtherRoles
                         Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
                         Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
 
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceBomb, Hazel.SendOption.Reliable);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceBomb, Hazel.SendOption.Reliable);
                         writer.WriteBytesAndSize(buff);
-                        writer.EndMessage();
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.placeBomb(buff);
 
                         SoundEffectsManager.play("trapperTrap");
