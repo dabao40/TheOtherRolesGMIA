@@ -29,6 +29,8 @@ namespace TheOtherRoles.Modules
         public static List<(byte, bool)> alreadyPicked = new();
         public static IEnumerator CoSelectRoles(IntroCutscene __instance)
         {
+            if (!isEnabled) yield break;
+
             isRunning = true;
             SoundEffectsManager.play("GMIATheme", volume: 1f, true, true);
             alreadyPicked.Clear();

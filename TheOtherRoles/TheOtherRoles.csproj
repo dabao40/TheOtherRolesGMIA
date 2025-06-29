@@ -29,10 +29,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.3.25" />
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.733" />
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.4.15" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" />
 		<PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
-        <PackageReference Include="Reactor" Version="2.4.0-ci.344" />
+        <PackageReference Include="Reactor" Version="2.5.0-ci.371" />
     </ItemGroup>
    
     <Target Name="Date" BeforeTargets="BeforeBuild">  <!--Will make the compile time available s.t. we can let betas expire-->

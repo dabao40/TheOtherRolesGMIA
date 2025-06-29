@@ -19,8 +19,8 @@ namespace TheOtherRoles.Modules;
 
 public class BepInExUpdater : MonoBehaviour
 {
-    public const string RequiredBepInExVersion = "6.0.0-be.733+995f04991b2b5ace4ddef07e12c3e99d4b2766a6";
-    public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/733/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.733%2B995f049.zip";
+    public const string RequiredBepInExVersion = "6.0.0-be.735+5fef3570f212b2fb5fbe9c1d20487c13c2fa90cb";
+    public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/735/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.735%2B5fef357.zip";
     public static bool UpdateRequired => Paths.BepInExVersion.ToString() != RequiredBepInExVersion;
 
     public void Awake()

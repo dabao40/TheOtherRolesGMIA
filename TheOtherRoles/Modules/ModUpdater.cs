@@ -273,20 +273,16 @@ namespace TheOtherRoles.Modules
 
             JToken assets = data.Request["assets"];
             string downloadURI = "";
-            if (Helpers.isChinese()) downloadURI = "https://dl.fangkuai.fun/ModFiles/TheOtherRolesGMIA/TheOtherRoles.dll";
-            else
+            for (JToken current = assets.First; current != null; current = current.Next)
             {
-                for (JToken current = assets.First; current != null; current = current.Next)
+                string browser_download_url = current["browser_download_url"]?.ToString();
+                if (browser_download_url != null && current["content_type"] != null)
                 {
-                    string browser_download_url = current["browser_download_url"]?.ToString();
-                    if (browser_download_url != null && current["content_type"] != null)
+                    if (current["content_type"].ToString().Equals("application/x-msdownload") &&
+                        browser_download_url.EndsWith(".dll"))
                     {
-                        if (current["content_type"].ToString().Equals("application/x-msdownload") &&
-                            browser_download_url.EndsWith(".dll"))
-                        {
-                            downloadURI = browser_download_url;
-                            break;
-                        }
+                        downloadURI = Helpers.isChinese() ? "https://ghproxy.fangkuai.fun/" + browser_download_url : browser_download_url;
+                        break;
                     }
                 }
             }

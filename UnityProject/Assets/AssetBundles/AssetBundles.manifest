@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 3912287515
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: audio
+      Dependencies: {}
+    Info_1:
+      Name: shaderassets
+      Dependencies: {}
