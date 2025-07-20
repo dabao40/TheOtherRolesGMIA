@@ -155,7 +155,7 @@ namespace TheOtherRoles.Patches {
                 else return;
 
                 // fade in and out:
-                float alpha = Mathf.Clamp01(Mathf.Min(new float[] { timer, maxTimer - timer }));
+                float alpha = Mathf.Clamp01(Mathf.Min([timer, maxTimer - timer]));
                 if (motds.Count == 1) alpha = 1;
                 LogoPatch.motdText.color = LogoPatch.motdText.color.SetAlpha(alpha);
                 timer -= Time.deltaTime;

@@ -5,10 +5,10 @@ using UnityEngine;
 using HarmonyLib;
 using TMPro;
 using TheOtherRoles.Modules;
-using TheOtherRoles;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
 using Hazel;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Objects
 {
@@ -123,7 +123,7 @@ namespace TheOtherRoles.Objects
                     sb.Append("<color=#FFFF00FF>");
                 }
             }
-            if (PlayerControl.LocalPlayer == Fox.fox)
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Fox))
             {
                 if (Fox.taskType == Fox.TaskType.Serial)
                 {

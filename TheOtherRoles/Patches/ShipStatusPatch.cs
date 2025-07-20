@@ -7,6 +7,7 @@ using UnityEngine;
 using TheOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
 using Hazel;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Patches {
 
@@ -28,7 +29,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // If player is Lighter with ability active
-            if (Lighter.lighter != null && Lighter.lighter.PlayerId == player.PlayerId) {
+            if (Lighter.allPlayers.Any(x => x.PlayerId == player.PlayerId)) {
                 float unlerped = Mathf.InverseLerp(__instance.MinLightRadius, __instance.MaxLightRadius, GetNeutralLightRadius(__instance, false));
                 __result = Mathf.Lerp(__instance.MaxLightRadius * Lighter.lighterModeLightsOffVision, __instance.MaxLightRadius * Lighter.lighterModeLightsOnVision, unlerped);
             }
@@ -40,7 +41,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // If there is a Trickster with their ability active
-            else if (Trickster.trickster != null && Trickster.lightsOutTimer > 0f) {
+            else if (Trickster.allPlayers.Count > 0 && Trickster.lightsOutTimer > 0f) {
                 float lerpValue = 1f;
                 if (Trickster.lightsOutDuration - Trickster.lightsOutTimer < 0.5f) {
                     lerpValue = Mathf.Clamp01((Trickster.lightsOutDuration - Trickster.lightsOutTimer) * 2);
@@ -52,7 +53,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // If player is Lawyer, apply Lawyer vision modifier
-            else if (Lawyer.lawyer != null && Lawyer.lawyer.PlayerId == player.PlayerId) {
+            else if (Lawyer.allPlayers.Any(x => x.PlayerId == player.PlayerId)) {
                 float unlerped = Mathf.InverseLerp(__instance.MinLightRadius, __instance.MaxLightRadius, GetNeutralLightRadius(__instance, false));
                 __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius * Lawyer.vision, unlerped);
                 return false;

@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TheOtherRoles.Modules;
-using TheOtherRoles;
 using static TheOtherRoles.TheOtherRoles;
 using System;
 using TheOtherRoles.MetaContext;
 using System.Collections;
 using Il2CppSystem.Collections;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Objects
 {

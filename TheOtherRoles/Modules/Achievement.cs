@@ -111,7 +111,7 @@ namespace TheOtherRoles.Modules
 
         public void Load()
         {
-            string dataPathTo = FileIO.GetDataPathTo(new string[] { filename });
+            string dataPathTo = FileIO.GetDataPathTo([filename]);
 
             if (!FileIO.Exists(dataPathTo)) return;
 
@@ -131,7 +131,7 @@ namespace TheOtherRoles.Modules
             {
                 strContents += entry.Key + ":" + entry.Value + "\n";
             }
-            FileIO.WriteAllText(FileIO.GetDataPathTo(new string[] { filename }), strContents);
+            FileIO.WriteAllText(FileIO.GetDataPathTo([filename]), strContents);
         }
     }
 
@@ -231,53 +231,6 @@ namespace TheOtherRoles.Modules
             this.Trophy = trophy;
             this.entry = new IntegerDataEntry("a." + hashedKey, AchievementDataSaver, 0);
             RegisterAchievement(this, key);
-        }
-
-        /// <summary>
-        /// Activates the achievements after roles are set
-        /// </summary>
-        public static void onAchievementStart()
-        {
-            Mayor.onAchievementActivate();
-            Portalmaker.onAchievementActivate();
-            Engineer.onAchievementActivate();
-            Sheriff.onAchievementActivate();
-            Shifter.niceShifterOnAchievementActivate();
-            Bait.onAchievementActivate();
-            Detective.onAchievementActivate();
-            Medic.onAchievementActivate();
-            Swapper.niceSwapperOnAchievementActivate();
-            Seer.onAchievementActivate();
-            Tracker.onAchievementActivate();
-            SecurityGuard.onAchievementActivate();
-            Medium.onAchievementActivate();
-            FortuneTeller.onAchievementActivate();
-            Sprinter.onAchievementActivate();
-            Sherlock.onAchievementActivate();
-            Yasuna.yasunaOnAchievementActivate();
-            Teleporter.onAchievementActivate();
-            Busker.onAchievementActivate();
-            Morphling.onAchievementActivate();
-            Camouflager.onAchievementActivate();
-            Vampire.onAchievementActivate();
-            Eraser.onAchievementActivate();
-            Trickster.onAchievementActivate();
-            Cleaner.onAchievementActivate();
-            Warlock.onAchievementActivate();
-            BountyHunter.onAchievementActivate();
-            Witch.onAchievementActivate();
-            Assassin.onAchievementActivate();
-            Ninja.onAchievementActivate();
-            EvilHacker.onAchievementActivate();
-            Guesser.evilGuesserOnAchievementActivate();
-            Guesser.niceGuesserOnAchievementActivate();
-            Noisemaker.onAchievementActivate();
-            Swapper.evilSwapperOnAchievementActivate();
-            Trapper.onAchievementActivate();
-            Blackmailer.onAchievementActivate();
-            Yasuna.evilYasunaOnAcheivementActivate();
-            MimicK.onAchievementActivate();
-            MimicA.onAchievementActivate();
         }
 
         public bool IsHidden

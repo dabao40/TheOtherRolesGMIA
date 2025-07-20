@@ -225,10 +225,10 @@ namespace TheOtherRoles.Objects
 
                 HudManager.Instance.StartCoroutine(Effects.Sequence(
                     new Il2CppReferenceArray<Il2CppSystem.Collections.IEnumerator>(
-                        new Il2CppSystem.Collections.IEnumerator[] {
+                        [
                         updater.WrapToIl2Cpp(),
                         getDestroyer().WrapToIl2Cpp()
-                        }
+                        ]
                     )));
             }
         }

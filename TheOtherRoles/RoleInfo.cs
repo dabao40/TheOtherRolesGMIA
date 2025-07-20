@@ -6,6 +6,7 @@ using UnityEngine;
 using TheOtherRoles.Utilities;
 using TheOtherRoles.CustomGameModes;
 using Reactor.Networking;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles
 {
@@ -115,7 +116,6 @@ namespace TheOtherRoles
         public static RoleInfo plagueDoctor = new("plagueDoctor", PlagueDoctor.color, RoleId.PlagueDoctor, true);
         public static RoleInfo jekyllAndHyde = new("jekyllAndHyde", JekyllAndHyde.color, RoleId.JekyllAndHyde, true);
         public static RoleInfo cupid = new("cupid", Cupid.color, RoleId.Cupid, true);
-        public static RoleInfo cupidLover = new("lover", Cupid.color, RoleId.Lover, false, true);
         public static RoleInfo fox = new("fox", Fox.color, RoleId.Fox, true);
         public static RoleInfo immoralist = new("immoralist", Immoralist.color, RoleId.Immoralist, true);
         public static RoleInfo schrodingersCat = new("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
@@ -238,12 +238,11 @@ namespace TheOtherRoles
             vip,
             invert,
             chameleon,
-            armored,
-            cupidLover
+            armored
             //shifter, 
         };
 
-        public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false) {
+        public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false, RoleId[] excludeRoles = null) {
             List<RoleInfo> infos = new();
             if (p == null) return infos;
 
@@ -252,12 +251,10 @@ namespace TheOtherRoles
                 // after dead modifier
                 if (!CustomOptionHolder.modifiersAreHidden.getBool() || PlayerControl.LocalPlayer.Data.IsDead || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended)
                 {
-                    //if (Bait.bait.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bait);
                     if (Bloody.bloody.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bloody);
                     if (Vip.vip.Any(x => x.PlayerId == p.PlayerId)) infos.Add(vip);
                 }
-                if (p == Lovers.lover1 || p == Lovers.lover2) infos.Add(lover);
-                if (Cupid.lovers1 != null && Cupid.lovers2 != null && (p == Cupid.lovers2 || p == Cupid.lovers1)) infos.Add(cupidLover);
+                if (p.isLovers()) infos.Add(lover);
                 if (p == Tiebreaker.tiebreaker) infos.Add(tiebreaker);
                 if (AntiTeleport.antiTeleport.Any(x => x.PlayerId == p.PlayerId)) infos.Add(antiTeleport);
                 if (Sunglasses.sunglasses.Any(x => x.PlayerId == p.PlayerId)) infos.Add(sunglasses);
@@ -271,58 +268,57 @@ namespace TheOtherRoles
             int count = infos.Count;  // Save count after modifiers are added so that the role count can be checked
 
             // Special roles
-            if (p == Jester.jester) infos.Add(jester);
-            if (p == Mayor.mayor) infos.Add(mayor);
-            if (p == Portalmaker.portalmaker) infos.Add(portalmaker);
-            if (p == Engineer.engineer) infos.Add(engineer);
-            if (p == Sheriff.sheriff || p == Sheriff.formerSheriff) infos.Add(sheriff);
-            if (p == Deputy.deputy) infos.Add(deputy);
-            if (p == Lighter.lighter) infos.Add(lighter);
-            if (p == Godfather.godfather) infos.Add(godfather);
-            if (p == Mafioso.mafioso) infos.Add(mafioso);
-            if (p == Janitor.janitor) infos.Add(janitor);
-            if (p == Morphling.morphling) infos.Add(morphling);
-            if (p == Camouflager.camouflager) infos.Add(camouflager);
-            if (p == Vampire.vampire) infos.Add(vampire);
-            if (p == Eraser.eraser) infos.Add(eraser);
-            if (p == Trickster.trickster) infos.Add(trickster);
-            if (p == Cleaner.cleaner) infos.Add(cleaner);
-            if (p == Warlock.warlock) infos.Add(warlock);
-            if (p == Witch.witch) infos.Add(witch);
-            if (p == Assassin.assassin) infos.Add(assassin);
-            //if (p == Bomber.bomber) infos.Add(bomber);
-            if (p == Detective.detective) infos.Add(detective);
-            if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
-            if (p == Medic.medic) infos.Add(medic);
-            if (p == Swapper.swapper) infos.Add(p.Data.Role.IsImpostor ? evilSwapper : niceSwapper);
-            if (p == Seer.seer) infos.Add(seer);
-            if (p == Hacker.hacker) infos.Add(hacker);
-            if (p == Tracker.tracker) infos.Add(tracker);
-            if (p == Snitch.snitch) infos.Add(snitch);
-            if (p == Jackal.jackal || (Jackal.formerJackals != null && Jackal.formerJackals.Any(x => x.PlayerId == p.PlayerId))) infos.Add(jackal);
-            if (p == Sidekick.sidekick) infos.Add(sidekick);
-            if (p == Spy.spy) infos.Add(spy);
-            if (p == SecurityGuard.securityGuard) infos.Add(securityGuard);
-            if (p == Bait.bait) infos.Add(bait);
-            if (p == Veteran.veteran) infos.Add(veteran);
-            if (p == Sherlock.sherlock) infos.Add(sherlock);
-            if (p == Sprinter.sprinter) infos.Add(sprinter);
-            if (p == Yasuna.yasuna) infos.Add(p.Data.Role.IsImpostor ? evilYasuna : yasuna);
-            if (p == Moriarty.moriarty || p == Moriarty.formerMoriarty) infos.Add(moriarty);
-            if (p == JekyllAndHyde.jekyllAndHyde || p == JekyllAndHyde.formerJekyllAndHyde) infos.Add(jekyllAndHyde);
-            if (p == Akujo.akujo) infos.Add(akujo);
-            if (p == Teleporter.teleporter) infos.Add(teleporter);
-            if (p == Cupid.cupid) infos.Add(cupid);
-            if (p == Blackmailer.blackmailer) infos.Add(blackmailer);
-            if (p == Fox.fox) infos.Add(fox);
-            if (p == Kataomoi.kataomoi) infos.Add(kataomoi);
-            if (p == Immoralist.immoralist) infos.Add(immoralist);
-            if (p == Busker.busker) infos.Add(busker);
-            if (p == Noisemaker.noisemaker) infos.Add(noisemaker);
-            if (p == Archaeologist.archaeologist) infos.Add(archaeologist);
-            if (p == Yoyo.yoyo) infos.Add(yoyo);
-            if (p == Doomsayer.doomsayer) infos.Add(doomsayer);
-            if (p == FortuneTeller.fortuneTeller)
+            if (p.isRole(RoleId.Jester)) infos.Add(jester);
+            if (p.isRole(RoleId.Mayor)) infos.Add(mayor);
+            if (p.isRole(RoleId.Portalmaker)) infos.Add(portalmaker);
+            if (p.isRole(RoleId.Engineer)) infos.Add(engineer);
+            if (p.isRole(RoleId.Sheriff)) infos.Add(sheriff);
+            if (p.isRole(RoleId.Deputy)) infos.Add(deputy);
+            if (p.isRole(RoleId.Lighter)) infos.Add(lighter);
+            if (p.isRole(RoleId.Godfather)) infos.Add(godfather);
+            if (p.isRole(RoleId.Mafioso)) infos.Add(mafioso);
+            if (p.isRole(RoleId.Janitor)) infos.Add(janitor);
+            if (p.isRole(RoleId.Morphling)) infos.Add(morphling);
+            if (p.isRole(RoleId.Camouflager)) infos.Add(camouflager);
+            if (p.isRole(RoleId.Vampire)) infos.Add(vampire);
+            if (p.isRole(RoleId.Eraser)) infos.Add(eraser);
+            if (p.isRole(RoleId.Trickster)) infos.Add(trickster);
+            if (p.isRole(RoleId.Cleaner)) infos.Add(cleaner);
+            if (p.isRole(RoleId.Warlock)) infos.Add(warlock);
+            if (p.isRole(RoleId.Witch)) infos.Add(witch);
+            if (p.isRole(RoleId.Assassin)) infos.Add(assassin);
+            if (p.isRole(RoleId.Detective)) infos.Add(detective);
+            if (p.isRole(RoleId.TimeMaster)) infos.Add(timeMaster);
+            if (p.isRole(RoleId.Medic)) infos.Add(medic);
+            if (p.isRole(RoleId.Swapper)) infos.Add(p.Data.Role.IsImpostor ? evilSwapper : niceSwapper);
+            if (p.isRole(RoleId.Seer)) infos.Add(seer);
+            if (p.isRole(RoleId.Hacker)) infos.Add(hacker);
+            if (p.isRole(RoleId.Tracker)) infos.Add(tracker);
+            if (p.isRole(RoleId.Snitch)) infos.Add(snitch);
+            if (p.isRole(RoleId.Jackal)) infos.Add(jackal);
+            if (p.isRole(RoleId.Sidekick)) infos.Add(sidekick);
+            if (p.isRole(RoleId.Spy)) infos.Add(spy);
+            if (p.isRole(RoleId.SecurityGuard)) infos.Add(securityGuard);
+            if (p.isRole(RoleId.Bait)) infos.Add(bait);
+            if (p.isRole(RoleId.Veteran)) infos.Add(veteran);
+            if (p.isRole(RoleId.Sherlock)) infos.Add(sherlock);
+            if (p.isRole(RoleId.Sprinter)) infos.Add(sprinter);
+            if (Yasuna.isYasuna(p.PlayerId)) infos.Add(p.Data.Role.IsImpostor ? evilYasuna : yasuna);
+            if (p.isRole(RoleId.Moriarty)) infos.Add(moriarty);
+            if (p.isRole(RoleId.JekyllAndHyde)) infos.Add(jekyllAndHyde);
+            if (p.isRole(RoleId.Akujo)) infos.Add(akujo);
+            if (p.isRole(RoleId.Teleporter)) infos.Add(teleporter);
+            if (p.isRole(RoleId.Cupid)) infos.Add(cupid);
+            if (p.isRole(RoleId.Blackmailer)) infos.Add(blackmailer);
+            if (p.isRole(RoleId.Fox)) infos.Add(fox);
+            if (p.isRole(RoleId.Kataomoi)) infos.Add(kataomoi);
+            if (p.isRole(RoleId.Immoralist)) infos.Add(immoralist);
+            if (p.isRole(RoleId.Busker)) infos.Add(busker);
+            if (p.isRole(RoleId.Noisemaker)) infos.Add(noisemaker);
+            if (p.isRole(RoleId.Archaeologist)) infos.Add(archaeologist);
+            if (p.isRole(RoleId.Yoyo)) infos.Add(yoyo);
+            if (p.isRole(RoleId.Doomsayer)) infos.Add(doomsayer);
+            if (p.isRole(RoleId.FortuneTeller))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
                 {
@@ -334,40 +330,38 @@ namespace TheOtherRoles
                     infos.Add(info);
                 }
             }
-            if (p == TaskMaster.taskMaster)
+            if (p.isRole(RoleId.TaskMaster))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden || !TaskMaster.becomeATaskMasterWhenCompleteAllTasks) infos.Add(taskMaster);
                 else infos.Add(TaskMaster.isTaskComplete ? taskMaster : crewmate);
             }
-            if (p == PlagueDoctor.plagueDoctor) infos.Add(plagueDoctor);
-            if (p == SchrodingersCat.schrodingersCat || p == SchrodingersCat.formerSchrodingersCat) infos.Add(!SchrodingersCat.hideRole || includeHidden || PlayerControl.LocalPlayer.Data.IsDead
+            if (p.isRole(RoleId.PlagueDoctor)) infos.Add(plagueDoctor);
+            if (p.isRole(RoleId.SchrodingersCat)) infos.Add(!SchrodingersCat.hideRole || includeHidden || PlayerControl.LocalPlayer.Data.IsDead
                 || SchrodingersCat.hasTeam() || SchrodingersCat.tasksComplete(PlayerControl.LocalPlayer) ? schrodingersCat : crewmate);
-            if (p == Opportunist.opportunist) infos.Add(opportunist);
-            if (p == Shifter.shifter) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
-            if (p == Arsonist.arsonist) infos.Add(arsonist);
-            if (p == Guesser.niceGuesser) infos.Add(goodGuesser);
-            if (p == Guesser.evilGuesser) infos.Add(badGuesser);
-            if (p == Watcher.nicewatcher) infos.Add(niceWatcher);
-            if (p == Watcher.evilwatcher) infos.Add(evilWatcher);
-            if (p == BountyHunter.bountyHunter) infos.Add(bountyHunter);
-            if (p == Ninja.ninja) infos.Add(ninja);
-            if (p == NekoKabocha.nekoKabocha) infos.Add(nekoKabocha);
-            if (p == SerialKiller.serialKiller) infos.Add(serialKiller);
-            if (p == EvilTracker.evilTracker) infos.Add(evilTracker);
-            if (p == EvilHacker.evilHacker) infos.Add(evilHacker);
-            if (p == Undertaker.undertaker) infos.Add(undertaker);
-            if (p == Trapper.trapper) infos.Add(trapper);
-            if (p == MimicK.mimicK) infos.Add(mimicK);
-            if (p == MimicA.mimicA) infos.Add(mimicA);
-            if (p == BomberA.bomberA) infos.Add(bomberA);
-            if (p == BomberB.bomberB) infos.Add(bomberB);
-            if (p == Vulture.vulture) infos.Add(vulture);
-            if (p == Medium.medium) infos.Add(medium);
-            if (p == Lawyer.lawyer) infos.Add(lawyer); // && !Lawyer.isProsecutor
-            //if (p == Lawyer.lawyer && Lawyer.isProsecutor) infos.Add(prosecutor);
-            //if (p == Trapper.trapper) infos.Add(trapper);
-            if (p == Pursuer.pursuer) infos.Add(pursuer);
-            if (p == Thief.thief) infos.Add(thief);
+            if (p.isRole(RoleId.Opportunist)) infos.Add(opportunist);
+            if (p.isRole(RoleId.Shifter)) infos.Add(Shifter.isNeutral ? chainshifter : niceshifter);
+            if (p.isRole(RoleId.Arsonist)) infos.Add(arsonist);
+            if (p.isRole(RoleId.NiceGuesser)) infos.Add(goodGuesser);
+            if (p.isRole(RoleId.EvilGuesser)) infos.Add(badGuesser);
+            if (p.isRole(RoleId.NiceWatcher)) infos.Add(niceWatcher);
+            if (p.isRole(RoleId.EvilWatcher)) infos.Add(evilWatcher);
+            if (p.isRole(RoleId.BountyHunter)) infos.Add(bountyHunter);
+            if (p.isRole(RoleId.Ninja)) infos.Add(ninja);
+            if (p.isRole(RoleId.NekoKabocha)) infos.Add(nekoKabocha);
+            if (p.isRole(RoleId.SerialKiller)) infos.Add(serialKiller);
+            if (p.isRole(RoleId.EvilTracker)) infos.Add(evilTracker);
+            if (p.isRole(RoleId.EvilHacker)) infos.Add(evilHacker);
+            if (p.isRole(RoleId.Undertaker)) infos.Add(undertaker);
+            if (p.isRole(RoleId.Trapper)) infos.Add(trapper);
+            if (p.isRole(RoleId.MimicK)) infos.Add(mimicK);
+            if (p.isRole(RoleId.MimicA)) infos.Add(mimicA);
+            if (p.isRole(RoleId.BomberA)) infos.Add(bomberA);
+            if (p.isRole(RoleId.BomberB)) infos.Add(bomberB);
+            if (p.isRole(RoleId.Vulture)) infos.Add(vulture);
+            if (p.isRole(RoleId.Medium)) infos.Add(medium);
+            if (p.isRole(RoleId.Lawyer)) infos.Add(lawyer);
+            if (p.isRole(RoleId.Pursuer)) infos.Add(pursuer);
+            if (p.isRole(RoleId.Thief)) infos.Add(thief);
 
             // Default roles (just impostor, just crewmate, or hunter / hunted for hide n seek
             if (infos.Count == count) {
@@ -377,32 +371,34 @@ namespace TheOtherRoles
                     infos.Add(TORMapOptions.gameMode == CustomGamemodes.HideNSeek ? RoleInfo.hunted : RoleInfo.crewmate);
             }
 
+            if (excludeRoles != null)
+                infos.RemoveAll(x => excludeRoles.Contains(x.roleId));
+
             return infos;
         }
 
-        public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false, bool includeHidden = false) {
+        public static String GetRolesString(PlayerControl p, bool useColors, bool showModifier = true, bool suppressGhostInfo = false, bool includeHidden = false, RoleId[] excludeRoles = null) {
             string roleName;
-            roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier, includeHidden).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
+            roleName = String.Join(" ", getRoleInfoForPlayer(p, showModifier, includeHidden, excludeRoles).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray());
 
-            if (Madmate.madmate.Any(x => x.PlayerId == p.PlayerId) || CreatedMadmate.createdMadmate == p)
+            if (Madmate.madmate.Any(x => x.PlayerId == p.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == p.PlayerId))
             {
-                if (getRoleInfoForPlayer(p, true, includeHidden).Contains(crewmate))
+                if (getRoleInfoForPlayer(p, true, includeHidden, excludeRoles).Contains(crewmate))
                 {
                     roleName = useColors ? Helpers.cs(Madmate.color, Madmate.fullName) : Madmate.fullName;
-                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
+                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden, excludeRoles).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden, excludeRoles).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
                 }
                 else
                 {
                     string prefix = useColors ? Helpers.cs(Madmate.color, Madmate.prefix) : Madmate.prefix;
-                    roleName = string.Join(" ", getRoleInfoForPlayer(p, false, includeHidden).Select(x => useColors ? Helpers.cs(Madmate.color, x.name) : x.name).ToArray());
+                    roleName = string.Join(" ", getRoleInfoForPlayer(p, false, includeHidden, excludeRoles).Select(x => useColors ? Helpers.cs(Madmate.color, x.name) : x.name).ToArray());
                     roleName = prefix + roleName;
-                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
+                    if (showModifier && getRoleInfoForPlayer(p, true, includeHidden, excludeRoles).Where(x => x.isModifier).FirstOrDefault() != null) roleName = string.Join(" ", getRoleInfoForPlayer(p, true, includeHidden, excludeRoles).Where(x => x.isModifier).Select(x => useColors ? Helpers.cs(x.color, x.name) : x.name).ToArray()) + " " + roleName;
                 }
             }
 
             if (Lawyer.target != null && p.PlayerId == Lawyer.target.PlayerId && PlayerControl.LocalPlayer != Lawyer.target) 
                 roleName += useColors ? Helpers.cs(Pursuer.color, " §") : " §";
-            if (Husk.husk.Any(x => x.PlayerId == p.PlayerId)) roleName += $" ({ModTranslation.getString("husk")})";
             if (HandleGuesser.isGuesserGm && HandleGuesser.isGuesser(p.PlayerId))
             {
                 int remainingShots = HandleGuesser.remainingShots(p.PlayerId);
@@ -414,41 +410,38 @@ namespace TheOtherRoles
                 roleName += useColors ? Helpers.cs(color, guesserModifier) : guesserModifier;
             }
             if (!suppressGhostInfo && p != null) {
-                if (p == Shifter.shifter && (PlayerControl.LocalPlayer == Shifter.shifter || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
+                if (p.isRole(RoleId.Shifter) && (PlayerControl.LocalPlayer.isRole(RoleId.Shifter) || Helpers.shouldShowGhostInfo()) && Shifter.futureShift != null)
                     roleName += Helpers.cs(Color.yellow, " ← " + Shifter.futureShift.Data.PlayerName);
-                if (p == Vulture.vulture && (PlayerControl.LocalPlayer == Vulture.vulture || Helpers.shouldShowGhostInfo()))
-                    roleName += Helpers.cs(Vulture.color, $" ({Vulture.vultureNumberToWin - Vulture.eatenBodies} {ModTranslation.getString("roleInfoRemaining")})");
+                foreach (var vulture in Vulture.players) {
+                    if (p == vulture.player && (PlayerControl.LocalPlayer == p || Helpers.shouldShowGhostInfo()))
+                        roleName += Helpers.cs(Vulture.color, $" ({Vulture.vultureNumberToWin - vulture.eatenBodies} {ModTranslation.getString("roleInfoRemaining")})");
+                }
                 if (Helpers.shouldShowGhostInfo()) {
+                    if (p.isLovers()) roleName = Helpers.cs(Lovers.getColor(p), ModTranslation.getString("lover")) + " " + roleName;
                     if (Eraser.futureErased.Contains(p))
                         roleName = Helpers.cs(Color.gray, ModTranslation.getString("roleInfoErased")) + roleName;
-                    if (Vampire.vampire != null && !Vampire.vampire.Data.IsDead && Vampire.bitten == p && !p.Data.IsDead)
-                        roleName = Helpers.cs(Vampire.color, $"({ModTranslation.getString("roleInfoBitten")} {(int)HudManagerStartPatch.vampireKillButton.Timer + 1}) ") + roleName;
                     if (Deputy.handcuffedPlayers.Contains(p.PlayerId))
                         roleName = Helpers.cs(Color.gray, ModTranslation.getString("roleInfoCuffed")) + roleName;
                     if (Deputy.handcuffedKnows.ContainsKey(p.PlayerId))  // Active cuff
                         roleName = Helpers.cs(Deputy.color, ModTranslation.getString("roleInfoCuffed")) + roleName;
-                    if (p == Warlock.curseVictim)
+                    if (Warlock.players.Any(x => x.curseVictim == p))
                         roleName = Helpers.cs(Warlock.color, ModTranslation.getString("roleInfoCursed")) + roleName;
-                    if (p == Assassin.assassinMarked)
+                    if (Assassin.players.Any(x => x.player && x.assassinMarked == p))
                         roleName = Helpers.cs(Assassin.color, ModTranslation.getString("roleInfoMarked")) + roleName;
                     if (Pursuer.blankedList.Contains(p) && !p.Data.IsDead)
                         roleName = Helpers.cs(Pursuer.color, ModTranslation.getString("roleInfoBlanked")) + roleName;
-                    if (p == FortuneTeller.divineTarget)
+                    if (FortuneTeller.players.Any(x => x.divineTarget == p))
                         roleName = Helpers.cs(FortuneTeller.color, ModTranslation.getString("roleInfoDivined")) + roleName;
-                    if (Witch.futureSpelled.Contains(p) && !MeetingHud.Instance) // This is already displayed in meetings!
+                    if (Witch.players.Any(x => x.futureSpelled.Contains(p)) && !MeetingHud.Instance) // This is already displayed in meetings!
                         roleName = Helpers.cs(Witch.color, "☆ ") + roleName;
-                    if (BountyHunter.bounty == p)
-                        roleName = Helpers.cs(BountyHunter.color, ModTranslation.getString("roleInfoBounty")) + roleName;
-                    if (Arsonist.dousedPlayers.Contains(p))
-                        roleName = Helpers.cs(Arsonist.color, "♨ ") + roleName;
-                    if (p == Arsonist.arsonist)
-                        roleName += Helpers.cs(Arsonist.color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return x != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
-                    if (p == Jackal.fakeSidekick)
-                        roleName = Helpers.cs(Sidekick.color, ModTranslation.getString("roleInfoFakeSD")) + roleName;
-                    if (Akujo.keeps.Contains(p))
+                    foreach (var arsonist in Arsonist.players) {
+                        if (arsonist.player == p)
+                            roleName += Helpers.cs(Arsonist.color, $" ({PlayerControl.AllPlayerControls.ToArray().Count(x => { return x != p && !x.Data.IsDead && !x.Data.Disconnected && !arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} {ModTranslation.getString("roleInfoRemaining")})");
+                    }
+                    if (Akujo.isKeep(p))
                         roleName = Helpers.cs(Color.gray, ModTranslation.getString("roleInfoBackup")) + roleName;
-                    if (p == Akujo.honmei)
-                        roleName = Helpers.cs(Akujo.color, ModTranslation.getString("roleInfoHonmei")) + roleName;
+                    if (Akujo.isHonmei(p))
+                        roleName = Helpers.cs(Akujo.players.FirstOrDefault(x => x.honmei == p).iconColor, ModTranslation.getString("roleInfoHonmei")) + roleName;
                     if (p == Kataomoi.target)
                         roleName = Helpers.cs(Kataomoi.color, ModTranslation.getString("roleInfoKataomoiTarget")) + roleName;
 
@@ -459,8 +452,8 @@ namespace TheOtherRoles
 
                         Color killerColor = new();
                         if (deadPlayer != null && deadPlayer.killerIfExisting != null) {
-                            killerColor = RoleInfo.getRoleInfoForPlayer(deadPlayer.killerIfExisting, false, true).FirstOrDefault().color;
-                            if (Madmate.madmate.Any(x => x.PlayerId == deadPlayer.killerIfExisting.PlayerId) || CreatedMadmate.createdMadmate == deadPlayer.killerIfExisting) killerColor = Palette.ImpostorRed;
+                            killerColor = getRoleInfoForPlayer(deadPlayer.killerIfExisting, false, true).FirstOrDefault().color;
+                            if (Madmate.madmate.Any(x => x.PlayerId == deadPlayer.killerIfExisting.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == deadPlayer.killerIfExisting.PlayerId)) killerColor = Palette.ImpostorRed;
                         }
 
                         if (deadPlayer != null) {

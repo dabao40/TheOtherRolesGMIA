@@ -123,7 +123,7 @@ namespace TheOtherRoles.Modules
             var info = RoleInfo.getRoleInfoForPlayer(player, false, true).FirstOrDefault();
             if (roleHistory.ContainsKey(player.PlayerId))
                 roleHistory[player.PlayerId].Add(new(player.Data.PlayerName, info, currentTime, player.Data.DefaultOutfit, Madmate.madmate.Any(x =>
-                x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate == player, info.color));
+                x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId), info.color));
         }
 
         public class StatisticsEvent
@@ -171,7 +171,7 @@ namespace TheOtherRoles.Modules
                 if (handler == null) return;
                 foreach (var method in handler.GetType().GetMethods().Where(method => !method.IsStatic && method.IsDefined(typeof(EventHandlerAttribute), true) && method.GetParameters().Length == 1))
                 {
-                    RegisterEvent(lifespan, method.GetParameters()[0].ParameterType, (obj) => method.Invoke(handler, new object[] { obj }));
+                    RegisterEvent(lifespan, method.GetParameters()[0].ParameterType, (obj) => method.Invoke(handler, [obj]));
                 }
             }
 
@@ -272,7 +272,7 @@ namespace TheOtherRoles.Modules
                 }
                 else
                 {
-                    Position = new Tuple<byte, Vector2>[0];
+                    Position = [];
                 }
             }
 

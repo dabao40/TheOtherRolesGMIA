@@ -1,7 +1,6 @@
 using Reactor.Utilities.Extensions;
-using System;
 using System.Collections.Generic;
-using TheOtherRoles.MetaContext;
+using TheOtherRoles.Roles;
 using UnityEngine;
 
 namespace TheOtherRoles.Objects
@@ -12,6 +11,7 @@ namespace TheOtherRoles.Objects
         public float timeRemaining;
         public bool permanent = false;
         private bool visibleForEveryOne = false;
+        public PlayerControl placePlayer;
         private SpriteRenderer renderer;
 
         public static List<Silhouette> silhouettes = new();
@@ -24,13 +24,16 @@ namespace TheOtherRoles.Objects
             return SilhouetteSprite;
         }
 
-        public Silhouette(Vector3 p, float duration = 1f, bool visibleForEveryOne = true)
+        public Silhouette(Vector3 p, PlayerControl placePlayer, float duration = 1f, bool visibleForEveryOne = true)
         {
             if (duration <= 0f)
             {
                 TheOtherRolesPlugin.Logger.LogMessage("silhouette: permanent!");
                 permanent = true;
             }
+            var yoyo = Yoyo.getRole(placePlayer);
+            if (yoyo == null) return;
+
             this.visibleForEveryOne = visibleForEveryOne;
             gameObject = new GameObject("Silhouette");
             gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
@@ -43,20 +46,22 @@ namespace TheOtherRoles.Objects
             renderer.sprite = getSilhouetteSprite();
 
             timeRemaining = duration;
+            this.placePlayer = placePlayer;
+            renderer.color = renderer.color.SetAlpha(yoyo.SilhouetteVisibility);
 
-            renderer.color = renderer.color.SetAlpha(Yoyo.SilhouetteVisibility);
-
-            bool visible = visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
+            bool visible = visibleForEveryOne || PlayerControl.LocalPlayer == placePlayer || PlayerControl.LocalPlayer.Data.IsDead;
 
             gameObject.SetActive(visible);
             silhouettes.Add(this);
         }
 
-        public static void clearSilhouettes()
+        public static void clearSilhouettes(PlayerControl player = null)
         {
-            foreach (var sil in silhouettes)
+            foreach (var sil in new List<Silhouette>(silhouettes)) {
+                if (player != null && sil.placePlayer != player) continue;
                 sil.gameObject.Destroy();
-            silhouettes = new();
+                silhouettes.Remove(sil);
+            }
         }
 
         public static void UpdateAll()
@@ -64,14 +69,15 @@ namespace TheOtherRoles.Objects
             foreach (Silhouette current in new List<Silhouette>(silhouettes))
             {
                 if (current == null || current.gameObject == null) continue;
+                var yoyo = Yoyo.getRole(current.placePlayer);
                 current.timeRemaining -= Time.fixedDeltaTime;
-                bool visible = current.visibleForEveryOne || PlayerControl.LocalPlayer == Yoyo.yoyo || PlayerControl.LocalPlayer.Data.IsDead;
+                bool visible = current.visibleForEveryOne || PlayerControl.LocalPlayer == current.placePlayer || PlayerControl.LocalPlayer.Data.IsDead;
                 current.gameObject.SetActive(visible);
 
                 if (visible && current.timeRemaining > 0 && current.timeRemaining < 0.5)
                 {
                     var alphaRatio = current.timeRemaining / 0.5f;
-                    current.renderer.color = current.renderer.color.SetAlpha(Yoyo.SilhouetteVisibility * alphaRatio);
+                    current.renderer.color = current.renderer.color.SetAlpha((yoyo != null ? yoyo.SilhouetteVisibility : 0) * alphaRatio);
                 }
 
                 if (current.timeRemaining < 0 && !current.permanent)

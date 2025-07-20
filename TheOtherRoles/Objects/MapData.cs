@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,14 +36,14 @@ namespace TheOtherRoles.Objects
             return false;
         }
 
-        static private MapData[] AllMapData = new MapData[] { new SkeldData(), new MiraData(), new PolusData(), null!, new AirshipData(), new FungleData() };
+        static private MapData[] AllMapData = [new SkeldData(), new MiraData(), new PolusData(), null!, new AirshipData(), new FungleData()];
         static public MapData GetCurrentMapData() => AllMapData[GameOptionsManager.Instance.CurrentGameOptions.MapId];
     }
 
     public class FungleData : MapData
     {
-        static private Vector2[] MapPositions = new Vector2[]
-            { 
+        static private Vector2[] MapPositions =
+            [ 
         //ドロップシップ
         new(-9.2f,13.4f),
         //カフェテリア
@@ -92,15 +92,15 @@ namespace TheOtherRoles.Objects
         new(20.1f,7.2f),
         //コミュ
         new(20.9f,10.8f),new(24.1f,13.2f),new(17.9f,12.7f),
-            };
+            ];
 
         protected override Vector2[] MapArea => MapPositions;
     }
 
     public class AirshipData : MapData
     {
-        static private Vector2[] MapPositions = new Vector2[]
-            { 
+        static private Vector2[] MapPositions =
+            [ 
         //金庫
         new(-9f, 12.8f), new(-8.7f, 4.9f), new(-12.8f, 8.7f), new(-4.8f, 8.7f), new(-7.1f, 6.8f), new(-10.4f, 6.9f), new(-7f, 10.2f),
         //宿舎前
@@ -151,15 +151,15 @@ namespace TheOtherRoles.Objects
         new(3.8f, 8.8f),
         //ミーティング
         new(6.5f, 15.3f), new(11.8f, 14.1f), new(11.8f, 16f), new(16.3f, 15.2f),
-            };
+            ];
 
         protected override Vector2[] MapArea => MapPositions;
     }
 
     public class PolusData : MapData
     {
-        static private Vector2[] MapPositions = new Vector2[]
-        {
+        static private Vector2[] MapPositions =
+        [
         //ドロップシップ
         new(16.7f, -2.6f),
         //ドロップシップ下
@@ -202,15 +202,15 @@ namespace TheOtherRoles.Objects
         new(24.2f, -4.5f),
         //ストレージ・ラボ下・オフィス右
         new(24f, -14.6f), new(26f, -12.2f), new(29.8f, -15.7f)
-        };
+        ];
 
         protected override Vector2[] MapArea => MapPositions;
     }
 
     public class MiraData : MapData
     {
-        static private Vector2[] MapPositions = new Vector2[]
-        {
+        static private Vector2[] MapPositions =
+        [
         //ラウンチパッド
         new(-4.4f, 3.3f),
         //ランチパッド下通路
@@ -245,15 +245,15 @@ namespace TheOtherRoles.Objects
         new(20.6f, 20.8f), new(22.3f, 18.6f), new(21.2f, 17.3f), new(19.4f, 17.6f),
         //グリーンハウス
         new(13.2f, 22.3f), new(22.4f, 23.3f), new(20.2f, 24.3f), new(16.5f, 24.4f), new(20.7f, 22.2f), new(18f, 25.3f),
-        };
+        ];
 
         protected override Vector2[] MapArea => MapPositions;
     }
 
     public class SkeldData : MapData
     {
-        static private Vector2[] MapPositions = new Vector2[]
-        {
+        static private Vector2[] MapPositions =
+        [
         //カフェ
         new(0f, 5.3f), new(-5.2f, 1.2f), new(-0.9f, -3.1f), new(4.6f, 1.2f),
         //ウェポン
@@ -286,7 +286,7 @@ namespace TheOtherRoles.Objects
         new(-7.3f, -4.6f), new(-9.2f, -2.1f),
         //アドミン
         new(2.6f, -7.1f), new(6.3f, -9.5f)
-        };
+        ];
         protected override Vector2[] MapArea => MapPositions;
     }
 }

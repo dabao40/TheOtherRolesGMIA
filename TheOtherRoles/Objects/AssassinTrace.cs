@@ -17,7 +17,7 @@ namespace TheOtherRoles.Objects {
             return TraceSprite;
         }
 
-        public AssassinTrace(Vector2 p, float duration=1f) {
+        public AssassinTrace(Vector2 p, PlayerControl assassin, float duration=1f) {
             trace = new GameObject("AssassinTrace");
             trace.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
             //Vector3 position = new Vector3(p.x, p.y, PlayerControl.LocalPlayer.transform.localPosition.z + 0.001f); // just behind player
@@ -33,8 +33,8 @@ namespace TheOtherRoles.Objects {
             // display the assassins color in the trace
             float colorDuration = CustomOptionHolder.assassinTraceColorTime.getFloat();
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(colorDuration, new Action<float>((p) => {
-                Color c = Palette.PlayerColors[(int)Assassin.assassin.Data.DefaultOutfit.ColorId];
-                if (Helpers.isLighterColor(Assassin.assassin.Data.DefaultOutfit.ColorId)) c = Color.white;
+                Color c = Palette.PlayerColors[(int)assassin.Data.DefaultOutfit.ColorId];
+                if (Helpers.isLighterColor(assassin.Data.DefaultOutfit.ColorId)) c = Color.white;
                 else c = Palette.PlayerColors[6];
                 //if (Camouflager.camouflageTimer > 0) {
                 //    c = Palette.PlayerColors[6];
@@ -63,7 +63,7 @@ namespace TheOtherRoles.Objects {
         }
 
         public static void clearTraces() {
-            traces = new List<AssassinTrace>();
+            traces = [];
         }
 
         public static void UpdateAll() {

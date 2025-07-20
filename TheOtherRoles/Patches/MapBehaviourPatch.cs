@@ -7,6 +7,7 @@ using System.Linq;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
@@ -95,17 +96,17 @@ namespace TheOtherRoles.Patches {
         {
             if (FreePlayGM.isFreePlayGM) return true;
             if (!MeetingHud.Instance) return true;  // Only run in meetings, and then set the Position of the HerePoint to the Position before the Meeting!
-            if (PlayerControl.LocalPlayer != EvilTracker.evilTracker || !EvilTracker.canSeeTargetTasks) return true;
-            if (EvilTracker.target == null) return true;
-            if (realTasks[EvilTracker.target.PlayerId] == null) return false;
+            if (!PlayerControl.LocalPlayer.isRole(RoleId.EvilTracker) || !EvilTracker.canSeeTargetTasks) return true;
+            if (EvilTracker.local.target == null) return true;
+            if (realTasks[EvilTracker.local.target.PlayerId] == null) return false;
             _ = new StaticAchievementToken("evilTracker.common2");
             __instance.gameObject.SetActive(true);
             __instance.data.Clear();
-            for (int i = 0; i < realTasks[EvilTracker.target.PlayerId].Count; i++)
+            for (int i = 0; i < realTasks[EvilTracker.local.target.PlayerId].Count; i++)
             {
                 try
                 {
-                    Vector2 pos = realTasks[EvilTracker.target.PlayerId][i];
+                    Vector2 pos = realTasks[EvilTracker.local.target.PlayerId][i];
 
                     Vector3 localPosition = pos / MapUtilities.CachedShipStatus.MapScale;
                     localPosition.z = -1f;
@@ -131,7 +132,7 @@ namespace TheOtherRoles.Patches {
         {
             static bool Prefix(MapTaskOverlay __instance)
             {
-                if (EvilTracker.evilTracker != null && PlayerControl.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId)
+                if (PlayerControl.LocalPlayer.isRole(RoleId.EvilTracker))
                 {
                     return evilTrackerShowTask(__instance);
                 }
@@ -163,18 +164,17 @@ namespace TheOtherRoles.Patches {
 					herePoints.Remove(s.Key);
 				}
 			}*/
-            if (EvilTracker.evilTracker != null && PlayerControl.LocalPlayer.PlayerId == EvilTracker.evilTracker.PlayerId && EvilTracker.canSeeTargetPosition)
+            if (PlayerControl.LocalPlayer.isRole(RoleId.EvilTracker) && EvilTracker.canSeeTargetPosition)
 			{
-                if (EvilTracker.target != null && MeetingHud.Instance == null)
+                if (EvilTracker.local.target != null && MeetingHud.Instance == null)
                 {
-                    if (targetHerePoint == null)
-                    {
+                    if (targetHerePoint == null) {
                         targetHerePoint = GameObject.Instantiate<SpriteRenderer>(__instance.HerePoint, __instance.HerePoint.transform.parent);
                     }
-                    targetHerePoint.gameObject.SetActive(!EvilTracker.target.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead);
-                    NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.target.PlayerId);
+                    targetHerePoint.gameObject.SetActive(!EvilTracker.local.target.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead);
+                    NetworkedPlayerInfo playerById = GameData.Instance.GetPlayerById(EvilTracker.local.target.PlayerId);
                     PlayerMaterial.SetColors((playerById != null) ? playerById.DefaultOutfit.ColorId : 0, targetHerePoint);
-                    Vector3 pos = new(EvilTracker.target.transform.position.x, EvilTracker.target.transform.position.y, EvilTracker.target.transform.position.z);
+                    Vector3 pos = new(EvilTracker.local.target.transform.position.x, EvilTracker.local.target.transform.position.y, EvilTracker.local.target.transform.position.z);
                     pos /= MapUtilities.CachedShipStatus.MapScale;
                     pos.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
                     pos.z = -10;
@@ -183,11 +183,11 @@ namespace TheOtherRoles.Patches {
                 else UnityEngine.Object.Destroy(targetHerePoint);
 
                 // Use the red icons to indicate the Impostors' positions
-                impostorHerePoint ??= new();
+                impostorHerePoint ??= [];
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if ((p.Data.Role.IsImpostor && p != PlayerControl.LocalPlayer) || (Spy.spy != null && p == Spy.spy) || (p == Sidekick.sidekick && Sidekick.wasTeamRed)
-                        || (p == Jackal.jackal && Jackal.wasTeamRed))
+                    if ((p.Data.Role.IsImpostor && p != PlayerControl.LocalPlayer) || p.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.player == p && x.wasTeamRed)
+                        || Jackal.players.Any(x => x.player == p && x.wasTeamRed))
                     {
                         if (!impostorHerePoint.ContainsKey(p.PlayerId))
                         {
@@ -205,7 +205,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (EvilHacker.canSeeDoorStatus && ((EvilHacker.evilHacker != null && PlayerControl.LocalPlayer.PlayerId == EvilHacker.evilHacker.PlayerId) || EvilHacker.isInherited()))
+            if (EvilHacker.canSeeDoorStatus && (PlayerControl.LocalPlayer.isRole(RoleId.EvilHacker) || EvilHacker.isInherited()))
             {
                 if (doorClosedSprite == null)
                 {
@@ -249,7 +249,7 @@ namespace TheOtherRoles.Patches {
 
             foreach (var vent in MapUtilities.CachedShipStatus.AllVents)
             {
-                if (vent.name.StartsWith("JackInThe") && !(PlayerControl.LocalPlayer == Trickster.trickster || PlayerControl.LocalPlayer.Data.IsDead)) continue; //for trickster vents
+                if (vent.name.StartsWith("JackInThe") && !(PlayerControl.LocalPlayer.isRole(RoleId.Trickster) || PlayerControl.LocalPlayer.Data.IsDead)) continue; //for trickster vents
 
                 if (!TheOtherRolesPlugin.ShowVentsOnMap.Value)
                 {

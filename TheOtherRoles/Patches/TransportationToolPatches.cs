@@ -2,8 +2,9 @@ using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using System;
 using UnityEngine.Windows.Speech;
-using TheOtherRoles;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Patches
 {
@@ -24,14 +25,14 @@ namespace TheOtherRoles.Patches
 
         // Zipline:
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), new Type[] { typeof(PlayerControl), typeof(bool) })]
+        [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), [typeof(PlayerControl), typeof(bool)])]
         public static void prefix3(ZiplineBehaviour __instance, PlayerControl player, bool fromTop)
         {
             AntiTeleport.position = PlayerControl.LocalPlayer.transform.position;
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), new Type[] { typeof(PlayerControl), typeof(bool) })]
+        [HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), [typeof(PlayerControl), typeof(bool)])]
         public static void postfix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop)
         {
             // Fix camo:
@@ -42,18 +43,22 @@ namespace TheOtherRoles.Patches
                 {
                     if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive())
                     {
-                        if (player == Morphling.morphling && Morphling.morphTimer > 0) {
-                            hand.SetPlayerColor(Morphling.morphTarget.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
-                            // Also set hat color, cause the line destroys it...
-                            player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
-                        } else if (player == MimicK.mimicK && MimicK.victim != null) {
+                        foreach (var morphling in Morphling.players)  {
+                            if (player == morphling.player && morphling.morphTimer > 0) {
+                                hand.SetPlayerColor(morphling.morphTarget.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
+                                // Also set hat color, cause the line destroys it...
+                                player.RawSetHat(morphling.morphTarget.Data.DefaultOutfit.HatId, morphling.morphTarget.Data.DefaultOutfit.ColorId);
+                            }
+                        }
+                        if (player.isRole(RoleId.MimicK) && MimicK.victim != null) {
                             hand.SetPlayerColor(MimicK.victim.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
                             player.RawSetHat(MimicK.victim.Data.DefaultOutfit.HatId, MimicK.victim.Data.DefaultOutfit.ColorId);
-                        } else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph) {
-                            hand.SetPlayerColor(MimicK.mimicK.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
-                            player.RawSetHat(MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.ColorId);
-                        } else if ((Ninja.ninja != null && Ninja.ninja == player && Ninja.stealthed) || (Sprinter.sprinter != null && Sprinter.sprinter == player && Sprinter.sprinting)
-                            || (Fox.fox != null && Fox.fox == player && Fox.stealthed) || (Kataomoi.kataomoi != null && Kataomoi.kataomoi == player && Kataomoi.isStalking())) {
+                        } else if (player.isRole(RoleId.MimicA) && MimicA.isMorph) {
+                            var target = MimicK.allPlayers.FirstOrDefault();
+                            hand.SetPlayerColor(target.CurrentOutfit, PlayerMaterial.MaskType.None, 1f);
+                            player.RawSetHat(target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.ColorId);
+                        } else if (Ninja.isStealthed(player) || Sprinter.isSprinting(player)
+                            || (player.isRole(RoleId.Fox) && Fox.stealthed) || (player.isRole(RoleId.Kataomoi) && Kataomoi.isStalking())) {
                             hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None, 0f);
                         } else {
                             hand.SetPlayerColor(player.CurrentOutfit, PlayerMaterial.MaskType.None, player.cosmetics.GetPhantomRoleAlpha());
@@ -84,12 +89,17 @@ namespace TheOtherRoles.Patches
             __instance.StartCoroutine(Effects.Lerp(5.0f, new System.Action<float>((p) => {
                 if (Camouflager.camouflageTimer <= 0 && !Helpers.MushroomSabotageActive())
                 {
-                    if (player == Morphling.morphling && Morphling.morphTimer > 0.1f)
-                        player.RawSetHat(Morphling.morphTarget.Data.DefaultOutfit.HatId, Morphling.morphTarget.Data.DefaultOutfit.ColorId);
-                    else if (player == MimicK.mimicK && MimicK.victim != null && MimicK.victim.Data != null)
+                    foreach (var morphling in Morphling.players)  {
+                        if (player == morphling.player && morphling.morphTimer > 0.1f) {
+                            player.RawSetHat(morphling.morphTarget.Data.DefaultOutfit.HatId, morphling.morphTarget.Data.DefaultOutfit.ColorId);
+                        }
+                    }
+                    if (player.isRole(RoleId.MimicK) && MimicK.victim != null && MimicK.victim.Data != null)
                         player.RawSetHat(MimicK.victim.Data.DefaultOutfit.HatId, MimicK.victim.Data.DefaultOutfit.ColorId);
-                    else if (player == MimicA.mimicA && MimicK.mimicK != null && MimicA.isMorph)
-                        player.RawSetHat(MimicK.mimicK.Data.DefaultOutfit.HatId, MimicK.mimicK.Data.DefaultOutfit.ColorId);
+                    else if (player.isRole(RoleId.MimicA) && MimicA.isMorph) {
+                        var mimicK = MimicK.allPlayers.FirstOrDefault();
+                        player.RawSetHat(mimicK.Data.DefaultOutfit.HatId, mimicK.Data.DefaultOutfit.ColorId);
+                    }
                 }
             })));
         }

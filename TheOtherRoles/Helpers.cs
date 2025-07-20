@@ -20,6 +20,7 @@ using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
+using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -209,12 +210,16 @@ namespace TheOtherRoles
 
         public static void handleVampireBiteOnBodyReport() {
             // Murder the bitten player and reset bitten (regardless whether the kill was successful or not)
-            checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-            writer.Write(byte.MaxValue);
-            writer.Write(byte.MaxValue);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
+            foreach (var vampire in Vampire.players)
+            {
+                checkMurderAttemptAndKill(vampire.player, vampire.bitten, true, false);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                writer.Write(byte.MaxValue);
+                writer.Write(byte.MaxValue);
+                writer.Write(vampire.player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue, vampire.player.PlayerId);
+            }
         }
 
         public static void handleTrapperTrapOnBodyReport()
@@ -267,7 +272,7 @@ namespace TheOtherRoles
 
             foreach (var roleInfo in infos)
             {
-                taskTexts.Add(getRoleString(roleInfo, Husk.husk.Any(x => x.PlayerId == player.PlayerId)));
+                taskTexts.Add(getRoleString(roleInfo));
             }
 
             var toRemove = new List<PlayerTask>();
@@ -296,7 +301,7 @@ namespace TheOtherRoles
                 player.myTasks.Insert(0, task);
             }
 
-            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || player == CreatedMadmate.createdMadmate)
+            if (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId))
             {
                 var task = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
@@ -305,13 +310,12 @@ namespace TheOtherRoles
             }
         }
 
-        internal static string getRoleString(RoleInfo roleInfo, bool isHusk)
+        internal static string getRoleString(RoleInfo roleInfo)
         {
-            bool addHusk = isHusk && !roleInfo.isModifier;
             if (roleInfo.roleId == RoleId.Jackal)
             {
-                var getSidekickText = Jackal.canCreateSidekick && !addHusk ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
-                return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {getSidekickText}");
+                var getSidekickText = Jackal.local.canCreateSidekick ? ModTranslation.getString("jackalWithSidekick") : ModTranslation.getString("jackalShortDesc");
+                return cs(roleInfo.color, $"{roleInfo.name}: {getSidekickText}");
             }
 
             if (roleInfo.roleId == RoleId.Invert)
@@ -319,7 +323,68 @@ namespace TheOtherRoles
                 return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription} ({Invert.meetings})");
             }
 
-            return cs(roleInfo.color, $"{roleInfo.name}{(addHusk ? $" ({ModTranslation.getString("husk")})" : "")}: {roleInfo.shortDescription}");
+            return cs(roleInfo.color, $"{roleInfo.name}: {roleInfo.shortDescription}");
+        }
+
+        public static bool isLovers(this PlayerControl player)
+        {
+            return player != null && Lovers.isLovers(player);
+        }
+
+        public static PlayerControl getPartner(this PlayerControl player)
+        {
+            return Lovers.getPartner(player);
+        }
+
+        public static void ForEach<T>(this IList<T> self, Action<T> todo)
+        {
+            for (int i = 0; i < self.Count; i++)
+            {
+                todo(self[i]);
+            }
+        }
+
+        public static bool isRole(this PlayerControl player, RoleId role)
+        {
+            foreach (var t in RoleData.allRoleIds)
+            {
+                if (role == t.Key)
+                {
+                    return (bool)t.Value.GetMethod("isRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+                }
+            }
+            return false;
+        }
+
+        public static void setRole(this PlayerControl player, RoleId role)
+        {
+            foreach (var t in RoleData.allRoleIds)
+            {
+                if (role == t.Key)
+                {
+                    t.Value.GetMethod("setRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+                    return;
+                }
+            }
+        }
+
+        public static void eraseAllRoles(this PlayerControl player)
+        {
+            foreach (var t in RoleData.allRoleIds)
+            {
+                t.Value.GetMethod("eraseRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player]);
+            }
+        }
+
+        public static void swapRoles(this PlayerControl player, PlayerControl target)
+        {
+            foreach (var t in RoleData.allRoleIds)
+            {
+                if (player.isRole(t.Key))
+                {
+                    t.Value.GetMethod("swapRole", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, [player, target]);
+                }
+            }
         }
 
         public static bool isLighterColor(int colorId) {
@@ -332,36 +397,36 @@ namespace TheOtherRoles
             return n is not StringNames.ServerNA and not StringNames.ServerEU and not StringNames.ServerAS;
         }
 
-        public static int[] MinPlayers = new int[7] {
+        public static int[] MinPlayers = [
             4, 4, 7, 9, 13, 15, 18
-            };
+            ];
 
-        public static int[] RecommendedKillCooldown = new int[25] {
+        public static int[] RecommendedKillCooldown = [
             0,
             0, 0, 0, 45, 30,
             15, 35, 30, 25, 20,
             20, 20, 20, 20, 20,
             20, 20, 20, 20, 20,
             20, 20, 20, 20
-            };
+            ];
 
-        public static int[] RecommendedImpostors = new int[25] {
+        public static int[] RecommendedImpostors = [
             0,
             0, 0, 0, 1, 1,
             1, 2, 2, 2, 2,
             2, 3, 3, 3, 3,
             3, 4, 4, 4, 4,
             5, 5, 5, 5
-            };
+            ];
 
-        public static int[] MaxImpostors = new int[25] {
+        public static int[] MaxImpostors = [
             0,
             0, 0, 0, 1, 1,
             1, 2, 2, 3, 3,
             3, 3, 4, 4, 5,
             5, 5, 6, 6, 6,
             6, 6, 6, 6
-            };
+            ];
 
         static public int[] Sequential(int length)
         {
@@ -402,18 +467,19 @@ namespace TheOtherRoles
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Opportunist.opportunist || player == Vulture.vulture || Jackal.formerJackals.Any(x => x == player) || player == Moriarty.moriarty || player == Moriarty.formerMoriarty
+            return player.isRole(RoleId.Jester) || player.isRole(RoleId.Jackal) || player.isRole(RoleId.Sidekick) || player.isRole(RoleId.Arsonist) || player.isRole(RoleId.Vulture) || player.isRole(RoleId.Opportunist) || player.isRole(RoleId.Moriarty)
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
-                (player == CreatedMadmate.createdMadmate && !CreatedMadmate.hasTasks) || player == Akujo.akujo || player == Kataomoi.kataomoi || player == PlagueDoctor.plagueDoctor || player == JekyllAndHyde.formerJekyllAndHyde || player == Cupid.cupid || (player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hideRole)
-                || player == Immoralist.immoralist || player == Doomsayer.doomsayer;
+                (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId) && !CreatedMadmate.hasTasks) || player.isRole(RoleId.Akujo) || player.isRole(RoleId.Kataomoi) || player.isRole(RoleId.PlagueDoctor) || player.isRole(RoleId.Cupid) || (player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hideRole)
+                || player.isRole(RoleId.Immoralist) || player.isRole(RoleId.Doomsayer);
         }
 
         public static bool canBeErased(this PlayerControl player) {
-            return player != Jackal.jackal && player != Sidekick.sidekick && !Jackal.formerJackals.Any(x => x == player);
+            return !player.isRole(RoleId.Jackal) && !player.isRole(RoleId.Sidekick);
         }
 
         public static bool shouldShowGhostInfo() {
-            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && !(PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag) && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
+            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)
+                && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
         public static void clearAllTasks(this PlayerControl player) {
@@ -464,6 +530,16 @@ namespace TheOtherRoles
                 return !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
                 !MeetingHud.Instance &&
                 !ExileController.Instance;
+            }
+        }
+
+        public static bool ShowKillAnimation
+        {
+            get
+            {
+                return MeetingHud.Instance?.state is not
+                    MeetingHud.VoteStates.Animating and not MeetingHud.VoteStates.Results
+                    and not MeetingHud.VoteStates.Proceeding;
             }
         }
 
@@ -535,30 +611,30 @@ namespace TheOtherRoles
 
         public static void HandleRoleFlashOnDeath(PlayerControl target)
         {
-            if (Noisemaker.noisemaker != null && Noisemaker.target != null && Noisemaker.target == target)
+            if (Noisemaker.players.Any(x => x.player && x.target == target))
             {
-                if ((Noisemaker.soundTarget == Noisemaker.SoundTarget.Noisemaker && PlayerControl.LocalPlayer == Noisemaker.noisemaker) ||
+                if ((Noisemaker.soundTarget == Noisemaker.SoundTarget.Noisemaker && PlayerControl.LocalPlayer.isRole(RoleId.Noisemaker)) ||
                     (Noisemaker.soundTarget == Noisemaker.SoundTarget.Crewmates && !isNeutral(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.Role.IsImpostor) ||
                     (Noisemaker.soundTarget == Noisemaker.SoundTarget.Everyone))
                 { InstantiateNoisemakerArrow(target.transform.localPosition, true).arrow.SetDuration(Noisemaker.duration); }
-                Noisemaker.target = null;
-                if (PlayerControl.LocalPlayer == Noisemaker.noisemaker)
+                if (Noisemaker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.target == target))
                 {
                     _ = new StaticAchievementToken("noisemaker.common1");
-                    Noisemaker.acTokenChallenge.Value++;
+                    Noisemaker.local.acTokenChallenge.Value++;
+                    Noisemaker.local.target = null;
                 }
             }
-            if (Immoralist.immoralist != null && PlayerControl.LocalPlayer == Immoralist.immoralist && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Immoralist) && !PlayerControl.LocalPlayer.Data.IsDead)
                 showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f));
 
             // Seer show flash and add dead player position
-            if (Seer.seer != null && (PlayerControl.LocalPlayer == Seer.seer || shouldShowGhostInfo()) && !Seer.seer.Data.IsDead && Seer.seer != target && Seer.mode <= 1)
+            if (Seer.exists && ((PlayerControl.LocalPlayer.isRole(RoleId.Seer) && PlayerControl.LocalPlayer != target) || shouldShowGhostInfo()) && Seer.livingPlayers.Count > 0 && Seer.mode <= 1)
             {
                 showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("seerInfo"));
-                if (PlayerControl.LocalPlayer == Seer.seer)
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Seer))
                 {
                     _ = new StaticAchievementToken("seer.common1");
-                    Seer.acTokenChallenge.Value.flash++;
+                    Seer.local.acTokenChallenge.Value++;
                 }
             }
             if (Seer.deadBodyPositions != null) Seer.deadBodyPositions.Add(target.transform.position);
@@ -579,36 +655,7 @@ namespace TheOtherRoles
                 showFlash(color, 1.5f);
             }
 
-            if (PlagueDoctor.plagueDoctor != null && (PlagueDoctor.canWinDead || !PlagueDoctor.plagueDoctor.Data.IsDead)) PlagueDoctor.checkWinStatus();
-        }
-
-        public static void HandleRolesOnErase(PlayerControl player)
-        {
-            // Specify shifting onto Lawyer/Akujo
-            if (player == Lawyer.lawyer && Lawyer.target != null)
-            {
-                Transform playerInfoTransform = Lawyer.target.cosmetics.nameText.transform.parent.FindChild("Info");
-                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
-                if (playerInfo != null) playerInfo.text = "";
-            }
-            else if (player == Akujo.akujo)
-            {
-                if (Akujo.honmei != null)
-                {
-                    Transform playerInfoTransform = Akujo.honmei.cosmetics.nameText.transform.parent.FindChild("Info");
-                    TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                    if (playerInfo != null) playerInfo.text = "";
-                }
-                if (Akujo.keeps != null)
-                {
-                    foreach (PlayerControl playerControl in Akujo.keeps)
-                    {
-                        Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
-                        TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
-                        if (playerInfo != null) playerInfo.text = "";
-                    }
-                }
-            }
+            if (PlagueDoctor.allPlayers.Count > 0 && (PlagueDoctor.canWinDead || PlagueDoctor.hasAlivePlayers)) PlagueDoctor.checkWinStatus();
         }
 
         public static Camera FindCamera(int cameraLayer) => Camera.allCameras.FirstOrDefault(c => (c.cullingMask & (1 << cameraLayer)) != 0);
@@ -690,8 +737,8 @@ namespace TheOtherRoles
 
         static public float GetKillCooldown(this PlayerControl player)
         {
-            if (player == SerialKiller.serialKiller) return SerialKiller.killCooldown;
-            if (player == SchrodingersCat.schrodingersCat) return SchrodingersCat.killCooldown;
+            if (player.isRole(RoleId.SerialKiller)) return SerialKiller.killCooldown;
+            if (player.isRole(RoleId.SchrodingersCat)) return SchrodingersCat.killCooldown;
             return GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
         }
 
@@ -1022,10 +1069,10 @@ namespace TheOtherRoles
             return features;
         }
 
-        public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie) {
+        public static KeyValuePair<byte, float> MaxPair(this Dictionary<byte, float> self, out bool tie) {
             tie = true;
-            KeyValuePair<byte, int> result = new(byte.MaxValue, int.MinValue);
-            foreach (KeyValuePair<byte, int> keyValuePair in self)
+            KeyValuePair<byte, float> result = new(byte.MaxValue, int.MinValue);
+            foreach (KeyValuePair<byte, float> keyValuePair in self)
             {
                 if (keyValuePair.Value > result.Value)
                 {
@@ -1169,21 +1216,20 @@ namespace TheOtherRoles
 
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f || MushroomSabotageActive()) return true; // No names are visible
-            if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target) && Ninja.ninja == target) return true; // Hide Ninja nametags from non-impostors
-            if (Sprinter.sprinting && Sprinter.sprinter == target && source != Sprinter.sprinter) return true; // Hide Sprinter nametags
-            if (Fox.stealthed && Fox.fox == target && source != Fox.fox) return true; // Hide Fox nametags
+            if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target)) return true; // Hide Ninja nametags from non-impostors
+            if (Sprinter.isSprinting(target) && source != target) return true; // Hide Sprinter nametags
+            if (Fox.stealthed && target.isRole(RoleId.Fox) && source != target) return true; // Hide Fox nametags
             if (source != target && Kataomoi.isStalking(target)) return true; // Hide Kataomoi nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
             //else if (Assassin.isInvisble && Assassin.assassin == target) return true;
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
             else if (source == null || target == null) return true;
             else if (source == target) return false; // Player sees his own name
-            else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target == Spy.spy || (target == Sidekick.sidekick && Sidekick.wasTeamRed) || (target == Jackal.jackal && Jackal.wasTeamRed))) return false; // Members of team Impostors see the names of Impostors/Spies
-            else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
-            else if (Cupid.lovers1 != null && Cupid.lovers2 != null && (source == Cupid.lovers1 || source == Cupid.lovers2) && (target == Cupid.lovers1 || target == Cupid.lovers2)) return false; // Members of team Cupid Lovers see the names of each other
-            else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
-            else if (Deputy.knowsSheriff && (source == Sheriff.sheriff || source == Deputy.deputy) && (target == Sheriff.sheriff || target == Deputy.deputy)) return false; // Sheriff & Deputy see the names of each other
-            else if ((source == Fox.fox || source == Immoralist.immoralist) && (target == Fox.fox || target == Immoralist.immoralist)) return false; // Members of team Fox see the names of each other
+            else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.player == target && x.wasTeamRed) || Jackal.players.Any(x => x.player == target && x.wasTeamRed))) return false; // Members of team Impostors see the names of Impostors/Spies
+            else if (source.getPartner() == target) return false; // Members of team Lovers see the names of each other
+            else if (Jackal.players.Any(x => x.player == source && (target == x.fakeSidekick || (Jackal.getSidekick(source) != null && Jackal.getSidekick(source).player == target))) || Sidekick.players.Any(x => x.player == source && x.jackal.player == target)) return false; // Members of team Jackal see the names of each other
+            else if (Deputy.knowsSheriff && (Sheriff.players.Any(x => x.player == source && Sheriff.getDeputy(source) != null && Sheriff.getDeputy(source).player == target) || Deputy.players.Any(x => x.player == source && x.sheriff.player == target))) return false; // Sheriff & Deputy see the names of each other
+            else if ((source.isRole(RoleId.Fox) || source.isRole(RoleId.Immoralist)) && (target.isRole(RoleId.Fox) || target.isRole(RoleId.Immoralist))) return false; // Members of team Fox see the names of each other
             return true;
         }
 
@@ -1306,6 +1352,9 @@ namespace TheOtherRoles
             text.defaultStr = translationKey;
         }
 
+        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && !Busker.players.Any(x => x.player == player && x.pseudocideFlag))
+                        || (player.isRole(RoleId.Lighter) && Lighter.canSeeInvisible);
+
         public static PlayerDisplay GetPlayerDisplay()
         {
             AmongUsClient.Instance.PlayerPrefab.gameObject.SetActive(false);
@@ -1368,7 +1417,7 @@ namespace TheOtherRoles
 
             SpriteRenderer additionalRenderer = null;
             p = 0f;
-            while (p < Detective.inspectDuration && !MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead)
+            while (p < Detective.inspectDuration && !MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Detective))
             {
                 if (target == null) break;
                 Vector2 del = target.transform.position - FindCamera(LayerMask.NameToLayer("UI")).transform.position;
@@ -1461,24 +1510,6 @@ namespace TheOtherRoles
             list.Add(param);
         }
 
-        public static List<PlayerControl> GetAllRelatedPlayers(this PlayerControl player)
-        {
-            List<PlayerControl> relatedPlayers = new();
-            if (player.getPartner() != null && Lovers.bothDie) relatedPlayers.TryAdd(player.getPartner());
-            if (player.getCupidLover() != null) {
-                relatedPlayers.TryAdd(player.getCupidLover());
-                if (Cupid.cupid != null) relatedPlayers.TryAdd(Cupid.cupid);
-            }
-            if ((player == Akujo.akujo && Akujo.honmei != null) || (player == Akujo.honmei && Akujo.akujo != null)) relatedPlayers.TryAdd(player == Akujo.akujo ?
-                Akujo.honmei : Akujo.akujo);
-            if ((player == BomberA.bomberA || player == BomberB.bomberB) && BomberA.ifOneDiesBothDie) relatedPlayers.TryAdd(player == BomberA.bomberA ? BomberB.bomberB : BomberA.bomberA);
-            if ((player == MimicK.mimicK || player == MimicA.mimicA) && MimicK.ifOneDiesBothDie) relatedPlayers.TryAdd(player == MimicK.mimicK ? MimicA.mimicA : MimicK.mimicK);
-            if (player == Fox.fox && Immoralist.immoralist != null) relatedPlayers.TryAdd(Immoralist.immoralist);
-            if (player == Kataomoi.target && Kataomoi.kataomoi != null) relatedPlayers.TryAdd(Kataomoi.kataomoi);
-            relatedPlayers.RemoveAll(x => x == player);
-            return relatedPlayers;
-        }
-
         public static void setInvisible(PlayerControl player, Color color, float alpha)
         {
             if (player.cosmetics.currentBodySprite.BodySprite != null)
@@ -1545,11 +1576,11 @@ namespace TheOtherRoles
             bool roleCouldUse = false;
             if (Madmate.madmate.Any(x => x.PlayerId == player?.PlayerId) && Madmate.canSabotage)
                 roleCouldUse = true;
-            else if (CreatedMadmate.createdMadmate != null && player == CreatedMadmate.createdMadmate && CreatedMadmate.canSabotage)
+            else if (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player?.PlayerId) && CreatedMadmate.canSabotage)
                 roleCouldUse = true;
-            else if (Janitor.janitor != null && Janitor.janitor == player)
+            else if (player.isRole(RoleId.Janitor))
                 roleCouldUse = false;
-            else if (Mafioso.mafioso != null && Mafioso.mafioso == player && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+            else if (player.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead))
                 roleCouldUse = false;
             else if (player?.Data?.Role?.IsImpostor == true)
                 roleCouldUse = true;
@@ -1558,38 +1589,38 @@ namespace TheOtherRoles
 
         public static bool roleCanUseVents(this PlayerControl player) {
             bool roleCouldUse = false;            
-            if (Engineer.engineer != null && Engineer.engineer == player)
+            if (player.isRole(RoleId.Engineer))
                 roleCouldUse = true;
-            else if (Jackal.canUseVents && Jackal.jackal != null && Jackal.jackal == player)
+            else if (Jackal.canUseVents && player.isRole(RoleId.Jackal))
                 roleCouldUse = true;
-            else if (Sidekick.canUseVents && Sidekick.sidekick != null && Sidekick.sidekick == player)
+            else if (Sidekick.canUseVents && player.isRole(RoleId.Sidekick))
                 roleCouldUse = true;
-            else if (Spy.canEnterVents && Spy.spy != null && Spy.spy == player)
+            else if (Spy.canEnterVents && player.isRole(RoleId.Spy))
                 roleCouldUse = true;            
-            else if (Vulture.canUseVents && Vulture.vulture != null && Vulture.vulture == player)
+            else if (Vulture.canUseVents && player.isRole(RoleId.Vulture))
                 roleCouldUse = true;
             else if (Madmate.canVent && Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
                 roleCouldUse = true;
-            else if (CreatedMadmate.canEnterVents && CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate == player)
+            else if (CreatedMadmate.canEnterVents && CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId))
                 roleCouldUse = true;
-            else if (Moriarty.moriarty != null && Moriarty.moriarty == player)
+            else if (player.isRole(RoleId.Moriarty))
                 roleCouldUse = true;
-            else if (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde == player)
+            else if (JekyllAndHyde.players.Any(x => x.player == player && !x.isJekyll()))
                 roleCouldUse = true;
-            else if (Jester.jester != null && Jester.canUseVents && Jester.jester == player)
+            else if (Jester.canUseVents && player.isRole(RoleId.Jester))
                 roleCouldUse = true;
-            else if (Thief.canUseVents && Thief.thief != null && Thief.thief == player)
+            else if (Thief.canUseVents && player.isRole(RoleId.Thief))
                 roleCouldUse = true;
-            else if (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat == player && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
+            else if (player.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
-                if (Janitor.janitor != null && Janitor.janitor == player)
+                if (player.isRole(RoleId.Janitor))
                     roleCouldUse = false;
-                else if (Mafioso.mafioso != null && Mafioso.mafioso == player && Godfather.godfather != null && !Godfather.godfather.Data.IsDead)
+                else if (player.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead))
                     roleCouldUse = false;
-                else if (Ninja.ninja != null && Ninja.ninja == player && Ninja.canUseVents == false)
+                else if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
                     roleCouldUse = false;
-                else if (Undertaker.undertaker != null && Undertaker.undertaker == player && Undertaker.DraggedBody != null && Undertaker.disableVent)
+                else if (player.isRole(RoleId.Undertaker) && Undertaker.DraggedBody != null && Undertaker.disableVent)
                     roleCouldUse = false;
                 else
                     roleCouldUse = true;
@@ -1640,16 +1671,20 @@ namespace TheOtherRoles
             }
 
             // Block impostor shielded kill
-            if (Medic.shielded != null && Medic.shielded == target) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.shieldedMurderAttempt();
-                SoundEffectsManager.play("fail");
+            if (Medic.IsShielded(target)) {
+                foreach (var medic in Medic.GetMedic(target)) {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
+                    writer.Write(medic.player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.shieldedMurderAttempt(medic.player.PlayerId);
 
-                MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockMedicAcChallenge, SendOption.Reliable, -1);
-                writer.Write(killer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(acWriter);
-                RPCProcedure.unlockMedicAcChallenge(killer.PlayerId);
+                    MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockMedicAcChallenge, SendOption.Reliable, -1);
+                    acWriter.Write(killer.PlayerId);
+                    acWriter.Write(medic.player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(acWriter);
+                    RPCProcedure.unlockMedicAcChallenge(killer.PlayerId, medic.player.PlayerId);
+                }
+                SoundEffectsManager.play("fail");
                 return MurderAttemptResult.SuppressKill;
             }
 
@@ -1659,43 +1694,42 @@ namespace TheOtherRoles
             }
 
             // Block Time Master with time shield kill
-            else if (TimeMaster.shieldActive && TimeMaster.timeMaster != null && TimeMaster.timeMaster == target) {
+            else if (TimeMaster.players.Any(x => x.player == target && x.shieldActive)) {
                 if (!blockRewind) { // Only rewind the attempt was not called because a meeting startet 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.TimeMasterRewindTime, Hazel.SendOption.Reliable, -1);
+                    writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.timeMasterRewindTime();
+                    RPCProcedure.timeMasterRewindTime(target.PlayerId);
                 }
                 return MurderAttemptResult.SuppressKill;
             }
 
-            else if (Cupid.cupid != null && Cupid.shielded == target && !Cupid.cupid.Data.IsDead)
+            else if (Cupid.checkShieldActive(target))
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, Hazel.SendOption.Reliable, -1);
-                writer.Write(Cupid.cupid.PlayerId);
-                writer.Write(true);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.cupidSuicide(Cupid.cupid.PlayerId, true);
+                Cupid.scapeGoat(target);
                 return MurderAttemptResult.BlankKill;
             }
 
             // Kill the killer if Veteran is on alert
-            else if (Veteran.veteran != null && Veteran.alertActive && Veteran.veteran == target)
+            else if (Veteran.players.Any(x => x.player == target && x.alertActive))
             {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.UnlockVeteranAcChallenge, Hazel.SendOption.Reliable, -1);
+                writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.unlockVeteranAcChallenge();
+                RPCProcedure.unlockVeteranAcChallenge(target.PlayerId);
                 return MurderAttemptResult.ReverseKill;
             }
 
             // Thief if hit crew only kill if setting says so, but also kill the thief.
             else if (Thief.isFailedThiefKill(target, killer, targetRole)) {
+                var thief = Thief.getRole(killer);
                 if (!checkArmored(killer, true, true))
-                    Thief.suicideFlag = true;
+                    thief.suicideFlag = true;
                 return MurderAttemptResult.SuppressKill;
             }
 
             // Block Armored with armor kill
-            else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, Sheriff.sheriff == null || killer.PlayerId != Sheriff.sheriff.PlayerId || (isEvil(target) && Sheriff.canKillNeutrals) || isKiller(target)))
+            else if (checkArmored(target, true, killer == PlayerControl.LocalPlayer, !Sheriff.exists || !killer.isRole(RoleId.Sheriff) || (isEvil(target) && Sheriff.canKillNeutrals) || isKiller(target)))
             {
                 return MurderAttemptResult.BlankKill;
             }
@@ -1710,7 +1744,7 @@ namespace TheOtherRoles
                 return MurderAttemptResult.SuppressKill;
             }
 
-            if (TransportationToolPatches.isUsingTransportation(target) && !blockRewind && killer == Vampire.vampire)
+            if (TransportationToolPatches.isUsingTransportation(target) && !blockRewind && killer.isRole(RoleId.Vampire))
             {
                 return MurderAttemptResult.DelayVampireKill;
             }
@@ -1741,13 +1775,14 @@ namespace TheOtherRoles
             else if (murder == MurderAttemptResult.DelayVampireKill)
             {
                 HudManager.Instance.StartCoroutine(Effects.Lerp(10f, new Action<float>((p) => {
-                    if (!TransportationToolPatches.isUsingTransportation(target) && Vampire.bitten != null)
+                    if (!TransportationToolPatches.isUsingTransportation(target) && Vampire.players.Any(x => x.bitten == target))
                     {
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
                         writer.Write(byte.MaxValue);
                         writer.Write(byte.MaxValue);
+                        writer.Write(killer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
+                        RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue, killer.PlayerId);
                         MurderPlayer(killer, target, showAnimation);
                     }
                 })));
@@ -1777,8 +1812,8 @@ namespace TheOtherRoles
             List<PlayerControl> team = new();
             foreach(PlayerControl p in PlayerControl.AllPlayerControls) {
                 if (player.Data.Role.IsImpostor && p.Data.Role.IsImpostor && player.PlayerId != p.PlayerId && team.All(x => x.PlayerId != p.PlayerId)) team.Add(p);
-                else if (player == Jackal.jackal && p == Sidekick.sidekick) team.Add(p); 
-                else if (player == Sidekick.sidekick && p == Jackal.jackal) team.Add(p);
+                else if (player.isRole(RoleId.Jackal) && p.isRole(RoleId.Sidekick)) team.Add(p); 
+                else if (player.isRole(RoleId.Sidekick) && p.isRole(RoleId.Jackal)) team.Add(p);
             }
             
             return team;
@@ -1793,7 +1828,7 @@ namespace TheOtherRoles
         public static bool checkSuspendAction(PlayerControl player, PlayerControl target)
         {
             if (player == null || target == null) return false;
-            if (Veteran.veteran != null && target == Veteran.veteran && Veteran.alertActive)
+            if (Veteran.players.Any(x => x.player == target && x.alertActive))
             {
                 if (isEvil(player))
                 {
@@ -1815,17 +1850,21 @@ namespace TheOtherRoles
         public static bool isKiller(PlayerControl player) {
             return player.Data.Role.IsImpostor || 
                 (isNeutral(player) && 
-                player != Jester.jester && 
-                player != Arsonist.arsonist && 
-                player != Vulture.vulture && 
-                player != Lawyer.lawyer && 
-                player != Pursuer.pursuer &&
-                player != Opportunist.opportunist &&
-                player != Akujo.akujo &&
-                player != PlagueDoctor.plagueDoctor &&
-                player != Cupid.cupid &&
-                !(player == SchrodingersCat.schrodingersCat && !SchrodingersCat.hasTeam()));
+                !player.isRole(RoleId.Jester) && 
+                !player.isRole(RoleId.Arsonist) && 
+                !player.isRole(RoleId.Vulture) && 
+                !player.isRole(RoleId.Lawyer) && 
+                !player.isRole(RoleId.Pursuer) &&
+                !player.isRole(RoleId.Opportunist) &&
+                !player.isRole(RoleId.Akujo) &&
+                !player.isRole(RoleId.PlagueDoctor) &&
+                !player.isRole(RoleId.Cupid) &&
+                !(player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam()));
 
+        }
+
+        public static bool isCrew(this PlayerControl player) {
+            return player != null && !player.Data.Role.IsImpostor && !isNeutral(player);
         }
 
         public static bool isEvil(PlayerControl player) {
@@ -1904,17 +1943,17 @@ namespace TheOtherRoles
 
         public static bool hasImpVision(NetworkedPlayerInfo player) {
             return player.Role.IsImpostor
-                || (((Jackal.jackal != null && Jackal.jackal.PlayerId == player.PlayerId) || Jackal.formerJackals.Any(x => x.PlayerId == player.PlayerId)) && Jackal.hasImpostorVision)
-                || (Sidekick.sidekick != null && Sidekick.sidekick.PlayerId == player.PlayerId && Sidekick.hasImpostorVision)
-                || (Spy.spy != null && Spy.spy.PlayerId == player.PlayerId && Spy.hasImpostorVision)
-                || (Jester.jester != null && Jester.jester.PlayerId == player.PlayerId && Jester.hasImpostorVision)
-                || (Thief.thief != null && Thief.thief.PlayerId == player.PlayerId && Thief.hasImpostorVision)
+                || (player.Object.isRole(RoleId.Jackal) && Jackal.hasImpostorVision)
+                || (player.Object.isRole(RoleId.Sidekick) && Sidekick.hasImpostorVision)
+                || (player.Object.isRole(RoleId.Spy) && Spy.hasImpostorVision)
+                || (player.Object.isRole(RoleId.Jester) && Jester.hasImpostorVision)
+                || (player.Object.isRole(RoleId.Thief) && Thief.hasImpostorVision)
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && Madmate.hasImpostorVision)
-                || (CreatedMadmate.createdMadmate != null && CreatedMadmate.createdMadmate.PlayerId == player.PlayerId && CreatedMadmate.hasImpostorVision)
-                || (Moriarty.moriarty != null && Moriarty.moriarty.PlayerId == player.PlayerId)
-                || (JekyllAndHyde.jekyllAndHyde != null && !JekyllAndHyde.isJekyll() && JekyllAndHyde.jekyllAndHyde.PlayerId == player.PlayerId)
-                || (Fox.fox != null && Fox.fox.PlayerId == player.PlayerId)
-                || (SchrodingersCat.schrodingersCat != null && SchrodingersCat.schrodingersCat.PlayerId == player.PlayerId && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate);
+                || (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId) && CreatedMadmate.hasImpostorVision)
+                || player.Object.isRole(RoleId.Moriarty)
+                || JekyllAndHyde.players.Any(x => x.player && x.player.PlayerId == player.PlayerId && !x.isJekyll())
+                || player.Object.isRole(RoleId.Fox)
+                || (player.Object.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate);
         }
         
         public static object TryCast(this Il2CppObjectBase self, Type type)
@@ -1977,7 +2016,7 @@ namespace TheOtherRoles
                 closestDistance = distance;
             }
 
-            if (result && Undertaker.undertaker == targetingPlayer)
+            if (result && targetingPlayer.isRole(RoleId.Undertaker))
                 SetDeadBodyOutline(result, Undertaker.color);
 
             return result;
@@ -1985,7 +2024,7 @@ namespace TheOtherRoles
 
         public static void HandleUndertakerDropOnBodyReport()
         {
-            if (Undertaker.undertaker == null) return;
+            if (Undertaker.allPlayers.Count == 0) return;
             var position = Undertaker.DraggedBody != null
                 ? Undertaker.DraggedBody.transform.position
                 : Vector3.zero;

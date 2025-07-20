@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -16,7 +17,7 @@ namespace TheOtherRoles.Patches {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
             var target = __instance.HauntTarget;
             var roleInfo = RoleInfo.getRoleInfoForPlayer(target, false, includeHidden: true);
-            string roleString = (roleInfo.Count > 0 && TORMapOptions.ghostsSeeRoles) ? ((Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate == target) ? (roleInfo.Contains(RoleInfo.crewmate) ? Madmate.fullName : Madmate.prefix + roleInfo[0].name) : roleInfo[0].name) : "";
+            string roleString = (roleInfo.Count > 0 && TORMapOptions.ghostsSeeRoles) ? ((Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == target.PlayerId)) ? (roleInfo.Contains(RoleInfo.crewmate) ? Madmate.fullName : Madmate.prefix + roleInfo[0].name) : roleInfo[0].name) : "";
             if (__instance.HauntTarget.Data.IsDead) {
                 __instance.FilterText.text = string.Format(ModTranslation.getString("hauntMenuGhost"), roleString);
                 return;
@@ -63,7 +64,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.FixedUpdate))]
         public static void UpdatePostfix(HauntMenuMinigame __instance) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
-            if (PlayerControl.LocalPlayer.Data.Role.IsImpostor && Vampire.vampire != PlayerControl.LocalPlayer)
+            if (PlayerControl.LocalPlayer.Data.Role.IsImpostor && !PlayerControl.LocalPlayer.isRole(RoleId.Vampire))
                 __instance.gameObject.transform.localPosition = new UnityEngine.Vector3(-6f, -1.1f, __instance.gameObject.transform.localPosition.z);
             return;
         }
@@ -72,7 +73,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance) {
             bool isHideNSeek = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek;
-            if (FreePlayGM.isFreePlayGM || (PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag)) return;
+            if (FreePlayGM.isFreePlayGM || Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)) return;
             if (PlayerControl.LocalPlayer.Data.IsDead && (CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool() || isHideNSeek)) {
                 // player has haunt button.
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);

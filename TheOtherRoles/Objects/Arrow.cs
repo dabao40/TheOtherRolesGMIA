@@ -1,3 +1,4 @@
+using TheOtherRoles.Roles;
 using UnityEngine;
 
 namespace TheOtherRoles.Objects {
@@ -48,28 +49,28 @@ namespace TheOtherRoles.Objects {
         {
             if (!GameManager.Instance.GameHasStarted) return;
 
-            if (Tracker.DangerMeterParent == null)
+            if (Tracker.local.DangerMeterParent == null)
             {
-                Tracker.DangerMeterParent = GameObject.Instantiate(GameObject.Find("ImpostorDetector"), HudManager.Instance.transform);
-                Tracker.Meter = Tracker.DangerMeterParent.transform.GetChild(0).GetComponent<DangerMeter>();
-                Tracker.DangerMeterParent.transform.localPosition = new(3.7f, -1.6f, 0);
-                var backgroundrend = Tracker.DangerMeterParent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
+                Tracker.local.DangerMeterParent = GameObject.Instantiate(GameObject.Find("ImpostorDetector"), HudManager.Instance.transform);
+                Tracker.local.Meter = Tracker.local.DangerMeterParent.transform.GetChild(0).GetComponent<DangerMeter>();
+                Tracker.local.DangerMeterParent.transform.localPosition = new(3.7f, -1.6f, 0);
+                var backgroundrend = Tracker.local.DangerMeterParent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
                 backgroundrend.color = backgroundrend.color.SetAlpha(0.5f);
             }
-            Tracker.DangerMeterParent.SetActive(MeetingHud.Instance == null && LobbyBehaviour.Instance == null && !Tracker.tracker.Data.IsDead && Tracker.tracked != null);
-            Tracker.Meter.gameObject.SetActive(MeetingHud.Instance == null && LobbyBehaviour.Instance == null && !Tracker.tracker.Data.IsDead && Tracker.tracked != null);
-            if (Tracker.tracker.Data.IsDead) return;
-            if (Tracker.tracked == null)
+            Tracker.local.DangerMeterParent.SetActive(MeetingHud.Instance == null && LobbyBehaviour.Instance == null && !PlayerControl.LocalPlayer.Data.IsDead && Tracker.local.tracked != null);
+            Tracker.local.Meter.gameObject.SetActive(MeetingHud.Instance == null && LobbyBehaviour.Instance == null && !PlayerControl.LocalPlayer.Data.IsDead && Tracker.local.tracked != null);
+            if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (Tracker.local.tracked == null)
             {
-                Tracker.Meter.SetDangerValue(0, 0);
+                Tracker.local.Meter.SetDangerValue(0, 0);
                 return;
             }
-            if (Tracker.DangerMeterParent.transform.localPosition.x != 3.7f) Tracker.DangerMeterParent.transform.localPosition = new(3.7f, -1.6f, 0);
+            if (Tracker.local.DangerMeterParent.transform.localPosition.x != 3.7f) Tracker.local.DangerMeterParent.transform.localPosition = new(3.7f, -1.6f, 0);
             float num = float.MaxValue;
             float dangerLevel1;
             float dangerLevel2;
 
-            float sqrMagnitude = (position - Tracker.tracker.transform.position).sqrMagnitude;
+            float sqrMagnitude = (position - Tracker.local.player.transform.position).sqrMagnitude;
             if (sqrMagnitude < (55 * GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod) && num > sqrMagnitude)
             {
                 num = sqrMagnitude;
@@ -78,7 +79,7 @@ namespace TheOtherRoles.Objects {
             dangerLevel1 = Mathf.Clamp01((55 - num) / (55 - 15 * GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod));
             dangerLevel2 = Mathf.Clamp01((15 - num) / (15 * GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod));
 
-            Tracker.Meter.SetDangerValue(dangerLevel1, dangerLevel2);
+            Tracker.local.Meter.SetDangerValue(dangerLevel1, dangerLevel2);
         }
     }
 }

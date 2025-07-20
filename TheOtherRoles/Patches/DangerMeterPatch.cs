@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using UnityEngine;
 
 namespace TheOtherRoles.Patches
@@ -14,7 +14,7 @@ namespace TheOtherRoles.Patches
 
         public static void Prefix(DangerMeter __instance, ref Color color)
         {
-            if (PlayerControl.LocalPlayer != Tracker.tracker) return;
+            if (!PlayerControl.LocalPlayer.isRole(RoleId.Tracker)) return;
             if (__instance == HudManager.Instance.DangerMeter) return;
 
             color = color.SetAlpha(0.5f);

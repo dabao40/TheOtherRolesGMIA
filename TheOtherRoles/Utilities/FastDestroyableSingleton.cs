@@ -11,7 +11,7 @@ public static unsafe class FastDestroyableSingleton<T> where T : MonoBehaviour
     static FastDestroyableSingleton()
     {
         _fieldPtr = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<DestroyableSingleton<T>>.NativeClassPtr, nameof (DestroyableSingleton<T>._instance));
-        var constructor = typeof(T).GetConstructor(new[] {typeof(IntPtr)});
+        var constructor = typeof(T).GetConstructor([typeof(IntPtr)]);
         var ptr = Expression.Parameter(typeof(IntPtr));
         var create = Expression.New(constructor!, ptr);
         var lambda = Expression.Lambda<Func<IntPtr, T>>(create, ptr);

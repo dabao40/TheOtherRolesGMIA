@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using TheOtherRoles.Utilities;
 using static TheOtherRoles.TheOtherRoles;
+using System.Linq;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Objects {
 
@@ -50,9 +52,11 @@ namespace TheOtherRoles.Objects {
             bool flip = playerControl.cosmetics.currentBodySprite.BodySprite.flipX; // use the original player control here, not the morhpTarget.
             firstPortal.animationFgRenderer.flipX = flip;
             secondPortal.animationFgRenderer.flipX = flip;
-            if (Morphling.morphling != null && Morphling.morphTimer > 0 && Morphling.morphling == playerControl) playerControl = Morphling.morphTarget;  // Will output info of morph-target instead
-            else if (MimicK.mimicK != null && MimicA.mimicA != null && MimicA.isMorph && MimicA.mimicA == playerControl) playerControl = MimicK.mimicK;
-            else if (MimicK.mimicK != null && MimicK.victim != null && MimicK.mimicK == playerControl) playerControl = MimicK.victim;
+            foreach (var morphling in Morphling.players) {
+                if (morphling.morphTimer > 0 && morphling.player == playerControl) playerControl = morphling.morphTarget;
+            }
+            if (MimicA.isMorph && playerControl.isRole(RoleId.MimicA)) playerControl = MimicK.allPlayers.FirstOrDefault();
+            else if (MimicK.victim != null && playerControl.isRole(RoleId.MimicK)) playerControl = MimicK.victim;
 
             string playerNameDisplay = Portalmaker.logOnlyHasColors ? ModTranslation.getString("portalmakerLogPlayer") + " (" + (Helpers.isLighterColor(playerControl.Data.DefaultOutfit.ColorId) ? ModTranslation.getString("detectiveLightLabel") : ModTranslation.getString("detectiveDarkLabel")) + ")" : playerControl.Data.PlayerName;
 
@@ -111,7 +115,7 @@ namespace TheOtherRoles.Objects {
             animationFgRenderer.material = FastDestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
             // Only render the inactive portals for the Portalmaker
-            bool playerIsPortalmaker = PlayerControl.LocalPlayer == TheOtherRoles.Portalmaker.portalmaker;
+            bool playerIsPortalmaker = PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker);
             portalGameObject.SetActive(playerIsPortalmaker);
             portalFgAnimationGameObject.SetActive(true);
 
@@ -156,17 +160,17 @@ namespace TheOtherRoles.Objects {
                 secondPortal.portalGameObject.SetActive(true);
                 bothPlacedAndEnabled = true;
                 HudManagerStartPatch.portalmakerButtonText2.text = "2. " + secondPortal.room;
-                if (PlayerControl.LocalPlayer == Portalmaker.portalmaker)
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker))
                     _ = new Modules.StaticAchievementToken("portalmaker.common1");
             }
 
             // reset teleported players
             teleportedPlayers = new List<tpLogEntry>();
 
-            if (PlayerControl.LocalPlayer == Portalmaker.portalmaker)
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker))
             {
-                if (Portalmaker.acTokenChallenge != null)
-                    Portalmaker.acTokenChallenge.Value.portal = 0;
+                if (Portalmaker.local.acTokenChallenge != null)
+                    Portalmaker.local.acTokenChallenge.Value.portal = 0;
             }
         }
 

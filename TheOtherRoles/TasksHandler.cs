@@ -3,6 +3,7 @@ using Hazel;
 using System;
 using System.Linq;
 using TheOtherRoles.Patches;
+using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 
 namespace TheOtherRoles {
@@ -17,7 +18,7 @@ namespace TheOtherRoles {
                 playerInfo.Role && playerInfo.Role.TasksCountTowardProgress &&
                 !playerInfo.Object.hasFakeTasks() && !playerInfo.Role.IsImpostor
                 ) {
-                bool isTaskMasterEx = TaskMaster.taskMaster && TaskMaster.taskMaster == playerInfo.Object && TaskMaster.isTaskComplete;
+                bool isTaskMasterEx = playerInfo.Object.isRole(RoleId.TaskMaster) && TaskMaster.isTaskComplete;
                 if (!isResult && isTaskMasterEx)
                 {
                     TotalTasks = CompletedTasks = GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks + 
@@ -46,18 +47,17 @@ namespace TheOtherRoles {
                 
                 foreach (var playerInfo in GameData.Instance.AllPlayers.GetFastEnumerator())
                 {
-                    if ((playerInfo.Object
-                        && (playerInfo.Object.hasAliveKillingLover() ||
-                        playerInfo.Object.hasAliveKillingCupidLover())) // Tasks do not count if a Crewmate has an alive killing Lover
-                        || playerInfo.PlayerId == Lawyer.lawyer?.PlayerId // Tasks of the Lawyer do not count
-                        || (playerInfo.PlayerId == Pursuer.pursuer?.PlayerId && Pursuer.pursuer.Data.IsDead) // Tasks of the Pursuer only count, if he's alive
-                        || (playerInfo.PlayerId == Shifter.shifter?.PlayerId && Shifter.isNeutral) // Chain-Shifter has tasks, but they don't count
-                        || playerInfo.PlayerId == Thief.thief?.PlayerId // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
+                    if (playerInfo.Object
+                        && (playerInfo.Object.hasAliveKillingLover() // Tasks do not count if a Crewmate has an alive killing Lover
+                        || playerInfo.Object.isRole(RoleId.Lawyer) // Tasks of the Lawyer do not count
+                        || (playerInfo.Object.isRole(RoleId.Pursuer) && playerInfo.IsDead) // Tasks of the Pursuer only count, if he's alive
+                        || (playerInfo.Object.isRole(RoleId.Shifter) && Shifter.isNeutral) // Chain-Shifter has tasks, but they don't count
+                        || playerInfo.Object.isRole(RoleId.Thief) // Thief's tasks only count after joining crew team as sheriff (and then the thief is not the thief anymore)
                         || (Madmate.hasTasks && Madmate.madmate.Any(x => x.PlayerId == playerInfo.PlayerId))
-                        || (CreatedMadmate.hasTasks && playerInfo.PlayerId == CreatedMadmate.createdMadmate?.PlayerId)
-                        || (SchrodingersCat.hideRole && playerInfo.PlayerId == SchrodingersCat.schrodingersCat?.PlayerId)
-                        || playerInfo.PlayerId == JekyllAndHyde.jekyllAndHyde?.PlayerId
-                        || playerInfo.PlayerId == Fox.fox?.PlayerId
+                        || (CreatedMadmate.hasTasks && CreatedMadmate.createdMadmate.Any(x => x.PlayerId == playerInfo.PlayerId))
+                        || (SchrodingersCat.hideRole && playerInfo.Object.isRole(RoleId.SchrodingersCat))
+                        || playerInfo.Object.isRole(RoleId.JekyllAndHyde)
+                        || playerInfo.Object.isRole(RoleId.Fox))
                         )
                         continue;
                     var (playerCompleted, playerTotal) = taskInfo(playerInfo);
@@ -76,7 +76,7 @@ namespace TheOtherRoles {
         {
             private static void Postfix(GameData __instance, [HarmonyArgument(0)] PlayerControl pc, [HarmonyArgument(1)] uint taskId)
             {
-                if (AmongUsClient.Instance.AmHost && !pc.Data.IsDead && TaskMaster.isTaskMaster(pc.PlayerId))
+                if (AmongUsClient.Instance.AmHost && !pc.Data.IsDead && pc.isRole(RoleId.TaskMaster))
                 {
                     byte clearTasks = 0;
                     for (int i = 0; i < pc.Data.Tasks.Count; ++i)

@@ -14,7 +14,7 @@ namespace TheOtherRoles.Patches
     [HarmonyPatch]
     public static class ClientOptionsPatch
     {
-        private static SelectionBehaviour[] AllOptions = {
+        private static SelectionBehaviour[] AllOptions = [
             new SelectionBehaviour("ghostsSeeInfoButton", () => TORMapOptions.ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value = !TheOtherRolesPlugin.GhostsSeeInformation.Value, TheOtherRolesPlugin.GhostsSeeInformation.Value),
             new SelectionBehaviour("ghostsSeeVotesButton", () => TORMapOptions.ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value = !TheOtherRolesPlugin.GhostsSeeVotes.Value, TheOtherRolesPlugin.GhostsSeeVotes.Value),
             new SelectionBehaviour("ghostsSeeRolesButton", () => TORMapOptions.ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value = !TheOtherRolesPlugin.GhostsSeeRoles.Value, TheOtherRolesPlugin.GhostsSeeRoles.Value),
@@ -30,7 +30,7 @@ namespace TheOtherRoles.Patches
             new("showChatNotification", () => TORMapOptions.ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value = !TheOtherRolesPlugin.ShowChatNotifications.Value, TheOtherRolesPlugin.ShowChatNotifications.Value),
             new("showVentsOnMap", () => TORMapOptions.ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value = !TheOtherRolesPlugin.ShowVentsOnMap.Value, TheOtherRolesPlugin.ShowVentsOnMap.Value),
             new("showExtraInfo", () => TORMapOptions.showExtraInfo = TheOtherRolesPlugin.ShowExtraInfo.Value = !TheOtherRolesPlugin.ShowExtraInfo.Value, TheOtherRolesPlugin.ShowExtraInfo.Value)
-        };
+        ];
         
         private static GameObject popUp;
         private static TextMeshPro titleText;

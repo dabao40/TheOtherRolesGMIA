@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -81,7 +81,7 @@ namespace TheOtherRoles
             SpawnLocation = location;
             LocationKey = locationKey;
             TextureAddress = textureAddress;
-            Sprites = new Sprite[0];
+            Sprites = [];
 
             AudioClip = null;
             AudioClipName = audioClip;

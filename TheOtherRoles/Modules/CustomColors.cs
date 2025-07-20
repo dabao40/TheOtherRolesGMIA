@@ -223,10 +223,10 @@ namespace TheOtherRoles.Modules {
 
         [HarmonyPatch]
         public static class CustomColorPatches {
-            [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] {
+            [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), [
                 typeof(StringNames),
                 typeof(Il2CppReferenceArray<Il2CppSystem.Object>)
-            })]
+            ])]
             private class ColorStringPatch {
                 [HarmonyPriority(Priority.Last)]
                 public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name) {

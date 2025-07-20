@@ -66,7 +66,7 @@ namespace TheOtherRoles.Patches
                 Transform gapRoom = ShipStatus.Instance.FastRooms[SystemTypes.GapRoom].transform;
 
                 float diffX = (meetingRoom.position.x - gapRoom.transform.position.x) / 0.7f;
-                float[] shadowX = new float[2] { 0f, 0f };
+                float[] shadowX = [0f, 0f];
 
                 //画像を更新する
                 GameObject customRendererObj = new("meeting_custom");

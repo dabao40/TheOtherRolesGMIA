@@ -92,7 +92,8 @@ namespace TheOtherRoles.Modules
                 time -= Time.deltaTime;
                 if (time < 0f)
                 {
-                    text.color = Color.Lerp(Color.white, Palette.PlayerColors[player?.Data.DefaultOutfit.ColorId ?? PlayerId], 0.25f);
+                    int colorId = player?.Data.DefaultOutfit.ColorId ?? PlayerId;
+                    text.color = Color.Lerp(Color.white, Palette.PlayerColors[colorId >= 0 && colorId < Palette.PlayerColors.Length ? colorId : PlayerId], 0.25f);
                     time = 1f;
                 }
             }

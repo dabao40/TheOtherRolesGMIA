@@ -3,11 +3,11 @@ using HarmonyLib;
 using System.Linq;
 using TheOtherRoles.Utilities;
 using Hazel;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch]
     public static class ChatCommands {
-        public static bool isLover(this PlayerControl player) => !(player == null) && (player == Lovers.lover1 || player == Lovers.lover2);
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch {
@@ -102,8 +102,7 @@ namespace TheOtherRoles.Modules {
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class EnableChat {
             public static void Postfix(HudManager __instance) {
-                if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (PlayerControl.LocalPlayer.isLover() && Lovers.enableChat) || (Cupid.lovers1 != null
-                    && Cupid.lovers2 != null && (PlayerControl.LocalPlayer == Cupid.lovers1 || PlayerControl.LocalPlayer == Cupid.lovers2))))
+                if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (Lovers.enableChat && PlayerControl.LocalPlayer.isLovers())))
                     __instance.Chat.SetVisible(true);
             }
         }
@@ -112,7 +111,7 @@ namespace TheOtherRoles.Modules {
         public static class SetBubbleName { 
             public static void Postfix(ChatBubble __instance, [HarmonyArgument(0)] string playerName) {
                 PlayerControl sourcePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data != null && x.Data.PlayerName.Equals(playerName));
-                if (sourcePlayer != null && PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (Spy.spy != null && sourcePlayer.PlayerId == Spy.spy.PlayerId || Sidekick.sidekick != null && Sidekick.wasTeamRed && sourcePlayer.PlayerId == Sidekick.sidekick.PlayerId || Jackal.jackal != null && Jackal.wasTeamRed && sourcePlayer.PlayerId == Jackal.jackal.PlayerId) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
+                if (sourcePlayer != null && PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (sourcePlayer.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer) || Jackal.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer)) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
             }
         }
 
@@ -122,8 +121,7 @@ namespace TheOtherRoles.Modules {
                 if (__instance != FastDestroyableSingleton<HudManager>.Instance.Chat)
                     return true;
                 PlayerControl localPlayer = PlayerControl.LocalPlayer;
-                return localPlayer == null || MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead && !(localPlayer == Busker.busker && Busker.pseudocideFlag)) || (localPlayer.isLover() && Lovers.enableChat &&
-                    sourcePlayer == localPlayer.getPartner()) || (localPlayer.isCupidLover() && sourcePlayer == localPlayer.getCupidLover()) || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
+                return localPlayer == null || MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag)) || (sourcePlayer == localPlayer.getPartner()) || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
 
             }
         }

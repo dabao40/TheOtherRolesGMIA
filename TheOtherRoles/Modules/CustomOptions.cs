@@ -15,6 +15,7 @@ using AmongUs.GameOptions;
 using TMPro;
 using TheOtherRoles.Modules;
 using AmongUs.Data;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles {
     public class CustomOption {
@@ -48,10 +49,11 @@ namespace TheOtherRoles {
         public Action onChange = null;
         public string heading = "";
         public bool invertedParent;
+        public Color color;
 
         // Option creation
 
-        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, string format, Action onChange = null, string heading = "", bool invertedParent = false) {
+        public CustomOption(int id, CustomOptionType type, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader, string format, Color color, Action onChange = null, string heading = "", bool invertedParent = false) {
             this.id = id;
             this.name = parent == null ? name : "- " + name;
             this.format = format;
@@ -64,6 +66,7 @@ namespace TheOtherRoles {
             this.onChange = onChange;
             this.heading = heading;
             this.invertedParent = invertedParent;
+            this.color = color;
             selection = 0;
             if (id != 0) {
                 entry = TheOtherRolesPlugin.Instance.Config.Bind($"Preset{preset}", id.ToString(), defaultSelection);
@@ -72,24 +75,24 @@ namespace TheOtherRoles {
             options.Add(this);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false) {
-            return new CustomOption(id, type, name, selections, "", parent, isHeader, format, onChange, heading, invertedParent);
+        public static CustomOption Create(int id, CustomOptionType type, string name, string[] selections, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false, Color color = default) {
+            return new CustomOption(id, type, name, selections, "", parent, isHeader, format, color == default ? Color.white : color, onChange, heading, invertedParent);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false) {
+        public static CustomOption Create(int id, CustomOptionType type, string name, float defaultValue, float min, float max, float step, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false, Color color = default) {
             List<object> selections = new();
             for (float s = min; s <= max; s += step)
                 selections.Add(s);
-            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, format, onChange, heading, invertedParent);
+            return new CustomOption(id, type, name, selections.ToArray(), defaultValue, parent, isHeader, format, color == default ? color == default ? Color.white : color : color, onChange, heading, invertedParent);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false) {
-            return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format, onChange, heading, invertedParent);
+        public static CustomOption Create(int id, CustomOptionType type, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false, string format = "", Action onChange = null, string heading = "", bool invertedParent = false, Color color = default) {
+            return new CustomOption(id, type, name, new string[]{ "optionOff", "optionOn" }, defaultValue ? "optionOn" : "optionOff", parent, isHeader, format, Color.white, onChange, heading, invertedParent);
         }
 
-        public static CustomOption Create(int id, CustomOptionType type, string name, List<RoleId> roleId, CustomOption parent = null, bool isHeader = false) {
+        public static CustomOption Create(int id, CustomOptionType type, string name, List<RoleId> roleId, CustomOption parent = null, bool isHeader = false, Color color = default) {
             return new CustomOption(id, type, name, roleId.Select(x => x == RoleId.Jester ? "optionOff" : RoleInfo.allRoleInfos.FirstOrDefault(y => y.roleId == x
-            && y.color != Palette.ImpostorRed && !y.isNeutral).nameKey).ToArray(), 0, parent, isHeader, "");
+            && y.color != Palette.ImpostorRed && !y.isNeutral).nameKey).ToArray(), 0, parent, isHeader, "", color == default ? Color.white : color);
         }
 
         // Static behaviour
@@ -233,6 +236,11 @@ namespace TheOtherRoles {
         {
             if (heading == "") return "";
             return ModTranslation.getString(heading);
+        }
+
+        public Color getColor()
+        {
+            return color;
         }
 
         // Option changes
@@ -383,6 +391,63 @@ namespace TheOtherRoles {
                 SoundEffectsManager.play("fail");
             }
             return Convert.ToInt32(vanillaOptionsFine) + torOptionsFine;
+        }
+    }
+
+    public class CustomRoleOption : CustomOption
+    {
+        public CustomOption countOption = null;
+        public bool roleEnabled = true;
+
+        public bool enabled
+        {
+            get
+            {
+                return roleEnabled && selection > 0;
+            }
+        }
+
+        public int rate
+        {
+            get
+            {
+                return enabled ? selection : 0;
+            }
+        }
+
+        public int count
+        {
+            get
+            {
+                if (!enabled)
+                    return 0;
+
+                if (countOption != null)
+                    return Mathf.RoundToInt(countOption.getFloat());
+
+                return 1;
+            }
+        }
+
+        public (int, int) data
+        {
+            get
+            {
+                return (rate, count);
+            }
+        }
+
+        public CustomRoleOption(int id, CustomOptionType type, string name, Color color, int max = 24, bool roleEnabled = true) :
+            base(id, type, Helpers.cs(color, name), CustomOptionHolder.rates, "", null, true, "", color)
+        {
+            this.roleEnabled = roleEnabled;
+
+            if (max <= 0 || !roleEnabled) {
+                this.roleEnabled = false;
+            }
+
+            if (max > 1)
+                countOption = Create(id + 10000, type, "roleNumAssigned", 1f, 1f, max, 1f, this, false, "unitPlayers");
         }
     }
 
@@ -594,6 +659,10 @@ namespace TheOtherRoles {
                     categoryHeaderMasked.transform.localScale = Vector3.one;
                     categoryHeaderMasked.transform.localPosition = new Vector3(-9.77f, num, -2f);
                     __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
+                    if ((int)optionType != 99) {
+                        categoryHeaderMasked.transform.GetChild(0).GetComponent<SpriteRenderer>().color = option.getColor();
+                        categoryHeaderMasked.transform.GetChild(1).GetComponent<SpriteRenderer>().color = option.getColor();
+                    }
                     num -= 1.05f;
                     i = 0;
                 }
@@ -626,6 +695,8 @@ namespace TheOtherRoles {
                 if ((int)optionType == 99) {
                     if (option.type == CustomOptionType.Modifier)
                         viewSettingsInfoPanel.settingText.text = viewSettingsInfoPanel.settingText.text + GameOptionsDataPatch.buildModifierExtras(option);
+                    if (option is CustomRoleOption roleOption)
+                        viewSettingsInfoPanel.settingText.text += roleOption.enabled && roleOption.countOption != null ? $" ({roleOption.count})" : "";
                 }
                 __instance.settingsInfo.Add(viewSettingsInfoPanel.gameObject);
 
@@ -1136,6 +1207,8 @@ namespace TheOtherRoles {
                     categoryHeaderMasked.Title.text = titleText;
                     categoryHeaderMasked.transform.localScale = Vector3.one * 0.63f;
                     categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
+                    categoryHeaderMasked.transform.GetChild(0).GetComponent<SpriteRenderer>().color = option.getColor();
+                    categoryHeaderMasked.transform.GetChild(1).GetComponent<SpriteRenderer>().color = option.getColor();
                     num -= 0.63f;
                 }
                 else if (!ShouldBeEnabled(option)) continue;  // Hides options, for which the parent is disabled!
@@ -1379,9 +1452,6 @@ namespace TheOtherRoles {
             var quantity = children.Where(o => o.name.Contains("Quantity")).ToList();
             if (customOption.getSelection() == 0) return "";
             if (quantity.Count == 1) return $" ({quantity[0].getQuantity()})";
-            if (customOption == CustomOptionHolder.modifierLover) {
-                return $" ({ModTranslation.getString("loverIsImpOption")}: {CustomOptionHolder.modifierLoverImpLoverRate.getSelection() * 10}%)";
-            }
             return "";
         }
 
@@ -1403,6 +1473,7 @@ namespace TheOtherRoles {
                 if (option.parent == null) {
                     string line = $"{option.getName()}: {option.getString()}";
                     if (type == CustomOption.CustomOptionType.Modifier) line += buildModifierExtras(option);
+                    if (option is CustomRoleOption roleOption && roleOption.enabled && roleOption.countOption != null) line += $" ({roleOption.count})";
                     sb.AppendLine(line);
                 }
                 else if (option.parent.getSelection() > 0 || option.invertedParent && option.parent.getSelection() == 0) {
@@ -1427,7 +1498,7 @@ namespace TheOtherRoles {
                     bool isIrrelevant = !ShouldBeEnabled(option);
 
                     Color c = isIrrelevant ? Color.grey : Color.white;  // No use for now
-                    if (isIrrelevant) continue;
+                    if (isIrrelevant || option.name.Contains("roleNumAssigned")) continue;
                     sb.AppendLine(Helpers.cs(c, $"{option.getName()}: {option.getString()}"));
                 } else {
                     if (option == CustomOptionHolder.crewmateRolesCountMin) {
@@ -1474,7 +1545,7 @@ namespace TheOtherRoles {
                     } else if ((option == CustomOptionHolder.crewmateRolesCountMax) || (option == CustomOptionHolder.neutralRolesCountMax) || (option == CustomOptionHolder.impostorRolesCountMax) || option == CustomOptionHolder.modifiersCountMax) {
                         continue;
                     } else {
-                        sb.AppendLine($"\n{option.getName()}: {option.getString()}");
+                        sb.AppendLine($"\n{option.getName()}: {option.getString()}{(option is CustomRoleOption roleOption && roleOption.enabled && roleOption.countOption != null ? $" ({roleOption.count})" : "")}");
                     }
                 }
             }
@@ -1740,7 +1811,7 @@ namespace TheOtherRoles {
             {
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer == Busker.busker && Busker.pseudocideFlag) || MeetingHud.Instance || ExileController.Instance);
+                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) || MeetingHud.Instance || ExileController.Instance);
                 zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
                 toggleZoomButtonObject.SetActive(zoomButtonActive);
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);

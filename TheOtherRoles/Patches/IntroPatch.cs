@@ -12,6 +12,7 @@ using TheOtherRoles.Modules;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -44,7 +45,7 @@ namespace TheOtherRoles.Patches {
 
                     player.gameObject.SetActive(false);
 
-                    if (PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist) {
+                    if (PlayerControl.LocalPlayer.isRole(RoleId.Arsonist) && p != PlayerControl.LocalPlayer) {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
@@ -71,14 +72,9 @@ namespace TheOtherRoles.Patches {
             }
 
             // Force Bounty Hunter to load a new Bounty when the Intro is over
-            if (BountyHunter.bounty != null) {
-                if (PlayerControl.LocalPlayer == BountyHunter.bountyHunter) BountyHunter.bountyUpdateTimer = 0f;
-                if (FastDestroyableSingleton<HudManager>.Instance != null) {
-                    BountyHunter.cooldownText = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
-                    BountyHunter.cooldownText.alignment = TMPro.TextAlignmentOptions.Center;
-                    BountyHunter.cooldownText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
-                    BountyHunter.cooldownText.transform.localScale = Vector3.one * 0.4f;
-                    BountyHunter.cooldownText.gameObject.SetActive(PlayerControl.LocalPlayer == BountyHunter.bountyHunter);
+            foreach (var bountyHunter in BountyHunter.players) {
+                if (bountyHunter.bounty != null) {
+                    if (PlayerControl.LocalPlayer == bountyHunter.player) bountyHunter.bountyUpdateTimer = 0f;
                 }
             }
 
@@ -317,55 +313,7 @@ namespace TheOtherRoles.Patches {
                 LastImpostor.promoteToLastImpostor();
             }
 
-            if (Kataomoi.kataomoi != null)
-            {
-                if (FastDestroyableSingleton<HudManager>.Instance != null)
-                {
-                    Kataomoi.stareText = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
-                    Kataomoi.stareText.alignment = TMPro.TextAlignmentOptions.Center;
-                    Kataomoi.stareText.transform.localPosition = bottomLeft + new Vector3(0f, -0.35f, -62f);
-                    Kataomoi.stareText.transform.localScale = Vector3.one * 0.5f;
-                    Kataomoi.stareText.gameObject.SetActive(PlayerControl.LocalPlayer == Kataomoi.kataomoi && Kataomoi.target != null);
-
-                    Kataomoi.gaugeRenderer[0] = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.graphic, FastDestroyableSingleton<HudManager>.Instance.transform);
-                    var killButton = Kataomoi.gaugeRenderer[0].GetComponent<KillButton>();
-                    killButton.SetCoolDown(0.00000001f, 0.00000001f);
-                    killButton.SetFillUp(0.00000001f, 0.00000001f);
-                    killButton.SetDisabled();
-                    Helpers.hideGameObjects(Kataomoi.gaugeRenderer[0].gameObject);
-                    var components = killButton.GetComponents<Component>();
-                    foreach (var c in components)
-                    {
-                        if ((c as KillButton) == null && (c as SpriteRenderer) == null)
-                            GameObject.Destroy(c.gameObject);
-                    }
-
-                    Kataomoi.gaugeRenderer[0].sprite = Kataomoi.getLoveGaugeSprite(0);
-                    Kataomoi.gaugeRenderer[0].color = new Color32(175, 175, 176, 255);
-                    Kataomoi.gaugeRenderer[0].size = new Vector2(300f, 64f);
-                    Kataomoi.gaugeRenderer[0].gameObject.SetActive(true);
-                    Kataomoi.gaugeRenderer[0].transform.localPosition = new Vector3(-3.354069f + 1f, -2.429999f, -8f);
-                    Kataomoi.gaugeRenderer[0].transform.localScale = Vector3.one;
-
-                    Kataomoi.gaugeRenderer[1] = UnityEngine.Object.Instantiate(Kataomoi.gaugeRenderer[0], FastDestroyableSingleton<HudManager>.Instance.transform);
-                    Kataomoi.gaugeRenderer[1].sprite = Kataomoi.getLoveGaugeSprite(1);
-                    Kataomoi.gaugeRenderer[1].size = new Vector2(261f, 7f);
-                    Kataomoi.gaugeRenderer[1].color = Kataomoi.color;
-                    Kataomoi.gaugeRenderer[1].transform.localPosition = new Vector3(-3.482069f + 1f, -2.626999f, -8.1f);
-                    Kataomoi.gaugeRenderer[1].transform.localScale = Vector3.one;
-
-                    Kataomoi.gaugeRenderer[2] = UnityEngine.Object.Instantiate(Kataomoi.gaugeRenderer[0], FastDestroyableSingleton<HudManager>.Instance.transform);
-                    Kataomoi.gaugeRenderer[2].sprite = Kataomoi.getLoveGaugeSprite(2);
-                    Kataomoi.gaugeRenderer[2].color = Kataomoi.gaugeRenderer[0].color;
-                    Kataomoi.gaugeRenderer[2].size = new Vector2(300f, 64f);
-                    Kataomoi.gaugeRenderer[2].transform.localPosition = new Vector3(-3.354069f + 1f, -2.429999f, -8.2f);
-                    Kataomoi.gaugeRenderer[2].transform.localScale = Vector3.one;
-
-                    Kataomoi.gaugeTimer = 1.0f;
-
-                    for (int i = 0; i < 3; i++) if (Kataomoi.gaugeRenderer[i] != null) Kataomoi.gaugeRenderer[i].gameObject.SetActive(false);
-                }
-            }
+            Kataomoi.generateText();
 
             SchrodingersCat.playerTemplate = UnityEngine.Object.Instantiate(__instance.PlayerPrefab, FastDestroyableSingleton<HudManager>.Instance.transform);
             SchrodingersCat.playerTemplate.UpdateFromPlayerOutfit(PlayerControl.LocalPlayer.Data.DefaultOutfit, PlayerMaterial.MaskType.ComplexUI, false, true);
@@ -375,7 +323,7 @@ namespace TheOtherRoles.Patches {
             SchrodingersCat.playerTemplate.cosmetics.nameText.text = "";
             SchrodingersCat.playerTemplate.gameObject.SetActive(false);
 
-            if (AmongUsClient.Instance.AmHost && (Archaeologist.archaeologist != null || FreePlayGM.isFreePlayGM))
+            if (AmongUsClient.Instance.AmHost && (Archaeologist.exists || FreePlayGM.isFreePlayGM))
             {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAntique, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -400,7 +348,7 @@ namespace TheOtherRoles.Patches {
                 var cpt = new CustomNormalPlayerTask("foxTaskStay", Il2CppType.Of<FoxTask>(), Fox.numTasks, taskIdList.ToArray(), Shrine.allShrine.Find(x => x.console.ConsoleId == taskIdList.ToArray()[0]).console.Room, true);
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (p == Fox.fox)
+                    if (p.isRole(RoleId.Fox))
                     {
                         p.clearAllTasks();
                         cpt.addTaskToPlayer(p.PlayerId);
@@ -461,19 +409,19 @@ namespace TheOtherRoles.Patches {
     class IntroPatch {
         public static void setupIntroTeamIcons(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
             // Intro solo teams
-            if (Helpers.isNeutral(PlayerControl.LocalPlayer) && !(PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
+            if (Helpers.isNeutral(PlayerControl.LocalPlayer) && !(PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hideRole)) {
                 var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
                 soloTeam.Add(PlayerControl.LocalPlayer);
                 yourTeam = soloTeam;
             }
 
             // Add the Spy to the Impostor team (for the Impostors)
-            if (Spy.spy != null && PlayerControl.LocalPlayer.Data.Role.IsImpostor) {
+            if (Spy.exists && PlayerControl.LocalPlayer.Data.Role.IsImpostor) {
                 List<PlayerControl> players = PlayerControl.AllPlayerControls.ToArray().ToList().OrderBy(x => Guid.NewGuid()).ToList();
                 var fakeImpostorTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>(); // The local player always has to be the first one in the list (to be displayed in the center)
                 fakeImpostorTeam.Add(PlayerControl.LocalPlayer);
                 foreach (PlayerControl p in players) {
-                    if (PlayerControl.LocalPlayer != p && (p == Spy.spy || p.Data.Role.IsImpostor))
+                    if (PlayerControl.LocalPlayer != p && (p.isRole(RoleId.Spy) || p.Data.Role.IsImpostor))
                         fakeImpostorTeam.Add(p);
                 }
                 yourTeam = fakeImpostorTeam;
@@ -500,7 +448,7 @@ namespace TheOtherRoles.Patches {
                 return;
             }
             if (roleInfo == null) return;
-            if (roleInfo.isNeutral && !(PlayerControl.LocalPlayer == SchrodingersCat.schrodingersCat && SchrodingersCat.hideRole)) {
+            if (roleInfo.isNeutral && !(PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hideRole)) {
                 __instance.BackgroundBar.material.color = neutralColor;
                 __instance.TeamTitle.text = ModTranslation.getString("roleIntroNeutral");
                 __instance.TeamTitle.color = neutralColor;
@@ -574,16 +522,18 @@ namespace TheOtherRoles.Patches {
                         if (info.roleId != RoleId.Lover)
                             __instance.RoleBlurbText.text += Helpers.cs(info.color, $"\n{info.introDescription}");
                         else {
-                            PlayerControl otherLover = PlayerControl.LocalPlayer == Lovers.lover1 ? Lovers.lover2 : Lovers.lover1;
+                            PlayerControl otherLover = PlayerControl.LocalPlayer.getPartner();
                             __instance.RoleBlurbText.text += "\n" + Helpers.cs(Lovers.color, String.Format(ModTranslation.getString("loversFlavor"), otherLover?.Data?.PlayerName ?? ""));
                         }
                     }
                 }
-                if (Deputy.knowsSheriff && Deputy.deputy != null && Sheriff.sheriff != null) {
-                    if (infos.Any(info => info.roleId == RoleId.Sheriff))
-                        __instance.RoleBlurbText.text += Helpers.cs(Sheriff.color, string.Format(ModTranslation.getString("deputyIntroLine"), Deputy.deputy?.Data?.PlayerName ?? ""));
+                if (Deputy.knowsSheriff && Deputy.exists && Sheriff.exists) {
+                    if (infos.Any(info => info.roleId == RoleId.Sheriff)) {
+                        var deputy = Sheriff.getDeputy(PlayerControl.LocalPlayer);
+                        if (deputy != null) __instance.RoleBlurbText.text += Helpers.cs(Sheriff.color, string.Format(ModTranslation.getString("deputyIntroLine"), deputy?.player?.Data?.PlayerName ?? ""));
+                    }
                     else if (infos.Any(info => info.roleId == RoleId.Deputy))
-                        __instance.RoleBlurbText.text += Helpers.cs(Sheriff.color, string.Format(ModTranslation.getString("sheriffIntroLine"), Sheriff.sheriff?.Data?.PlayerName ?? ""));
+                        __instance.RoleBlurbText.text += Helpers.cs(Sheriff.color, string.Format(ModTranslation.getString("sheriffIntroLine"), Deputy.getRole(PlayerControl.LocalPlayer)?.sheriff?.player?.Data?.PlayerName ?? ""));
                 }
                 if (infos.Any(info => info.roleId == RoleId.Kataomoi)) {
                     __instance.RoleBlurbText.text += Helpers.cs(Kataomoi.color, string.Format(ModTranslation.getString("kataomoiIntroLine"), Kataomoi.target?.Data?.PlayerName ?? ""));

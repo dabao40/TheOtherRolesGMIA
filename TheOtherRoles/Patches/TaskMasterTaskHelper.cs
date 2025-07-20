@@ -22,7 +22,7 @@ namespace TheOtherRoles.Patches {
 
         public static byte[] GetTaskMasterTasks(PlayerControl pc)
         {
-            if (!TaskMaster.isTaskMaster(pc.PlayerId))
+            if (!pc.isRole(RoleId.TaskMaster))
                 return null;
 
             List<byte> list = new(10);

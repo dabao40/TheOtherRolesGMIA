@@ -5,6 +5,7 @@ using Rewired;
 using System;
 using System.Collections.Generic;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Roles;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -125,7 +126,7 @@ namespace TheOtherRoles.Objects {
                     this.isEffectActive = true;
                 }
 
-                if (Sherlock.sherlock != null && !Sherlock.sherlock.Data.IsDead && PlayerControl.LocalPlayer.Data.Role.IsImpostor
+                if (Sherlock.hasAlivePlayers && PlayerControl.LocalPlayer.Data.Role.IsImpostor
                     && actionButton != HudManagerStartPatch.garlicButton.actionButton) {
                     var pos = PlayerControl.LocalPlayer.transform.position;
                     byte[] buff = new byte[sizeof(float) * 2];

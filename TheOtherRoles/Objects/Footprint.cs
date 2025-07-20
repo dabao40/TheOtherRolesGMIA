@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -27,8 +28,8 @@ namespace TheOtherRoles.Objects
         private static Sprite _footprintSprite;
         private static Sprite FootprintSprite => _footprintSprite ??= Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Footprint.png", 600f);
 
-        private static bool AnonymousFootprints => TheOtherRoles.Detective.anonymousFootprints;
-        private static float FootprintDuration => TheOtherRoles.Detective.footprintDuration;
+        private static bool AnonymousFootprints => Detective.anonymousFootprints;
+        private static float FootprintDuration => Detective.footprintDuration;
 
         private class Footprint
         {
@@ -97,21 +98,19 @@ namespace TheOtherRoles.Objects
                 }
 
                 Color color;
-                if (AnonymousFootprints || Camouflager.camouflageTimer > 0 || Helpers.MushroomSabotageActive())
-                {
+                if (AnonymousFootprints || Camouflager.camouflageTimer > 0 || Helpers.MushroomSabotageActive()) {
                     color = Palette.PlayerColors[6];
                 }
-                else if (activeFootprint.Owner == Morphling.morphling && Morphling.morphTimer > 0 && Morphling.morphTarget && Morphling.morphTarget.Data != null)
-                {
-                    color = Palette.PlayerColors[Morphling.morphTarget.Data.DefaultOutfit.ColorId];
+                else if (Morphling.players.Any(x => x.player == activeFootprint.Owner && x.morphTarget && x.morphTimer > 0 && x.morphTarget.Data != null)) {
+                    color = Palette.PlayerColors[Morphling.getRole(activeFootprint.Owner).morphTarget.Data.DefaultOutfit.ColorId];
                 }
-                else if (activeFootprint.Owner == MimicK.mimicK && MimicK.victim != null && MimicK.victim.Data != null)
+                else if (activeFootprint.Owner.isRole(RoleId.MimicK) && MimicK.victim != null && MimicK.victim.Data != null)
                 {
                     color = Palette.PlayerColors[MimicK.victim.Data.DefaultOutfit.ColorId];
                 }
-                else if (activeFootprint.Owner == MimicA.mimicA && MimicA.isMorph && MimicK.mimicK != null && MimicK.mimicK.Data != null)
+                else if (activeFootprint.Owner.isRole(RoleId.MimicA) && MimicA.isMorph && MimicK.players.Any(x => x.player != null && x.player.Data != null))
                 {
-                    color = Palette.PlayerColors[MimicK.mimicK.Data.DefaultOutfit.ColorId];
+                    color = Palette.PlayerColors[MimicK.allPlayers.FirstOrDefault().Data.DefaultOutfit.ColorId];
                 }
                 else
                 {

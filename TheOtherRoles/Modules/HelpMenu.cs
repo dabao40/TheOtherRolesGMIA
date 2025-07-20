@@ -28,10 +28,10 @@ public static class HelpMenu
         public MetaContextOld.Button GetButton(MetaScreen screen, HelpTab currentTab, HelpTab validTabs) => new(() => ShowScreen(screen, Tab, validTabs), TabButtonAttr) { Color = currentTab == Tab ? Color.white : Color.gray, TranslationKey = TranslateKey };
     }
 
-    public static HelpTabInfo[] AllHelpTabInfo = {
+    public static HelpTabInfo[] AllHelpTabInfo = [
         new(HelpTab.Objects, "helpObjectsKey"),
         new(HelpTab.Achievements, "helpAchievementsKey")
-    };
+    ];
 
     private static IMetaContextOld GetTabsContext(MetaScreen screen, HelpTab tab, HelpTab validTabs)
     {

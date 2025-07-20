@@ -130,9 +130,7 @@ namespace TheOtherRoles.MetaContext
 
 
 
-            float[] xRange = new float[2], yRange = new float[2];
-            xRange[0] = -size.Width * 0.5f - 0.15f;
-            xRange[1] = size.Width * 0.5f + 0.15f;
+            float[] xRange = [-size.Width * 0.5f - 0.15f, size.Width * 0.5f + 0.15f], yRange = new float[2];
             yRange[0] = -size.Height * 0.5f - 0.15f;
             yRange[1] = size.Height * 0.5f + 0.15f;
 

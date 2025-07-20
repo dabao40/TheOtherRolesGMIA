@@ -1,67 +1,37 @@
-using Hazel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using Hazel;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
-namespace TheOtherRoles
+namespace TheOtherRoles.Objects
 {
     class BombEffect
     {
-        public static List<BombEffect> bombeffects = new();
-
-        public GameObject bombeffect;
-        private GameObject background = null;
-
-        private static Sprite bombeffectSprite;
-        public static Sprite getBombEffectSprite()
-        {
-            if (bombeffectSprite) return bombeffectSprite;
-            bombeffectSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BombEffect.png", 300f);
-            return bombeffectSprite;
-        }
+        static IDividedSpriteLoader ExplosionSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.BombEffect.png", 200f, 4, 2);
 
         public BombEffect(PlayerControl player)
         {
-            bombeffect = new GameObject("BombEffect");
             Vector3 position = new(player.transform.localPosition.x, player.transform.localPosition.y, player.transform.localPosition.z - 0.001f); // just behind player
-            bombeffect.transform.position = position;
-            bombeffect.transform.localPosition = position;
-
-            var bombeffectRenderer = bombeffect.AddComponent<SpriteRenderer>();
-            bombeffectRenderer.sprite = getBombEffectSprite();
-            bombeffect.SetActive(true);
-            bombeffects.Add(this);
+            TORGUIManager.Instance.StartCoroutine(CoAnim(position).WrapToIl2Cpp());
         }
 
-        public static void clearBombEffects()
+        static IEnumerator CoAnim(Vector2 pos)
         {
-            foreach (var bombeffect in bombeffects)
+            if (MeetingHud.Instance) yield break;
+            var bombRenderer = Helpers.CreateObject<SpriteRenderer>("BombEffect", null, pos.AsVector3(-10f));
+            bombRenderer.transform.localScale = Vector3.one * 1.8f;
+            bombRenderer.transform.localEulerAngles = new(0f, 0f, System.Random.Shared.NextSingle() * 360f);
+            for (int i = 0; i < 8; i++)
             {
-                if (bombeffect != null && bombeffect.bombeffect != null)
-                {
-                    bombeffect.bombeffect.SetActive(false);
-                    UnityEngine.Object.Destroy(bombeffect.bombeffect);
-
-                }
+                bombRenderer.sprite = ExplosionSprite.GetSprite(i);
+                yield return Effects.Wait(0.12f);
             }
-            bombeffects = new List<BombEffect>();
-        }
-
-        public static void UpdateAll()
-        {
-            foreach (BombEffect bombeffect in bombeffects)
-            {
-                if (bombeffect != null)
-                    bombeffect.Update();
-            }
-        }
-
-        public void Update()
-        {
-            if (background != null)
-                background.transform.Rotate(Vector3.forward * 6 * Time.fixedDeltaTime);
+            UnityEngine.Object.Destroy(bombRenderer.gameObject);
         }
     }
 }
