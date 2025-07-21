@@ -88,7 +88,8 @@ namespace TheOtherRoles.Roles
                     meetingFlag = false;
             })));
 
-            foreach (var p in PlayerControl.AllPlayerControls)                 playerStatus[p.PlayerId] = !p.Data.IsDead;
+            foreach (var p in PlayerControl.AllPlayerControls)
+                playerStatus[p.PlayerId] = !p.Data.IsDead;
 
             if (PlayerControl.LocalPlayer == player)
                 acTokenImpostor.Value.cleared |= exiled != null && acTokenImpostor.Value.divined && divineTarget != null
@@ -98,6 +99,7 @@ namespace TheOtherRoles.Roles
         private void fortuneTellerUpdate()
         {
             if (player == PlayerControl.LocalPlayer && !meetingFlag)
+            {
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
                     if (!progress.ContainsKey(p.PlayerId)) progress[p.PlayerId] = 0f;
@@ -106,17 +108,20 @@ namespace TheOtherRoles.Roles
                     float distance = Vector3.Distance(p.transform.position, fortuneTeller.transform.position);
                     // 障害物判定
                     bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), fortuneTeller.GetTruePosition(), Constants.ShipAndObjectsMask, false);
-                    if (!anythingBetween && distance <= FortuneTeller.distance && progress[p.PlayerId] < duration)                         progress[p.PlayerId] += Time.fixedDeltaTime;
+                    if (!anythingBetween && distance <= FortuneTeller.distance && progress[p.PlayerId] < duration) progress[p.PlayerId] += Time.fixedDeltaTime;
                 }
+            }
         }
 
         public static void resetArrow() {
             foreach (Arrow arrow in arrows)
+            {
                 if (arrow?.arrow != null)
                 {
                     arrow.arrow.SetActive(false);
                     UnityEngine.Object.Destroy(arrow.arrow);
                 }
+            }
         }
 
         public void impostorArrowUpdate()
@@ -228,6 +233,7 @@ namespace TheOtherRoles.Roles
             Color color = Color.white;
 
             if (divineResult == DivineResults.BlackWhite)
+            {
                 if (!Helpers.isNeutral(p) && !p.Data.Role.IsImpostor)
                 {
                     msg = string.Format(ModTranslation.getString("divineMessageIsCrew"), p.Data.PlayerName);
@@ -238,8 +244,10 @@ namespace TheOtherRoles.Roles
                     msg = string.Format(ModTranslation.getString("divineMessageIsntCrew"), p.Data.PlayerName);
                     color = Palette.ImpostorRed;
                 }
+            }
 
             else if (divineResult == DivineResults.Team)
+            {
                 if (!Helpers.isNeutral(p) && !p.Data.Role.IsImpostor)
                 {
                     msg = string.Format(ModTranslation.getString("divineMessageTeamCrew"), p.Data.PlayerName);
@@ -255,6 +263,7 @@ namespace TheOtherRoles.Roles
                     msg = string.Format(ModTranslation.getString("divineMessageTeamImp"), p.Data.PlayerName);
                     color = Palette.ImpostorRed;
                 }
+            }
 
             else if (divineResult == DivineResults.Role)
                 msg = $"{p.Data.PlayerName} was The {string.Join(" ", RoleInfo.getRoleInfoForPlayer(p, false, true).Select(x => Helpers.cs(x.color, x.name)))}";

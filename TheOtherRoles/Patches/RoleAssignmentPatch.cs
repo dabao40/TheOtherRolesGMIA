@@ -54,9 +54,6 @@ namespace TheOtherRoles.Patches {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ResetVaribles, Hazel.SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.resetVariables();
-            MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ResetAchievement, SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(acWriter);
-            RPCProcedure.resetAchievement();
             if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek || TORMapOptions.gameMode == CustomGamemodes.FreePlay || RoleDraft.isEnabled) return; // Don't assign Roles in Hide N Seek
             assignRoles();
         }

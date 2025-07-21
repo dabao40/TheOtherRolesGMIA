@@ -57,6 +57,14 @@ namespace TheOtherRoles.Roles
             return arrowSprite;
         }
 
+        public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason)
+        {
+            if (player != null && impostorPositionText != null && impostorPositionText.ContainsKey(player.Data.PlayerName))
+                impostorPositionText[player.Data.PlayerName].text = "";
+            if (player != null && target == player)
+                targetPositionText.text = "";
+        }
+
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
             // Reset here, else the task option would be useless
@@ -76,11 +84,21 @@ namespace TheOtherRoles.Roles
         {
             if (PlayerControl.LocalPlayer.Data.IsDead)
             {
-                if (arrows?.Count > 0)                     foreach (var arrow in arrows)
-                        if (arrow != null && arrow.arrow != null) Object.Destroy(arrow.arrow);
-                if (impostorPositionText.Count > 0)                 foreach (var p in impostorPositionText.Values)
-                    if (p != null) Object.Destroy(p.gameObject);
-                if (targetPositionText != null) Object.Destroy(targetPositionText.gameObject);
+                if (arrows?.Count > 0)
+                {
+                    foreach (var arrow in arrows)
+                    {
+                        if (arrow != null && arrow.arrow != null)
+                            Object.Destroy(arrow.arrow);
+                    }
+                }
+                if (impostorPositionText.Count > 0)
+                {
+                    foreach (var p in impostorPositionText.Values)
+                        if (p != null) Object.Destroy(p.gameObject);
+                }
+                if (targetPositionText != null)
+                    Object.Destroy(targetPositionText.gameObject);
                 target = null;
                 return;
             }
@@ -94,11 +112,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null && arrow.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];
@@ -107,11 +127,9 @@ namespace TheOtherRoles.Roles
                 int count = 0;
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (p.Data.IsDead)
+                    if (p.Data.IsDead && impostorPositionText.ContainsKey(p.Data.PlayerName))
                     {
-                        if ((p.Data.Role.IsImpostor || p.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.player == p && x.wasTeamRed)
-                        || Jackal.players.Any(x => x.player == p && x.wasTeamRed)) && impostorPositionText.ContainsKey(p.Data.PlayerName))
-                            impostorPositionText[p.Data.PlayerName].text = "";
+                        impostorPositionText[p.Data.PlayerName].text = "";
                         continue;
                     }
                     Arrow arrow;
@@ -130,12 +148,12 @@ namespace TheOtherRoles.Roles
                             GameObject gameObject = Object.Instantiate(roomTracker.gameObject);
                             Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
                             gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                            gameObject.transform.localPosition = new Vector3(0, -2.0f + 0.25f * count, gameObject.transform.localPosition.z);
                             gameObject.transform.localScale = Vector3.one * 1.0f;
                             TMPro.TMP_Text positionText = gameObject.GetComponent<TMPro.TMP_Text>();
                             positionText.alpha = 1.0f;
                             impostorPositionText.Add(p.Data.PlayerName, positionText);
                         }
+                        impostorPositionText[p.Data.PlayerName].transform.localPosition = new Vector3(0, -2.0f + 0.25f * count, impostorPositionText[p.Data.PlayerName].transform.localPosition.z);
                         PlainShipRoom room = Helpers.getPlainShipRoom(p);
                         impostorPositionText[p.Data.PlayerName].gameObject.SetActive(true);
                         if (room != null)
@@ -166,8 +184,10 @@ namespace TheOtherRoles.Roles
                     }
                     PlainShipRoom room = Helpers.getPlainShipRoom(target);
                     targetPositionText.gameObject.SetActive(true);
-                    if (room != null)                         targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
-                    else                         targetPositionText.text = "";
+                    if (room != null)
+                        targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}(" + FastDestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
+                    else
+                        targetPositionText.text = "";
                 }
                 else
                     if (targetPositionText != null)
@@ -180,10 +200,16 @@ namespace TheOtherRoles.Roles
 
         public void clearAllArrow()
         {
-            if (arrows?.Count > 0)             foreach (var arrow in arrows)
-                if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
-            if (impostorPositionText.Count > 0)                 foreach (var p in impostorPositionText.Values)
+            if (arrows?.Count > 0)
+            {
+                foreach (var arrow in arrows)
+                    if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
+            if (impostorPositionText.Count > 0)
+            {
+                foreach (var p in impostorPositionText.Values)
                     if (p != null) p.gameObject.SetActive(false);
+            }
             if (targetPositionText != null) targetPositionText.gameObject.SetActive(false);
         }
 

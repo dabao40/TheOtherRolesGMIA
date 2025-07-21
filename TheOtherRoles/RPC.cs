@@ -264,7 +264,6 @@ namespace TheOtherRoles
         UnlockVeteranAcChallenge,
         UnlockTaskMasterAcChallenge,
         UnlockJesterAcCommon,
-        ResetAchievement,
         RecordStatistics,
         SetRoleHistory,
         NoisemakerSetSounded,
@@ -936,15 +935,6 @@ namespace TheOtherRoles
                 };
                 FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Sequence(Effects.Wait(7f), Effects.Action((Action)(() => arrow.MarkAsDisappering()))));
             }
-        }
-
-        /// <summary>
-        /// Resets all the AchievementTokenBases and reactivates the achievements <br></br>
-        /// On game end the achievements will not be activated again
-        /// </summary>
-        public static void resetAchievement()
-        {
-            Achievement.allAchievementTokens = new List<AchievementTokenBase>();
         }
 
         // Hmm... Lots of bugs huh?
@@ -2672,9 +2662,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.KataomoiStalking:
                     playerId = reader.ReadByte();
                     RPCProcedure.kataomoiStalking(playerId);
-                    break;
-                case (byte)CustomRPC.ResetAchievement:
-                    RPCProcedure.resetAchievement();
                     break;
                 case (byte)CustomRPC.RecordStatistics:
                     RPCProcedure.recordStatistics(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadSingle());

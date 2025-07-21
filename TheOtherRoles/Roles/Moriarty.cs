@@ -145,11 +145,13 @@ namespace TheOtherRoles.Roles
                     targetPositionText.gameObject.SetActive(true);
                     int nearestPlayer = 0;
                     foreach (var p in PlayerControl.AllPlayerControls)
+                    {
                         if (p != target && !p.Data.IsDead)
                         {
                             float dist = Vector2.Distance(p.transform.position, target.transform.position);
                             if (dist < 7f) nearestPlayer += 1;
                         }
+                    }
                     if (room != null)
                         targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}({nearestPlayer})(" + DestroyableSingleton<TranslationController>.Instance.GetString(room.RoomId) + ")</color>";
                     else

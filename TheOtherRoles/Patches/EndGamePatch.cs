@@ -666,7 +666,6 @@ namespace TheOtherRoles.Patches {
             }
 
             TORGUIManager.Instance.StartCoroutine(Achievement.CoShowAchievements(TORGUIManager.Instance, Achievement.UniteAll()).WrapToIl2Cpp());
-            RPCProcedure.resetAchievement();
             IEnumerator CoShowStatistics()
             {
                 yield return new WaitForSeconds(0.4f);

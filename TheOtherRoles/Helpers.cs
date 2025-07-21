@@ -22,6 +22,7 @@ using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
+using TMPro;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -1085,6 +1086,16 @@ namespace TheOtherRoles
                 }
             }
             return result;
+        }
+
+        static public TextMeshPro TextHudContent(string name)
+        {
+            TextMeshPro tmPro = null!;
+            var text = new TORGUIText(GUIAlignment.Left, new(TORGUIContextEngine.API.GetAttribute(AttributeParams.StandardBaredBoldLeftNonFlexible)) { Alignment = MetaContext.TextAlignment.BottomLeft, FontSize = new(1.6f), Size = new(3f, 1f) }, new RawTextComponent("")) { PostBuilder = t => { tmPro = t; tmPro.sortingOrder = 0; } };
+            text.Instantiate(new Anchor(new(0f, 0f), new(-0.5f, -0.5f, 0f)), new(20f, 20f), out _);
+
+            tmPro.gameObject.name = name;
+            return tmPro;
         }
 
         public static TMPro.TextMeshPro getFirst(this TMPro.TextMeshPro[] text)

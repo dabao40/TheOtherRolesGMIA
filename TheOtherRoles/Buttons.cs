@@ -464,10 +464,17 @@ namespace TheOtherRoles
             );
         }*/
 
+        public static void Prefix(HudManager __instance)
+        {
+            TORGameManager.Instance?.Abandon();
+        }
+
         public static void Postfix(HudManager __instance) {
             initialized = false;
 
-            try {
+            try
+            {
+                _ = new TORGameManager();
                 createButtonsPostfix(__instance);
             } catch { }
         }

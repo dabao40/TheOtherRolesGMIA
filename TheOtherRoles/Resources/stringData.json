@@ -911,6 +911,10 @@
         "13": "\u9a97\u672f\u5e08\u653e\u7f6e\u60ca\u5413\u76d2\u7684\u51b7\u5374\u65f6\u95f4",
         "14": "\u653e\u7f6e\u76d2\u5b50\u51b7\u537b\u6642\u9593"
     },
+    "tricksterBoxKillPenalty": {
+        "0": "Penalty For Box Kills",
+        "13": "\u5728\u9a97\u672f\u7bb1\u5185\u51fb\u6740\u51b7\u5374\u8ffd\u52a0\u65f6\u95f4"
+    },
     "tricksterLightsOutCooldown": {
         "0": "Trickster Lights Out Cooldown",
         "11": "\u5f37\u5236\u505c\u96fb\u306e\u30af\u30fc\u30eb\u30c0\u30a6\u30f3",

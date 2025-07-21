@@ -38,14 +38,14 @@ namespace TheOtherRoles.Modules
         public AchievementTokenBase(Achievement achievement)
         {
             this.Achievement = achievement;
-            Achievement.allAchievementTokens.Add(this);
+            TORGameManager.Instance?.AllAchievementTokens.Add(this);
         }
         public bool IsDeadObject { get; private set; } = false;
 
         public void Release()
         {
             IsDeadObject = true;
-            Achievement.allAchievementTokens.Remove(this);
+            TORGameManager.Instance?.AllAchievementTokens.Remove(this);
         }
     }
 
@@ -323,7 +323,6 @@ namespace TheOtherRoles.Modules
         static public Dictionary<byte, Achievement> TitleMap = new();
 
         public static IEnumerable<Achievement> allAchievements => achievements.Values;
-        public static List<AchievementTokenBase> allAchievementTokens = new();
         static public DataSaver AchievementDataSaver = new("Progress");
         static private StringDataEntry myTitleEntry = new("MyTitle", AchievementDataSaver, "-");
 
@@ -507,7 +506,7 @@ namespace TheOtherRoles.Modules
         {
             List<(Achievement achievement, ClearState clearState)> result = new();
 
-            foreach (var token in allAchievementTokens)
+            foreach (var token in TORGameManager.Instance?.AllAchievementTokens)
             {
                 var state = token.UniteTo();
                 if (state == ClearState.NotCleared) continue;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TheOtherRoles.Modules;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -405,6 +406,23 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
+    public class TORGameManager
+    {
+        static private TORGameManager instance = null;
+        static public TORGameManager Instance { get => instance; }
+        public List<AchievementTokenBase> AllAchievementTokens = [];
+
+        public TORGameManager()
+        {
+            instance = this;
+        }
+
+        public void Abandon()
+        {
+            instance = null;
+        }
+    }
+
     public class TORGUIManager : MonoBehaviour
     {
         static public TORGUIManager Instance { get; private set; } = null!;
@@ -737,6 +755,7 @@ namespace TheOtherRoles.MetaContext
         public GUIContextSupplier OverlayContext { get; init; } = null;
         public (Action action, bool reopenOverlay)? OnClickText { get; init; } = null;
         virtual protected bool AllowGenerateCollider => true;
+        public Action<TextMeshPro> PostBuilder = null;
         public TORGUIText(GUIAlignment alignment, TextAttributes attribute, TextComponent text) : base(alignment)
         {
             Attr = attribute;
@@ -815,6 +834,7 @@ namespace TheOtherRoles.MetaContext
                 }
             }
 
+            PostBuilder?.Invoke(text);
             actualSize = new Size(text.rectTransform.sizeDelta);
             return text.gameObject;
         }

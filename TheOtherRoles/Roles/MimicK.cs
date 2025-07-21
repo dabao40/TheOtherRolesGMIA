@@ -49,17 +49,23 @@ namespace TheOtherRoles.Roles
             victim = null;
 
             if (ifOneDiesBothDie)
+            {
                 foreach (var partner in MimicA.allPlayers)
+                {
                     if (partner != null && !partner.Data.IsDead)
                     {
-                        if (killer != null)                             partner.MurderPlayer(partner, MurderResultFlags.Succeeded);
-                        else {
+                        if (killer != null)
+                            partner.MurderPlayer(partner, MurderResultFlags.Succeeded);
+                        else
+                        {
                             partner.Exiled();
                             if (PlayerControl.LocalPlayer == partner && Helpers.ShowKillAnimation)
                                 FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(partner.Data, partner.Data);
                         }
                         GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.Suicide);
                     }
+                }
+            }
         }
 
         public override void OnKill(PlayerControl target)
@@ -99,10 +105,14 @@ namespace TheOtherRoles.Roles
         static void arrowUpdate()
         {
             if (PlayerControl.LocalPlayer.Data.IsDead) {
-                foreach (Arrow arrow in arrows)                     if (arrow != null && arrow.arrow != null) {
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null && arrow.arrow != null)
+                    {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
                 return;
             }
 
@@ -114,11 +124,13 @@ namespace TheOtherRoles.Roles
             {
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null && arrow.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];

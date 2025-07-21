@@ -50,7 +50,9 @@ namespace TheOtherRoles.Roles
         {
             resetMorph();
             if (MimicK.ifOneDiesBothDie)
+            {
                 foreach (var partner in MimicK.allPlayers)
+                {
                     if (partner != null && !partner.Data.IsDead)
                     {
                         if (killer != null)
@@ -63,6 +65,8 @@ namespace TheOtherRoles.Roles
                         }
                         GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.Suicide);
                     }
+                }
+            }
         }
 
         public static AchievementToken<int> acTokenCommon;
@@ -73,10 +77,14 @@ namespace TheOtherRoles.Roles
         static void arrowUpdate()
         {
             if (PlayerControl.LocalPlayer.Data.IsDead) {
-                foreach (Arrow arrow in arrows)                     if (arrow != null && arrow.arrow != null) {
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null && arrow.arrow != null)
+                    {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
                 return;
             }
             // 前フレームからの経過時間をマイナスする
