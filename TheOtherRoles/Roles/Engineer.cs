@@ -36,7 +36,9 @@ namespace TheOtherRoles.Roles
             bool jackalHighlight = highlightForTeamJackal && (PlayerControl.LocalPlayer.isRole(RoleId.Jackal) || PlayerControl.LocalPlayer.isRole(RoleId.Sidekick));
             bool impostorHighlight = highlightForImpostors && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
             if ((jackalHighlight || impostorHighlight) && MapUtilities.CachedShipStatus?.AllVents != null)
+            {
                 foreach (Vent vent in MapUtilities.CachedShipStatus.AllVents)
+                {
                     try
                     {
                         if (vent?.myRend?.material != null)
@@ -49,16 +51,20 @@ namespace TheOtherRoles.Roles
                                 vent.myRend.material.SetFloat("_Outline", 0);
                     }
                     catch { }
-
+                }
+            }
             if (PlayerControl.LocalPlayer == player && MapUtilities.CachedShipStatus?.AllVents != null && acTokenChallenge != null)
+            {
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
+                {
                     if (PlayerControl.LocalPlayer.inVent && !acTokenChallenge.Value.inVent)
                         acTokenChallenge.Value.inVent = true;
                     else if (!PlayerControl.LocalPlayer.inVent && acTokenChallenge.Value.inVent)
                         acTokenChallenge.Value.inVent = false;
-                else
-                    if (acTokenChallenge.Value.inVent && !acTokenChallenge.Value.cleared)
-                        acTokenChallenge.Value.cleared = true;
+                }
+                else if (acTokenChallenge.Value.inVent && !acTokenChallenge.Value.cleared)
+                    acTokenChallenge.Value.cleared = true;
+            }
         }
 
         public override void PostInit()

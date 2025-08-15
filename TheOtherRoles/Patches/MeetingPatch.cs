@@ -536,18 +536,16 @@ namespace TheOtherRoles.Patches
         static void guesserSelectRole(bool SetPage = true)
         {
             if (SetPage) Page = 1;
-            foreach (var RoleButton in RoleButtons)
+            int index = 0;
+            foreach (var RoleBtn in RoleButtons)
             {
-                int index = 0;
-                foreach (var RoleBtn in RoleButtons)
-                {
-                    if (RoleBtn == null) continue;
-                    index++;
-                    if (index <= (Page - 1) * MaxOneScreenRole) { RoleBtn.gameObject.SetActive(false); continue; }
-                    if ((Page * MaxOneScreenRole) < index) { RoleBtn.gameObject.SetActive(false); continue; }
-                    RoleBtn.gameObject.SetActive(true);
-                }
+                if (RoleBtn == null) continue;
+                index++;
+                if (index <= (Page - 1) * MaxOneScreenRole) { RoleBtn.gameObject.SetActive(false); continue; }
+                if ((Page * MaxOneScreenRole) < index) { RoleBtn.gameObject.SetActive(false); continue; }
+                RoleBtn.gameObject.SetActive(true);
             }
+            TheOtherRolesPlugin.Logger.LogMessage($"RoleButtons count: {index}");
         }
 
         static void guesserOnClick(int buttonTarget, MeetingHud __instance) {
@@ -646,9 +644,10 @@ namespace TheOtherRoles.Patches
             Transform selectedButton = null;
 
             RoleManagerSelectRolesPatch.RoleAssignmentData roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
+            TheOtherRolesPlugin.Logger.LogMessage(RoleInfo.allRoleInfos.Count);
             foreach (RoleInfo roleInfo in RoleInfo.allRoleInfos) {
-                RoleId guesserRole = PlayerControl.LocalPlayer.isRole(RoleId.NiceGuesser) ? RoleId.NiceGuesser : RoleId.EvilGuesser;
-                if (roleInfo.isModifier || roleInfo.roleId == guesserRole || (!HandleGuesser.evilGuesserCanGuessSpy && guesserRole == RoleId.EvilGuesser && roleInfo.roleId == RoleId.Spy && !HandleGuesser.isGuesserGm)) continue; // Not guessable roles & modifier
+                if (roleInfo.isModifier || (roleInfo.roleId == RoleId.EvilGuesser && PlayerControl.LocalPlayer.isRole(RoleId.EvilGuesser)) || (roleInfo.roleId == RoleId.NiceGuesser && PlayerControl.LocalPlayer.isRole(RoleId.NiceGuesser))
+                    || (!HandleGuesser.evilGuesserCanGuessSpy && PlayerControl.LocalPlayer.isRole(RoleId.EvilGuesser) && roleInfo.roleId == RoleId.Spy && !HandleGuesser.isGuesserGm)) continue; // Not guessable roles & modifier
                 if (HandleGuesser.isGuesserGm && (roleInfo.roleId == RoleId.NiceGuesser || roleInfo.roleId == RoleId.EvilGuesser)) continue; // remove Guesser for guesser game mode
                 if (HandleGuesser.isGuesserGm && PlayerControl.LocalPlayer.Data.Role.IsImpostor && !HandleGuesser.evilGuesserCanGuessSpy && roleInfo.roleId == RoleId.Spy) continue;
                 // remove all roles that cannot spawn due to the settings from the ui.
@@ -892,7 +891,7 @@ namespace TheOtherRoles.Patches
             // Add overlay for spelled players
             if (Witch.players.Any(x => x.player && x.futureSpelled != null)) {
                 foreach (PlayerVoteArea pva in __instance.playerStates) {
-                    if (Witch.players.Any(witch => witch.futureSpelled.Any(x => x.PlayerId == pva.TargetPlayerId))) {
+                    if (Witch.players.Any(witch => witch.player && witch.futureSpelled.Any(x => x.PlayerId == pva.TargetPlayerId))) {
                         SpriteRenderer rend = new GameObject().AddComponent<SpriteRenderer>();
                         rend.transform.SetParent(pva.transform);
                         rend.gameObject.layer = pva.Megaphone.gameObject.layer;
@@ -1211,7 +1210,7 @@ namespace TheOtherRoles.Patches
                     if (Bait.players.Any(x => x.player == player && x.reportDelay <= 0f))
                         tag = EventDetail.BaitReport;
                 }
-                GameStatistics.Event.GameStatistics.RecordEvent(new GameStatistics.Event(
+                TORGameManager.Instance?.GameStatistics.RecordEvent(new GameStatistics.Event(
             meetingTarget == null ? GameStatistics.EventVariation.EmergencyButton : GameStatistics.EventVariation.Report, __instance.PlayerId,
                 meetingTarget == null ? 0 : (1 << meetingTarget.PlayerId)) { RelatedTag = tag });
 
@@ -1246,7 +1245,7 @@ namespace TheOtherRoles.Patches
                 SoundEffectsManager.stopAll();
 
                 // Close In-Game Settings Display if open
-                HudManagerUpdate.CloseSettings();
+                TORGUIManager.Instance?.CloseAllUI();
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
@@ -12,6 +13,9 @@ namespace TheOtherRoles.Roles
     public class Kataomoi : RoleBase<Kataomoi>
     {
         public static Color color = Lovers.color;
+
+        static public HelpSprite[] helpSprite = [new(getStareSprite(), "kataomoiStareHint"), new(getSearchSprite(), "kataomoiSearchHint"),
+        new(getStalkingSprite(), "kataomoiStalkHint"), new(getLoveSprite(), "kataomoiLoveHint")];
 
         public static float stareCooldown = 30f;
         public static float stareDuration = 3f;
@@ -56,11 +60,13 @@ namespace TheOtherRoles.Roles
                 if (stareText != null && stareText.gameObject != null) UnityEngine.Object.Destroy(stareText.gameObject);
                 stareText = null;
                 for (int i = 0; i < gaugeRenderer.Length; ++i)
+                {
                     if (gaugeRenderer[i] != null)
                     {
                         UnityEngine.Object.Destroy(gaugeRenderer[i].gameObject);
                         gaugeRenderer[i] = null;
                     }
+                }
                 TORMapOptions.resetPoolables();
                 return;
             }
@@ -75,14 +81,17 @@ namespace TheOtherRoles.Roles
                     stareText.text = "";
             }
 
-            if (target != null && TORMapOptions.playerIcons.ContainsKey(target?.PlayerId ?? byte.MaxValue))                 TORMapOptions.playerIcons[target.PlayerId].gameObject.SetActive(!MeetingHud.Instance);
+            if (target != null && TORMapOptions.playerIcons.ContainsKey(target?.PlayerId ?? byte.MaxValue))
+                TORMapOptions.playerIcons[target.PlayerId].gameObject.SetActive(!MeetingHud.Instance);
             for (int i = 0; i < gaugeRenderer.Length; ++i)
-                if (gaugeRenderer[i] != null)                     gaugeRenderer[i].gameObject?.SetActive(!MeetingHud.Instance);
+                if (gaugeRenderer[i] != null)
+                    gaugeRenderer[i].gameObject?.SetActive(!MeetingHud.Instance);
 
             // Update Arrow
             arrow ??= new Arrow(color);
             arrow.arrow.SetActive(isSearch);
-            if (isSearch && target != null)                 arrow.Update(target.transform.position);
+            if (isSearch && target != null)
+                arrow.Update(target.transform.position);
         }
 
         public static void generateText()
@@ -204,7 +213,9 @@ namespace TheOtherRoles.Roles
         {
             if (!exists || player != target) return;
             foreach (var p in allPlayers)
-                if (p && !p.Data.IsDead) {
+            {
+                if (p && !p.Data.IsDead)
+                {
                     if (killer) p.MurderPlayer(p, MurderResultFlags.Succeeded);
                     else
                     {
@@ -214,6 +225,7 @@ namespace TheOtherRoles.Roles
                     }
                     GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
+            }
         }
 
         public static void resetStalking()
@@ -294,11 +306,13 @@ namespace TheOtherRoles.Roles
             stareText = null;
             if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             for (int i = 0; i < gaugeRenderer.Length; ++i)
+            {
                 if (gaugeRenderer[i] != null)
                 {
                     UnityEngine.Object.Destroy(gaugeRenderer[i].gameObject);
                     gaugeRenderer[i] = null;
                 }
+            }
             arrow = null;
             gaugeTimer = 0.0f;
             baseGauge = 0.0f;

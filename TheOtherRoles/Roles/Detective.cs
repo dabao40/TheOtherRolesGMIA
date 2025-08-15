@@ -18,6 +18,10 @@ public class Detective : RoleBase<Detective>
     public float timer = 6.2f;
     public static float inspectCooldown = 15f;
     public static float inspectDuration = 10f;
+    public static SpriteLoader detectiveIcon = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrow.png", 100f);
+    static public SpriteLoader hintSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrowHint.png", 100f);
+
+    static public HelpSprite[] helpSprite = [new(getButtonSprite(), "detectiveTrackHint"), new(hintSprite, "detectiveIconHint")];
 
     public Detective()
     {
@@ -29,7 +33,6 @@ public class Detective : RoleBase<Detective>
 
     public AchievementToken<bool> acTokenCommon = null;
     public AchievementToken<(bool reported, byte votedFor, byte killerId, bool cleared)> acTokenChallenge = null;
-    public static SpriteLoader detectiveIcon = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrow.png", 100f);
 
     private static Sprite buttonSprite;
     public static Sprite getButtonSprite()

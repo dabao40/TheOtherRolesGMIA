@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
@@ -14,6 +15,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Archaeologist;
         }
+
+        static public HelpSprite[] helpSprite = [new(getDetectSprite(), "archaeologistDetectHint"), new(getExcavateSprite(), "archaeologistExcavateHint")];
 
         public static Color color = new(71f / 255f, 93f / 255f, 206f / 255f);
 
@@ -62,12 +65,17 @@ namespace TheOtherRoles.Roles
                     }
                 }
                 if (arrow?.arrow != null)
-                    if (Antique.antiques != null && arrowActive && !PlayerControl.LocalPlayer.Data.IsDead) {
+                {
+                    if (Antique.antiques != null && arrowActive && !PlayerControl.LocalPlayer.Data.IsDead)
+                    {
                         var antique = Antique.antiques.FirstOrDefault(x => x.isDetected);
                         arrow.Update(ShipStatus.Instance.FastRooms[antique.room].roomArea.ClosestPoint(PlayerControl.LocalPlayer.transform.position));
                         arrow.arrow.SetActive(true);
                     }
-                    else                         arrow.arrow.SetActive(false);
+                    else {
+                        arrow.arrow.SetActive(false);
+                    }
+                }
             }
         }
 

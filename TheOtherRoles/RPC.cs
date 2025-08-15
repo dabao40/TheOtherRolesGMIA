@@ -265,7 +265,6 @@ namespace TheOtherRoles
         UnlockTaskMasterAcChallenge,
         UnlockJesterAcCommon,
         RecordStatistics,
-        SetRoleHistory,
         NoisemakerSetSounded,
         SchrodingersCatSetTeam,
         KataomoiSetTarget,
@@ -319,7 +318,6 @@ namespace TheOtherRoles
             setCustomButtonCooldowns();
             CustomButton.ReloadHotkeys();
             reloadPluginOptions();
-            CustomOverlay.resetOverlays();
             Helpers.toggleZoom(reset : true);
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
             SurveillanceMinigamePatch.nightVisionOverlays = null;
@@ -336,6 +334,7 @@ namespace TheOtherRoles
                     CustomOption option = CustomOption.options.First(option => option.id == (int)optionId);
                     option.updateSelection((int)selection, i == numberOfOptions - 1);
                 }
+                HelpMenu.OnUpdateOptions();
             } catch (Exception e) {
                 TheOtherRolesPlugin.Logger.LogError("Error while deserializing options: " + e.Message);
             }
@@ -521,6 +520,9 @@ namespace TheOtherRoles
                         PlayerControl.LocalPlayer.generateAndAssignTasks(Madmate.commonTasks, Madmate.shortTasks, Madmate.longTasks);
                     }
 
+                    PlayerControl.AllPlayerControls.GetFastEnumerator().DoIf(x => !TORGameManager.Instance.RoleHistory.Any(history => history.PlayerId == x.PlayerId),
+                        x => TORGameManager.Instance.RecordRoleHistory(x));
+
                     ShipStatus.Instance.AllCameras.Do
                     (
                         x =>
@@ -572,7 +574,7 @@ namespace TheOtherRoles
                     UnityEngine.Object.Destroy(array[i].gameObject);
                 }     
             }
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.CleanBody, cleaningPlayerId, 1 << playerId)
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.CleanBody, cleaningPlayerId, 1 << playerId)
             {
                 RelatedTag =
                 cleanPlayer.isRole(RoleId.Vulture) ? EventDetail.Eat : EventDetail.Clean
@@ -783,8 +785,8 @@ namespace TheOtherRoles
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
                 CustomButton.ResetAllCooldowns();
 
-            GameStatistics.recordRoleHistory(oldShifter);
-            GameStatistics.recordRoleHistory(player);
+            TORGameManager.Instance?.RecordRoleHistory(oldShifter);
+            TORGameManager.Instance?.RecordRoleHistory(player);
         }
 
         static public void jesterWin(byte playerId)
@@ -881,7 +883,7 @@ namespace TheOtherRoles
 
         public static void shareAchievement(byte playerId, string achievement)
         {
-            Achievement.TitleMap[playerId] = Helpers.playerById(playerId)?.GetTitleShower().SetAchievement(achievement);
+            TORGameManager.Instance?.TitleMap[playerId] = Helpers.playerById(playerId)?.GetTitleShower().SetAchievement(achievement);
         }
 
         public static void evilHackerCreatesMadmate(byte targetId, byte evilHackerId)
@@ -1039,7 +1041,6 @@ namespace TheOtherRoles
                 curSheriff.isFormerDeputy = true;
                 curSheriff.remainingHandcuffs = remainingCuffs;
                 Deputy.eraseRole(deputy);
-                GameStatistics.recordRoleHistory(curSheriff.player);
             }
         }
 
@@ -1071,7 +1072,6 @@ namespace TheOtherRoles
                         LastImpostor.promoteToLastImpostor();
                     }
                 }
-                GameStatistics.recordRoleHistory(player);
                 if (HandleGuesser.isGuesserGm && CustomOptionHolder.guesserGamemodeSidekickIsAlwaysGuesser.getBool() && !HandleGuesser.isGuesser(targetId))
                     setGuesserGm(targetId);
             }
@@ -1094,7 +1094,6 @@ namespace TheOtherRoles
             jackal.wasTeamRed = wasTeamRed;
             jackal.wasSpy = wasSpy;
             jackal.wasImpostor = wasImpostor;
-            GameStatistics.recordRoleHistory(player);
             return;
         }
         
@@ -1126,9 +1125,6 @@ namespace TheOtherRoles
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId)) Chameleon.chameleon.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (player == Armored.armored) Armored.clearAndReload();
             }
-
-            if (GameStatistics.roleHistory.ContainsKey(playerId))
-                GameStatistics.roleHistory[playerId].Add(new(player.Data.PlayerName, RoleInfo.crewmate, GameStatistics.currentTime, player.Data.DefaultOutfit, isCreatedMadmate, Color.white));
         }
 
         public static void setFutureErased(byte playerId) {
@@ -1166,21 +1162,7 @@ namespace TheOtherRoles
 
         public static void recordStatistics(byte variation, byte relatedTag, byte sourceId, byte targetMask, float timeLag)
         {
-            GameStatistics.Event.GameStatistics.RecordEvent(new GameStatistics.Event(GameStatistics.EventVariation.ValueOf(variation), GameStatistics.currentTime + timeLag, sourceId == byte.MaxValue ? null : sourceId, targetMask, null) { RelatedTag = TranslatableTag.ValueOf(relatedTag) });
-        }
-
-        public static void setRoleHistory()
-        {
-            GameStatistics.Event.GameStatistics = new();
-            GameStatistics.roleHistory = new();
-            GameStatistics.currentTime = 0f;
-
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-            {
-                var info = RoleInfo.getRoleInfoForPlayer(p, false, true).FirstOrDefault();
-                GameStatistics.roleHistory.Add(p.PlayerId, new());
-                GameStatistics.roleHistory[p.PlayerId].Add(new GameStatistics.RoleHistory(p.Data.PlayerName, info, GameStatistics.currentTime, p.Data.DefaultOutfit, Madmate.madmate.Any(x => x.PlayerId == p.PlayerId), info.color));
-            }
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new GameStatistics.Event(GameStatistics.EventVariation.ValueOf(variation), TORGameManager.Instance.CurrentTime + timeLag, sourceId == byte.MaxValue ? null : sourceId, targetMask, null) { RelatedTag = TranslatableTag.ValueOf(relatedTag) });
         }
 
         public static void foxStealth(bool stealthed)
@@ -1197,7 +1179,6 @@ namespace TheOtherRoles
             player.setRole(RoleId.Immoralist);
             player.clearAllTasks();
             Fox.canCreateImmoralist = false;
-            GameStatistics.recordRoleHistory(player);
         }
 
         public static void placeAccel(byte id)
@@ -1286,7 +1267,7 @@ namespace TheOtherRoles
                     break;
             }
             if (PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat)) _ = new StaticAchievementToken("schrodingersCat.another1");
-            SchrodingersCat.allPlayers.ForEach(x => GameStatistics.recordRoleHistory(x));
+            SchrodingersCat.allPlayers.ForEach(x => TORGameManager.Instance?.RecordRoleHistory(x));
         }
 
         public static void placeAssassinTrace(byte playerId, byte[] buff) {
@@ -1486,7 +1467,7 @@ namespace TheOtherRoles
                 if (Medium.futureDeadBodies != null) Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(new DeadPlayer(player, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Pseudocide, player), busker.deathPosition));
                 if (!isLoverSuicide) overrideDeathReasonAndKiller(player, DeadPlayer.CustomDeathReason.Pseudocide);
                 busker.pseudocideComplete = true;
-                GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, targetId, 1 << targetId) { RelatedTag = isLoverSuicide ? EventDetail.Kill : EventDetail.Pseudocide });
+                TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, targetId, 1 << targetId) { RelatedTag = isLoverSuicide ? EventDetail.Kill : EventDetail.Pseudocide });
 
                 Lovers.killLovers(player, player);
                 Kataomoi.killKataomoi(player);
@@ -1512,7 +1493,7 @@ namespace TheOtherRoles
             player.Revive();
             player.Data.IsDead = false;
             player.StartCoroutine(player.CoGush());
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << playerId) { RelatedTag = EventDetail.Revive });
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << playerId) { RelatedTag = EventDetail.Revive });
         }
 
         public static void veteranAlert(byte playerId)
@@ -2088,7 +2069,6 @@ namespace TheOtherRoles
             PlayerControl player = Helpers.playerById(playerId);
             Lawyer.eraseRole(player);
             player.setRole(RoleId.Pursuer);
-            GameStatistics.recordRoleHistory(player);
         }
 
         public static void lawyerWin()
@@ -2105,7 +2085,7 @@ namespace TheOtherRoles
         /// <param name="guessedRoleId">The RoleId the Guesser has guessed (2 same RoleIds for Swapper and Shifter)</param>
         /// <param name="isSpecialRole">Whether or not this is a Nice Shifter or a Nice Swapper etc.</param>
         public static void guesserShoot(byte killerId, byte dyingTargetId, byte guessedTargetId, byte guessedRoleId, bool isSpecialRole) {
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, killerId, 1 << dyingTargetId) { RelatedTag = killerId == dyingTargetId ? EventDetail.MisGuess : EventDetail.Guessed});
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, killerId, 1 << dyingTargetId) { RelatedTag = killerId == dyingTargetId ? EventDetail.MisGuess : EventDetail.Guessed});
 
             PlayerControl killer = Helpers.playerById(killerId);
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
@@ -2226,7 +2206,9 @@ namespace TheOtherRoles
                     else  // If thief kills witch during the round, remove the thief from the list of spelled people, keep the rest
                         witch.futureSpelled.RemoveAll(x => x.PlayerId == thief.PlayerId);
             }
+            var role = Role.allRoles.FirstOrDefault(x => x.player == target);
             target.swapRoles(thief);
+            if (role != null && role.roleId is RoleId.Jackal or RoleId.JekyllAndHyde or RoleId.Moriarty) target.setRole(role.roleId);  // Keep teamed roles to the target
             if (target.Data.Role.IsImpostor) {
                 RoleManager.Instance.SetRole(thief, RoleTypes.Impostor);
                 FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(thief.killTimer, PlayerControl.LocalPlayer.GetKillCooldown());
@@ -2235,8 +2217,9 @@ namespace TheOtherRoles
                 Lawyer.target = thief;
             if (thief == PlayerControl.LocalPlayer) CustomButton.ResetAllCooldowns();
             Thief.formerThief.Add(thief);  // After clearAndReload, else it would get reset...
-            GameStatistics.recordRoleHistory(thief);
-            GameStatistics.recordRoleHistory(target);
+
+            TORGameManager.Instance?.RecordRoleHistory(thief);
+            TORGameManager.Instance?.RecordRoleHistory(target);
         }
 
         public static void setGuesserGm (byte playerId) {
@@ -2665,9 +2648,6 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.RecordStatistics:
                     RPCProcedure.recordStatistics(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadSingle());
-                    break;
-                case (byte)CustomRPC.SetRoleHistory:
-                    RPCProcedure.setRoleHistory();
                     break;
                 case (byte)CustomRPC.AkujoSetHonmei:
                     RPCProcedure.akujoSetHonmei(reader.ReadByte(), reader.ReadByte());

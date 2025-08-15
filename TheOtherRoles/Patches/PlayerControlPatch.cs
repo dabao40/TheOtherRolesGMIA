@@ -769,7 +769,7 @@ namespace TheOtherRoles.Patches {
             // First kill (set before lover suicide)
             if (TORMapOptions.firstKillName == "") TORMapOptions.firstKillName = target.Data.PlayerName;
 
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, __instance.PlayerId, 1 << target.PlayerId) { RelatedTag = EventDetail.Kill});
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, __instance.PlayerId, 1 << target.PlayerId) { RelatedTag = EventDetail.Kill});
 
             // Pursuer promotion trigger on murder (the host sends the call such that everyone recieves the update before a possible game End)
             if (target == Lawyer.target && AmongUsClient.Instance.AmHost) {
@@ -1099,11 +1099,10 @@ namespace TheOtherRoles.Patches {
                 MeetingHudPatch.swapperCheckAndReturnSwap(MeetingHud.Instance, player.PlayerId);
                 MeetingHudPatch.yasunaCheckAndReturnSpecialVote(MeetingHud.Instance, player.PlayerId);
             }
-            if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && GameStatistics.roleHistory != null) {
-                GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });
+            if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started) {
+                TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Disconnect, player.PlayerId, 0) { RelatedTag = EventDetail.Disconnect });
                 Role.allRoles.Do(x => x.HandleDisconnect(player, reason));
                 Lovers.HandleDisconnect(player, reason);
-                if (PlayerControl.LocalPlayer == player) Props.clearProps();
             }
             if (RoleDraft.isEnabled && RoleDraft.isRunning) {
                 if (RoleDraft.pickOrder != null && RoleDraft.pickOrder.Count > 0) {
@@ -1121,6 +1120,16 @@ namespace TheOtherRoles.Patches {
             {
                 if (AmongUsClient.Instance.AmHost && player != null && player.Data?.Role?.IsImpostor == true) LastImpostor.promoteToLastImpostor();
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
+    public static class LocalPlayerExitPatch
+    {
+        public static void Postfix()
+        {
+            Props.clearProps();
+            if (RoleInfo.schrodingersCat != null) RoleInfo.schrodingersCat.color = SchrodingersCat.color;
         }
     }
 }

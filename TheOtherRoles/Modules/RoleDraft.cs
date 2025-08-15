@@ -83,6 +83,7 @@ namespace TheOtherRoles.Modules
             }
 
             int impostorCount = PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Data.Role.IsImpostor).Count();
+            int allPlayerCount = PlayerControl.AllPlayerControls.Count;
             RoleManagerSelectRolesPatch.RoleAssignmentData roleData = RoleManagerSelectRolesPatch.getRoleAssignmentData();
             roleData.crewSettings.Add((byte)RoleId.Sheriff, CustomOptionHolder.sheriffSpawnRate.data);
             if (CustomOptionHolder.sheriffSpawnRate.getSelection() > 0)
@@ -232,7 +233,7 @@ namespace TheOtherRoles.Modules
                                 if (neutralsMin > neutralsMax) neutralsMin = neutralsMax;
 
                                 // If crewmate fill disabled and crew picked the amount of allowed crewmates alreay: no more crewmate except vanilla crewmate allowed!
-                                int crewLimit = PlayerControl.AllPlayerControls.Count - impostorCount - (neutralsMin > neutrals100 ? neutralsMin : neutrals100 > neutralsMax ? neutralsMax : neutrals100);
+                                int crewLimit = allPlayerCount - impostorCount - (neutralsMin > neutrals100 ? neutralsMin : neutrals100 > neutralsMax ? neutralsMax : neutrals100);
                                 int maxCrew = CustomOptionHolder.crewmateRolesFill.getBool() ? CustomOptionHolder.crewmateRolesCountMax.getSelection() : crewLimit;
                                 if (maxCrew > crewLimit)
                                     maxCrew = crewLimit;
@@ -424,7 +425,7 @@ namespace TheOtherRoles.Modules
                         }
 
                     } else {
-                        int currentPick = PlayerControl.AllPlayerControls.Count - pickOrder.Count + 1;
+                        int currentPick = alreadyPicked.Count + 1;
                         playerText = string.Format(ModTranslation.getString("roleDraftAnonymousPlayer"), currentPick);
                         HudManager.Instance.FullScreen.color = Color.black;
                     }

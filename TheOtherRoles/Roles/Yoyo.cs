@@ -1,3 +1,4 @@
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -13,6 +14,8 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Yoyo;
             markedLocation = null;
         }
+
+        static public HelpSprite[] helpSprite = [new(getMarkButtonSprite(), "yoyoMarkHint"), new(getBlinkButtonSprite(), "yoyoBlinkHint")];
 
         public static float blinkDuration = 0;
         public static float markCooldown = 0;

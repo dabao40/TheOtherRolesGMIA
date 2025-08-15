@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
@@ -19,6 +20,9 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.SchrodingersCat;
         }
+
+        static public SpriteLoader hintSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.SchrodingersCatHint.png", 100f);
+        static public HelpSprite[] helpSprite = [new(Morphling.getSampleSprite(), "schrodingersCatSwitchHint"), new(hintSprite, "schrodingersCatButtonHint")];
 
         public override void ResetRole(bool isShifted)
         {
@@ -56,8 +60,8 @@ namespace TheOtherRoles.Roles
                         if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == player.PlayerId)                             array[i].gameObject.active = false;
                     DeadPlayer deadPlayerEntry = GameHistory.deadPlayers.Where(x => x.player.PlayerId == player.PlayerId).FirstOrDefault();
                     if (deadPlayerEntry != null) GameHistory.deadPlayers.Remove(deadPlayerEntry);
-                    GameStatistics.recordRoleHistory(player);
-                    GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << player.PlayerId) { RelatedTag = EventDetail.Revive });
+                    TORGameManager.Instance?.RecordRoleHistory(player);
+                    TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << player.PlayerId) { RelatedTag = EventDetail.Revive });
                 }
             }
             else                 // Assign the default ghost role to let the Schrodinger's Cat have the haunt button
@@ -289,6 +293,7 @@ namespace TheOtherRoles.Roles
             if (player != PlayerControl.LocalPlayer) return;
             var untargetables = new List<PlayerControl>();
             if (team == Team.Jackal)
+            {
                 if (!isTeamJackalAlive() || !cantKillUntilLastOne)
                 {
                     untargetables.AddRange(Jackal.allPlayers);
@@ -296,21 +301,28 @@ namespace TheOtherRoles.Roles
                     currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(currentTarget, Palette.ImpostorRed);
                 }
+            }
             else if (team == Team.JekyllAndHyde)
+            {
                 if (!JekyllAndHyde.hasAlivePlayers || !cantKillUntilLastOne)
                 {
                     untargetables.AddRange(JekyllAndHyde.allPlayers);
                     currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(currentTarget, JekyllAndHyde.color);
                 }
+            }
             else if (team == Team.Moriarty)
+            {
                 if (!Moriarty.hasAlivePlayers || !cantKillUntilLastOne)
                 {
                     untargetables.AddRange(Moriarty.allPlayers);
                     currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(currentTarget, Moriarty.color);
                 }
-            else if (team == Team.Impostor && !isLastImpostor() && cantKillUntilLastOne)                 FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
+            }
+            else if (team == Team.Impostor && !isLastImpostor() && cantKillUntilLastOne) {
+                FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
+            }
 
             if (player.Data.IsDead || hasTeam() || MeetingHud.Instance || ExileController.Instance) {
                 if (shownMenu) showMenu();
@@ -364,7 +376,7 @@ namespace TheOtherRoles.Roles
             RoleInfo.schrodingersCat.color = color;
             RoleInfo.schrodingersCat.isNeutral = true;
             shownMenu = false;
-            if (teams != null) teams.ForEach(x => x.gameObject.SetActive(false));
+            if (teams != null) teams.ForEach(x => { if (x != null && x.gameObject) x.gameObject.SetActive(false); });
             teams = [];
             isExiled = false;
             players = [];

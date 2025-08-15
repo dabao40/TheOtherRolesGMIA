@@ -100,9 +100,9 @@ namespace TheOtherRoles.Modules
 
             if (player && ShipStatus.Instance)
             {
-                Destroy(text.gameObject);
-                HelpMenu.TryCloseHelpScreen();
-                Destroy(this);
+                if (text.gameObject) Destroy(text.gameObject);
+                TORGUIManager.Instance?.CloseAllUI();
+                if (this) Destroy(this);
             }
         }
     }

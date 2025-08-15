@@ -28,9 +28,11 @@ namespace TheOtherRoles.Modules
             TransitionFade.Instance.DoTransitionFade(null!, obj.gameObject, () => { mainMenu.mainMenuUI.SetActive(false); }, () => { obj.OnShown(); });
         }
 
-        static public GUIContext GenerateContext(float scrollerHeight, float width)
+        static public GUIContext GenerateContext(float scrollerHeight, float width, string scrollerTag = null, Predicate<Achievement> predicate = null, string shownText = null)
         {
-            var gui = TORGUIContextEngine.Instance;
+            scrollerTag ??= "Achievements";
+
+            var gui = TORGUIContextEngine.API;
 
             List<GUIContext> inner = new();
             var holder = new VerticalContextsHolder(GUIAlignment.Left, inner);
@@ -39,10 +41,8 @@ namespace TheOtherRoles.Modules
             var detailTitleAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
             var detailDetailAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
 
-            foreach (var a in Achievement.allAchievements)
+            foreach (var a in Achievement.allAchievements.Where(a => (predicate?.Invoke(a) ?? true) && !a.IsHidden))
             {
-                if (a.IsHidden) continue;
-
                 if (inner.Count != 0) inner.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.08f)));
 
                 var aContenxt = new HorizontalContextsHolder(GUIAlignment.Left,
@@ -59,7 +59,7 @@ namespace TheOtherRoles.Modules
             }
             var scroller = new GUIScrollView(GUIAlignment.Center, new(4.7f, scrollerHeight), holder);
 
-            var cul = Achievement.Aggregate();
+            var cul = Achievement.Aggregate(predicate);
             List<GUIContext> footerList = new();
             for (int i = 0; i < cul.Length; i++)
             {
@@ -71,7 +71,7 @@ namespace TheOtherRoles.Modules
                 footerList.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, new RawTextComponent(cul[i].num + "/" + cul[i].max)));
             }
             footerList.Add(new TORGUIMargin(GUIAlignment.Center, new(0.3f, 0f)));
-            footerList.Add(new TORGUIText(GUIAlignment.Right, detailDetailAttr, new RawTextComponent(ModTranslation.getString("achievementAllAchievements") + ": " + cul.Sum(c => c.num) + "/" + cul.Sum(c => c.max))));
+            footerList.Add(new TORGUIText(GUIAlignment.Right, detailDetailAttr, new RawTextComponent(shownText ?? ModTranslation.getString(predicate != null ? "achievementShown" : "achievementAllAchievements") + ": " + cul.Sum(c => c.num) + "/" + cul.Sum(c => c.max))));
             var footer = new HorizontalContextsHolder(GUIAlignment.Center, footerList.ToArray());
 
             return new VerticalContextsHolder(GUIAlignment.Left, scroller, new TORGUIMargin(GUIAlignment.Center, new(0f, 0.15f)), footer)

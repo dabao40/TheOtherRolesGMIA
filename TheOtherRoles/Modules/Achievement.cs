@@ -243,11 +243,11 @@ namespace TheOtherRoles.Modules
 
         public static Shader materialShader;
 
-        static public (int num, int max, int hidden)[] Aggregate()
+        static public (int num, int max, int hidden)[] Aggregate(Predicate<Achievement> predicate)
         {
             (int num, int max, int hidden)[] result = new (int num, int max, int hidden)[3];
             for (int i = 0; i < result.Length; i++) result[i] = (0, 0, 0);
-            return achievements.Values.Aggregate(result,
+            return achievements.Values.Where(a => predicate?.Invoke(a) ?? true).Aggregate(result,
                 (ac, achievement) => {
                     if (!achievement.IsHidden)
                     {
@@ -320,7 +320,6 @@ namespace TheOtherRoles.Modules
         }
 
         static private Dictionary<string, Achievement> achievements = new();
-        static public Dictionary<byte, Achievement> TitleMap = new();
 
         public static IEnumerable<Achievement> allAchievements => achievements.Values;
         static public DataSaver AchievementDataSaver = new("Progress");

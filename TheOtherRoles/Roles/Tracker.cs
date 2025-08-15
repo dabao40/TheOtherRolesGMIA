@@ -27,7 +27,7 @@ namespace TheOtherRoles.Roles
         {
             if (PlayerControl.LocalPlayer != player) return;
             // Handle player tracking
-            if (arrow?.arrow != null)
+            if (arrow?.arrow != null) {
                 if (tracked != null && !player.Data.IsDead)
                 {
                     timeUntilUpdate -= Time.fixedDeltaTime;
@@ -54,14 +54,15 @@ namespace TheOtherRoles.Roles
                         }
                         timeUntilUpdate = updateIntervall;
                     }
-                    else
+                    else {
                         if (trackingMode is 0 or 2)
                             arrow.Update();
+                    }
 
                     if (tracked.inVent && !acTokenChallenge.Value.inVent)
                     {
                         acTokenChallenge.Value.inVent = true;
-                        acTokenChallenge.Value.ventTime = GameStatistics.currentTime;
+                        acTokenChallenge.Value.ventTime = TORGameManager.Instance.CurrentTime;
                     }
                     else if (!tracked.inVent && acTokenChallenge.Value.inVent)
                         acTokenChallenge.Value.inVent = false;
@@ -72,6 +73,7 @@ namespace TheOtherRoles.Roles
                     if (Meter?.gameObject != null) Meter?.gameObject?.SetActive(false);
                     if (arrow?.arrow != null) arrow.arrow.SetActive(false);
                 }
+            }
 
             // Handle corpses tracking
             if (corpsesTrackingTimer >= 0f && !player.Data.IsDead)
@@ -172,9 +174,12 @@ namespace TheOtherRoles.Roles
         public override void ResetRole(bool isShifted)
         {
             resetTracked();
-            if (localArrows != null)                 foreach (Arrow arrow in localArrows)
+            if (localArrows != null)
+            {
+                foreach (Arrow arrow in localArrows)
                     if (arrow?.arrow != null)
                         Object.Destroy(arrow.arrow);
+            }
             localArrows = [];
         }
 

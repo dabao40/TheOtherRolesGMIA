@@ -17,6 +17,8 @@ namespace TheOtherRoles.Roles
             clearArrows();
         }
 
+        static public HelpSprite[] helpSprite = [new(getMarkButtonSprite(), "assassinMarkHint"), new(getKillButtonSprite(), "assassinKillHint")];
+
         public static Color color = Palette.ImpostorRed;
 
         public PlayerControl assassinMarked;
@@ -68,8 +70,10 @@ namespace TheOtherRoles.Roles
             List<PlayerControl> untargetables = [];
             if (!Spy.impostorsCanKillAnyone) untargetables.AddRange(Spy.allPlayers);
             if (Mini.mini != null && !Mini.isGrownUp()) untargetables.Add(Mini.mini);
-            foreach (var jackal in Jackal.players)                 if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
-            foreach (var sidekick in Sidekick.players)                 if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
+            foreach (var jackal in Jackal.players)
+                if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
+            foreach (var sidekick in Sidekick.players)
+                if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
             currentTarget = setTarget(onlyCrewmates: Spy.allPlayers.Count == 0 || !Spy.impostorsCanKillAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(currentTarget, color);
         }

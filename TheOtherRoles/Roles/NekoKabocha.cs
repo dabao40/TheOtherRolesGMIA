@@ -40,14 +40,17 @@ namespace TheOtherRoles.Roles
         {
             killer ??= meetingKiller;
             if (killer != null && killer != player)
+            {
                 if (!killer.Data.IsDead)
+                {
                     if (killer.Data.Role.IsImpostor && revengeImpostor
                         || Helpers.isNeutral(killer) && revengeNeutral
                         || revengeCrew && killer.isCrew())
                     {
                         if (meetingKiller == null)
                             player.MurderPlayer(killer, MurderResultFlags.Succeeded);
-                        else {
+                        else
+                        {
                             killer.Exiled();
                             if (PlayerControl.LocalPlayer == killer)
                                 FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, killer.Data);
@@ -56,6 +59,8 @@ namespace TheOtherRoles.Roles
                         if (PlayerControl.LocalPlayer == player) _ = new StaticAchievementToken("nekoKabocha.challenge");
                         GameHistory.overrideDeathReasonAndKiller(killer, DeadPlayer.CustomDeathReason.Revenge, killer: player);
                     }
+                }
+            }
             else if (killer == null && revengeExile && otherKiller == null && PlayerControl.LocalPlayer == player)
             {
                 var candidates = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(x => x != player && !x.Data.IsDead).ToList();

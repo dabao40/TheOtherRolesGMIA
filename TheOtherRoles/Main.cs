@@ -22,9 +22,9 @@ using Reactor.Networking.Attributes;
 using AmongUs.Data;
 using TheOtherRoles.Modules.CustomHats;
 using TheOtherRoles.Objects;
-using TheOtherRoles.MetaContext;
 using UnityEngine.SceneManagement;
 using AmongUs.Data.Player;
+using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles
 {
@@ -35,7 +35,7 @@ namespace TheOtherRoles
     public class TheOtherRolesPlugin : BasePlugin
     {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "1.3.3";
+        public const string VersionString = "1.3.4";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -96,13 +96,12 @@ namespace TheOtherRoles
         }
 
         public override void Load() {
-            ModTranslation.Load();
-
             Logger = Log;
             Instance = this;
   
             _ = Helpers.checkBeta(); // Exit if running an expired beta
             _ = Patches.CredentialsPatch.MOTD.loadMOTDs();
+            ModTranslation.Load();
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
@@ -128,7 +127,7 @@ namespace TheOtherRoles
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             Harmony.PatchAll();
-            
+
             CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();

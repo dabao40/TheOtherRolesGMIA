@@ -16,6 +16,8 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Trapper;
         }
 
+        static public HelpSprite[] helpSprite = [new(getTrapButtonSprite(), "trapperTrapHint")];
+
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
             Trap.clearAllTraps();
@@ -56,7 +58,9 @@ namespace TheOtherRoles.Roles
             try
             {
                 if (PlayerControl.LocalPlayer == player && Trap.traps.Count != 0 && !Trap.hasTrappedPlayer() && !meetingFlag)
+                {
                     foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
+                    {
                         foreach (var trap in Trap.traps)
                         {
                             if (DateTime.UtcNow.Subtract(trap.Value.placedTime).TotalSeconds < extensionTime) continue;
@@ -88,8 +92,11 @@ namespace TheOtherRoles.Roles
                                 break;
                             }
                         }
+                    }
+                }
 
                 if (PlayerControl.LocalPlayer == player && Trap.hasTrappedPlayer() && !meetingFlag)
+                {
                     // トラップにかかっているプレイヤーを救出する
                     foreach (var trap in Trap.traps)
                     {
@@ -108,8 +115,8 @@ namespace TheOtherRoles.Roles
                                 RPCProcedure.disableTrap(trap.Key);
                             }
                         }
-
                     }
+                }
             }
             catch (NullReferenceException e)
             {

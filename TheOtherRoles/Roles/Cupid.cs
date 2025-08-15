@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
@@ -20,6 +21,8 @@ namespace TheOtherRoles.Roles
             lovers1 = null;
             lovers2 = null;
         }
+
+        static public HelpSprite[] helpSprite = [new(getArrowSprite(), "cupidArrowHint"), new(Medic.getButtonSprite(), "cupidShieldHint")];
 
         public static Color color = new Color32(246, 152, 150, byte.MaxValue);
 
@@ -162,7 +165,8 @@ namespace TheOtherRoles.Roles
                 akujo.honmei = null;
                 akujo.cupidHonmei = p2;
             }
-            else if (Akujo.isKeep(p1) && !p2.isRole(RoleId.Akujo))                 Akujo.players.ForEach(x => x.keeps.Remove(p1));
+            else if (Akujo.isKeep(p1) && !p2.isRole(RoleId.Akujo))
+                Akujo.players.ForEach(x => x.keeps.Remove(p1));
         }
 
         public static bool isCupidLovers(PlayerControl player)

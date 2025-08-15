@@ -49,6 +49,11 @@ namespace TheOtherRoles.Roles
             return buttonSprite;
         }
 
+        public override void OnMeetingStart()
+        {
+            sprinting = false;
+        }
+
         public static float sprintFade(PlayerControl player)
         {
             if (isRole(player) && fadeTime > 0 && !player.Data.IsDead)

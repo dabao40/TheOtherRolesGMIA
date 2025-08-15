@@ -12,6 +12,8 @@ namespace TheOtherRoles.Roles
         public static float camouflageTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge = null;
 
+        public static HelpSprite[] helpSprite = [new(getButtonSprite(), "camouflagerCamoHint")];
+
         public Camouflager()
         {
             RoleId = roleId = RoleId.Camouflager;
@@ -43,7 +45,8 @@ namespace TheOtherRoles.Roles
 
         public static void resetCamouflage() {
             camouflageTimer = 0f;
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)                 p.setDefaultLook();
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                p.setDefaultLook();
             if (isRole(PlayerControl.LocalPlayer))
                 acTokenChallenge.Value.kills = 0;
         }

@@ -82,39 +82,42 @@ namespace TheOtherRoles.Patches {
             Portal.meetingEndsUpdate();            
 
             // Witch execute casted spells
-            if (Witch.allPlayers.Count > 0 && AmongUsClient.Instance.AmHost) {
+            if (Witch.allPlayers.Count > 0) {
                 foreach (var witch in Witch.players)
                 {
-                    if (witch.player == null || witch.futureSpelled == null) continue;
-                    bool exiledIsWitch = exiled != null && exiled.PlayerId == witch.player.PlayerId;
-                    bool witchDiesWithExiledLover = exiled != null && Lovers.bothDie && exiled.Object.isLovers() && exiled.Object.getPartner() == witch.player;
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        if (witch.player == null || witch.futureSpelled == null) continue;
+                        bool exiledIsWitch = exiled != null && exiled.PlayerId == witch.player.PlayerId;
+                        bool witchDiesWithExiledLover = exiled != null && Lovers.bothDie && exiled.Object.isLovers() && exiled.Object.getPartner() == witch.player;
 
-                    if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) witch.futureSpelled = [];
-                    foreach (PlayerControl target in witch.futureSpelled) {
-                        if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(witch.player, target, true) == MurderAttemptResult.PerformKill){
-                            if (target == Lawyer.target) {
-                                foreach (var lawyer in Lawyer.allPlayers)
-                                {
-                                    MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                                    writer2.Write(lawyer.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                                    RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                        if ((witchDiesWithExiledLover || exiledIsWitch) && Witch.witchVoteSavesTargets) witch.futureSpelled = [];
+                        foreach (PlayerControl target in witch.futureSpelled) {
+                            if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(witch.player, target, true) == MurderAttemptResult.PerformKill){
+                                if (target == Lawyer.target) {
+                                    foreach (var lawyer in Lawyer.allPlayers)
+                                    {
+                                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
+                                        writer2.Write(lawyer.PlayerId);
+                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                                        RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                                    }
                                 }
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
+                                writer.Write(target.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                RPCProcedure.uncheckedExilePlayer(target.PlayerId);
+
+                                MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                                writer3.Write(PlayerControl.LocalPlayer.PlayerId);
+                                writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                                writer3.Write(target.PlayerId);
+                                writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
+                                writer3.Write(witch.player.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer3);
+
+                                GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.WitchExile, killer: witch.player);
                             }
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
-                            writer.Write(target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.uncheckedExilePlayer(target.PlayerId);
-
-                            MessageWriter writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                            writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer3.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
-                            writer3.Write(target.PlayerId);
-                            writer3.Write((byte)DeadPlayer.CustomDeathReason.WitchExile);
-                            writer3.Write(witch.player.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer3);
-
-                            GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.WitchExile, killer: witch.player);
                         }
                     }
 
@@ -196,9 +199,9 @@ namespace TheOtherRoles.Patches {
 
         static void WrapUpPostfix(PlayerControl exiled)
         {
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.MeetingEnd, null, 0) { RelatedTag = EventDetail.MeetingEnd });
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.MeetingEnd, null, 0) { RelatedTag = EventDetail.MeetingEnd });
             if (exiled != null)
-                GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Exile, null, 1 << exiled.PlayerId) { RelatedTag = EventDetail.Exiled });
+                TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Exile, null, 1 << exiled.PlayerId) { RelatedTag = EventDetail.Exiled });
             
             // Prosecutor win condition
             /*if (exiled != null && Lawyer.lawyer != null && Lawyer.target != null && Lawyer.isProsecutor && Lawyer.target.PlayerId == exiled.PlayerId && !Lawyer.lawyer.Data.IsDead)

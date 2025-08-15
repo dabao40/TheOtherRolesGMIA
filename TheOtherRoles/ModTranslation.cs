@@ -85,12 +85,65 @@ namespace TheOtherRoles
         }
     }
 
+    public class EastAsianFontChanger
+    {
+        private static TMPro.TMP_FontAsset FontJP = null, FontSC = null, FontKR = null;
+
+        public static void LoadFont()
+        {
+            var fonts = UnityEngine.Object.FindObjectsOfTypeIncludingAssets(Il2CppType.Of<TMPro.TMP_FontAsset>());
+            foreach (var font in fonts)
+            {
+                if (font.name == "NotoSansJP-Regular SDF")
+                    FontJP = font.CastFast<TMPro.TMP_FontAsset>();
+                if (font.name == "NotoSansSC-Regular SDF")
+                    FontSC = font.CastFast<TMPro.TMP_FontAsset>();
+                if (font.name == "NotoSansKR-Regular SDF")
+                    FontKR = font.CastFast<TMPro.TMP_FontAsset>();
+            }
+        }
+
+        public static void SetUpFont(SupportedLangs language)
+        {
+            TMPro.TMP_FontAsset localFont = null;
+
+            if (language == SupportedLangs.Korean)
+                localFont = FontKR;
+            else if (language is SupportedLangs.TChinese or SupportedLangs.SChinese)
+                localFont = FontSC;
+            else
+                localFont = FontJP;
+
+            if (localFont == null) return;
+
+            var fonts = UnityEngine.Object.FindObjectsOfTypeIncludingAssets(Il2CppType.Of<TMPro.TMP_FontAsset>());
+            foreach (var font in fonts)
+            {
+                var asset = font.CastFast<TMPro.TMP_FontAsset>();
+                asset.fallbackFontAssetTable.Clear();
+
+                if (font.name == localFont.name) continue;
+
+                asset.fallbackFontAssetTable.Add(localFont);
+                if (localFont != FontJP) asset.fallbackFontAssetTable.Add(FontJP);
+                if (localFont != FontSC) asset.fallbackFontAssetTable.Add(FontSC);
+                if (localFont != FontKR) asset.fallbackFontAssetTable.Add(FontKR);
+            }
+        }
+
+        public static void ReflectFallBackFont()
+        {
+            SetUpFont(AmongUs.Data.DataManager.Settings.Language.CurrentLanguage);
+        }
+    }
+
     [HarmonyPatch(typeof(LanguageSetter), nameof(LanguageSetter.SetLanguage))]
     class SetLanguagePatch
     {
         static void Postfix()
         {
             ClientOptionsPatch.updateTranslations();
+            EastAsianFontChanger.ReflectFallBackFont();
         }
     }
 }

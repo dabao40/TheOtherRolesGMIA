@@ -30,8 +30,10 @@ namespace TheOtherRoles.Roles
             if (player != PlayerControl.LocalPlayer) return;
 
             List<PlayerControl> untargetables = [.. Spy.allPlayers];
-            foreach (var jackal in Jackal.players)                 if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
-            foreach (var sidekick in Sidekick.players)                 if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
+            foreach (var jackal in Jackal.players)
+                if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
+            foreach (var sidekick in Sidekick.players)
+                if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
             currentTarget = setTarget(onlyCrewmates: !canEraseAnyone, untargetablePlayers: canEraseAnyone ? [] : untargetables);
             setPlayerOutline(currentTarget, color);
         }

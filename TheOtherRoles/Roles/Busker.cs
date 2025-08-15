@@ -59,7 +59,8 @@ namespace TheOtherRoles.Roles
 
             DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
             foreach (var deadBody in array)
-                if (deadBody.ParentId == player.PlayerId)                     return true;
+                if (deadBody.ParentId == player.PlayerId)
+                    return true;
             dieBusker();
             return false;
         }

@@ -398,6 +398,31 @@ namespace TheOtherRoles
             return n is not StringNames.ServerNA and not StringNames.ServerEU and not StringNames.ServerAS;
         }
 
+        public static SpriteLoader ConvertSpriteToSpriteLoader(Sprite sprite)
+        {
+            if (sprite == null)
+                throw new ArgumentNullException(nameof(sprite));
+
+            Texture2D texture = sprite.texture;
+            var textureLoader = new DirectTextureLoader(texture);
+            var spriteLoader = new SpriteLoader(textureLoader, sprite.pixelsPerUnit);
+            spriteLoader.SetPivot(sprite.pivot / sprite.rect.size);
+
+            return spriteLoader;
+        }
+
+        public static string Bold(this string original)
+        {
+            return "<b>" + original + "</b>";
+        }
+
+        public static bool IsPiled(this PassiveUiElement uiElem)
+        {
+            var currentOver = PassiveButtonManager.Instance.currentOver;
+            if (!currentOver || !uiElem) return false;
+            return currentOver.GetInstanceID() == uiElem.GetInstanceID();
+        }
+
         public static int[] MinPlayers = [
             4, 4, 7, 9, 13, 15, 18
             ];
@@ -784,6 +809,23 @@ namespace TheOtherRoles
             __instance.StartCoroutine(AnimateCoroutine(__instance));
         }
 
+        static public IEnumerator WaitAsCoroutine(this Task task)
+        {
+            while (!task.IsCompleted) yield return null;
+            yield break;
+        }
+
+        static public IEnumerable<T> Delimit<T>(this IEnumerable<T> enumerable, T delimiter)
+        {
+            bool isFirst = true;
+            foreach (T item in enumerable)
+            {
+                if (!isFirst) yield return delimiter;
+                yield return item;
+                isFirst = false;
+            }
+        }
+
         private static IEnumerator AnimateCoroutine(HideAndSeekDeathPopup __instance)
         {
             HideAndSeekDeathPopup andSeekDeathPopup = __instance;
@@ -828,8 +870,8 @@ namespace TheOtherRoles
 
             if (withSound)
             {
-                button.OnClick.AddListener((Action)(() => SoundManager.Instance.PlaySound(VanillaAsset.SelectClip, false, 0.8f)));
-                button.OnMouseOver.AddListener((Action)(() => SoundManager.Instance.PlaySound(VanillaAsset.HoverClip, false, 0.8f)));
+                button.OnClick.AddListener((Action)(() => VanillaAsset.PlaySelectSE()));
+                button.OnMouseOver.AddListener((Action)(() => VanillaAsset.PlayHoverSE()));
             }
             if (buttonRenderer != null)
             {
@@ -1088,14 +1130,12 @@ namespace TheOtherRoles
             return result;
         }
 
-        static public TextMeshPro TextHudContent(string name)
+        public static T MarkDontUnload<T>(this T obj) where T : UnityEngine.Object
         {
-            TextMeshPro tmPro = null!;
-            var text = new TORGUIText(GUIAlignment.Left, new(TORGUIContextEngine.API.GetAttribute(AttributeParams.StandardBaredBoldLeftNonFlexible)) { Alignment = MetaContext.TextAlignment.BottomLeft, FontSize = new(1.6f), Size = new(3f, 1f) }, new RawTextComponent("")) { PostBuilder = t => { tmPro = t; tmPro.sortingOrder = 0; } };
-            text.Instantiate(new Anchor(new(0f, 0f), new(-0.5f, -0.5f, 0f)), new(20f, 20f), out _);
+            GameObject.DontDestroyOnLoad(obj);
+            obj.hideFlags |= HideFlags.DontUnloadUnusedAsset | HideFlags.HideAndDontSave;
 
-            tmPro.gameObject.name = name;
-            return tmPro;
+            return obj;
         }
 
         public static TMPro.TextMeshPro getFirst(this TMPro.TextMeshPro[] text)

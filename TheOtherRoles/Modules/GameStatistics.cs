@@ -89,42 +89,6 @@ namespace TheOtherRoles.Modules
 
     public class GameStatistics
     {
-        public static float currentTime = 0f;
-
-        public static void updateTimer() => currentTime += Time.deltaTime;
-        public static MapBehaviour MinimapPrefab = null!;
-        public static GameObject MinimapObjPrefab => MinimapPrefab.transform.GetChild(1).gameObject;
-        public static float MapScale = 0f;
-        public static Dictionary<byte, List<RoleHistory>> roleHistory = new();
-
-        public class RoleHistory
-        {
-            public string playerName = "";
-            public RoleInfo roleInfo = null;
-            public float historyTime = 0f;
-            public NetworkedPlayerInfo.PlayerOutfit playerOutfit = null;
-            public bool isMadmate = false;
-            public Color32 defaultColor = default;
-
-            public RoleHistory(string playerName, RoleInfo roleInfo, float historyTime, NetworkedPlayerInfo.PlayerOutfit playerOutfit, bool isMadmate, Color32 color)
-            {
-                this.playerName = playerName;
-                this.roleInfo = roleInfo;
-                this.historyTime = historyTime;
-                this.playerOutfit = playerOutfit;
-                this.isMadmate = isMadmate;
-                defaultColor = color;
-            }
-        }
-
-        public static void recordRoleHistory(PlayerControl player)
-        {
-            if (player == null) return;
-            var info = RoleInfo.getRoleInfoForPlayer(player, false, true).FirstOrDefault();
-            if (roleHistory.ContainsKey(player.PlayerId))
-                roleHistory[player.PlayerId].Add(new(player.Data.PlayerName, info, currentTime, player.Data.DefaultOutfit, Madmate.madmate.Any(x =>
-                x.PlayerId == player.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId), info.color));
-        }
 
         public class StatisticsEvent
         {
@@ -205,23 +169,23 @@ namespace TheOtherRoles.Modules
         {
             static Dictionary<int, EventVariation> AllEvents = new();
             static private DividedSpriteLoader iconSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.GameStatisticsIcon.png", 100f, 8, 1);
-            static public EventVariation Kill = new(0, iconSprite.WrapLoader(0), iconSprite.WrapLoader(0), true, true);
-            static public EventVariation Exile = new(1, iconSprite.WrapLoader(2), iconSprite.WrapLoader(2), false, false);
-            static public EventVariation GameStart = new(2, iconSprite.WrapLoader(1), iconSprite.WrapLoader(1), true, false);
-            static public EventVariation GameEnd = new(3, iconSprite.WrapLoader(1), iconSprite.WrapLoader(1), true, false);
-            static public EventVariation MeetingEnd = new(4, iconSprite.WrapLoader(1), iconSprite.WrapLoader(1), true, false);
-            static public EventVariation Report = new(5, iconSprite.WrapLoader(4), iconSprite.WrapLoader(4), true, false);
-            static public EventVariation EmergencyButton = new(6, iconSprite.WrapLoader(3), iconSprite.WrapLoader(3), true, false);
-            static public EventVariation Disconnect = new(7, iconSprite.WrapLoader(5), iconSprite.WrapLoader(5), false, false);
-            static public EventVariation Revive = new(8, iconSprite.WrapLoader(6), iconSprite.WrapLoader(6), true, false);
-            static public EventVariation CleanBody = new(9, iconSprite.WrapLoader(7), iconSprite.WrapLoader(7), true, false);
+            static public EventVariation Kill = new(0, iconSprite.AsLoader(0), iconSprite.AsLoader(0), true, true);
+            static public EventVariation Exile = new(1, iconSprite.AsLoader(2), iconSprite.AsLoader(2), false, false);
+            static public EventVariation GameStart = new(2, iconSprite.AsLoader(1), iconSprite.AsLoader(1), true, false);
+            static public EventVariation GameEnd = new(3, iconSprite.AsLoader(1), iconSprite.AsLoader(1), true, false);
+            static public EventVariation MeetingEnd = new(4, iconSprite.AsLoader(1), iconSprite.AsLoader(1), true, false);
+            static public EventVariation Report = new(5, iconSprite.AsLoader(4), iconSprite.AsLoader(4), true, false);
+            static public EventVariation EmergencyButton = new(6, iconSprite.AsLoader(3), iconSprite.AsLoader(3), true, false);
+            static public EventVariation Disconnect = new(7, iconSprite.AsLoader(5), iconSprite.AsLoader(5), false, false);
+            static public EventVariation Revive = new(8, iconSprite.AsLoader(6), iconSprite.AsLoader(6), true, false);
+            static public EventVariation CleanBody = new(9, iconSprite.AsLoader(7), iconSprite.AsLoader(7), true, false);
 
             public int Id { get; private init; }
-            public ISpriteLoader EventIcon { get; private init; }
-            public ISpriteLoader InteractionIcon { get; private init; }
+            public Image EventIcon { get; private init; }
+            public Image InteractionIcon { get; private init; }
             public bool ShowPlayerPosition { get; private init; }
             public bool CanCombine { get; private init; }
-            public EventVariation(int id, ISpriteLoader eventIcon, ISpriteLoader interactionIcon, bool showPlayerPosition, bool canCombine)
+            public EventVariation(int id, Image eventIcon, Image interactionIcon, bool showPlayerPosition, bool canCombine)
             {
                 Id = id;
                 EventIcon = eventIcon;
@@ -236,8 +200,6 @@ namespace TheOtherRoles.Modules
 
         public class Event
         {
-            public static GameStatistics GameStatistics { get; set; } = new();
-
             public EventVariation Variation { get; private init; }
             public float Time { get; private init; }
             public byte? SourceId { get; private init; }
@@ -245,9 +207,8 @@ namespace TheOtherRoles.Modules
             public Tuple<byte, Vector2>[] Position { get; private init; }
             public CommunicableTextTag RelatedTag { get; set; } = null;
 
-
             public Event(EventVariation variation, byte? sourceId, int targetIdMask, GameStatisticsGatherTag? positionTag = null)
-                : this(variation, currentTime, sourceId, targetIdMask, positionTag) { }
+                : this(variation, TORGameManager.Instance.CurrentTime, sourceId, targetIdMask, positionTag) { }
 
             public Event(EventVariation variation, float time, byte? sourceId, int targetIdMask, GameStatisticsGatherTag? positionTag)
             {
@@ -258,13 +219,13 @@ namespace TheOtherRoles.Modules
 
                 if (variation.ShowPlayerPosition)
                 {
-                    List<Tuple<byte, Vector2>> list = new();
+                    List<Tuple<byte, Vector2>> list = [];
                     foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
                     {
                         if (p.Data.IsDead && p.PlayerId != sourceId && ((TargetIdMask & (1 << p.PlayerId)) == 0)) continue;
 
                         if (positionTag != null)
-                            list.Add(new Tuple<byte, Vector2>(p.PlayerId, GameStatistics.Gathering[positionTag.Value][p.PlayerId]));
+                            list.Add(new Tuple<byte, Vector2>(p.PlayerId, TORGameManager.Instance.GameStatistics.Gathering[positionTag.Value][p.PlayerId]));
                         else
                             list.Add(new Tuple<byte, Vector2>(p.PlayerId, p.transform.position));
                     }
@@ -440,7 +401,7 @@ namespace TheOtherRoles.Modules
 
         public void Start()
         {
-            allStatistics = GameStatistics.Event.GameStatistics.Sealed;
+            allStatistics = TORGameManager.Instance!.GameStatistics.Sealed;
             if (allStatistics.Length == 0) return;
 
             timelineBack = Helpers.SetUpLineRenderer("TimelineBack", transform, new Vector3(0, 0, -10f), LayerMask.NameToLayer("UI"), 0.014f);
@@ -449,14 +410,14 @@ namespace TheOtherRoles.Modules
             minimap = Helpers.CreateObject("Minimap", transform, new Vector3(0, -1.62f, 0));
             var scaledMinimap = Helpers.CreateObject("Scaled", minimap.transform, new Vector3(0, 0, 0));
             scaledMinimap.transform.localScale = new Vector3(0.45f, 0.45f, 1);
-            var minimapRenderer = GameObject.Instantiate(GameStatistics.MinimapObjPrefab, scaledMinimap.transform);
+            var minimapRenderer = GameObject.Instantiate(TORGameManager.Instance?.RuntimeAsset.MinimapObjPrefab, scaledMinimap.transform);
             minimapRenderer.gameObject.name = "MapGraphic";
             minimapRenderer.transform.localScale = new Vector3(1f, 1f, 1f);
             minimapRenderer.transform.localPosition = Vector3.zero;
             mapColor = minimapRenderer.GetComponent<AlphaPulse>();
             mapColor.SetColor(MainColor);
             Helpers.CreateSharpBackground(new Vector2(4.6f, 2.8f), MainColor, minimap.transform);
-            baseOnMinimap = Helpers.CreateObject("Scaler", scaledMinimap.transform, GameStatistics.MinimapPrefab.HerePoint.transform.parent.localPosition);
+            baseOnMinimap = Helpers.CreateObject("Scaler", scaledMinimap.transform, TORGameManager.Instance.RuntimeAsset.MinimapPrefab.HerePoint.transform.parent.localPosition);
             detailHolder = Helpers.CreateObject("Detail", transform, new Vector3(0, -3.5f, 0));
             Hide();
 
@@ -606,9 +567,9 @@ namespace TheOtherRoles.Modules
             float p = 0f;
             foreach (var pos in statisticsEvent.Position)
             {
-                var renderer = GameObject.Instantiate(GameStatistics.MinimapPrefab.HerePoint, baseOnMinimap.transform);
-                PlayerMaterial.SetColors(GameStatistics.roleHistory[pos.Item1].FirstOrDefault().playerOutfit.ColorId, renderer);
-                renderer.transform.localPosition = (Vector3)(pos.Item2 / GameStatistics.MapScale) + new Vector3(0, 0, -1f - p);
+                var renderer = GameObject.Instantiate(TORGameManager.Instance.RuntimeAsset.MinimapPrefab.HerePoint, baseOnMinimap.transform);
+                PlayerMaterial.SetColors(GameData.Instance.GetPlayerById(pos.Item1).DefaultOutfit.ColorId, renderer);
+                renderer.transform.localPosition = (Vector3)(pos.Item2 / TORGameManager.Instance.RuntimeAsset.MapScale) + new Vector3(0, 0, -1f - p);
                 var button = renderer.gameObject.SetUpButton();
                 button.gameObject.AddComponent<BoxCollider2D>().size = new(0.3f, 0.3f);
 
@@ -620,11 +581,11 @@ namespace TheOtherRoles.Modules
                         if (near.Item2.Distance(pos.Item2) > 0.6f) continue;
 
                         if (context.Count > 0) context.Append(new MetaContextOld.VerticalMargin(0.1f));
-                        var history = GameStatistics.roleHistory[near.Item1].Where(x => x.historyTime <= statisticsEvent.Time).LastOrDefault();
-                        var role = history.roleInfo;
-                        bool isMadmate = history.isMadmate;
-                        var roleText = Helpers.cs(isMadmate ? Madmate.color : history.defaultColor, isMadmate ? (role == RoleInfo.crewmate ? Madmate.fullName : Madmate.prefix + role.name) : role.name);
-                        context.Append(new MetaContextOld.Text(TextAttribute.BoldAttrLeft) { RawText = GameStatistics.roleHistory[near.Item1].FirstOrDefault().playerName });
+                        var history = TORGameManager.Instance.RoleHistory.Where(x => x.PlayerId == near.Item1 && x.Time <= statisticsEvent.Time).LastOrDefault();
+                        var role = history.RoleInfo;
+                        bool isMadmate = history.IsMadmate;
+                        var roleText = Helpers.cs(isMadmate ? Madmate.color : history.Color, isMadmate ? (role == RoleInfo.crewmate ? Madmate.fullName : Madmate.prefix + role.name) : role.name);
+                        context.Append(new MetaContextOld.Text(TextAttribute.BoldAttrLeft) { RawText = GameData.Instance.GetPlayerById(near.Item1).PlayerName });
                         context.Append(new MetaContextOld.VariableText(new TextAttribute(TextAttribute.BoldAttrLeft) { Alignment = TMPro.TextAlignmentOptions.TopLeft }.EditFontSize(1.35f)) { RawText = roleText });
                     }
 
@@ -665,9 +626,9 @@ namespace TheOtherRoles.Modules
                 Il2CppArgument<PoolablePlayer> GeneratePlayerView(byte id)
                 {
                     PoolablePlayer player = GameObject.Instantiate(PlayerPrefab, detail.transform);
-                    player.UpdateFromPlayerOutfit(GameStatistics.roleHistory[id].FirstOrDefault().playerOutfit, PlayerMaterial.MaskType.None, false, true, null);
+                    player.UpdateFromPlayerOutfit(GameData.Instance.GetPlayerById(id).DefaultOutfit, PlayerMaterial.MaskType.None, false, true, null);
                     player.ToggleName(true);
-                    player.SetName(GameStatistics.roleHistory[id].FirstOrDefault().playerName, new Vector3(3.1f, 3.1f, 1f), Color.white, -15f);
+                    player.SetName(GameData.Instance.GetPlayerById(id).PlayerName, new Vector3(3.1f, 3.1f, 1f), Color.white, -15f);
                     player.transform.localScale = new Vector3(0.24f, 0.24f, 1f);
                     player.cosmetics.nameText.transform.parent.localPosition += new Vector3(0f, -1.05f, 0f);
                     return player;
@@ -690,9 +651,9 @@ namespace TheOtherRoles.Modules
                 }
                 objects.Add(icon.gameObject);
 
-                foreach (var p in GameStatistics.roleHistory.Keys)
-                    if ((target.TargetIdMask & (1 << p)) != 0)
-                        objects.Add(GeneratePlayerView(p).Value.gameObject);
+                foreach (var p in GameData.Instance.AllPlayers)
+                    if ((target.TargetIdMask & (1 << p.PlayerId)) != 0)
+                        objects.Add(GeneratePlayerView(p.PlayerId).Value.gameObject);
 
                 float width = Mathf.Min(1.2f, (float)(objects.Count - 1) * 0.5f);
                 for (int i = 0; i < objects.Count; i++)

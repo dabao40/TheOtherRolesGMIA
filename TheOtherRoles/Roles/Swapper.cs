@@ -14,6 +14,8 @@ namespace TheOtherRoles.Roles
         public static float rechargeTasksNumber;
         public static float rechargedTasks;
 
+        public static HelpSprite[] helpSprite = [new(getCheckSprite(), "swapperCheckHint")];
+
         public Swapper()
         {
             RoleId = roleId = RoleId.Swapper;

@@ -242,10 +242,13 @@ namespace TheOtherRoles.Patches {
 
             // Assign Shifter (chance to be neutral based on setting)
             bool shifterIsNeutral = false;
-            if (data.crewmates.Count > 0 && data.maxNeutralRoles > 0 && rnd.Next(1, 101) <= CustomOptionHolder.shifterIsNeutralRate.getSelection() * 10)
+            if (rnd.Next(1, 101) <= CustomOptionHolder.shifterIsNeutralRate.getSelection() * 10)
             {
-                data.neutralSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.data);
-                shifterIsNeutral = true;
+                if (data.crewmates.Count > 0 && data.maxNeutralRoles > 0)
+                {
+                    data.neutralSettings.Add((byte)RoleId.Shifter, CustomOptionHolder.shifterSpawnRate.data);
+                    shifterIsNeutral = true;
+                }
             }
             else if (data.crewmates.Count > 0 && data.maxCrewmateRoles > 0)
             {

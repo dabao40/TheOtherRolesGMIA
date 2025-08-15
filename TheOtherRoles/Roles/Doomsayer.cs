@@ -22,6 +22,8 @@ namespace TheOtherRoles.Roles
             currentTarget = null;
         }
 
+        static public HelpSprite[] helpSprite = [new(getButtonSprite(), "doomsayerObserveHint")];
+
         public static Color color = new(0f, 1f, 0.5f, 1f);
 
         public static int guessesToWin = 4;
@@ -49,40 +51,42 @@ namespace TheOtherRoles.Roles
                 string msg = "";
                 var list = new List<RoleInfo>();
                 var info = RoleInfo.getRoleInfoForPlayer(observed, false, true).FirstOrDefault();
-                if (Killing.Contains(info)) {
+                if (RoleInfo.Killing.Contains(info)) {
                     msg = "doomsayerKillingInfo";
-                    list = Killing;
-                } else if (Trick.Contains(info)) {
+                    list = RoleInfo.Killing;
+                } else if (RoleInfo.Trick.Contains(info)) {
                     msg = "doomsayerTrickInfo";
-                    list = Trick;
-                } else if (Detect.Contains(info)) {
+                    list = RoleInfo.Trick;
+                } else if (RoleInfo.Detect.Contains(info)) {
                     msg = "doomsayerDetectInfo";
-                    list = Detect;
-                } else if (Panic.Contains(info)) {
+                    list = RoleInfo.Detect;
+                } else if (RoleInfo.Panic.Contains(info)) {
                     msg = "doomsayerPanicInfo";
-                    list = Panic;
-                } else if (Body.Contains(info)) {
+                    list = RoleInfo.Panic;
+                } else if (RoleInfo.Body.Contains(info)) {
                     msg = "doomsayerBodyInfo";
-                    list = Body;
-                } else if (Team.Contains(info)) {
+                    list = RoleInfo.Body;
+                } else if (RoleInfo.Team.Contains(info)) {
                     msg = "doomsayerTeamInfo";
-                    list = new(Team);
+                    list = new(RoleInfo.Team);
                     list.RemoveAll(x => x.roleId == RoleId.BomberB);
-                } else if (Protection.Contains(info)) {
+                } else if (RoleInfo.Protection.Contains(info)) {
                     msg = "doomsayerProtectionInfo";
-                    list = Protection;
-                } else if (Outlook.Contains(info)) {
+                    list = RoleInfo.Protection;
+                } else if (RoleInfo.Outlook.Contains(info)) {
                     msg = "doomsayerOutlookInfo";
-                    list = Outlook;
-                } else if (Hunting.Contains(info)) {
+                    list = RoleInfo.Outlook;
+                } else if (RoleInfo.Hunting.Contains(info)) {
                     msg = "doomsayerHuntingInfo";
-                    list = Hunting;
+                    list = RoleInfo.Hunting;
                 } else if (info.roleId is RoleId.Crewmate or RoleId.Impostor) {
                     msg = "doomsayerRolelessInfo";
                     list = [RoleInfo.crewmate, RoleInfo.impostor];
                 }
-                if (!string.IsNullOrEmpty(msg))                     msg = string.Format(ModTranslation.getString(msg), observed.Data.PlayerName) + "\n(" + string.Join(", ", list.Select(x => x.name)) +")";
-                else                     msg = string.Format(ModTranslation.getString("doomsayerNoneInfo"), observed.Data.PlayerName);
+                if (!string.IsNullOrEmpty(msg))
+                    msg = string.Format(ModTranslation.getString(msg), observed.Data.PlayerName) + "\n(" + string.Join(", ", list.Select(x => x.name)) +")";
+                else
+                    msg = string.Format(ModTranslation.getString("doomsayerNoneInfo"), observed.Data.PlayerName);
                     
                 if (PlayerControl.LocalPlayer == player)
                     MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
@@ -108,107 +112,6 @@ namespace TheOtherRoles.Roles
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DoomsayerButton.png", 115f);
             return buttonSprite;
         }
-
-        public static List<RoleInfo> Killing = [
-            RoleInfo.sheriff,
-            RoleInfo.bountyHunter,
-            RoleInfo.witch,
-            RoleInfo.jekyllAndHyde,
-            RoleInfo.thief,
-            RoleInfo.serialKiller
-        ];
-
-        public static List<RoleInfo> Trick =
-        [
-            RoleInfo.nekoKabocha,
-            RoleInfo.ninja,
-            RoleInfo.veteran,
-            RoleInfo.niceSwapper,
-            RoleInfo.evilSwapper,
-            RoleInfo.mayor,
-            RoleInfo.bait
-        ];
-
-        public static List<RoleInfo> Detect =
-        [
-            RoleInfo.snitch,
-            RoleInfo.fortuneTeller,
-            RoleInfo.hacker,
-            RoleInfo.evilHacker,
-            RoleInfo.blackmailer,
-            RoleInfo.archaeologist
-        ];
-
-        public static List<RoleInfo> Body =
-        [
-            RoleInfo.sherlock,
-            RoleInfo.medium,
-            RoleInfo.vulture,
-            RoleInfo.cleaner,
-            RoleInfo.undertaker,
-            RoleInfo.vampire
-        ];
-
-        public static List<RoleInfo> Panic =
-        [
-            RoleInfo.teleporter,
-            RoleInfo.yasuna,
-            RoleInfo.evilYasuna,
-            RoleInfo.fortuneTeller,
-            RoleInfo.trapper,
-            RoleInfo.plagueDoctor,
-            RoleInfo.eraser,
-            RoleInfo.morphling,
-            RoleInfo.doomsayer
-        ];
-
-        public static List<RoleInfo> Team =
-        [
-            RoleInfo.bomberA,
-            RoleInfo.bomberB,
-            RoleInfo.jackal,
-            RoleInfo.sidekick,
-            RoleInfo.fox,
-            RoleInfo.immoralist,
-            RoleInfo.mimicK,
-            RoleInfo.mimicA,
-            RoleInfo.spy
-        ];
-
-        public static List<RoleInfo> Protection =
-        [
-            RoleInfo.akujo,
-            RoleInfo.cupid,
-            RoleInfo.medic,
-            RoleInfo.lawyer,
-            RoleInfo.engineer,
-            RoleInfo.camouflager,
-            RoleInfo.securityGuard
-        ];
-
-        public static List<RoleInfo> Outlook =
-        [
-            RoleInfo.schrodingersCat,
-            RoleInfo.moriarty,
-            RoleInfo.warlock,
-            RoleInfo.seer,
-            RoleInfo.taskMaster,
-            RoleInfo.timeMaster,
-            RoleInfo.portalmaker
-        ];
-
-        public static List<RoleInfo> Hunting =
-        [
-            RoleInfo.tracker,
-            RoleInfo.evilTracker,
-            RoleInfo.detective,
-            RoleInfo.sprinter,
-            RoleInfo.kataomoi,
-            RoleInfo.assassin,
-            RoleInfo.noisemaker,
-            RoleInfo.lighter,
-            RoleInfo.yoyo
-        ];
 
         public static void clearAndReload()
         {

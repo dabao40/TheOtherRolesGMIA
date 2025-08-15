@@ -14,6 +14,8 @@ namespace TheOtherRoles.Roles
         public static float lightsOutTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge;
 
+        static public HelpSprite[] helpSprite = [new(getPlaceBoxButtonSprite(), "tricksterBoxHint"), new(getLightsOutButtonSprite(), "tricksterLightsOutHint")];
+
         public static bool isInTricksterVent
         {
             get
@@ -63,8 +65,12 @@ namespace TheOtherRoles.Roles
 
         public override void OnKill(PlayerControl target)
         {
-            if (PlayerControl.LocalPlayer == player)                 if (isInTricksterVent) player.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + boxKillPenalty);
+            if (PlayerControl.LocalPlayer == player)
+            {
+                if (isInTricksterVent)
+                    player.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + boxKillPenalty);
                 else player.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+            }
         }
 
         public static void clearAndReload() {

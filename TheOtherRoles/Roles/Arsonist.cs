@@ -20,6 +20,8 @@ namespace TheOtherRoles.Roles
             dousedPlayers = [];
         }
 
+        static public HelpSprite[] helpSprite = [new(getDouseSprite(), "arsonistDouseHint"), new(getIgniteSprite(), "arsonistIgniteHint")];
+
         public static float cooldown = 30f;
         public static float duration = 3f;
         public bool triggerArsonistWin = false;
@@ -86,9 +88,14 @@ namespace TheOtherRoles.Roles
             List<PlayerControl> untargetables;
             if (douseTarget != null) {
                 untargetables = [];
-                foreach (PlayerControl player in PlayerControl.AllPlayerControls)                     if (player.PlayerId != douseTarget.PlayerId)                         untargetables.Add(player);
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.PlayerId != douseTarget.PlayerId)
+                        untargetables.Add(player);
+                }
             }
-            else untargetables = dousedPlayers;
+            else
+                untargetables = dousedPlayers;
             currentTarget = setTarget(untargetablePlayers: untargetables);
             if (currentTarget != null) setPlayerOutline(currentTarget, color);
         }

@@ -15,6 +15,8 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Undertaker;
         }
 
+        static public HelpSprite[] helpSprite = [new(getDragButtonSprite(), "undertakerDragHint"), new(getDropButtonSprite(), "undertakerDropHint")];
+
         public static DeadBody DraggedBody;
         public static DeadBody TargetBody;
         public static bool CanDropBody;
@@ -62,7 +64,8 @@ namespace TheOtherRoles.Roles
 
         public override void OnDeath(PlayerControl killer = null)
         {
-            if (PlayerControl.LocalPlayer == player && DraggedBody != null && killer != null)                 _ = new StaticAchievementToken("undertaker.another1");
+            if (PlayerControl.LocalPlayer == player && DraggedBody != null && killer != null)
+                _ = new StaticAchievementToken("undertaker.another1");
         }
 
         void undertakerCanDropTarget()
@@ -79,7 +82,8 @@ namespace TheOtherRoles.Roles
         void undertakerSetTarget()
         {
             if (player != PlayerControl.LocalPlayer) return;
-            if (TargetBody != null)                 Helpers.SetDeadBodyOutline(TargetBody, null);
+            if (TargetBody != null)
+                Helpers.SetDeadBodyOutline(TargetBody, null);
 
             if (DraggedBody == null)
             {
@@ -123,7 +127,8 @@ namespace TheOtherRoles.Roles
                 newBodyPos = new Vector3(undertakerPos.x, undertakerPos.y, bodyLastPos.z);
 
             if (player.Data.IsDead) {
-                if (player.AmOwner)                     RpcDropBody(newBodyPos);
+                if (player.AmOwner)
+                    RpcDropBody(newBodyPos);
                 return;
             }
 

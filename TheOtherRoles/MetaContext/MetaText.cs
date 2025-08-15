@@ -120,6 +120,11 @@ public enum AttributeAsset
     MetaRoleButton,
 
     /// <summary>
+    /// 中揃えの小見出しやボタン向けの固定サイズテキスト属性です。
+    /// </summary>
+    CenteredBoldFixed,
+
+    /// <summary>
     /// 主にオーバーレイ向けの見出し用可変サイズテキスト属性です。
     /// </summary>
     OverlayTitle,
@@ -130,9 +135,24 @@ public enum AttributeAsset
     DocumentTitle,
 
     /// <summary>
+    /// DocumentTitleより小さく、DocumentSubtitle2より大きいテキスト属性です。
+    /// </summary>
+    DocumentSubtitle1,
+
+    /// <summary>
+    /// DocumentSubtitle1より小さく、DocumentStandardより大きいテキスト属性です。
+    /// </summary>
+    DocumentSubtitle2,
+
+    /// <summary>
     /// SerializableDocumentのTextStyle"Standard"で提供されているテキスト属性です。
     /// </summary>
     DocumentStandard,
+
+    /// <summary>
+    /// SerializableDocumentのTextStyle"Bold"で提供されているテキスト属性です。
+    /// </summary>
+    DocumentBold,
 }
 
 [Flags]

@@ -101,7 +101,7 @@ namespace TheOtherRoles.Patches {
             // Reset zoomed out ghosts
             Helpers.toggleZoom(reset: true);
 
-            GameStatistics.Event.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.GameEnd, null, 0) { RelatedTag = EventDetail.GameEnd });
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.GameEnd, null, 0) { RelatedTag = EventDetail.GameEnd });
         }
 
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)]ref EndGameResult endGameResult) {
@@ -1243,7 +1243,7 @@ namespace TheOtherRoles.Patches {
 
             TeamJackalAlive = numJackalAlive;
             TeamImpostorsAlive = numImpostorsAlive;
-            TeamSheriffAlive = Sheriff.allPlayers.Where(x => !x.Data.IsDead && !Madmate.madmate.Contains(x)).ToList().Count +
+            TeamSheriffAlive = Sheriff.allPlayers.Where(x => !x.Data.IsDead && !Madmate.madmate.Any(y => y.PlayerId == x.PlayerId)).ToList().Count +
                 (Deputy.stopsGameEnd ? Deputy.livingPlayers.Count : 0);
             TeamMoriartyAlive = numMoriartyAlive;
             TeamJekyllAndHydeAlive = numJekyllAndHydeAlive;

@@ -1,5 +1,6 @@
 using System.Linq;
 using Hazel;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -15,6 +16,11 @@ public class Mayor : RoleBase<Mayor>
 
     public static bool meetingButton = true;
     public static int numVotes = 2;
+
+    public static HelpSprite[] helpSprite =
+    [
+        new(getMeetingSprite(), "mayorMeetingButtonHint")
+    ];
 
     public Mayor()
     {

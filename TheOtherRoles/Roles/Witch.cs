@@ -29,8 +29,10 @@ namespace TheOtherRoles.Roles
                 untargetables = []; // Also target players that have already been spelled, to hide spells that were blanks/blocked by shields
                 if (!canSpellAnyone) {
                     untargetables.AddRange(Spy.allPlayers);
-                    foreach (var jackal in Jackal.players)                         if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
-                    foreach (var sidekick in Sidekick.players)                         if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
+                    foreach (var jackal in Jackal.players)
+                        if (jackal.player != null && jackal.wasTeamRed) untargetables.Add(jackal.player);
+                    foreach (var sidekick in Sidekick.players)
+                        if (sidekick.player != null && sidekick.wasTeamRed) untargetables.Add(sidekick.player);
                 }
             }
             currentTarget = setTarget(onlyCrewmates: !canSpellAnyone, untargetablePlayers: untargetables);
@@ -80,7 +82,6 @@ namespace TheOtherRoles.Roles
             spelledOverlaySprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.SpellButtonMeeting.png", 225f);
             return spelledOverlaySprite;
         }
-
 
         public static void clearAndReload() {
             cooldown = CustomOptionHolder.witchCooldown.getFloat();

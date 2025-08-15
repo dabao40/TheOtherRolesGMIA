@@ -69,11 +69,17 @@ namespace TheOtherRoles.Roles
             if (MeetingHud.Instance || PlayerControl.LocalPlayer != player) yield break;
             List<byte> transportTargets = [];
             foreach (var player in PlayerControl.AllPlayerControls)
+            {
                 if (!player.Data.Disconnected && player != target1)
+                {
                     if (!player.Data.IsDead) transportTargets.Add(player.PlayerId);
                     else
+                    {
                         foreach (var body in UnityEngine.Object.FindObjectsOfType<DeadBody>())
                             if (body.ParentId == player.PlayerId) transportTargets.Add(player.PlayerId);
+                    }
+                }
+            }
             byte[] transporttargetIDs = transportTargets.ToArray();
             var pk = new PlayerMenu((x) =>
             {
@@ -132,7 +138,8 @@ namespace TheOtherRoles.Roles
             public IEnumerator Open(float delay, bool includeDead = false)
             {
                 yield return new WaitForSecondsRealtime(delay);
-                while (ExileController.Instance != null) yield return 0;                 Targets = PlayerControl.AllPlayerControls.ToArray().Where(x => Inclusion(x) && (!x.Data.IsDead || includeDead) && !x.Data.Disconnected).ToList();
+                while (ExileController.Instance != null) yield return 0;
+                Targets = PlayerControl.AllPlayerControls.ToArray().Where(x => Inclusion(x) && (!x.Data.IsDead || includeDead) && !x.Data.Disconnected).ToList();
                 TheOtherRolesPlugin.Logger.LogMessage($"Targets {Targets.Count}");
                 if (Menu == null)
                 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace TheOtherRoles.Roles
             Serial,
             Parallel
         }
+
+        static public HelpSprite[] helpSprite = [new(getHideButtonSprite(), "foxHideHint"), new(getImmoralistButtonSprite(), "foxImmoralistHint"), new(getRepairButtonSprite(), "foxRepairHint")];
 
         public Fox()
         {
@@ -121,11 +124,13 @@ namespace TheOtherRoles.Roles
             // 生存中の狐が1匹でもタスクを終了しているかを確認
             bool isCompleted = false;
             foreach (var fox in livingPlayers)
+            {
                 if (tasksComplete(fox))
                 {
                     isCompleted = true;
                     break;
                 }
+            }
             return isCompleted;
         }
 
@@ -189,11 +194,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow?.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         UnityEngine.Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];

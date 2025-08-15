@@ -1,19 +1,19 @@
-using HarmonyLib;
 using System;
-using Hazel;
-using UnityEngine;
-using System.Linq;
-using static TheOtherRoles.TheOtherRoles;
-using static TheOtherRoles.GameHistory;
-using static TheOtherRoles.TORMapOptions;
 using System.Collections.Generic;
-using TheOtherRoles.Utilities;
-using TheOtherRoles.Objects;
-using TheOtherRoles.CustomGameModes;
-using Reactor.Utilities.Extensions;
+using System.Linq;
 using AmongUs.GameOptions;
+using HarmonyLib;
+using Hazel;
+using Reactor.Utilities.Extensions;
+using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
 using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using static TheOtherRoles.GameHistory;
+using static TheOtherRoles.TheOtherRoles;
+using static TheOtherRoles.TORMapOptions;
 
 namespace TheOtherRoles.Patches {
 
@@ -148,7 +148,7 @@ namespace TheOtherRoles.Patches {
         {
             foreach (var tracker in Tracker.players) {
                 if (tracker.tracked != null && tracker.tracked == PlayerControl.LocalPlayer)
-                    tracker.unlockAch(GameStatistics.currentTime);
+                    tracker.unlockAch(TORGameManager.Instance.CurrentTime);
             }
         }
     }

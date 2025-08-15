@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
@@ -16,6 +17,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.BomberA;
         }
+
+        static public HelpSprite[] helpSprite = [new(getBomberButtonSprite(), "bomberPlantBombHint"), new(getReleaseButtonSprite(), "bomberReleaseBombHint")];
 
         public static bool isAlive()
         {
@@ -71,9 +74,12 @@ namespace TheOtherRoles.Roles
         {
             if (PlayerControl.LocalPlayer.Data.IsDead)
             {
-                if (arrows != null)                     foreach (Arrow arrow in arrows)
+                if (arrows != null)
+                {
+                    foreach (Arrow arrow in arrows)
                         if (arrow?.arrow != null)
                             Object.Destroy(arrow.arrow);
+                }
                 return;
             }
             if ((bombTarget == null || BomberB.bombTarget == null) && !alwaysShowArrow) return;
@@ -86,11 +92,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];
@@ -160,12 +168,15 @@ namespace TheOtherRoles.Roles
 
         public static void clearPlayerIcons()
         {
-            foreach (PoolablePlayer p in playerIcons.Values)                 if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+            foreach (PoolablePlayer p in playerIcons.Values)
+                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
             TORMapOptions.resetPoolables();
             if (arrows != null)
+            {
                 foreach (Arrow arrow in arrows)
                     if (arrow?.arrow != null)
                         Object.Destroy(arrow.arrow);
+            }
             targetText = null;
             partnerTargetText = null;
         }
@@ -192,16 +203,22 @@ namespace TheOtherRoles.Roles
         public override void OnDeath(PlayerControl killer = null)
         {
             if (ifOneDiesBothDie)
-                foreach (var partner in BomberB.allPlayers)                     if (partner != null && !partner.Data.IsDead)
+            {
+                foreach (var partner in BomberB.allPlayers)
+                {
+                    if (partner != null && !partner.Data.IsDead)
                     {
-                        if (killer != null)                             partner.MurderPlayer(partner, MurderResultFlags.Succeeded);
-                        else {
+                        if (killer != null) partner.MurderPlayer(partner, MurderResultFlags.Succeeded);
+                        else
+                        {
                             partner.Exiled();
                             if (PlayerControl.LocalPlayer == partner && Helpers.ShowKillAnimation)
                                 FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(partner.Data, partner.Data);
                         }
                         GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.Suicide);
                     }
+                }
+            }
         }
 
         public static void clearAndReload()
@@ -229,6 +246,7 @@ namespace TheOtherRoles.Roles
             public static void Prefix(IntroCutscene __instance)
             {
                 if (PlayerControl.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null)
+                {
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                     {
                         NetworkedPlayerInfo data = p.Data;
@@ -241,6 +259,7 @@ namespace TheOtherRoles.Roles
                         player.gameObject.SetActive(false);
                         playerIcons[p.PlayerId] = player;
                     }
+                }
             }
         }
     }

@@ -556,7 +556,7 @@ namespace TheOtherRoles.Patches {
             updateUseButton(__instance);
             updateMapButton(__instance);
             if (!MeetingHud.Instance) __instance.AbilityButton?.Update();
-            GameStatistics.updateTimer();
+            TORGameManager.Instance?.OnUpdate();
             foreach (var arrow in new List<Sherlock.SherlockDetectArrow>(Sherlock.SherlockDetectArrow.allArrows))
                 arrow.HudUpdate();
 

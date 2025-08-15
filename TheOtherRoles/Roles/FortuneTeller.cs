@@ -229,6 +229,7 @@ namespace TheOtherRoles.Roles
 
         public void divine(PlayerControl p)
         {
+            if (p == null) return;
             string msg = "";
             Color color = Color.white;
 

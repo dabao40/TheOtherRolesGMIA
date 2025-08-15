@@ -74,9 +74,22 @@ namespace TheOtherRoles.MetaContext
         void SetContext(GUIContext context, out Size actualSize);
     }
 
-    public interface Image
+    public interface Image : IManageableAsset
     {
         internal Sprite GetSprite();
+    }
+
+    public interface MultiImage : IManageableAsset
+    {
+        internal Sprite GetSprite(int index);
+        Image AsLoader(int index);
+    }
+
+    public interface IManageableAsset
+    {
+        void UnloadAsset();
+        IEnumerator LoadAsset();
+        void MarkAsUnloadAsset();
     }
 
     public interface Artifact<T> : IEnumerable<T>
@@ -118,17 +131,42 @@ namespace TheOtherRoles.MetaContext
     }
 
     public delegate GUIContext GUIContextSupplier();
+    public delegate void GUIClickableAction(GUIClickable clickable);
 
     /// <summary>
     /// GUI上に表示できるオブジェクトの定義を表します。
     /// </summary>
     public abstract class GUIContext
     {
-        internal abstract GUIAlignment Alignment { get; init; }
+        internal abstract GUIAlignment Alignment { get; }
+        internal Image BackImage { get; set; } = null!;
+        internal bool GrayoutedBackImage { get; set; } = false;
         internal abstract GameObject Instantiate(Size size, out Size actualSize);
         internal abstract GameObject Instantiate(Anchor anchor, Size size, out Size actualSize);
 
-        public static implicit operator GUIContextSupplier(GUIContext widget) => () => widget ?? TORGUIContextEngine.Instance.EmptyContext;
+        public static implicit operator GUIContextSupplier(GUIContext context) => () => context ?? TORGUIContextEngine.Instance.EmptyContext;
+    }
+
+    /// <summary>
+    /// GUI上のクリック可能なオブジェクトを表します。
+    /// </summary>
+    public class GUIClickable
+    {
+        internal PassiveUiElement uiElement { get; init; }
+        public IGUISelectable Selectable { get; private init; }
+
+        internal GUIClickable(PassiveUiElement uiElement, IGUISelectable selectable = null)
+        {
+            this.uiElement = uiElement;
+            this.Selectable = selectable;
+        }
+    }
+
+    public interface IGUISelectable
+    {
+        void Unselect();
+        void Select();
+        public bool IsSelected { get; }
     }
 
     /// <summary>

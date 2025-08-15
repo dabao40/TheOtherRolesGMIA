@@ -96,11 +96,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null && arrow.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];

@@ -5,6 +5,7 @@ using AmongUs.Data;
 using HarmonyLib;
 using Hazel;
 using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
@@ -355,6 +356,7 @@ namespace TheOtherRoles
                     T role = new();
                     role.Init(player);
                     role.PostInit();
+                    TORGameManager.Instance?.RecordRoleHistory(player);
                 }
             }
 
@@ -363,6 +365,7 @@ namespace TheOtherRoles
                 players.DoIf(x => x.player == player, x => x.ResetRole(false));
                 players.RemoveAll(x => x.player == player && x.roleId == RoleId);
                 allRoles.RemoveAll(x => x.player == player && x.roleId == RoleId);
+                TORGameManager.Instance?.RecordRoleHistory(player);
             }
 
             public static void swapRole(PlayerControl p1, PlayerControl p2)

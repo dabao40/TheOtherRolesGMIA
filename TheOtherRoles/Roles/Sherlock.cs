@@ -29,6 +29,9 @@ namespace TheOtherRoles.Roles
 
         public static HideAndSeekDeathPopup killPopup = null;
 
+        static public HelpSprite[] helpSprite = [new(getDetectIcon(), "sherlockDetectHint"), new(getInvestigateIcon(), "sherlockInvestigateHint"),
+        new(getWatchIcon(), "sherlockWatchHint")];
+
         public Sherlock()
         {
             RoleId = roleId = RoleId.Sherlock;

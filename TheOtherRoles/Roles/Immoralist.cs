@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -14,6 +15,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Immoralist;
         }
+
+        static public HelpSprite[] helpSprite = [new(getButtonSprite(), "immoralistSuicideHint")];
 
         public static List<Arrow> arrows = [];
         public static float updateTimer = 0f;
@@ -56,11 +59,13 @@ namespace TheOtherRoles.Roles
             {
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow?.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrow一覧
                 arrows = [];
@@ -98,11 +103,13 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             foreach (Arrow arrow in arrows)
+            {
                 if (arrow?.arrow != null)
                 {
                     arrow.arrow.SetActive(false);
                     Object.Destroy(arrow.arrow);
                 }
+            }
             arrows = [];
             players = [];
         }

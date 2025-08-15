@@ -1,14 +1,11 @@
-﻿using HarmonyLib;
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HarmonyLib;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using System.Collections;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
-using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Objects
 {
@@ -80,6 +77,9 @@ namespace TheOtherRoles.Objects
         {
             while (AmongUsClient.Instance == null)
                 yield return null;
+
+            EastAsianFontChanger.LoadFont();
+
             AsyncOperationHandle<GameObject> skeldAsset = AmongUsClient.Instance.ShipPrefabs.ToArray()[0].LoadAsset<GameObject>();
             while (!skeldAsset.IsDone)
                 yield return null;
@@ -92,6 +92,8 @@ namespace TheOtherRoles.Objects
             while (!airshipAsset.IsDone)
                 yield return null;
             airship = airshipAsset.Result.GetComponent<ShipStatus>();
+
+            EastAsianFontChanger.ReflectFallBackFont();
         }
     }
 
@@ -105,8 +107,11 @@ namespace TheOtherRoles.Objects
             if (Loaded)
                 return;
             Loaded = true;
-            __instance.StartCoroutine(BepInEx.Unity.IL2CPP.Utils.Collections.CollectionExtensions.WrapToIl2Cpp(MapLoader.LoadMaps()));
+
             VanillaAsset.LoadAssetsOnTitle();
+            HelpMenu.Load();
+
+            __instance.StartCoroutine(BepInEx.Unity.IL2CPP.Utils.Collections.CollectionExtensions.WrapToIl2Cpp(MapLoader.LoadMaps()));
         }
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -140,6 +142,11 @@ namespace TheOtherRoles.Roles
         public static bool knowsRoles = true;
         public static int numKeeps;
 
+        static public HelpSprite[] helpSprite = [
+            new(getHonmeiSprite(), "akujoHonmeiHint"),
+            new(getKeepSprite(), "akujoKeepHint")
+        ];
+
         private static Sprite honmeiSprite;
         public static Sprite getHonmeiSprite()
         {
@@ -223,12 +230,14 @@ namespace TheOtherRoles.Roles
                 if (playerInfo != null) playerInfo.text = "";
             }
             if (keeps != null)
+            {
                 foreach (PlayerControl playerControl in keeps)
                 {
                     Transform playerInfoTransform = playerControl.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform?.GetComponent<TMPro.TextMeshPro>();
                     if (playerInfo != null) playerInfo.text = "";
                 }
+            }
         }
 
         public static void breakLovers(PlayerControl lover)

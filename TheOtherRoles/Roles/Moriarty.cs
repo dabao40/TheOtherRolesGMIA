@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -18,6 +19,8 @@ namespace TheOtherRoles.Roles
             killTarget = null;
             counter = 0;
         }
+
+        static public HelpSprite[] helpSprite = [new(getBrainwashIcon(), "moriartyBrainwashHint")];
 
         public static Color color = Color.green;
 
@@ -98,8 +101,10 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (arrows.Count > 0)
+                {
                     foreach (var arrow in arrows)
                         if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+                }
                 if (targetPositionText != null) UnityEngine.Object.Destroy(targetPositionText.gameObject);
                 target = null;
                 return;
@@ -114,11 +119,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null && arrow.arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         UnityEngine.Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];
@@ -157,9 +164,10 @@ namespace TheOtherRoles.Roles
                     else
                         targetPositionText.text = "<color=#8CFFFFFF>" + $"{target.Data.PlayerName}({nearestPlayer})</color>";
                 }
-                else
+                else {
                     if (targetPositionText != null)
                         targetPositionText.text = "";
+                }
 
                 // タイマーに時間をセット
                 updateTimer = arrowUpdateInterval;
@@ -169,8 +177,10 @@ namespace TheOtherRoles.Roles
         public void clearAllArrow()
         {
             if (arrows.Count > 0)
+            {
                 foreach (var arrow in arrows)
                     if (arrow != null && arrow.arrow != null) arrow.arrow.SetActive(false);
+            }
             if (targetPositionText != null) targetPositionText.gameObject.SetActive(false);
             var obj = GameObject.Find("MoriartyText(Clone)");
             if (obj != null) obj.SetActive(false);

@@ -91,7 +91,8 @@ namespace TheOtherRoles.Roles
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
-            if (PlayerControl.LocalPlayer == player && PlayerControl.LocalPlayer.Data.IsDead && exiled != null)                 acTokenChallenge.Value.cleared |= acTokenChallenge.Value.killerId == exiled.PlayerId;
+            if (PlayerControl.LocalPlayer == player && PlayerControl.LocalPlayer.Data.IsDead && exiled != null)
+                acTokenChallenge.Value.cleared |= acTokenChallenge.Value.killerId == exiled.PlayerId;
         }
 
         public static Color color = new Color32(0, 247, 255, byte.MaxValue);

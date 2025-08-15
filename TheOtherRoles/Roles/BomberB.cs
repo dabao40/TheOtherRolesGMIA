@@ -88,10 +88,14 @@ namespace TheOtherRoles.Roles
         public static void arrowUpdate()
         {
             if (PlayerControl.LocalPlayer.Data.IsDead) {
-                foreach (Arrow arrow in arrows)                     if (arrow != null && arrow.arrow != null) {
+                foreach (Arrow arrow in arrows)
+                {
+                    if (arrow != null && arrow.arrow != null)
+                    {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
                 return;
             }
             if ((BomberA.bombTarget == null || bombTarget == null) && !BomberA.alwaysShowArrow) return;
@@ -104,11 +108,13 @@ namespace TheOtherRoles.Roles
 
                 // 前回のArrowをすべて破棄する
                 foreach (Arrow arrow in arrows)
+                {
                     if (arrow != null)
                     {
                         arrow.arrow.SetActive(false);
                         Object.Destroy(arrow.arrow);
                     }
+                }
 
                 // Arrows一覧
                 arrows = [];
@@ -145,7 +151,9 @@ namespace TheOtherRoles.Roles
         public override void OnDeath(PlayerControl killer = null)
         {
             if (BomberA.ifOneDiesBothDie)
+            {
                 foreach (var partner in BomberA.allPlayers)
+                {
                     if (partner != null && !partner.Data.IsDead)
                     {
                         if (killer != null)
@@ -158,16 +166,21 @@ namespace TheOtherRoles.Roles
                         }
                         GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.Suicide);
                     }
+                }
+            }
         }
 
         public static void clearPlayerIcons()
         {
-            foreach (PoolablePlayer p in playerIcons.Values)                 if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+            foreach (PoolablePlayer p in playerIcons.Values)
+                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
             TORMapOptions.resetPoolables();
             if (arrows != null)
+            {
                 foreach (Arrow arrow in arrows)
                     if (arrow?.arrow != null)
                         Object.Destroy(arrow.arrow);
+            }
             targetText = null;
             partnerTargetText = null;
         }
@@ -199,6 +212,7 @@ namespace TheOtherRoles.Roles
             public static void Prefix(IntroCutscene __instance)
             {
                 if (PlayerControl.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null)
+                {
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                     {
                         NetworkedPlayerInfo data = p.Data;
@@ -211,6 +225,7 @@ namespace TheOtherRoles.Roles
                         player.gameObject.SetActive(false);
                         playerIcons[p.PlayerId] = player;
                     }
+                }
             }
         }
     }

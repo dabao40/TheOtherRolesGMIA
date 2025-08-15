@@ -10,6 +10,8 @@ namespace TheOtherRoles.Roles
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
 
+        public static HelpSprite[] helpSprite = [new(getSampleSprite(), "morphlingSampleHint"), new(getMorphSprite(), "morphlingMorphHint")];
+
         public Morphling()
         {
             RoleId = roleId = RoleId.Morphling;
@@ -73,7 +75,8 @@ namespace TheOtherRoles.Roles
 
         public override void OnKill(PlayerControl target)
         {
-            if (PlayerControl.LocalPlayer == player && morphTimer > 0f && morphTarget != null)                 acTokenChallenge.Value.kill = true;
+            if (PlayerControl.LocalPlayer == player && morphTimer > 0f && morphTarget != null)
+                acTokenChallenge.Value.kill = true;
         }
 
         public override void OnDeath(PlayerControl killer = null)

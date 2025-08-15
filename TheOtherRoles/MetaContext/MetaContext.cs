@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheOtherRoles.Modules;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -88,22 +87,22 @@ namespace TheOtherRoles.MetaContext
                 var upper = Helpers.ScreenToWorldPoint(new(Screen.width - 10f, Screen.height - 10f), LayerMask.NameToLayer("UI"));
                 float diff;
 
-                diff = (transform.position.x + xRange[0]) - lower.x;
+                diff = transform.position.x + xRange[0] - lower.x;
                 if (diff < 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = (transform.position.y + yRange[0]) - lower.y;
+                diff = transform.position.y + yRange[0] - lower.y;
                 if (diff < 0f) transform.position -= new Vector3(0f, diff);
 
-                diff = (transform.position.x + xRange[1]) - upper.x;
+                diff = transform.position.x + xRange[1] - upper.x;
                 if (diff > 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = (transform.position.y + yRange[1]) - upper.y;
+                diff = transform.position.y + yRange[1] - upper.y;
                 if (diff > 0f) transform.position -= new Vector3(0f, diff);
             }
 
 
             background.transform.localPosition = new Vector3((width.min + width.max) / 2f, screenSize.y / 2f - height / 2f, 1f);
-            background.size = new Vector2((width.max - width.min) + 0.22f, height + 0.1f);
+            background.size = new Vector2(width.max - width.min + 0.22f, height + 0.1f);
 
             Update();
         }
@@ -129,7 +128,18 @@ namespace TheOtherRoles.MetaContext
 
             myScreen.SetContext(context, new Vector2(0.5f, 0.5f), out var size);
 
+            var scale = new Vector2(size.Width + 0.22f, size.Height + 0.1f);
 
+            var imagePos = scale * 0.5f - new Vector2(0.55f, 0.55f);
+            var imageScale = 0.38f;
+            if (imagePos.y < 0f)
+            {
+                imageScale = Math.Max(0.15f, imageScale + (imagePos.y * 0.6f));
+                imagePos.y = 0f;
+            }
+            else imagePos.y *= -1f;
+            myScreen.SetBackImage(context.BackImage, context.GrayoutedBackImage ? 0.03f : 0.6f, context.GrayoutedBackImage ? 0.46f : 0.4f,
+                imagePos, scale, imageScale, context.GrayoutedBackImage);
 
             float[] xRange = [-size.Width * 0.5f - 0.15f, size.Width * 0.5f + 0.15f], yRange = new float[2];
             yRange[0] = -size.Height * 0.5f - 0.15f;
@@ -147,16 +157,16 @@ namespace TheOtherRoles.MetaContext
                 var upper = Helpers.ScreenToWorldPoint(new(Screen.width - 10f, Screen.height - 10f), LayerMask.NameToLayer("UI"));
                 float diff;
 
-                diff = (transform.position.x + xRange[0]) - lower.x;
+                diff = transform.position.x + xRange[0] - lower.x;
                 if (diff < 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = (transform.position.y + yRange[0]) - lower.y;
+                diff = transform.position.y + yRange[0] - lower.y;
                 if (diff < 0f) transform.position -= new Vector3(0f, diff);
 
-                diff = (transform.position.x + xRange[1]) - upper.x;
+                diff = transform.position.x + xRange[1] - upper.x;
                 if (diff > 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = (transform.position.y + yRange[1]) - upper.y;
+                diff = transform.position.y + yRange[1] - upper.y;
                 if (diff > 0f) transform.position -= new Vector3(0f, diff);
             }
 
@@ -170,24 +180,23 @@ namespace TheOtherRoles.MetaContext
         public void Update()
         {
             if (relatedButton is not null && !relatedButton)
-            {
                 SetContext(null, null);
-            }
 
         }
     }
 
     public abstract class AbstractGUIContext : GUIContext
     {
-        internal override GUIAlignment Alignment { get; init; }
+        internal override GUIAlignment Alignment => alignment;
+        private GUIAlignment alignment;
         internal override GameObject Instantiate(Anchor anchor, Size size, out Size actualSize)
         {
             var obj = Instantiate(size, out actualSize);
 
             if (obj != null)
             {
-                UnityEngine.Vector3 localPos = anchor.anchoredPosition -
-                    new UnityEngine.Vector3(
+                Vector3 localPos = anchor.anchoredPosition -
+                    new Vector3(
                         actualSize.Width * (anchor.pivot.x - 0.5f),
                         actualSize.Height * (anchor.pivot.y - 0.5f),
                         0f);
@@ -200,7 +209,7 @@ namespace TheOtherRoles.MetaContext
 
         public AbstractGUIContext(GUIAlignment alignment)
         {
-            Alignment = alignment;
+            this.alignment = alignment;
         }
 
         protected static float CalcWidth(GUIAlignment alignment, float myWidth, float maxWidth)
@@ -215,9 +224,9 @@ namespace TheOtherRoles.MetaContext
 
         private static float Calc(GUIAlignment alignment, float myParam, float maxParam, GUIAlignment lower, GUIAlignment higher)
         {
-            if ((int)(alignment & lower) != 0)
+            if ((alignment & lower) != 0)
                 return (myParam - maxParam) * 0.5f;
-            if ((int)(alignment & higher) != 0)
+            if ((alignment & higher) != 0)
                 return (maxParam - myParam) * 0.5f;
             return 0f;
         }
@@ -251,12 +260,12 @@ namespace TheOtherRoles.MetaContext
                 this.scroller = scroller;
                 this.scrollerCollider = scrollerCollider;
                 this.scrollViewSizeY = scrollViewSizeY;
-                this.myAnchor = new(new(0f, 1f), new(-innerSize.Width * 0.5f, innerSize.Height * 0.5f, -0.01f));
+                myAnchor = new(new(0f, 1f), new(-innerSize.Width * 0.5f, innerSize.Height * 0.5f, -0.01f));
             }
 
             public void SetContext(GUIContext context, out Size actualSize)
             {
-                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => GameObject.Destroy(obj)));
+                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => UnityEngine.Object.Destroy(obj)));
 
                 if (context != null)
                 {
@@ -265,7 +274,34 @@ namespace TheOtherRoles.MetaContext
                     {
                         obj.transform.SetParent(screen.transform, false);
 
-                        scroller.SetBounds(new FloatRange(0, actualSize.Height - scrollViewSizeY), null);
+                        scroller.SetBounds(new FloatRange(0, Math.Max(0f, actualSize.Height - scrollViewSizeY)), null);
+                        scroller.ScrollRelative(Vector2.zero);
+
+                        foreach (var button in screen.GetComponentsInChildren<PassiveButton>()) button.ClickMask = scrollerCollider;
+                    }
+                }
+                else
+                    actualSize = new Size(0f, 0f);
+            }
+
+            public void SetStaticContext(GUIContext context, Vector2 anchor, out Size actualSize)
+            {
+                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => GameObject.Destroy(obj)));
+
+                if (context != null)
+                {
+                    Vector3 anchoredPos = new(anchor.x, anchor.y, 0f);
+                    anchoredPos.x -= 0.5f;
+                    anchoredPos.y -= 0.5f;
+                    anchoredPos.x *= innerSize.Width;
+                    anchoredPos.y *= innerSize.Height;
+
+                    var obj = context.Instantiate(new(anchor, anchoredPos), innerSize, out actualSize);
+                    if (obj != null)
+                    {
+                        obj.transform.SetParent(screen.transform, false);
+
+                        scroller.SetBounds(new FloatRange(0, 0), null);
                         scroller.ScrollRelative(UnityEngine.Vector2.zero);
 
                         foreach (var button in screen.GetComponentsInChildren<PassiveButton>()) button.ClickMask = scrollerCollider;
@@ -279,55 +315,57 @@ namespace TheOtherRoles.MetaContext
         }
 
         public string ScrollerTag { get; init; } = null;
-        public UnityEngine.Vector2 Size { get; init; }
+        public Vector2 Size { get; init; }
         public bool WithMask { get; init; } = true;
 
         internal ListArtifact<InnerScreen> InnerArtifact { get; private init; }
         public Artifact<GUIScreen> Artifact { get; private init; }
 
-        public GUIContext Inner { get; init; } = null;
+        public GUIContextSupplier Inner { get; init; } = null;
 
-        public GUIScrollView(GUIAlignment alignment, UnityEngine.Vector2 size, GUIContext inner) : base(alignment)
+        public GUIScrollView(GUIAlignment alignment, Vector2 size, GUIContextSupplier inner) : base(alignment)
         {
-            this.Size = size;
+            Size = size;
 
-            this.InnerArtifact = new();
-            this.Artifact = new GeneralizedArtifact<GUIScreen, InnerScreen>(InnerArtifact);
-            this.Inner = inner;
+            InnerArtifact = new();
+            Artifact = new GeneralizedArtifact<GUIScreen, InnerScreen>(InnerArtifact);
+            Inner = inner;
         }
 
 
         internal override GameObject Instantiate(Size size, out Size actualSize)
         {
-            var view = Helpers.CreateObject("ScrollView", null, new UnityEngine.Vector3(0f, 0f, 0f), LayerMask.NameToLayer("UI"));
-            var inner = Helpers.CreateObject("Inner", view.transform, new UnityEngine.Vector3(-0.2f, 0f, -0.1f));
-            var innerSize = Size - new UnityEngine.Vector2(0.4f, 0f);
+            var view = Helpers.CreateObject("ScrollView", null, new Vector3(0f, 0f, 0f), LayerMask.NameToLayer("UI"));
+            var inner = Helpers.CreateObject("Inner", view.transform, new Vector3(-0.2f, 0f, -0.1f));
+            var innerSize = Size - new Vector2(0.4f, 0f);
 
             if (WithMask)
             {
                 view.AddComponent<SortingGroup>();
-                var mask = Helpers.CreateObject<SpriteMask>("Mask", view.transform, new UnityEngine.Vector3(-0.2f, 0, 0));
+                var mask = Helpers.CreateObject<SpriteMask>("Mask", view.transform, new Vector3(-0.2f, 0, 0));
                 mask.sprite = VanillaAsset.FullScreenSprite;
                 mask.transform.localScale = innerSize;
             }
 
-            var scroller = VanillaAsset.GenerateScroller(Size, view.transform, new UnityEngine.Vector2(Size.x / 2 - 0.15f, 0f), inner.transform, new FloatRange(0, Size.y), Size.y);
+            var scroller = VanillaAsset.GenerateScroller(Size, view.transform, new Vector2(Size.x / 2 - 0.15f, 0f), inner.transform, new FloatRange(0, Size.y), Size.y);
             var hitBox = scroller.GetComponent<Collider2D>();
             var innerScreen = new InnerScreen(inner, new(innerSize), scroller, hitBox, Size.y);
             InnerArtifact.Values.Add(innerScreen);
 
-            innerScreen.SetContext(Inner, out var innerActualSize);
+            innerScreen.SetContext(Inner?.Invoke(), out var innerActualSize);
             float height = innerActualSize.Height;
 
 
             if (ScrollerTag != null && distDic.TryGetValue(ScrollerTag, out var val))
                 scroller.Inner.transform.localPosition = scroller.Inner.transform.localPosition +
-                    new UnityEngine.Vector3(0f, Mathf.Clamp(val + scroller.ContentYBounds.min, scroller.ContentYBounds.min, scroller.ContentYBounds.max), 0f);
+                    new Vector3(0f, Mathf.Clamp(val + scroller.ContentYBounds.min, scroller.ContentYBounds.min, scroller.ContentYBounds.max), 0f);
 
             if (ScrollerTag != null)
                 scroller.Inner.gameObject.AddComponent<ScriptBehaviour>().UpdateHandler += () => { distDic[ScrollerTag] = scroller.Inner.transform.localPosition.y - scroller.ContentYBounds.min; };
 
             actualSize = new(Size.x + 0.15f, Size.y + 0.08f);
+
+            scroller.UpdateScrollBars();
 
             return view;
         }
@@ -339,7 +377,7 @@ namespace TheOtherRoles.MetaContext
 
         public ContextsHolder(GUIAlignment alignment, IEnumerable<GUIContext> contexts) : base(alignment)
         {
-            this.contexts = contexts;
+            this.contexts = contexts.Where(c => c != null);
         }
     }
 
@@ -355,7 +393,7 @@ namespace TheOtherRoles.MetaContext
             (float maxWidth, float sumHeight) = results.Aggregate((0f, 0f), (r, current) => (Math.Max(r.Item1, current.acSize.Width), r.Item2 + current.acSize.Height));
             if (FixedWidth != null) maxWidth = FixedWidth.Value;
 
-            GameObject myObj = Helpers.CreateObject("ContextsHolder", null, UnityEngine.Vector3.zero);
+            GameObject myObj = Helpers.CreateObject("ContextsHolder", null, Vector3.zero);
 
 
             float height = sumHeight * 0.5f;
@@ -364,7 +402,7 @@ namespace TheOtherRoles.MetaContext
                 if (r.Item1 != null)
                 {
                     r.Item1.transform.SetParent(myObj.transform);
-                    r.Item1.transform.localPosition = new UnityEngine.Vector3(CalcWidth(r.c.Alignment, r.acSize.Width, maxWidth), height - r.acSize.Height * 0.5f, 0f);
+                    r.Item1.transform.localPosition = new Vector3(CalcWidth(r.c.Alignment, r.acSize.Width, maxWidth), height - r.acSize.Height * 0.5f, 0f);
                 }
                 height -= r.acSize.Height;
             }
@@ -387,7 +425,7 @@ namespace TheOtherRoles.MetaContext
             (float sumWidth, float maxHeight) = results.Aggregate((0f, 0f), (r, current) => (r.Item1 + current.acSize.Width, Math.Max(r.Item2, current.acSize.Height)));
             if (FixedHeight != null) maxHeight = FixedHeight.Value;
 
-            GameObject myObj = Helpers.CreateObject("ContextsHolder", null, UnityEngine.Vector3.zero);
+            GameObject myObj = Helpers.CreateObject("ContextsHolder", null, Vector3.zero);
 
 
             float width = -sumWidth * 0.5f;
@@ -396,7 +434,7 @@ namespace TheOtherRoles.MetaContext
                 if (r.Item1 != null)
                 {
                     r.Item1.transform.SetParent(myObj.transform);
-                    r.Item1.transform.localPosition = new UnityEngine.Vector3(width + r.acSize.Width * 0.5f, CalcHeight(r.c.Alignment, r.acSize.Height, maxHeight), 0f);
+                    r.Item1.transform.localPosition = new Vector3(width + r.acSize.Width * 0.5f, CalcHeight(r.c.Alignment, r.acSize.Height, maxHeight), 0f);
                 }
                 width += r.acSize.Width;
             }
@@ -406,34 +444,31 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
-    public class TORGameManager
-    {
-        static private TORGameManager instance = null;
-        static public TORGameManager Instance { get => instance; }
-        public List<AchievementTokenBase> AllAchievementTokens = [];
-
-        public TORGameManager()
-        {
-            instance = this;
-        }
-
-        public void Abandon()
-        {
-            instance = null;
-        }
-    }
-
     public class TORGUIManager : MonoBehaviour
     {
         static public TORGUIManager Instance { get; private set; } = null!;
 
         //テキスト情報表示
         private MouseOverPopup mouseOverPopup = null!;
+        private List<Tuple<GameObject, PassiveButton>> allModUi = [];
 
         static TORGUIManager()
         {
             ClassInjector.RegisterTypeInIl2Cpp<TORGUIManager>();
         }
+
+        public void CloseAllUI()
+        {
+            foreach (var ui in allModUi) GameObject.Destroy(ui.Item1);
+            allModUi.Clear();
+        }
+
+        public void RegisterUI(GameObject uiObj, PassiveButton closeButton)
+        {
+            allModUi.Add(new Tuple<GameObject, PassiveButton>(uiObj, closeButton));
+        }
+
+        public bool HasSomeUI => allModUi.Count > 0;
 
         public void Awake()
         {
@@ -441,6 +476,21 @@ namespace TheOtherRoles.MetaContext
             gameObject.layer = LayerMask.NameToLayer("UI");
 
             mouseOverPopup = Helpers.CreateObject<MouseOverPopup>("MouseOverPopup", transform, Vector3.zero);
+        }
+
+        public void Update()
+        {
+            allModUi.RemoveAll(tuple => !tuple.Item1);
+
+            for (int i = 0; i < allModUi.Count; i++)
+            {
+                var lPos = allModUi[i].Item1.transform.localPosition;
+                allModUi[i].Item1.transform.localPosition = new Vector3(lPos.x, lPos.y, -750f - i * 30f);
+                allModUi[i].Item2?.gameObject.SetActive(i == allModUi.Count - 1);
+            }
+
+            if (allModUi.Count > 0 && Input.GetKeyDown(KeyCode.Escape))
+                allModUi[^1].Item2?.OnClick.Invoke();
         }
 
         public void HideHelpContext() => mouseOverPopup.SetContext(null, null);
@@ -453,9 +503,7 @@ namespace TheOtherRoles.MetaContext
         public void SetHelpContext(PassiveUiElement related, string rawText)
         {
             if (rawText != null)
-            {
                 SetHelpContext(related, new MetaContextOld.VariableText(TextAttribute.ContentAttr) { Alignment = IMetaContextOld.AlignmentOption.Left, RawText = rawText });
-            }
         }
         public PassiveUiElement HelpRelatedObject => mouseOverPopup.RelatedObject;
     }
@@ -473,9 +521,7 @@ namespace TheOtherRoles.MetaContext
         public TextAttributes GetAttribute(AttributeParams attribute)
         {
             if (allAttr.TryGetValue(attribute, out var attr))
-            {
                 return attr;
-            }
             else
             {
                 var isFlexible = attribute.HasFlag((AttributeParams)AttributeTemplateFlag.IsFlexible);
@@ -488,42 +534,44 @@ namespace TheOtherRoles.MetaContext
         public TextAttributes GetAttribute(AttributeAsset attribute)
         {
             if (!allAttrAsset.TryGetValue(attribute, out var attr))
-            {
                 allAttrAsset[attribute] = attribute switch
                 {
                     AttributeAsset.OblongHeader => new TextAttributes(TextAlignment.Left, GetFont(FontAsset.Oblong), FontStyle.Normal, new(5.2f, false), new(0.45f, 3f), new(255, 255, 255), true),
                     AttributeAsset.StandardMediumMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.6f, 0.8f, 1.6f), new(1.45f, 0.3f), new(255, 255, 255), false),
                     AttributeAsset.StandardLargeWideMasked => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.7f, 1f, 1.7f), new(2.9f, 0.45f), new(255, 255, 255), false),
+                    AttributeAsset.CenteredBoldFixed => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.Gothic), FontStyle.Bold, new(1.9f, 1f, 1.9f), new(1.1f, 0.32f), new(255, 255, 255), false),
                     AttributeAsset.OverlayContent => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f, 1.1f, 1.5f), Size = new(5f, 6f) },
                     AttributeAsset.OverlayTitle => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) },
                     AttributeAsset.MetaRoleButton => new TextAttributes(TextAlignment.Center, GetFont(FontAsset.GothicMasked), FontStyle.Bold, new(1.8f, 1f, 2f), new(1.4f, 0.26f), new(255, 255, 255), false),
                     AttributeAsset.DocumentTitle => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(2.2f, 0.6f, 2.2f), Size = new(5f, 6f) },
                     AttributeAsset.DocumentStandard => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardLeft)) { FontSize = new(1.2f, 0.6f, 1.2f), Size = new(7f, 6f) },
+                    AttributeAsset.DocumentBold => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.2f, 0.6f, 1.2f), Size = new(5f, 6f) },
+                    AttributeAsset.DocumentSubtitle1 => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.9f, 0.6f, 1.9f), Size = new(5f, 6f) },
+                    AttributeAsset.DocumentSubtitle2 => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.6f, 0.6f, 1.6f), Size = new(5f, 6f) },
                     _ => null!
                 };
-            }
 
             return allAttrAsset[attribute];
         }
 
         public GUIContext Arrange(GUIAlignment alignment, IEnumerable<GUIContext> inner, int perLine)
         {
-            List<GUIContext> widgets = new();
-            List<GUIContext> horizontalWidgets = new();
-            foreach (var widget in inner)
+            List<GUIContext> contexts = new();
+            List<GUIContext> horizontalContexts = new();
+            foreach (var context in inner)
             {
-                if (widget == null) continue;
+                if (context == null) continue;
 
-                horizontalWidgets.Add(widget);
-                if (horizontalWidgets.Count == perLine)
+                horizontalContexts.Add(context);
+                if (horizontalContexts.Count == perLine)
                 {
-                    widgets.Add(HorizontalHolder(alignment, horizontalWidgets.ToArray()));
-                    horizontalWidgets.Clear();
+                    contexts.Add(HorizontalHolder(alignment, horizontalContexts.ToArray()));
+                    horizontalContexts.Clear();
                 }
             }
-            if (horizontalWidgets.Count > 0) widgets.Add(HorizontalHolder(alignment, horizontalWidgets));
+            if (horizontalContexts.Count > 0) contexts.Add(HorizontalHolder(alignment, horizontalContexts));
 
-            return VerticalHolder(alignment, widgets);
+            return VerticalHolder(alignment, contexts);
         }
 
         public TextAttributes GenerateAttribute(AttributeParams attribute, Color color, FontSize fontSize, Size size)
@@ -571,7 +619,7 @@ namespace TheOtherRoles.MetaContext
 
         public GUIContext VerticalHolder(GUIAlignment alignment, IEnumerable<GUIContext> inner, float? fixedWidth = null) => new VerticalContextsHolder(alignment, inner) { FixedWidth = fixedWidth };
 
-        public GUIContext Image(GUIAlignment alignment, Image image, FuzzySize size) => new TORGUIImage(alignment, image, size);
+        public GUIContext Image(GUIAlignment alignment, Image image, FuzzySize size) => new TORGUIImage(alignment, image, size) { IsMasked = true };
 
         public GUIContext ScrollView(GUIAlignment alignment, Size size, string scrollerTag, GUIContext inner, out Artifact<GUIScreen> artifact)
         {
@@ -618,6 +666,34 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
+    public class LazyGUIContext : AbstractGUIContext
+    {
+        private GUIContextSupplier supprier;
+        private GUIContext evaluated = null;
+        private bool run = false;
+
+        internal override GameObject Instantiate(Size size, out Size actualSize)
+        {
+            if (!run)
+            {
+                evaluated = supprier.Invoke();
+                run = true;
+            }
+            if (evaluated != null)
+                return evaluated.Instantiate(size, out actualSize);
+            else
+            {
+                actualSize = new(0f, 0f);
+                return null;
+            }
+        }
+
+        public LazyGUIContext(GUIAlignment alignment, GUIContextSupplier supplier) : base(alignment)
+        {
+            this.supprier = supplier;
+        }
+    }
+
     public class TORGUIImage : AbstractGUIContext
     {
         protected Image Image;
@@ -627,24 +703,24 @@ namespace TheOtherRoles.MetaContext
 
         public TORGUIImage(GUIAlignment alignment, Image image, FuzzySize size, Color? color = null) : base(alignment)
         {
-            this.Image = image;
-            this.Size = size;
-            this.Color = color;
+            Image = image;
+            Size = size;
+            Color = color;
         }
 
         internal override GameObject Instantiate(Size size, out Size actualSize)
         {
-            var renderer = Helpers.CreateObject<SpriteRenderer>("Image", null, UnityEngine.Vector3.zero, LayerMask.NameToLayer("UI"));
+            var renderer = Helpers.CreateObject<SpriteRenderer>("Image", null, Vector3.zero, LayerMask.NameToLayer("UI"));
             renderer.sprite = Image.GetSprite();
             renderer.sortingOrder = 10;
             if (IsMasked) renderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
 
             var spriteSize = renderer.sprite.bounds.size;
             float scale = Math.Min(
-                Size.Width.HasValue ? (Size.Width.Value / spriteSize.x) : float.MaxValue,
-                Size.Height.HasValue ? (Size.Height.Value / spriteSize.y) : float.MaxValue
+                Size.Width.HasValue ? Size.Width.Value / spriteSize.x : float.MaxValue,
+                Size.Height.HasValue ? Size.Height.Value / spriteSize.y : float.MaxValue
                 );
-            renderer.transform.localScale = UnityEngine.Vector3.one * scale;
+            renderer.transform.localScale = Vector3.one * scale;
 
             if (Color != null) renderer.color = Color.Value;
 
@@ -679,18 +755,18 @@ namespace TheOtherRoles.MetaContext
         {
             var inner = base.Instantiate(size, out actualSize)!;
 
-            var button = Helpers.CreateObject<SpriteRenderer>("Button", null, UnityEngine.Vector3.zero, LayerMask.NameToLayer("UI"));
+            var button = Helpers.CreateObject<SpriteRenderer>("Button", null, Vector3.zero, LayerMask.NameToLayer("UI"));
             button.sprite = VanillaAsset.TextButtonSprite;
             button.drawMode = SpriteDrawMode.Sliced;
             button.tileMode = SpriteTileMode.Continuous;
-            button.size = actualSize.ToUnityVector() + new UnityEngine.Vector2(TextMargin * 0.84f, TextMargin * 0.84f);
+            button.size = actualSize.ToUnityVector() + new Vector2(TextMargin * 0.84f, TextMargin * 0.84f);
             if (AsMaskedButton) button.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
 
             inner.transform.SetParent(button.transform);
-            inner.transform.localPosition += new UnityEngine.Vector3(0, 0, -0.05f);
+            inner.transform.localPosition += new Vector3(0, 0, -0.05f);
 
             var collider = button.gameObject.AddComponent<BoxCollider2D>();
-            collider.size = actualSize.ToUnityVector() + new UnityEngine.Vector2(TextMargin * 0.6f, TextMargin * 0.6f);
+            collider.size = actualSize.ToUnityVector() + new Vector2(TextMargin * 0.6f, TextMargin * 0.6f);
             collider.isTrigger = true;
 
             var passiveButton = button.gameObject.SetUpButton(true, button, Color, SelectedColor);
@@ -734,9 +810,9 @@ namespace TheOtherRoles.MetaContext
 
     public class TORGUIMargin : AbstractGUIContext
     {
-        protected UnityEngine.Vector2 margin;
+        protected Vector2 margin;
 
-        public TORGUIMargin(GUIAlignment alignment, UnityEngine.Vector2 margin) : base(alignment)
+        public TORGUIMargin(GUIAlignment alignment, Vector2 margin) : base(alignment)
         {
             this.margin = margin;
         }
@@ -762,19 +838,19 @@ namespace TheOtherRoles.MetaContext
             Text = text;
         }
 
-        private void ReflectMyAttribute(TMPro.TextMeshPro text, float width)
+        private void ReflectMyAttribute(TextMeshPro text, float width)
         {
             text.color = Attr.Color;
-            text.alignment = (TMPro.TextAlignmentOptions)Attr.Alignment;
-            text.fontStyle = (TMPro.FontStyles)Attr.Style;
+            text.alignment = (TextAlignmentOptions)Attr.Alignment;
+            text.fontStyle = (FontStyles)Attr.Style;
             text.fontSize = Attr.FontSize.FontSizeDefault;
             text.fontSizeMin = Attr.FontSize.FontSizeMin;
             text.fontSizeMax = Attr.FontSize.FontSizeMax;
             text.enableAutoSizing = Attr.FontSize.AllowAutoSizing;
             text.rectTransform.sizeDelta = new(Math.Min(width, Attr.Size.Width), Attr.Size.Height);
-            text.rectTransform.anchorMin = new UnityEngine.Vector2(0.5f, 0.5f);
-            text.rectTransform.anchorMax = new UnityEngine.Vector2(0.5f, 0.5f);
-            text.rectTransform.pivot = new UnityEngine.Vector2(0.5f, 0.5f);
+            text.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            text.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            text.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             if (Attr.Font != null)
             {
                 text.font = Attr.Font.Font;
@@ -791,7 +867,7 @@ namespace TheOtherRoles.MetaContext
             }
 
             var text = UnityEngine.Object.Instantiate(VanillaAsset.StandardTextPrefab, null);
-            text.transform.localPosition = new UnityEngine.Vector3(0f, 0f, 0f);
+            text.transform.localPosition = new Vector3(0f, 0f, 0f);
 
             ReflectMyAttribute(text, size.Width);
             text.text = Text.GetString();
@@ -821,7 +897,6 @@ namespace TheOtherRoles.MetaContext
                     button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                 }
                 if (OnClickText != null)
-                {
                     button.OnClick.AddListener((Action)(() =>
                     {
                         OnClickText.Value.action.Invoke();
@@ -831,7 +906,6 @@ namespace TheOtherRoles.MetaContext
                             button.OnMouseOver.Invoke();
                         }
                     }));
-                }
             }
 
             PostBuilder?.Invoke(text);
@@ -854,26 +928,24 @@ namespace TheOtherRoles.MetaContext
             {
                 this.screen = screen;
                 this.innerSize = innerSize;
-                this.myAnchor = new(new(0f, 1f), new(-innerSize.Width * 0.5f, innerSize.Height * 0.5f, -0.01f));
+                myAnchor = new(new(0f, 1f), new(-innerSize.Width * 0.5f, innerSize.Height * 0.5f, -0.01f));
             }
 
-            public void SetContext(GUIContext widget, out Size actualSize)
+            public void SetContext(GUIContext context, out Size actualSize)
             {
-                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => GameObject.Destroy(obj)));
+                screen.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => UnityEngine.Object.Destroy(obj)));
 
-                if (widget != null)
+                if (context != null)
                 {
-                    var obj = widget.Instantiate(myAnchor, innerSize, out actualSize);
+                    var obj = context.Instantiate(myAnchor, innerSize, out actualSize);
                     if (obj != null) obj.transform.SetParent(screen.transform, false);
                 }
                 else
-                {
                     actualSize = new Size(0f, 0f);
-                }
             }
         }
 
-        public UnityEngine.Vector2 Size { get; init; }
+        public Vector2 Size { get; init; }
         public bool WithMask { get; init; } = true;
 
         internal ListArtifact<InnerScreen> InnerArtifact { get; private init; }
@@ -881,26 +953,26 @@ namespace TheOtherRoles.MetaContext
 
         public GUIContextSupplier Inner { get; init; } = null;
 
-        public GUIFixedView(GUIAlignment alignment, UnityEngine.Vector2 size, GUIContextSupplier inner) : base(alignment)
+        public GUIFixedView(GUIAlignment alignment, Vector2 size, GUIContextSupplier inner) : base(alignment)
         {
-            this.Size = size;
+            Size = size;
 
-            this.InnerArtifact = new();
-            this.Artifact = new GeneralizedArtifact<GUIScreen, InnerScreen>(InnerArtifact);
-            this.Inner = inner;
+            InnerArtifact = new();
+            Artifact = new GeneralizedArtifact<GUIScreen, InnerScreen>(InnerArtifact);
+            Inner = inner;
         }
 
 
         internal override GameObject Instantiate(Size size, out Size actualSize)
         {
-            var view = Helpers.CreateObject("FixedView", null, new UnityEngine.Vector3(0f, 0f, 0f), LayerMask.NameToLayer("UI"));
-            var inner = Helpers.CreateObject("Inner", view.transform, new UnityEngine.Vector3(-0.2f, 0f, -0.1f));
-            var innerSize = Size - new UnityEngine.Vector2(0.4f, 0f);
+            var view = Helpers.CreateObject("FixedView", null, new Vector3(0f, 0f, 0f), LayerMask.NameToLayer("UI"));
+            var inner = Helpers.CreateObject("Inner", view.transform, new Vector3(-0.2f, 0f, -0.1f));
+            var innerSize = Size - new Vector2(0.4f, 0f);
 
             if (WithMask)
             {
                 view.AddComponent<SortingGroup>();
-                var mask = Helpers.CreateObject<SpriteMask>("Mask", view.transform, new UnityEngine.Vector3(-0.2f, 0, 0));
+                var mask = Helpers.CreateObject<SpriteMask>("Mask", view.transform, new Vector3(-0.2f, 0, 0));
                 mask.sprite = VanillaAsset.FullScreenSprite;
                 mask.transform.localScale = innerSize;
             }

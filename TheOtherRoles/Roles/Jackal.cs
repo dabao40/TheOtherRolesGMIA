@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
@@ -23,6 +24,8 @@ namespace TheOtherRoles.Roles
         public bool wasImpostor;
         public bool wasSpy;
         public static bool canSabotageLights;
+
+        static public HelpSprite[] helpSprite = [new(getSidekickButtonSprite(), "jackalSidekickHint")];
 
         public override void FixedUpdate()
         {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TheOtherRoles.Modules;
 using TMPro;
 using Twitch;
 using UnityEngine;
@@ -518,15 +519,35 @@ namespace TheOtherRoles.MetaContext
 
     public class VanillaAsset
     {
+        public class VanillaAudioClip
+        {
+            private string name;
+            private AudioClip clip = null;
+            public AudioClip Clip
+            {
+                get
+                {
+                    if (clip) return clip;
+                    clip = Helpers.FindAsset<AudioClip>(name);
+                    return clip!;
+                }
+            }
+
+            public VanillaAudioClip(string name)
+            {
+                this.name = name;
+            }
+        }
+
         static public Sprite CloseButtonSprite { get; private set; } = null!;
         static public TMPro.TextMeshPro StandardTextPrefab { get; private set; } = null!;
         static public PlayerCustomizationMenu PlayerOptionsMenuPrefab { get; private set; } = null!;
         static public Sprite PopUpBackSprite { get; private set; } = null!;
         static public Sprite FullScreenSprite { get; private set; } = null!;
         static public Sprite TextButtonSprite { get; private set; } = null!;
-        static public AudioClip HoverClip { get; private set; } = null!;
-        static public AudioClip SelectClip { get; private set; } = null!;
-        static public bool loaded = false;
+        static public VanillaAudioClip HoverClip { get; private set; } = new("UI_Hover")!;
+        static public VanillaAudioClip SelectClip { get; private set; } = new("UI_Select")!;
+        static public bool Loaded = false;
 
         static public Material OblongMaskedFontMaterial
         {
@@ -589,15 +610,14 @@ namespace TheOtherRoles.MetaContext
             UnityEngine.Object.DontDestroyOnLoad(StandardTextPrefab.gameObject);
         }
 
-        public static void PlayHoverSE() => SoundManager.Instance.PlaySound(HoverClip, false, 0.8f);
+        public static void PlaySelectSE() => SoundManager.Instance.PlaySound(SelectClip.Clip, false, 0.8f);
+        public static void PlayHoverSE() => SoundManager.Instance.PlaySound(HoverClip.Clip, false, 0.8f);
 
         static public void LoadAssetAtInitialize()
         {
-            if (loaded) return;
-            loaded = true;
-            HoverClip = Helpers.FindAsset<AudioClip>("UI_Hover")!;
-            SelectClip = Helpers.FindAsset<AudioClip>("UI_Select")!;
+            if (Loaded) return;
             PlayerOptionsMenuPrefab = Helpers.FindAsset<PlayerCustomizationMenu>("LobbyPlayerCustomizationMenu")!;
+            Loaded = true;
         }
 
         static public Scroller GenerateScroller(Vector2 size, Transform transform, Vector3 scrollBarLocalPos, Transform target, FloatRange bounds, float scrollerHeight)

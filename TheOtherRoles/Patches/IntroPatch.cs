@@ -11,7 +11,6 @@ using TheOtherRoles.Objects;
 using TheOtherRoles.Modules;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
-using TheOtherRoles.MetaContext;
 using TheOtherRoles.Roles;
 
 namespace TheOtherRoles.Patches {
@@ -84,13 +83,7 @@ namespace TheOtherRoles.Patches {
                 Props.placeProps();
             }
 
-            if (AmongUsClient.Instance.AmHost)
-            {
-                MessageWriter roleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRoleHistory, SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(roleWriter);
-                RPCProcedure.setRoleHistory();
-                GameStatistics.Event.GameStatistics.RpcRecordEvent(GameStatistics.EventVariation.GameStart, EventDetail.GameStart, null, 0);
-            }
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.GameStart, null, 0) { RelatedTag = EventDetail.GameStart });
 
             if (CustomOptionHolder.randomGameStartPosition.getBool())
             { //Random spawn on game start
@@ -305,9 +298,8 @@ namespace TheOtherRoles.Patches {
                 oneWayShadow.gameObject.SetActive(false);
             }
 
+            TORGameManager.Instance?.OnGameStart();
             HudManager.Instance.ShowVanillaKeyGuide();
-            GameStatistics.MinimapPrefab = ShipStatus.Instance.MapPrefab;
-            GameStatistics.MapScale = ShipStatus.Instance.MapScale;
 
             if (AmongUsClient.Instance.AmHost) {
                 LastImpostor.promoteToLastImpostor();

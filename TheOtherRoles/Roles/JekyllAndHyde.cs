@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -13,6 +14,8 @@ namespace TheOtherRoles.Roles
     {
         public static Color color = Color.grey;
         public PlayerControl currentTarget;
+
+        static public HelpSprite[] helpSprite = [new(PlagueDoctor.getSyringeIcon(), "jekyllAndHydeSwitchHint"), new(SerialKiller.getButtonSprite(), "jekyllAndHydeSuicideHint")];
 
         public JekyllAndHyde()
         {

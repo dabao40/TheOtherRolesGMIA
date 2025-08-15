@@ -9,6 +9,13 @@ using static TheOtherRoles.MetaContext.IMetaContextOld;
 
 namespace TheOtherRoles.MetaContext
 {
+    public enum BackgroundSetting
+    {
+        Off,
+        Old,
+        Modern,
+    }
+
     public class MetaScreen : MonoBehaviour, GUIScreen
     {
         static MetaScreen()
@@ -105,24 +112,18 @@ namespace TheOtherRoles.MetaContext
             catch { }
         }
 
-        static public PassiveButton InstantiateCloseButton(Transform parent, Vector3 localPos)
-        {
-            var collider = Helpers.CreateObject<CircleCollider2D>("CloseButton", parent, localPos);
-            collider.isTrigger = true;
-            collider.gameObject.layer = LayerMask.NameToLayer("UI");
-            collider.radius = 0.25f;
-            SpriteRenderer renderer = null;
-            renderer = collider.gameObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = VanillaAsset.CloseButtonSprite;
-            var button = collider.gameObject.SetUpButton(true, renderer);
-
-            return button;
-        }
+        static private MultiImage closeButtonSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.CloseButton.png", 100f, 2, 1);
+        static readonly private Image backFrameSprite = new ResourceExpandableSpriteLoader("TheOtherRoles.Resources.Background_Frame.png", 150f, 60, 60);
+        static readonly private Image backInnerSprite = new ResourceExpandableSpriteLoader("TheOtherRoles.Resources.Background_Inner.png", 150f, 60, 60);
+        static public Image BackFrameImage => backFrameSprite;
+        static public Image BackInnerImage => backInnerSprite;
 
         static public MetaScreen GenerateScreen(Vector2 size, Transform parent, Vector3 localPos, bool withBackground, bool withBlackScreen, bool withClickGuard)
+        => GenerateScreen(size, parent, localPos, withBackground ? BackgroundSetting.Old : BackgroundSetting.Off, withBlackScreen, withClickGuard);
+        static public MetaScreen GenerateScreen(Vector2 size, Transform parent, Vector3 localPos, BackgroundSetting backgroundSetting, bool withBlackScreen, bool withClickGuard)
         {
             var window = Helpers.CreateObject("MetaWindow", parent, localPos);
-            if (withBackground)
+            if (backgroundSetting == BackgroundSetting.Old)
             {
                 var renderer = Helpers.CreateObject<SpriteRenderer>("Background", window.transform, new Vector3(0, 0, 0.1f));
                 renderer.sprite = VanillaAsset.PopUpBackSprite;
@@ -131,6 +132,24 @@ namespace TheOtherRoles.MetaContext
                 renderer.size = size + new Vector2(0.45f, 0.35f);
                 renderer.gameObject.layer = LayerMask.NameToLayer("UI");
             }
+            else if (backgroundSetting == BackgroundSetting.Modern)
+            {
+                var inner = Helpers.CreateObject<SpriteRenderer>("Inner", window.transform, new Vector3(0, 0, 0.1f));
+                inner.sprite = backInnerSprite.GetSprite();
+                inner.drawMode = SpriteDrawMode.Sliced;
+                inner.tileMode = SpriteTileMode.Continuous;
+                inner.size = size + new Vector2(0.75f, 0.75f);
+                inner.gameObject.layer = LayerMask.NameToLayer("UI");
+                inner.color = Color.white.RGBMultiplied(0.55f);
+
+                var frame = Helpers.CreateObject<SpriteRenderer>("Frame", window.transform, new Vector3(0, 0, -0.01f));
+                frame.sprite = backFrameSprite.GetSprite();
+                frame.drawMode = SpriteDrawMode.Sliced;
+                frame.tileMode = SpriteTileMode.Continuous;
+                frame.size = size + new Vector2(0.75f, 0.75f);
+                frame.gameObject.layer = LayerMask.NameToLayer("UI");
+            }
+
             if (withBlackScreen)
             {
                 var renderer = Helpers.CreateObject<SpriteRenderer>("BlackScreen", window.transform, new Vector3(0, 0, 0.2f));
@@ -154,32 +173,93 @@ namespace TheOtherRoles.MetaContext
             return screen;
         }
 
-        static public MetaScreen GenerateWindow(Vector2 size, Transform parent, Vector3 localPos, bool withBlackScreen, bool closeOnClickOutside, bool withCloseButton = true)
+        /// <summary>
+        /// 枠線および不透明な黒い領域を持たない透明ウィンドウを生成します。
+        /// このウィンドウはほかのウィンドウと同様に順番に整列します。
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="parent"></param>
+        /// <param name="localPos"></param>
+        /// <param name="closeButtonPos"></param>
+        /// <param name="withBlackScreen"></param>
+        /// <returns></returns>
+        static public MetaScreen GenerateBlankWindow(Vector2 size, Transform parent, Vector3 localPos, Vector2 closeButtonPos, bool withBlackScreen)
         {
             var screen = GenerateScreen(size, parent, localPos, true, withBlackScreen, true);
-
             var obj = screen.transform.parent.gameObject;
+            var button = InstantiateCloseButton(screen, closeButtonPos);
+            TORGUIManager.Instance.RegisterUI(obj, button);
+            return screen;
+        }
 
-            var collider = Helpers.CreateObject<CircleCollider2D>("CloseButton", obj.transform, new Vector3(-size.x / 2f - 0.6f, size.y / 2f + 0.25f, 0f));
+        static public PassiveButton InstantiateCloseButton(Transform parent, Vector3 localPos)
+        {
+            var collider = Helpers.CreateObject<CircleCollider2D>("CloseButton", parent, localPos);
             collider.isTrigger = true;
             collider.gameObject.layer = LayerMask.NameToLayer("UI");
             collider.radius = 0.25f;
             SpriteRenderer renderer = null;
-            if (withCloseButton)
-            {
-                renderer = collider.gameObject.AddComponent<SpriteRenderer>();
-                renderer.sprite = VanillaAsset.CloseButtonSprite;
-            }
+            renderer = collider.gameObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = VanillaAsset.CloseButtonSprite;
             var button = collider.gameObject.SetUpButton(true, renderer);
-            button.OnClick.AddListener((Action)(() => Destroy(obj)));
+
+            return button;
+        }
+
+        static public PassiveButton InstantiateCloseButton(MetaScreen target, Vector3 localPos)
+        {
+            var button = InstantiateCloseButton(target.transform.parent, localPos);
+            var targetObj = target.combinedObject;
+            button.OnClick.AddListener((Action)(() => GameObject.Destroy(targetObj)));
+
+            return button;
+        }
+
+        static public MetaScreen GenerateWindow(Vector2 size, Transform parent, Vector3 localPos, bool withBlackScreen, bool closeOnClickOutside, bool withMask = false, BackgroundSetting background = BackgroundSetting.Old)
+        {
+            var screen = GenerateScreen(size, parent, localPos, background, withBlackScreen, true);
+
+            var obj = screen.transform.parent.gameObject;
+
+            if (background == BackgroundSetting.Modern)
+            {
+                var collider = Helpers.CreateObject<BoxCollider2D>("CloseButton", obj.transform, new Vector3(-size.x / 2f - 0.3f, size.y / 2f + 0.2f, -1f));
+                collider.transform.localScale = new(0.57f, 0.57f, 1f);
+                collider.isTrigger = true;
+                collider.gameObject.layer = LayerMask.NameToLayer("UI");
+                collider.size = new(0.85f, 0.85f);
+                SpriteRenderer renderer = null;
+                renderer = collider.gameObject.AddComponent<SpriteRenderer>();
+                renderer.sprite = closeButtonSprite.GetSprite(0);
+                var button = collider.gameObject.SetUpButton(true);
+                button.OnClick.AddListener((Action)(() => GameObject.Destroy(obj)));
+                button.OnMouseOver.AddListener((Action)(() => renderer.sprite = closeButtonSprite.GetSprite(1)));
+                button.OnMouseOut.AddListener((Action)(() => renderer.sprite = closeButtonSprite.GetSprite(0)));
+                TORGUIManager.Instance.RegisterUI(obj, button);
+            }
+            else
+            {
+                var button = InstantiateCloseButton(screen, new Vector3(-size.x / 2f - 0.6f, size.y / 2f + 0.25f, 0f));
+                TORGUIManager.Instance.RegisterUI(obj, button);
+            }
 
             if (closeOnClickOutside)
             {
-                obj.transform.FindChild("ClickGuard").GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Destroy(obj)));
+                obj.transform.FindChild("ClickGuard").GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => GameObject.Destroy(obj)));
                 var myCollider = Helpers.CreateObject<BoxCollider2D>("MyScreenCollider", obj.transform, new Vector3(0f, 0f, 0.1f));
-                myCollider.isTrigger = false;
+                myCollider.isTrigger = true;
                 myCollider.size = size;
                 myCollider.gameObject.SetUpButton();
+            }
+
+            if (withMask)
+            {
+                var group = Helpers.CreateObject<SortingGroup>("Group", obj.transform, Vector3.zero);
+                var mask = Helpers.CreateObject<SpriteMask>("Mask", group.transform, Vector3.zero);
+                mask.sprite = VanillaAsset.FullScreenSprite;
+                mask.transform.localScale = size;
+
+                obj.transform.FindChild("Screen").SetParent(group.transform);
             }
 
             return screen;
@@ -190,7 +270,8 @@ namespace TheOtherRoles.MetaContext
             this.border = border;
         }
 
-        public void SetContext(GUIContext context, out Size actualSize) => SetContext(context, new(0f, 1f), out actualSize);
+        public void SetContext(GUIContext context, out Size actualSize) => SetContext(context, new Vector2(0f, 1f), out actualSize);
+        public void SetContext(GUIContext context, Image image, out Size actualSize) => SetContext(context, new(0f, 1f), image, out actualSize);
         public void SetContext(GUIContext context, UnityEngine.Vector2 anchor, out Size actualSize)
         {
             ClearContext();
@@ -200,6 +281,48 @@ namespace TheOtherRoles.MetaContext
             {
                 obj.transform.SetParent(transform, false);
             }
+        }
+
+        public void SetContext(GUIContext context, UnityEngine.Vector2 anchor, Image image, out Size actualSize)
+        {
+            SetContext(context, anchor, out actualSize);
+            SetBackImage(image);
+        }
+
+        //既存のコンテンツを削除せずに背景画像を追加します。
+        public void SetBackImage(Image image, float brightness = 0.25f)
+        {
+            SetBackImage(image, brightness, 0.6f, new Vector3(border.x, -border.y) * 0.27f, new Vector2(border.x * 0.974f + 0.45f, border.y * 0.96f + 0.35f), 1f);
+        }
+
+        public void ClearBackImage()
+        {
+            try
+            {
+                var image = transform.FindChild("BackImage");
+                if (image) GameObject.Destroy(image.gameObject);
+            }
+            catch
+            {
+            }
+        }
+
+        public void SetBackImage(Image image, float brightness, float alpha, Vector2 imagePosition, Vector2 maskScale, float imageScale, bool grayout = false)
+        {
+            if (image?.GetSprite() == null) return;
+
+            var group = Helpers.CreateObject<SortingGroup>("BackImage", this.transform, new(0f, 0f, 0.06f));
+            group.sortingOrder = -10;
+            var mask = Helpers.CreateObject<SpriteMask>("Mask", group.transform, Vector3.zero);
+            mask.sprite = VanillaAsset.FullScreenSprite;
+            mask.transform.localScale = maskScale;
+
+            var renderer = Helpers.CreateObject<SpriteRenderer>("MaskedImage", group.transform, imagePosition);
+            renderer.sprite = image.GetSprite();
+            renderer.transform.localScale = new(imageScale, imageScale);
+            renderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            renderer.color = new(brightness, brightness, brightness, alpha);
+            if (grayout) renderer.material.shader = Modules.Achievement.materialShader;
         }
     }
 
@@ -256,11 +379,7 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
-    public interface ISpriteLoader : Image
-    {
-    }
-
-    public class WrapSpriteLoader : ISpriteLoader
+    public class WrapSpriteLoader : Image
     {
         Func<Sprite> supplier;
 
@@ -270,6 +389,11 @@ namespace TheOtherRoles.MetaContext
         }
 
         public Sprite GetSprite() => supplier.Invoke();
+
+        public void UnloadAsset() { }
+
+        public System.Collections.IEnumerator LoadAsset() { yield break; }
+        public void MarkAsUnloadAsset() { }
     }
 
     public class TranslateTextComponent : TextComponent

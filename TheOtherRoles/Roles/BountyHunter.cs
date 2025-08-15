@@ -53,8 +53,10 @@ namespace TheOtherRoles.Roles
                 arrowUpdateTimer = 0f; // Force arrow to update
                 bountyUpdateTimer = bountyDuration;
                 var possibleTargets = new List<PlayerControl>();
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)                     if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && !p.isRole(RoleId.Spy) && !Sidekick.players.Any(x => x.player == p && x.wasTeamRed) && !Jackal.players.Any(x => x.player == p && x.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) &&
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
+                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && !p.isRole(RoleId.Spy) && !Sidekick.players.Any(x => x.player == p && x.wasTeamRed) && !Jackal.players.Any(x => x.player == p && x.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) &&
                         !Akujo.players.Any(x => x.player == p && (x.keeps.Contains(player) || x.honmei == player))) possibleTargets.Add(p);
+                }
                 if (possibleTargets.Count == 0) return;
                 bounty = possibleTargets[rnd.Next(0, possibleTargets.Count)];
                 if (bounty == null) return;
@@ -79,7 +81,9 @@ namespace TheOtherRoles.Roles
                 cooldownText.gameObject.SetActive(!MeetingHud.Instance);  // Show if not in meeting
                 cooldownText.transform.localPosition = IntroCutsceneOnDestroyPatch.bottomLeft + new Vector3(0f, -0.35f, -62f);
             }
-            else                 generateCooldownText();
+            else {
+                generateCooldownText();
+            }
 
             // Update Arrow
             if (showArrow && bounty != null)

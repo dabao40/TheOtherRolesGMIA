@@ -24,6 +24,8 @@ namespace TheOtherRoles.Roles
         public DateTime stealthedAt = DateTime.UtcNow;
         public AchievementToken<int> acTokenChallenge = null;
 
+        static public HelpSprite[] helpSprite = [new(getButtonSprite(), "ninjaStealthHint")];
+
         public Ninja()
         {
             RoleId = roleId = RoleId.Ninja;

@@ -41,7 +41,8 @@ namespace TheOtherRoles.Roles
             if (isNeutral && !shiftPastShifters)
             {
                 blockShift = [];
-                foreach (var playerId in pastShifters)                     blockShift.Add(Helpers.playerById((byte)playerId));
+                foreach (var playerId in pastShifters)
+                    blockShift.Add(Helpers.playerById((byte)playerId));
             }
 
             currentTarget = setTarget(untargetablePlayers: blockShift);
@@ -56,7 +57,8 @@ namespace TheOtherRoles.Roles
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
-            if (PlayerControl.LocalPlayer == player && !isNeutral && exiled != null)                 niceShifterAcTokenChallenge.Value.cleared |= niceShifterAcTokenChallenge.Value.shiftId == exiled.PlayerId;
+            if (PlayerControl.LocalPlayer == player && !isNeutral && exiled != null)
+                niceShifterAcTokenChallenge.Value.cleared |= niceShifterAcTokenChallenge.Value.shiftId == exiled.PlayerId;
         }
 
         public static void clearAndReload()

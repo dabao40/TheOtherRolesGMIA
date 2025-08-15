@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Utilities;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
-using TheOtherRoles.Patches;
-using UnityEngine.SceneManagement;
-using TheOtherRoles.Utilities;
-using AmongUs.Data;
-using Assets.InnerNet;
-using System.Linq;
-using BepInEx;
-using BepInEx.Unity.IL2CPP;
-using TMPro;
-using System.Text;
-using TheOtherRoles.MetaContext;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]

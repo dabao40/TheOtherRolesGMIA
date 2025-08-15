@@ -52,15 +52,21 @@ namespace TheOtherRoles.Roles
             if (player != PlayerControl.LocalPlayer) return;
 
             PlayerControl target = null;
-            if (Spy.exists)                 if (Spy.impostorsCanKillAnyone)                     target = setTarget(false, true);
-else {
+            if (Spy.exists)
+            {
+                if (Spy.impostorsCanKillAnyone) {
+                    target = setTarget(false, true);
+                }
+                else
+                {
                     var untargetables = new List<PlayerControl>();
                     untargetables.AddRange(Spy.allPlayers);
                     untargetables.AddRange(Jackal.players.Where(x => x.wasTeamRed).Select(x => x.player));
                     untargetables.AddRange(Sidekick.players.Where(x => x.wasTeamRed).Select(x => x.player));
                     target = setTarget(true, true, untargetables);
                 }
-else {
+            }
+            else {
                 var untargetables = new List<PlayerControl>();
                 untargetables.AddRange(Jackal.players.Where(x => x.wasImpostor).Select(x => x.player));
                 untargetables.AddRange(Sidekick.players.Where(x => x.wasImpostor).Select(x => x.player));
@@ -68,7 +74,14 @@ else {
             }
 
             bool targetNearGarlic = false;
-            if (target != null)                 foreach (Garlic garlic in Garlic.garlics)                     if (Vector2.Distance(garlic.garlic.transform.position, target.transform.position) <= 1.91f)                         targetNearGarlic = true;
+            if (target != null)
+            {
+                foreach (Garlic garlic in Garlic.garlics)
+                {
+                    if (Vector2.Distance(garlic.garlic.transform.position, target.transform.position) <= 1.91f)
+                        targetNearGarlic = true;
+                }
+            }
             this.targetNearGarlic = targetNearGarlic;
             currentTarget = target;
             setPlayerOutline(currentTarget, color);

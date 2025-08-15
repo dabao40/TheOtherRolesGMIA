@@ -320,8 +320,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            HudManagerUpdate.CloseSettings();
-            CustomOverlay.hideInfoOverlay();
+            MetaContext.TORGUIManager.Instance?.CloseAllUI();
         }
 
         public static List<Vent> GetNetworkFor(Vent vent)

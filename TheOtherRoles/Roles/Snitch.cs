@@ -73,7 +73,8 @@ namespace TheOtherRoles.Roles
                     var (complete, total) = TasksHandler.taskInfo(snitch.Data);
                     int remaining = total - complete;
                     if (remaining > taskCountForReveal || snitch.Data.IsDead) continue;
-                    if (arrowIndex >= localArrows.Count)                         localArrows.Add(new Arrow(Color.blue));
+                    if (arrowIndex >= localArrows.Count)
+                        localArrows.Add(new Arrow(Color.blue));
                     if (arrowIndex < localArrows.Count && localArrows[arrowIndex] != null)
                     {
                         localArrows[arrowIndex].arrow.SetActive(true);
@@ -94,15 +95,17 @@ namespace TheOtherRoles.Roles
                     bool arrowForMoriarty = includeTeamEvil && (p.isRole(RoleId.Moriarty) || (p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Moriarty));
 
                     Color color = Palette.ImpostorRed;
-                    if (teamEvilUseDifferentArrowColor)
+                    if (teamEvilUseDifferentArrowColor) {
                         if (arrowForTeamJackal) color = Jackal.color;
                         else if (arrowForFox) color = Fox.color;
                         else if (arrowForJekyll) color = JekyllAndHyde.color;
                         else if (arrowForMoriarty) color = Moriarty.color;
+                    }
 
                     if (!p.Data.IsDead && (arrowForImp || arrowForTeamJackal || arrowForFox || arrowForJekyll || arrowForMoriarty))
                     {
-                        if (arrowIndex >= snitchArrows.Count)                             snitchArrows.Add(new Arrow(color));
+                        if (arrowIndex >= snitchArrows.Count)
+                            snitchArrows.Add(new Arrow(color));
                         if (arrowIndex < snitchArrows.Count && snitchArrows[arrowIndex] != null)
                         {
                             snitchArrows[arrowIndex].arrow.SetActive(true);

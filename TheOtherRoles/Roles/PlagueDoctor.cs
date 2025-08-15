@@ -65,7 +65,9 @@ namespace TheOtherRoles.Roles
 
         public void infectionUpdate()
         {
-            if (MeetingHud.Instance != null)                 if (statusText != null)                     statusText.gameObject.SetActive(false);
+            if (MeetingHud.Instance != null)
+                if (statusText != null)
+                    statusText.gameObject.SetActive(false);
 
             if (PlayerControl.LocalPlayer == player || PlayerControl.LocalPlayer.Data.IsDead &&
                 !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag))

@@ -13,6 +13,8 @@ namespace TheOtherRoles.Roles
         public PlayerControl curseVictimTarget;
         public AchievementToken<int> acTokenChallenge;
 
+        static public HelpSprite[] helpSprite = [new(getCurseButtonSprite(), "warlockCurseHint"), new(getCurseKillButtonSprite(), "warlockCurseKillHint")];
+
         public static float cooldown = 30f;
         public static float rootTime = 5f;
 
@@ -61,7 +63,8 @@ namespace TheOtherRoles.Roles
         public override void OnKill(PlayerControl target)
         {
             if (PlayerControl.LocalPlayer == player && HudManagerStartPatch.warlockCurseButton != null)
-                if (player.killTimer > HudManagerStartPatch.warlockCurseButton.Timer)                     HudManagerStartPatch.warlockCurseButton.Timer = player.killTimer;
+                if (player.killTimer > HudManagerStartPatch.warlockCurseButton.Timer)
+                    HudManagerStartPatch.warlockCurseButton.Timer = player.killTimer;
         }
 
         public override void FixedUpdate()
