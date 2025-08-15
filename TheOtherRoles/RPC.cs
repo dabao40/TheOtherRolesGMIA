@@ -883,7 +883,11 @@ namespace TheOtherRoles
 
         public static void shareAchievement(byte playerId, string achievement)
         {
-            TORGameManager.Instance?.TitleMap[playerId] = Helpers.playerById(playerId)?.GetTitleShower().SetAchievement(achievement);
+            if (TORGameManager.Instance != null && Helpers.playerById(playerId) != null)
+            {
+                var titleShower = Helpers.playerById(playerId).GetTitleShower();
+                TORGameManager.Instance.TitleMap[playerId] = titleShower.SetAchievement(achievement);
+            }
         }
 
         public static void evilHackerCreatesMadmate(byte targetId, byte evilHackerId)
