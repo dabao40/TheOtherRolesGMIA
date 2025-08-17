@@ -596,6 +596,29 @@ namespace TheOtherRoles.MetaContext
             }
         }
 
+        private static Material highlightMaterial = null;
+        public static Material GetHighlightMaterial()
+        {
+            if (highlightMaterial != null) return new Material(highlightMaterial);
+            foreach (var mat in UnityEngine.Resources.FindObjectsOfTypeAll(Il2CppType.Of<Material>()))
+            {
+                if (mat.name == "HighlightMat")
+                {
+                    highlightMaterial = mat.TryCast<Material>();
+                    break;
+                }
+            }
+            return new Material(highlightMaterial);
+        }
+
+        static public readonly ShipStatus[] MapAsset = new ShipStatus[6];
+        static public Vector2 GetMapCenter(byte mapId) => MapAsset[mapId].MapPrefab.transform.GetChild(5).localPosition;
+        static public float GetMapScale(byte mapId) => MapAsset[mapId].MapScale;
+        static public Vector2 ConvertToMinimapPos(Vector2 pos, Vector2 center, float scale) => (pos / scale) + center;
+        static public Vector2 ConvertToMinimapPos(Vector2 pos, byte mapId) => ConvertToMinimapPos(pos, GetMapCenter(mapId), GetMapScale(mapId));
+        static public Vector2 ConvertFromMinimapPosToWorld(Vector2 minimapPos, Vector2 center, float scale) => (minimapPos - center) * scale;
+        static public Vector2 ConvertFromMinimapPosToWorld(Vector2 minimapPos, byte mapId) => ConvertFromMinimapPosToWorld(minimapPos, GetMapCenter(mapId), GetMapScale(mapId));
+
         static public void LoadAssetsOnTitle()
         {
             var twitchPopUp = TwitchManager.Instance.transform.GetChild(0);

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AmongUs.GameOptions;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -19,6 +20,8 @@ namespace TheOtherRoles.Roles
         public static bool showAttemptToMedic = false;
         public static bool setShieldAfterMeeting = false;
         public static bool showShieldAfterMeeting = false;
+        public static bool canUseVitals = true;
+        public static bool seesDeathReasonOnVitals = true;
         public bool meetingAfterShielding = false;
 
         public Medic()
@@ -63,6 +66,69 @@ namespace TheOtherRoles.Roles
             return buttonSprite;
         }
 
+        internal static VitalsMinigame OpenSpecialVitalsMinigame()
+        {
+            VitalsMinigame vitalsMinigame = null;
+            foreach (RoleBehaviour role in RoleManager.Instance.AllRoles)
+            {
+                if (role.Role == RoleTypes.Scientist)
+                {
+                    vitalsMinigame = UnityEngine.Object.Instantiate(role.gameObject.GetComponent<ScientistRole>().VitalsPrefab, Camera.main.transform, false);
+                    break;
+                }
+            }
+            if (vitalsMinigame == null) return null!;
+            vitalsMinigame.transform.SetParent(Camera.main.transform, false);
+            vitalsMinigame.transform.localPosition = new Vector3(0.0f, 0.0f, -50f);
+            vitalsMinigame.Begin(null);
+
+            return vitalsMinigame;
+        }
+
+        public static string GetDeathReason(PlayerControl player)
+        {
+            if (player == null) return null;
+            var dp = GameHistory.deadPlayers?.FirstOrDefault(x => x.player?.PlayerId == player?.PlayerId);
+            if (dp == null || dp.killerIfExisting == null) return null;
+            var killer = dp.killerIfExisting;
+            switch (dp.deathReason)
+            {
+                case DeadPlayer.CustomDeathReason.Guess:
+                    if (killer == player)
+                        return "MisGuess";
+                    else
+                        return "Guess";
+                case DeadPlayer.CustomDeathReason.Pseudocide:
+                    return "Pseudocide";
+                case DeadPlayer.CustomDeathReason.LoverSuicide:
+                    return "LoverSuicide";
+                case DeadPlayer.CustomDeathReason.Bomb:
+                    return "Bomb";
+                case DeadPlayer.CustomDeathReason.WitchExile:
+                    return "WitchExile";
+                case DeadPlayer.CustomDeathReason.BrainwashedKilled:
+                    return "Brainwash";
+                case DeadPlayer.CustomDeathReason.Divined:
+                    return "Divined";
+            }
+
+            if (dp.deathReason == DeadPlayer.CustomDeathReason.Kill)
+            {
+                if (killer.isRole(RoleId.Sheriff))
+                {
+                    if (killer == player)
+                        return "Misfire";
+                    else
+                        return "SheriffKill";
+                }
+                if (killer.isRole(RoleId.Veteran)) return "VeteranKill";
+                if (killer.isRole(RoleId.MimicK)) return "MimicKill";
+                return "KilledNormal";
+            }
+
+            return null;
+        }
+
         public override void PostInit()
         {
             if (PlayerControl.LocalPlayer != player) return;
@@ -94,6 +160,8 @@ namespace TheOtherRoles.Roles
             showAttemptToMedic = CustomOptionHolder.medicShowAttemptToMedic.getBool();
             setShieldAfterMeeting = CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 2;
             showShieldAfterMeeting = CustomOptionHolder.medicSetOrShowShieldAfterMeeting.getSelection() == 1;
+            canUseVitals = CustomOptionHolder.medicCanUseVitals.getBool();
+            seesDeathReasonOnVitals = CustomOptionHolder.medicSeesDeathReasonOnVitals.getBool();
             players = [];
         }
     }

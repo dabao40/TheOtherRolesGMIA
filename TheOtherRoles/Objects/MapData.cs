@@ -11,13 +11,17 @@ namespace TheOtherRoles.Objects
     {
         abstract protected Vector2[] MapArea { get; }
 
-        public bool CheckMapArea(Vector2 position)
+        public bool CheckMapArea(Vector2 position, float radius = 0.1f)
         {
-            int num = Physics2D.OverlapCircleNonAlloc(position, 0.23f, PhysicsHelpers.colliderHits, Constants.ShipAndAllObjectsMask);
-            if (num > 0) for (int i = 0; i < num; i++) if (!PhysicsHelpers.colliderHits[i].isTrigger) return false;
+            if (radius > 0f)
+            {
+                int num = Physics2D.OverlapCircleNonAlloc(position, radius, PhysicsHelpers.colliderHits, Constants.ShipAndAllObjectsMask);
+                if (num > 0) for (int i = 0; i < num; i++) if (!PhysicsHelpers.colliderHits[i].isTrigger) return false;
+            }
 
             return CheckMapAreaInternal(position);
         }
+
 
         public bool CheckMapAreaInternal(Vector2 position)
         {

@@ -2001,6 +2001,14 @@
         "13": "\u4f1a\u8bae\u540e\u751f\u6548",
         "14": "\u6703\u8b70\u5f8c\u751f\u6548"
     },
+    "medicCanUseVitals": {
+        "0": "Medic Can Use Vitals",
+        "13": "\u533b\u751f\u53ef\u4ee5\u4f7f\u7528\u5fc3\u7535\u56fe"
+    },
+    "medicSeesDeathReasonOnVitals": {
+        "0": "Can See Death Reason On Vitals",
+        "13": "\u53ef\u4ee5\u5728\u5fc3\u7535\u56fe\u4e0a\u663e\u793a\u6b7b\u56e0"
+    },
     "medicReport": {
         "0": "Body Report: Killed {0}s ago!",
         "11": "\u6b7b\u4f53\u8abf\u67fb\u306e\u7d50\u679c\u3001{0}\u79d2\u524d\u306b\u6bba\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u304c\u308f\u304b\u308a\u307e\u3057\u305f!",
@@ -2012,6 +2020,58 @@
         "11": "\u30b7\u30fc\u30eb\u30c9\u3092\u5f35\u3063\u305f\u30af\u30eb\u30fc\u304c\u8ab0\u304b\u306b\u30ad\u30eb\u3055\u308c\u305d\u3046\u306b\u306a\u3063\u305f\u3088\u3046\u3060...",
         "13": "\u6709\u4eba\u8bd5\u56fe\u51fb\u6740\u88ab\u62a4\u76fe\u4fdd\u62a4\u7684\u73a9\u5bb6",
         "14": "\u6709\u4eba\u8a66\u5716\u64ca\u6bba\u88ab\u4fdd\u8b77\u8005"
+    },
+    "medicMisGuess": {
+        "0": "Missed",
+        "13": "\u8bef\u8d4c"
+    },
+    "medicGuess": {
+        "0": "Guessed",
+        "13": "\u8d4c\u6740"
+    },
+    "medicPseudocide": {
+        "0": "Pseudocide",
+        "13": "\u5047\u6b7b"
+    },
+    "medicLoverSuicide": {
+        "0": "Lover Died",
+        "13": "\u6b89\u60c5"
+    },
+    "medicBomb": {
+        "0": "Bombed",
+        "13": "\u7206\u7834"
+    },
+    "medicWitchExile": {
+        "0": "Witched",
+        "13": "\u5492\u6740"
+    },
+    "medicBrainwash": {
+        "0": "Brainwashed",
+        "13": "\u6d17\u8111"
+    },
+    "medicDivined": {
+        "0": "Divined",
+        "13": "\u5360\u535c"
+    },
+    "medicMisfire": {
+        "0": "Misfire",
+        "13": "\u8d70\u706b"
+    },
+    "medicSheriffKill": {
+        "0": "Shot",
+        "13": "\u51fa\u8b66"
+    },
+    "medicVeteranKill": {
+        "0": "Reversed",
+        "13": "\u53cd\u5f39"
+    },
+    "medicMimicKill": {
+        "0": "Mimicked",
+        "13": "\u6a21\u4eff"
+    },
+    "medicKilledNormal": {
+        "0": "Killed",
+        "13": "\u51fb\u6740"
     },
     "swapper": {
         "0": "Swapper",

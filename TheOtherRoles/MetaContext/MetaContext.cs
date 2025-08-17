@@ -444,6 +444,33 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
+    public class TORGameObjectGUIWrapper : AbstractGUIContext
+    {
+        private Func<(GameObject gameObject, Size size)> generator;
+
+        public TORGameObjectGUIWrapper(GUIAlignment alignment, Func<(GameObject gameObject, Size size)> generator) : base(alignment)
+        {
+            this.generator = generator;
+        }
+
+        internal override GameObject Instantiate(Size size, out Size actualSize)
+        {
+            var generated = generator.Invoke();
+            actualSize = generated.size;
+            return generated.gameObject;
+        }
+
+        public TORGameObjectGUIWrapper(GUIAlignment alignment, IMetaParallelPlacableOld widget) : base(alignment)
+        {
+            this.generator = () =>
+            {
+                var holder = Helpers.CreateObject("Holder", null, UnityEngine.Vector3.zero, LayerMask.NameToLayer("UI"));
+                var height = widget.Generate(holder, UnityEngine.Vector3.zero, out var width);
+                return (holder, new(width * 2f, height));
+            };
+        }
+    }
+
     public class TORGUIManager : MonoBehaviour
     {
         static public TORGUIManager Instance { get; private set; } = null!;
@@ -506,6 +533,14 @@ namespace TheOtherRoles.MetaContext
                 SetHelpContext(related, new MetaContextOld.VariableText(TextAttribute.ContentAttr) { Alignment = IMetaContextOld.AlignmentOption.Left, RawText = rawText });
         }
         public PassiveUiElement HelpRelatedObject => mouseOverPopup.RelatedObject;
+
+        public Coroutine ScheduleDelayAction(Action action)
+        {
+            return StartCoroutine(Effects.Sequence(
+                Effects.Action((Il2CppSystem.Action)(() => { })),
+                Effects.Action(action)
+                ));
+        }
     }
 
     public class TORGUIContextEngine : GUI

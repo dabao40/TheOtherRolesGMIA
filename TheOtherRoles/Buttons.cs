@@ -1,19 +1,22 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using BepInEx.Unity.IL2CPP.Utils;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
-using System;
-using UnityEngine;
-using static TheOtherRoles.TheOtherRoles;
-using TheOtherRoles.Objects;
-using System.Linq;
-using System.Collections.Generic;
-using TheOtherRoles.Utilities;
-using TheOtherRoles.CustomGameModes;
-using TheOtherRoles.Patches;
-using TheOtherRoles.Modules;
-using TheOtherRoles.MetaContext;
 using Reactor.Utilities;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
+using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
+using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using UnityEngine.UIElements;
+using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles
 {
@@ -107,6 +110,7 @@ namespace TheOtherRoles
         public static CustomButton yoyoButton;
         public static CustomButton archaeologistDetectButton;
         public static CustomButton archaeologistExcavateButton;
+        public static CustomButton medicVitalsButton;
         public static CustomButton doomsayerButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
@@ -200,6 +204,7 @@ namespace TheOtherRoles
             yoyoButton.MaxTimer = Yoyo.markCooldown;
             securityGuardButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
+            medicVitalsButton.MaxTimer = 0f;
             arsonistButton.MaxTimer = Arsonist.cooldown;
             kataomoiButton.MaxTimer = Kataomoi.stareCooldown;
             kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
@@ -751,6 +756,50 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
+            medicVitalsButton = new CustomButton(
+                () => {
+                    medicVitalsButton.Timer = 0f;
+                    var vitalsMinigame = Medic.OpenSpecialVitalsMinigame();
+
+                    if (Medic.seesDeathReasonOnVitals)
+                    {
+                        IEnumerator CoUpdateState(VitalsPanel panel, PlayerControl player)
+                        {
+                            TMPro.TextMeshPro text = UnityEngine.Object.Instantiate(vitalsMinigame.SabText, panel.transform);
+                            UnityEngine.Object.DestroyImmediate(text.GetComponent<AlphaBlink>());
+                            text.gameObject.SetActive(false);
+                            text.transform.localScale = Vector3.one * 0.5f;
+                            text.transform.localPosition = new Vector3(-0.75f, -0.23f, 0f);
+                            text.color = new Color(0.8f, 0.8f, 0.8f);
+                            while (true)
+                            {
+                                string deathReason = Medic.GetDeathReason(player);
+                                if ((panel.IsDiscon || panel.IsDead) && deathReason != null)
+                                {
+                                    text.gameObject.SetActive(true);
+                                    text.text = ModTranslation.getString("medic" + deathReason);
+                                }
+                                else
+                                {
+                                    text.gameObject.SetActive(false);
+                                }
+                                yield return null;
+                            }
+                        }
+
+                        vitalsMinigame.vitals.DoIf(panel => panel.isActiveAndEnabled, panel => panel.StartCoroutine(CoUpdateState(panel, Helpers.playerById(panel.PlayerInfo.PlayerId))));
+                    }
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Medic) && Medic.canUseVitals && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => { },
+                Hacker.getVitalsSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: TranslationController.Instance.GetString(StringNames.VitalsLabel),
+                abilityTexture: CustomButton.ButtonLabelType.AdminButton
+            );
 
             // Shifter shift
             shifterShiftButton = new CustomButton(

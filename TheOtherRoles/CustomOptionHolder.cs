@@ -240,6 +240,8 @@ namespace TheOtherRoles {
         public static CustomOption medicSetOrShowShieldAfterMeeting;
         public static CustomOption medicShowAttemptToMedic;
         public static CustomOption medicSetShieldAfterMeeting;
+        public static CustomOption medicCanUseVitals;
+        public static CustomOption medicSeesDeathReasonOnVitals;
 
         public static CustomRoleOption veteranSpawnRate;
         public static CustomOption veteranCooldown;
@@ -1011,6 +1013,8 @@ namespace TheOtherRoles {
             medicShowAttemptToShielded = CustomOption.Create(144, Types.Crewmate, "medicShowAttemptToShielded", false, medicSpawnRate);
             medicSetOrShowShieldAfterMeeting = CustomOption.Create(145, Types.Crewmate, "medicSetOrShowShieldAfterMeeting", ["medicInstantly", "medicVisibleAfterMeeting", "medicAftermeeting"], medicSpawnRate);
             medicShowAttemptToMedic = CustomOption.Create(146, Types.Crewmate, "medicShowAttemptToMedic", false, medicSpawnRate);
+            medicCanUseVitals = CustomOption.Create(147, Types.Crewmate, "medicCanUseVitals", true, medicSpawnRate);
+            medicSeesDeathReasonOnVitals = CustomOption.Create(148, Types.Crewmate, "medicSeesDeathReasonOnVitals", true, medicCanUseVitals);
 
             fortuneTellerSpawnRate = new CustomRoleOption(940, Types.Crewmate, "fortuneTeller", FortuneTeller.color);
             fortuneTellerResults = CustomOption.Create(941, Types.Crewmate, "fortuneTellerResults", ["fortuneTellerResultCrew", "fortuneTellerResultTeam", "fortuneTellerResultRole"], fortuneTellerSpawnRate);

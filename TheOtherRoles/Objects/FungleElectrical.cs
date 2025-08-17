@@ -21,14 +21,14 @@ namespace TheOtherRoles.Objects
             fungleShipStatus.Systems[SystemTypes.Electrical] = system.TryCast<ISystemType>();
             fungleShipStatus.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>().specials.Add(system.TryCast<IActivatable>());
             List<PlayerTask> Tasks = ShipStatus.Instance.SpecialTasks.ToList();
-            Tasks.Add(MapLoader.Airship.SpecialTasks.FirstOrDefault(x => x.TaskType == TaskTypes.FixLights));
+            Tasks.Add(VanillaAsset.MapAsset[4].SpecialTasks.FirstOrDefault(x => x.TaskType == TaskTypes.FixLights));
             ShipStatus.Instance.SpecialTasks = new(Tasks.ToArray());
 
-            Console console1 = GameObject.Instantiate(MapLoader.Airship.transform.FindChild("Storage/task_lightssabotage (cargo)"), fungleShipStatus.transform).GetComponent<Console>();
+            Console console1 = GameObject.Instantiate(VanillaAsset.MapAsset[4].transform.FindChild("Storage/task_lightssabotage (cargo)"), fungleShipStatus.transform).GetComponent<Console>();
             console1.transform.localPosition = new(-16.2f, 7.67f, 0);
             console1.ConsoleId = 0;
 
-            Console console2 = GameObject.Instantiate(MapLoader.Skeld.transform.FindChild("Electrical/Ground/electric_frontset/SwitchConsole"), fungleShipStatus.transform).GetComponent<Console>();
+            Console console2 = GameObject.Instantiate(VanillaAsset.MapAsset[0].transform.FindChild("Electrical/Ground/electric_frontset/SwitchConsole"), fungleShipStatus.transform).GetComponent<Console>();
             console2.transform.localPosition = new(-5.7f, -7.7f, -1.008f);
             console2.ConsoleId = 1;
 
@@ -51,7 +51,7 @@ namespace TheOtherRoles.Objects
                 if (!Helpers.isFungle() || !CustomOptionHolder.fungleElectrical.getBool())
                     return;
 
-                MapRoom mapRoom = GameObject.Instantiate(MapLoader.Airship.MapPrefab.infectedOverlay.rooms.FirstOrDefault(x => x.room == SystemTypes.Electrical), __instance.infectedOverlay.transform);
+                MapRoom mapRoom = GameObject.Instantiate(VanillaAsset.MapAsset[4].MapPrefab.infectedOverlay.rooms.FirstOrDefault(x => x.room == SystemTypes.Electrical), __instance.infectedOverlay.transform);
                 mapRoom.Parent = __instance.infectedOverlay;
                 mapRoom.transform.localPosition = new(-0.83f, -1.8f, -1f);
                 var buttons = __instance.infectedOverlay.allButtons.ToList();
@@ -66,13 +66,6 @@ namespace TheOtherRoles.Objects
 
     public static class MapLoader
     {
-        private static ShipStatus skeld;
-        private static ShipStatus airship;
-        public static ShipStatus Polus;
-        public static GameObject PolusObject => Polus.gameObject;
-        public static ShipStatus Skeld => skeld;
-        public static ShipStatus Airship => airship;
-
         public static IEnumerator LoadMaps()
         {
             while (AmongUsClient.Instance == null)
@@ -80,18 +73,13 @@ namespace TheOtherRoles.Objects
 
             EastAsianFontChanger.LoadFont();
 
-            AsyncOperationHandle<GameObject> skeldAsset = AmongUsClient.Instance.ShipPrefabs.ToArray()[0].LoadAsset<GameObject>();
-            while (!skeldAsset.IsDone)
-                yield return null;
-            skeld = skeldAsset.Result.GetComponent<ShipStatus>();
-            AsyncOperationHandle<GameObject> polusAsset = AmongUsClient.Instance.ShipPrefabs.ToArray()[2].LoadAsset<GameObject>();
-            while (!polusAsset.IsDone)
-                yield return null;
-            Polus = polusAsset.Result.GetComponent<ShipStatus>();
-            AsyncOperationHandle<GameObject> airshipAsset = AmongUsClient.Instance.ShipPrefabs.ToArray()[4].LoadAsset<GameObject>();
-            while (!airshipAsset.IsDone)
-                yield return null;
-            airship = airshipAsset.Result.GetComponent<ShipStatus>();
+            for (int i = 0; i < VanillaAsset.MapAsset.Length; i++)
+            {
+                if (i == 3) continue;
+                var handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<GameObject>(AmongUsClient.Instance.ShipPrefabs[i].RuntimeKey);
+                yield return handle;
+                VanillaAsset.MapAsset[i] = handle.Result.GetComponent<ShipStatus>();
+            }
 
             EastAsianFontChanger.ReflectFallBackFont();
         }
