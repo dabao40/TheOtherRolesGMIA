@@ -25,6 +25,7 @@ namespace TheOtherRoles {
             Divined,
             Disease,
             Pseudocide,
+            Blown,
             Bomb,
             Arson,
         };

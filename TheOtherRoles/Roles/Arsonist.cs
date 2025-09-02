@@ -20,7 +20,7 @@ namespace TheOtherRoles.Roles
             dousedPlayers = [];
         }
 
-        static public HelpSprite[] helpSprite = [new(getDouseSprite(), "arsonistDouseHint"), new(getIgniteSprite(), "arsonistIgniteHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getDouseSprite(), "arsonistDouseHint"), new(getIgniteSprite(), "arsonistIgniteHint")];
 
         public static float cooldown = 30f;
         public static float duration = 3f;

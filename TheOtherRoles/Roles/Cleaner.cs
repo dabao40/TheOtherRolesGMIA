@@ -1,3 +1,4 @@
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -22,6 +23,8 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer != player) return;
             acTokenChallenge ??= new("cleaner.challenge", 0, (val, _) => val >= 3);
         }
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Cleaner.png");
 
         public override void OnKill(PlayerControl target)
         {

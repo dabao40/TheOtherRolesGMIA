@@ -20,7 +20,7 @@ namespace TheOtherRoles.Roles
             counter = 0;
         }
 
-        static public HelpSprite[] helpSprite = [new(getBrainwashIcon(), "moriartyBrainwashHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getBrainwashIcon(), "moriartyBrainwashHint")];
 
         public static Color color = Color.green;
 
@@ -37,6 +37,7 @@ namespace TheOtherRoles.Roles
         public static int numberToWin = 3;
         public static bool indicateKills = false;
         public static bool hasKilled = false;
+        public static int sherlockAddition = 2;
 
         public static Sprite brainwashIcon;
 
@@ -230,6 +231,7 @@ namespace TheOtherRoles.Roles
             brainwashCooldown = CustomOptionHolder.moriartyBrainwashCooldown.getFloat();
             brainwashTime = CustomOptionHolder.moriartyBrainwashTime.getFloat();
             numberToWin = (int)CustomOptionHolder.moriartyNumberToWin.getFloat();
+            sherlockAddition = (int)CustomOptionHolder.moriartySherlockAddition.getFloat();
             indicateKills = CustomOptionHolder.moriartyKillIndicate.getBool();
             players = [];
         }

@@ -21,7 +21,7 @@ public class Detective : RoleBase<Detective>
     public static SpriteLoader detectiveIcon = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrow.png", 100f);
     static public SpriteLoader hintSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrowHint.png", 100f);
 
-    static public HelpSprite[] helpSprite = [new(getButtonSprite(), "detectiveTrackHint"), new(hintSprite, "detectiveIconHint")];
+    static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "detectiveTrackHint"), new(hintSprite, "detectiveIconHint")];
 
     public Detective()
     {

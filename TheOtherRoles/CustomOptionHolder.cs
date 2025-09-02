@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Roles;
 using UnityEngine;
-using static TheOtherRoles.TheOtherRoles;
 using Types = TheOtherRoles.CustomOption.CustomOptionType;
 
 namespace TheOtherRoles {
@@ -205,7 +204,8 @@ namespace TheOtherRoles {
         public static CustomRoleOption lighterSpawnRate;
         public static CustomOption lighterModeLightsOnVision;
         public static CustomOption lighterModeLightsOffVision;
-        public static CustomOption lighterFlashlightWidth;
+        public static CustomOption lighterCooldown;
+        public static CustomOption lighterDuration;
         public static CustomOption lighterCanSeeInvisible;
 
         public static CustomRoleOption sprinterSpawnRate;
@@ -372,6 +372,14 @@ namespace TheOtherRoles {
         public static CustomOption createdMadmateAbility;
         public static CustomOption createdMadmateCommonTasks;
 
+        public static CustomRoleOption zephyrSpawnRate;
+        public static CustomOption zephyrCooldown;
+        public static CustomOption zephyrNumberOfCannons;
+        public static CustomOption zephyrCannonRange;
+        public static CustomOption zephyrCannonAttenuation;
+        public static CustomOption zephyrTriggerBothCooldown;
+        public static CustomOption zephyrLeaveEvidence;
+
         public static CustomRoleOption trapperSpawnRate;
         public static CustomOption trapperNumTrap;
         public static CustomOption trapperKillTimer;
@@ -461,6 +469,7 @@ namespace TheOtherRoles {
         public static CustomOption moriartyBrainwashTime;
         public static CustomOption moriartyBrainwashCooldown;
         public static CustomOption moriartyNumberToWin;
+        public static CustomOption moriartySherlockAddition;
         public static CustomOption moriartyKillIndicate;
 
         public static CustomRoleOption akujoSpawnRate;
@@ -792,6 +801,14 @@ namespace TheOtherRoles {
             createdMadmateCommonTasks = CustomOption.Create(8010, Types.Impostor, "createdMadmateCommonTasks", 1f, 1f, 3f, 1f, createdMadmateAbility, false, "unitScrews");
             evilHackerCanInheritAbility = CustomOption.Create(8014, Types.Impostor, "evilHackerCanInheritAbility", false, evilHackerSpawnRate);
 
+            zephyrSpawnRate = new CustomRoleOption(9100, Types.Impostor, "zephyr", Zephyr.color);
+            zephyrCooldown = CustomOption.Create(9105, Types.Impostor, "zephyrCooldown", 30f, 5f, 120f, 2.5f, zephyrSpawnRate, false, "unitSeconds");
+            zephyrNumberOfCannons = CustomOption.Create(9103, Types.Impostor, "zephyrNumberOfCannons", 5f, 1f, 10f, 1f, zephyrSpawnRate, false, "unitScrews");
+            zephyrCannonRange = CustomOption.Create(9102, Types.Impostor, "zephyrCannonPower", 5f, 2.5f, 40f, 2.5f, zephyrSpawnRate, false, "unitTimes");
+            zephyrCannonAttenuation = CustomOption.Create(9104, Types.Impostor, "zephyrCannonAttenuation", 0.75f, 0.25f, 2f, 0.125f, zephyrSpawnRate, false, "unitTimes");
+            zephyrTriggerBothCooldown = CustomOption.Create(9107, Types.Impostor, "zephyrTriggerBothCooldown", true, zephyrSpawnRate);
+            zephyrLeaveEvidence = CustomOption.Create(9106, Types.Impostor, "zephyrLeaveEvidence", true, zephyrSpawnRate);
+
             trapperSpawnRate = new CustomRoleOption(8016, Types.Impostor, "trapper", Trapper.color, 1);
             trapperNumTrap = CustomOption.Create(8017, Types.Impostor, "trapperNumTrap", 2f, 1f, 10f, 1f, trapperSpawnRate, false, "unitScrews");
             trapperExtensionTime = CustomOption.Create(8018, Types.Impostor, "trapperExtensionTime", 5f, 2f, 10f, 0.5f, trapperSpawnRate, false, "unitSeconds");
@@ -875,8 +892,7 @@ namespace TheOtherRoles {
             vultureShowArrows = CustomOption.Create(344, Types.Neutral, "vultureShowArrows", true, vultureSpawnRate);
 
             lawyerSpawnRate = new CustomRoleOption(350, Types.Neutral, "lawyer", Lawyer.color, 1);
-            lawyerTargetKnows = CustomOption.Create(351, Types.Neutral, "lawyerTargetKnows", true, lawyerSpawnRate);
-            //lawyerIsProsecutorChance = CustomOption.Create(358, Types.Neutral, "Chance That The Lawyer Is Prosecutor", rates, lawyerSpawnRate);
+            lawyerTargetKnows = CustomOption.Create(358, Types.Neutral, "lawyerTargetKnows", true, lawyerSpawnRate);
             lawyerVision = CustomOption.Create(354, Types.Neutral, "lawyerVision", 1f, 0.25f, 3f, 0.25f, lawyerSpawnRate, false, "unitTimes");
             lawyerKnowsRole = CustomOption.Create(355, Types.Neutral, "lawyerKnowsRole", false, lawyerSpawnRate); 
             lawyerWinsAfterMeetings = CustomOption.Create(352, Types.Neutral, "lawyerWinsMeeting", false, lawyerSpawnRate);
@@ -985,7 +1001,8 @@ namespace TheOtherRoles {
             lighterSpawnRate = new CustomRoleOption(110, Types.Crewmate, "lighter", Lighter.color);
             lighterModeLightsOnVision = CustomOption.Create(111, Types.Crewmate, "lighterModeLightsOnVision", 1.5f, 0.25f, 5f, 0.25f, lighterSpawnRate, false, "unitTimes");
             lighterModeLightsOffVision = CustomOption.Create(112, Types.Crewmate, "lighterModeLightsOffVision", 0.5f, 0.25f, 5f, 0.25f, lighterSpawnRate, false, "unitTimes");
-            lighterFlashlightWidth = CustomOption.Create(113, Types.Crewmate, "lighterFlashlightWidth", 0.3f, 0.1f, 1f, 0.1f, lighterSpawnRate, false, "unitTimes");
+            lighterCooldown = CustomOption.Create(115, Types.Crewmate, "lighterCooldown", 30f, 5f, 120f, 5f, lighterSpawnRate, format: "unitSeconds");
+            lighterDuration = CustomOption.Create(116, Types.Crewmate, "lighterDuration", 5f, 2.5f, 60f, 2.5f, lighterSpawnRate, format: "unitSeconds");
             lighterCanSeeInvisible = CustomOption.Create(114, Types.Crewmate, "lighterCanSeeInvisible", true, lighterSpawnRate);
 
             sprinterSpawnRate = new CustomRoleOption(4005, Types.Crewmate, "sprinter", Sprinter.color);
@@ -1133,6 +1150,7 @@ namespace TheOtherRoles {
             moriartyBrainwashCooldown = CustomOption.Create(8031, Types.Neutral, "moriartyBrainwashCooldown", 30f, 10f, 60f, 1f, moriartySpawnRate, false, "unitSeconds");
             moriartyBrainwashTime = CustomOption.Create(8032, Types.Neutral, "moriartyBrainwashTime", 30f, 1f, 60f, 1f, moriartySpawnRate, false, "unitSeconds");
             moriartyNumberToWin = CustomOption.Create(8033, Types.Neutral, "moriartyNumberToWin", 3f, 1f, 10f, 1f, moriartySpawnRate, false, "unitScrews");
+            moriartySherlockAddition = CustomOption.Create(8045, Types.Neutral, "moriartySherlockAddition", 2f, 0f, 5f, 1f, moriartySpawnRate, false, "unitScrews");
             moriartyKillIndicate = CustomOption.Create(8044, Types.Neutral, "moriartyKillIndicate", false, moriartySpawnRate);
 
             /*trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);

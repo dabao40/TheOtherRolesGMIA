@@ -95,6 +95,7 @@ namespace TheOtherRoles
         EvilHacker,
         Undertaker,
         Trapper,
+        Zephyr,
         Blackmailer,
         Opportunist,
         Yoyo,
@@ -284,7 +285,9 @@ namespace TheOtherRoles
         ShareAchievement,
         SherlockReceiveDetect,
         JesterWin,
-        SetLovers
+        SetLovers,
+        ZephyrBlowCannon,
+        ZephyrCheckCannon
     }
 
     public static class RPCProcedure {
@@ -1892,6 +1895,7 @@ namespace TheOtherRoles
                 if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
             }
             moriarty.counter += 1;
+            if (target.isRole(RoleId.Sherlock)) moriarty.counter += Moriarty.sherlockAddition;
             Moriarty.hasKilled = true;
             if (Moriarty.numberToWin == moriarty.counter) Moriarty.triggerMoriartyWin = true;
         }
@@ -2695,6 +2699,18 @@ namespace TheOtherRoles
                     var y = reader.ReadSingle();
                     var z = reader.ReadSingle();
                     Undertaker.DropBody(new Vector3(x, y, z));
+                    break;
+                case (byte)CustomRPC.ZephyrBlowCannon:
+                    byte blownId = reader.ReadByte();
+                    byte zephyrId = reader.ReadByte();
+                    var posx = reader.ReadSingle();
+                    var posy = reader.ReadSingle();
+                    var player = Helpers.playerById(blownId);
+                    var zephyr = Helpers.playerById(zephyrId);
+                    Zephyr.fireCannon(player, zephyr, new Vector2(posx, posy));
+                    break;
+                case (byte)CustomRPC.ZephyrCheckCannon:
+                    Zephyr.checkCannon(new(reader.ReadSingle(), reader.ReadSingle()), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.MimicMorph:
                     byte mimicA = reader.ReadByte();

@@ -292,7 +292,7 @@ namespace TheOtherRoles.MetaContext
         //既存のコンテンツを削除せずに背景画像を追加します。
         public void SetBackImage(Image image, float brightness = 0.25f)
         {
-            SetBackImage(image, brightness, 0.6f, new Vector3(border.x, -border.y) * 0.27f, new Vector2(border.x * 0.974f + 0.45f, border.y * 0.96f + 0.35f), 1f);
+            SetBackImage(image, brightness, 0.6f, new Vector3(border.x, -border.y + 0.5f) * 0.27f, new Vector2(border.x * 0.974f + 0.45f, border.y * 0.96f + 0.35f), 0.7f);
         }
 
         public void ClearBackImage()

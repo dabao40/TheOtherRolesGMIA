@@ -110,7 +110,7 @@ namespace TheOtherRoles.Patches {
             bool canUse;
             bool couldUse;
             __instance.CanUse(PlayerControl.LocalPlayer.Data, out canUse, out couldUse);
-            bool canMoveInVents = !PlayerControl.LocalPlayer.isRole(RoleId.Spy) && !PlayerControl.LocalPlayer.isRole(RoleId.Jester) && !Madmate.madmate.Contains(PlayerControl.LocalPlayer) && !CreatedMadmate.createdMadmate.Contains(PlayerControl.LocalPlayer); //&& !Trapper.playersOnMap.Contains(PlayerControl.LocalPlayer)
+            bool canMoveInVents = !PlayerControl.LocalPlayer.isRole(RoleId.Spy) && !PlayerControl.LocalPlayer.isRole(RoleId.Jester) && !Madmate.madmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId) && !CreatedMadmate.createdMadmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId); //&& !Trapper.playersOnMap.Contains(PlayerControl.LocalPlayer)
             if (PlayerControl.LocalPlayer.isRole(RoleId.Engineer)) canMoveInVents = true;
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
@@ -203,6 +203,8 @@ namespace TheOtherRoles.Patches {
                         HudManagerStartPatch.cleanerCleanButton.Timer = HudManagerStartPatch.cleanerCleanButton.MaxTimer;
                     else if (PlayerControl.LocalPlayer.isRole(RoleId.Warlock))
                         HudManagerStartPatch.warlockCurseButton.Timer = HudManagerStartPatch.warlockCurseButton.MaxTimer;
+                    else if (PlayerControl.LocalPlayer.isRole(RoleId.Zephyr))
+                        HudManagerStartPatch.zephyrButton.Timer = HudManagerStartPatch.zephyrButton.MaxTimer;
                     else if (PlayerControl.LocalPlayer == Mini.mini && Mini.mini.Data.Role.IsImpostor)
                         Mini.mini.SetKillTimer(PlayerControl.LocalPlayer.GetKillCooldown() * (Mini.isGrownUp() ? 0.66f : 2f));
                     else if (PlayerControl.LocalPlayer.isRole(RoleId.Witch))

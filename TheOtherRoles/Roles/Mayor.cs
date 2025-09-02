@@ -17,7 +17,7 @@ public class Mayor : RoleBase<Mayor>
     public static bool meetingButton = true;
     public static int numVotes = 2;
 
-    public static HelpSprite[] helpSprite =
+    public static readonly HelpSprite[] HelpSprites =
     [
         new(getMeetingSprite(), "mayorMeetingButtonHint")
     ];

@@ -17,7 +17,7 @@ public class Portalmaker : RoleBase<Portalmaker>
         acTokenChallenge = null;
     }
 
-    public static HelpSprite[] helpSprite = [new(getPlacePortalButtonSprite(), "portalmakerCreateHint")];
+    public static readonly HelpSprite[] HelpSprites = [new(getPlacePortalButtonSprite(), "portalmakerCreateHint")];
 
     public static float cooldown;
     public static float usePortalCooldown;

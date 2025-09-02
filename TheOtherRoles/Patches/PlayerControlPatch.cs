@@ -756,7 +756,7 @@ namespace TheOtherRoles.Patches {
         {
             // Collect dead player info
             DeadPlayer deadPlayer = new(target, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Kill, __instance);
-            GameHistory.deadPlayers.Add(deadPlayer);
+            deadPlayers.Add(deadPlayer);
 
             // Reset killer to crewmate if resetToCrewmate
             if (resetToCrewmate) __instance.Data.Role.TeamType = RoleTeamTypes.Crewmate;
@@ -1064,33 +1064,6 @@ namespace TheOtherRoles.Patches {
             Kataomoi.fixedUpdate(__instance);
         }
     }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.IsFlashlightEnabled))]
-    public static class IsFlashlightEnabledPatch {
-        public static bool Prefix(ref bool __result) {
-            if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek)
-                return true;
-            __result = false;
-            if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Lighter)) {
-                __result = true;
-            }
-
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.AdjustLighting))]
-    public static class AdjustLight {
-        public static bool Prefix(PlayerControl __instance) {
-            if (__instance == null || PlayerControl.LocalPlayer == null || !Lighter.exists) return true;
-
-            bool hasFlashlight = !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Lighter);
-            __instance.SetFlashlightInputMethod();
-            __instance.lightSource.SetupLightingForGameplay(hasFlashlight, Lighter.flashlightWidth, __instance.TargetFlashlight.transform);
-
-            return false;
-        }
-    }
     
     [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), [typeof(PlayerControl), typeof(DisconnectReasons)])]
     public static class GameDataHandleDisconnectPatch {
@@ -1129,7 +1102,11 @@ namespace TheOtherRoles.Patches {
         public static void Postfix()
         {
             Props.clearProps();
-            if (RoleInfo.schrodingersCat != null) RoleInfo.schrodingersCat.color = SchrodingersCat.color;
+            if (RoleInfo.schrodingersCat != null)
+            {
+                RoleInfo.schrodingersCat.color = SchrodingersCat.color;
+                RoleInfo.schrodingersCat.isNeutral = true;
+            }
         }
     }
 }

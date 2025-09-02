@@ -169,6 +169,40 @@ namespace TheOtherRoles.MetaContext
         }
     }
 
+    internal abstract class AssetBundleResource<T> where T : UnityEngine.Object
+    {
+        abstract protected AssetBundle AssetBundle { get; }
+
+        private string name;
+        private T asset = null;
+        public T Asset
+        {
+            get
+            {
+                if (!asset) asset = AssetBundle.LoadAsset(name, Il2CppInterop.Runtime.Il2CppType.Of<T>())?.Cast<T>()!;
+                return asset;
+            }
+        }
+
+        public AssetBundleResource(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    internal class TORSpriteLoader : AssetBundleResource<Sprite>, Image
+    {
+        protected override AssetBundle AssetBundle => Modules.AssetLoader.AssetBundle;
+
+        Sprite Image.GetSprite() => Asset;
+
+        public TORSpriteLoader(string name) : base(name) { }
+
+        public void UnloadAsset() { }
+        public System.Collections.IEnumerator LoadAsset() { yield break; }
+        public void MarkAsUnloadAsset() { }
+    }
+
     public class ResourceTextureLoader : ITextureLoader
     {
         string address;

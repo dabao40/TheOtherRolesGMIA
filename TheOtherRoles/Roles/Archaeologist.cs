@@ -16,7 +16,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Archaeologist;
         }
 
-        static public HelpSprite[] helpSprite = [new(getDetectSprite(), "archaeologistDetectHint"), new(getExcavateSprite(), "archaeologistExcavateHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getDetectSprite(), "archaeologistDetectHint"), new(getExcavateSprite(), "archaeologistExcavateHint")];
 
         public static Color color = new(71f / 255f, 93f / 255f, 206f / 255f);
 

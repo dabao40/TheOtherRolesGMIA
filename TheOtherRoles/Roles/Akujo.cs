@@ -142,10 +142,12 @@ namespace TheOtherRoles.Roles
         public static bool knowsRoles = true;
         public static int numKeeps;
 
-        static public HelpSprite[] helpSprite = [
+        public static readonly HelpSprite[] HelpSprites = [
             new(getHonmeiSprite(), "akujoHonmeiHint"),
             new(getKeepSprite(), "akujoKeepHint")
         ];
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Akujo.png");
 
         private static Sprite honmeiSprite;
         public static Sprite getHonmeiSprite()

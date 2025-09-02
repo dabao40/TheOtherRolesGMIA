@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Reflection;
 using TheOtherRoles.Objects;
 using UnityEngine;
-using UnityEngine.UI;
 using Reactor.Utilities.Extensions;
-using Il2CppSystem;
 
 namespace TheOtherRoles.Modules
 {
@@ -17,6 +9,7 @@ namespace TheOtherRoles.Modules
     {
         private static readonly Assembly dll = Assembly.GetExecutingAssembly();
         private static bool flag = false;
+        static internal AssetBundle AssetBundle { get; private set; } = null!;
 
         public static void LoadAssets()
         {
@@ -41,9 +34,9 @@ namespace TheOtherRoles.Modules
         private static void LoadSpriteAssets()
         {
             var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets");
-            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
-            FoxTask.prefab = assetBundleBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
-            Shrine.sprite = assetBundleBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
+            AssetBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
+            FoxTask.prefab = AssetBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
+            Shrine.sprite = AssetBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
         }
 
         private static void LoadShaderAssets()

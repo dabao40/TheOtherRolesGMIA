@@ -14,7 +14,7 @@ namespace TheOtherRoles.Roles
     {
         public static Color color = Lovers.color;
 
-        static public HelpSprite[] helpSprite = [new(getStareSprite(), "kataomoiStareHint"), new(getSearchSprite(), "kataomoiSearchHint"),
+        static public readonly HelpSprite[] HelpSprites = [new(getStareSprite(), "kataomoiStareHint"), new(getSearchSprite(), "kataomoiSearchHint"),
         new(getStalkingSprite(), "kataomoiStalkHint"), new(getLoveSprite(), "kataomoiLoveHint")];
 
         public static float stareCooldown = 30f;

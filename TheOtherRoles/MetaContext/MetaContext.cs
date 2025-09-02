@@ -10,14 +10,32 @@ using UnityEngine.SceneManagement;
 
 namespace TheOtherRoles.MetaContext
 {
+    public class MouseOverPopupParameters
+    {
+        public PassiveUiElement RelatedButton { get; set; } = null;
+        public Func<bool> RelatedPredicate { get; set; } = null;
+        public Func<Vector2> RelatedPosition { get; set; } = null;
+        public Func<float> RelatedValue { get; set; } = null;
+        public bool CanPileCursor { get; set; } = false;
+        public Action OnClick { get; set; } = null;
+        public Image Icon { get; set; } = null;
+    }
+
     public class MouseOverPopup : MonoBehaviour
     {
         private MetaScreen myScreen = null!;
         private SpriteRenderer background = null!;
+        private SpriteRenderer icon = null!;
+        private SpriteRenderer valueViewer = null!;
         private Vector2 screenSize;
-        private PassiveUiElement relatedButton;
+        public MouseOverPopupParameters Parameters { get; set; } = new MouseOverPopupParameters();
+        private SpriteMask mask = null!;
+        public bool Piled { get; private set; }
+        private BoxCollider2D Collider { get; set; }
+        private Size lastSize = new(0f, 0f);
+        private bool followMouseCursor = false;
 
-        public PassiveUiElement RelatedObject => relatedButton;
+        public PassiveUiElement RelatedObject => Parameters.RelatedButton;
         static MouseOverPopup()
         {
             ClassInjector.RegisterTypeInIl2Cpp<MouseOverPopup>();
@@ -26,36 +44,58 @@ namespace TheOtherRoles.MetaContext
         public void Awake()
         {
             background = Helpers.CreateObject<SpriteRenderer>("Background", transform, Vector3.zero, LayerMask.NameToLayer("UI"));
-            background.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.StatisticsBackground.png", 100f);
+            background.sprite = Helpers.SharpWindowBackgroundSprite.GetSprite();
             background.drawMode = SpriteDrawMode.Sliced;
             background.tileMode = SpriteTileMode.Continuous;
             background.color = new Color(0.14f, 0.14f, 0.14f, 1f);
 
+            var button = background.gameObject.SetUpButton(false);
+            button.OnMouseOver.AddListener((Action)(() => Piled = true));
+            button.OnMouseOut.AddListener((Action)(() => Piled = false));
+            button.OnClick.AddListener((Action)(() => Parameters.OnClick?.Invoke()));
+            Collider = button.gameObject.AddComponent<BoxCollider2D>();
+            this.Collider.isTrigger = true;
+
+            valueViewer = Helpers.CreateObject<SpriteRenderer>("Value", transform, new(0f, 0f, -1f), LayerMask.NameToLayer("UI"));
+            valueViewer.sprite = VanillaAsset.FullScreenSprite;
+            valueViewer.gameObject.SetActive(false);
+            valueViewer.transform.localScale = new(1f, 0.03f);
+
+            icon = Helpers.CreateObject<SpriteRenderer>("Icon", transform, new(0f, 0f, -1f), LayerMask.NameToLayer("UI"));
+            icon.gameObject.SetActive(false);
+
+            var group = Helpers.CreateObject<SortingGroup>("Group", transform, Vector3.zero);
+            mask = Helpers.CreateObject<SpriteMask>("Mask", group.transform, Vector3.zero);
+            mask.sprite = VanillaAsset.FullScreenSprite;
+            mask.transform.localScale = new Vector3(1f, 1f);
+
             screenSize = new Vector2(7f, 4f);
-            myScreen = MetaScreen.GenerateScreen(screenSize, transform, Vector3.zero, false, false, false);
+            myScreen = MetaScreen.GenerateScreen(screenSize, group.transform, Vector3.zero, false, false, false);
 
             gameObject.SetActive(false);
         }
 
         public void Irrelevantize()
         {
-            relatedButton = null;
+            Parameters = new();
         }
 
         public void SetContextOld(PassiveUiElement related, IMetaContextOld context)
         {
             myScreen.SetContext(null);
 
+            followMouseCursor = false;
+            Parameters = new();
+
             if (context == null)
             {
                 gameObject.SetActive(false);
-                relatedButton = null;
                 return;
             }
 
             gameObject.SetActive(true);
 
-            relatedButton = related;
+            Parameters.RelatedButton = related;
             transform.SetParent(Helpers.FindCamera(LayerMask.NameToLayer("UI"))!.transform);
 
             bool isLeft = Input.mousePosition.x < Screen.width / 2f;
@@ -100,54 +140,95 @@ namespace TheOtherRoles.MetaContext
                 if (diff > 0f) transform.position -= new Vector3(0f, diff);
             }
 
-
-            background.transform.localPosition = new Vector3((width.min + width.max) / 2f, screenSize.y / 2f - height / 2f, 1f);
-            background.size = new Vector2(width.max - width.min + 0.22f, height + 0.1f);
-
+            UpdateArea(new((width.min + width.max) / 2f, screenSize.y / 2f - height / 2f), new((width.max - width.min) + 0.22f, height + 0.1f));
             Update();
         }
 
-        public void SetContext(PassiveUiElement related, GUIContext context)
+        void UpdateArea(Vector2 localPos, Vector2 localScale)
+        {
+            Vector3 localPos3 = localPos;
+            localPos3.z = 1f;
+
+            background.transform.localPosition = localPos3;
+            background.size = localScale;
+
+            this.Collider.size = localScale;
+
+            mask.transform.localPosition = localPos;
+            mask.transform.localScale = localScale;
+        }
+
+        public void SetContext(PassiveUiElement related, GUIContext context, bool followMouseCursor = false)
         {
             myScreen.SetContext(null);
+
+            Parameters = new();
 
             if (context == null)
             {
                 gameObject.SetActive(false);
-                relatedButton = null;
                 return;
             }
 
             gameObject.SetActive(true);
 
-            relatedButton = related;
+            Parameters.RelatedButton = related;
             transform.SetParent(Helpers.FindCamera(LayerMask.NameToLayer("UI"))!.transform);
-
-            bool isLeft = Input.mousePosition.x < Screen.width / 2f;
-            bool isLower = Input.mousePosition.y < Screen.height / 2f;
 
             myScreen.SetContext(context, new Vector2(0.5f, 0.5f), out var size);
 
-            var scale = new Vector2(size.Width + 0.22f, size.Height + 0.1f);
+            this.followMouseCursor = followMouseCursor;
+            this.lastSize = size;
+            var scale = new Vector2(lastSize.Width + 0.22f, lastSize.Height + 0.1f);
 
             var imagePos = scale * 0.5f - new Vector2(0.55f, 0.55f);
-            var imageScale = 0.38f;
+            var imageScale = 0.32f;
             if (imagePos.y < 0f)
             {
                 imageScale = Math.Max(0.15f, imageScale + (imagePos.y * 0.6f));
                 imagePos.y = 0f;
             }
-            else imagePos.y *= -1f;
+            else {
+                imagePos.y *= -1f;
+            }
+
             myScreen.SetBackImage(context.BackImage, context.GrayoutedBackImage ? 0.03f : 0.6f, context.GrayoutedBackImage ? 0.46f : 0.4f,
                 imagePos, scale, imageScale, context.GrayoutedBackImage);
 
-            float[] xRange = [-size.Width * 0.5f - 0.15f, size.Width * 0.5f + 0.15f], yRange = new float[2];
-            yRange[0] = -size.Height * 0.5f - 0.15f;
-            yRange[1] = size.Height * 0.5f + 0.15f;
+            UpdateArea(new(0f, 0f), scale);
+            UpdatePosition();
 
-            Vector2 anchorPoint = new(xRange[isLeft ? 0 : 1], yRange[isLower ? 0 : 1]);
+            Update();
+        }
 
-            var pos = Helpers.ScreenToWorldPoint(Input.mousePosition, LayerMask.NameToLayer("UI"));
+        public void UpdatePosition(Vector2? screenPosition = null, bool smoothedCenter = false)
+        {
+            Vector2 screenPos = screenPosition ?? Input.mousePosition;
+            bool isLeft = screenPos.x < Screen.width / 2f;
+            bool isLower = screenPos.y < Screen.height / 2f;
+
+            float smoothX = 0f;
+            float smoothY = 0f;
+            if (smoothedCenter)
+            {
+                float xCenter = (Screen.width / 2f - screenPos.x) / 200f;
+                float yCenter = (Screen.height / 2f - screenPos.y) / 200f;
+                smoothX = Math.Max(0f, 1f - Math.Abs(xCenter));
+                smoothY = Math.Max(0f, 1f - Math.Abs(yCenter));
+            }
+
+            float[] xRange = [
+                -lastSize.Width * 0.5f - 0.15f,
+            lastSize.Width * 0.5f + 0.15f
+                ];
+            float[] yRange = [
+                -lastSize.Height * 0.5f - 0.15f,
+            lastSize.Height * 0.5f + 0.15f
+                ];
+
+            Vector2 anchorPoint = new(Mathf.Lerp(xRange[isLeft ? 0 : 1], 0f, smoothX), Mathf.Lerp(yRange[isLower ? 0 : 1], 0f, smoothY));
+
+            var pos = Helpers.ScreenToWorldPoint(screenPos, LayerMask.NameToLayer("UI"));
             pos.z = -800f;
             transform.position = pos - (Vector3)anchorPoint;
 
@@ -157,32 +238,74 @@ namespace TheOtherRoles.MetaContext
                 var upper = Helpers.ScreenToWorldPoint(new(Screen.width - 10f, Screen.height - 10f), LayerMask.NameToLayer("UI"));
                 float diff;
 
-                diff = transform.position.x + xRange[0] - lower.x;
+                diff = (transform.position.x + xRange[0]) - lower.x;
                 if (diff < 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = transform.position.y + yRange[0] - lower.y;
+                diff = (transform.position.y + yRange[0]) - lower.y;
                 if (diff < 0f) transform.position -= new Vector3(0f, diff);
 
-                diff = transform.position.x + xRange[1] - upper.x;
+                diff = (transform.position.x + xRange[1]) - upper.x;
                 if (diff > 0f) transform.position -= new Vector3(diff, 0f);
 
-                diff = transform.position.y + yRange[1] - upper.y;
+                diff = (transform.position.y + yRange[1]) - upper.y;
                 if (diff > 0f) transform.position -= new Vector3(0f, diff);
             }
+        }
 
+        public void SetRelatedPredicate(Func<bool> predicate)
+        {
+            this.Parameters.RelatedPredicate = predicate;
+        }
+        public void SetRelatedPosition(Func<Vector2> position)
+        {
+            this.Parameters.RelatedPosition = position;
+        }
 
-            background.transform.localPosition = new Vector3(0f, 0f, 1f);
-            background.size = new Vector2(size.Width + 0.22f, size.Height + 0.1f);
-
-            Update();
+        public void SetRelatedValue(Func<float> value)
+        {
+            this.Parameters.RelatedValue = value;
         }
 
         public void Update()
         {
-            if (relatedButton is not null && !relatedButton)
+            if ((Parameters.RelatedButton is not null && !Parameters.RelatedButton) || !(Parameters.RelatedPredicate?.Invoke() ?? true))
+            {
                 SetContext(null, null);
+            }
 
+            if (followMouseCursor)
+                UpdatePosition(Parameters.RelatedPosition?.Invoke());
+            else if (Parameters.RelatedPosition != null)
+                UpdatePosition(Parameters.RelatedPosition?.Invoke(), true);
+
+            valueViewer.gameObject.SetActive(Parameters.RelatedValue != null);
+            if (Parameters.RelatedValue != null)
+            {
+                float value = Math.Clamp(Parameters.RelatedValue.Invoke(), 0f, 1f);
+                Vector3 valuePos = background.transform.localPosition;
+                valuePos.z = -1f;
+                valuePos.y -= (background.bounds.size.y * 0.5f);
+                valuePos.x += (background.bounds.size.x * (value - 1f) * 0.5f);
+                valueViewer.transform.localPosition = valuePos;
+                valueViewer.transform.localScale = new(value * background.bounds.size.x, 0.03f, 1f);
+            }
+
+            icon.gameObject.SetActive(Parameters.Icon != null);
+            if (Parameters.Icon != null)
+            {
+                Vector3 valuePos = background.transform.localPosition;
+                valuePos.z = -1f;
+                valuePos.y += (background.bounds.size.y * 0.5f);
+                valuePos.x -= (background.bounds.size.x * 0.5f);
+                icon.transform.localPosition = valuePos;
+                icon.sprite = Parameters.Icon.GetSprite();
+            }
+
+            Collider.enabled = Parameters.CanPileCursor;
         }
+
+        public bool ShowAnyOverlay => gameObject.activeSelf;
+        public bool ShowUnrelatedOverlay => ShowAnyOverlay && !RelatedObject;
     }
 
     public abstract class AbstractGUIContext : GUIContext
@@ -477,6 +600,7 @@ namespace TheOtherRoles.MetaContext
 
         //テキスト情報表示
         private MouseOverPopup mouseOverPopup = null!;
+        internal MouseOverPopup MouseOverPopup => mouseOverPopup;
         private List<Tuple<GameObject, PassiveButton>> allModUi = [];
 
         static TORGUIManager()
@@ -526,13 +650,15 @@ namespace TheOtherRoles.MetaContext
             if (HelpRelatedObject == related) mouseOverPopup.SetContext(null, null);
         }
         public void SetHelpContext(PassiveUiElement related, IMetaContextOld context) => mouseOverPopup.SetContextOld(related, context);
-        public void SetHelpContext(PassiveUiElement related, GUIContext context) => mouseOverPopup.SetContext(related, context);
+        public void SetHelpContext(PassiveUiElement related, GUIContext context, bool followMouseCursor = false) => mouseOverPopup.SetContext(related, context, followMouseCursor);
         public void SetHelpContext(PassiveUiElement related, string rawText)
         {
             if (rawText != null)
                 SetHelpContext(related, new MetaContextOld.VariableText(TextAttribute.ContentAttr) { Alignment = IMetaContextOld.AlignmentOption.Left, RawText = rawText });
         }
         public PassiveUiElement HelpRelatedObject => mouseOverPopup.RelatedObject;
+        public bool ShowingAnyHelpContent => mouseOverPopup.isActiveAndEnabled;
+        public void HelpIrrelevantize() => mouseOverPopup.Irrelevantize();
 
         public Coroutine ScheduleDelayAction(Action action)
         {
@@ -946,6 +1072,56 @@ namespace TheOtherRoles.MetaContext
             PostBuilder?.Invoke(text);
             actualSize = new Size(text.rectTransform.sizeDelta);
             return text.gameObject;
+        }
+    }
+
+    public class GUITextField : AbstractGUIContext
+    {
+        internal ListArtifact<TextField> Artifact = new();
+        public Size FieldSize { get; init; }
+        public bool IsSharpField { get; init; } = true;
+        public float FontSize { get; init; } = 2f;
+        public Predicate<char> TextPredicate { get; init; }
+        public string HintText { get; init; } = "";
+        public string DefaultText { get; init; } = "";
+        public bool WithMaskMaterial { get; init; } = true;
+        public int MaxLines { get; init; } = 1;
+        public Predicate<string> EnterAction { get; init; } = null;
+        public GUITextField(GUIAlignment alignment, Size size) : base(alignment)
+        {
+            FieldSize = size;
+        }
+
+        internal override GameObject Instantiate(Size size, out Size actualSize)
+        {
+            var unitySize = FieldSize.ToUnityVector();
+            var obj = Helpers.CreateObject("TextField", null, UnityEngine.Vector3.zero);
+
+            var field = Helpers.CreateObject<TextField>("Text", obj.transform, new UnityEngine.Vector3(0, 0, -0.1f));
+            field.SetSize(unitySize, FontSize, MaxLines);
+            field.InputPredicate = TextPredicate;
+            field.EnterAction = EnterAction;
+            if (WithMaskMaterial) field.AsMaskedText();
+
+            var background = Helpers.CreateObject<SpriteRenderer>("Background", obj.transform, UnityEngine.Vector3.zero, LayerMask.NameToLayer("UI"));
+            background.sprite = IsSharpField ? Helpers.SharpWindowBackgroundSprite.GetSprite() : VanillaAsset.TextButtonSprite;
+            background.drawMode = SpriteDrawMode.Sliced;
+            background.tileMode = SpriteTileMode.Continuous;
+            background.size = unitySize;
+            if (!IsSharpField) background.size += new UnityEngine.Vector2(0.12f, 0.12f);
+            background.sortingOrder = 5;
+            if (WithMaskMaterial) background.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            var collider = background.gameObject.AddComponent<BoxCollider2D>();
+            collider.size = unitySize;
+            collider.isTrigger = true;
+            var button = background.gameObject.SetUpButton(true, background);
+            button.OnClick.AddListener((Action)(() => field.GainFocus()));
+            Artifact.Values.Add(field);
+            if (DefaultText.Length > 0) field.SetText(DefaultText);
+            if (HintText != null) field.SetHint(HintText!);
+
+            actualSize = new Size(unitySize + new UnityEngine.Vector2(IsSharpField ? 0.1f : 0.22f, IsSharpField ? 0.1f : 0.22f));
+            return obj;
         }
     }
 

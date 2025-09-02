@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
@@ -42,6 +43,8 @@ namespace TheOtherRoles.Roles
         public List<Arrow> arrows = [];
         public Dictionary<string, TMPro.TMP_Text> impostorPositionText;
         public TMPro.TMP_Text targetPositionText;
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/EvilTracker.png");
 
         public static Sprite getEvilTrackerButtonSprite()
         {

@@ -15,7 +15,6 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
-using UnityEngine.UIElements;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles
@@ -89,6 +88,7 @@ namespace TheOtherRoles
         public static CustomButton akujoHonmeiButton;
         public static CustomButton akujoBackupButton;
         public static CustomButton plagueDoctorButton;
+        public static CustomButton lighterButton;
         public static CustomButton jekyllAndHydeKillButton;
         public static CustomButton jekyllAndHydeDrugButton;
         public static CustomButton jekyllAndHydeSuicideButton;
@@ -111,6 +111,7 @@ namespace TheOtherRoles
         public static CustomButton archaeologistDetectButton;
         public static CustomButton archaeologistExcavateButton;
         public static CustomButton medicVitalsButton;
+        public static CustomButton zephyrButton;
         public static CustomButton doomsayerButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
@@ -148,6 +149,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text jekyllAndHydeKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
         public static TMPro.TMP_Text doomsayerUsesText;
+        public static TMPro.TMP_Text zephyrUsesText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
@@ -205,6 +207,8 @@ namespace TheOtherRoles
             securityGuardButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
             medicVitalsButton.MaxTimer = 0f;
+            zephyrButton.MaxTimer = Zephyr.cooldown;
+            lighterButton.MaxTimer = Lighter.cooldown;
             arsonistButton.MaxTimer = Arsonist.cooldown;
             kataomoiButton.MaxTimer = Kataomoi.stareCooldown;
             kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
@@ -316,6 +320,7 @@ namespace TheOtherRoles
             archaeologistExcavateButton.EffectDuration = Archaeologist.detectDuration;
             //serialKillerButton.EffectDuration = SerialKiller.suicideTimer;
             veteranAlertButton.EffectDuration = Veteran.alertDuration;
+            lighterButton.EffectDuration = Lighter.duration;
             foxStealthButton.EffectDuration = Fox.stealthDuration;
             detectiveButton.EffectDuration = Detective.inspectDuration;
             buskerButton.EffectDuration = Busker.duration;
@@ -760,6 +765,7 @@ namespace TheOtherRoles
                 () => {
                     medicVitalsButton.Timer = 0f;
                     var vitalsMinigame = Medic.OpenSpecialVitalsMinigame();
+                    _ = new StaticAchievementToken("medic.common2");
 
                     if (Medic.seesDeathReasonOnVitals)
                     {
@@ -789,6 +795,15 @@ namespace TheOtherRoles
 
                         vitalsMinigame.vitals.DoIf(panel => panel.isActiveAndEnabled, panel => panel.StartCoroutine(CoUpdateState(panel, Helpers.playerById(panel.PlayerInfo.PlayerId))));
                     }
+
+                    IEnumerator CoUpdate()
+                    {
+                        int lastAliveCount = PlayerControl.AllPlayerControls.GetFastEnumerator().Count(x => x != null && !x.Data.IsDead && !Busker.players.Any(y => y.pseudocideFlag && y.player?.PlayerId == x.PlayerId));
+                        while (vitalsMinigame.amClosing != Minigame.CloseState.Closing) yield return null;
+                        if (lastAliveCount != PlayerControl.AllPlayerControls.GetFastEnumerator().Count(x => x != null && !x.Data.IsDead && !Busker.players.Any(y => y.pseudocideFlag && y.player?.PlayerId == x.PlayerId)))
+                            _ = new StaticAchievementToken("medic.another1");
+                    }
+                    vitalsMinigame.StartCoroutine(CoUpdate().WrapToIl2Cpp());
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Medic) && Medic.canUseVitals && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return PlayerControl.LocalPlayer.CanMove; },
@@ -796,10 +811,41 @@ namespace TheOtherRoles
                 Hacker.getVitalsSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                KeyCode.F,
+                KeyCode.H,
                 buttonText: TranslationController.Instance.GetString(StringNames.VitalsLabel),
                 abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
+
+            zephyrButton = new CustomButton(
+                () =>
+                {
+                    Zephyr.local.RpcCheckCannon(PlayerControl.LocalPlayer.GetTruePosition());
+                    zephyrButton.Timer = zephyrButton.MaxTimer;
+
+                    if (Zephyr.triggerBothCooldown)
+                        PlayerControl.LocalPlayer.killTimer = PlayerControl.LocalPlayer.GetKillCooldown();
+
+                    _ = new StaticAchievementToken("zephyr.common1");
+                    Zephyr.local.acTokenAnother.Value++;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Zephyr) && !PlayerControl.LocalPlayer.Data.IsDead && Zephyr.local.numUses > 0; },
+                () =>
+                {
+                    if (zephyrUsesText != null) zephyrUsesText.text = Zephyr.local.numUses.ToString();
+                    return PlayerControl.LocalPlayer.CanMove;
+                },
+                () =>
+                {
+                    zephyrButton.Timer = zephyrButton.MaxTimer = Zephyr.cooldown;
+                },
+                Zephyr.getButtonSprite(),
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("zephyrCannonText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+            zephyrUsesText = zephyrButton.ShowUsesIcon(0);
 
             // Shifter shift
             shifterShiftButton = new CustomButton(
@@ -822,8 +868,38 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 
-            // Morphling morph
+            lighterButton = new CustomButton(
+                () =>
+                {
+                    Lighter.local.lightActive = true;
+                    Lighter.local.light();
+                    SoundEffectsManager.play("lighterLight");
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Lighter) && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () =>
+                {
+                    lighterButton.Timer = lighterButton.MaxTimer = Lighter.cooldown;
+                    lighterButton.isEffectActive = false;
+                    lighterButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                },
+                Hunter.getLightSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                true,
+                Lighter.duration,
+                () =>
+                {
+                    Lighter.local.lightActive = false;
+                    lighterButton.Timer = lighterButton.MaxTimer;
+                    SoundEffectsManager.play("lighterLight");
+                },
+                buttonText: ModTranslation.getString("LighterText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
 
+            // Morphling morph
             morphlingButton = new CustomButton(
                 () => {
                     if (Morphling.local.sampledTarget != null) {
@@ -1738,7 +1814,7 @@ namespace TheOtherRoles
 
                     _ = new StaticAchievementToken("eraser.common1");
                     if (Eraser.local.currentTarget.Data.Role.IsImpostor) _ = new StaticAchievementToken("eraser.another1");
-                    //Eraser.acTokenChallenge.Value++;
+                    Eraser.local.acTokenChallenge.Value++;
 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureErased, Hazel.SendOption.Reliable, -1);
                     writer.Write(Eraser.local.currentTarget.PlayerId);

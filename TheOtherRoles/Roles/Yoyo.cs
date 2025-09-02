@@ -1,3 +1,4 @@
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -15,7 +16,8 @@ namespace TheOtherRoles.Roles
             markedLocation = null;
         }
 
-        static public HelpSprite[] helpSprite = [new(getMarkButtonSprite(), "yoyoMarkHint"), new(getBlinkButtonSprite(), "yoyoBlinkHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getMarkButtonSprite(), "yoyoMarkHint"), new(getBlinkButtonSprite(), "yoyoBlinkHint")];
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/YoYo.png");
 
         public static float blinkDuration = 0;
         public static float markCooldown = 0;

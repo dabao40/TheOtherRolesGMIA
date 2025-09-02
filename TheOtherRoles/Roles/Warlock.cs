@@ -13,7 +13,7 @@ namespace TheOtherRoles.Roles
         public PlayerControl curseVictimTarget;
         public AchievementToken<int> acTokenChallenge;
 
-        static public HelpSprite[] helpSprite = [new(getCurseButtonSprite(), "warlockCurseHint"), new(getCurseKillButtonSprite(), "warlockCurseKillHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getCurseButtonSprite(), "warlockCurseHint"), new(getCurseKillButtonSprite(), "warlockCurseKillHint")];
 
         public static float cooldown = 30f;
         public static float rootTime = 5f;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace TheOtherRoles.Roles
         public static List<Tuple<DeadPlayer, Vector3>> futureDeadBodies = [];
         public List<SpriteRenderer> souls = [];
         public static DateTime meetingStartTime = DateTime.UtcNow;
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Medium.png");
 
         public Medium()
         {

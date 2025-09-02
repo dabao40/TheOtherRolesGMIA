@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
@@ -27,6 +28,8 @@ namespace TheOtherRoles.Roles
             if (player == PlayerControl.LocalPlayer)
                 bountyUpdateTimer = 0f;
         }
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/BountyHunter.png");
 
         public override void FixedUpdate()
         {

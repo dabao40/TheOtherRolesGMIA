@@ -11,12 +11,12 @@ namespace TheOtherRoles.Modules {
         public static List<int> lighterColors = new(){ 3, 4, 5, 7, 10, 11, 13, 14, 17 };
         public static uint pickableColors = (uint)Palette.ColorNames.Length;
 
-        private static readonly List<int> ORDER = new() { 7, 37, 14, 5, 33, 41, 25,
+        private static readonly List<int> ORDER = [ 7, 37, 14, 5, 33, 41, 25,
                                                                     4, 30, 0, 35, 3, 27, 17,
                                                                     13, 23, 8, 32, 38, 1, 21,
                                                                     40, 31, 10, 34, 22, 28, 36,
                                                                     2, 11, 26, 29, 20, 19, 18,
-                                                                    12, 9, 24, 16, 15, 6, 39, };
+                                                                    12, 9, 24, 16, 15, 6, 39, ];
         public static void Load() {
             List<StringNames> longlist = Enumerable.ToList<StringNames>(Palette.ColorNames);
             List<Color32> colorlist = Enumerable.ToList<Color32>(Palette.PlayerColors);

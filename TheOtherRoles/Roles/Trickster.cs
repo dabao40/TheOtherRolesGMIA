@@ -14,7 +14,7 @@ namespace TheOtherRoles.Roles
         public static float lightsOutTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge;
 
-        static public HelpSprite[] helpSprite = [new(getPlaceBoxButtonSprite(), "tricksterBoxHint"), new(getLightsOutButtonSprite(), "tricksterLightsOutHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getPlaceBoxButtonSprite(), "tricksterBoxHint"), new(getLightsOutButtonSprite(), "tricksterLightsOutHint")];
 
         public static bool isInTricksterVent
         {

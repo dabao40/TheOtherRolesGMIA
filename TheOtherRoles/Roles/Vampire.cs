@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace TheOtherRoles.Roles
 {
     public class Vampire : RoleBase<Vampire> {
         public static Color color = Palette.ImpostorRed;
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Vampire.png");
 
         public Vampire()
         {

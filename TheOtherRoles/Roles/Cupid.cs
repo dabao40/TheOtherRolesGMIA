@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -22,7 +23,8 @@ namespace TheOtherRoles.Roles
             lovers2 = null;
         }
 
-        static public HelpSprite[] helpSprite = [new(getArrowSprite(), "cupidArrowHint"), new(Medic.getButtonSprite(), "cupidShieldHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getArrowSprite(), "cupidArrowHint"), new(Medic.getButtonSprite(), "cupidShieldHint")];
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Cupid.png");
 
         public static Color color = new Color32(246, 152, 150, byte.MaxValue);
 

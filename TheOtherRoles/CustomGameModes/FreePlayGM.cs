@@ -55,7 +55,7 @@ namespace TheOtherRoles.CustomGameModes
 
                 if (tab == 0)
                 {
-                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.color, r.name), () =>
+                    inner = gui.Arrange(GUIAlignment.Center, RoleInfo.allRoleInfos.Where(x => x != RoleInfo.bomberB && x != RoleInfo.bountyHunter && !x.isModifier).Select(r => gui.RawButton(GUIAlignment.Center, roleMaskedTittleAttr, Helpers.cs(r.orgColor, r.name), () =>
                     {
                         bool isImpostorFormer = PlayerControl.LocalPlayer.Data.Role.IsImpostor;
                         var formerRole = RoleInfo.getRoleInfoForPlayer(PlayerControl.LocalPlayer, false).FirstOrDefault();
@@ -63,8 +63,8 @@ namespace TheOtherRoles.CustomGameModes
                         if (formerRole.roleId == RoleId.Jackal) Jackal.eraseRole(PlayerControl.LocalPlayer);
                         else if (formerRole.roleId == RoleId.Sidekick) Sidekick.eraseRole(PlayerControl.LocalPlayer);
                         RPCProcedure.erasePlayerRoles(PlayerControl.LocalPlayer.PlayerId, generateTasks: false);
-                        if (r.isImpostor() && !isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
-                        else if (!r.isImpostor() && isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
+                        if (r.isImpostor && !isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Impostor);
+                        else if (!r.isImpostor && isImpostorFormer) PlayerControl.LocalPlayer.FastSetRole(RoleTypes.Crewmate);
 
                         if (r == RoleInfo.chainshifter) Shifter.isNeutral = true;
                         else if (r == RoleInfo.niceshifter) Shifter.isNeutral = false;
@@ -125,8 +125,6 @@ namespace TheOtherRoles.CustomGameModes
                 targetPlayer.Data.RoleWhenAlive = new Il2CppSystem.Nullable<RoleTypes>(roleType);
             roleBehaviour.AdjustTasks(targetPlayer);
         }
-
-        private static bool isImpostor(this RoleInfo roleInfo) => roleInfo.color == Palette.ImpostorRed && roleInfo.roleId != RoleId.Spy;
 
         public static void removeModifier(RoleId modifierId)
         {

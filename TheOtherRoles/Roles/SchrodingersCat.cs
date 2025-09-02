@@ -22,7 +22,7 @@ namespace TheOtherRoles.Roles
         }
 
         static public SpriteLoader hintSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.SchrodingersCatHint.png", 100f);
-        static public HelpSprite[] helpSprite = [new(Morphling.getSampleSprite(), "schrodingersCatSwitchHint"), new(hintSprite, "schrodingersCatButtonHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(Morphling.getSampleSprite(), "schrodingersCatSwitchHint"), new(hintSprite, "schrodingersCatButtonHint")];
 
         public override void ResetRole(bool isShifted)
         {

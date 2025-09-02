@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AmongUs.Data;
 using HarmonyLib;
 using Hazel;
@@ -75,6 +76,7 @@ namespace TheOtherRoles
             Trapper.clearAndReload();
             Blackmailer.clearAndReload();
             Yoyo.clearAndReload();
+            Zephyr.clearAndReload();
             LastImpostor.clearAndReload();
             FortuneTeller.clearAndReload();
             Sprinter.clearAndReload();
@@ -186,6 +188,7 @@ namespace TheOtherRoles
                 { RoleId.EvilWatcher, typeof(RoleBase<EvilWatcher>) },
                 { RoleId.Assassin, typeof(RoleBase<Assassin>) },
                 { RoleId.Ninja, typeof(RoleBase<Ninja>) },
+                { RoleId.Zephyr, typeof(RoleBase<Zephyr>) },
 
                 // Neutral
                 { RoleId.Jester, typeof(RoleBase<Jester>) },
@@ -209,6 +212,16 @@ namespace TheOtherRoles
                 { RoleId.Fox, typeof(RoleBase<Fox>) },
                 { RoleId.Immoralist, typeof(RoleBase<Immoralist>) }
             };
+
+            public static HelpSprite[] GetHelp(RoleId roleId)
+            {
+                return allRoleIds.TryGetValue(roleId, out var type) ? type.GetGenericArguments()[0].GetField("HelpSprites", BindingFlags.Public | BindingFlags.Static)?.GetValue(null) as HelpSprite[] ?? [] : [];
+            }
+
+            public static MetaContext.Image GetIllustration(RoleId roleId)
+            {
+                return allRoleIds.TryGetValue(roleId, out var type) ? type.GetGenericArguments()[0].GetField("Illustration", BindingFlags.Public | BindingFlags.Static)?.GetValue(null) as MetaContext.Image ?? null : null;
+            }
         }
 
         public static void OnDeath(this PlayerControl player, PlayerControl killer)
@@ -538,7 +551,8 @@ namespace TheOtherRoles
                         var busker = Busker.getRole(partner);
                         busker.dieBusker(true);
                     }
-                        GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.LoverSuicide);
+
+                    GameHistory.overrideDeathReasonAndKiller(partner, DeadPlayer.CustomDeathReason.LoverSuicide);
                 }
             }
         }

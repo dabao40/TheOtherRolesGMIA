@@ -29,7 +29,7 @@ namespace TheOtherRoles.Roles
 
         public static HideAndSeekDeathPopup killPopup = null;
 
-        static public HelpSprite[] helpSprite = [new(getDetectIcon(), "sherlockDetectHint"), new(getInvestigateIcon(), "sherlockInvestigateHint"),
+        static public readonly HelpSprite[] HelpSprites = [new(getDetectIcon(), "sherlockDetectHint"), new(getInvestigateIcon(), "sherlockInvestigateHint"),
         new(getWatchIcon(), "sherlockWatchHint")];
 
         public Sherlock()

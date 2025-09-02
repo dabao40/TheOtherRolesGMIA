@@ -29,7 +29,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // If player is Lighter with ability active
-            if (Lighter.allPlayers.Any(x => x.PlayerId == player.PlayerId)) {
+            if (Lighter.players.Any(x => x.player && x.player?.PlayerId == player.PlayerId && x.lightActive)) {
                 float unlerped = Mathf.InverseLerp(__instance.MinLightRadius, __instance.MaxLightRadius, GetNeutralLightRadius(__instance, false));
                 __result = Mathf.Lerp(__instance.MaxLightRadius * Lighter.lighterModeLightsOffVision, __instance.MaxLightRadius * Lighter.lighterModeLightsOnVision, unlerped);
             }

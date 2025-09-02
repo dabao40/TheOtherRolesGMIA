@@ -95,7 +95,7 @@ namespace TheOtherRoles {
 
         public static CustomOption Create(int id, CustomOptionType type, string name, List<RoleId> roleId, CustomOption parent = null, bool isHeader = false, Color color = default) {
             return new CustomOption(id, type, name, roleId.Select(x => x == RoleId.Jester ? "optionOff" : RoleInfo.allRoleInfos.FirstOrDefault(y => y.roleId == x
-            && y.color != Palette.ImpostorRed && !y.isNeutral).nameKey).ToArray(), 0, parent, isHeader, "", color == default ? Color.white : color);
+            && y.color != Palette.ImpostorRed && !y.isOrgNeutral).nameKey).ToArray(), 0, parent, isHeader, "", color == default ? Color.white : color);
         }
 
         // Static behaviour

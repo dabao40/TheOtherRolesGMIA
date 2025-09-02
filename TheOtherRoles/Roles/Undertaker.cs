@@ -15,7 +15,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Undertaker;
         }
 
-        static public HelpSprite[] helpSprite = [new(getDragButtonSprite(), "undertakerDragHint"), new(getDropButtonSprite(), "undertakerDropHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getDragButtonSprite(), "undertakerDragHint"), new(getDropButtonSprite(), "undertakerDropHint")];
 
         public static DeadBody DraggedBody;
         public static DeadBody TargetBody;

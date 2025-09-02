@@ -10,7 +10,7 @@ namespace TheOtherRoles.Roles
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
 
-        public static HelpSprite[] helpSprite = [new(getSampleSprite(), "morphlingSampleHint"), new(getMorphSprite(), "morphlingMorphHint")];
+        public static readonly HelpSprite[] HelpSprites = [new(getSampleSprite(), "morphlingSampleHint"), new(getMorphSprite(), "morphlingMorphHint")];
 
         public Morphling()
         {

@@ -14,7 +14,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.SecurityGuard;
         }
 
-        static public HelpSprite[] helpSprite = [new(getCloseVentButtonSprite(), "securityGuardVentHint"), new(getPlaceCameraButtonSprite(), "securityGuardCamHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getCloseVentButtonSprite(), "securityGuardVentHint"), new(getPlaceCameraButtonSprite(), "securityGuardCamHint")];
 
         public static float cooldown = 30f;
         public static int remainingScrews = 7;

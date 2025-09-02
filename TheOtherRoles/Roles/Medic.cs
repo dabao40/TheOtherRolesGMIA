@@ -89,44 +89,9 @@ namespace TheOtherRoles.Roles
         {
             if (player == null) return null;
             var dp = GameHistory.deadPlayers?.FirstOrDefault(x => x.player?.PlayerId == player?.PlayerId);
-            if (dp == null || dp.killerIfExisting == null) return null;
-            var killer = dp.killerIfExisting;
-            switch (dp.deathReason)
-            {
-                case DeadPlayer.CustomDeathReason.Guess:
-                    if (killer == player)
-                        return "MisGuess";
-                    else
-                        return "Guess";
-                case DeadPlayer.CustomDeathReason.Pseudocide:
-                    return "Pseudocide";
-                case DeadPlayer.CustomDeathReason.LoverSuicide:
-                    return "LoverSuicide";
-                case DeadPlayer.CustomDeathReason.Bomb:
-                    return "Bomb";
-                case DeadPlayer.CustomDeathReason.WitchExile:
-                    return "WitchExile";
-                case DeadPlayer.CustomDeathReason.BrainwashedKilled:
-                    return "Brainwash";
-                case DeadPlayer.CustomDeathReason.Divined:
-                    return "Divined";
-            }
+            if (dp == null) return null;
 
-            if (dp.deathReason == DeadPlayer.CustomDeathReason.Kill)
-            {
-                if (killer.isRole(RoleId.Sheriff))
-                {
-                    if (killer == player)
-                        return "Misfire";
-                    else
-                        return "SheriffKill";
-                }
-                if (killer.isRole(RoleId.Veteran)) return "VeteranKill";
-                if (killer.isRole(RoleId.MimicK)) return "MimicKill";
-                return "KilledNormal";
-            }
-
-            return null;
+            return dp.deathReason.ToString();
         }
 
         public override void PostInit()

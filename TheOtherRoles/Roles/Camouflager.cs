@@ -12,7 +12,7 @@ namespace TheOtherRoles.Roles
         public static float camouflageTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge = null;
 
-        public static HelpSprite[] helpSprite = [new(getButtonSprite(), "camouflagerCamoHint")];
+        public static readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "camouflagerCamoHint")];
 
         public Camouflager()
         {

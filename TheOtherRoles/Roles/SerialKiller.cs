@@ -13,7 +13,7 @@ namespace TheOtherRoles.Roles
             isCountDown = false;
         }
 
-        static public HelpSprite[] helpSprite = [new(getButtonSprite(), "serialKillerSuicideHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "serialKillerSuicideHint")];
 
         public static PlayerControl serialKiller;
         public static Color color = Palette.ImpostorRed;

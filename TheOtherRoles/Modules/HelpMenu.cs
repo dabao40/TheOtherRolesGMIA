@@ -100,7 +100,25 @@ public static class HelpMenu
                 scrollerTagPrefix = "ingameAchievementViewerNotCleared";
                 shownPredicate = ModTranslation.getString("achievementNonAchieved");
                 ShowInnerContext();
-            }, WithCheckMark = true}];
+            }, WithCheckMark = true},
+            new GUIModernButton(GUIAlignment.Center, gui.GetAttribute(AttributeAsset.CenteredBoldFixed), new TranslateTextComponent("achievementSearchFilter")){ OnClick = clickable => {
+                var searchWindow = MetaScreen.GenerateWindow(new(6f,0.8f), HudManager.Instance.transform, Vector3.zero, true, true, true);
+
+                void ShowResult(string rawKeyword){
+                    string[] keyword = rawKeyword.Split(' ','　').Where(s => s.Length >= 1).ToArray();
+                    searchWindow.CloseScreen();
+                    clickable.Selectable?.Select();
+
+                    achPredicate = a => keyword.All(k => a.GetKeywords().Any(acK => acK.ToLower().Contains(k.ToLower())));
+                    shownPredicate = string.Format(ModTranslation.getString("achievementSearch"), rawKeyword);
+                    ShowInnerContext();
+                }
+
+                var textField = new GUITextField(GUIAlignment.Left, new(4.3f,0.4f)){ HintText = ModTranslation.getString("uiDialogKeyword").Color(Color.gray), IsSharpField = false, WithMaskMaterial = true, EnterAction = (rawKeyword) => {ShowResult(rawKeyword); return true; } };
+                var button = new GUIButton(GUIAlignment.Center, gui.GetAttribute(AttributeAsset.CenteredBoldFixed), new TranslateTextComponent("uiDialogSearch")){OnClick = () => ShowResult(textField.Artifact.FirstOrDefault()?.Text ?? "") };
+                searchWindow.SetContext(gui.HorizontalHolder(GUIAlignment.Center, textField, button), new Vector2(0.5f,0.5f), out var size);
+                textField.Artifact.Do(field => field.GainFocus());
+            }, WithCheckMark = true, BlockSelectingOnClicked = true},];
 
         var sidebar = new VerticalContextsHolder(GUIAlignment.Center,
             new GUIButtonGroup(new VerticalContextsHolder(GUIAlignment.Top, categorizeButtons))
@@ -121,9 +139,9 @@ public static class HelpMenu
     private static IMetaContextOld ShowAssignableScreen()
     {
         (IEnumerable<RoleInfo> roleInfo, TextComponent label)[] assignables = [
-            (RoleInfo.allRoleInfos.Where(x => x.isImpostor && x.roleId != RoleId.BomberB && !(TORMapOptions.gameMode == CustomGamemodes.Guesser && x.roleId == RoleId.EvilGuesser)), TORGUIContextEngine.API.TextComponent(Palette.ImpostorRed, "impostor")),
-            (RoleInfo.allRoleInfos.Where(x => !x.isImpostor && !x.isNeutral && !x.isModifier && !(TORMapOptions.gameMode == CustomGamemodes.Guesser && x.roleId == RoleId.NiceGuesser)), TORGUIContextEngine.API.TextComponent(Palette.CrewmateBlue, "crewmate")),
-            (RoleInfo.allRoleInfos.Where(x => x.isNeutral && !x.isModifier), TORGUIContextEngine.API.TextComponent(new Color32(76, 84, 78, 255), "roleIntroNeutral")),
+            (RoleInfo.allRoleInfos.Where(x => x.isOrgImpostor && x.roleId != RoleId.BomberB && !(TORMapOptions.gameMode == CustomGamemodes.Guesser && x.roleId == RoleId.EvilGuesser)), TORGUIContextEngine.API.TextComponent(Palette.ImpostorRed, "impostor")),
+            (RoleInfo.allRoleInfos.Where(x => !x.isOrgImpostor && !x.isOrgNeutral && !x.isModifier && !(TORMapOptions.gameMode == CustomGamemodes.Guesser && x.roleId == RoleId.NiceGuesser)), TORGUIContextEngine.API.TextComponent(Palette.CrewmateBlue, "crewmate")),
+            (RoleInfo.allRoleInfos.Where(x => x.isOrgNeutral && !x.isModifier), TORGUIContextEngine.API.TextComponent(new Color32(76, 84, 78, 255), "roleIntroNeutral")),
             (RoleInfo.allRoleInfos.Where(x => x.isModifier), TORGUIContextEngine.API.TextComponent(Color.yellow, "modifiers"))
             ];
 
@@ -145,7 +163,7 @@ public static class HelpMenu
                     OpenAssignableHelp(role);
                 }, RoleTitleAttr)
                 {
-                    RawText = Helpers.cs(role.color, role.name),
+                    RawText = Helpers.cs(role.orgColor, role.name),
                     PostBuilder = (PassiveButton button, SpriteRenderer renderer, TMPro.TextMeshPro text) =>
                     {
                         renderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
@@ -190,7 +208,7 @@ public static class HelpMenu
         inner = scrollView.Artifact;
         Reference<MetaContextOld.ScrollView.InnerScreen> innerRef = new();
 
-        screen.SetContext(scrollView, out _);
+        screen.SetContext(scrollView, TheOtherRoles.RoleData.GetIllustration(roleInfo.roleId), out _);
     }
 
     public static GUIContext GetRoleContext(RoleInfo roleInfo, params GUIContext[] inner)
@@ -207,8 +225,8 @@ public static class HelpMenu
     {
         var gui = TORGUIContextEngine.API;
         if (roleInfo == null) return null;
-        var blurb = gui.Text(GUIAlignment.Left, RoleBlurbAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.color, roleInfo.introDescription) ?? "ERROR"));
-        var title = gui.Text(GUIAlignment.Left, RoleNameAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.color, roleInfo.name) ?? "ERROR"));
+        var blurb = gui.Text(GUIAlignment.Left, RoleBlurbAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.orgColor, roleInfo.introDescription) ?? "ERROR"));
+        var title = gui.Text(GUIAlignment.Left, RoleNameAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.orgColor, roleInfo.name) ?? "ERROR"));
 
         return gui.VerticalHolder(GUIAlignment.TopLeft, gui.HorizontalHolder(GUIAlignment.Left, gui.VerticalHolder(GUIAlignment.Left, blurb, gui.VerticalMargin(-0.06f), title, gui.VerticalMargin(-0.05f)), gui.HorizontalMargin(0.25f)), gui.VerticalMargin(0.15f),
             gui.RawText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.DocumentStandard), roleInfo.fullDescription), gui.VerticalMargin(0.15f));
@@ -225,8 +243,9 @@ public static class HelpMenu
             gui.HorizontalMargin(0.15f), gui.LocalizedText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.DocumentStandard), hs.localizedName)
             );
 
-        var context = roleInfo.helpSprite.Select(GetHelpSprite);
-        if (roleInfo.helpSprite.Length == 0) return gui.EmptyContext;
+        var hss = TheOtherRoles.RoleData.GetHelp(roleInfo.roleId);
+        var context = hss.Select(GetHelpSprite);
+        if (hss.Length == 0) return gui.EmptyContext;
         return GetChapter("ability", [gui.VerticalHolder(GUIAlignment.Left, context)]);
     }
 
@@ -241,7 +260,7 @@ public static class HelpMenu
 
     private static TextAttribute RoleTitleAttrUnmasked = new(TextAttribute.BoldAttr) { Size = new Vector2(1.4f, 0.29f) };
 
-    private static IMetaContextOld ShowMyRolesSrceen()
+    private static IMetaContextOld ShowMyRolesSrceen(MetaScreen outsideScreen, out Image backImage)
     {
         MetaContextOld widget = new();
 
@@ -253,10 +272,12 @@ public static class HelpMenu
                 inner.Do(screen =>
                 {
                     screen.SetContext(GetRoleContext(role), out _);
+                    outsideScreen.ClearBackImage();
+                    outsideScreen.SetBackImage(TheOtherRoles.RoleData.GetIllustration(role.roleId), 0.2f);
                 });
             }, RoleTitleAttrUnmasked)
             {
-                RawText = Helpers.cs(role.color, role.name),
+                RawText = Helpers.cs(role.orgColor, role.name),
                 Alignment = IMetaContextOld.AlignmentOption.Center
             }, 128, -1, 0, 0.6f);
 
@@ -268,6 +289,8 @@ public static class HelpMenu
         inner = scrollView.Artifact;
 
         widget.Append(new MetaContextOld.WrappedContext(scrollView));
+
+        backImage = TheOtherRoles.RoleData.GetIllustration(assignable.roleId);
 
         return widget;
     }
@@ -321,7 +344,7 @@ public static class HelpMenu
         var maskedAttr = gui.GetAttribute(AttributeAsset.DocumentStandard);
         var maskedTitleAttr = gui.GetAttribute(AttributeAsset.DocumentTitle);
         var maskedSubtitleAttr = gui.GetAttribute(AttributeAsset.DocumentSubtitle1);
-        GUIContext GetAssignableText(RoleInfo assignable, string displayName = null) => new TORGUIText(GUIAlignment.Center, maskedAttr, new RawTextComponent(displayName ?? Helpers.cs(assignable.color, assignable.name)))
+        GUIContext GetAssignableText(RoleInfo assignable, string displayName = null) => new TORGUIText(GUIAlignment.Center, maskedAttr, new RawTextComponent(displayName ?? Helpers.cs(assignable.orgColor, assignable.name)))
         {
             OverlayContext = () => GetAssignableOverlay(assignable),
             OnClickText = (() => OpenAssignableHelp(assignable), false)
@@ -346,8 +369,8 @@ public static class HelpMenu
 
             void CheckRoles(List<GUIContext> list100, List<GUIContext> listRandom)
             {
-                foreach (var role in RoleInfo.allRoleInfos.Where(x => (x.isImpostor && category == RoleCategory.Impostors) || (x.isNeutral && category == RoleCategory.Neutrals) || (!x.isNeutral &&
-                !x.isImpostor && category == RoleCategory.Crewmates)))
+                foreach (var role in RoleInfo.allRoleInfos.Where(x => (x.isOrgImpostor && category == RoleCategory.Impostors) || (x.isOrgNeutral && category == RoleCategory.Neutrals) || (!x.isOrgNeutral &&
+                !x.isOrgImpostor && category == RoleCategory.Crewmates)))
                 {
                     Configurations.TryGetValue(role.roleId, out var option);
                     if (option == null || (role.roleId is RoleId.Immoralist or RoleId.Sidekick or RoleId.Pursuer or RoleId.BomberB) ||
@@ -385,7 +408,7 @@ public static class HelpMenu
             string specialAssignmentOption = null;
             if (roleInfo.roleId == RoleId.Swapper)
             {
-                if (roleInfo.isImpostor) specialAssignmentOption = CustomOptionHolder.swapperIsImpRate.getString();
+                if (roleInfo.isOrgImpostor) specialAssignmentOption = CustomOptionHolder.swapperIsImpRate.getString();
                 else specialAssignmentOption = $"{(10 - CustomOptionHolder.swapperIsImpRate.getSelection()) * 10}%";
             }
             else if (roleInfo.roleId == RoleId.Yasuna) specialAssignmentOption = $"{(10 - CustomOptionHolder.yasunaIsImpYasunaRate.getSelection()) * 10}%";
@@ -504,10 +527,10 @@ public static class HelpMenu
 
         var gui = TORGUIContextEngine.API;
 
-        context.Add(new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OverlayTitle), new RawTextComponent(Helpers.cs(assignable.color, assignable.name))));
+        context.Add(new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OverlayTitle), new RawTextComponent(Helpers.cs(assignable.orgColor, assignable.name))));
         context.Add(new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(assignable.blurb)));
 
-        return new VerticalContextsHolder(GUIAlignment.Left, context);
+        return new VerticalContextsHolder(GUIAlignment.Left, context) { BackImage = TheOtherRoles.RoleData.GetIllustration(assignable.roleId) };
     }
 
     static public GUIContext GetAchievementContext(RoleInfo assignable)
@@ -639,6 +662,7 @@ public static class HelpMenu
                 { RoleId.BomberA, CustomOptionHolder.bomberSpawnRate },
                 { RoleId.BomberB, CustomOptionHolder.bomberSpawnRate },
                 { RoleId.Swapper, CustomOptionHolder.swapperSpawnRate },
+                { RoleId.Zephyr, CustomOptionHolder.zephyrSpawnRate },
                 { RoleId.EvilHacker, CustomOptionHolder.evilHackerSpawnRate },
                 { RoleId.Trapper, CustomOptionHolder.trapperSpawnRate },
                 { RoleId.Blackmailer, CustomOptionHolder.blackmailerSpawnRate },
@@ -682,6 +706,7 @@ public static class HelpMenu
     private static void ShowScreen(MetaScreen screen, HelpTab tab, HelpTab validTabs)
     {
         MetaContextOld context = new();
+        Image backImage = null;
         context.Append(GetTabsContext(screen, tab, validTabs));
         context.Append(new MetaContextOld.VerticalMargin(0.1f));
 
@@ -697,7 +722,7 @@ public static class HelpMenu
                 context.Append(ShowOptionsScreen());
                 break;
             case HelpTab.MyInfo:
-                context.Append(ShowMyRolesSrceen());
+                context.Append(ShowMyRolesSrceen(screen, out backImage));
                 break;
             case HelpTab.Overview:
                 context.Append(ShowPreviewScreen());
@@ -705,6 +730,7 @@ public static class HelpMenu
         }
 
         screen.SetContext(context);
+        screen.SetBackImage(backImage, 0.4f);
     }
 
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]

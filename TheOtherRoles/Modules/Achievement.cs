@@ -10,12 +10,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using TheOtherRoles.MetaContext;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.SocialPlatforms.Impl;
-using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Modules
 {
@@ -214,12 +211,14 @@ namespace TheOtherRoles.Modules
         IntegerDataEntry entry;
         public int Trophy { get; private init; }
         public bool IsCleared => goal <= entry.Value;
+        Image BackImage { get => SpecifiedBackImage ?? (Category != null ? TheOtherRoles.RoleData.GetIllustration(Category.Value.role.roleId) : null); }
+        Image SpecifiedBackImage { get; }
 
         static public TextComponent HiddenComponent = new RawTextComponent("???");
         static public TextComponent HiddenDescriptiveComponent = new ColorTextComponent(new Color(0.4f, 0.4f, 0.4f), new TranslateTextComponent("achievementTitleHidden"));
         static public TextComponent HiddenDetailComponent = new ColorTextComponent(new Color(0.8f, 0.8f, 0.8f), new TranslateTextComponent("achievementTitleHiddenDetail"));
 
-        public Achievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, (RoleInfo role, AchievementType type)? category, int trophy)
+        public Achievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, (RoleInfo role, AchievementType type)? category, int trophy, Image specifiedImage)
         {
             this.goal = goal;
             this.isSecret = isSecret;
@@ -229,6 +228,7 @@ namespace TheOtherRoles.Modules
             this.hashedKey = key.ComputeConstantHashAsString();
             this.Category = category;
             this.Trophy = trophy;
+            this.SpecifiedBackImage = specifiedImage;
             this.entry = new IntegerDataEntry("a." + hashedKey, AchievementDataSaver, 0);
             RegisterAchievement(this, key);
         }
@@ -315,7 +315,7 @@ namespace TheOtherRoles.Modules
                         else if (secret) type = AchievementType.Secret;
                     }
                 }
-                new Achievement(clearOnce, secret, noHint, args[0], goal, (relatedRole, type), rarity);
+                new Achievement(clearOnce, secret, noHint, args[0], goal, (relatedRole, type), rarity, null);
             }
         }
 
@@ -359,6 +359,14 @@ namespace TheOtherRoles.Modules
                 MyTitle = achievement;
         }
 
+        public IEnumerable<string> GetKeywords()
+        {
+            if (Category != null) yield return Category?.role?.name ?? "";
+            yield return ModTranslation.getString(GoalTranslationKey);
+            yield return ModTranslation.getString(CondTranslationKey);
+            if (IsCleared) yield return ModTranslation.getString(TranslationKey);
+        }
+
         public enum ClearState
         {
             Clear,
@@ -399,7 +407,7 @@ namespace TheOtherRoles.Modules
 
             if (Category?.role != null)
             {
-                list.Add(TORGUIContextEngine.Instance.TextComponent((Color)Category?.role.color, Category?.role.name));
+                list.Add(TORGUIContextEngine.Instance.TextComponent((Color)Category?.role.orgColor, Category?.role.name));
             }
 
             if (Category?.type != null)
@@ -453,7 +461,7 @@ namespace TheOtherRoles.Modules
                 ModTranslation.getString("achievementEquip"))));
             }
 
-            return new VerticalContextsHolder(GUIAlignment.Left, list);
+            return new VerticalContextsHolder(GUIAlignment.Left, list) { BackImage = BackImage, GrayoutedBackImage = !(IsCleared || !hiddenNotClearedAchievement) };
         }
 
         public TextComponent GetTitleComponent(TextComponent hiddenComponent)

@@ -293,7 +293,7 @@ namespace TheOtherRoles.Objects
                         trap.isActive ||
                         PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
                         PlayerControl.LocalPlayer.Data.IsDead || 
-                        PlayerControl.LocalPlayer.isRole(RoleId.Lighter) ||
+                        Lighter.isLightActive(PlayerControl.LocalPlayer) ||
                         PlayerControl.LocalPlayer.isRole(RoleId.Fox);
                     var opacity = canSee ? 1.0f : 0.0f;
                     if (trap.trap != null)

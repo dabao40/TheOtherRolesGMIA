@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,6 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities.Extensions;
-using Rewired.Utils.Platforms.Windows;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
@@ -54,6 +54,104 @@ namespace TheOtherRoles
         public static Vector2 upright = new(0.70710677f, 0.70710677f);
         public static Vector2 downleft = new(-0.70710677f, -0.70710677f);
         public static Vector2 downright = new(0.70710677f, -0.70710677f);
+    }
+
+    public class StackfullCoroutine
+    {
+        private List<IEnumerator> stack = new();
+
+        public StackfullCoroutine(IEnumerator enumerator)
+        {
+            stack.Add(enumerator);
+        }
+
+        public bool MoveNext()
+        {
+            if (stack.Count == 0) return false;
+
+            var current = stack[stack.Count - 1];
+            if (!current.MoveNext())
+                stack.RemoveAt(stack.Count - 1);
+            else if (current.Current != null)
+            {
+                if (current.Current is IEnumerator child)
+                    stack.Add(child);
+                else if (current.Current is Il2CppSystem.Collections.IEnumerator il2CppChild)
+                    stack.Add(il2CppChild.WrapToManaged());
+            }
+
+            return stack.Count > 0;
+        }
+
+        public void Wait()
+        {
+            while (MoveNext()) { }
+        }
+
+        //状態を共有している点に注意
+        public IEnumerator AsEnumerator()
+        {
+            while (MoveNext()) yield return null;
+        }
+    }
+
+    public class ParallelCoroutine
+    {
+        StackfullCoroutine[] coroutines;
+        bool someoneFinished = false;
+        public ParallelCoroutine(params StackfullCoroutine[] coroutines)
+        {
+            this.coroutines = coroutines;
+        }
+
+        public bool MoveNext()
+        {
+            bool allFinished = true;
+            foreach (var c in coroutines)
+            {
+                bool result = c.MoveNext();
+                someoneFinished |= !result;
+                allFinished &= !result;
+            }
+
+            return !allFinished;
+        }
+
+        //状態を共有している点に注意
+        public IEnumerator AsEnumerator()
+        {
+            while (MoveNext()) yield return null;
+        }
+
+        //ただ待機するだけのコルーチン。処理自体は別の誰かが担う必要がある。
+        public IEnumerator JustWaitSomeoneFinished()
+        {
+            while (!someoneFinished) yield return null;
+        }
+
+        public IEnumerator WaitAndProcessTillSomeoneFinished()
+        {
+            while (!someoneFinished)
+            {
+                MoveNext();
+                yield return null;
+            }
+        }
+
+        public bool SomeoneFinished => someoneFinished;
+    }
+
+    public static class ManagedCoroutineHelper
+    {
+        static public StackfullCoroutine AsStackfullCoroutine(this IEnumerator enumerator) => new(enumerator);
+        static public StackfullCoroutine Continue(Func<bool> func)
+        {
+            IEnumerator CoWait()
+            {
+                while (func()) yield return null;
+            }
+            return CoWait().AsStackfullCoroutine();
+        }
     }
 
     public static class Helpers
@@ -461,6 +559,14 @@ namespace TheOtherRoles
             return array;
         }
 
+        public static Vector3 AsWorldPos(this Vector3 vec, bool isBack)
+        {
+            Vector3 result = vec;
+            result.z = result.y / 1000f;
+            if (isBack) result.z += 0.001f;
+            return result;
+        }
+
         static public IEnumerator Smooth(this Transform transform, Vector3 goalLocalPosition, float duration)
         {
             float p = 0f;
@@ -476,6 +582,22 @@ namespace TheOtherRoles
             }
 
             transform.localPosition = goalLocalPosition;
+        }
+
+        private static readonly Image LightMask = SpriteLoader.FromResource("TheOtherRoles.Resources.LighterLightMask.png", 100f);
+        public static SpriteRenderer CreateCustomLight(Vector2 pos, float range, bool enabled = true, Sprite maskSprite = null)
+        {
+            var trueRange = range;
+            var light = new GameObject("Light");
+            light.transform.position = (Vector3)pos + new Vector3(0f, 0f, -50f);
+            light.transform.localScale = new(trueRange, trueRange, 1f);
+            light.layer = LayerMask.NameToLayer("Shadow");
+
+            var lightRenderer = light.AddComponent<SpriteRenderer>();
+            lightRenderer.sprite = maskSprite ?? LightMask.GetSprite();
+            lightRenderer.material.shader = PlayerControl.LocalPlayer.LightPrefab.LightCutawayMaterial.shader;
+            lightRenderer.enabled = enabled;
+            return lightRenderer;
         }
 
         public static Vector3 convertPos(int index, int arrangeType, (int x, int y)[] arrangement, Vector3 origin, Vector3[] originOffset, Vector3 contentsOffset, float[] scale, (float x, float y)[] contentAreaMultiplier)
@@ -751,9 +873,11 @@ namespace TheOtherRoles
             return CreateSharpBackground(renderer, color, size);
         }
 
+        static public ResourceExpandableSpriteLoader SharpWindowBackgroundSprite = new("TheOtherRoles.Resources.StatisticsBackground.png", 100f, 5, 5);
+
         static public SpriteRenderer CreateSharpBackground(SpriteRenderer renderer, Color color, Vector2 size)
         {
-            renderer.sprite = loadSpriteFromResources("TheOtherRoles.Resources.StatisticsBackground.png", 100f);
+            renderer.sprite = SharpWindowBackgroundSprite.GetSprite();
             renderer.drawMode = SpriteDrawMode.Sliced;
             renderer.tileMode = SpriteTileMode.Continuous;
             renderer.color = color;
@@ -786,6 +910,12 @@ namespace TheOtherRoles
                 val %= SurPrime;
             }
             return (int)(val % SurPrime);
+        }
+
+        static public bool Find<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, [MaybeNullWhen(false)] out T found)
+        {
+            found = enumerable.FirstOrDefault(predicate);
+            return found != null;
         }
 
         public static string ComputeConstantHashAsString(this string str)
@@ -1404,7 +1534,7 @@ namespace TheOtherRoles
         }
 
         public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && !Busker.players.Any(x => x.player == player && x.pseudocideFlag))
-                        || (player.isRole(RoleId.Lighter) && Lighter.canSeeInvisible);
+                        || Lighter.isLightActive(player);
 
         public static PlayerDisplay GetPlayerDisplay()
         {

@@ -17,7 +17,7 @@ namespace TheOtherRoles.Roles
             clearArrows();
         }
 
-        static public HelpSprite[] helpSprite = [new(getMarkButtonSprite(), "assassinMarkHint"), new(getKillButtonSprite(), "assassinKillHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getMarkButtonSprite(), "assassinMarkHint"), new(getKillButtonSprite(), "assassinKillHint")];
 
         public static Color color = Palette.ImpostorRed;
 

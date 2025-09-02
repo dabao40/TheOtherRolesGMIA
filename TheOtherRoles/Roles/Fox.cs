@@ -21,7 +21,7 @@ namespace TheOtherRoles.Roles
             Parallel
         }
 
-        static public HelpSprite[] helpSprite = [new(getHideButtonSprite(), "foxHideHint"), new(getImmoralistButtonSprite(), "foxImmoralistHint"), new(getRepairButtonSprite(), "foxRepairHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getHideButtonSprite(), "foxHideHint"), new(getImmoralistButtonSprite(), "foxImmoralistHint"), new(getRepairButtonSprite(), "foxRepairHint")];
 
         public Fox()
         {

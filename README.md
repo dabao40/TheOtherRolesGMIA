@@ -17,19 +17,20 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 16.0.4s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
+| 16.0.0s            | v1.3.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.4) |
+| 16.0.0s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
 | 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
 | 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
-| 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
-| 2024.6.18s         | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
-| 2024.6.18s         | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
 
 <details>
   <summary>Click to show older versions</summary>
   
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 2024.3.5s        | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
+| 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
+| 2024.6.18s         | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
+| 2024.6.18s         | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
+| 2024.3.5s          | v1.2.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.3) |
 | 2023.11.28s        | v1.1.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.7) |
 | 2023.11.28s        | v1.1.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.4) |
 | 2023.10.24s        | v1.1.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.1.3) |
@@ -50,8 +51,29 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 <details>
   <summary>Click to show the Changelog</summary>
 
+  **Version v1.3.4**
+ - Added support for multiple same roles in one game
+ - Added new option to allow multiple pairs of Lovers
+ - Added new option to allow the Medic to see portable vitals
+ - Added new option for the Moriarty to gain extra points upon killing Sherlock
+ - Added new option to allow the Fortune Teller be unguessable after divination
+ - Added a whole new UI system
+ - Added a fallback on fonts which then supports Eastern characters
+ - Added new role Zephyr
+ - Added a new sub version system. The sub version will go from A to Z
+ - Changed Lighter to the former one, where using the lighter increases the vision and ignores shadows
+ - Changed the images of some buttons, thanks to Windy_bailan
+ - Significantly changed the logic in-game. Lag problems should be fixed
+ - Fixed a bug where the Doomsayer cannot guess the Nice Guesser
+ - Fixed a bug where leaving the game will not change the color of the Schrodinger's Cat
+ - Fixed TChinese translation, thanks to NK & VK
+ - Reworked some SChinese translation, thanks to Yuhangyuan & QwQ
+  
+   If you've been playing TheOtherRolesGMIA for a long time, you can draft an issue to make your skin a drawing of a role in GMIA!
+   For instance, the illustrations of Fox, Task Master, Fortune Teller etc. (which you can view by pressing H in the lobby) are all created based on the skins of players in China! We welcome you to post your own skin and make yourself known in TheOtherRolesGMIA!
+
   **Version v1.3.3**
- - Updated to Among Us version v16.0.4
+ - Updated to Among Us version v16.0.0
  - Added new role Doomsayer, thanks to Tukuai
  - Added new mode Draft Mode
  - Added new modifier for the Guesser gamemode, Last Impostor

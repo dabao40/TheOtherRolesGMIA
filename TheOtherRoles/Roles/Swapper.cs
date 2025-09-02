@@ -1,4 +1,5 @@
 using System;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -14,7 +15,8 @@ namespace TheOtherRoles.Roles
         public static float rechargeTasksNumber;
         public static float rechargedTasks;
 
-        public static HelpSprite[] helpSprite = [new(getCheckSprite(), "swapperCheckHint")];
+        public static readonly HelpSprite[] HelpSprites = [new(getCheckSprite(), "swapperCheckHint")];
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Swapper.png");
 
         public Swapper()
         {

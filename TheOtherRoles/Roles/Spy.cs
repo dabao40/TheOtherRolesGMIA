@@ -1,3 +1,4 @@
+using TheOtherRoles.MetaContext;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -5,6 +6,8 @@ namespace TheOtherRoles.Roles
 {
     public class Spy : RoleBase<Spy> {
         public static Color color = Palette.ImpostorRed;
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Spy.png");
 
         public Spy()
         {

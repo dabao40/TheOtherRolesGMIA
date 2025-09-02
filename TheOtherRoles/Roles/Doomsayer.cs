@@ -22,7 +22,8 @@ namespace TheOtherRoles.Roles
             currentTarget = null;
         }
 
-        static public HelpSprite[] helpSprite = [new(getButtonSprite(), "doomsayerObserveHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "doomsayerObserveHint")];
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Doomsayer.png");
 
         public static Color color = new(0f, 1f, 0.5f, 1f);
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
@@ -16,6 +17,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.BomberB;
         }
+
+        static public readonly HelpSprite[] HelpSprites = BomberA.HelpSprites;
 
         public static Color color = Palette.ImpostorRed;
 

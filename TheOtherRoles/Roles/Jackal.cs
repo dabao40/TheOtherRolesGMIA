@@ -25,7 +25,7 @@ namespace TheOtherRoles.Roles
         public bool wasSpy;
         public static bool canSabotageLights;
 
-        static public HelpSprite[] helpSprite = [new(getSidekickButtonSprite(), "jackalSidekickHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getSidekickButtonSprite(), "jackalSidekickHint")];
 
         public override void FixedUpdate()
         {
