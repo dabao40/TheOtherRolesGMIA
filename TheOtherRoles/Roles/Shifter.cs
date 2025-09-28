@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Shifter : RoleBase<Shifter>
     {
         public Shifter()
@@ -33,6 +34,17 @@ namespace TheOtherRoles.Roles
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ShiftButton.png", 115f);
             return buttonSprite;
         }
+
+        public static RemoteProcess<byte> Shift = RemotePrimitiveProcess.OfByte("ShifterShift", (message, _) => RPCProcedure.shifterShift(message));
+
+        public static RemoteProcess<byte> SetFutureShifted = RemotePrimitiveProcess.OfByte("SetFutureShifted", (message, _) =>
+        {
+            if (isNeutral && !shiftPastShifters && pastShifters.Contains(message))
+                return;
+            futureShift = Helpers.playerById(message);
+        });
+
+        public static RemoteProcess<bool> SetType = RemotePrimitiveProcess.OfBoolean("SetShifterType", (message, _) => isNeutral = message);
 
         public override void FixedUpdate()
         {

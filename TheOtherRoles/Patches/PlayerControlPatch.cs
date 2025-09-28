@@ -775,10 +775,7 @@ namespace TheOtherRoles.Patches {
             if (target == Lawyer.target && AmongUsClient.Instance.AmHost) {
                 foreach (var lawyer in Lawyer.allPlayers)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                    writer.Write(lawyer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                    Lawyer.PromoteToPursuer.Invoke(lawyer.PlayerId);
                 }
             }
 
@@ -887,11 +884,7 @@ namespace TheOtherRoles.Patches {
 
             // Add Bloody Modifier
             if (Bloody.bloody.FindAll(x => x.PlayerId == target.PlayerId).Count > 0) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Bloody, Hazel.SendOption.Reliable, -1);
-                writer.Write(__instance.PlayerId);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.bloody(__instance.PlayerId, target.PlayerId);
+                RPCProcedure.ActivateBloody.Invoke((__instance.PlayerId, target.PlayerId));
             }
 
             // HideNSeek
@@ -1017,18 +1010,12 @@ namespace TheOtherRoles.Patches {
             if (__instance.Data.Role.IsImpostor && AmongUsClient.Instance.AmHost)
                 LastImpostor.promoteToLastImpostor();
 
-            // Check Plague Doctor status
-            if (PlagueDoctor.allPlayers.Count > 0 && (PlagueDoctor.canWinDead || PlagueDoctor.hasAlivePlayers)) PlagueDoctor.checkWinStatus();
-
             // Pursuer promotion trigger on exile & suicide (the host sends the call such that everyone recieves the update before a possible game End)
             if (__instance == Lawyer.target) {
                 if (AmongUsClient.Instance.AmHost && ((!Lawyer.target.isRole(RoleId.Jester)) || Lawyer.targetWasGuessed)) {
                     foreach (var lawyer in Lawyer.allPlayers)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                        writer.Write(lawyer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                        Lawyer.PromoteToPursuer.Invoke(lawyer.PlayerId);
                     }
                 }
             }

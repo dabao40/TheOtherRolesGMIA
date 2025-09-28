@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class PlagueDoctor : RoleBase<PlagueDoctor>
     {
         public PlagueDoctor()
@@ -37,6 +38,28 @@ namespace TheOtherRoles.Roles
         public static bool canWinDead = true;
 
         public static Sprite plagueDoctorIcon;
+
+        public static RemoteProcess<byte> SetInfected = RemotePrimitiveProcess.OfByte("PlagueDoctorSetInfected", (message, _) =>
+        {
+            var p = Helpers.playerById(message);
+            if (allPlayers.Count <= 0) return;
+            if (!infected.ContainsKey(message))
+                infected[message] = p;
+        });
+
+        public static RemoteProcess TriggerWin = new("PlagueDoctorWin", (_) =>
+        {
+            triggerPlagueDoctorWin = true;
+            var pd = allPlayers.FirstOrDefault();
+            if (pd == null) return;
+            var livingPlayers = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(p => !p.isRole(RoleId.PlagueDoctor) && !p.Data.IsDead);
+            foreach (PlayerControl p in livingPlayers)
+            {
+                if (p.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(p).otherKiller = pd;
+                if (!p.Data.IsDead) p.Exiled();
+                GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Disease, pd);
+            }
+        });
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
@@ -113,6 +136,7 @@ namespace TheOtherRoles.Roles
             }
 
             if (PlayerControl.LocalPlayer == player)
+            {
                 if (!meetingFlag && (canWinDead || !player.Data.IsDead))
                 {
                     List<PlayerControl> newInfected = [];
@@ -148,32 +172,11 @@ namespace TheOtherRoles.Roles
                         foreach (PlayerControl p in newInfected)
                         {
                             byte targetId = p.PlayerId;
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, SendOption.Reliable, -1);
-                            writer.Write(targetId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.plagueDoctorInfected(targetId);
-                        }
-
-                        bool winFlag = true;
-                        foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                        {
-                            if (p.Data.IsDead) continue;
-                            if (p == player) continue;
-                            if (!infected.ContainsKey(p.PlayerId))
-                            {
-                                winFlag = false;
-                                break;
-                            }
-                        }
-
-                        if (winFlag)
-                        {
-                            MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorWin, SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                            RPCProcedure.plagueDoctorWin();
+                            SetInfected.Invoke(targetId);
                         }
                     }
                 }
+            }
         }
 
         void plagueDoctorSetTarget()
@@ -191,10 +194,7 @@ namespace TheOtherRoles.Roles
             if (infectKiller && killer != null && PlayerControl.LocalPlayer == player)
             {
                 byte targetId = killer.PlayerId;
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, SendOption.Reliable, -1);
-                writer.Write(targetId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.plagueDoctorInfected(targetId);
+                SetInfected.Invoke(targetId);
             }
         }
 
@@ -202,6 +202,7 @@ namespace TheOtherRoles.Roles
         {
             plagueDoctorSetTarget();
             infectionUpdate();
+            checkWinStatus();
         }
 
         public static Sprite getSyringeIcon()
@@ -233,13 +234,15 @@ namespace TheOtherRoles.Roles
             return Helpers.cs(color, $"{progPercent.ToString("F1")}%");
         }
 
-        public static void checkWinStatus()
+        public void checkWinStatus()
         {
+            if (!(!player.Data.IsDead && (canWinDead || hasAlivePlayers)) || PlayerControl.LocalPlayer != player) return;
+
             bool winFlag = true;
             foreach (PlayerControl p in PlayerControl.AllPlayerControls)
             {
                 if (p.Data.IsDead) continue;
-                if (isRole(p)) continue;
+                if (p == player) continue;
                 if (!infected.ContainsKey(p.PlayerId))
                 {
                     winFlag = false;
@@ -249,9 +252,7 @@ namespace TheOtherRoles.Roles
 
             if (winFlag)
             {
-                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorWin, SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                RPCProcedure.plagueDoctorWin();
+                TriggerWin.Invoke();
             }
         }
 

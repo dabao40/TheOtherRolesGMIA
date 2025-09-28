@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles;
 
+[TORRPCHolder]
 public class Mayor : RoleBase<Mayor>
 {
     public static Color color = new Color32(32, 77, 66, byte.MaxValue);
@@ -29,6 +30,16 @@ public class Mayor : RoleBase<Mayor>
         acTokenChallenge = null;
     }
 
+    public static RemoteProcess<(byte votedFor, byte playerId)> GainAchievement = new("UnlockMayorAch", (message, _) =>
+    {
+        if (PlayerControl.LocalPlayer.PlayerId == message.playerId)
+        {
+            if (!GameManager.Instance.LogicOptions.GetAnonymousVotes())
+                new StaticAchievementToken("mayor.common1");
+            if (local.acTokenChallenge != null) local.acTokenChallenge.Value.votedFor = message.votedFor;
+        }
+    });
+
     public AchievementToken<(byte votedFor, bool cleared)> acTokenChallenge = null;
 
     public static Sprite getMeetingSprite()
@@ -36,15 +47,6 @@ public class Mayor : RoleBase<Mayor>
         if (emergencySprite) return emergencySprite;
         emergencySprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.EmergencyButton.png", 550f);
         return emergencySprite;
-    }
-
-    public static void unlockAch(byte votedFor, byte playerId)
-    {
-        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockMayorAcCommon, SendOption.Reliable, -1);
-        writer.Write(votedFor);
-        writer.Write(playerId);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        RPCProcedure.unlockMayorAcCommon(votedFor, playerId);
     }
 
     public static void clearAndReload()

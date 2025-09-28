@@ -10,10 +10,11 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Vampire : RoleBase<Vampire> {
         public static Color color = Palette.ImpostorRed;
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Vampire.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Vampire.png");
 
         public Vampire()
         {
@@ -35,6 +36,24 @@ namespace TheOtherRoles.Roles
         public bool targetNearGarlic = false;
 
         public AchievementToken<(DateTime deathTime, bool cleared)> acTokenChallenge;
+
+        public static RemoteProcess<(byte targetId, byte performReset, byte vampireId)> SetBitten = new("VampireSetBitten", (message, _) =>
+        {
+            var vampire = getRole(Helpers.playerById(message.vampireId));
+            if (vampire == null) return;
+            if (message.performReset != 0)
+            {
+                vampire.bitten = null;
+                return;
+            }
+
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == message.targetId && !player.Data.IsDead) {
+                    vampire.bitten = player;
+                }
+            }
+        });
 
         public override void OnMeetingStart()
         {

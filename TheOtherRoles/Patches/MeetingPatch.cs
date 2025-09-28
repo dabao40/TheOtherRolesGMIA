@@ -66,7 +66,7 @@ namespace TheOtherRoles.Patches
 
                         if (player.isRole(RoleId.Mayor)) {
                             additionalVotes = Mayor.numVotes;
-                            Mayor.unlockAch(playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId);
+                            Mayor.GainAchievement.Invoke((playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId));
                         }
                         if (MimicK.isAlive() && MimicA.isAlive() && MimicK.hasOneVote && (player.isRole(RoleId.MimicK) || player.isRole(RoleId.MimicA)))
                             additionalVotes = 0.5f;
@@ -74,10 +74,10 @@ namespace TheOtherRoles.Patches
                             additionalVotes = 0.5f;
 
                         if (Detective.exists && Detective.allPlayers.Any(x => x.PlayerId == playerVoteArea.TargetPlayerId))
-                            Detective.unlockAch(playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId);
+                            Detective.GainAchievement.Invoke((playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId));
                         foreach (var jester in Jester.allPlayers) {
                             if (jester.PlayerId != playerVoteArea.TargetPlayerId && playerVoteArea.VotedFor == jester.PlayerId)
-                                Jester.unlockAch(jester.PlayerId);
+                                Jester.UnlockAch.Invoke(jester.PlayerId);
                         }
                         if (dictionary.TryGetValue(playerVoteArea.VotedFor, out float currentVotes))
                             dictionary[playerVoteArea.VotedFor] = currentVotes + additionalVotes;
@@ -169,9 +169,7 @@ namespace TheOtherRoles.Patches
                             exiled = potentialExiled.ToArray().FirstOrDefault(v => v.PlayerId == tiebreakerVote);
                             tie = false;
 
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTiebreak, Hazel.SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.setTiebreak();
+                            RPCProcedure.SetTieBreak.Invoke();
                         }
                     }
 
@@ -444,12 +442,8 @@ namespace TheOtherRoles.Patches
                 if (swapperButtonList[A] != null) swapperButtonList[A].OnClick.RemoveAllListeners();  // Swap buttons can't be clicked / changed anymore
             }
             if (firstPlayer != null && secondPlayer != null) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SwapperSwap, Hazel.SendOption.Reliable, -1);
-                writer.Write((byte)firstPlayer.TargetPlayerId);
-                writer.Write((byte)secondPlayer.TargetPlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Swapper.ConfirmSwap.Invoke((firstPlayer.TargetPlayerId, secondPlayer.TargetPlayerId));
 
-                RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
                 if (!PlayerControl.LocalPlayer.Data.Role.IsImpostor)
                 {
                     Swapper.acTokenChallenge.Value.swapped1 = firstPlayer.TargetPlayerId;
@@ -670,7 +664,7 @@ namespace TheOtherRoles.Patches
                     if (Snitch.allPlayers.Any(x => TasksHandler.taskInfo(x.Data).Item2 - TasksHandler.taskInfo(x.Data).Item1 <= 0) && roleInfo.roleId == RoleId.Snitch) continue;
                 }
                 if (FortuneTeller.exists && HandleGuesser.guesserCantGuessFortuneTeller) {
-                    if (FortuneTeller.players.Any(x => x.player && x.divinedFlag)) continue;
+                    if (FortuneTeller.players.Any(x => x.player && x.divinedFlag) && roleInfo.roleId == RoleId.FortuneTeller) continue;
                 }
                 CreateRole(roleInfo);
             }

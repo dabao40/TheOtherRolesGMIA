@@ -312,20 +312,13 @@ namespace TheOtherRoles
             foreach (var vampire in Vampire.players)
             {
                 checkMurderAttemptAndKill(vampire.player, vampire.bitten, true, false);
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-                writer.Write(byte.MaxValue);
-                writer.Write(byte.MaxValue);
-                writer.Write(vampire.player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue, vampire.player.PlayerId);
+                Vampire.SetBitten.Invoke((byte.MaxValue, byte.MaxValue, vampire.player.PlayerId));
             }
         }
 
         public static void handleTrapperTrapOnBodyReport()
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperMeetingFlag, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.trapperMeetingFlag();
+            Trapper.MeetingFlag.Invoke();
         }
 
         public static IEnumerator BlackmailShhh()
@@ -802,8 +795,6 @@ namespace TheOtherRoles
                 }
                 showFlash(color, 1.5f);
             }
-
-            if (PlagueDoctor.allPlayers.Count > 0 && (PlagueDoctor.canWinDead || PlagueDoctor.hasAlivePlayers)) PlagueDoctor.checkWinStatus();
         }
 
         public static Camera FindCamera(int cameraLayer) => Camera.allCameras.FirstOrDefault(c => (c.cullingMask & (1 << cameraLayer)) != 0);
@@ -1468,13 +1459,10 @@ namespace TheOtherRoles
             renderer.gameObject.SetActive(true);
             renderer.enabled = true;
 
-            // Message Text
-            TMPro.TextMeshPro messageText = GameObject.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
-            messageText.text = message;
-            messageText.enableWordWrapping = false;
-            messageText.transform.localScale = Vector3.one * 0.5f;
-            messageText.transform.localPosition += new Vector3(0f, 2f, -69f);
-            messageText.gameObject.SetActive(true);
+            var messageText = CreateAndShowNotification(message, HudManager.Instance.Notifier.settingsChangeColor);
+            messageText.transform.localPosition = new Vector3(0f, 0f, -20f);
+            messageText.alphaTimer = duration + 2f;
+
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) => {
 
                 if (p < 0.5) {
@@ -1485,7 +1473,6 @@ namespace TheOtherRoles
                         renderer.color = new Color(color.r, color.g, color.b, Mathf.Clamp01((1 - p) * 2 * 0.75f));
                 }
                 if (p == 1f && renderer != null) renderer.enabled = false;
-                if (p == 1f) messageText.gameObject.Destroy();
             })));
         }
 
@@ -1718,6 +1705,47 @@ namespace TheOtherRoles
                 player.cosmetics.PettingHand.SetAlpha(alpha);
         }
 
+        // From Mira-API
+
+        /// <summary>
+        /// Creates and shows a notification.
+        /// </summary>
+        /// <param name="text">The text you want to display.</param>
+        /// <param name="color">The color of the text and image.</param>
+        /// <param name="clip">The sound you want to play with the notification.</param>
+        /// <param name="spr">The sprite beside the notification.</param>
+        /// <returns>The created notification.</returns>
+        public static LobbyNotificationMessage CreateAndShowNotification(string text, Color color, AudioClip clip = null, Sprite spr = null)
+        {
+            return CreateAndShowNotification(text, color, new Vector3(0f, 0f, -2f), clip, spr);
+        }
+
+        /// <summary>
+        /// Creates and shows a notification.
+        /// </summary>
+        /// <param name="text">The text you want to display.</param>
+        /// <param name="color">The color of the text and image.</param>
+        /// <param name="localPos">The position of the notification.</param>
+        /// <param name="clip">The sound you want to play with the notification.</param>
+        /// <param name="spr">The sprite beside the notification.</param>
+        /// <returns>The created notification.</returns>
+        public static LobbyNotificationMessage CreateAndShowNotification(string text, Color color, Vector3 localPos, AudioClip clip = null, Sprite spr = null)
+        {
+            var popper = HudManager.Instance.Notifier;
+            var newMessage = UnityEngine.Object.Instantiate(popper.notificationMessageOrigin, Vector3.zero, Quaternion.identity, popper.transform);
+            newMessage.transform.localPosition = localPos;
+            newMessage.SetUp(text, spr ?? null, color, new System.Action(() => popper.OnMessageDestroy(newMessage)));
+            popper.lastMessageKey = -1;
+            popper.ShiftMessages();
+            popper.AddMessageToQueue(newMessage);
+
+            if (clip == null) return newMessage;
+            SoundManager.Instance.StopSound(clip);
+            SoundManager.Instance.PlaySound(clip, false, 2f);
+
+            return newMessage;
+        }
+
         public static PlainShipRoom getPlainShipRoom(PlayerControl p)
         {
             PlainShipRoom[] array = null;
@@ -1814,9 +1842,7 @@ namespace TheOtherRoles
             {
                 if (breakShield)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BreakArmor, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.breakArmor();
+                    RPCProcedure.BreakArmor.Invoke();
                 }
                 if (showShield)
                 {
@@ -1859,11 +1885,7 @@ namespace TheOtherRoles
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.shieldedMurderAttempt(medic.player.PlayerId);
 
-                    MessageWriter acWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockMedicAcChallenge, SendOption.Reliable, -1);
-                    acWriter.Write(killer.PlayerId);
-                    acWriter.Write(medic.player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(acWriter);
-                    RPCProcedure.unlockMedicAcChallenge(killer.PlayerId, medic.player.PlayerId);
+                    Medic.GainAchievement.Invoke((killer.PlayerId, medic.player.PlayerId));
                 }
                 SoundEffectsManager.play("fail");
                 return MurderAttemptResult.SuppressKill;
@@ -1894,10 +1916,7 @@ namespace TheOtherRoles
             // Kill the killer if Veteran is on alert
             else if (Veteran.players.Any(x => x.player == target && x.alertActive))
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.UnlockVeteranAcChallenge, Hazel.SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.unlockVeteranAcChallenge(target.PlayerId);
+                Veteran.GainAchievement.Invoke(target.PlayerId);
                 return MurderAttemptResult.ReverseKill;
             }
 
@@ -1958,12 +1977,7 @@ namespace TheOtherRoles
                 HudManager.Instance.StartCoroutine(Effects.Lerp(10f, new Action<float>((p) => {
                     if (!TransportationToolPatches.isUsingTransportation(target) && Vampire.players.Any(x => x.bitten == target))
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-                        writer.Write(byte.MaxValue);
-                        writer.Write(byte.MaxValue);
-                        writer.Write(killer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue, killer.PlayerId);
+                        Vampire.SetBitten.Invoke((byte.MaxValue, byte.MaxValue, killer.PlayerId));
                         MurderPlayer(killer, target, showAnimation);
                     }
                 })));
@@ -2209,7 +2223,7 @@ namespace TheOtherRoles
             var position = Undertaker.DraggedBody != null
                 ? Undertaker.DraggedBody.transform.position
                 : Vector3.zero;
-            Undertaker.DropBody(position);
+            Undertaker.DropBody.LocalInvoke(position);
         }
     }
 }

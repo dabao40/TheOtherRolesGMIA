@@ -326,10 +326,7 @@ namespace TheOtherRoles.Modules
                             if (randomRole.roleId == RoleId.Shifter)
                             {
                                 bool shifterIsNeutral = randomRole == RoleInfo.chainshifter;
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetShifterType, Hazel.SendOption.Reliable, -1);
-                                writer.Write(shifterIsNeutral);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                RPCProcedure.setShifterType(shifterIsNeutral);
+                                Shifter.SetType.Invoke(shifterIsNeutral);
                             }
                             sendPick((byte)randomRole.roleId, originalAvailable.Count > 1, randomRole == RoleInfo.niceshifter || randomRole == RoleInfo.niceSwapper);
                         }
@@ -390,10 +387,7 @@ namespace TheOtherRoles.Modules
                                     if (roleInfo.roleId == RoleId.Shifter)
                                     {
                                         bool shifterIsNeutral = roleInfo == RoleInfo.chainshifter;
-                                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetShifterType, Hazel.SendOption.Reliable, -1);
-                                        writer.Write(shifterIsNeutral);
-                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                        RPCProcedure.setShifterType(shifterIsNeutral);
+                                        Shifter.SetType.Invoke(shifterIsNeutral);
                                     }
                                     sendPick((byte)roleInfo.roleId, isSpecialRole: roleInfo == RoleInfo.niceshifter || roleInfo == RoleInfo.niceSwapper);
                                 }));
@@ -414,10 +408,7 @@ namespace TheOtherRoles.Modules
                                     if (randomRole.roleId == RoleId.Shifter)
                                     {
                                         bool shifterIsNeutral = randomRole == RoleInfo.chainshifter;
-                                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetShifterType, Hazel.SendOption.Reliable, -1);
-                                        writer.Write(shifterIsNeutral);
-                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                        RPCProcedure.setShifterType(shifterIsNeutral);
+                                        Shifter.SetType.Invoke(shifterIsNeutral);
                                     }
                                     sendPick((byte)randomRole.roleId, true, randomRole == RoleInfo.niceshifter || randomRole == RoleInfo.niceSwapper);
                                 }));

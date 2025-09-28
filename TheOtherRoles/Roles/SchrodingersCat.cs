@@ -14,6 +14,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class SchrodingersCat : RoleBase<SchrodingersCat>
     {
         public SchrodingersCat()
@@ -34,6 +35,34 @@ namespace TheOtherRoles.Roles
             }
             if (teams != null) teams.ForEach(x => x.gameObject.SetActive(false));
         }
+
+        public static RemoteProcess<byte> SetTeam = RemotePrimitiveProcess.OfByte("SchrodingersCatSetTeam", (message, _) =>
+        {
+            switch ((Team)message)
+            {
+                case Team.Crewmate:
+                    setCrewFlag();
+                    break;
+                case Team.Impostor:
+                    setImpostorFlag();
+                    allPlayers.ForEach(x => FastDestroyableSingleton<RoleManager>.Instance.SetRole(x, RoleTypes.Impostor));
+                    break;
+                case Team.Jackal:
+                    setJackalFlag();
+                    break;
+                case Team.JekyllAndHyde:
+                    setJekyllAndHydeFlag();
+                    break;
+                case Team.Moriarty:
+                    setMoriartyFlag();
+                    break;
+                default:
+                    setCrewFlag();
+                    break;
+            }
+            if (PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat)) new StaticAchievementToken("schrodingersCat.another1");
+            allPlayers.ForEach(x => TORGameManager.Instance?.RecordRoleHistory(x));
+        });
 
         public override void OnDeath(PlayerControl killer = null)
         {
@@ -182,10 +211,7 @@ namespace TheOtherRoles.Roles
                     parent.transform.localPosition = new Vector3(0, 0, 0);
                     var impostor = createPoolable(parent, "impostor", 0, (UnityAction)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
-                        writer.Write((byte)Team.Impostor);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.schrodingersCatSetTeam((byte)Team.Impostor);
+                        SetTeam.Invoke((byte)Team.Impostor);
                         showMenu();
                     }));
                     teams.Add(impostor);
@@ -193,10 +219,7 @@ namespace TheOtherRoles.Roles
                     {
                         var jackal = createPoolable(parent, "jackal", 1, (UnityAction)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
-                            writer.Write((byte)Team.Jackal);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.schrodingersCatSetTeam((byte)Team.Jackal);
+                            SetTeam.Invoke((byte)Team.Jackal);
                             showMenu();
                         }));
                         teams.Add(jackal);
@@ -205,10 +228,7 @@ namespace TheOtherRoles.Roles
                     {
                         var moriarty = createPoolable(parent, "moriarty", 2, (UnityAction)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
-                            writer.Write((byte)Team.Moriarty);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.schrodingersCatSetTeam((byte)Team.Moriarty);
+                            SetTeam.Invoke((byte)Team.Moriarty);
                             showMenu();
                         }));
                         teams.Add(moriarty);
@@ -217,20 +237,14 @@ namespace TheOtherRoles.Roles
                     {
                         var jekyllAndHyde = createPoolable(parent, "jekyllAndHyde", 6, (UnityAction)(() =>
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
-                            writer.Write((byte)Team.JekyllAndHyde);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.schrodingersCatSetTeam((byte)Team.JekyllAndHyde);
+                            SetTeam.Invoke((byte)Team.JekyllAndHyde);
                             showMenu();
                         }));
                         teams.Add(jekyllAndHyde);
                     }
                     var crewmate = createPoolable(parent, "crewmate", 10, (UnityAction)(() =>
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SchrodingersCatSetTeam, SendOption.Reliable, -1);
-                        writer.Write((byte)Team.Crewmate);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.schrodingersCatSetTeam((byte)Team.Crewmate);
+                        SetTeam.Invoke((byte)Team.Crewmate);
                         showMenu();
                     }));
                     teams.Add(crewmate);

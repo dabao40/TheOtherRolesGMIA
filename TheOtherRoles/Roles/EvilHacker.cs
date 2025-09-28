@@ -1,10 +1,13 @@
+using AmongUs.GameOptions;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class EvilHacker : RoleBase<EvilHacker>
     {
         public static Color color = Palette.ImpostorRed;
@@ -22,6 +25,28 @@ namespace TheOtherRoles.Roles
             acTokenChallenge = null;
             canCreateMadmate = CustomOptionHolder.evilHackerCanCreateMadmate.getBool();
         }
+
+        public static RemoteProcess<(byte targetId, byte evilHackerId)> CreatesMadmate = new("EvilHackerCreateMadmate", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.targetId);
+            PlayerControl evilHacker = Helpers.playerById(message.evilHackerId);
+            var evilHackerRole = getRole(evilHacker);
+            if (evilHacker == null || evilHackerRole == null) return;
+            if (canCreateMadmateFromJackal || !player.isRole(RoleId.Jackal))
+            {
+                FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
+
+                // タスクがないプレイヤーがMadmateになった場合はショートタスクを必要数割り当てる
+                RPCProcedure.erasePlayerRoles(player.PlayerId, true, true, false);
+                if (CreatedMadmate.hasTasks && player == PlayerControl.LocalPlayer)
+                    player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
+
+                CreatedMadmate.createdMadmate.Add(player);
+                if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
+            }
+            evilHackerRole.canCreateMadmate = false;
+            return;
+        });
 
         public AchievementToken<(bool admin, bool cleared)> acTokenChallenge = null;
 

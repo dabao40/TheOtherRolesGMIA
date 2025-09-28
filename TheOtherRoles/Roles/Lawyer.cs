@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Lawyer : RoleBase<Lawyer> {
         public static PlayerControl target;
         public static Color color = new Color32(134, 153, 25, byte.MaxValue);
@@ -19,6 +20,17 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Lawyer;
         }
 
+        public static RemoteProcess<byte> SetTarget = RemotePrimitiveProcess.OfByte("LawyerSetTarget", (message, _) => target = Helpers.playerById(message));
+
+        public static RemoteProcess TriggerWin = new("LawyerWin", (_) =>  triggerLawyerWin = true);
+
+        public static RemoteProcess<byte> PromoteToPursuer = RemotePrimitiveProcess.OfByte("LawyerPromotesToPursuer", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            eraseRole(player);
+            player.setRole(RoleId.Pursuer);
+        });
+
         public override void FixedUpdate()
         {
             if (player != PlayerControl.LocalPlayer) return;
@@ -27,19 +39,14 @@ namespace TheOtherRoles.Roles
             if (winsAfterMeetings && neededMeetings == meetings && target != null && !target.Data.IsDead)
             {
                 winsAfterMeetings = false; // Avoid sending mutliple RPCs until the host finshes the game
-                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerWin, SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                RPCProcedure.lawyerWin();
+                TriggerWin.Invoke();
                 return;
             }
 
             // Promote to Pursuer
             if (target != null && target.Data.Disconnected && !player.Data.IsDead)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, SendOption.Reliable, -1);
-                writer.Write(player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.lawyerPromotesToPursuer(player.PlayerId);
+                PromoteToPursuer.Invoke(player.PlayerId);
                 return;
             }
         }

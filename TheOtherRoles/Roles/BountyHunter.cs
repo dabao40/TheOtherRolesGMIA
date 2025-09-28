@@ -29,7 +29,7 @@ namespace TheOtherRoles.Roles
                 bountyUpdateTimer = 0f;
         }
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/BountyHunter.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/BountyHunter.png");
 
         public override void FixedUpdate()
         {

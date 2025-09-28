@@ -44,7 +44,7 @@ namespace TheOtherRoles.Roles
         public Dictionary<string, TMPro.TMP_Text> impostorPositionText;
         public TMPro.TMP_Text targetPositionText;
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/EvilTracker.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/EvilTracker.png");
 
         public static Sprite getEvilTrackerButtonSprite()
         {

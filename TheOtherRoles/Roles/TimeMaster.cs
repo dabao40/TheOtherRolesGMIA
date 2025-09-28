@@ -1,8 +1,10 @@
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class TimeMaster : RoleBase<TimeMaster> {
         public static Color color = new Color32(112, 142, 239, byte.MaxValue);
 
@@ -25,6 +27,15 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.TimeMaster;
             shieldActive = false;
         }
+
+        public static RemoteProcess<byte> UseShield = RemotePrimitiveProcess.OfByte("TimeMasterShield", (message, _) =>
+        {
+            var timeMaster = getRole(Helpers.playerById(message));
+            timeMaster.shieldActive = true;
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(shieldDuration, new System.Action<float>((p) => {
+                if (p == 1f) timeMaster.shieldActive = false;
+            })));
+        });
 
         public static void clearAndReload() {
             isRewinding = false;

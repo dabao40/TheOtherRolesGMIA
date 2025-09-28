@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class NekoKabocha : RoleBase<NekoKabocha>
     {
         public NekoKabocha()
@@ -25,6 +26,12 @@ namespace TheOtherRoles.Roles
 
         public PlayerControl meetingKiller = null;
         public PlayerControl otherKiller = null;
+
+        public static RemoteProcess<(byte targetId, byte killerId)> RevengeExile = new("NekoKabochaExile", (message, _) =>
+        {
+            RPCProcedure.uncheckedExilePlayer(message.targetId);
+            GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(message.targetId), DeadPlayer.CustomDeathReason.Revenge, killer: Helpers.playerById(message.killerId));
+        });
 
         public override void OnMeetingStart()
         {
@@ -67,11 +74,7 @@ namespace TheOtherRoles.Roles
                 int targetID = rnd.Next(0, candidates.Count);
                 var target = candidates[targetID];
 
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NekoKabochaExile, SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                writer.Write(player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.nekoKabochaExile(target.PlayerId, player.PlayerId);
+                RevengeExile.Invoke((target.PlayerId, player.PlayerId));
             }
             meetingKiller = null;
         }

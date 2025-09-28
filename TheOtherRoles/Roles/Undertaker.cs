@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Undertaker : RoleBase<Undertaker>
     {
         public static Color color = Palette.ImpostorRed;
@@ -27,33 +28,13 @@ namespace TheOtherRoles.Roles
         public static Sprite dragButtonSprite;
         public static Sprite dropButtonSprite;
 
-        public static void RpcDropBody(Vector3 position)
-        {
-            if (allPlayers.Count == 0) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndertakerDropBody, SendOption.Reliable, -1);
-            writer.Write(position.x);
-            writer.Write(position.y);
-            writer.Write(position.z);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            DropBody(position);
-        }
-
-        public static void RpcDragBody(byte playerId)
-        {
-            if (allPlayers.Count == 0) return;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndertakerDragBody, SendOption.Reliable, -1);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            DragBody(playerId);
-        }
-
-        public static void DropBody(Vector3 position)
+        public static RemoteProcess<Vector3> DropBody = RemotePrimitiveProcess.OfVector3("UndertakerDropBody", (message, _) =>
         {
             if (!DraggedBody) return;
-            DraggedBody.transform.position = position;
+            DraggedBody.transform.position = message;
             DraggedBody = null;
             TargetBody = null;
-        }
+        });
 
         public override void FixedUpdate()
         {
@@ -128,7 +109,7 @@ namespace TheOtherRoles.Roles
 
             if (player.Data.IsDead) {
                 if (player.AmOwner)
-                    RpcDropBody(newBodyPos);
+                    DropBody.Invoke(newBodyPos);
                 return;
             }
 
@@ -139,13 +120,13 @@ namespace TheOtherRoles.Roles
             Helpers.SetDeadBodyOutline(bodyComponent, Color.green);
         }
 
-        public static void DragBody(byte playerId)
+        public static RemoteProcess<byte> DragBody = RemotePrimitiveProcess.OfByte("UndertakerDragBody", (message, _) =>
         {
             if (allPlayers.Count == 0) return;
-            var body = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == playerId);
+            var body = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == message);
             if (body == null) return;
             DraggedBody = body;
-        }
+        });
 
         public static Sprite getDragButtonSprite()
         {

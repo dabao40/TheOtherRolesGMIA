@@ -5,6 +5,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Morphling : RoleBase<Morphling> {
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
@@ -21,6 +22,18 @@ namespace TheOtherRoles.Roles
             morphTimer = 0f;
             acTokenChallenge = null;
         }
+
+        public static RemoteProcess<(byte playerId, byte morphlingId)> Morph = new("MorphlingMorph", (message, _) =>
+        {
+            PlayerControl target = Helpers.playerById(message.playerId);
+            Morphling morphling = getRole(Helpers.playerById(message.morphlingId));
+            if (morphling == null || target == null) return;
+
+            morphling.morphTimer = duration;
+            morphling.morphTarget = target;
+            if (Camouflager.camouflageTimer <= 0f)
+                morphling.player.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
+        });
     
         public static float cooldown = 30f;
         public static float duration = 10f;

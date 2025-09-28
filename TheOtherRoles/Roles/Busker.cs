@@ -1,11 +1,12 @@
 using System;
-using Hazel;
+using BepInEx.Unity.IL2CPP.Utils;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Busker : RoleBase<Busker>
     {
         public static Color color = new(255f / 255f, 172f / 255f, 117f / 255f);
@@ -45,13 +46,30 @@ namespace TheOtherRoles.Roles
 
         public void dieBusker(bool isLoverSuicide = false)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)CustomRPC.BuskerPseudocide, SendOption.Reliable, -1);
-            writer.Write(player.PlayerId);
-            writer.Write(true);
-            writer.Write(isLoverSuicide);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.buskerPseudocide(player.PlayerId, true, isLoverSuicide);
+            Pseudocide.Invoke((player.PlayerId, true, isLoverSuicide));
         }
+
+        public static RemoteProcess<(byte targetId, bool isTrueDead, bool isLoverSuicide)> Pseudocide = new("BuskerPseudocide", (message, _) =>
+        RPCProcedure.buskerPseudocide(message.targetId, message.isTrueDead, message.isLoverSuicide));
+
+        public static RemoteProcess<byte> Revive = RemotePrimitiveProcess.OfByte("BuskerRevive", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            var busker = getRole(player);
+            if (player == null || busker == null) return;
+            busker.pseudocideFlag = false;
+            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            foreach (DeadBody body in array)
+            {
+                if (body.ParentId != message) continue;
+                UnityEngine.Object.Destroy(body.gameObject);
+                break;
+            }
+            player.Revive();
+            player.Data.IsDead = false;
+            player.StartCoroutine(player.CoGush());
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << message) { RelatedTag = EventDetail.Revive });
+        });
 
         public bool checkPseudocide()
         {

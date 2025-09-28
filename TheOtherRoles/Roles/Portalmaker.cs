@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles;
 
+[TORRPCHolder]
 public class Portalmaker : RoleBase<Portalmaker>
 {
     public static Color color = new Color32(69, 69, 169, byte.MaxValue);
@@ -18,6 +19,18 @@ public class Portalmaker : RoleBase<Portalmaker>
     }
 
     public static readonly HelpSprite[] HelpSprites = [new(getPlacePortalButtonSprite(), "portalmakerCreateHint")];
+
+    public static RemoteProcess<Vector2> PlacePortal = RemotePrimitiveProcess.OfVector2("PlacePortal", (message, _) => new Portal(message));
+
+    public static RemoteProcess<(byte playerId, byte exit)> UsePortal = new("UsePortal", (message, _) =>
+    {
+        Portal.startTeleport(message.playerId, message.exit);
+        if (isRole(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead && local.acTokenChallenge != null)
+        {
+            local.acTokenChallenge.Value.portal++;
+            local.acTokenChallenge.Value.cleared |= local.acTokenChallenge.Value.portal >= 3;
+        }
+    });
 
     public static float cooldown;
     public static float usePortalCooldown;

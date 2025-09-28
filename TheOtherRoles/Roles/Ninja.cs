@@ -8,6 +8,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Ninja : RoleBase<Ninja>
     {
         public static Color color = Palette.ImpostorRed;
@@ -25,6 +26,12 @@ namespace TheOtherRoles.Roles
         public AchievementToken<int> acTokenChallenge = null;
 
         static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "ninjaStealthHint")];
+
+        public static RemoteProcess<(byte playerId, bool stealthed)> Stealth = new("NinjaStealth", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            setStealthed(player, message.stealthed);
+        });
 
         public Ninja()
         {

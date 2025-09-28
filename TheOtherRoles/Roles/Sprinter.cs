@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Sprinter : RoleBase<Sprinter>
     {
         public static Color color = new Color32(128, 128, 255, byte.MaxValue);
@@ -34,6 +35,12 @@ namespace TheOtherRoles.Roles
             if (sprintDuration <= 15f)
                 acTokenMove ??= new("sprinter.common2", (Vector3.zero, false), (val, _) => val.cleared);
         }
+
+        public static RemoteProcess<(byte playerId, bool sprinting)> Sprint = new("SprinterSprint", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            setSprinting(player, message.sprinting);
+        });
 
         public override void ResetRole(bool isShifted)
         {

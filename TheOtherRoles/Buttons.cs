@@ -499,15 +499,11 @@ namespace TheOtherRoles
                     engineerRepairButton.Timer = 0f;
                     Engineer.local.remainingFixes--;
                     _ = new StaticAchievementToken("engineer.common1");
-                    MessageWriter usedRepairWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerUsedRepair, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(usedRepairWriter);
-                    RPCProcedure.engineerUsedRepair();
+                    Engineer.UseRepair.Invoke();
                     SoundEffectsManager.play("engineerRepair");
                     foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks.GetFastEnumerator()) {
                         if (task.TaskType == TaskTypes.FixLights) {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixLights, Hazel.SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.engineerFixLights();
+                            Engineer.FixLights.Invoke();
                         } else if (task.TaskType == TaskTypes.RestoreOxy) {
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 0 | 64);
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.LifeSupp, 1 | 64);
@@ -522,9 +518,7 @@ namespace TheOtherRoles
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 0 | 16);
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 1 | 16);
                         } else if (SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask) {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixSubmergedOxygen, Hazel.SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.engineerFixSubmergedOxygen();
+                            Engineer.FixSubmergedOxygen.Invoke();
                         }
 
                     }
@@ -565,11 +559,7 @@ namespace TheOtherRoles
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
                                     _ = new StaticAchievementToken("janitor.common1");
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(playerInfo.PlayerId);
-                                    writer.Write(Janitor.local.player.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                    RPCProcedure.cleanBody(playerInfo.PlayerId, Janitor.local.player.PlayerId);
+                                    RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                                     janitorCleanButton.Timer = janitorCleanButton.MaxTimer;
                                     SoundEffectsManager.play("cleanerClean");
 
@@ -643,10 +633,7 @@ namespace TheOtherRoles
                     if (Helpers.isEvil(Helpers.playerById(targetId)))
                         _ = new StaticAchievementToken("deputy.common1");
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DeputyUsedHandcuffs, Hazel.SendOption.Reliable, -1);
-                    writer.Write(targetId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.deputyUsedHandcuffs(targetId);
+                    Deputy.Handcuff.Invoke(targetId);
                     if (promotedDeputy) {
                         Sheriff.local.remainingHandcuffs--;
                     }
@@ -702,10 +689,7 @@ namespace TheOtherRoles
             // Time Master Rewind Time
             timeMasterShieldButton = new CustomButton(
                 () => {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TimeMasterShield, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.timeMasterShield(PlayerControl.LocalPlayer.PlayerId);
+                    TimeMaster.UseShield.Invoke(PlayerControl.LocalPlayer.PlayerId);
                     SoundEffectsManager.play("timemasterShield");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -738,16 +722,12 @@ namespace TheOtherRoles
                     if (!Helpers.isEvil(Medic.local.currentTarget))
                         _ = new StaticAchievementToken("medic.common1");
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, Medic.setShieldAfterMeeting ? (byte)CustomRPC.SetFutureShielded : (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Medic.local.currentTarget.PlayerId);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     if (Medic.setShieldAfterMeeting)
-                        RPCProcedure.setFutureShielded(Medic.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Medic.FutureShield.Invoke((Medic.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     else
-                        RPCProcedure.medicSetShielded(Medic.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
-                    Medic.local.meetingAfterShielding = false;
+                        Medic.Shield.Invoke((Medic.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
 
+                    Medic.local.meetingAfterShielding = false;
                     SoundEffectsManager.play("medicShield");
                     },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Medic) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -851,10 +831,7 @@ namespace TheOtherRoles
             shifterShiftButton = new CustomButton(
                 () => {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Shifter.currentTarget)) return;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureShifted, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Shifter.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.setFutureShifted(Shifter.currentTarget.PlayerId);
+                    Shifter.SetFutureShifted.Invoke(Shifter.currentTarget.PlayerId);
                     SoundEffectsManager.play("shifterShift");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Shifter) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -904,11 +881,7 @@ namespace TheOtherRoles
                 () => {
                     if (Morphling.local.sampledTarget != null) {
                          _ = new StaticAchievementToken("morphling.common1");
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Morphling.local.sampledTarget.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.morphlingMorph(Morphling.local.sampledTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Morphling.Morph.Invoke((Morphling.local.sampledTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                         Morphling.local.sampledTarget = null;
                         morphlingButton.EffectDuration = Morphling.duration;
                         morphlingButton.shakeOnEnd = true;
@@ -963,9 +936,7 @@ namespace TheOtherRoles
             camouflagerButton = new CustomButton(
                 () => {
                     _ = new StaticAchievementToken("camouflager.common1");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CamouflagerCamouflage, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.camouflagerCamouflage();
+                    Camouflager.ActivateCamo.Invoke();
                     SoundEffectsManager.play("morphlingMorph");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Camouflager) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1133,11 +1104,7 @@ namespace TheOtherRoles
                     if (Tracker.local.currentTarget.Data.Role.IsImpostor)
                         _ = new StaticAchievementToken("tracker.common1");
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrackerUsedTracker, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Tracker.local.currentTarget.PlayerId);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.trackerUsedTracker(Tracker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                    Tracker.UseTracker.Invoke((Tracker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     SoundEffectsManager.play("trackerTrackPlayer");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Tracker) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1233,12 +1200,7 @@ namespace TheOtherRoles
                             _ = new StaticAchievementToken("vampire.common1");
                             Vampire.local.bitten = Vampire.local.currentTarget;
                             // Notify players about bitten
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-                            writer.Write(Vampire.local.bitten.PlayerId);
-                            writer.Write((byte)0);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.vampireSetBitten(Vampire.local.bitten.PlayerId, 0, PlayerControl.LocalPlayer.PlayerId);
+                            Vampire.SetBitten.Invoke((Vampire.local.bitten.PlayerId, 0, PlayerControl.LocalPlayer.PlayerId));
 
                             byte lastTimer = (byte)Vampire.delay;
                             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Vampire.delay, new Action<float>((p) => { // Delayed action
@@ -1248,12 +1210,7 @@ namespace TheOtherRoles
                                     if (res == MurderAttemptResult.PerformKill)
                                     {
                                         Vampire.local.acTokenChallenge.Value.deathTime = DateTime.UtcNow;
-                                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-                                        writer.Write(byte.MaxValue);
-                                        writer.Write(byte.MaxValue);
-                                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                        RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue, PlayerControl.LocalPlayer.PlayerId);
+                                        Vampire.SetBitten.Invoke((byte.MaxValue, byte.MaxValue, PlayerControl.LocalPlayer.PlayerId));
                                     }
                                 }
                             })));
@@ -1303,14 +1260,7 @@ namespace TheOtherRoles
                 () => {
                     Vampire.localPlacedGarlic = true;
                     var pos = PlayerControl.LocalPlayer.transform.position;
-                    byte[] buff = new byte[sizeof(float) * 2];
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceGarlic, Hazel.SendOption.Reliable);
-                    writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
-                    RPCProcedure.placeGarlic(buff);
+                    RPCProcedure.PlaceGarlic.Invoke(pos);
                     SoundEffectsManager.play("garlic");
                 },
                 () => { return !Vampire.localPlacedGarlic && !PlayerControl.LocalPlayer.Data.IsDead && Vampire.garlicsActive && !HideNSeek.isHideNSeekGM; },
@@ -1330,14 +1280,7 @@ namespace TheOtherRoles
                     portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer;
 
                     var pos = PlayerControl.LocalPlayer.transform.position;
-                    byte[] buff = new byte[sizeof(float) * 2];
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlacePortal, Hazel.SendOption.Reliable);
-                    writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
-                    RPCProcedure.placePortal(buff);
+                    Portalmaker.PlacePortal.Invoke(pos);
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker) && !PlayerControl.LocalPlayer.Data.IsDead && Portal.secondPortal == null; },
@@ -1371,13 +1314,13 @@ namespace TheOtherRoles
 
                     PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(entry);
 
-                    if (!PlayerControl.LocalPlayer.Data.IsDead) {  // Ghosts can portal too, but non-blocking and only with a local animation
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UsePortal, Hazel.SendOption.Reliable, -1);
-                        writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(portalMakerSoloTeleport ? (byte)1 : (byte)0);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    if (!PlayerControl.LocalPlayer.Data.IsDead)
+                    {  // Ghosts can portal too, but non-blocking and only with a local animation
+                        Portalmaker.UsePortal.Invoke((PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0));
                     }
-                    RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0);
+                    else {
+                        Portalmaker.UsePortal.LocalInvoke((PlayerControl.LocalPlayer.PlayerId, portalMakerSoloTeleport ? (byte)1 : (byte)0));
+                    }
                     usePortalButton.Timer = usePortalButton.MaxTimer;
                     portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
                     SoundEffectsManager.play("portalUse");
@@ -1418,13 +1361,13 @@ namespace TheOtherRoles
                     bool didTeleport = false;
                     Vector3 exit = Portal.secondPortal.portalGameObject.transform.position;
 
-                    if (!PlayerControl.LocalPlayer.Data.IsDead) {  // Ghosts can portal too, but non-blocking and only with a local animation
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UsePortal, Hazel.SendOption.Reliable, -1);
-                        writer.Write((byte)PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write((byte)2);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    if (!PlayerControl.LocalPlayer.Data.IsDead)
+                    {  // Ghosts can portal too, but non-blocking and only with a local animation
+                        Portalmaker.UsePortal.Invoke((PlayerControl.LocalPlayer.PlayerId, 2));
                     }
-                    RPCProcedure.usePortal(PlayerControl.LocalPlayer.PlayerId, 2);
+                    else {
+                        Portalmaker.UsePortal.LocalInvoke((PlayerControl.LocalPlayer.PlayerId, 2));
+                    }
                     usePortalButton.Timer = usePortalButton.MaxTimer;
                     portalmakerMoveToPortalButton.Timer = usePortalButton.MaxTimer;
                     SoundEffectsManager.play("portalUse");
@@ -1475,11 +1418,7 @@ namespace TheOtherRoles
                 () => {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Jackal.local.currentTarget)) return;
                     _ = new StaticAchievementToken("jackal.common1");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.JackalCreatesSidekick, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Jackal.local.currentTarget.PlayerId);
-                    writer.Write(Jackal.local.player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.jackalCreatesSidekick(Jackal.local.currentTarget.PlayerId, Jackal.local.player.PlayerId);
+                    Jackal.CreateSidekick.Invoke((Jackal.local.currentTarget.PlayerId, Jackal.local.player.PlayerId));
                     SoundEffectsManager.play("jackalSidekick");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Jackal) && Jackal.local.canCreateSidekick && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1679,10 +1618,7 @@ namespace TheOtherRoles
 
                     byte targetId = PlagueDoctor.currentTarget.PlayerId;
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorSetInfected, Hazel.SendOption.Reliable, -1);
-                    writer.Write(targetId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.plagueDoctorInfected(targetId);
+                    PlagueDoctor.SetInfected.Invoke(targetId);
                     PlagueDoctor.numInfections--;
                     _ = new StaticAchievementToken("plagueDoctor.common1");
 
@@ -1719,11 +1655,7 @@ namespace TheOtherRoles
                      * creates madmate
                      */
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, EvilHacker.local.currentTarget)) return;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EvilHackerCreatesMadmate, Hazel.SendOption.Reliable, -1);
-                    writer.Write(EvilHacker.local.currentTarget.PlayerId);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.evilHackerCreatesMadmate(EvilHacker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                    EvilHacker.CreatesMadmate.Invoke((EvilHacker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     _ = new StaticAchievementToken("evilHacker.common1");
 
                 },
@@ -1768,11 +1700,7 @@ namespace TheOtherRoles
                        _ = new StaticAchievementToken("blackmailer.common1");
                        Blackmailer.local.acTokenChallenge.Value.cleared |= Blackmailer.local.acTokenChallenge.Value.witness.Any(x => x == Blackmailer.local.currentTarget.PlayerId);
 
-                       MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BlackmailPlayer, Hazel.SendOption.Reliable, -1);
-                       writer.Write(Blackmailer.local.currentTarget.PlayerId);
-                       writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                       AmongUsClient.Instance.FinishRpcImmediately(writer);
-                       RPCProcedure.blackmailPlayer(Blackmailer.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                       Blackmailer.Blackmail.Invoke((Blackmailer.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                        blackmailerButton.Timer = blackmailerButton.MaxTimer;
                        SoundEffectsManager.play("blackmailerSilence");
                    }
@@ -1816,10 +1744,7 @@ namespace TheOtherRoles
                     if (Eraser.local.currentTarget.Data.Role.IsImpostor) _ = new StaticAchievementToken("eraser.another1");
                     Eraser.local.acTokenChallenge.Value++;
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureErased, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Eraser.local.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.setFutureErased(Eraser.local.currentTarget.PlayerId);
+                    Eraser.SetFutureErased.Invoke(Eraser.local.currentTarget.PlayerId);
                     SoundEffectsManager.play("eraserErase");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Eraser) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1866,11 +1791,7 @@ namespace TheOtherRoles
                     {
                         if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Moriarty.local.currentTarget)) return;
                         _ = new StaticAchievementToken("moriarty.common1");
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBrainwash, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Moriarty.local.currentTarget.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.setBrainwash(Moriarty.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Moriarty.Brainwash.Invoke((Moriarty.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                         SoundEffectsManager.play("moriartyBrainwash");
 
                         // 洗脳終了までのカウントダウン
@@ -1893,15 +1814,10 @@ namespace TheOtherRoles
             moriartyKillButton = new CustomButton(
                 () =>
                 {
-
                     MurderAttemptResult murder = Helpers.checkMurderAttemptAndKill(PlayerControl.LocalPlayer, Moriarty.local.killTarget, showAnimation: false);
                     if (murder == MurderAttemptResult.PerformKill)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MoriartyKill, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Moriarty.local.killTarget.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.moriartyKill(Moriarty.local.killTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Moriarty.UpdateCounter.Invoke((Moriarty.local.killTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                         Moriarty.local.target = null;
                         moriartyBrainwashButton.Timer = moriartyBrainwashButton.MaxTimer;
                     }
@@ -1942,14 +1858,7 @@ namespace TheOtherRoles
                     placeJackInTheBoxButton.Timer = placeJackInTheBoxButton.MaxTimer;
 
                     var pos = PlayerControl.LocalPlayer.transform.position;
-                    byte[] buff = new byte[sizeof(float) * 2];
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceJackInTheBox, Hazel.SendOption.Reliable);
-                    writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
-                    RPCProcedure.placeJackInTheBox(buff);
+                    Trickster.PlaceBox.Invoke(pos);
                     SoundEffectsManager.play("tricksterPlaceBox");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Trickster) && !PlayerControl.LocalPlayer.Data.IsDead && !JackInTheBox.hasJackInTheBoxLimitReached(); },
@@ -1970,9 +1879,7 @@ namespace TheOtherRoles
             lightsOutButton = new CustomButton(
                 () => {
                     _ = new StaticAchievementToken("trickster.common2");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LightsOut, Hazel.SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.lightsOut();
+                    Trickster.LightsOut.Invoke();
                     SoundEffectsManager.play("lighterLight");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Trickster) && !PlayerControl.LocalPlayer.Data.IsDead && JackInTheBox.hasJackInTheBoxLimitReached() && JackInTheBox.boxesConvertedToVents; },
@@ -2014,12 +1921,8 @@ namespace TheOtherRoles
                                     Cleaner.local.acTokenChallenge.Value++;
 
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
-                                    
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(playerInfo.PlayerId);
-                                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                    RPCProcedure.cleanBody(playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+
+                                    RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
 
                                     PlayerControl.LocalPlayer.killTimer = PlayerControl.LocalPlayer.GetKillCooldown();
                                     cleanerCleanButton.Timer = cleanerCleanButton.MaxTimer;
@@ -2261,10 +2164,7 @@ namespace TheOtherRoles
                     bool dousedEveryoneAlive = Arsonist.local.dousedEveryoneAlive();
                     if (dousedEveryoneAlive) {
                         _ = new StaticAchievementToken("arsonist.challenge");
-                        MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArsonistWin, Hazel.SendOption.Reliable, -1);
-                        winWriter.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                        RPCProcedure.arsonistWin(PlayerControl.LocalPlayer.PlayerId);
+                        Arsonist.TriggerWin.Invoke(PlayerControl.LocalPlayer.PlayerId);
                         arsonistButton.HasEffect = false;
                     } else if (Arsonist.local.currentTarget != null) {
                         if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Arsonist.local.currentTarget)) return;
@@ -2319,10 +2219,7 @@ namespace TheOtherRoles
             // Veteran Alert
             veteranAlertButton = new CustomButton(
                 () => {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VeteranAlert, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.veteranAlert(PlayerControl.LocalPlayer.PlayerId);
+                    Veteran.ActivateAlert.Invoke(PlayerControl.LocalPlayer.PlayerId);
 
                     Veteran.local.remainingAlerts--;
                     SoundEffectsManager.play("veteranAlert");
@@ -2354,10 +2251,7 @@ namespace TheOtherRoles
                 {
                     var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
                     var id = rnd.Next(remainingList.Count);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArchaeologistDetect, SendOption.Reliable);
-                    writer.Write(id);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.archaeologistDetect((byte)id);
+                    Archaeologist.DetectAntique.Invoke((byte)id);
                     _ = new StaticAchievementToken("archaeologist.common1");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Archaeologist) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -2414,10 +2308,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     byte index = (byte)Archaeologist.antiqueTarget.id;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArchaeologistExcavate, SendOption.Reliable);
-                    writer.Write(index);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.archaeologistExcavate(index);
+                    Archaeologist.ExcavateAntique.Invoke(index);
                     Archaeologist.revealed.RemoveAll(x => x.isBroken);
                     archaeologistExcavateButton.Timer = archaeologistExcavateButton.MaxTimer;
                 },
@@ -2699,12 +2590,12 @@ namespace TheOtherRoles
                     var bodyComponent = Undertaker.TargetBody;
                     if (Undertaker.DraggedBody == null && bodyComponent != null)
                     {
-                        Undertaker.RpcDragBody(bodyComponent.ParentId);
+                        Undertaker.DragBody.Invoke(bodyComponent.ParentId);
                     }
                     else if (Undertaker.DraggedBody != null)
                     {
                         var position = Undertaker.DraggedBody.transform.position;
-                        Undertaker.RpcDropBody(position);
+                        Undertaker.DropBody.Invoke(position);
                     }
                 }, // Action OnClick
                 () =>
@@ -2748,12 +2639,7 @@ namespace TheOtherRoles
                         return;
                     }
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BuskerPseudocide, SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(false);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.buskerPseudocide(PlayerControl.LocalPlayer.PlayerId, false, false);
+                    Busker.Pseudocide.Invoke((PlayerControl.LocalPlayer.PlayerId, false, false));
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Busker) && (!PlayerControl.LocalPlayer.Data.IsDead || Busker.local.checkPseudocide()); },
                 () =>
@@ -2785,10 +2671,7 @@ namespace TheOtherRoles
                         Busker.local.buttonInterrupted = false;
                         _ = new StaticAchievementToken("busker.common1");
                         Busker.local.acTokenChallenge.Value.pseudocide = DateTime.UtcNow;
-                        MessageWriter writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BuskerRevive, SendOption.Reliable, -1);
-                        writer1.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer1);
-                        RPCProcedure.buskerRevive(PlayerControl.LocalPlayer.PlayerId);
+                        Busker.Revive.Invoke(PlayerControl.LocalPlayer.PlayerId);
                         buskerButton.Timer = buskerButton.MaxTimer = Busker.cooldown;
                     }
                     else
@@ -2807,11 +2690,7 @@ namespace TheOtherRoles
             noisemakerButton = new CustomButton(
                 () =>
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NoisemakerSetSounded, SendOption.Reliable, -1);
-                    writer.Write(Noisemaker.local.currentTarget.PlayerId);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.noisemakerSetSounded(Noisemaker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                    Noisemaker.SetSounded.Invoke((Noisemaker.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     Noisemaker.local.numSound--;
                     noisemakerButton.Timer = noisemakerButton.MaxTimer;
                 },
@@ -3022,11 +2901,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Cupid.local.currentTarget)) return;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCupidShield, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Cupid.local.shieldTarget.PlayerId);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.setCupidShield(Cupid.local.shieldTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                    Cupid.SetShielded.Invoke((Cupid.local.shieldTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                 },
                 () => { return Cupid.isShieldOn && PlayerControl.LocalPlayer.isRole(RoleId.Cupid) && !PlayerControl.LocalPlayer.Data.IsDead && Cupid.local.shielded == null; },
                 () => { return PlayerControl.LocalPlayer.CanMove && Cupid.local.shieldTarget != null; },
@@ -3046,11 +2921,7 @@ namespace TheOtherRoles
                 {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Akujo.local.currentTarget)) return;
                     _ = new StaticAchievementToken("akujo.common2");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AkujoSetHonmei, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(Akujo.local.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.akujoSetHonmei(PlayerControl.LocalPlayer.PlayerId, Akujo.local.currentTarget.PlayerId);
+                    Akujo.SetHonmei.Invoke((PlayerControl.LocalPlayer.PlayerId, Akujo.local.currentTarget.PlayerId));
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Akujo) && !PlayerControl.LocalPlayer.Data.IsDead && Akujo.local.honmei == null && Akujo.local.cupidHonmei == null && Akujo.local.timeLeft > 0; },
                 () =>
@@ -3080,11 +2951,7 @@ namespace TheOtherRoles
                 {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Akujo.local.currentTarget)) return;
                     _ = new StaticAchievementToken("akujo.common1");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AkujoSetKeep, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(Akujo.local.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.akujoSetKeep(PlayerControl.LocalPlayer.PlayerId, Akujo.local.currentTarget.PlayerId);
+                    Akujo.SetKeep.Invoke((PlayerControl.LocalPlayer.PlayerId, Akujo.local.currentTarget.PlayerId));
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Akujo) && !PlayerControl.LocalPlayer.Data.IsDead && Akujo.local.keepsLeft > 0 && Akujo.local.timeLeft > 0; },
                 () =>
@@ -3115,18 +2982,11 @@ namespace TheOtherRoles
                     if (!MimicA.isMorph)
                     {
                         var partnerId = MimicK.allPlayers.FirstOrDefault().PlayerId;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MimicMorph, Hazel.SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(partnerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.mimicMorph(PlayerControl.LocalPlayer.PlayerId, partnerId);
+                        MimicA.Morph.Invoke((PlayerControl.LocalPlayer.PlayerId, partnerId));
                     }
                     else
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MimicResetMorph, Hazel.SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.mimicResetMorph(PlayerControl.LocalPlayer.PlayerId);
+                        MimicA.ResetMorph.Invoke(PlayerControl.LocalPlayer.PlayerId);
                     }
                     MimicA.acTokenCommon.Value++;
                 },
@@ -3178,11 +3038,7 @@ namespace TheOtherRoles
                     }
 
                     _ = new StaticAchievementToken("ninja.common1");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(true);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.ninjaStealth(PlayerControl.LocalPlayer.PlayerId, true);
+                    Ninja.Stealth.Invoke((PlayerControl.LocalPlayer.PlayerId, true));
                     SoundEffectsManager.play("ninjaStealth");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Ninja) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -3213,12 +3069,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     ninjaButton.Timer = ninjaButton.MaxTimer = Ninja.stealthCooldown;
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NinjaStealth, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.ninjaStealth(PlayerControl.LocalPlayer.PlayerId, false);
+                    Ninja.Stealth.Invoke((PlayerControl.LocalPlayer.PlayerId, false));
 
                     PlayerControl.LocalPlayer.SetKillTimer(Math.Max(PlayerControl.LocalPlayer.killTimer, Ninja.killPenalty));
                 },
@@ -3236,9 +3087,7 @@ namespace TheOtherRoles
                         var murderAttemptResult = Helpers.checkMuderAttempt(PlayerControl.LocalPlayer, Kataomoi.currentTarget);
                         if (murderAttemptResult == MurderAttemptResult.SuppressKill) return;
 
-                        MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.KataomoiWin, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                        RPCProcedure.kataomoiWin();
+                        Kataomoi.TriggerWin.Invoke();
 
                         if (murderAttemptResult == MurderAttemptResult.PerformKill)
                         {
@@ -3330,11 +3179,7 @@ namespace TheOtherRoles
                     if (!Kataomoi.exists) return;
 
                     byte playerId = PlayerControl.LocalPlayer.PlayerId;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.KataomoiStalking, Hazel.SendOption.Reliable, -1);
-                    writer.Write(playerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    RPCProcedure.kataomoiStalking(playerId);
+                    Kataomoi.SetStalking.Invoke(playerId);
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Kataomoi) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => {
@@ -3367,10 +3212,7 @@ namespace TheOtherRoles
                         return;
                     }
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FoxStealth, Hazel.SendOption.Reliable, -1);
-                    writer.Write(true);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.foxStealth(true);
+                    Fox.SetStealth.Invoke(true);
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Fox) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () =>
@@ -3400,10 +3242,7 @@ namespace TheOtherRoles
                 () =>
                 {
                     foxStealthButton.Timer = foxStealthButton.MaxTimer = Fox.stealthCooldown;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FoxStealth, Hazel.SendOption.Reliable, -1);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.foxStealth(false);
+                    Fox.SetStealth.Invoke(false);
                 },
                 buttonText: ModTranslation.getString("FoxStealthText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
@@ -3425,9 +3264,7 @@ namespace TheOtherRoles
                     {
                         if (task.TaskType == TaskTypes.FixLights)
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixLights, Hazel.SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.engineerFixLights();
+                            Engineer.FixLights.Invoke();
                         }
                         else if (task.TaskType == TaskTypes.RestoreOxy)
                         {
@@ -3480,10 +3317,7 @@ namespace TheOtherRoles
                 {
                     if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Fox.currentTarget)) return;
                     _ = new StaticAchievementToken("fox.common1");
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FoxCreatesImmoralist, Hazel.SendOption.Reliable, -1);
-                    writer.Write(Fox.currentTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.foxCreatesImmoralist(Fox.currentTarget.PlayerId);
+                    Fox.CreatesImmoralist.Invoke(Fox.currentTarget.PlayerId);
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Fox) && Fox.canCreateImmoralist && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return Fox.currentTarget != null && PlayerControl.LocalPlayer.CanMove; },
@@ -3529,11 +3363,7 @@ namespace TheOtherRoles
                     if (Yoyo.local.markedLocation == null)
                     {
                         TheOtherRolesPlugin.Logger.LogMessage($"marked location is null in button press");
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoMarkLocation, Hazel.SendOption.Reliable);
-                        writer.WriteBytesAndSize(buff);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.EndMessage();
-                        RPCProcedure.yoyoMarkLocation(buff, PlayerControl.LocalPlayer.PlayerId);
+                        Yoyo.MarkLocation.Invoke((pos, PlayerControl.LocalPlayer.PlayerId));
                         SoundEffectsManager.play("tricksterPlaceBox");
                         yoyoButton.Sprite = Yoyo.getBlinkButtonSprite();
                         yoyoButton.Timer = 10f;
@@ -3545,13 +3375,8 @@ namespace TheOtherRoles
                         TheOtherRolesPlugin.Logger.LogMessage("in else for some reason");
                         // Jump to location
                         TheOtherRolesPlugin.Logger.LogMessage($"trying to blink!");
-                        var exit = (Vector3)Yoyo.local.markedLocation;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
-                        writer.Write(Byte.MaxValue);
-                        writer.WriteBytesAndSize(buff);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.EndMessage();
-                        RPCProcedure.yoyoBlink(true, buff, PlayerControl.LocalPlayer.PlayerId);
+
+                        Yoyo.Blink.Invoke((true, pos, PlayerControl.LocalPlayer.PlayerId));
                         yoyoButton.EffectDuration = Yoyo.blinkDuration;
                         yoyoButton.Timer = 10f;
                         yoyoButton.HasEffect = true;
@@ -3594,19 +3419,11 @@ namespace TheOtherRoles
 
                     // jump back!
                     var pos = PlayerControl.LocalPlayer.transform.position;
-                    byte[] buff = new byte[sizeof(float) * 2];
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
                     var exit = (Vector3)Yoyo.local.markedLocation;
                     if (SubmergedCompatibility.IsSubmerged) {
                         SubmergedCompatibility.ChangeFloor(exit.y > -7);
                     }
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.YoyoBlink, Hazel.SendOption.Reliable);
-                    writer.Write((byte)0);
-                    writer.WriteBytesAndSize(buff);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.EndMessage();
-                    RPCProcedure.yoyoBlink(false, buff, PlayerControl.LocalPlayer.PlayerId);
+                    Yoyo.Blink.Invoke((false, pos, PlayerControl.LocalPlayer.PlayerId));
 
                     yoyoButton.Timer = yoyoButton.MaxTimer;
                     yoyoButton.isEffectActive = false;
@@ -3697,11 +3514,7 @@ namespace TheOtherRoles
                                 if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false)) {
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
                                     _ = new StaticAchievementToken("vulture.common1");
-                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(playerInfo.PlayerId);
-                                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                    RPCProcedure.cleanBody(playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                                    RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
 
                                     Vulture.cooldown = vultureEatButton.Timer = vultureEatButton.MaxTimer;
                                     SoundEffectsManager.play("vultureEat");
@@ -3847,11 +3660,7 @@ namespace TheOtherRoles
                     if (Doomsayer.local.currentTarget != null)
                     {
                         if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Doomsayer.local.currentTarget)) return;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoomsayerObserve, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Doomsayer.local.currentTarget.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.doomsayerObserve(Doomsayer.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Doomsayer.Observe.Invoke((Doomsayer.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                         Doomsayer.local.usesLeft--;
                         doomsayerButton.Timer = doomsayerButton.MaxTimer;
                         _ = new StaticAchievementToken("doomsayer.common1");
@@ -4127,11 +3936,7 @@ namespace TheOtherRoles
                     if (attempt == MurderAttemptResult.PerformKill) {
                         _ = new StaticAchievementToken("witch.common1");
                         Witch.local.acTokenChallenge.Value++;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFutureSpelled, Hazel.SendOption.Reliable, -1);
-                        writer.Write(Witch.local.currentTarget.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.setFutureSpelled(Witch.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId);
+                        Witch.SetFutureSpelled.Invoke((Witch.local.currentTarget.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     }
                     if (attempt is MurderAttemptResult.BlankKill or MurderAttemptResult.PerformKill) {
                         Witch.local.currentCooldownAddition += Witch.cooldownAddition;
@@ -4163,11 +3968,7 @@ namespace TheOtherRoles
                     _ = new StaticAchievementToken("sprinter.common1");
                     if (Sprinter.local.acTokenMove != null) Sprinter.local.acTokenMove.Value.pos = PlayerControl.LocalPlayer.GetTruePosition();
 
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(true);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.sprinterSprint(PlayerControl.LocalPlayer.PlayerId, true);
+                    Sprinter.Sprint.Invoke((PlayerControl.LocalPlayer.PlayerId, true));
                     SoundEffectsManager.play("ninjaStealth");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Sprinter) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -4199,11 +4000,7 @@ namespace TheOtherRoles
                 {
                     sprintButton.Timer = sprintButton.MaxTimer = Sprinter.sprintCooldown;
                     if (Sprinter.local.acTokenMove != null) Sprinter.local.acTokenMove.Value.cleared |= PlayerControl.LocalPlayer.GetTruePosition().Distance(Sprinter.local.acTokenMove.Value.pos) > 15f;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SprinterSprint, Hazel.SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.sprinterSprint(PlayerControl.LocalPlayer.PlayerId, false);
+                    Sprinter.Sprint.Invoke((PlayerControl.LocalPlayer.PlayerId, false));
                 },
                 abilityTexture: CustomButton.ButtonLabelType.UseButton,
                 buttonText: ModTranslation.getString("SprintText")
@@ -4228,15 +4025,7 @@ namespace TheOtherRoles
                             Assassin.local.acTokenChallenge.Value.markKill = true;
                             // Create first trace before killing
                             var pos = PlayerControl.LocalPlayer.transform.position;
-                            byte[] buff = new byte[sizeof(float) * 2];
-                            Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-                            Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-
-                            writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.WriteBytesAndSize(buff);
-                            writer.EndMessage();
-                            RPCProcedure.placeAssassinTrace(PlayerControl.LocalPlayer.PlayerId, buff);
+                            Assassin.PlaceTrace.Invoke((PlayerControl.LocalPlayer.PlayerId, pos));
 
                             // Perform Kill
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
@@ -4248,15 +4037,7 @@ namespace TheOtherRoles
 
                             // Create Second trace after killing
                             pos = Assassin.local.assassinMarked.transform.position;
-                            buff = new byte[sizeof(float) * 2];
-                            Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-                            Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-
-                            MessageWriter writer3 = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAssassinTrace, Hazel.SendOption.Reliable);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer3.WriteBytesAndSize(buff);
-                            writer3.EndMessage();
-                            RPCProcedure.placeAssassinTrace(PlayerControl.LocalPlayer.PlayerId, buff);
+                            Assassin.PlaceTrace.Invoke((PlayerControl.LocalPlayer.PlayerId, pos));
                         }
 
                         if (attempt is MurderAttemptResult.BlankKill or MurderAttemptResult.PerformKill) {

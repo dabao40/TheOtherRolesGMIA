@@ -11,6 +11,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Akujo : RoleBase<Akujo>
     {
         public static Color color = new Color32(142, 69, 147, byte.MaxValue);
@@ -31,6 +32,42 @@ namespace TheOtherRoles.Roles
             iconColor = getAvailableColor();
         }
 
+        public static RemoteProcess<(byte akujoId, byte targetId)> SetHonmei = new("AkujoSetHonmei", (message, _) =>
+        {
+            PlayerControl akujo = Helpers.playerById(message.akujoId);
+            PlayerControl target = Helpers.playerById(message.targetId);
+            var akujoRole = getRole(akujo);
+
+            if (akujo != null && akujoRole != null && akujoRole.honmei == null)
+            {
+                breakLovers(target);
+                akujoRole.honmei = target;
+            }
+        });
+
+        public static RemoteProcess<(byte akujoId, byte targetId)> SetKeep = new("AkujoSetKeep", (message, _) =>
+        {
+            var akujo = Helpers.playerById(message.akujoId);
+            PlayerControl target = Helpers.playerById(message.targetId);
+            var akujoRole = getRole(akujo);
+
+            if (akujo != null && akujoRole != null && akujoRole.keepsLeft > 0)
+            {
+                breakLovers(target);
+                akujoRole.keeps.Add(target);
+            }
+        });
+
+        public static RemoteProcess<byte> Suicide = RemotePrimitiveProcess.OfByte("AkujoSuicide", (message, _) =>
+        {
+            var akujo = Helpers.playerById(message);
+            if (akujo != null)
+            {
+                akujo.MurderPlayer(akujo, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(akujo, DeadPlayer.CustomDeathReason.Loneliness);
+            }
+        });
+
         public void akujoUpdate()
         {
             if (PlayerControl.LocalPlayer != player) return;
@@ -45,10 +82,7 @@ namespace TheOtherRoles.Roles
                 }
                 if (timeLeft <= 0)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AkujoSuicide, SendOption.Reliable, -1);
-                    writer.Write(player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.akujoSuicide(player.PlayerId);
+                    Suicide.Invoke(player.PlayerId);
                 }
             }
         }
@@ -147,7 +181,7 @@ namespace TheOtherRoles.Roles
             new(getKeepSprite(), "akujoKeepHint")
         ];
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Akujo.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Akujo.png");
 
         private static Sprite honmeiSprite;
         public static Sprite getHonmeiSprite()

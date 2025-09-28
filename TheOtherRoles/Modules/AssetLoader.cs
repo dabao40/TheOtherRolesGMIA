@@ -1,7 +1,7 @@
 using System.Reflection;
+using Reactor.Utilities.Extensions;
 using TheOtherRoles.Objects;
 using UnityEngine;
-using Reactor.Utilities.Extensions;
 
 namespace TheOtherRoles.Modules
 {
@@ -18,6 +18,8 @@ namespace TheOtherRoles.Modules
             LoadAudioAssets();
             LoadSpriteAssets();
             LoadShaderAssets();
+            var resourceStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.illustrationassets");
+            AssetBundle = AssetBundle.LoadFromMemory(resourceStream!.ReadFully());
         }
 
         private static void LoadAudioAssets()
@@ -34,9 +36,9 @@ namespace TheOtherRoles.Modules
         private static void LoadSpriteAssets()
         {
             var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets");
-            AssetBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
-            FoxTask.prefab = AssetBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
-            Shrine.sprite = AssetBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
+            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
+            FoxTask.prefab = assetBundleBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
+            Shrine.sprite = assetBundleBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
         }
 
         private static void LoadShaderAssets()

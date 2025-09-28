@@ -118,9 +118,7 @@ namespace TheOtherRoles {
                         else if (!TaskMaster.triggerTaskMasterWin)
                         {
                             action();
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockTaskMasterAcChallenge, SendOption.Reliable, -1);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.unlockTaskMasterAcChallenge();
+                            RPCProcedure.UnlockTaskMasterAch.Invoke();
                             TaskMaster.triggerTaskMasterWin = true;
                         }
                     }

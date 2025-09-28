@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Jackal : RoleBase<Jackal> {
         public static Color color = new Color32(0, 180, 235, byte.MaxValue);
         public PlayerControl fakeSidekick;
@@ -39,6 +40,8 @@ namespace TheOtherRoles.Roles
             setPlayerOutline(currentTarget, Palette.ImpostorRed);
         }
 
+        public static RemoteProcess<(byte targetId, byte jackalId)> CreateSidekick = new("JackalCreateSidekick", (message, _) => RPCProcedure.jackalCreatesSidekick(message.targetId, message.jackalId));
+
         public Jackal()
         {
             RoleId = roleId = RoleId.Jackal;
@@ -58,10 +61,11 @@ namespace TheOtherRoles.Roles
 
         public override void ResetRole(bool isShifted)
         {
-            if (Sidekick.promotesToJackal) {
+            if (!isShifted)
+            {
                 var sidekick = getSidekick(player);
-                if (sidekick != null && sidekick.player != null && !sidekick.player.Data.IsDead && !isShifted)
-                    RPCProcedure.sidekickPromotes(sidekick.player.PlayerId);
+                if (sidekick != null)
+                    sidekick.jackal = null;
             }
         }
 

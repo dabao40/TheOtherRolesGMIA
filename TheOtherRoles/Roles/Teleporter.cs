@@ -13,6 +13,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Teleporter : RoleBase<Teleporter>
     {
         public Teleporter()
@@ -34,6 +35,27 @@ namespace TheOtherRoles.Roles
         public bool SwappingMenus;
 
         public AchievementToken<(byte target1, byte target2, DateTime swapTime, bool cleared)> acTokenChallenge = null;
+
+        public static RemoteProcess<(byte target1Id, byte target2Id)> Teleport = new("TeleporterTeleport", (message, _) =>
+        {
+            PlayerControl target1 = Helpers.playerById(message.target1Id);
+            PlayerControl target2 = Helpers.playerById(message.target2Id);
+
+            target1.MyPhysics.ResetMoveState();
+            target2.MyPhysics.ResetMoveState();
+            var targetPosition = target1.GetTruePosition();
+            var TempFacing = target1.cosmetics.currentBodySprite.BodySprite.flipX;
+            target1.NetTransform.SnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
+            target1.cosmetics.currentBodySprite.BodySprite.flipX = target2.cosmetics.currentBodySprite.BodySprite.flipX;
+            target2.NetTransform.SnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
+            target2.cosmetics.currentBodySprite.BodySprite.flipX = TempFacing;
+
+            if (PlayerControl.LocalPlayer == target1 || PlayerControl.LocalPlayer == target2)
+            {
+                Helpers.showFlash(color);
+                if (Minigame.Instance) Minigame.Instance.Close();
+            }
+        });
 
         public override void PostInit()
         {
@@ -90,11 +112,7 @@ namespace TheOtherRoles.Roles
                     acTokenChallenge.Value.swapTime = DateTime.UtcNow;
                     acTokenChallenge.Value.target1 = target1.PlayerId;
                     acTokenChallenge.Value.target2 = target2.PlayerId;
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TeleporterTeleport, SendOption.Reliable, -1);
-                    writer.Write(target1.PlayerId);
-                    writer.Write(target2.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.teleporterTeleport(target1.PlayerId, target2.PlayerId);
+                    Teleport.Invoke((target1.PlayerId, target2.PlayerId));
                 }
                 target1 = null;
                 target2 = null;

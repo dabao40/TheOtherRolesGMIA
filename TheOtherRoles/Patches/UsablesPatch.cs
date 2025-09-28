@@ -147,8 +147,8 @@ namespace TheOtherRoles.Patches {
         public static void Postfix(Vent otherVent)
         {
             foreach (var tracker in Tracker.players) {
-                if (tracker.tracked != null && tracker.tracked == PlayerControl.LocalPlayer)
-                    tracker.unlockAch(TORGameManager.Instance.CurrentTime);
+                if (tracker.player && tracker.tracked != null && tracker.tracked == PlayerControl.LocalPlayer)
+                    Tracker.GainAchievement.Invoke((TORGameManager.Instance.CurrentTime, tracker.player.PlayerId));
             }
         }
     }

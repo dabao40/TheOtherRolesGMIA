@@ -6,6 +6,8 @@ using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles;
+
+[TORRPCHolder]
 public class Detective : RoleBase<Detective>
 {
     public static Color color = new Color32(45, 106, 165, byte.MaxValue);
@@ -33,6 +35,14 @@ public class Detective : RoleBase<Detective>
 
     public AchievementToken<bool> acTokenCommon = null;
     public AchievementToken<(bool reported, byte votedFor, byte killerId, bool cleared)> acTokenChallenge = null;
+
+    public static RemoteProcess<(byte votedFor, byte playerId)> GainAchievement = new("UnlockDetectiveAch", (message, isCalledByMe) =>
+    {
+        if (PlayerControl.LocalPlayer.PlayerId == message.playerId)
+        {
+            local.acTokenChallenge.Value.votedFor = message.votedFor;
+        }
+    });
 
     private static Sprite buttonSprite;
     public static Sprite getButtonSprite()
@@ -77,15 +87,6 @@ public class Detective : RoleBase<Detective>
             acTokenChallenge.Value.reported = false;
             acTokenChallenge.Value.killerId = byte.MaxValue;
         }
-    }
-
-    public static void unlockAch(byte votedFor, byte playerId)
-    {
-        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockDetectiveAcChallenge, SendOption.Reliable, -1);
-        writer.Write(votedFor);
-        writer.Write(playerId);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        RPCProcedure.unlockDetectiveAcChallenge(votedFor, playerId);
     }
 
     public static void clearAndReload()

@@ -8,6 +8,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Medic : RoleBase<Medic> {
         public PlayerControl shielded;
         public PlayerControl futureShielded;
@@ -34,6 +35,28 @@ namespace TheOtherRoles.Roles
             meetingAfterShielding = false;
             acTokenChallenge = null;
         }
+
+        public static RemoteProcess<(byte shieldedId, byte medicId)> Shield = new("MedicSetShielded", (message, _) =>
+        {
+            var medic = getRole(Helpers.playerById(message.medicId));
+            medic.usedShield = true;
+            medic.shielded = Helpers.playerById(message.shieldedId);
+            medic.futureShielded = null;
+        });
+
+        public static RemoteProcess<(byte playerId, byte medicId)> FutureShield = new("MedicSetFutureShielded", (message, _) =>
+        {
+            var medic = getRole(Helpers.playerById(message.medicId));
+            if (medic == null) return;
+            medic.futureShielded = Helpers.playerById(message.playerId);
+            medic.usedShield = true;
+        });
+
+        public static RemoteProcess<(byte killerId, byte medicId)> GainAchievement = new("UnlockMedicAch", (message, _) =>
+        {
+            if (PlayerControl.LocalPlayer.PlayerId == message.medicId)
+                local.acTokenChallenge.Value.killerId = message.killerId;
+        });
 
         public static bool IsShielded(PlayerControl player) => players.Any(x => x.player != null && !x.player.Data.Disconnected && !x.player.Data.IsDead && x.shielded == player && player?.Data.IsDead == false);
         public static List<Medic> GetMedic(PlayerControl shielded) => players.Where(x => x.shielded == shielded || x.futureShielded == shielded).ToList();

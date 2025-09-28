@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
@@ -11,6 +12,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Fox : RoleBase<Fox>
     {
         public static Color color = new Color32(167, 87, 168, byte.MaxValue);
@@ -22,6 +24,8 @@ namespace TheOtherRoles.Roles
         }
 
         static public readonly HelpSprite[] HelpSprites = [new(getHideButtonSprite(), "foxHideHint"), new(getImmoralistButtonSprite(), "foxImmoralistHint"), new(getRepairButtonSprite(), "foxRepairHint")];
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Fox.png");
 
         public Fox()
         {
@@ -102,11 +106,13 @@ namespace TheOtherRoles.Roles
             return 1.0f;
         }
 
-        public static void setStealthed(bool stealthed = true)
+        public static RemoteProcess<bool> SetStealth = RemotePrimitiveProcess.OfBoolean("FoxSetStealth", (message, _) =>
         {
-            Fox.stealthed = stealthed;
+            stealthed = message;
             stealthedAt = DateTime.UtcNow;
-        }
+        });
+
+        public static RemoteProcess<byte> CreatesImmoralist = RemotePrimitiveProcess.OfByte("FoxCreatesImmoralist", (message, _) => RPCProcedure.foxCreatesImmoralist(message));
 
         public static void setOpacity(PlayerControl player, float opacity)
         {

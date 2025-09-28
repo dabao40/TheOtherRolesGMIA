@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Doomsayer : RoleBase<Doomsayer>
     {
         public Doomsayer()
@@ -22,8 +23,17 @@ namespace TheOtherRoles.Roles
             currentTarget = null;
         }
 
+        public static RemoteProcess<(byte playerId, byte doomsayerId)> Observe = new("DoomsayerObserve", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            PlayerControl doomsayer = Helpers.playerById(message.doomsayerId);
+            var doomsayerRole = getRole(doomsayer);
+            if (player == null || doomsayer == null || doomsayerRole == null) return;
+            doomsayerRole.observed = player;
+        });
+
         static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "doomsayerObserveHint")];
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Doomsayer.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Doomsayer.png");
 
         public static Color color = new(0f, 1f, 0.5f, 1f);
 

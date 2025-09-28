@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Sherlock : RoleBase<Sherlock>
     {
         public static Color color = new Color32(248, 205, 70, byte.MaxValue);
@@ -31,6 +33,18 @@ namespace TheOtherRoles.Roles
 
         static public readonly HelpSprite[] HelpSprites = [new(getDetectIcon(), "sherlockDetectHint"), new(getInvestigateIcon(), "sherlockInvestigateHint"),
         new(getWatchIcon(), "sherlockWatchHint")];
+
+        public static RemoteProcess<Vector2> ReceiveDetect = RemotePrimitiveProcess.OfVector2("SherlockReceive", (message, _) =>
+        {
+            if (isRole(PlayerControl.LocalPlayer))
+            {
+                var arrow = new SherlockDetectArrow(getDetectIcon(), true)
+                {
+                    TargetPos = message
+                };
+                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Sequence(Effects.Wait(7f), Effects.Action((Action)(() => arrow.MarkAsDisappering()))));
+            }
+        });
 
         public Sherlock()
         {
@@ -65,34 +79,11 @@ namespace TheOtherRoles.Roles
             return detectIcon;
         }
 
-        private static TMPro.TMP_Text text;
-
         public static void investigateMessage(string message, float duration, Color color)
         {
-
-            RoomTracker roomTracker = HudManager.Instance?.roomTracker;
-
-            if (roomTracker != null)
-            {
-                GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-
-                gameObject.transform.SetParent(HudManager.Instance.transform);
-                UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-
-                // Use local position to place it in the player's view instead of the world location
-                gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
-                gameObject.transform.localScale *= 1.5f;
-
-                text = gameObject.GetComponent<TMPro.TMP_Text>();
-                text.text = message;
-                text.color = color;
-
-                HudManager.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) =>
-                {
-                    if (p == 1f && text != null && text.gameObject != null)
-                        UnityEngine.Object.Destroy(text.gameObject);
-                })));
-            }
+            var messageText = Helpers.CreateAndShowNotification(message, color);
+            messageText.transform.localPosition = new Vector3(0f, 0f, -20f);
+            messageText.alphaTimer = duration;
         }
 
         public int getNumInvestigate()

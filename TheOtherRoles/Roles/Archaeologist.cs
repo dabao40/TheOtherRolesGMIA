@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Archaeologist : RoleBase<Archaeologist>
     {
         public Archaeologist()
@@ -26,6 +27,19 @@ namespace TheOtherRoles.Roles
             Immediately,
             AfterMeeting
         }
+
+        public static RemoteProcess<byte> DetectAntique = RemotePrimitiveProcess.OfByte("ArchaeologistDetectAntique", (message, _) =>
+        {
+            if (Antique.antiques == null || Antique.antiques.Count == 0) return;
+            foreach (var a in Antique.antiques) if (a.isDetected) a.isDetected = false;
+            var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
+            if (remainingList.Count <= message) return;
+            var antique = remainingList[message];
+            antique.isDetected = true;
+            arrowActive = true;
+        });
+
+        public static RemoteProcess<byte> ExcavateAntique = RemotePrimitiveProcess.OfByte("ArchaeologistExcavateAntique", (message, _) => RPCProcedure.archaeologistExcavate(message));
 
         public override void FixedUpdate()
         {

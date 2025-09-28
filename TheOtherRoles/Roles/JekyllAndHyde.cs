@@ -17,7 +17,7 @@ namespace TheOtherRoles.Roles
         public PlayerControl currentTarget;
 
         static public readonly HelpSprite[] HelpSprites = [new(PlagueDoctor.getSyringeIcon(), "jekyllAndHydeSwitchHint"), new(SerialKiller.getButtonSprite(), "jekyllAndHydeSuicideHint")];
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/JekyllAndHyde.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/JekyllAndHyde.png");
 
         public JekyllAndHyde()
         {

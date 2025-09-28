@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Deputy : RoleBase<Deputy>
     {
         public static Color color = Sheriff.color;
@@ -32,6 +34,8 @@ namespace TheOtherRoles.Roles
             currentTarget = null;
             remainingHandcuffs = CustomOptionHolder.deputyNumberOfHandcuffs.getFloat();
         }
+
+        public static RemoteProcess<byte> Handcuff = RemotePrimitiveProcess.OfByte("DeputyHandcuff", (message, _) => handcuffedPlayers.Add(message));
 
         private static Sprite buttonSprite;
         private static Sprite handcuffedSprite;
@@ -70,10 +74,7 @@ namespace TheOtherRoles.Roles
             if (promotesToSheriff == 0 || player == null || player.Data.IsDead || (promotesToSheriff == 2 && !isMeeting)) return;
             if (sheriff == null || sheriff.player == null || sheriff?.player?.Data?.Disconnected == true || sheriff?.player?.Data.IsDead == true)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DeputyPromotes, SendOption.Reliable, -1);
-                writer.Write(player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.deputyPromotes(player.PlayerId);
+                PromoteToSheriff.Invoke(player.PlayerId);
             }
         }
 
@@ -81,6 +82,25 @@ namespace TheOtherRoles.Roles
         {
             if (PlayerControl.LocalPlayer == player) deputyCheckPromotion(true);
         }
+
+        public static RemoteProcess<byte> PromoteToSheriff = RemotePrimitiveProcess.OfByte("DeputyPromotes", (message, _) =>
+        {
+            PlayerControl deputy = Helpers.playerById(message);
+            var deputyRole = getRole(deputy);
+            if (deputy != null && deputyRole != null)
+            {  // Deputy should never be null here, but there appeared to be a race condition during testing, which was removed.
+                float remainingCuffs = deputyRole.remainingHandcuffs;
+                Sheriff.replaceCurrentSheriff(deputy);
+                if (PlayerControl.LocalPlayer == deputy)
+                {
+                    new StaticAchievementToken("deputy.another1");
+                }
+                Sheriff curSheriff = Sheriff.getRole(deputy);
+                curSheriff.isFormerDeputy = true;
+                curSheriff.remainingHandcuffs = remainingCuffs;
+                eraseRole(deputy);
+            }
+        });
 
         public static Sprite getButtonSprite()
         {

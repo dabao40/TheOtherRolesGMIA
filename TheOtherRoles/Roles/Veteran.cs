@@ -1,8 +1,11 @@
+using TheOtherRoles.Modules;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Veteran : RoleBase<Veteran>
     {
         public static Color color = new Color32(255, 77, 0, byte.MaxValue);
@@ -13,6 +16,23 @@ namespace TheOtherRoles.Roles
             remainingAlerts = Mathf.RoundToInt(CustomOptionHolder.veteranAlertNumber.getFloat());
             alertActive = false;
         }
+
+        public static RemoteProcess<byte> ActivateAlert = RemotePrimitiveProcess.OfByte("VeteranAlert", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            var veteran = getRole(player);
+            if (player == null || veteran == null) return;
+            veteran.alertActive = true;
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(alertDuration, new System.Action<float>((p) => {
+                if (p == 1f) veteran.alertActive = false;
+            })));
+        });
+
+        public static RemoteProcess<byte> GainAchievement = RemotePrimitiveProcess.OfByte("UnlockVeteranAch", (message, _) =>
+        {
+            if (PlayerControl.LocalPlayer.PlayerId == message)
+                new StaticAchievementToken("veteran.challenge");
+        });
 
         public static float alertDuration = 3f;
         public static float cooldown = 30f;

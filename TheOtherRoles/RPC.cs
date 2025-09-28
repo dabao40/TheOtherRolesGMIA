@@ -1,24 +1,25 @@
-using HarmonyLib;
-using Hazel;
-using static TheOtherRoles.TheOtherRoles;
-using static TheOtherRoles.HudManagerStartPatch;
-using static TheOtherRoles.GameHistory;
-using static TheOtherRoles.TORMapOptions;
-using TheOtherRoles.Objects;
-using TheOtherRoles.Patches;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using System;
-using TheOtherRoles.Utilities;
-using TheOtherRoles.CustomGameModes;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using AmongUs.Data;
 using AmongUs.GameOptions;
-using BepInEx.Unity.IL2CPP.Utils;
-using TheOtherRoles.Modules;
+using HarmonyLib;
+using Hazel;
 using Reactor.Utilities.Extensions;
+using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
+using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using static TheOtherRoles.GameHistory;
+using static TheOtherRoles.HudManagerStartPatch;
+using static TheOtherRoles.TheOtherRoles;
+using static TheOtherRoles.TORMapOptions;
 
 namespace TheOtherRoles
 {
@@ -147,52 +148,16 @@ namespace TheOtherRoles
 
         // Role functionality
 
-        EngineerFixLights = 120,
-        EngineerFixSubmergedOxygen,
-        EngineerUsedRepair,
-        CleanBody,
-        MedicSetShielded,
-        ShieldedMurderAttempt,
-        TimeMasterShield,
+        ShieldedMurderAttempt = 130,
         TimeMasterRewindTime,
-        ShifterShift,
-        SwapperSwap,
-        MorphlingMorph,
-        CamouflagerCamouflage,
-        TrackerUsedTracker,
-        VampireSetBitten,
-        PlaceGarlic,
-        DeputyUsedHandcuffs,
-        DeputyPromotes,
-        JackalCreatesSidekick,
-        SidekickPromotes,
         ErasePlayerRoles,
-        SetFutureErased,
-        SetFutureShifted,
-        SetFutureShielded,
-        SetFutureSpelled,
-        PlaceAssassinTrace,
-        PlacePortal,
-        UsePortal,
-        PlaceJackInTheBox,
-        LightsOut,
         PlaceCamera,
         SealVent,
-        ArsonistWin,
         GuesserShoot,
-        LawyerSetTarget,
-        LawyerPromotesToPursuer,
         SetBlanked,
-        Bloody,
-        SetFirstKill,
         Invert,
-        SetTiebreak,
         SetInvisible,
         ThiefStealsRole,
-        //SetTrap,
-        //TriggerTrap,
-        //PlaceBomb,
-        //DefuseBomb,
         ShareRoom,
 
         // Gamemode
@@ -205,46 +170,15 @@ namespace TheOtherRoles
         ShareGhostInfo,
 
         // GMIA Special functionality
-        NinjaStealth,
-        FortuneTellerUsedDivine, 
-        NekoKabochaExile,
-        SprinterSprint,
         SerialKillerSuicide,
-        VeteranAlert,
-        UndertakerDragBody,
-        UndertakerDropBody,
-        MimicMorph,
-        MimicResetMorph,
-        SetShifterType,
         YasunaSpecialVote,
-        YasunaSpecialVote_DoCastVote,
         TaskMasterSetExTasks,
         TaskMasterUpdateExTasks,
         PlantBomb,
         ReleaseBomb,
         BomberKill,
-        EvilHackerCreatesMadmate,
-        TrapperKill,
-        PlaceTrap,
-        ClearTrap,
-        ActivateTrap,
-        DisableTrap,
-        TrapperMeetingFlag,
-        SetBrainwash,
-        MoriartyKill,
-        AkujoSetHonmei,
-        AkujoSetKeep,
-        AkujoSuicide,
-        PlagueDoctorWin,
-        PlagueDoctorSetInfected,
         PlagueDoctorUpdateProgress,
         SetOddIsJekyll,
-        TeleporterTeleport,
-        SetCupidLovers,
-        CupidSuicide,
-        SetCupidShield,
-        BlackmailPlayer,
-        UnblackmailPlayer,
         ShareRealTasks,
         PlaceAccel,
         ActivateAccel,
@@ -253,43 +187,468 @@ namespace TheOtherRoles
         ActivateDecel,
         UntriggerDecel,
         DeactivateDecel,
-        LawyerWin,
-        FoxStealth,
-        FoxCreatesImmoralist,
-        BuskerPseudocide,
-        BuskerRevive,
-        UnlockMayorAcCommon,
-        UnlockDetectiveAcChallenge,
-        UnlockMedicAcChallenge,
-        UnlockTrackerAcChallenge,
-        UnlockVeteranAcChallenge,
-        UnlockTaskMasterAcChallenge,
-        UnlockJesterAcCommon,
-        RecordStatistics,
-        NoisemakerSetSounded,
-        SchrodingersCatSetTeam,
-        KataomoiSetTarget,
-        KataomoiWin,
-        KataomoiStalking,
-        YoyoMarkLocation,
-        YoyoBlink,
-        BreakArmor,
-        PlaceAntique,
-        ArchaeologistDetect,
-        ArchaeologistExcavate,
-        ImpostorPromotesToLastImpostor,
-        DoomsayerObserve,
         EventKick,
         DraftModePickOrder,
         DraftModePick,
-        ShareAchievement,
-        SherlockReceiveDetect,
-        JesterWin,
         SetLovers,
         ZephyrBlowCannon,
         ZephyrCheckCannon
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class TORRPCHolder : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class CustomTORRPC : Attribute
+    {
+
+    }
+
+
+    public class RPCInvoker
+    {
+        Action<MessageWriter> sender;
+        Action localBodyProcess;
+        int hash;
+        public bool IsDummy { get; private set; }
+
+        public RPCInvoker(int hash, Action<MessageWriter> sender, Action localBodyProcess)
+        {
+            this.hash = hash;
+            this.sender = sender;
+            this.localBodyProcess = localBodyProcess;
+            this.IsDummy = false;
+        }
+
+        public RPCInvoker(Action localAction)
+        {
+            this.hash = 0;
+            this.sender = null!;
+            this.localBodyProcess = localAction;
+            this.IsDummy = true;
+        }
+
+        public void Invoke(MessageWriter writer)
+        {
+            writer.Write(hash);
+            sender.Invoke(writer);
+            localBodyProcess.Invoke();
+        }
+
+        public void InvokeSingle()
+        {
+            if (IsDummy)
+                localBodyProcess.Invoke();
+            else
+                RPCRouter.SendRpc("Invoker", hash, (writer) => sender.Invoke(writer), () => localBodyProcess.Invoke());
+        }
+
+        public void InvokeLocal()
+        {
+            localBodyProcess.Invoke();
+        }
+    }
+
+    public static class RPCRouter
+    {
+        public class RPCSection : IDisposable
+        {
+            public string Name;
+            public void Dispose()
+            {
+                if (currentSection != this) return;
+
+                currentSection = null;
+                Debug.Log($"End Evacuating Rpcs ({Name}, Size = {evacuateds.Count})");
+
+                CombinedRemoteProcess.CombinedRPC.Invoke([.. evacuateds]);
+                evacuateds.Clear();
+            }
+
+            public RPCSection(string name = null)
+            {
+                Name = name ?? "Untitled";
+                if (currentSection == null)
+                {
+                    currentSection = this;
+                    Debug.Log($"Start Evacuating Rpcs ({Name})");
+                }
+            }
+        }
+
+        static public RPCSection CreateSection(string label = null) => new(label);
+
+        static RPCSection currentSection = null;
+        static List<RPCInvoker> evacuateds = [];
+        public static void SendRpc(string name, int hash, Action<MessageWriter> sender, Action localBodyProcess)
+        {
+            if (currentSection == null)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, 128, SendOption.Reliable, -1);
+                writer.Write(hash);
+                sender.Invoke(writer);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                try
+                {
+                    localBodyProcess.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    TheOtherRolesPlugin.Logger.LogError($"Error in RPC(Invoke: {name})" + ex.Message + ex.StackTrace);
+                }
+            }
+            else
+            {
+                evacuateds.Add(new(hash, sender, localBodyProcess));
+            }
+        }
+    }
+
+    public class RemoteProcessBase
+    {
+        static public Dictionary<int, RemoteProcessBase> AllTORProcess = new();
+
+
+        public int Hash { get; private set; } = -1;
+        public string Name { get; private set; }
+
+
+        public RemoteProcessBase(string name)
+        {
+            Hash = name.ComputeConstantHash();
+            Name = name;
+
+            if (AllTORProcess.ContainsKey(Hash)) TheOtherRolesPlugin.Logger.LogWarning(name + " is duplicated. (" + Hash + ")");
+
+            AllTORProcess[Hash] = this;
+        }
+
+        static private void SwapMethodPointer(MethodInfo method0, MethodInfo method1)
+        {
+            unsafe
+            {
+                var functionPointer0 = method0.MethodHandle.Value.ToPointer();
+                var functionPointer1 = method1.MethodHandle.Value.ToPointer();
+                var functionShiftedPointer0 = *((int*)new IntPtr(((int*)functionPointer0 + 1)).ToPointer());
+                var functionShiftedPointer1 = *((int*)new IntPtr(((int*)functionPointer1 + 1)).ToPointer());
+                *((int*)new IntPtr(((int*)functionPointer0 + 1)).ToPointer()) = functionShiftedPointer1;
+                *((int*)new IntPtr(((int*)functionPointer1 + 1)).ToPointer()) = functionShiftedPointer0;
+            }
+        }
+
+        static Dictionary<string, RemoteProcess<object[]>> harmonyRpcMap = new();
+        static private void WrapRpcMethod(Harmony harmony, MethodInfo method)
+        {
+            //元の静的メソッドをコピーしておく
+            var copiedOriginal = harmony.Patch(method);
+
+            //メソッド呼び出しのパラメータを取得
+            var parameters = method.GetParameters();
+
+            //RPCを定義し、登録
+
+            List<(Action<MessageWriter, object> writer, Func<MessageReader, object> reader)> processList = new();
+            if (!method.IsStatic) processList.Add(RemoteProcessAsset.GetProcess(method.DeclaringType!));
+            processList.AddRange(parameters.Select(p => RemoteProcessAsset.GetProcess(p.ParameterType)));
+
+            RemoteProcess<object[]> rpc = new(method.Name,
+                (writer, args) =>
+                {
+                    for (int i = 0; i < processList.Count; i++) processList[i].writer(writer, args[i]);
+                },
+                (reader) =>
+                {
+                    return [.. processList.Select(p => p.reader(reader))];
+                },
+                (args, _) =>
+                {
+                    copiedOriginal.Invoke(null, args);
+                }
+                );
+            harmonyRpcMap[method.DeclaringType!.FullName + "." + method.Name] = rpc;
+
+            //静的メソッドをRPC呼び出しに変更
+            static bool RpcPrefix(object __instance, object[] __args, MethodBase __originalMethod)
+            {
+                var name = __originalMethod.DeclaringType!.FullName + "." + __originalMethod.Name;
+                if (!__originalMethod.IsStatic) __args = __args.Prepend(__instance!).ToArray();
+                harmonyRpcMap[name].Invoke(__args);
+                return false;
+            }
+
+            var prefixInfo = RpcPrefix;
+
+            var newMethod = harmony.Patch(method, new HarmonyMethod(prefixInfo.Method));
+        }
+
+        static public void Load()
+        {
+            var types = Assembly.GetAssembly(typeof(RemoteProcessBase))?.GetTypes().Where((type) => type.IsDefined(typeof(TORRPCHolder))).ToList();
+            if (types == null) return;
+
+            foreach (var type in types)
+            {
+                RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+                var methods = type.GetMethods().Where(m => m.IsDefined(typeof(CustomTORRPC))).ToList();
+                foreach (var method in methods) WrapRpcMethod(TheOtherRolesPlugin.Instance.Harmony, method);
+            }
+        }
+
+        public virtual void Receive(MessageReader reader) { }
+    }
+
+    public static class RemoteProcessAsset
+    {
+        private static Dictionary<Type, (Action<MessageWriter, object>, Func<MessageReader, object>)> defaultProcessDic = new();
+
+        static RemoteProcessAsset()
+        {
+            defaultProcessDic[typeof(byte)] = ((writer, obj) => writer.Write((byte)obj), (reader) => reader.ReadByte());
+            defaultProcessDic[typeof(short)] = ((writer, obj) => writer.Write((short)obj), (reader) => reader.ReadInt16());
+            defaultProcessDic[typeof(int)] = ((writer, obj) => writer.Write((int)obj), (reader) => reader.ReadInt32());
+            defaultProcessDic[typeof(ulong)] = ((writer, obj) => writer.Write((ulong)obj), (reader) => reader.ReadUInt64());
+            defaultProcessDic[typeof(float)] = ((writer, obj) => writer.Write((float)obj), (reader) => reader.ReadSingle());
+            defaultProcessDic[typeof(bool)] = ((writer, obj) => writer.Write((bool)obj), (reader) => reader.ReadBoolean());
+            defaultProcessDic[typeof(string)] = ((writer, obj) => writer.Write((string)obj), (reader) => reader.ReadString());
+            defaultProcessDic[typeof(byte[])] = ((writer, obj) => writer.WriteBytesAndSize((byte[])obj), (reader) => reader.ReadBytesAndSize().ToArray());
+            defaultProcessDic[typeof(int[])] = ((writer, obj) => { var ary = (int[])obj; writer.Write(ary.Length); for (int i = 0; i < ary.Length; i++) writer.Write(ary[i]); }, (reader) => { var ary = new int[reader.ReadInt32()]; for (int i = 0; i < ary.Length; i++) ary[i] = reader.ReadInt32(); return ary; });
+            defaultProcessDic[typeof(float[])] = ((writer, obj) => { var ary = (float[])obj; writer.Write(ary.Length); for (int i = 0; i < ary.Length; i++) writer.Write(ary[i]); }, (reader) => { var ary = new float[reader.ReadInt32()]; for (int i = 0; i < ary.Length; i++) ary[i] = reader.ReadSingle(); return ary; });
+            defaultProcessDic[typeof(string[])] = ((writer, obj) => { var ary = (string[])obj; writer.Write(ary.Length); for (int i = 0; i < ary.Length; i++) writer.Write(ary[i]); }, (reader) => { var ary = new string[reader.ReadInt32()]; for (int i = 0; i < ary.Length; i++) ary[i] = reader.ReadString(); return ary; });
+            defaultProcessDic[typeof(Vector2)] = ((writer, obj) => { var vec = (Vector2)obj; writer.Write(vec.x); writer.Write(vec.y); }, (reader) => new Vector2(reader.ReadSingle(), reader.ReadSingle()));
+            defaultProcessDic[typeof(Vector3)] = ((writer, obj) => { var vec = (Vector3)obj; writer.Write(vec.x); writer.Write(vec.y); writer.Write(vec.z); }, (reader) => new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()));
+            defaultProcessDic[typeof(TranslatableTag)] = ((writer, obj) => writer.Write(((TranslatableTag)obj).Id), (reader) => TranslatableTag.ValueOf(reader.ReadInt32())!);
+            defaultProcessDic[typeof(CommunicableTextTag)] = defaultProcessDic[typeof(TranslatableTag)];
+        }
+
+        static public (Action<MessageWriter, object>, Func<MessageReader, object>) GetProcess(Type type)
+        {
+            if (type.IsAssignableTo(typeof(Enum)))
+                return defaultProcessDic[Enum.GetUnderlyingType(type)];
+            return defaultProcessDic[type];
+        }
+
+        public static void GetMessageTreater<Parameter>(out Action<MessageWriter, Parameter> sender, out Func<MessageReader, Parameter> receiver)
+        {
+            Type paramType = typeof(Parameter);
+
+            if (!typeof(Parameter).IsAssignableTo(typeof(ITuple))) throw new Exception("Can not generate sender and receiver for Non-tuple object.");
+
+            int count = 0;
+
+
+            List<(Action<MessageWriter, object>, Func<MessageReader, object>)> processList = new();
+            while (true)
+            {
+                var field = paramType.GetField("Item" + (count + 1).ToString());
+                if (field == null) break;
+
+                processList.Add(GetProcess(field.FieldType));
+                count++;
+            }
+
+            var processAry = processList.ToArray();
+            var constructor = paramType.GetConstructors().FirstOrDefault(c => c.GetParameters().Length == processAry.Length);
+
+            if (constructor == null) throw new Exception("Can not Tuple Constructor");
+
+            sender = (writer, param) => {
+                ITuple tuple = (param as ITuple)!;
+                for (int i = 0; i < processAry.Length; i++) processAry[i].Item1.Invoke(writer, tuple[i]!);
+            };
+            receiver = (reader) => {
+                return (Parameter)constructor.Invoke(processAry.Select(p => p.Item2.Invoke(reader)).ToArray());
+            };
+        }
+
+    }
+    public class RemoteProcess<Parameter> : RemoteProcessBase
+    {
+        public delegate void Process(Parameter parameter, bool isCalledByMe);
+
+        private Action<MessageWriter, Parameter> Sender { get; set; }
+        private Func<MessageReader, Parameter> Receiver { get; set; }
+        private Process Body { get; set; }
+
+        public RemoteProcess(string name, Action<MessageWriter, Parameter> sender, Func<MessageReader, Parameter> receiver, Process process)
+        : base(name)
+        {
+            Sender = sender;
+            Receiver = receiver;
+            Body = process;
+        }
+
+        public RemoteProcess(string name, Process process) : base(name)
+        {
+            Body = process;
+            RemoteProcessAsset.GetMessageTreater<Parameter>(out var sender, out var receiver);
+            Sender = sender;
+            Receiver = receiver;
+        }
+
+
+        public void Invoke(Parameter parameter)
+        {
+            RPCRouter.SendRpc(Name, Hash, (writer) => Sender(writer, parameter), () => Body.Invoke(parameter, true));
+        }
+
+        public RPCInvoker GetInvoker(Parameter parameter)
+        {
+            return new RPCInvoker(Hash, (writer) => Sender(writer, parameter), () => Body.Invoke(parameter, true));
+        }
+
+        public void LocalInvoke(Parameter parameter)
+        {
+            Body.Invoke(parameter, true);
+        }
+
+        public override void Receive(MessageReader reader)
+        {
+            try
+            {
+                Body.Invoke(Receiver.Invoke(reader), false);
+            }
+            catch (Exception ex)
+            {
+                TheOtherRolesPlugin.Logger.LogError($"Error in RPC(Received: {Name})" + ex.Message);
+            }
+        }
+    }
+
+    public static class RemotePrimitiveProcess
+    {
+        public static RemoteProcess<int> OfInteger(string name, RemoteProcess<int>.Process process) => new(name, (writer, message) => writer.Write(message), (reader) => reader.ReadInt32(), process);
+        public static RemoteProcess<float> OfFloat(string name, RemoteProcess<float>.Process process) => new(name, (writer, message) => writer.Write(message), (reader) => reader.ReadSingle(), process);
+        public static RemoteProcess<string> OfString(string name, RemoteProcess<string>.Process process) => new(name, (writer, message) => writer.Write(message), (reader) => reader.ReadString(), process);
+        public static RemoteProcess<byte> OfByte(string name, RemoteProcess<byte>.Process process) => new(name, (writer, message) => writer.Write(message), (reader) => reader.ReadByte(), process);
+        public static RemoteProcess<Vector2> OfVector2(string name, RemoteProcess<Vector2>.Process process) => new(name, (writer, message) => { writer.Write(message.x); writer.Write(message.y); }, (reader) => new(reader.ReadSingle(), reader.ReadSingle()), process);
+        public static RemoteProcess<Vector3> OfVector3(string name, RemoteProcess<Vector3>.Process process) => new(name, (writer, message) => { writer.Write(message.x); writer.Write(message.y); writer.Write(message.z); }, (reader) => new(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()), process);
+        public static RemoteProcess<bool> OfBoolean(string name, RemoteProcess<bool>.Process process) => new(name, (writer, message) => writer.Write(message), (reader) => reader.ReadBoolean(), process);
+    }
+
+    [TORRPCHolder]
+    public class CombinedRemoteProcess : RemoteProcessBase
+    {
+        public static CombinedRemoteProcess CombinedRPC = new();
+        CombinedRemoteProcess() : base("CombinedRPC") { }
+
+        public override void Receive(MessageReader reader)
+        {
+            int num = reader.ReadInt32();
+            for (int i = 0; i < num; i++) AllTORProcess[reader.ReadInt32()].Receive(reader);
+        }
+
+        public void Invoke(params RPCInvoker[] invokers)
+        {
+            RPCRouter.SendRpc(Name, Hash, (writer) =>
+            {
+                writer.Write(invokers.Count(i => !i.IsDummy));
+                foreach (var invoker in invokers)
+                {
+                    if (!invoker.IsDummy)
+                        invoker.Invoke(writer);
+                    else
+                        invoker.InvokeLocal();
+                }
+            },
+            () => { });
+        }
+    }
+
+    public class RemoteProcess : RemoteProcessBase
+    {
+        public delegate void Process(bool isCalledByMe);
+        private Process Body { get; set; }
+        public RemoteProcess(string name, Process process)
+        : base(name)
+        {
+            Body = process;
+        }
+
+        public void Invoke()
+        {
+            RPCRouter.SendRpc(Name, Hash, (writer) => { }, () => Body.Invoke(true));
+        }
+
+        public RPCInvoker GetInvoker()
+        {
+            return new RPCInvoker(Hash, (writer) => { }, () => Body.Invoke(true));
+        }
+
+        public override void Receive(MessageReader reader)
+        {
+            try
+            {
+                Body.Invoke(false);
+            }
+            catch (Exception ex)
+            {
+                TheOtherRolesPlugin.Logger.LogError($"Error in RPC(Received: {Name})" + ex.Message);
+            }
+        }
+    }
+
+    public class DivisibleRemoteProcess<Parameter, DividedParameter> : RemoteProcessBase
+    {
+        public delegate void Process(DividedParameter parameter, bool isCalledByMe);
+
+        private Func<Parameter, IEnumerator<DividedParameter>> Divider;
+        private Action<MessageWriter, DividedParameter> DividedSender { get; set; }
+        private Func<MessageReader, DividedParameter> Receiver { get; set; }
+        private Process Body { get; set; }
+
+        public DivisibleRemoteProcess(string name, Func<Parameter, IEnumerator<DividedParameter>> divider, Action<MessageWriter, DividedParameter> dividedSender, Func<MessageReader, DividedParameter> receiver, DivisibleRemoteProcess<Parameter, DividedParameter>.Process process)
+        : base(name)
+        {
+            Divider = divider;
+            DividedSender = dividedSender;
+            Receiver = receiver;
+            Body = process;
+        }
+
+        public DivisibleRemoteProcess(string name, Func<Parameter, IEnumerator<DividedParameter>> divider, DivisibleRemoteProcess<Parameter, DividedParameter>.Process process)
+        : base(name)
+        {
+            Divider = divider;
+            RemoteProcessAsset.GetMessageTreater<DividedParameter>(out var sender, out var receiver);
+            DividedSender = sender;
+            Receiver = receiver;
+            Body = process;
+        }
+
+        public void Invoke(Parameter parameter)
+        {
+            void dividedSend(DividedParameter param)
+            {
+                RPCRouter.SendRpc(Name, Hash, (writer) => DividedSender(writer, param), () => Body.Invoke(param, true));
+            }
+            var enumerator = Divider.Invoke(parameter);
+            while (enumerator.MoveNext()) dividedSend(enumerator.Current);
+        }
+
+        public void LocalInvoke(Parameter parameter)
+        {
+            var enumerator = Divider.Invoke(parameter);
+            while (enumerator.MoveNext()) Body.Invoke(enumerator.Current, true);
+        }
+
+        public override void Receive(MessageReader reader)
+        {
+            try
+            {
+                Body.Invoke(Receiver.Invoke(reader), false);
+            }
+            catch (Exception ex)
+            {
+                TheOtherRolesPlugin.Logger.LogError($"Error in RPC(Received: {Name})" + ex.Message);
+            }
+        }
+    }
+
+    [TORRPCHolder]
     public static class RPCProcedure {
 
         // Main Controls
@@ -360,7 +719,7 @@ namespace TheOtherRoles
         }
 
         public static void shareGamemode(byte gm) {
-            TORMapOptions.gameMode = (CustomGamemodes) gm;
+            gameMode = (CustomGamemodes) gm;
             if (LobbyViewSettingsPatch.currentButtons != null)
                 LobbyViewSettingsPatch.currentButtons?.ForEach(x => { if (x != null && x.gameObject != null) x?.gameObject?.Destroy(); });
             LobbyViewSettingsPatch.currentButtons?.Clear();
@@ -548,48 +907,35 @@ namespace TheOtherRoles
 
         // Role functionality
 
-        public static void engineerFixLights() {
-            SwitchSystem switchSystem = MapUtilities.Systems[SystemTypes.Electrical].CastFast<SwitchSystem>();
-            switchSystem.ActualSwitches = switchSystem.ExpectedSwitches;
-        }
-
-        public static void engineerFixSubmergedOxygen() {
-            SubmergedCompatibility.RepairOxygen();
-        }
-
-        public static void engineerUsedRepair() {
-            if (Helpers.shouldShowGhostInfo()) {
-                Helpers.showFlash(Engineer.color, 0.5f, ModTranslation.getString("engineerInfo")); ;
-            }
-        }
-
-        public static void cleanBody(byte playerId, byte cleaningPlayerId) {
-            if (Medium.futureDeadBodies != null && !Busker.players.Any(x => x.player && x.player.PlayerId == playerId && !x.pseudocideComplete)) {
-                var deadBody = Medium.futureDeadBodies.Find(x => x.Item1.player.PlayerId == playerId).Item1;
-                if (deadBody != null) deadBody.wasCleaned = true;
-            }
-            PlayerControl player = Helpers.playerById(playerId);
-            PlayerControl cleanPlayer = Helpers.playerById(cleaningPlayerId);
-
-            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
-            for (int i = 0; i < array.Length; i++) {
-                if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == playerId) {
-                    UnityEngine.Object.Destroy(array[i].gameObject);
-                }     
-            }
-            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.CleanBody, cleaningPlayerId, 1 << playerId)
+        public static RemoteProcess<(byte playerId, byte cleaningPlayerId)> CleanBody = new("CleanBody",
+            (message, _) =>
             {
-                RelatedTag =
-                cleanPlayer.isRole(RoleId.Vulture) ? EventDetail.Eat : EventDetail.Clean
-            });
-            if (cleanPlayer.isRole(RoleId.Vulture)) {
-                var vulture = Vulture.getRole(cleanPlayer);
-                vulture.eatenBodies++;
-                if (vulture.eatenBodies == Vulture.vultureNumberToWin) {
-                    vulture.triggerVultureWin = true;
+                if (Medium.futureDeadBodies != null && !Busker.players.Any(x => x.player && x.player.PlayerId == message.playerId && !x.pseudocideComplete)) {
+                    var deadBody = Medium.futureDeadBodies.Find(x => x.Item1.player.PlayerId == message.playerId).Item1;
+                    if (deadBody != null) deadBody.wasCleaned = true;
                 }
-            }
-        }
+                PlayerControl player = Helpers.playerById(message.playerId);
+                PlayerControl cleanPlayer = Helpers.playerById(message.cleaningPlayerId);
+
+                DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+                for (int i = 0; i < array.Length; i++) {
+                    if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == message.playerId) {
+                        UnityEngine.Object.Destroy(array[i].gameObject);
+                    }     
+                }
+                TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.CleanBody, message.cleaningPlayerId, 1 << message.playerId)
+                {
+                    RelatedTag =
+                    cleanPlayer.isRole(RoleId.Vulture) ? EventDetail.Eat : EventDetail.Clean
+                });
+                if (cleanPlayer.isRole(RoleId.Vulture)) {
+                    var vulture = Vulture.getRole(cleanPlayer);
+                    vulture.eatenBodies++;
+                    if (vulture.eatenBodies == Vulture.vultureNumberToWin) {
+                        vulture.triggerVultureWin = true;
+                    }
+                }
+            });
 
         public static void timeMasterRewindTime(byte playerId) {
             PlayerControl player = Helpers.playerById(playerId);
@@ -618,21 +964,6 @@ namespace TheOtherRoles
             PlayerControl.LocalPlayer.moveable = false;
         }
 
-        public static void timeMasterShield(byte playerId) {
-            var timeMaster = TimeMaster.getRole(Helpers.playerById(playerId));
-            timeMaster.shieldActive = true;
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(TimeMaster.shieldDuration, new Action<float>((p) => {
-                if (p == 1f) timeMaster.shieldActive = false;
-            })));
-        }
-
-        public static void medicSetShielded(byte shieldedId, byte medicId) {
-            var medic = Medic.getRole(Helpers.playerById(medicId));
-            medic.usedShield = true;
-            medic.shielded = Helpers.playerById(shieldedId);
-            medic.futureShielded = null;
-        }
-
         public static void shieldedMurderAttempt(byte medicId) {
             var medic = Medic.getRole(Helpers.playerById(medicId));
             if (medic == null || medic.shielded == null) return;
@@ -659,16 +990,13 @@ namespace TheOtherRoles
                 if (!oldShifter.Data.IsDead)
                 {
                     oldShifter.Exiled();
-                    GameHistory.overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
+                    overrideDeathReasonAndKiller(oldShifter, DeadPlayer.CustomDeathReason.Shift, player);
                 }
                 if (oldShifter == Lawyer.target && AmongUsClient.Instance.AmHost)
                 {
                     foreach (var lawyer in Lawyer.allPlayers)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                        writer.Write(lawyer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                        Lawyer.PromoteToPursuer.Invoke(lawyer.PlayerId);
                     }
                 }
                 if (PlayerControl.LocalPlayer == oldShifter) {
@@ -792,128 +1120,23 @@ namespace TheOtherRoles
             TORGameManager.Instance?.RecordRoleHistory(player);
         }
 
-        static public void jesterWin(byte playerId)
-        {
-            Jester.players.FirstOrDefault(x => x.player.PlayerId == playerId).triggerJesterWin = true;
-        }
-
-        public static void swapperSwap(byte playerId1, byte playerId2) {
-            if (MeetingHud.Instance) {
-                Swapper.playerId1 = playerId1;
-                Swapper.playerId2 = playerId2;
-            }
-        }
-
-        public static void morphlingMorph(byte playerId, byte morphlingId) {  
-            PlayerControl target = Helpers.playerById(playerId);
-            Morphling morphling = Morphling.getRole(Helpers.playerById(morphlingId));
-            if (morphling == null || target == null) return;
-
-            morphling.morphTimer = Morphling.duration;
-            morphling.morphTarget = target;
-            if (Camouflager.camouflageTimer <= 0f)
-                morphling.player.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
-        }
-
-        public static void camouflagerCamouflage() {
-            if (!Camouflager.exists) return;
-
-            Camouflager.camouflageTimer = Camouflager.duration;
-            if (Helpers.MushroomSabotageActive()) return; // Dont overwrite the fungle "camo"
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-                player.setLook("", 6, "", "", "", "");
-        }
-
-        public static void vampireSetBitten(byte targetId, byte performReset, byte vampireId)
-        {
-            var vampire = Vampire.getRole(Helpers.playerById(vampireId));
-            if (vampire == null) return;
-            if (performReset != 0) {
-                vampire.bitten = null;
-                return;
-            }
-
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
-                if (player.PlayerId == targetId && !player.Data.IsDead) {
-                        vampire.bitten = player;
-                }
-            }
-        }
-
-        public static void plagueDoctorWin()
-        {
-            PlagueDoctor.triggerPlagueDoctorWin = true;
-            var pd = PlagueDoctor.allPlayers.FirstOrDefault();
-            if (pd == null) return;
-            var livingPlayers = PlayerControl.AllPlayerControls.GetFastEnumerator().ToArray().Where(p => !p.isRole(RoleId.PlagueDoctor) && !p.Data.IsDead);
-            foreach (PlayerControl p in livingPlayers)
-            {
-                if (p.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(p).otherKiller = pd;
-                if (!p.Data.IsDead) p.Exiled();
-                GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Disease, pd);
-            }
-        }
-
-        public static void plagueDoctorInfected(byte targetId)
-        {
-            var p = Helpers.playerById(targetId);
-            if (PlagueDoctor.allPlayers.Count <= 0) return;
-            if (!PlagueDoctor.infected.ContainsKey(targetId)) {
-                PlagueDoctor.infected[targetId] = p;
-            }
-        }
-
         public static void plagueDoctorProgress(byte targetId, float progress)
         {
             if (PlagueDoctor.allPlayers.Count <= 0) return;
             PlagueDoctor.progress[targetId] = progress;
         }
 
-        public static void placeGarlic(byte[] buff) {
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0*sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1*sizeof(float));
-            new Garlic(position);
-        }
+        public static RemoteProcess<Vector2> PlaceGarlic = RemotePrimitiveProcess.OfVector2("PlaceGarlic", (message, _) => new Garlic(message));
 
-        public static void trackerUsedTracker(byte targetId, byte trackerId) {
-            var tracker = Tracker.getRole(Helpers.playerById(trackerId));
-            tracker.usedTracker = true;
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-                if (player.PlayerId == targetId)
-                    tracker.tracked = player;
-        }
-
-        public static void shareAchievement(byte playerId, string achievement)
+        public static RemoteProcess<(byte playerId, string achievement)> ShareAchievement = new("ShareAchievement", (message, _) =>
         {
-            if (TORGameManager.Instance != null && Helpers.playerById(playerId) != null)
+            PlayerControl player = Helpers.playerById(message.playerId);
+            if (TORGameManager.Instance != null && player != null)
             {
-                var titleShower = Helpers.playerById(playerId).GetTitleShower();
-                TORGameManager.Instance.TitleMap[playerId] = titleShower.SetAchievement(achievement);
+                var titleShower = Helpers.playerById(message.playerId).GetTitleShower();
+                TORGameManager.Instance.TitleMap[message.playerId] = titleShower.SetAchievement(message.achievement);
             }
-        }
-
-        public static void evilHackerCreatesMadmate(byte targetId, byte evilHackerId)
-        {
-            PlayerControl player = Helpers.playerById(targetId);
-            PlayerControl evilHacker = Helpers.playerById(evilHackerId);
-            var evilHackerRole = EvilHacker.getRole(evilHacker);
-            if (evilHacker == null || evilHackerRole == null) return;
-            if (EvilHacker.canCreateMadmateFromJackal || !player.isRole(RoleId.Jackal))
-            {
-                FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
-
-                // タスクがないプレイヤーがMadmateになった場合はショートタスクを必要数割り当てる
-                erasePlayerRoles(player.PlayerId, true, true, false);
-                if (CreatedMadmate.hasTasks && player == PlayerControl.LocalPlayer)
-                    player.generateAndAssignTasks(0, CreatedMadmate.numTasks, 0);
-
-                CreatedMadmate.createdMadmate.Add(player);
-                if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) PlayerControl.LocalPlayer.moveable = true;
-            }
-            evilHackerRole.canCreateMadmate = false;
-            return;
-        }
+        });
 
         public static void shareRealTasks(MessageReader reader)
         {
@@ -922,27 +1145,12 @@ namespace TheOtherRoles
             {
                 byte playerId = reader.ReadByte();
                 byte[] taskTmp = reader.ReadBytes(4);
-                float x = System.BitConverter.ToSingle(taskTmp, 0);
+                float x = BitConverter.ToSingle(taskTmp, 0);
                 taskTmp = reader.ReadBytes(4);
-                float y = System.BitConverter.ToSingle(taskTmp, 0);
+                float y = BitConverter.ToSingle(taskTmp, 0);
                 Vector2 pos = new(x, y);
                 if (!MapBehaviourPatch.realTasks.ContainsKey(playerId)) MapBehaviourPatch.realTasks[playerId] = new Il2CppSystem.Collections.Generic.List<Vector2>();
                 MapBehaviourPatch.realTasks[playerId].Add(pos);
-            }
-        }
-
-        public static void sherlockReceiveDetect(byte[] buff)
-        {
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            if (PlayerControl.LocalPlayer.isRole(RoleId.Sherlock))
-            {
-                var arrow = new Sherlock.SherlockDetectArrow(Sherlock.getDetectIcon(), true)
-                {
-                    TargetPos = position
-                };
-                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Sequence(Effects.Wait(7f), Effects.Action((Action)(() => arrow.MarkAsDisappering()))));
             }
         }
 
@@ -982,7 +1190,7 @@ namespace TheOtherRoles
             }
         }
 
-        public static void placeAntique()
+        public static RemoteProcess PlaceAntique = new("PlaceAntique", (_) =>
         {
             var dictionary = new Dictionary<Vector3, SystemTypes>();
             if (Helpers.isSkeld()) dictionary = Antique.SkeldPos;
@@ -992,18 +1200,7 @@ namespace TheOtherRoles
             else dictionary = Antique.FunglePos;
 
             foreach (var p in dictionary) new Antique(p.Key, p.Value);
-        }
-
-        public static void archaeologistDetect(byte id)
-        {
-            if (Antique.antiques == null || Antique.antiques.Count == 0) return;
-            foreach (var a in Antique.antiques) if (a.isDetected) a.isDetected = false;
-            var remainingList = Antique.antiques.Where(x => !x.isBroken).ToList();
-            if (remainingList.Count <= id) return;
-            var antique = remainingList[id];
-            antique.isDetected = true;
-            Archaeologist.arrowActive = true;
-        }
+        });
 
         public static void archaeologistExcavate(byte index)
         {
@@ -1027,28 +1224,6 @@ namespace TheOtherRoles
             }
             antique.isDetected = false;
             if (Archaeologist.revealAntique == Archaeologist.RevealAntique.Immediately) antique.revealAntique();
-        }
-
-        public static void deputyUsedHandcuffs(byte targetId)
-        {
-            Deputy.handcuffedPlayers.Add(targetId);
-        }
-
-        public static void deputyPromotes(byte playerId)
-        {
-            PlayerControl deputy = Helpers.playerById(playerId);
-            var deputyRole = Deputy.getRole(deputy);
-            if (deputy != null && deputyRole != null) {  // Deputy should never be null here, but there appeared to be a race condition during testing, which was removed.
-                float remainingCuffs = deputyRole.remainingHandcuffs;
-                Sheriff.replaceCurrentSheriff(deputy);
-                if (PlayerControl.LocalPlayer == deputy) {
-                    _ = new StaticAchievementToken("deputy.another1");
-                }
-                Sheriff curSheriff = Sheriff.getRole(deputy);
-                curSheriff.isFormerDeputy = true;
-                curSheriff.remainingHandcuffs = remainingCuffs;
-                Deputy.eraseRole(deputy);
-            }
         }
 
         public static void jackalCreatesSidekick(byte targetId, byte jackalId) {
@@ -1084,25 +1259,6 @@ namespace TheOtherRoles
             }
             jackal.canCreateSidekick = false;
         }
-
-        public static void sidekickPromotes(byte playerId) {
-            PlayerControl player = Helpers.playerById(playerId);
-            var sidekick = Sidekick.getRole(player);
-            if (FreePlayGM.isFreePlayGM || sidekick == null) return;
-            if (PlayerControl.LocalPlayer.PlayerId == playerId) _ = new StaticAchievementToken("sidekick.challenge");
-            bool wasTeamRed = sidekick.wasTeamRed;
-            bool wasSpy = sidekick.wasSpy;
-            bool wasImpostor = sidekick.wasImpostor;
-            Sidekick.eraseRole(player);
-            player.setRole(RoleId.Jackal);
-            var jackal = Jackal.getRole(player);
-            jackal.removeCurrentJackal();
-            jackal.canCreateSidekick = Jackal.jackalPromotedFromSidekickCanCreateSidekick;
-            jackal.wasTeamRed = wasTeamRed;
-            jackal.wasSpy = wasSpy;
-            jackal.wasImpostor = wasImpostor;
-            return;
-        }
         
         public static void erasePlayerRoles(byte playerId, bool ignoreModifier = true, bool isCreatedMadmate = false, bool generateTasks = true) {
             PlayerControl player = Helpers.playerById(playerId);
@@ -1134,48 +1290,8 @@ namespace TheOtherRoles
             }
         }
 
-        public static void setFutureErased(byte playerId) {
-            PlayerControl player = Helpers.playerById(playerId);
-            if (Eraser.futureErased == null) 
-                Eraser.futureErased = new List<PlayerControl>();
-            if (player != null) {
-                Eraser.futureErased.Add(player);
-            }
-        }
-
-        public static void setFutureShifted(byte playerId) {
-            if (Shifter.isNeutral && !Shifter.shiftPastShifters && Shifter.pastShifters.Contains(playerId))
-                return;
-            Shifter.futureShift = Helpers.playerById(playerId);
-        }
-
-        public static void setFutureShielded(byte playerId, byte medicId) {
-            var medic = Medic.getRole(Helpers.playerById(medicId));
-            if (medic == null) return;
-            medic.futureShielded = Helpers.playerById(playerId);
-            medic.usedShield = true;
-        }
-
-        public static void setFutureSpelled(byte playerId, byte witchId) {
-            PlayerControl player = Helpers.playerById(playerId);
-            PlayerControl witch = Helpers.playerById(witchId);
-            var witchRole = Witch.getRole(witch);
-            if (witch == null || witchRole == null) return;
-            witchRole.futureSpelled ??= new List<PlayerControl>();
-            if (player != null) {
-                witchRole.futureSpelled.Add(player);
-            }
-        }
-
-        public static void recordStatistics(byte variation, byte relatedTag, byte sourceId, byte targetMask, float timeLag)
-        {
-            TORGameManager.Instance?.GameStatistics.RecordEvent(new GameStatistics.Event(GameStatistics.EventVariation.ValueOf(variation), TORGameManager.Instance.CurrentTime + timeLag, sourceId == byte.MaxValue ? null : sourceId, targetMask, null) { RelatedTag = TranslatableTag.ValueOf(relatedTag) });
-        }
-
-        public static void foxStealth(bool stealthed)
-        {
-            Fox.setStealthed(stealthed);
-        }
+        public static RemoteProcess<(int variation, int relatedTag, byte sourceId, int targetMask, float timeLag)> RecordStatistics = new("RecordStatistics", (message, _) =>
+        TORGameManager.Instance?.GameStatistics.RecordEvent(new GameStatistics.Event(GameStatistics.EventVariation.ValueOf(message.variation), TORGameManager.Instance.CurrentTime + message.timeLag, message.sourceId == byte.MaxValue ? null : message.sourceId, message.targetMask, null) { RelatedTag = TranslatableTag.ValueOf(message.relatedTag) }));
 
         public static void foxCreatesImmoralist(byte targetId)
         {
@@ -1240,55 +1356,6 @@ namespace TheOtherRoles
             if (PlayerControl.LocalPlayer == player) SoundEffectsManager.play("jekyllAndHydeDrug");
         }
 
-        public static void noisemakerSetSounded(byte playerId, byte noisemakerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            PlayerControl noisem = Helpers.playerById(noisemakerId);
-            var noisemaker = Noisemaker.getRole(noisem);
-            if (noisemaker == null || noisem == null) return;
-            noisemaker.target = player;
-        }
-
-        public static void schrodingersCatSetTeam(byte team)
-        {
-            switch ((SchrodingersCat.Team)team)
-            {
-                case SchrodingersCat.Team.Crewmate:
-                    SchrodingersCat.setCrewFlag();
-                    break;
-                case SchrodingersCat.Team.Impostor:
-                    SchrodingersCat.setImpostorFlag();
-                    SchrodingersCat.allPlayers.ForEach(x => FastDestroyableSingleton<RoleManager>.Instance.SetRole(x, RoleTypes.Impostor));
-                    break;
-                case SchrodingersCat.Team.Jackal:
-                    SchrodingersCat.setJackalFlag();
-                    break;
-                case SchrodingersCat.Team.JekyllAndHyde:
-                    SchrodingersCat.setJekyllAndHydeFlag();
-                    break;
-                case SchrodingersCat.Team.Moriarty:
-                    SchrodingersCat.setMoriartyFlag();
-                    break;
-                default:
-                    SchrodingersCat.setCrewFlag();
-                    break;
-            }
-            if (PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat)) _ = new StaticAchievementToken("schrodingersCat.another1");
-            SchrodingersCat.allPlayers.ForEach(x => TORGameManager.Instance?.RecordRoleHistory(x));
-        }
-
-        public static void placeAssassinTrace(byte playerId, byte[] buff) {
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            PlayerControl player = Helpers.playerById(playerId);
-            var assassin = Assassin.getRole(player);
-            if (player == null || assassin == null) return;
-            new AssassinTrace(position, player, Assassin.traceTime);
-            if (PlayerControl.LocalPlayer != player)
-                assassin.assassinMarked = null;
-        }
-
         public static void setInvisible(byte playerId, byte flag)
         {
             PlayerControl target = Helpers.playerById(playerId);
@@ -1315,61 +1382,12 @@ namespace TheOtherRoles
             //Assassin.isInvisble = true;
         }
 
-        public static void placePortal(byte[] buff) {
-            Vector3 position = Vector2.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            new Portal(position);
-        }
-
-        public static void usePortal(byte playerId, byte exit) {
-            Portal.startTeleport(playerId, exit);
-            if (PlayerControl.LocalPlayer.isRole(RoleId.Portalmaker) && Portalmaker.local.acTokenChallenge != null)
-            {
-                Portalmaker.local.acTokenChallenge.Value.portal++;
-                Portalmaker.local.acTokenChallenge.Value.cleared |= Portalmaker.local.acTokenChallenge.Value.portal >= 3;
-            }
-        }
-
-        public static void placeJackInTheBox(byte[] buff) {
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0*sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1*sizeof(float));
-            new JackInTheBox(position);
-        }
-
-        public static void lightsOut() {
-            Trickster.lightsOutTimer = Trickster.lightsOutDuration;
-            // If the local player is impostor indicate lights out
-            if(Helpers.hasImpVision(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId))) {
-                new CustomMessage(ModTranslation.getString("tricksterLightsOutText"), Trickster.lightsOutDuration);
-            }
-        }
-
-        public static void ninjaStealth(byte playerId, bool stealthed)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            Ninja.setStealthed(player, stealthed);
-        }
-
-        public static void nekoKabochaExile(byte targetId, byte killerId)
-        {
-            uncheckedExilePlayer(targetId);
-            overrideDeathReasonAndKiller(Helpers.playerById(targetId), DeadPlayer.CustomDeathReason.Revenge, killer: Helpers.playerById(killerId));
-        }
-
         public static void serialKillerSuicide(byte serialKillerId)
         {
             PlayerControl serialKiller = Helpers.playerById(serialKillerId);
             if (serialKiller == null) return;
             serialKiller.MurderPlayer(serialKiller, MurderResultFlags.Succeeded);
-            GameHistory.overrideDeathReasonAndKiller(serialKiller, DeadPlayer.CustomDeathReason.Suicide);
-        }
-
-        public static void sprinterSprint(byte playerId, bool sprinting)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            Sprinter.setSprinting(player, sprinting);
+            overrideDeathReasonAndKiller(serialKiller, DeadPlayer.CustomDeathReason.Suicide);
         }
 
         public static void updateMeeting(byte targetId)
@@ -1397,52 +1415,6 @@ namespace TheOtherRoles
                 if (AmongUsClient.Instance.AmHost)
                     MeetingHud.Instance.CheckForEndVoting();
             }
-        }
-
-        public static void teleporterTeleport(byte target1Id, byte target2Id)
-        {
-            PlayerControl target1 = Helpers.playerById(target1Id);
-            PlayerControl target2 = Helpers.playerById(target2Id);
-
-            target1.MyPhysics.ResetMoveState();
-            target2.MyPhysics.ResetMoveState();
-            var targetPosition = target1.GetTruePosition();
-            var TempFacing = target1.cosmetics.currentBodySprite.BodySprite.flipX;
-            target1.NetTransform.SnapTo(new Vector2(target2.GetTruePosition().x, target2.GetTruePosition().y + 0.3636f));
-            target1.cosmetics.currentBodySprite.BodySprite.flipX = target2.cosmetics.currentBodySprite.BodySprite.flipX;
-            target2.NetTransform.SnapTo(new Vector2(targetPosition.x, targetPosition.y + 0.3636f));
-            target2.cosmetics.currentBodySprite.BodySprite.flipX = TempFacing;
-
-            if (PlayerControl.LocalPlayer == target1 || PlayerControl.LocalPlayer == target2)
-            {
-                Helpers.showFlash(Teleporter.color);
-                if (Minigame.Instance) Minigame.Instance.Close();
-            }
-        }
-
-        public static void cupidSuicide(byte cupidId, bool isScapegoat, bool isExile)
-        {
-            var cupid = Helpers.playerById(cupidId);
-            if (cupid != null)
-            {
-                if (isExile)
-                {
-                    cupid.Exiled();
-                    if (PlayerControl.LocalPlayer == cupid && Helpers.ShowKillAnimation)
-                        FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(cupid.Data, cupid.Data);
-                }
-                cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
-                overrideDeathReasonAndKiller(cupid, isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
-                if (PlayerControl.LocalPlayer == cupid && isScapegoat) _ = new StaticAchievementToken("cupid.another1");
-            }
-        }
-
-        public static void setCupidShield(byte targetId, byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            var cupid = Cupid.getRole(player);
-            if (player == null || cupid == null) return;
-            cupid.shielded = Helpers.playerById(targetId);
         }
 
         public static void buskerPseudocide(byte targetId, bool isTrueDead, bool isLoverSuicide)
@@ -1483,121 +1455,7 @@ namespace TheOtherRoles
             }
         }
 
-        public static void buskerRevive(byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            var busker = Busker.getRole(player);
-            if (player == null || busker == null) return;
-            busker.pseudocideFlag = false;
-            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
-            foreach (DeadBody body in array)
-            {
-                if (body.ParentId != playerId) continue;
-
-                UnityEngine.Object.Destroy(body.gameObject);
-                break;
-            }
-            player.Revive();
-            player.Data.IsDead = false;
-            player.StartCoroutine(player.CoGush());
-            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << playerId) { RelatedTag = EventDetail.Revive });
-        }
-
-        public static void veteranAlert(byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            var veteran = Veteran.getRole(player);
-            if (player == null || veteran == null) return;
-            veteran.alertActive = true;
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Veteran.alertDuration, new Action<float>((p) => {
-                if (p == 1f) veteran.alertActive = false;
-            })));
-        }
-
-        public static void unlockMayorAcCommon(byte votedFor, byte playerId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == playerId)
-            {
-                if (!GameManager.Instance.LogicOptions.GetAnonymousVotes())
-                    _ = new StaticAchievementToken("mayor.common1");
-                if (Mayor.local.acTokenChallenge != null) Mayor.local.acTokenChallenge.Value.votedFor = votedFor;
-            }
-        }
-
-        public static void unlockDetectiveAcChallenge(byte votedFor, byte playerId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == playerId) {
-                Detective.local.acTokenChallenge.Value.votedFor = votedFor;
-            }
-        }
-
-        public static void unlockMedicAcChallenge(byte killerId, byte medicId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == medicId)
-                Medic.local.acTokenChallenge.Value.killerId = killerId;
-        }
-
-        public static void unlockTrackerAcChallenge(float moveTime, byte trackerId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == trackerId && !PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                if (!Tracker.local.acTokenChallenge.Value.cleared)
-                {
-                    if (moveTime - Tracker.local.acTokenChallenge.Value.ventTime >= Tracker.updateIntervall)
-                        Tracker.local.acTokenChallenge.Value.cleared = true;
-                }
-            }
-        }
-
-        public static void unlockVeteranAcChallenge(byte playerId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == playerId)
-                _ = new StaticAchievementToken("veteran.challenge");
-        }
-
-        public static void yoyoMarkLocation(byte[] buff, byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            var yoyo = Yoyo.getRole(player);
-            if (player == null || yoyo == null) return;
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            yoyo.markLocation(position);
-            _ = new Silhouette(position, player, -1, false);
-        }
-
-        public static void yoyoBlink(bool isFirstJump, byte[] buff, byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            var yoyo = Yoyo.getRole(player);
-            TheOtherRolesPlugin.Logger.LogMessage($"blink fistjumpo: {isFirstJump}");
-            if (player == null || yoyo == null || yoyo.markedLocation == null) return;
-            var markedPos = (Vector3)yoyo.markedLocation;
-            player.NetTransform.SnapTo(markedPos);
-
-            var markedSilhouette = Silhouette.silhouettes.FirstOrDefault(s => s.gameObject.transform.position.x == markedPos.x && s.gameObject.transform.position.y == markedPos.y);
-            if (markedSilhouette != null)
-                markedSilhouette.permanent = false;
-
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            // Create Silhoutte At Start Position:
-            if (isFirstJump)
-            {
-                yoyo.markLocation(position);
-                new Silhouette(position, player, Yoyo.blinkDuration, true);
-            }
-            else
-            {
-                new Silhouette(position, player, 5, true);
-                yoyo.markedLocation = null;
-            }
-            if (Chameleon.chameleon.Any(x => x.PlayerId == playerId)) // Make the Yoyo visible if chameleon!
-                Chameleon.lastMoved[playerId] = Time.time;
-        }
-        public static void breakArmor()
+        public static RemoteProcess BreakArmor = new("BreakArmor", (_) =>
         {
             if (Armored.armored == null || Armored.isBrokenArmor) return;
             Armored.isBrokenArmor = true;
@@ -1605,38 +1463,7 @@ namespace TheOtherRoles
             {
                 Armored.armored.ShowFailedMurder();
             }
-        }
-
-        public static void doomsayerObserve(byte playerId, byte doomsayerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            PlayerControl doomsayer = Helpers.playerById(doomsayerId);
-            var doomsayerRole = Doomsayer.getRole(doomsayer);
-            if (player == null || doomsayer == null || doomsayerRole == null) return;
-            doomsayerRole.observed = player;
-        }
-
-        public static void mimicMorph(byte mimicAId, byte mimicBId)
-        {
-            PlayerControl mimicA = Helpers.playerById(mimicAId);
-            PlayerControl mimicB = Helpers.playerById(mimicBId);
-            if (Camouflager.camouflageTimer <= 0f)
-                mimicA.setLook(mimicB.Data.PlayerName, mimicB.Data.DefaultOutfit.ColorId, mimicB.Data.DefaultOutfit.HatId, mimicB.Data.DefaultOutfit.VisorId, mimicB.Data.DefaultOutfit.SkinId, mimicB.Data.DefaultOutfit.PetId);
-            MimicA.isMorph = true;
-        }
-
-        public static void mimicResetMorph(byte mimicAId)
-        {
-            PlayerControl mimicA = Helpers.playerById(mimicAId);
-            if (Camouflager.camouflageTimer <= 0f)
-                mimicA.setDefaultLook();
-            MimicA.isMorph = false;
-        }
-
-        public static void setShifterType(bool isNeutral)
-        {
-            Shifter.isNeutral = isNeutral;
-        }
+        });
 
         public static void setOddIsJekyll(bool b, byte playerId)
         {
@@ -1654,15 +1481,6 @@ namespace TheOtherRoles
             if (target == null) return;
             Yasuna.specialVoteTargetPlayerId = targetid;
             Yasuna.remainingSpecialVotes(true);
-        }
-
-        public static void yasunaSpecialVote_DoCastVote()
-        {
-            if (!MeetingHud.Instance) return;
-            if (!Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId)) return;
-            PlayerControl target = Helpers.playerById(Yasuna.specialVoteTargetPlayerId);
-            if (target == null) return;
-            MeetingHud.Instance.CmdCastVote(PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
         }
 
         public static void taskMasterSetExTasks(byte playerId, byte oldTaskMasterPlayerId, byte[] taskTypeIds)
@@ -1714,191 +1532,27 @@ namespace TheOtherRoles
             TaskMaster.allExTasks = allExTasks;
         }
 
-        public static void setCupidLovers(byte playerId1, byte playerId2, byte cupidId)
+        public static RemoteProcess<byte> ImpostorPromotesToLastImpostor = RemotePrimitiveProcess.OfByte("ImpostorPromotesToLastImpostor", (message, _) =>
         {
-            var p1 = Helpers.playerById(playerId1);
-            var p2 = Helpers.playerById(playerId2);
-            var player = Helpers.playerById(cupidId);
-            var cupid = Cupid.getRole(player);
-            if (player == null || p1 == null || p2 == null || cupid == null) return;
-            cupid.lovers1 = p1;
-            cupid.lovers2 = p2;
-            Cupid.breakLovers(p1, p2);
-            Cupid.breakLovers(p2, p1);
-            Lovers.addCouple(p1, p2);
-        }
+            PlayerControl player = Helpers.playerById(message);
+            if (player == null) return;
 
-        public static void impostorPromotesToLastImpostor(byte targetId)
-        {
-            PlayerControl player = Helpers.playerById(targetId);
             if (LastImpostor.lastImpostor != null && player == LastImpostor.lastImpostor) return;
             if (LastImpostor.lastImpostor != null && !LastImpostor.isOriginalGuesser) GuesserGM.clear(LastImpostor.lastImpostor.PlayerId);
             LastImpostor.clearAndReload();
-            if (!HandleGuesser.isGuesser(targetId)) setGuesserGm(targetId);
+            if (!HandleGuesser.isGuesser(message)) setGuesserGm(message);
             else LastImpostor.isOriginalGuesser = true;
             LastImpostor.lastImpostor = player;
-            var g = GuesserGM.guessers.FindLast(x => x.guesser.PlayerId == targetId);
+            var g = GuesserGM.guessers.FindLast(x => x.guesser.PlayerId == message);
             if (g == null) return;
             g.shots = Mathf.Max(g.shots, LastImpostor.numShots);
-        }
+        });
 
-        public static void blackmailPlayer(byte playerId, byte blackmailerId)
-        {
-            PlayerControl target = Helpers.playerById(playerId);
-            PlayerControl blackmailer = Helpers.playerById(blackmailerId);
-            var blackmailerRole = Blackmailer.getRole(blackmailer);
-            if (blackmailerRole == null) return;
-           blackmailerRole.blackmailed = target;
-        }
-
-        public static void unblackmailPlayer()
-        {
-            foreach (var p in Blackmailer.players)
-                p.blackmailed = null;
-            Blackmailer.alreadyShook = false;
-        }
-
-        public static void akujoSetHonmei(byte akujoId, byte targetId)
-        {
-            PlayerControl akujo = Helpers.playerById(akujoId);
-            PlayerControl target = Helpers.playerById(targetId);
-            var akujoRole = Akujo.getRole(akujo);
-
-            if (akujo != null && akujoRole != null && akujoRole.honmei == null)
-            {
-                Akujo.breakLovers(target);
-                akujoRole.honmei = target;
-            }
-        }
-
-        public static void akujoSetKeep(byte akujoId, byte targetId)
-        {
-            var akujo = Helpers.playerById(akujoId);
-            PlayerControl target = Helpers.playerById(targetId);
-            var akujoRole = Akujo.getRole(akujo);
-
-            if (akujo != null && akujoRole != null && akujoRole.keepsLeft > 0)
-            {
-                Akujo.breakLovers(target);
-                akujoRole.keeps.Add(target);
-            }
-        }
-
-        public static void akujoSuicide(byte akujoId)
-        {
-            var akujo = Helpers.playerById(akujoId);
-            if (akujo != null)
-            {
-                akujo.MurderPlayer(akujo, MurderResultFlags.Succeeded);
-                GameHistory.overrideDeathReasonAndKiller(akujo, DeadPlayer.CustomDeathReason.Loneliness);
-                if (MeetingHud.Instance) updateMeeting(akujoId);
-            }
-        }
-
-        public static void unlockTaskMasterAcChallenge()
+        public static RemoteProcess UnlockTaskMasterAch = new("UnlockTaskMasterAch", (_) =>
         {
             if (PlayerControl.LocalPlayer.isRole(RoleId.TaskMaster))
-                _ = new StaticAchievementToken("taskMaster.challenge");
-        }
-
-        public static void unlockJesterAcCommon(byte playerId)
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == playerId) {
-                _ = new StaticAchievementToken("jester.common1");
-            }
-        }
-
-        public static void activateTrap(byte trapId, byte trapperId, byte playerId)
-        {
-            var trapper = Helpers.playerById(trapperId);
-            var player = Helpers.playerById(playerId);
-            Trap.activateTrap(trapId, trapper, player);
-        }
-
-        public static void disableTrap(byte trapId)
-        {
-            Trap.disableTrap(trapId);
-        }
-
-        public static void placeTrap(byte[] buff)
-        {
-            Vector3 pos = Vector3.zero;
-            pos.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            pos.y = BitConverter.ToSingle(buff, 1 * sizeof(float)) - 0.2f;
-            Trap trap = new(pos);
-        }
-
-        public static void trapperKill(byte trapId, byte trapperId, byte playerId)
-        {
-            var trapper = Helpers.playerById(trapperId);
-            var target = Helpers.playerById(playerId);
-            if (PlayerControl.LocalPlayer == trapper)
-            {
-                _ = new StaticAchievementToken("trapper.common1");
-                Trapper.acTokenChallenge.Value++;
-            }
-            Trap.trapKill(trapId, trapper, target);
-        }
-
-        public static void clearTrap()
-        {
-            Trap.clearAllTraps();
-        }
-
-        public static void trapperMeetingFlag()
-        {
-            Trap.onMeeting();
-        }
-
-        public static void kataomoiSetTarget(byte playerId)
-        {
-            Kataomoi.target = Helpers.playerById(playerId);
-        }
-
-        public static void kataomoiWin()
-        {
-            if (!Kataomoi.exists) return;
-
-            Kataomoi.triggerKataomoiWin = true;
-            if (Kataomoi.target != null) {
-                Kataomoi.target.Exiled();
-                overrideDeathReasonAndKiller(Kataomoi.target, DeadPlayer.CustomDeathReason.KataomoiStare, Kataomoi.allPlayers.FirstOrDefault());
-            }
-        }
-
-        public static void kataomoiStalking(byte playerId)
-        {
-            PlayerControl player = Helpers.playerById(playerId);
-            if (!player.isRole(RoleId.Kataomoi)) return;
-
-            Kataomoi.doStalking();
-        }
-
-        public static void setBrainwash(byte playerId, byte moriartyId)
-        {
-            var p = Helpers.playerById(playerId);
-            var player = Helpers.playerById(moriartyId);
-            var moriarty = Moriarty.getRole(player);
-            if (player == null || moriarty == null) return;
-            moriarty.target = p;
-            Moriarty.brainwashed.Add(p);
-        }
-
-        public static void moriartyKill(byte targetId, byte playerId)
-        {
-            PlayerControl target = Helpers.playerById(targetId);
-            PlayerControl player = Helpers.playerById(playerId);
-            var moriarty = Moriarty.getRole(player);
-            if (moriarty == null || player == null || target == null) return;
-            GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.BrainwashedKilled, player);
-            if (PlayerControl.LocalPlayer == moriarty.target) {
-                if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
-            }
-            moriarty.counter += 1;
-            if (target.isRole(RoleId.Sherlock)) moriarty.counter += Moriarty.sherlockAddition;
-            Moriarty.hasKilled = true;
-            if (Moriarty.numberToWin == moriarty.counter) Moriarty.triggerMoriartyWin = true;
-        }
+                new StaticAchievementToken("taskMaster.challenge");
+        });
 
         public static void plantBomb(byte playerId)
         {
@@ -1914,7 +1568,7 @@ namespace TheOtherRoles
             {
                 if (BomberA.bombTarget != null && BomberB.bombTarget != null)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BomberKill, Hazel.SendOption.Reliable, -1);
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BomberKill, SendOption.Reliable, -1);
                     writer.Write(killer);
                     writer.Write(target);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -2025,7 +1679,7 @@ namespace TheOtherRoles
             } else {
                 camera.gameObject.SetActive(false);
             }
-            TORMapOptions.camerasToAdd.Add(camera);
+            camerasToAdd.Add(camera);
         }
 
         public static void sealVent(int ventId) {
@@ -2052,36 +1706,7 @@ namespace TheOtherRoles
                 vent.name = "FutureSealedVent_" + vent.name;
             }
 
-            TORMapOptions.ventsToSeal.Add(vent);
-        }
-
-        public static void arsonistWin(byte playerId) {
-            PlayerControl player = Helpers.playerById(playerId);
-            var arsonist = Arsonist.getRole(player);
-            if (player == null || arsonist == null) return;
-            arsonist.triggerArsonistWin = true;
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                if (p != player && !p.Data.IsDead) {
-                    if (p.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(p).otherKiller = player;
-                    p.Exiled();
-                    overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Arson, player);
-                }
-            }
-        }
-
-        public static void lawyerSetTarget(byte playerId) {
-            Lawyer.target = Helpers.playerById(playerId);
-        }
-
-        public static void lawyerPromotesToPursuer(byte playerId) {
-            PlayerControl player = Helpers.playerById(playerId);
-            Lawyer.eraseRole(player);
-            player.setRole(RoleId.Pursuer);
-        }
-
-        public static void lawyerWin()
-        {
-            Lawyer.triggerLawyerWin = true;
+            ventsToSeal.Add(vent);
         }
 
         /// <summary>
@@ -2107,7 +1732,7 @@ namespace TheOtherRoles
             if (killer.isRole(RoleId.Thief) && Thief.canStealWithGuess) {
                 RoleInfo roleInfo = RoleInfo.allRoleInfos.FirstOrDefault(x => (byte)x.roleId == guessedRoleId);
                 if (!killer.Data.IsDead && !Thief.isFailedThiefKill(dyingTarget, guesser, roleInfo)) {
-                    RPCProcedure.thiefStealsRole(dyingTarget.PlayerId, killerId);
+                    thiefStealsRole(dyingTarget.PlayerId, killerId);
                 }
             }
 
@@ -2124,7 +1749,7 @@ namespace TheOtherRoles
             }
 
             dyingTarget.Exiled();
-            GameHistory.overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
+            overrideDeathReasonAndKiller(dyingTarget, DeadPlayer.CustomDeathReason.Guess, guesser);
 
             if (PlayerControl.LocalPlayer == killer && dyingTarget != killer)
             {
@@ -2181,22 +1806,21 @@ namespace TheOtherRoles
             if (value > 0) Pursuer.blankedList.Add(target);            
         }
 
-        public static void bloody(byte killerPlayerId, byte bloodyPlayerId) {
-            //if (Helpers.playerById(killerPlayerId) == MimicK.mimicK) return;
-            if (Bloody.active.ContainsKey(killerPlayerId)) return;            
-            Bloody.active.Add(killerPlayerId, Bloody.duration);
-            Bloody.bloodyKillerMap.Add(killerPlayerId, bloodyPlayerId);
-        }
+        public static RemoteProcess<(byte killerPlayerId, byte bloodyPlayerId)> ActivateBloody = new("Bloody", (message, _) =>
+        {
+            if (Bloody.active.ContainsKey(message.killerPlayerId)) return;
+            Bloody.active.Add(message.killerPlayerId, Bloody.duration);
+            Bloody.bloodyKillerMap.Add(message.killerPlayerId, message.bloodyPlayerId);
+        });
 
-        public static void setFirstKill(byte playerId) {
-            PlayerControl target = Helpers.playerById(playerId);
+        public static RemoteProcess<byte> SetFirstKill = RemotePrimitiveProcess.OfByte("SetFirstKill", (message, _) =>
+        {
+            PlayerControl target = Helpers.playerById(message);
             if (target == null) return;
-            TORMapOptions.firstKillPlayer = target;
-        }
+            firstKillPlayer = target;
+        });
 
-        public static void setTiebreak() {
-            Tiebreaker.isTiebreak = true;
-        }
+        public static RemoteProcess SetTieBreak = new("SetTieBreak", (_) => Tiebreaker.isTiebreak = true);
 
         public static void thiefStealsRole(byte playerId, byte thiefId) {
             // Notify that the Thief cannot steal the Mimic
@@ -2315,28 +1939,10 @@ namespace TheOtherRoles
                     Pursuer.blankedList.Remove(sender);
                     break;
                 case GhostInfoTypes.DeathReasonAndKiller:
-                    GameHistory.overrideDeathReasonAndKiller(Helpers.playerById(reader.ReadByte()), (DeadPlayer.CustomDeathReason)reader.ReadByte(), Helpers.playerById(reader.ReadByte()));
+                    overrideDeathReasonAndKiller(Helpers.playerById(reader.ReadByte()), (DeadPlayer.CustomDeathReason)reader.ReadByte(), Helpers.playerById(reader.ReadByte()));
                     break;
             }
         }
-
-        /*public static void placeBomb(byte[] buff) {
-            if (Bomber.bomber == null) return;
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0 * sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1 * sizeof(float));
-            new Bomb(position);
-        }
-
-        public static void defuseBomb() {
-            try {
-                SoundEffectsManager.playAtPosition("bombDefused", Bomber.bomb.bomb.transform.position, range: Bomber.hearRange);
-            } catch { }
-            Bomber.clearBomb();
-            bomberButton.Timer = bomberButton.MaxTimer;
-            bomberButton.isEffectActive = false;
-            bomberButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-        }*/
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -2344,13 +1950,29 @@ namespace TheOtherRoles
     {
         static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
-            if (Modules.AntiCheat.RpcSafe(__instance, callId, reader)) return false;
+            if (AntiCheat.RpcSafe(__instance, callId, reader)) return false;
             return true;
+        }
+
+        static public void ReceiveMessage(MessageReader reader)
+        {
+            int id = reader.ReadInt32();
+            if (RemoteProcessBase.AllTORProcess.TryGetValue(id, out var rpc))
+            {
+                rpc.Receive(reader);
+            }
+            else
+            {
+                TheOtherRolesPlugin.Logger.LogError("RPC NotFound Error. id: " + id);
+                throw new Exception("RPC Error Occurred. (Not found: " + id + ")");
+            }
         }
 
         static void Postfix([HarmonyArgument(0)]byte callId, [HarmonyArgument(1)]MessageReader reader)
         {
+            if (callId == 128) ReceiveMessage(reader);
             byte packetId = callId;
+
             switch (packetId) {
 
                 // Main Controls
@@ -2436,151 +2058,24 @@ namespace TheOtherRoles
                     break;
 
                 // Role functionality
-
-                case (byte)CustomRPC.EngineerFixLights:
-                    RPCProcedure.engineerFixLights();
-                    break;
-                case (byte)CustomRPC.EngineerFixSubmergedOxygen:
-                    RPCProcedure.engineerFixSubmergedOxygen();
-                    break;
-                case (byte)CustomRPC.EngineerUsedRepair:
-                    RPCProcedure.engineerUsedRepair();
-                    break;
-                case (byte)CustomRPC.CleanBody:
-                    RPCProcedure.cleanBody(reader.ReadByte(), reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.TimeMasterRewindTime:
                     RPCProcedure.timeMasterRewindTime(reader.ReadByte());
                     break;
-                case (byte)CustomRPC.TimeMasterShield:
-                    RPCProcedure.timeMasterShield(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.MedicSetShielded:
-                    RPCProcedure.medicSetShielded(reader.ReadByte(), reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.ShieldedMurderAttempt:
                     RPCProcedure.shieldedMurderAttempt(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.ShifterShift:
-                    RPCProcedure.shifterShift(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SwapperSwap:
-                    byte playerId1 = reader.ReadByte();
-                    byte playerId2 = reader.ReadByte();
-                    RPCProcedure.swapperSwap(playerId1, playerId2);
-                    break;
-                case (byte)CustomRPC.MorphlingMorph:
-                    RPCProcedure.morphlingMorph(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.CamouflagerCamouflage:
-                    RPCProcedure.camouflagerCamouflage();
-                    break;
-                case (byte)CustomRPC.VampireSetBitten:
-                    byte bittenId = reader.ReadByte();
-                    byte reset = reader.ReadByte();
-                    RPCProcedure.vampireSetBitten(bittenId, reset, reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.PlaceGarlic:
-                    RPCProcedure.placeGarlic(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.TrackerUsedTracker:
-                    RPCProcedure.trackerUsedTracker(reader.ReadByte(), reader.ReadByte());
-                    break;               
-                case (byte)CustomRPC.DeputyUsedHandcuffs:
-                    RPCProcedure.deputyUsedHandcuffs(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.DeputyPromotes:
-                    RPCProcedure.deputyPromotes(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.JackalCreatesSidekick:
-                    RPCProcedure.jackalCreatesSidekick(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SidekickPromotes:
-                    RPCProcedure.sidekickPromotes(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.ErasePlayerRoles:
                     byte eraseTarget = reader.ReadByte();
                     RPCProcedure.erasePlayerRoles(eraseTarget);
                     Eraser.alreadyErased.Add(eraseTarget);
                     break;
-                case (byte)CustomRPC.SetFutureErased:
-                    RPCProcedure.setFutureErased(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SetFutureShifted:
-                    RPCProcedure.setFutureShifted(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SetFutureShielded:
-                    RPCProcedure.setFutureShielded(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.PlaceAssassinTrace:
-                    RPCProcedure.placeAssassinTrace(reader.ReadByte(), reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.PlacePortal:
-                    RPCProcedure.placePortal(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.UsePortal:
-                    RPCProcedure.usePortal(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.PlaceJackInTheBox:
-                    RPCProcedure.placeJackInTheBox(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.LightsOut:
-                    RPCProcedure.lightsOut();
-                    break;
-                case (byte)CustomRPC.YoyoMarkLocation:
-                    RPCProcedure.yoyoMarkLocation(reader.ReadBytesAndSize(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.YoyoBlink:
-                    RPCProcedure.yoyoBlink(reader.ReadByte() == byte.MaxValue, reader.ReadBytesAndSize(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.BreakArmor:
-                    RPCProcedure.breakArmor();
-                    break;
-                case (byte)CustomRPC.DoomsayerObserve:
-                    RPCProcedure.doomsayerObserve(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.ImpostorPromotesToLastImpostor:
-                    RPCProcedure.impostorPromotesToLastImpostor(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.NinjaStealth:
-                    RPCProcedure.ninjaStealth(reader.ReadByte(), reader.ReadBoolean());
-                    break;
-                case (byte)CustomRPC.SprinterSprint:
-                    RPCProcedure.sprinterSprint(reader.ReadByte(), reader.ReadBoolean());
-                    break;
-                case (byte)CustomRPC.NekoKabochaExile:
-                    RPCProcedure.nekoKabochaExile(reader.ReadByte(), reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.SerialKillerSuicide:
                     RPCProcedure.serialKillerSuicide(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.PlaceAntique:
-                    RPCProcedure.placeAntique();
-                    break;
-                case (byte)CustomRPC.ArchaeologistDetect:
-                    RPCProcedure.archaeologistDetect(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.ArchaeologistExcavate:
-                    RPCProcedure.archaeologistExcavate(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SherlockReceiveDetect:
-                    RPCProcedure.sherlockReceiveDetect(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.FortuneTellerUsedDivine:
-                    byte fId = reader.ReadByte();
-                    byte tId = reader.ReadByte();
-                    RPCProcedure.fortuneTellerUsedDivine(fId, tId);
-                    break;
-                case (byte)CustomRPC.PlagueDoctorWin:
-                    RPCProcedure.plagueDoctorWin();
-                    break;
-                case (byte)CustomRPC.PlagueDoctorSetInfected:
-                    RPCProcedure.plagueDoctorInfected(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlagueDoctorUpdateProgress:
                     byte progressTarget = reader.ReadByte();
                     byte[] progressByte = reader.ReadBytes(4);
-                    float progress = System.BitConverter.ToSingle(progressByte, 0);
+                    float progress = BitConverter.ToSingle(progressByte, 0);
                     RPCProcedure.plagueDoctorProgress(progressTarget, progress);
                     break;
                 case (byte)CustomRPC.PlaceAccel:
@@ -2607,99 +2102,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SetOddIsJekyll:
                     RPCProcedure.setOddIsJekyll(reader.ReadBoolean(), reader.ReadByte());
                     break;
-                case (byte)CustomRPC.EvilHackerCreatesMadmate:
-                    RPCProcedure.evilHackerCreatesMadmate(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.VeteranAlert:
-                    RPCProcedure.veteranAlert(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.NoisemakerSetSounded:
-                    RPCProcedure.noisemakerSetSounded(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SchrodingersCatSetTeam:
-                    RPCProcedure.schrodingersCatSetTeam(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockMayorAcCommon:
-                    RPCProcedure.unlockMayorAcCommon(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockDetectiveAcChallenge:
-                    RPCProcedure.unlockDetectiveAcChallenge(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockMedicAcChallenge:
-                    RPCProcedure.unlockMedicAcChallenge(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockTrackerAcChallenge:
-                    RPCProcedure.unlockTrackerAcChallenge(reader.ReadSingle(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockVeteranAcChallenge:
-                    RPCProcedure.unlockVeteranAcChallenge(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnlockTaskMasterAcChallenge:
-                    RPCProcedure.unlockTaskMasterAcChallenge();
-                    break;
-                case (byte)CustomRPC.UnlockJesterAcCommon:
-                    RPCProcedure.unlockJesterAcCommon(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.JesterWin:
-                    RPCProcedure.jesterWin(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.KataomoiSetTarget:
-                    playerId = reader.ReadByte();
-                    RPCProcedure.kataomoiSetTarget(playerId);
-                    break;
-                case (byte)CustomRPC.KataomoiWin:
-                    RPCProcedure.kataomoiWin();
-                    break;
-                case (byte)CustomRPC.KataomoiStalking:
-                    playerId = reader.ReadByte();
-                    RPCProcedure.kataomoiStalking(playerId);
-                    break;
-                case (byte)CustomRPC.RecordStatistics:
-                    RPCProcedure.recordStatistics(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadSingle());
-                    break;
-                case (byte)CustomRPC.AkujoSetHonmei:
-                    RPCProcedure.akujoSetHonmei(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.AkujoSetKeep:
-                    RPCProcedure.akujoSetKeep(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.AkujoSuicide:
-                    RPCProcedure.akujoSuicide(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.BuskerPseudocide:
-                    RPCProcedure.buskerPseudocide(reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean());
-                    break;
-                case (byte)CustomRPC.BuskerRevive:
-                    RPCProcedure.buskerRevive(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.BlackmailPlayer:
-                    RPCProcedure.blackmailPlayer(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UnblackmailPlayer:
-                    RPCProcedure.unblackmailPlayer();
-                    break;
-                case (byte)CustomRPC.UndertakerDragBody:
-                    var bodyId = reader.ReadByte();
-                    Undertaker.DragBody(bodyId);
-                    break;
-                case (byte)CustomRPC.SetCupidLovers:
-                    RPCProcedure.setCupidLovers(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.CupidSuicide:
-                    RPCProcedure.cupidSuicide(reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean());
-                    break;
-                case (byte)CustomRPC.SetCupidShield:
-                    RPCProcedure.setCupidShield(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.TeleporterTeleport:
-                    RPCProcedure.teleporterTeleport(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.UndertakerDropBody:
-                    var x = reader.ReadSingle();
-                    var y = reader.ReadSingle();
-                    var z = reader.ReadSingle();
-                    Undertaker.DropBody(new Vector3(x, y, z));
-                    break;
                 case (byte)CustomRPC.ZephyrBlowCannon:
                     byte blownId = reader.ReadByte();
                     byte zephyrId = reader.ReadByte();
@@ -2712,30 +2114,13 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.ZephyrCheckCannon:
                     Zephyr.checkCannon(new(reader.ReadSingle(), reader.ReadSingle()), reader.ReadByte());
                     break;
-                case (byte)CustomRPC.MimicMorph:
-                    byte mimicA = reader.ReadByte();
-                    byte mimicB = reader.ReadByte();
-                    RPCProcedure.mimicMorph(mimicA, mimicB);
-                    break;
-                case (byte)CustomRPC.MimicResetMorph:
-                    RPCProcedure.mimicResetMorph(reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.ShareRealTasks:
                     RPCProcedure.shareRealTasks(reader);
-                    break;
-                case (byte)CustomRPC.SetShifterType:
-                    RPCProcedure.setShifterType(reader.ReadBoolean());
                     break;
                 case (byte)CustomRPC.YasunaSpecialVote:
                     byte id = reader.ReadByte();
                     byte targetId = reader.ReadByte();
                     RPCProcedure.yasunaSpecialVote(id, targetId);
-                    break;
-                case (byte)CustomRPC.YasunaSpecialVote_DoCastVote:
-                    RPCProcedure.yasunaSpecialVote_DoCastVote();
-                    break;
-                case (byte)CustomRPC.ShareAchievement:
-                    RPCProcedure.shareAchievement(reader.ReadByte(), reader.ReadString());
                     break;
                 case (byte)CustomRPC.TaskMasterSetExTasks:
                     playerId = reader.ReadByte();
@@ -2747,36 +2132,6 @@ namespace TheOtherRoles
                     byte clearExTasks = reader.ReadByte();
                     byte allExTasks = reader.ReadByte();
                     RPCProcedure.taskMasterUpdateExTasks(clearExTasks, allExTasks);
-                    break;
-                case (byte)CustomRPC.FoxStealth:
-                    RPCProcedure.foxStealth(reader.ReadBoolean());
-                    break;
-                case (byte)CustomRPC.FoxCreatesImmoralist:
-                    RPCProcedure.foxCreatesImmoralist(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.PlaceTrap:
-                    RPCProcedure.placeTrap(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.ClearTrap:
-                    RPCProcedure.clearTrap();
-                    break;
-                case (byte)CustomRPC.ActivateTrap:
-                    RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.DisableTrap:
-                    RPCProcedure.disableTrap(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.TrapperMeetingFlag:
-                    RPCProcedure.trapperMeetingFlag();
-                    break;
-                case (byte)CustomRPC.TrapperKill:
-                    RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.SetBrainwash:
-                    RPCProcedure.setBrainwash(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.MoriartyKill:
-                    RPCProcedure.moriartyKill(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.PlantBomb:
                     RPCProcedure.plantBomb(reader.ReadByte());
@@ -2793,9 +2148,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SealVent:
                     RPCProcedure.sealVent(reader.ReadPackedInt32());
                     break;
-                case (byte)CustomRPC.ArsonistWin:
-                    RPCProcedure.arsonistWin(reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.GuesserShoot:
                     byte killerId = reader.ReadByte();
                     byte dyingTarget = reader.ReadByte();
@@ -2804,34 +2156,10 @@ namespace TheOtherRoles
                     bool isSpecialRole = reader.ReadBoolean();
                     RPCProcedure.guesserShoot(killerId, dyingTarget, guessedTarget, guessedRoleId, isSpecialRole);
                     break;
-                case (byte)CustomRPC.LawyerSetTarget:
-                    RPCProcedure.lawyerSetTarget(reader.ReadByte()); 
-                    break;
-                case (byte)CustomRPC.LawyerPromotesToPursuer:
-                    RPCProcedure.lawyerPromotesToPursuer(reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.LawyerWin:
-                    RPCProcedure.lawyerWin();
-                    break;
                 case (byte)CustomRPC.SetBlanked:
                     var pid = reader.ReadByte();
                     var blankedValue = reader.ReadByte();
                     RPCProcedure.setBlanked(pid, blankedValue);
-                    break;
-                case (byte)CustomRPC.SetFutureSpelled:
-                    RPCProcedure.setFutureSpelled(reader.ReadByte(), reader.ReadByte());
-                    break;
-                case (byte)CustomRPC.Bloody:
-                    byte bloodyKiller = reader.ReadByte();
-                    byte bloodyDead = reader.ReadByte();
-                    RPCProcedure.bloody(bloodyKiller, bloodyDead);
-                    break;
-                case (byte)CustomRPC.SetFirstKill:
-                    byte firstKill = reader.ReadByte();
-                    RPCProcedure.setFirstKill(firstKill);
-                    break;
-                case (byte)CustomRPC.SetTiebreak:
-                    RPCProcedure.setTiebreak();
                     break;
                 case (byte)CustomRPC.SetInvisible:
                     byte invisiblePlayer = reader.ReadByte();
@@ -2848,20 +2176,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.DraftModePick:
                     RoleDraft.receivePick(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean());
                     break;
-                //case (byte)CustomRPC.SetTrap:
-                //RPCProcedure.setTrap(reader.ReadBytesAndSize());
-                //break;
-                /*case (byte)CustomRPC.TriggerTrap:
-                    byte trappedPlayer = reader.ReadByte();
-                    byte trapId = reader.ReadByte();
-                    RPCProcedure.triggerTrap(trappedPlayer, trapId);
-                    break;*/
-                /*case (byte)CustomRPC.PlaceBomb:
-                    RPCProcedure.placeBomb(reader.ReadBytesAndSize());
-                    break;
-                case (byte)CustomRPC.DefuseBomb:
-                    RPCProcedure.defuseBomb();
-                    break;*/
                 case (byte)CustomRPC.ShareGamemode:
                     byte gm = reader.ReadByte();
                     RPCProcedure.shareGamemode(gm);

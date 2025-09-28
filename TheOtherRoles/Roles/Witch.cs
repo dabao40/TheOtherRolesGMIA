@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Witch : RoleBase<Witch> {
         public static Color color = Palette.ImpostorRed;
 
@@ -38,6 +39,19 @@ namespace TheOtherRoles.Roles
             currentTarget = setTarget(onlyCrewmates: !canSpellAnyone, untargetablePlayers: untargetables);
             setPlayerOutline(currentTarget, color);
         }
+
+        public static RemoteProcess<(byte playerId, byte witchId)> SetFutureSpelled = new("SetFutureSpelled", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            PlayerControl witch = Helpers.playerById(message.witchId);
+            var witchRole = getRole(witch);
+            if (witch == null || witchRole == null) return;
+            witchRole.futureSpelled ??= new List<PlayerControl>();
+            if (player != null)
+            {
+                witchRole.futureSpelled.Add(player);
+            }
+        });
 
         public override void OnKill(PlayerControl target)
         {

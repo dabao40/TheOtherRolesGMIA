@@ -5,6 +5,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Noisemaker : RoleBase<Noisemaker>
     {
         public static Color32 color = new(160, 131, 187, byte.MaxValue);
@@ -22,6 +23,15 @@ namespace TheOtherRoles.Roles
             acTokenChallenge = null;
             numSound = Mathf.RoundToInt(CustomOptionHolder.noisemakerSoundNumber.getFloat());
         }
+
+        public static RemoteProcess<(byte playerId, byte noisemakerId)> SetSounded = new("NoisemakerSetSounded", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            PlayerControl noisem = Helpers.playerById(message.noisemakerId);
+            var noisemaker = getRole(noisem);
+            if (noisemaker == null || noisem == null) return;
+            noisemaker.target = player;
+        });
 
         public override void FixedUpdate()
         {

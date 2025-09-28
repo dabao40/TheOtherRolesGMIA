@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Arsonist : RoleBase<Arsonist> {
         public static Color color = new Color32(238, 112, 46, byte.MaxValue);
 
@@ -36,6 +37,23 @@ namespace TheOtherRoles.Roles
             douseSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DouseButton.png", 115f);
             return douseSprite;
         }
+
+        public static RemoteProcess<byte> TriggerWin = RemotePrimitiveProcess.OfByte("ArsonistWin", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            var arsonist = getRole(player);
+            if (player == null || arsonist == null) return;
+            arsonist.triggerArsonistWin = true;
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                if (p != player && !p.Data.IsDead)
+                {
+                    if (p.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(p).otherKiller = player;
+                    p.Exiled();
+                    GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Arson, player);
+                }
+            }
+        });
 
         private static Sprite igniteSprite;
         public static Sprite getIgniteSprite() {

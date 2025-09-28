@@ -19,7 +19,7 @@ namespace TheOtherRoles.Roles
         public List<SpriteRenderer> souls = [];
         public static DateTime meetingStartTime = DateTime.UtcNow;
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Medium.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Medium.png");
 
         public Medium()
         {

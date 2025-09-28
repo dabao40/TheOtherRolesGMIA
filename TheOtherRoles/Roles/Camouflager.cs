@@ -4,6 +4,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Camouflager : RoleBase<Camouflager> {
         public static Color color = Palette.ImpostorRed;
     
@@ -18,6 +19,16 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Camouflager;
         }
+
+        public static RemoteProcess ActivateCamo = new("CamouflagerCamouflage", (_) =>
+        {
+            if (!exists) return;
+
+            camouflageTimer = duration;
+            if (Helpers.MushroomSabotageActive()) return; // Dont overwrite the fungle "camo"
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                player.setLook("", 6, "", "", "", "");
+        });
 
         public override void PostInit()
         {

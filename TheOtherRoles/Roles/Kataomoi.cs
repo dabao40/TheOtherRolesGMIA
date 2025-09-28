@@ -10,6 +10,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Kataomoi : RoleBase<Kataomoi>
     {
         public static Color color = Lovers.color;
@@ -39,6 +40,28 @@ namespace TheOtherRoles.Roles
         public static float baseGauge = 0f;
 
         static bool _isStalking = false;
+
+        public static RemoteProcess<byte> SetTarget = RemotePrimitiveProcess.OfByte("KataomoiSetTarget", (message, _) => target = Helpers.playerById(message));
+
+        public static RemoteProcess TriggerWin = new("KataomoiWin", (_) =>
+        {
+            if (!exists) return;
+
+            triggerKataomoiWin = true;
+            if (target != null)
+            {
+                target.Exiled();
+                GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.KataomoiStare, allPlayers.FirstOrDefault());
+            }
+        });
+
+        public static RemoteProcess<byte> SetStalking = RemotePrimitiveProcess.OfByte("KataomoiSetStalking", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            if (!isRole(player)) return;
+
+            doStalking();
+        });
 
         public Kataomoi()
         {

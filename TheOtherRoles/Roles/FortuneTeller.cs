@@ -11,6 +11,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class FortuneTeller : RoleBase<FortuneTeller>
     {
         public PlayerControl divineTarget;
@@ -95,6 +96,8 @@ namespace TheOtherRoles.Roles
                 acTokenImpostor.Value.cleared |= exiled != null && acTokenImpostor.Value.divined && divineTarget != null
                     && divineTarget.PlayerId == exiled.PlayerId;
         }
+
+        public static RemoteProcess<(byte fortuneTellerId, byte targetId)> UseDivine = new("FortuneTellerUseDivine", (message, _) => RPCProcedure.fortuneTellerUsedDivine(message.fortuneTellerId, message.targetId));
 
         private void fortuneTellerUpdate()
         {
@@ -200,31 +203,11 @@ namespace TheOtherRoles.Roles
             return progress.ContainsKey(index) && progress[index] >= duration || !status;
         }
 
-        private static TMPro.TMP_Text text;
         public static void fortuneTellerMessage(string message, float duration, Color color)
         {
-            RoomTracker roomTracker = FastDestroyableSingleton<HudManager>.Instance?.roomTracker;
-            if (roomTracker != null)
-            {
-                GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-
-                gameObject.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-
-                // Use local position to place it in the player's view instead of the world location
-                gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
-                gameObject.transform.localScale *= 1.5f;
-
-                text = gameObject.GetComponent<TMPro.TMP_Text>();
-                text.text = message;
-                text.color = color;
-
-                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) =>
-                {
-                    if (p == 1f && text != null && text.gameObject != null)
-                        UnityEngine.Object.Destroy(text.gameObject);
-                })));
-            }
+            var messageText = Helpers.CreateAndShowNotification(message, color);
+            messageText.transform.localPosition = new Vector3(0f, 0f, -20f);
+            messageText.alphaTimer = duration;
         }
 
         public void divine(PlayerControl p)
@@ -276,11 +259,7 @@ namespace TheOtherRoles.Roles
             numUsed += 1;
 
             // 占いを実行したことで発火される処理を他クライアントに通知
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerUsedDivine, SendOption.Reliable, -1);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(p.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.fortuneTellerUsedDivine(PlayerControl.LocalPlayer.PlayerId, p.PlayerId);
+            UseDivine.Invoke((PlayerControl.LocalPlayer.PlayerId, p.PlayerId));
         }
 
         public static void clearAndReload()

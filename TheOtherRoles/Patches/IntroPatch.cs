@@ -23,6 +23,7 @@ namespace TheOtherRoles.Patches {
             // Generate and initialize player icons
             int playerCounter = 0;
             int hideNSeekCounter = 0;
+            List<RPCInvoker> allInvokers = [];
             if (PlayerControl.LocalPlayer != null && FastDestroyableSingleton<HudManager>.Instance != null) {
                 float aspect = Camera.main.aspect;
                 float safeOrthographicSize = CameraSafeArea.GetSafeOrthographicSize(Camera.main);
@@ -283,10 +284,7 @@ namespace TheOtherRoles.Patches {
             if (AmongUsClient.Instance.AmHost && TORMapOptions.shieldFirstKill && TORMapOptions.firstKillName != "" && !HideNSeek.isHideNSeekGM) {
                 PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(TORMapOptions.firstKillName));
                 if (target != null) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.setFirstKill(target.PlayerId);
+                    allInvokers.Add(RPCProcedure.SetFirstKill.GetInvoker(target.PlayerId));
                 }
             }
             TORMapOptions.firstKillName = "";
@@ -302,7 +300,9 @@ namespace TheOtherRoles.Patches {
             HudManager.Instance.ShowVanillaKeyGuide();
 
             if (AmongUsClient.Instance.AmHost) {
-                LastImpostor.promoteToLastImpostor();
+                var imp = LastImpostor.doNeedPromotion();
+                if (imp.Item1)
+                    allInvokers.Add(RPCProcedure.ImpostorPromotesToLastImpostor.GetInvoker(imp.Item2?.PlayerId ?? byte.MaxValue));
             }
 
             Kataomoi.generateText();
@@ -317,9 +317,7 @@ namespace TheOtherRoles.Patches {
 
             if (AmongUsClient.Instance.AmHost && (Archaeologist.exists || FreePlayGM.isFreePlayGM))
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceAntique, SendOption.Reliable);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.placeAntique();
+                allInvokers.Add(RPCProcedure.PlaceAntique.GetInvoker());
             }
 
             // Additional Vents
@@ -347,6 +345,8 @@ namespace TheOtherRoles.Patches {
                     }
                 }
             }
+
+            if (allInvokers.Count > 0) CombinedRemoteProcess.CombinedRPC.Invoke([.. allInvokers]);
 
             EventUtility.gameStartsUpdate();
 

@@ -293,26 +293,12 @@ namespace TheOtherRoles.Modules
 
         public void RpcRecordEvent(EventVariation variation, TranslatableTag relatedTag, PlayerControl source, int targetMask)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
-            writer.Write((byte)variation.Id);
-            writer.Write((byte)relatedTag.Id);
-            writer.Write(source?.PlayerId ?? byte.MaxValue);
-            writer.Write((byte)targetMask);
-            writer.Write(0f);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.recordStatistics((byte)variation.Id, (byte)relatedTag.Id, source?.PlayerId ?? byte.MaxValue, (byte)targetMask, 0f);
+            RPCProcedure.RecordStatistics.Invoke((variation.Id, relatedTag.Id, source?.PlayerId ?? byte.MaxValue, targetMask, 0f));
         }
 
         public void RpcRecordEvent(EventVariation variation, TranslatableTag relatedTag, float timeLag, PlayerControl source, int targetMask)
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RecordStatistics, SendOption.Reliable, -1);
-            writer.Write((byte)variation.Id);
-            writer.Write((byte)relatedTag.Id);
-            writer.Write(source?.PlayerId ?? byte.MaxValue);
-            writer.Write((byte)targetMask);
-            writer.Write(timeLag);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.recordStatistics((byte)variation.Id, (byte)relatedTag.Id, source?.PlayerId ?? byte.MaxValue, (byte)targetMask, timeLag);
+            RPCProcedure.RecordStatistics.Invoke((variation.Id, relatedTag.Id, source?.PlayerId ?? byte.MaxValue, targetMask, timeLag));
         }
     }
 

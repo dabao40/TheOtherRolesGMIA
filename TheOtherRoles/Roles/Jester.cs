@@ -1,10 +1,13 @@
+using System.Linq;
 using HarmonyLib;
 using Hazel;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Jester : RoleBase<Jester>
     {
         public static Color color = new Color32(236, 98, 165, byte.MaxValue);
@@ -20,13 +23,15 @@ namespace TheOtherRoles.Roles
             triggerJesterWin = false;
         }
 
-        public static void unlockAch(byte playerId)
+        public static RemoteProcess<byte> TriggerWin = RemotePrimitiveProcess.OfByte("JesterWin", (message, _) => players.FirstOrDefault(x => x.player?.PlayerId == message).triggerJesterWin = true);
+
+        public static RemoteProcess<byte> UnlockAch = RemotePrimitiveProcess.OfByte("UnlockJesterAch", (message, _) =>
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockJesterAcCommon, SendOption.Reliable, -1);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.unlockJesterAcCommon(playerId);
-        }
+            if (PlayerControl.LocalPlayer.PlayerId == message)
+            {
+                new StaticAchievementToken("jester.common1");
+            }
+        });
 
         public static void clearAndReload()
         {

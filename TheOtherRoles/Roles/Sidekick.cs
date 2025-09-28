@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using Hazel;
+using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Sidekick : RoleBase<Sidekick> {
         public static Color color = new Color32(0, 180, 235, byte.MaxValue);
 
@@ -30,6 +33,26 @@ namespace TheOtherRoles.Roles
                 if (player.isLovers()) counter += 1;
             return counter;
         }
+
+        public static RemoteProcess<byte> PromoteToJackal = RemotePrimitiveProcess.OfByte("SidekickPromotes", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            var sidekick = getRole(player);
+            if (FreePlayGM.isFreePlayGM || sidekick == null) return;
+            if (PlayerControl.LocalPlayer.PlayerId == message) new StaticAchievementToken("sidekick.challenge");
+            bool wasTeamRed = sidekick.wasTeamRed;
+            bool wasSpy = sidekick.wasSpy;
+            bool wasImpostor = sidekick.wasImpostor;
+            eraseRole(player);
+            player.setRole(RoleId.Jackal);
+            var jackal = Jackal.getRole(player);
+            jackal.removeCurrentJackal();
+            jackal.canCreateSidekick = Jackal.jackalPromotedFromSidekickCanCreateSidekick;
+            jackal.wasTeamRed = wasTeamRed;
+            jackal.wasSpy = wasSpy;
+            jackal.wasImpostor = wasImpostor;
+            return;
+        });
 
         public Sidekick()
         {
@@ -58,13 +81,10 @@ namespace TheOtherRoles.Roles
 
         private void sidekickCheckPromotion()
         {
-            if (player.Data.IsDead == true || !promotesToJackal) return;
+            if (PlayerControl.LocalPlayer != player || player.Data.IsDead == true || !promotesToJackal) return;
             if (jackal == null || jackal.player == null || jackal.player.Data.IsDead || jackal?.player.Data?.Disconnected == true)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SidekickPromotes, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.sidekickPromotes(PlayerControl.LocalPlayer.PlayerId);
+                PromoteToJackal.Invoke(PlayerControl.LocalPlayer.PlayerId);
             }
         }
 

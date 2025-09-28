@@ -119,11 +119,7 @@ namespace TheOtherRoles.Modules
                 if (PlayerControl.LocalPlayer?.AmOwner == true)
                 {
                     var ach = Achievement.MyTitle?.Id ?? "-";
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareAchievement, SendOption.Reliable);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(ach);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareAchievement(PlayerControl.LocalPlayer.PlayerId, ach);
+                    RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, ach));
                 }
             }
             AmongUsClient.Instance.StartCoroutine(CoShareAchievement().WrapToIl2Cpp());

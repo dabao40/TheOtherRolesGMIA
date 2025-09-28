@@ -7,6 +7,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Blackmailer : RoleBase<Blackmailer>
     {
         public static PlayerControl blackmailer;
@@ -30,6 +31,15 @@ namespace TheOtherRoles.Roles
         public AchievementToken<(List<byte> witness, bool cleared)> acTokenChallenge;
         private static Sprite blackmailButtonSprite;
         private static Sprite overlaySprite;
+
+        public static RemoteProcess<(byte playerId, byte blackmailerId)> Blackmail = new("BlackmailerBlackmail", (message, _) =>
+        {
+            PlayerControl target = Helpers.playerById(message.playerId);
+            PlayerControl blackmailer = Helpers.playerById(message.blackmailerId);
+            var blackmailerRole = getRole(blackmailer);
+            if (blackmailerRole == null) return;
+            blackmailerRole.blackmailed = target;
+        });
 
         public override void PostInit()
         {

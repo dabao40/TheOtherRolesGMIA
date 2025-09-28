@@ -142,12 +142,7 @@ namespace TheOtherRoles.Objects
                         target.moveable = true;
                         if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                         {
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
-                            writer.Write(trapId);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.Write(target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.trapperKill(trapId, PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
+                            Trapper.TrapKill.Invoke((trapId, PlayerControl.LocalPlayer.PlayerId, target.PlayerId));
                         }
                     }
                     else
@@ -203,12 +198,7 @@ namespace TheOtherRoles.Objects
                 {
                     if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
-                        writer.Write(trap.Key);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(trap.Value.target.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.trapperKill(trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId);
+                        Trapper.TrapKill.Invoke((trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId));
                     }
 
                 }

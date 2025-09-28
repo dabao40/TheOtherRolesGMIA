@@ -8,6 +8,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Moriarty : RoleBase<Moriarty>
     {
         public Moriarty()
@@ -21,6 +22,33 @@ namespace TheOtherRoles.Roles
         }
 
         static public readonly HelpSprite[] HelpSprites = [new(getBrainwashIcon(), "moriartyBrainwashHint")];
+
+        public static RemoteProcess<(byte playerId, byte moriartyId)> Brainwash = new("MoriartyBrainwash", (message, _) =>
+        {
+            var p = Helpers.playerById(message.playerId);
+            var player = Helpers.playerById(message.moriartyId);
+            var moriarty = getRole(player);
+            if (player == null || moriarty == null) return;
+            moriarty.target = p;
+            brainwashed.Add(p);
+        });
+
+        public static RemoteProcess<(byte targetId, byte playerId)> UpdateCounter = new("MoriartyKill", (message, _) =>
+        {
+            PlayerControl target = Helpers.playerById(message.targetId);
+            PlayerControl player = Helpers.playerById(message.playerId);
+            var moriarty = getRole(player);
+            if (moriarty == null || player == null || target == null) return;
+            GameHistory.overrideDeathReasonAndKiller(target, DeadPlayer.CustomDeathReason.BrainwashedKilled, player);
+            if (PlayerControl.LocalPlayer == moriarty.target)
+            {
+                if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
+            }
+            moriarty.counter += 1;
+            if (target.isRole(RoleId.Sherlock)) moriarty.counter += sherlockAddition;
+            hasKilled = true;
+            if (numberToWin == moriarty.counter) triggerMoriartyWin = true;
+        });
 
         public static Color color = Color.green;
 

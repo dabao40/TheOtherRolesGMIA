@@ -126,6 +126,7 @@ namespace TheOtherRoles
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             Harmony.PatchAll();
+            RemoteProcessBase.Load();
 
             CustomOptionHolder.Load();
             CustomColors.Load();

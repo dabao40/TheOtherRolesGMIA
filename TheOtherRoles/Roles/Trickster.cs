@@ -5,6 +5,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Trickster : RoleBase<Trickster> {
         public static Color color = Palette.ImpostorRed;
         public static float placeBoxCooldown = 30f;
@@ -23,6 +24,18 @@ namespace TheOtherRoles.Roles
                 return PlayerControl.LocalPlayer.inVent && Vent.currentVent != null && Vent.currentVent?.name.StartsWith("JackInTheBoxVent_") == true;
             }
         }
+
+        public static RemoteProcess<Vector2> PlaceBox = RemotePrimitiveProcess.OfVector2("PlaceJackInTheBox", (message, _) => new JackInTheBox(message));
+
+        public static RemoteProcess LightsOut = new("LightsOut", (_) =>
+        {
+            lightsOutTimer = lightsOutDuration;
+            // If the local player is impostor indicate lights out
+            if (Helpers.hasImpVision(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId)))
+            {
+                new CustomMessage(ModTranslation.getString("tricksterLightsOutText"), lightsOutDuration);
+            }
+        });
 
         public Trickster()
         {

@@ -342,11 +342,7 @@ namespace TheOtherRoles.Modules
 
                 if (PlayerControl.LocalPlayer && !ShipStatus.Instance && PlayerControl.LocalPlayer.AmOwner)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShareAchievement, SendOption.Reliable);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(myTitleEntry.Value);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.shareAchievement(PlayerControl.LocalPlayer.PlayerId, myTitleEntry.Value);
+                    RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, myTitleEntry.Value));
                 }
             }
         }

@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Trapper : RoleBase<Trapper>
     {
         public Trapper()
@@ -28,6 +29,39 @@ namespace TheOtherRoles.Roles
         {
             meetingFlag = true;
         }
+
+        public static RemoteProcess<(byte trapId, byte trapperId, byte playerId)> ActivateTrap = new("ActivateTrap", (message, _) =>
+        {
+            var trapper = Helpers.playerById(message.trapperId);
+            var player = Helpers.playerById(message.playerId);
+            Trap.activateTrap(message.trapId, trapper, player);
+        });
+
+        public static RemoteProcess<byte> DisableTrap = RemotePrimitiveProcess.OfByte("DisableTrap", (message, _) => Trap.disableTrap(message));
+
+        public static RemoteProcess<Vector3> PlaceTrap = RemotePrimitiveProcess.OfVector3("PlaceTrap", (message, _) => new Trap(new(message.x, message.y - 0.2f, message.z)));
+
+        public static RemoteProcess<(byte trapId, byte trapperId, byte playerId)> TrapKill = new("TrapperKill", (message, _) =>
+        {
+            var trapper = Helpers.playerById(message.trapperId);
+            var target = Helpers.playerById(message.playerId);
+            if (PlayerControl.LocalPlayer == trapper)
+            {
+                new StaticAchievementToken("trapper.common1");
+                acTokenChallenge.Value++;
+            }
+            Trap.trapKill(message.trapId, trapper, target);
+        });
+
+        public static RemoteProcess ClearTraps = new("ClearTraps", (_) =>
+        {
+            Trap.clearAllTraps();
+        });
+
+        public static RemoteProcess MeetingFlag = new("TrapperMeetingFlag", (_) =>
+        {
+            Trap.onMeeting();
+        });
 
         public override void ResetRole(bool isShifted)
         {
@@ -71,24 +105,11 @@ namespace TheOtherRoles.Roles
                             var distance = Vector3.Distance(p1, p2);
                             if (distance < trapRange)
                             {
-                                TMPro.TMP_Text text;
-                                text = UnityEngine.Object.Instantiate(FastDestroyableSingleton<HudManager>.Instance.KillButton.cooldownTimerText, FastDestroyableSingleton<HudManager>.Instance.transform);
-                                text.transform.localScale = Vector3.one;
-                                text.transform.localPosition = new Vector3(0, -1.8f, -69f);
-                                text.enableWordWrapping = false;
-                                text.text = string.Format(ModTranslation.getString("trapperGotTrapText"), p.Data.PlayerName);
-                                text.gameObject.SetActive(true);
-                                FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(3f, new Action<float>((p) =>
-                                {
-                                    if (p == 1f && text != null && text.gameObject != null)
-                                        UnityEngine.Object.Destroy(text.gameObject);
-                                })));
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ActivateTrap, SendOption.Reliable, -1);
-                                writer.Write(trap.Key);
-                                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                writer.Write(p.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                RPCProcedure.activateTrap(trap.Key, PlayerControl.LocalPlayer.PlayerId, p.PlayerId);
+                                var text = Helpers.CreateAndShowNotification(string.Format(ModTranslation.getString("trapperGotTrapText"), p.Data.PlayerName), Color.white);
+                                text.transform.localPosition = new Vector3(0f, 0f, -20f);
+                                text.alphaTimer = 3f;
+
+                                ActivateTrap.Invoke((trap.Key, PlayerControl.LocalPlayer.PlayerId, p.PlayerId));
                                 break;
                             }
                         }
@@ -109,10 +130,7 @@ namespace TheOtherRoles.Roles
                             float distance = Vector3.Distance(p1, p2);
                             if (distance < 0.5)
                             {
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, SendOption.Reliable, -1);
-                                writer.Write(trap.Key);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                RPCProcedure.disableTrap(trap.Key);
+                                DisableTrap.Invoke(trap.Key);
                             }
                         }
                     }
@@ -147,10 +165,7 @@ namespace TheOtherRoles.Roles
                 }
                 if (!isTrapKill)
                 {
-                    MessageWriter writer;
-                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ClearTrap, SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.clearTrap();
+                    ClearTraps.Invoke();
                 }
                 isTrapKill = false;
             }
@@ -172,13 +187,7 @@ namespace TheOtherRoles.Roles
         public static void setTrap()
         {
             var pos = PlayerControl.LocalPlayer.transform.position;
-            byte[] buff = new byte[sizeof(float) * 2];
-            Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));
-            Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1 * sizeof(float), sizeof(float));
-            MessageWriter writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaceTrap, SendOption.Reliable);
-            writer.WriteBytesAndSize(buff);
-            writer.EndMessage();
-            RPCProcedure.placeTrap(buff);
+            PlaceTrap.Invoke(pos);
             placedTime = DateTime.UtcNow;
         }
 

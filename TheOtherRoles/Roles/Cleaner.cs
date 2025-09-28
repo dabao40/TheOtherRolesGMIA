@@ -24,7 +24,7 @@ namespace TheOtherRoles.Roles
             acTokenChallenge ??= new("cleaner.challenge", 0, (val, _) => val >= 3);
         }
 
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Cleaner.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Cleaner.png");
 
         public override void OnKill(PlayerControl target)
         {

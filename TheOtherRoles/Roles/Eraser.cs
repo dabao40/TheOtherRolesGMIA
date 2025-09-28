@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Eraser : RoleBase<Eraser> {
         public static Color color = Palette.ImpostorRed;
 
@@ -24,6 +25,16 @@ namespace TheOtherRoles.Roles
         public static bool canEraseAnyone = false;
         public static float cooldownIncrease = 10f;
         public AchievementToken<int> acTokenChallenge;
+
+        public static RemoteProcess<byte> SetFutureErased = RemotePrimitiveProcess.OfByte("SetFutureErased", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message);
+            futureErased ??= [];
+            if (player != null)
+            {
+                futureErased.Add(player);
+            }
+        });
 
         public override void FixedUpdate()
         {

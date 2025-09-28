@@ -298,10 +298,7 @@ namespace TheOtherRoles.Patches {
             crewValues = data.crewSettings.Values.Select(x => x.rate * x.count).ToList().Sum();
             impValues = data.impSettings.Values.Select(x => x.rate * x.count).ToList().Sum();
 
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetShifterType, Hazel.SendOption.Reliable, -1);
-            writer.Write(shifterIsNeutral);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.setShifterType(shifterIsNeutral);
+            Shifter.SetType.Invoke(shifterIsNeutral);
         }
 
         private static void assignEnsuredRoles(RoleAssignmentData data) {
@@ -514,17 +511,11 @@ namespace TheOtherRoles.Patches {
                 if (possibleTargets.Count == 0) {
                     foreach (var lawyer in Lawyer.allPlayers)
                     {
-                        MessageWriter w = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                        w.Write(lawyer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(w);
-                        RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
+                        Lawyer.PromoteToPursuer.Invoke(lawyer.PlayerId);
                     }
                 } else {
-                    var target = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerSetTarget, Hazel.SendOption.Reliable, -1);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.lawyerSetTarget(target.PlayerId);
+                    var target = possibleTargets[rnd.Next(0, possibleTargets.Count)];
+                    Lawyer.SetTarget.Invoke(target.PlayerId);
                 }
             }
 
@@ -539,11 +530,8 @@ namespace TheOtherRoles.Patches {
                 }
                 if (possibleTargets.Count > 0)
                 {
-                    var target = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.KataomoiSetTarget, Hazel.SendOption.Reliable, -1);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.kataomoiSetTarget(target.PlayerId);
+                    var target = possibleTargets[rnd.Next(0, possibleTargets.Count)];
+                    Kataomoi.SetTarget.Invoke(target.PlayerId);
                 }
             }
         }

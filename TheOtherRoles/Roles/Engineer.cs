@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Engineer : RoleBase<Engineer>
     {
         public static Color color = new Color32(0, 40, 245, byte.MaxValue);
@@ -30,6 +31,22 @@ namespace TheOtherRoles.Roles
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RepairButton.png", 115f);
             return buttonSprite;
         }
+
+        public static RemoteProcess FixLights = new("EngineerFixLights",
+            (_) =>
+            {
+                SwitchSystem switchSystem = MapUtilities.Systems[SystemTypes.Electrical].CastFast<SwitchSystem>();
+                switchSystem.ActualSwitches = switchSystem.ExpectedSwitches;
+            }
+        );
+
+        public static RemoteProcess FixSubmergedOxygen = new("EngineerFixSubmergedOxygen", (_) => SubmergedCompatibility.RepairOxygen());
+
+        public static RemoteProcess UseRepair = new("EngineerUseRepair", (_) =>
+        {
+            if (Helpers.shouldShowGhostInfo())
+                Helpers.showFlash(color, 0.5f, ModTranslation.getString("engineerInfo"));
+        });
 
         public override void FixedUpdate()
         {

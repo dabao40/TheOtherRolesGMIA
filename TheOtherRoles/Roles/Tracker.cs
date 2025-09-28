@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
+using MonoMod.Cil;
 using Reactor.Utilities.Extensions;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
@@ -10,6 +11,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Tracker : RoleBase<Tracker> {
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
         public List<Arrow> localArrows = [];
@@ -22,6 +24,28 @@ namespace TheOtherRoles.Roles
             acTokenChallenge = null;
             resetTracked();
         }
+
+        public static RemoteProcess<(byte targetId, byte trackerId)> UseTracker = new("TrackerUseTrack", (message, _) =>
+        {
+            var tracker = getRole(Helpers.playerById(message.trackerId));
+            if (tracker == null) return;
+            tracker.usedTracker = true;
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                if (player.PlayerId == message.targetId)
+                    tracker.tracked = player;
+        });
+
+        public static RemoteProcess<(float moveTime, byte trackerId)> GainAchievement = new("Tracker", (message, _) =>
+        {
+            if (PlayerControl.LocalPlayer.PlayerId == message.trackerId && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                if (!local.acTokenChallenge.Value.cleared)
+                {
+                    if (message.moveTime - local.acTokenChallenge.Value.ventTime >= updateIntervall)
+                        local.acTokenChallenge.Value.cleared = true;
+                }
+            }
+        });
 
         public override void FixedUpdate()
         {
@@ -126,15 +150,6 @@ namespace TheOtherRoles.Roles
         public DangerMeter Meter;
 
         public AchievementToken<(bool inVent, float ventTime, bool cleared)> acTokenChallenge = null;
-
-        public void unlockAch(float ventTime)
-        {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UnlockTrackerAcChallenge, SendOption.Reliable, -1);
-            writer.Write(ventTime);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.unlockTrackerAcChallenge(ventTime, player.PlayerId);
-        }
 
         public override void PostInit()
         {

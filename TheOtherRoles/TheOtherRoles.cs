@@ -694,22 +694,24 @@ namespace TheOtherRoles
         public static int numShots;
         public static bool hasMultipleShots;
 
-        public static void promoteToLastImpostor()
+        public static (bool, PlayerControl) doNeedPromotion()
         {
-            if (!isEnable || !HandleGuesser.isGuesserGm) return;
+            if (!isEnable || !HandleGuesser.isGuesserGm) return (false, null);
 
             var impList = new List<PlayerControl>();
             foreach (var p in PlayerControl.AllPlayerControls.GetFastEnumerator())
             {
                 if (p.Data.Role.IsImpostor && !p.Data.IsDead && !p.Data.Disconnected) impList.Add(p);
             }
-            if (impList.Count == 1)
-            {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ImpostorPromotesToLastImpostor, SendOption.Reliable, -1);
-                writer.Write(impList[0].PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.impostorPromotesToLastImpostor(impList[0].PlayerId);
-            }
+
+            return (impList.Count == 1, impList.FirstOrDefault());
+        }
+
+        public static void promoteToLastImpostor()
+        {
+            var promoteImp = doNeedPromotion();
+            if (!promoteImp.Item1) return;
+            RPCProcedure.ImpostorPromotesToLastImpostor.Invoke(promoteImp.Item2?.PlayerId ?? byte.MaxValue);
         }
 
         public static bool isCounterMax()

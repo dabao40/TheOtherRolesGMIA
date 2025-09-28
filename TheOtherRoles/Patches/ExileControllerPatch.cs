@@ -19,11 +19,7 @@ namespace TheOtherRoles.Patches {
             if (AmongUsClient.Instance.AmHost) {
                 foreach (var medic in Medic.players) {
                     if (medic.futureShielded != null && !medic.player.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
-                        writer.Write(medic.futureShielded.PlayerId);
-                        writer.Write(medic.player.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.medicSetShielded(medic.futureShielded.PlayerId, medic.player.PlayerId);
+                        Medic.Shield.Invoke((medic.futureShielded.PlayerId, medic.player.PlayerId));
                     }
                     if (medic.usedShield) medic.meetingAfterShielding = true;  // Has to be after the setting of the shield
                 }
@@ -33,10 +29,7 @@ namespace TheOtherRoles.Patches {
             if (Shifter.allPlayers.Count > 0 && AmongUsClient.Instance.AmHost && Shifter.futureShift != null) { // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
                 PlayerControl oldShifter = Shifter.allPlayers.FirstOrDefault();
                 byte oldTaskMasterPlayerId = Shifter.futureShift.isRole(RoleId.TaskMaster) && TaskMaster.isTaskComplete ? Shifter.futureShift.PlayerId : byte.MaxValue;
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShifterShift, Hazel.SendOption.Reliable, -1);
-                writer.Write(Shifter.futureShift.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.shifterShift(Shifter.futureShift.PlayerId);
+                Shifter.Shift.Invoke(Shifter.futureShift.PlayerId);
 
                 if (oldShifter.isRole(RoleId.TaskMaster))
                 {
@@ -96,12 +89,7 @@ namespace TheOtherRoles.Patches {
                             if (target != null && !target.Data.IsDead && Helpers.checkMuderAttempt(witch.player, target, true) == MurderAttemptResult.PerformKill){
                                 if (target == Lawyer.target) {
                                     foreach (var lawyer in Lawyer.allPlayers)
-                                    {
-                                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LawyerPromotesToPursuer, Hazel.SendOption.Reliable, -1);
-                                        writer2.Write(lawyer.PlayerId);
-                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                                        RPCProcedure.lawyerPromotesToPursuer(lawyer.PlayerId);
-                                    }
+                                        Lawyer.PromoteToPursuer.Invoke(lawyer.PlayerId);
                                 }
                                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedExilePlayer, Hazel.SendOption.Reliable, -1);
                                 writer.Write(target.PlayerId);
@@ -213,10 +201,7 @@ namespace TheOtherRoles.Patches {
             }
             // Jester win condition
             else if (exiled != null && Jester.exists && exiled.isRole(RoleId.Jester)) {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.JesterWin, SendOption.Reliable, -1);
-                writer.Write(exiled.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.jesterWin(exiled.PlayerId);
+                Jester.TriggerWin.Invoke(exiled.PlayerId);
             }
 
 

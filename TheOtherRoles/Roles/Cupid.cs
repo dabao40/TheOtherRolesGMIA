@@ -4,12 +4,14 @@ using System.Linq;
 using Hazel;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Cupid : RoleBase<Cupid>
     {
         public Cupid()
@@ -24,7 +26,7 @@ namespace TheOtherRoles.Roles
         }
 
         static public readonly HelpSprite[] HelpSprites = [new(getArrowSprite(), "cupidArrowHint"), new(Medic.getButtonSprite(), "cupidShieldHint")];
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Cupid.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Cupid.png");
 
         public static Color color = new Color32(246, 152, 150, byte.MaxValue);
 
@@ -66,15 +68,49 @@ namespace TheOtherRoles.Roles
                 }
                 if (timeLeft <= 0)
                 {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, SendOption.Reliable, -1);
-                    writer.Write(player.PlayerId);
-                    writer.Write(false);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.cupidSuicide(player.PlayerId, false, false);
+                    Suicide.Invoke((player.PlayerId, false, false));
                 }
             }
         }
+
+        public static RemoteProcess<(byte cupidId, bool isScapegoat, bool isExile)> Suicide = new("CupidSuicide", (message, isCalledByMe) =>
+        {
+            var cupid = Helpers.playerById(message.cupidId);
+            if (cupid != null)
+            {
+                if (message.isExile)
+                {
+                    cupid.Exiled();
+                    if (PlayerControl.LocalPlayer == cupid && Helpers.ShowKillAnimation)
+                        FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(cupid.Data, cupid.Data);
+                }
+                cupid.MurderPlayer(cupid, MurderResultFlags.Succeeded);
+                GameHistory.overrideDeathReasonAndKiller(cupid, message.isScapegoat ? DeadPlayer.CustomDeathReason.Scapegoat : DeadPlayer.CustomDeathReason.Suicide);
+                if (PlayerControl.LocalPlayer == cupid && message.isScapegoat) _ = new StaticAchievementToken("cupid.another1");
+            }
+        });
+
+        public static RemoteProcess<(byte targetId, byte playerId)> SetShielded = new("SetCupidShielded", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            var cupid = getRole(player);
+            if (player == null || cupid == null) return;
+            cupid.shielded = Helpers.playerById(message.targetId);
+        });
+
+        public static RemoteProcess<(byte playerId1, byte playerId2, byte cupidId)> CreateLovers = new("CupidSetLovers", (message, _) =>
+        {
+            var p1 = Helpers.playerById(message.playerId1);
+            var p2 = Helpers.playerById(message.playerId2);
+            var player = Helpers.playerById(message.cupidId);
+            var cupid = getRole(player);
+            if (player == null || p1 == null || p2 == null || cupid == null) return;
+            cupid.lovers1 = p1;
+            cupid.lovers2 = p2;
+            breakLovers(p1, p2);
+            breakLovers(p2, p1);
+            Lovers.addCouple(p1, p2);
+        });
 
         public static bool checkShieldActive(PlayerControl target)
         {
@@ -91,23 +127,12 @@ namespace TheOtherRoles.Roles
                 {
                     if (killer != null)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, SendOption.Reliable, -1);
-                        writer.Write(cupid.player.PlayerId);
-                        writer.Write(false);
-                        writer.Write(false);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.cupidSuicide(cupid.player.PlayerId, false, false);
+                        Suicide.Invoke((cupid.player.PlayerId, false, false));
                     }
                     else
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, SendOption.Reliable, -1);
-                        writer.Write(cupid.player.PlayerId);
-                        writer.Write(false);
-                        writer.Write(true);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.cupidSuicide(cupid.player.PlayerId, false, true);
+                        Suicide.Invoke((cupid.player.PlayerId, false, true));
                     }
-                    GameHistory.overrideDeathReasonAndKiller(cupid.player, DeadPlayer.CustomDeathReason.Suicide);
                 }
             }
         }
@@ -115,15 +140,7 @@ namespace TheOtherRoles.Roles
         public static void scapeGoat(PlayerControl target)
         {
             var cupids = players.FindAll(x => x.player && x.shielded == target && !x.player.Data.IsDead);
-            cupids.ForEach(x =>
-            {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CupidSuicide, SendOption.Reliable, -1);
-                writer.Write(x.player.PlayerId);
-                writer.Write(true);
-                writer.Write(false);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.cupidSuicide(x.player.PlayerId, true, false);
-            });
+            cupids.ForEach(x => Suicide.Invoke((x.player.PlayerId, true, false)));
         }
 
         private static Sprite arrowSprite;
@@ -178,12 +195,7 @@ namespace TheOtherRoles.Roles
 
         public static void createLovers()
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCupidLovers, SendOption.Reliable, -1);
-            writer.Write(local.lovers1.PlayerId);
-            writer.Write(local.lovers2.PlayerId);
-            writer.Write(local.player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.setCupidLovers(local.lovers1.PlayerId, local.lovers2.PlayerId, local.player.PlayerId);
+            CreateLovers.Invoke((local.lovers1.PlayerId, local.lovers2.PlayerId, local.player.PlayerId));
         }
 
         public static void clearAndReload()

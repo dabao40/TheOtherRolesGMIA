@@ -6,6 +6,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Swapper : RoleBase<Swapper> {
         public static Color color = new Color32(134, 55, 86, byte.MaxValue);
         private static Sprite spriteCheck;
@@ -16,12 +17,21 @@ namespace TheOtherRoles.Roles
         public static float rechargedTasks;
 
         public static readonly HelpSprite[] HelpSprites = [new(getCheckSprite(), "swapperCheckHint")];
-        public static readonly Image Illustration = new TORSpriteLoader("Assets/Swapper.png");
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Swapper.png");
 
         public Swapper()
         {
             RoleId = roleId = RoleId.Swapper;
         }
+
+        public static RemoteProcess<(byte playerId1, byte playerId2)> ConfirmSwap = new("SwapperSwap", (message, _) =>
+        {
+            if (MeetingHud.Instance)
+            {
+                playerId1 = message.playerId1;
+                playerId2 = message.playerId2;
+            }
+        });
  
         public static byte playerId1 = byte.MaxValue;
         public static byte playerId2 = byte.MaxValue;

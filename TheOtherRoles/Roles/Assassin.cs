@@ -8,6 +8,7 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Assassin : RoleBase<Assassin> {
         public Assassin()
         {
@@ -20,6 +21,16 @@ namespace TheOtherRoles.Roles
         static public readonly HelpSprite[] HelpSprites = [new(getMarkButtonSprite(), "assassinMarkHint"), new(getKillButtonSprite(), "assassinKillHint")];
 
         public static Color color = Palette.ImpostorRed;
+
+        public static RemoteProcess<(byte playerId, Vector2 pos)> PlaceTrace = new("PlaceAssassinTrace", (message, _) =>
+        {
+            PlayerControl player = Helpers.playerById(message.playerId);
+            var assassin = getRole(player);
+            if (player == null || assassin == null) return;
+            new AssassinTrace(message.pos, player, traceTime);
+            if (PlayerControl.LocalPlayer != player)
+                assassin.assassinMarked = null;
+        });
 
         public PlayerControl assassinMarked;
         public PlayerControl currentTarget;
