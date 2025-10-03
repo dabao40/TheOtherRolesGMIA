@@ -280,6 +280,12 @@ namespace TheOtherRoles {
         public static CustomOption hackerRechargeTasksNumber;
         public static CustomOption hackerNoMove;
 
+        public static CustomRoleOption collatorSpawnRate;
+        public static CustomOption collatorCooldown;
+        public static CustomOption collatorNumberOfTrials;
+        public static CustomOption collatorMadmateSpecifiedAsCrewmate;
+        public static CustomOption collatorStrictNeutralRoles;
+
         public static CustomRoleOption baitSpawnRate;
         public static CustomOption baitHighlightAllVents;
         public static CustomOption baitReportDelay;
@@ -1038,6 +1044,12 @@ namespace TheOtherRoles {
             fortuneTellerNumTasks = CustomOption.Create(942, Types.Crewmate, "fortuneTellerNumTasks", 4f, 0f, 25f, 1f, fortuneTellerSpawnRate, false, "unitScrews");
             fortuneTellerDuration = CustomOption.Create(943, Types.Crewmate, "fortuneTellerDuration", 20f, 1f, 50f, 1f, fortuneTellerSpawnRate, false, "unitSeconds");
             fortuneTellerDistance = CustomOption.Create(944, Types.Crewmate, "fortuneTellerDistance", 2.5f, 1f, 10f, 0.5f, fortuneTellerSpawnRate, false, "unitMeters");
+
+            collatorSpawnRate = new CustomRoleOption(945, Types.Crewmate, "collator", Collator.color);
+            collatorCooldown = CustomOption.Create(946, Types.Crewmate, "collatorCooldown", 15f, 1f, 60f, 1f, collatorSpawnRate, false, "unitSeconds");
+            collatorNumberOfTrials = CustomOption.Create(947, Types.Crewmate, "collatorNumberOfTrials", 2f, 1f, 15f, 1f, collatorSpawnRate, false, "unitScrews");
+            collatorMadmateSpecifiedAsCrewmate = CustomOption.Create(948, Types.Crewmate, "collatorMadmateSpecifiedAsCrewmate", true, collatorSpawnRate);
+            collatorStrictNeutralRoles = CustomOption.Create(949, Types.Crewmate, "collatorStrictNeutralRoles", false, collatorSpawnRate);
 
             seerSpawnRate = new CustomRoleOption(160, Types.Crewmate, "seer", Seer.color);
             seerMode = CustomOption.Create(161, Types.Crewmate, "seerMode", ["seerModeBoth", "seerModeFlash", "seerModeSouls"], seerSpawnRate);

@@ -2085,37 +2085,30 @@
     },
     "medicShift": {
         "0": "Shift",
-        "1": "\u4ea4\u6362",
         "13": "\u4ea4\u6362"
     },
     "medicKataomoiStare": {
         "0": "Stared",
-        "1": "\u51dd\u89c6",
         "13": "\u51dd\u89c6"
     },
     "medicLoveStolen": {
         "0": "Love Stolen",
-        "1": "\u7231\u4eba\u88ab\u593a",
         "13": "\u7231\u4eba\u88ab\u593a"
     },
     "medicLoneliness": {
         "0": "Loneliness",
-        "1": "\u7cbe\u529b\u8870\u7aed",
         "13": "\u7cbe\u529b\u8870\u7aed"
     },
     "medicScapegoat": {
         "0": "Scapegoat",
-        "1": "\u66ff\u6b7b",
         "13": "\u66ff\u6b7b"
     },
     "medicDisease": {
         "0": "Diseased",
-        "1": "\u62b9\u6740",
         "13": "\u62b9\u6740"
     },
     "medicArson": {
         "0": "Burnt",
-        "1": "\u7eb5\u706b",
         "13": "\u7eb5\u706b"
     },
     "swapper": {
@@ -6906,6 +6899,50 @@
         "13": "\u5728{1}\u4e2d\u6709\u4e00\u540d{0}",
         "14": "\u5728{1}\u4e2d\u6709\u4e00\u540d{0}"
     },
+    "collator": {
+        "0": "Collator",
+        "13": "\u57fa\u56e0\u5b66\u5bb6"
+    },
+    "collatorIntroDesc": {
+        "0": "Collect samples and compare them",
+        "13": "\u63d0\u53d6\u5e76\u6bd4\u8f83\u57fa\u56e0"
+    },
+    "collatorShortDesc": {
+        "0": "Collect samples",
+        "13": "\u63d0\u53d6\u57fa\u56e0"
+    },
+    "collatorCooldown": {
+        "0": "Collator Sample Cooldown",
+        "13": "\u63d0\u53d6\u57fa\u56e0\u51b7\u5374\u65f6\u95f4"
+    },
+    "collatorNumberOfTrials": {
+        "0": "Collator Number Of Trials",
+        "13": "\u6700\u5927\u6bd4\u8f83\u57fa\u56e0\u6570\u91cf"
+    },
+    "collatorMadmateSpecifiedAsCrewmate": {
+        "0": "Madmate Is Shown As Crewmate",
+        "13": "\u53db\u5f92\u89c6\u4f5c\u5185\u9b3c\u9635\u8425"
+    },
+    "collatorStrictNeutralRoles": {
+        "0": "Separate Different Neutral Roles",
+        "13": "\u4e0d\u5c06\u6240\u6709\u4e2d\u7acb\u89c6\u4e3a\u540c\u4e00\u9635\u8425"
+    },
+    "collatorTargets": {
+        "0": "Targets:",
+        "13": "\u6bd4\u8f83\u76ee\u6807:"
+    },
+    "collatorMatched": {
+        "0": "Match",
+        "13": "\u5339\u914d"
+    },
+    "collatorUnmatched": {
+        "0": "Mismatch",
+        "13": "\u4e0d\u5339\u914d"
+    },
+    "collatorInfo": {
+        "0": "Collator Info",
+        "13": "\u57fa\u56e0\u5b66\u5bb6\u4fe1\u606f"
+    },
     "doomsayer": {
         "0": "Doomsayer",
         "13": "\u672b\u65e5\u9884\u8a00\u5bb6",
@@ -7632,6 +7669,10 @@
         "13": "\u7a7a\u6c14\u70ae",
         "14": "\u7a7a\u6c23\u7832"
     },
+    "CollatorText": {
+        "0": "Sample",
+        "13": "\u63d0\u53d6\u57fa\u56e0"
+    },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
         "11": "\u30fb\u4eba\u72fc\u3067\u3044\u3046\u300e\u3066\u308b\u3066\u308b\u300f\n\u30fb\u306a\u306b\u3082\u80fd\u529b\u3092\u6301\u305f\u306a\u3044\n\u30fb\u81ea\u8eab\u304c\u540a\u3089\u308c\u305f\u3068\u304d\u306b\u52dd\u5229\u3059\u308b",
@@ -8013,6 +8054,10 @@
         "0": "The Zephyr can fire cannons to blow away Crewmates.\nThe power of the air cannon will decrease as the range grows.\nPlayers inside the range will be blown off and die after landing.\nAccording to the options, blood traces will be left on the place where the Crewmates land.",
         "13": "\u98ce\u63a7\u5e08\u53ef\u4ee5\u901a\u8fc7\u53d1\u5c04\u7a7a\u6c14\u70ae\u6765\u5439\u6563\u8239\u5458\u3002\n\u7a7a\u6c14\u70ae\u7684\u5a01\u529b\u4f1a\u968f\u7740\u8ddd\u79bb\u7684\u589e\u5927\u800c\u8870\u51cf\u3002\n\u5728\u7a7a\u6c14\u70ae\u653b\u51fb\u8303\u56f4\u5185\u7684\u8239\u5458\u4f1a\u88ab\u5439\u98de\uff0c\u5e76\u5728\u843d\u5730\u540e\u6b7b\u4ea1\u3002\n\u6839\u636e\u8bbe\u7f6e\uff0c\u88ab\u5439\u6563\u7684\u8239\u5458\u53ef\u80fd\u4f1a\u7559\u4e0b\u8840\u8ff9\u3002",
         "14": "\u98a8\u63a7\u5e2b\u53ef\u4ee5\u767c\u5c04\u7a7a\u6c23\u7832\u4f86\u5439\u6563\u73a9\u5bb6\u3002\n\u7a7a\u6c23\u70ae\u7684\u5a01\u529b\u6703\u96a8\u8457\u8ddd\u96e2\u800c\u8870\u9000\u3002\n\u5728\u7a7a\u6c23\u7832\u653b\u64ca\u7bc4\u570d\u5167\u7684\u73a9\u5bb6\u6703\u88ab\u5439\u98db\uff0c\u4e26\u5728\u843d\u5730\u5f8c\u6b7b\u4ea1\u3002\n\u6839\u64da\u8a2d\u5b9a\uff0c\u88ab\u5439\u6563\u7684\u73a9\u5bb6\u53ef\u80fd\u7559\u4e0b\u8840\u8de1\u3002"
+    },
+    "collatorFullDesc": {
+        "0": "The Collator can sample players and compare their roles.\nThe roles will not get updated automatically once they have been collected.\nDuring the meeting the Collator can see whether or not their teams match.\nThe Collator only has a limited amount of trials.",
+        "13": "\u57fa\u56e0\u5b66\u5bb6\u53ef\u4ee5\u63d0\u53d6\u4e24\u540d\u73a9\u5bb6\u7684\u89d2\u8272\u9635\u8425\u5e76\u6bd4\u8f83\u3002\n\u9664\u975e\u91cd\u65b0\u63d0\u53d6\uff0c\u5df2\u7ecf\u88ab\u63d0\u53d6\u7684\u8eab\u4efd\u53ea\u4f1a\u4fdd\u7559\u5728\u63d0\u53d6\u65f6\u7684\u4fe1\u606f\u3002\n\u5728\u4f1a\u8bae\u4e0a\u57fa\u56e0\u5b66\u5bb6\u53ef\u4ee5\u67e5\u770b\u4e24\u540d\u73a9\u5bb6\u7684\u9635\u8425\u662f\u5426\u5339\u914d\u3002\n\u57fa\u56e0\u5b66\u5bb6\u53ea\u6709\u6709\u9650\u6b21\u4f7f\u7528\u6280\u80fd\u7684\u673a\u4f1a\u3002"
     },
     "taskMasterFullDesc": {
         "0": "The Task Master is a Crewmate role who gets extra tasks when all the original tasks have been completed.\nThe Task Master leads the Crewmates to victory once all the extra tasks are completed and the Task Master is still alive.",
@@ -9439,6 +9484,54 @@
         "0": "Antique Excavator",
         "13": "\u8003\u53e4\u6316\u6398",
         "14": "\u8003\u53e4\u6316\u6398"
+    },
+    "collatorcommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "collatorcommon1AchievementGoal": {
+        "0": "Compare The Roles Of 2 Players During The Meeting",
+        "13": "\u5728\u4f1a\u8bae\u4e2d\u5bf9\u6bd4\u4e24\u540d\u73a9\u5bb6\u7684\u8eab\u4efd"
+    },
+    "collatorcommon1AchievementTitle": {
+        "0": "Geneticist",
+        "13": "\u57fa\u56e0\u5b66\u8005"
+    },
+    "collatorcommon2AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "collatorcommon2AchievementGoal": {
+        "0": "Compare 2 Impostors During The Meeting",
+        "13": "\u5728\u4f1a\u8bae\u4e2d\u5bf9\u6bd4\u4e24\u540d\u5185\u9b3c\u7684\u8eab\u4efd"
+    },
+    "collatorcommon2AchievementTitle": {
+        "0": "Fake Information",
+        "13": "\u865a\u5047\u60c5\u62a5"
+    },
+    "collatoranother1AchievementCond": {
+        "0": "The Results Must Be A Mismatch",
+        "13": "\u7ed3\u679c\u5fc5\u987b\u4e3a\u4e0d\u5339\u914d"
+    },
+    "collatoranother1AchievementGoal": {
+        "0": "Compare 2 Players During The Meeting",
+        "13": "\u5728\u4f1a\u8bae\u4e2d\u5bf9\u6bd4\u4e24\u540d\u73a9\u5bb6\u7684\u8eab\u4efd"
+    },
+    "collatoranother1AchievementTitle": {
+        "0": "One Should Be Exiled",
+        "13": "\u6709\u4e00\u4e2a\u5c06\u88ab\u9a71\u9010"
+    },
+    "collatorchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "collatorchallengeAchievementGoal": {
+        "0": "Compare At Least 3 Groups Of Players",
+        "13": "\u5bf9\u6bd4\u81f3\u5c113\u7ec4\u73a9\u5bb6\u7684\u8eab\u4efd"
+    },
+    "collatorchallengeAchievementTitle": {
+        "0": "Figure That Out!",
+        "13": "\u901a\u901a\u63ea\u51fa\u6765!"
     },
     "mafiosoanother1AchievementCond": {
         "0": "You Must Be Alive When The Godfather Is Killed",
@@ -12178,6 +12271,10 @@
         "0": "The Zephyr fires cannons.\nPlayers in the range will be blown away.",
         "13": "\u98ce\u63a7\u5e08\u53ef\u4ee5\u53d1\u5c04\u7a7a\u6c14\u70ae\u3002\n\u5728\u5c04\u7a0b\u8303\u56f4\u5185\u7684\u73a9\u5bb6\u4f1a\u88ab\u5439\u6563\u3002",
         "14": "\u98a8\u63a7\u5e2b\u53ef\u4ee5\u767c\u5c04\u7a7a\u6c23\u7832\u3002\n\u5728\u5c04\u7a0b\u5167\u7684\u73a9\u5bb6\u6703\u88ab\u5439\u98db\u3002"
+    },
+    "collatorBlurb": {
+        "0": "The Collator samples players and compares their teams.",
+        "13": "\u57fa\u56e0\u5b66\u5bb6\u53ef\u4ee5\u63d0\u53d6\u5e76\u6bd4\u8f83\u73a9\u5bb6\u7684\u9635\u8425\u3002"
     },
     "bloodyBlurb": {
         "0": "The killer leaves a bloody trace.",

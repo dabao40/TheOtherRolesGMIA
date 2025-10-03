@@ -113,6 +113,7 @@ namespace TheOtherRoles
         public static CustomButton medicVitalsButton;
         public static CustomButton zephyrButton;
         public static CustomButton doomsayerButton;
+        public static CustomButton collatorButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
         public static CustomButton freePlayReviveButton;
@@ -150,6 +151,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
         public static TMPro.TMP_Text doomsayerUsesText;
         public static TMPro.TMP_Text zephyrUsesText;
+        public static TMPro.TMP_Text collatorUsesText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
@@ -227,6 +229,7 @@ namespace TheOtherRoles
             archaeologistDetectButton.MaxTimer = Archaeologist.cooldown;
             archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
             doomsayerButton.MaxTimer = Doomsayer.cooldown;
+            collatorButton.MaxTimer = Collator.cooldown;
             foreach (var button in fortuneTellerButtons)
             {
                 button.MaxTimer = 0f;
@@ -1732,6 +1735,43 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.Q
             );
+
+            collatorButton = new CustomButton(
+                () => {
+                    var sample = Collator.local.currentTarget;
+                    var info = RoleInfo.getRoleInfoForPlayer(sample, false, true).FirstOrDefault();
+
+                    if ((Madmate.madmate.Any(x => x.PlayerId == sample.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == sample.PlayerId)) && !Collator.madmateAsCrew)
+                        info = RoleInfo.impostor;
+
+                    Collator.local.sampledPlayers.Add((sample, Collator.CheckTeam(info)));
+
+                    TORGUIManager.Instance.StartCoroutine(Collator.local.CoShakeTube(Collator.local.sampledPlayers.Count - 1).WrapToIl2Cpp());
+                    Collator.local.UpdateSamples();
+                    collatorButton.Timer = collatorButton.MaxTimer;
+                    Collator.local.currentTarget = null;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Collator) && Collator.local.sampledPlayers.Count < Collator.local.allSamples.Length && Collator.local.trialsLeft > 0 && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () =>
+                {
+                    if (collatorUsesText != null)
+                    {
+                        if (Collator.local.trialsLeft > 0)
+                            collatorUsesText.text = $"{Collator.local.trialsLeft}";
+                        else
+                            collatorUsesText.text = "";
+                    }
+                    return Collator.local.currentTarget && PlayerControl.LocalPlayer.CanMove;
+                },
+                () => { collatorButton.Timer = collatorButton.MaxTimer; },
+                Collator.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("CollatorText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+            collatorUsesText = collatorButton.ShowUsesIcon(3);
 
             // Eraser erase button
             eraserButton = new CustomButton(

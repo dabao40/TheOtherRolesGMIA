@@ -111,6 +111,7 @@ namespace TheOtherRoles
         public static RoleInfo busker = new("busker", Busker.color, RoleId.Busker);
         public static RoleInfo noisemaker = new("noisemaker", Noisemaker.color, RoleId.Noisemaker);
         public static RoleInfo archaeologist = new("archaeologist", Archaeologist.color, RoleId.Archaeologist);
+        public static RoleInfo collator = new("collator", Collator.color, RoleId.Collator);
         public static RoleInfo evilYasuna = new("evilYasuna", Palette.ImpostorRed, RoleId.EvilYasuna);
         public static RoleInfo opportunist = new("opportunist", Opportunist.color, RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new("corruptedShifter", Shifter.color, RoleId.Shifter, true);
@@ -171,7 +172,8 @@ namespace TheOtherRoles
             hacker,
             evilHacker,
             blackmailer,
-            archaeologist
+            archaeologist,
+            collator
         ];
 
         public static List<RoleInfo> Body =
@@ -200,6 +202,9 @@ namespace TheOtherRoles
 
         public static List<RoleInfo> Team =
         [
+            godfather,
+            mafioso,
+            janitor,
             bomberA,
             bomberB,
             jackal,
@@ -346,6 +351,7 @@ namespace TheOtherRoles
             busker,
             noisemaker,
             archaeologist,
+            collator,
             //trapper,
             bloody,
             antiTeleport,
@@ -436,6 +442,7 @@ namespace TheOtherRoles
             if (p.isRole(RoleId.Yoyo)) infos.Add(yoyo);
             if (p.isRole(RoleId.Doomsayer)) infos.Add(doomsayer);
             if (p.isRole(RoleId.Zephyr)) infos.Add(zephyr);
+            if (p.isRole(RoleId.Collator)) infos.Add(collator);
             if (p.isRole(RoleId.FortuneTeller))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)

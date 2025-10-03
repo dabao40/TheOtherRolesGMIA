@@ -102,6 +102,7 @@ namespace TheOtherRoles
         Yoyo,
         Doomsayer,
         Kataomoi,
+        Collator,
         Busker,
         Noisemaker,
         Archaeologist,

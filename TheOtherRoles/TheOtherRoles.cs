@@ -90,6 +90,7 @@ namespace TheOtherRoles
             Busker.clearAndReload();
             Noisemaker.clearAndReload();
             Archaeologist.clearAndReload();
+            Collator.clearAndReload();
             Watcher.clearAndReload();
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
@@ -157,6 +158,7 @@ namespace TheOtherRoles
                 { RoleId.NiceWatcher, typeof(RoleBase<NiceWatcher>) },
                 { RoleId.Bait, typeof(RoleBase<Bait>) },
                 { RoleId.Sprinter, typeof(RoleBase<Sprinter>) },
+                { RoleId.Collator, typeof(RoleBase<Collator>) },
 
                 // Impostor
                 { RoleId.Godfather, typeof(RoleBase<Godfather>) },

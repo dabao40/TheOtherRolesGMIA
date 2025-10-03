@@ -12,7 +12,7 @@ namespace TheOtherRoles.Modules
 {
     internal class MeetingOverlayHolder
     {
-        static IDividedSpriteLoader IconSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.MeetingNotification.png", 100f, 4, 1);
+        static IDividedSpriteLoader IconSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.MeetingNotification.png", 100f, 5, 1);
         static Image NotificationSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.MeetingNotificationDot.png", 135f);
         static public Image[] IconsSprite = Helpers.Sequential(IconSprite.Length).Select(num => new WrapSpriteLoader(() => IconSprite.GetSprite(num))).ToArray();
 

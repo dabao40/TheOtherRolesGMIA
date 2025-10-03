@@ -1511,7 +1511,7 @@ namespace TheOtherRoles {
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) {
                 if (type == CustomOption.CustomOptionType.General)
                     options = CustomOption.options.Where(o => o.type == type || o.type == CustomOption.CustomOptionType.Guesser);
-                List<int> remove = new() { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318, 7006 };
+                List<int> remove = new() { 308, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 7006 };
                 options = options.Where(x => !remove.Contains(x.id));
             } else if (TORMapOptions.gameMode == CustomGamemodes.Classic) 
                 options = options.Where(x => !(x.type == CustomOption.CustomOptionType.Guesser || x == CustomOptionHolder.crewmateRolesFill || x.id == 7007));

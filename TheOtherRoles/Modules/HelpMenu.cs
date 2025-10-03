@@ -663,6 +663,7 @@ public static class HelpMenu
                 { RoleId.BomberB, CustomOptionHolder.bomberSpawnRate },
                 { RoleId.Swapper, CustomOptionHolder.swapperSpawnRate },
                 { RoleId.Zephyr, CustomOptionHolder.zephyrSpawnRate },
+                { RoleId.Collator, CustomOptionHolder.collatorSpawnRate },
                 { RoleId.EvilHacker, CustomOptionHolder.evilHackerSpawnRate },
                 { RoleId.Trapper, CustomOptionHolder.trapperSpawnRate },
                 { RoleId.Blackmailer, CustomOptionHolder.blackmailerSpawnRate },
