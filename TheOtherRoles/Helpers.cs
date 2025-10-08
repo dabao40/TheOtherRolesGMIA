@@ -1787,7 +1787,7 @@ namespace TheOtherRoles
                 roleCouldUse = true;
             else if (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player?.PlayerId) && CreatedMadmate.canSabotage)
                 roleCouldUse = true;
-            else if (player.isRole(RoleId.Janitor))
+            else if (player.isRole(RoleId.Janitor) && !Janitor.canSabotage)
                 roleCouldUse = false;
             else if (player.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead))
                 roleCouldUse = false;
@@ -1823,11 +1823,7 @@ namespace TheOtherRoles
             else if (player.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
-                if (player.isRole(RoleId.Janitor))
-                    roleCouldUse = false;
-                else if (player.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead))
-                    roleCouldUse = false;
-                else if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
+                if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
                     roleCouldUse = false;
                 else if (player.isRole(RoleId.Undertaker) && Undertaker.DraggedBody != null && Undertaker.disableVent)
                     roleCouldUse = false;

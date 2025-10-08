@@ -137,7 +137,7 @@ namespace TheOtherRoles.Roles
 
             if (PlayerControl.LocalPlayer == player)
             {
-                if (!meetingFlag && (canWinDead || !player.Data.IsDead))
+                if (canWinDead || !player.Data.IsDead)
                 {
                     List<PlayerControl> newInfected = [];
                     foreach (PlayerControl target in PlayerControl.AllPlayerControls)
@@ -145,24 +145,27 @@ namespace TheOtherRoles.Roles
                         if (target == player || target.Data.IsDead || infected.ContainsKey(target.PlayerId) || target.inVent) continue;
                         if (!progress.ContainsKey(target.PlayerId)) progress[target.PlayerId] = 0f;
 
-                        foreach (PlayerControl source in infected.Values.ToList())
+                        if (!meetingFlag)
                         {
-                            if (source.Data.IsDead) continue;
-                            float distance = Vector3.Distance(source.transform.position, target.transform.position);
-                            bool anythingBetween = PhysicsHelpers.AnythingBetween(source.GetTruePosition(), target.GetTruePosition(), Constants.ShipAndObjectsMask, false);
-
-                            if (distance <= infectDistance && !anythingBetween)
+                            foreach (PlayerControl source in infected.Values.ToList())
                             {
-                                progress[target.PlayerId] += Time.fixedDeltaTime;
+                                if (source.Data.IsDead) continue;
+                                float distance = Vector3.Distance(source.transform.position, target.transform.position);
+                                bool anythingBetween = PhysicsHelpers.AnythingBetween(source.GetTruePosition(), target.GetTruePosition(), Constants.ShipAndObjectsMask, false);
 
-                                // 他のクライアントに進行状況を通知する
-                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, SendOption.Reliable, -1);
-                                writer.Write(target.PlayerId);
-                                writer.Write(progress[target.PlayerId]);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                if (distance <= infectDistance && !anythingBetween)
+                                {
+                                    progress[target.PlayerId] += Time.fixedDeltaTime;
 
-                                // Only update a player's infection once per FixedUpdate
-                                break;
+                                    // 他のクライアントに進行状況を通知する
+                                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlagueDoctorUpdateProgress, SendOption.Reliable, -1);
+                                    writer.Write(target.PlayerId);
+                                    writer.Write(progress[target.PlayerId]);
+                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                                    // Only update a player's infection once per FixedUpdate
+                                    break;
+                                }
                             }
                         }
 
@@ -236,7 +239,7 @@ namespace TheOtherRoles.Roles
 
         public void checkWinStatus()
         {
-            if (!(!player.Data.IsDead && (canWinDead || hasAlivePlayers)) || PlayerControl.LocalPlayer != player) return;
+            if (!(canWinDead || hasAlivePlayers) || PlayerControl.LocalPlayer != player) return;
 
             bool winFlag = true;
             foreach (PlayerControl p in PlayerControl.AllPlayerControls)

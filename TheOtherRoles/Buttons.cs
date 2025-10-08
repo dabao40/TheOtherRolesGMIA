@@ -41,6 +41,7 @@ namespace TheOtherRoles
         public static CustomButton hackerAdminTableButton;
         private static CustomButton trackerTrackPlayerButton;
         private static CustomButton trackerTrackCorpsesButton;
+        private static CustomButton trackerKillButton;
         public static CustomButton vampireKillButton;
         public static CustomButton garlicButton;
         public static CustomButton jackalKillButton;
@@ -149,6 +150,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text moriartyKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeKillCounterText;
         public static TMPro.TMP_Text jekyllAndHydeDrugText;
+        public static TMPro.TMP_Text trackerText;
         public static TMPro.TMP_Text doomsayerUsesText;
         public static TMPro.TMP_Text zephyrUsesText;
         public static TMPro.TMP_Text collatorUsesText;
@@ -196,6 +198,7 @@ namespace TheOtherRoles
             hackerAdminTableButton.MaxTimer = Hacker.cooldown;
             vampireKillButton.MaxTimer = Vampire.cooldown;
             trackerTrackPlayerButton.MaxTimer = 0f;
+            trackerKillButton.MaxTimer = Tracker.killCooldown;
             garlicButton.MaxTimer = 0f;
             jackalKillButton.MaxTimer = Jackal.cooldown;
             sidekickKillButton.MaxTimer = Sidekick.cooldown;
@@ -1143,6 +1146,35 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("PathfindText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
+
+            trackerKillButton = new(
+                () =>
+                {
+                    if (Helpers.checkMurderAttemptAndKill(PlayerControl.LocalPlayer, Tracker.local.currentTarget) == MurderAttemptResult.SuppressKill) return;
+                    trackerKillButton.Timer = trackerKillButton.MaxTimer;
+                    Tracker.local.currentTarget = null;
+                    Tracker.local.numShots--;
+                },
+                () =>
+                {
+                    return PlayerControl.LocalPlayer.isRole(RoleId.Tracker) && !PlayerControl.LocalPlayer.Data.IsDead;
+                },
+                () =>
+                {
+                    if (trackerText != null) {
+                        trackerText.text = $"{Tracker.local.numShots}";
+                    }
+                    return PlayerControl.LocalPlayer.CanMove && Tracker.local.numShots > 0;
+                },
+                () => { trackerKillButton.Timer = trackerKillButton.MaxTimer; },
+                Tracker.getKillButtonSprite(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.Q,
+                buttonText: FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.KillLabel),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+            trackerText = trackerKillButton.ShowUsesIcon(3);
 
             detectiveButton = new CustomButton(
                 () =>
@@ -3645,6 +3677,7 @@ namespace TheOtherRoles
                     Medium.local.acTokenCommon.Value++;
                     mediumButton.Timer = mediumButton.MaxTimer;
                     if (Medium.local.target == null || Medium.local.target.player == null) return;
+                    if (Medium.showQuestionTarget) Medium.Question.Invoke((Medium.local.target.player.PlayerId, PlayerControl.LocalPlayer.PlayerId));
                     string msg = Medium.local.getInfo(Medium.local.target.player, Medium.local.target.killerIfExisting, Medium.local.target.deathReason);
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg, false);
 

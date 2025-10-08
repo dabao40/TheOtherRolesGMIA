@@ -4,12 +4,14 @@ using System.Linq;
 using TheOtherRoles;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Medium : RoleBase<Medium> {
         public DeadPlayer target;
         public DeadPlayer soulTarget;
@@ -18,6 +20,8 @@ namespace TheOtherRoles.Roles
         public static List<Tuple<DeadPlayer, Vector3>> futureDeadBodies = [];
         public List<SpriteRenderer> souls = [];
         public static DateTime meetingStartTime = DateTime.UtcNow;
+        public List<PlayerControl> questioned = [];
+        public List<Arrow> arrows = [];
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Medium.png");
 
@@ -30,32 +34,57 @@ namespace TheOtherRoles.Roles
             acTokenChallenge = null;
             deadBodies = [];
             souls = [];
+            questioned = [];
+            arrows = [];
         }
 
         public override void FixedUpdate()
         {
-            if (player != PlayerControl.LocalPlayer || player.Data.IsDead || deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
-
-            DeadPlayer target = null;
-            Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-            float closestDistance = float.MaxValue;
-            float usableDistance = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault().UsableDistance;
-            foreach ((DeadPlayer dp, Vector3 ps) in deadBodies)
-            {
-                float distance = Vector2.Distance(ps, truePosition);
-                if (distance <= usableDistance && distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    target = dp;
-                }
-            }
-            this.target = target;
+            setDeadTarget();
+            arrowUpdate();
         }
+
+        void setDeadTarget()
+        {
+            if (player != PlayerControl.LocalPlayer || deadBodies == null || MapUtilities.CachedShipStatus?.AllVents == null) return;
+
+            if (!player.Data.IsDead)
+            {
+                DeadPlayer target = null;
+                Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                float closestDistance = float.MaxValue;
+                float usableDistance = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault().UsableDistance;
+                foreach ((DeadPlayer dp, Vector3 ps) in deadBodies)
+                {
+                    float distance = Vector2.Distance(ps, truePosition);
+                    if (distance <= usableDistance && distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        target = dp;
+                    }
+                }
+                this.target = target;
+            }
+        }
+
+        public static RemoteProcess<(byte playerId, byte mediumId)> Question = new("MediumQuestion", (message, _) =>
+        {
+            var player = Helpers.playerById(message.playerId);
+            var m = Helpers.playerById(message.mediumId);
+            var medium = getRole(m);
+            if (player == null || medium == null) return;
+            medium.questioned.TryAdd(player);
+
+            if (PlayerControl.LocalPlayer == player) {
+                Helpers.showFlash(Palette.CrewmateBlue, message: ModTranslation.getString("mediumQuestionText"));
+            }
+        });
 
         public static float cooldown = 30f;
         public static float duration = 3f;
         public static bool oneTimeUse = false;
         public static float chanceAdditionalInfo = 0f;
+        public static bool showQuestionTarget = true;
 
         public AchievementToken<int> acTokenCommon = null;
         public AchievementToken<(List<byte> additionals, bool cleared)> acTokenChallenge = null;
@@ -96,17 +125,67 @@ namespace TheOtherRoles.Roles
             return question;
         }
 
+        void arrowUpdate()
+        {
+            foreach (Arrow arrow in arrows) arrow.arrow.SetActive(false);
+            if (questioned.Count == 0 || PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (PlayerControl.LocalPlayer == player)
+            {
+                int arrowIndex = 0;
+                foreach (var p in questioned)
+                {
+                    if (p == null) continue;
+                    if (arrowIndex >= arrows.Count)
+                        arrows.Add(new Arrow(color));
+                    if (arrowIndex < arrows.Count && arrows[arrowIndex] != null)
+                    {
+                        arrows[arrowIndex].arrow.SetActive(true);
+                        arrows[arrowIndex].Update(p.transform.position, color);
+                    }
+                    arrowIndex++;
+                }
+            }
+            else if (questioned.Contains(PlayerControl.LocalPlayer))
+            {
+                if (arrows.Count == 0) arrows.Add(new Arrow(Color.white));
+                if (arrows.Count != 0 && arrows[0] != null)
+                {
+                    arrows[0].arrow.SetActive(true);
+                    arrows[0].image.color = Color.white;
+                    arrows[0].Update(player.transform.position);
+                }
+            }
+        }
+
         public override void ResetRole(bool isShifted)
         {
             if (souls != null) {
                 foreach (SpriteRenderer sr in souls) UnityEngine.Object.Destroy(sr.gameObject);
                 souls = [];
             }
+            if (arrows != null)
+                foreach (Arrow arrow in arrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            arrows = [];
+        }
+
+        public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason)
+        {
+            if (this.player == player)
+            {
+                if (arrows != null)
+                    foreach (Arrow arrow in arrows)
+                        if (arrow?.arrow != null)
+                            UnityEngine.Object.Destroy(arrow.arrow);
+                arrows = [];
+            }
         }
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
             soulTarget = null;
+            questioned = [];
             if (PlayerControl.LocalPlayer == player) {
                 acTokenChallenge.Value.cleared |= exiled != null && acTokenChallenge.Value.additionals.Any(x => x == exiled.PlayerId);
                 acTokenChallenge.Value.additionals = [];
@@ -140,6 +219,7 @@ namespace TheOtherRoles.Roles
             duration = CustomOptionHolder.mediumDuration.getFloat();
             oneTimeUse = CustomOptionHolder.mediumOneTimeUse.getBool();
             chanceAdditionalInfo = CustomOptionHolder.mediumChanceAdditionalInfo.getSelection() / 10f;
+            showQuestionTarget = CustomOptionHolder.mediumRevealTarget.getBool();
             players = [];
         }
 

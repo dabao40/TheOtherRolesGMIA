@@ -38,7 +38,10 @@ namespace TheOtherRoles {
         public static CustomOption freePlayGameModeNumDummies;
 
         public static CustomRoleOption mafiaSpawnRate;
+        public static CustomOption godfatherShareInfo;
         public static CustomOption janitorCooldown;
+        public static CustomOption janitorCanSabotage;
+        public static CustomOption mafiosoNumberOfSkips;
 
         public static CustomRoleOption morphlingSpawnRate;
         public static CustomOption morphlingCooldown;
@@ -299,6 +302,7 @@ namespace TheOtherRoles {
         public static CustomOption trackerCorpsesTrackingCooldown;
         public static CustomOption trackerCorpsesTrackingDuration;
         public static CustomOption trackerTrackingMethod;
+        public static CustomOption trackerKillCooldown;
 
         public static CustomRoleOption archaeologistSpawnRate;
         public static CustomOption archaeologistCooldown;
@@ -427,6 +431,7 @@ namespace TheOtherRoles {
         public static CustomOption mediumCooldown;
         public static CustomOption mediumDuration;
         public static CustomOption mediumOneTimeUse;
+        public static CustomOption mediumRevealTarget;
         public static CustomOption mediumChanceAdditionalInfo;
 
         public static CustomRoleOption doomsayerSpawnRate;
@@ -696,7 +701,10 @@ namespace TheOtherRoles {
             draftModeHideNeutralRoles = CustomOption.Create(605, Types.General, cs(Color.yellow, "draftModeHideNeutralRoles"), false, draftModeShowRoles, false);
 
             mafiaSpawnRate = new CustomRoleOption(18, Types.Impostor, "mafia", Janitor.color, 1);
+            godfatherShareInfo = CustomOption.Create(24, Types.Impostor, "godfatherShareInfo", true, mafiaSpawnRate);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "janitorCooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate, false, "unitSeconds");
+            janitorCanSabotage = CustomOption.Create(25, Types.Impostor, "janitorCanSabotage", true, mafiaSpawnRate);
+            mafiosoNumberOfSkips = CustomOption.Create(23, Types.Impostor, "mafiosoNumberOfSkips", 2f, 1f, 15f, 1f, mafiaSpawnRate, false, "unitScrews");
 
             morphlingSpawnRate = new CustomRoleOption(20, Types.Impostor, "morphling", Morphling.color);
             morphlingCooldown = CustomOption.Create(21, Types.Impostor, "morphlingCooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate, false, "unitSeconds");
@@ -1098,6 +1106,7 @@ namespace TheOtherRoles {
             trackerCorpsesTrackingCooldown = CustomOption.Create(204, Types.Crewmate, "trackerCorpsesTrackingCooldown", 30f, 5f, 120f, 5f, trackerCanTrackCorpses, false, "unitSeconds");
             trackerCorpsesTrackingDuration = CustomOption.Create(205, Types.Crewmate, "trackerCorpsesTrackingDuration", 5f, 2.5f, 30f, 2.5f, trackerCanTrackCorpses, false, "unitSeconds");
             trackerTrackingMethod = CustomOption.Create(206, Types.Crewmate, "trackerTrackingMethod", ["trackerArrow", "trackerProximity", "trackerBoth"], trackerSpawnRate);
+            trackerKillCooldown = CustomOption.Create(207, Types.Crewmate, "trackerKillCooldown", 30f, 5f, 60f, 2.5f, trackerSpawnRate, false, "unitSeconds");
 
             sherlockSpawnRate = new CustomRoleOption(5070, Types.Crewmate, "sherlock", Sherlock.color);
             sherlockCooldown = CustomOption.Create(5071, Types.Crewmate, "sherlockCooldown", 10f, 0f, 40f, 2.5f, sherlockSpawnRate, false, "unitSeconds");
@@ -1149,6 +1158,7 @@ namespace TheOtherRoles {
             mediumCooldown = CustomOption.Create(361, Types.Crewmate, "mediumCooldown", 30f, 5f, 120f, 5f, mediumSpawnRate, false, "unitSeconds");
             mediumDuration = CustomOption.Create(362, Types.Crewmate, "mediumDuration", 3f, 0f, 15f, 1f, mediumSpawnRate, false, "unitSeconds");
             mediumOneTimeUse = CustomOption.Create(363, Types.Crewmate, "mediumOneTimeUse", false, mediumSpawnRate);
+            mediumRevealTarget = CustomOption.Create(365, Types.Crewmate, "mediumRevealTarget", true, mediumSpawnRate);
             mediumChanceAdditionalInfo = CustomOption.Create(364, Types.Crewmate, "mediumChanceAdditionalInfo", rates, mediumSpawnRate);
 
             thiefSpawnRate = new CustomRoleOption(400, Types.Neutral, "thief", Thief.color);

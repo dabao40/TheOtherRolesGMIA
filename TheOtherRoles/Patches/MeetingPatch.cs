@@ -374,6 +374,9 @@ namespace TheOtherRoles.Patches
                     }
                 }
 
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Mafioso))
+                    Mafioso.UpdateButton(__instance);
+
                 // Mini
                 if (!Mini.isGrowingUpInMeeting) Mini.timeOfGrowthStart = Mini.timeOfGrowthStart.Add(DateTime.UtcNow.Subtract(Mini.timeOfMeetingStart)).AddSeconds(10);
             }
@@ -1045,6 +1048,8 @@ namespace TheOtherRoles.Patches
             } if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Doomsayer)) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("doomsayerGuessesLeft"), Math.Max(0, Doomsayer.guessesToWin - Doomsayer.local.counter));
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("doomsayerMissesLeft"), Mathf.Max(0, Doomsayer.maxMisses - Doomsayer.local.failedGuesses));
+            } if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Mafioso)) {
+                meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("mafiosoNumSkipsLeft"), Mafioso.numUses);
             }
 
             meetingInfoText[meetingTextIndex].gameObject.SetActive(true);
@@ -1161,8 +1166,36 @@ namespace TheOtherRoles.Patches
                     }
                 }
                 __instance.StartCoroutine(Effects.Sequence(Effects.Wait(2f), Helpers.Action(() => SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1)).WrapToIl2Cpp()));
+
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Mafioso))
+                    Mafioso.GenButton(__instance);
             }
         }
+
+        [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.VoteForMe))]
+        class PlayerVoteAreaVoteForMePatch
+        {
+            static bool Prefix(PlayerVoteArea __instance)
+            {
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && __instance == Mafioso.skipMeeting)
+                {
+                    for (int index = 0; index < __instance.Parent.playerStates.Length; ++index)
+                    {
+                        PlayerVoteArea playerState = __instance.Parent.playerStates[index];
+                        playerState.ClearButtons();
+                        playerState.voteComplete = true;
+                    }
+                    Mafioso.numUses--;
+                    __instance.Parent.SkipVoteButton.ClearButtons();
+                    __instance.Parent.SkipVoteButton.voteComplete = true;
+                    __instance.Parent.SkipVoteButton.gameObject.SetActive(false);
+                    Mafioso.SkipMeeting.Invoke();
+                    return false;
+                }
+                return true;
+            }
+        }
+        
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch {
@@ -1271,6 +1304,8 @@ namespace TheOtherRoles.Patches
                         __instance.StartCoroutine(Effects.SwayX(playerState.transform));
                     }
                 }
+
+                Mafioso.UpdateTimer(__instance);
             }
         }
 

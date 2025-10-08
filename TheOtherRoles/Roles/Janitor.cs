@@ -8,6 +8,7 @@ namespace TheOtherRoles.Roles
         public static Color color = Palette.ImpostorRed;
 
         public static float cooldown = 30f;
+        public static bool canSabotage = true;
 
         public Janitor()
         {
@@ -25,6 +26,7 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             cooldown = CustomOptionHolder.janitorCooldown.getFloat();
+            canSabotage = CustomOptionHolder.janitorCanSabotage.getBool();
             players = [];
         }
     }

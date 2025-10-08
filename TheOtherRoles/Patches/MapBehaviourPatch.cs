@@ -1,9 +1,9 @@
-using HarmonyLib;
-using Hazel;
-using Reactor.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
+using Hazel;
+using Reactor.Utilities.Extensions;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
@@ -143,27 +143,6 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 		static void Postfix(MapBehaviour __instance) {
             __instance.HerePoint.transform.SetLocalZ(-2.1f);
-            /*if (Trapper.trapper != null && PlayerControl.LocalPlayer.PlayerId == Trapper.trapper.PlayerId) {
-				foreach (PlayerControl player in Trapper.playersOnMap) {
-					if (herePoints.ContainsKey(player.PlayerId)) continue;
-					Vector3 v = Trap.trapPlayerIdMap[player.PlayerId].trap.transform.position;
-					v /= MapUtilities.CachedShipStatus.MapScale;
-					v.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
-					v.z = -1f;
-					var herePoint = UnityEngine.Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
-					herePoint.transform.localPosition = v;
-					herePoint.enabled = true;
-					int colorId = player.CurrentOutfit.ColorId;
-					if (Trapper.anonymousMap) player.CurrentOutfit.ColorId = 6;
-					player.SetPlayerMaterialColors(herePoint);
-					player.CurrentOutfit.ColorId = colorId;
-					herePoints.Add(player.PlayerId, herePoint);
-				}
-				foreach (var s in herePoints.Where(x => !Trapper.playersOnMap.Contains(Helpers.playerById(x.Key))).ToList()) {
-					UnityEngine.Object.Destroy(s.Value);
-					herePoints.Remove(s.Key);
-				}
-			}*/
             if (PlayerControl.LocalPlayer.isRole(RoleId.EvilTracker) && EvilTracker.canSeeTargetPosition)
 			{
                 if (EvilTracker.local.target != null && MeetingHud.Instance == null)
@@ -243,6 +222,60 @@ namespace TheOtherRoles.Patches {
                         {
                             mark.gameObject.SetActive(false);
                         }
+                    }
+                }
+            }
+
+            // Show location of all players on the map for ghosts!
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Hacker))
+            {
+                if (Hacker.local.hackerTimer > 0f && !PlayerControl.LocalPlayer.Data.IsDead && __instance.countOverlay != null && __instance.countOverlay.isActiveAndEnabled)
+                {
+                    foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                    {
+                        if (player.Data.IsDead) continue;
+
+                        Vector3 v = player.transform.position;
+
+                        v /= MapUtilities.CachedShipStatus.MapScale;
+                        v.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                        v.z = -2.1f;
+                        if (herePoints.TryGetValue(player.PlayerId, out _))
+                        {
+                            herePoints[player.PlayerId].transform.localPosition = v;
+                            herePoints[player.PlayerId].color = herePoints[player.PlayerId].color;
+                            continue;
+                        }
+
+                        string pointName = $"TOR HerePoint {player.PlayerId}";
+                        var doublePoint = GameObject.Find(pointName);
+                        if (doublePoint != null)
+                        {
+                            doublePoint.Destroy();
+                        }
+
+                        var herePoint = UnityEngine.Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+
+                        herePoint.name = pointName;
+                        herePoint.transform.localPosition = v;
+                        herePoint.enabled = true;
+
+                        int colorId = player.CurrentOutfit.ColorId;
+
+                        if (Hacker.onlyColorType)
+                            player.CurrentOutfit.ColorId = Helpers.isLighterColor(colorId) ? 7 : 6;
+
+                        player.SetPlayerMaterialColors(herePoint);
+                        player.CurrentOutfit.ColorId = colorId;
+                        herePoints.Add(player.PlayerId, herePoint);
+                    }
+                }
+                else
+                {
+                    foreach (var s in herePoints)
+                    {
+                        UnityEngine.Object.Destroy(s.Value.gameObject);
+                        herePoints.Remove(s.Key);
                     }
                 }
             }

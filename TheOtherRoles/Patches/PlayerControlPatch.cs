@@ -285,7 +285,7 @@ namespace TheOtherRoles.Patches {
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
                 if ((Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target) || (Akujo.knowsRoles && Akujo.isPartner(PlayerControl.LocalPlayer, p)) || p == PlayerControl.LocalPlayer || (PlayerControl.LocalPlayer.Data.IsDead
-                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)) || FreePlayGM.isFreePlayGM) {
+                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)) || Godfather.shouldShowInfo(PlayerControl.LocalPlayer) || FreePlayGM.isFreePlayGM) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -352,7 +352,8 @@ namespace TheOtherRoles.Patches {
                         playerInfoText = $"{taskInfo}".Trim();
                         meetingInfoText = playerInfoText;
                     }
-                    else if (TORMapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target)) {
+                    else if (TORMapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target)
+                        || Godfather.shouldShowInfo(PlayerControl.LocalPlayer)) {
                         playerInfoText = $"{roleText}";
                         meetingInfoText = playerInfoText;
                     }
@@ -818,6 +819,9 @@ namespace TheOtherRoles.Patches {
                 Camouflager.acTokenChallenge.Value.kills++;
                 Camouflager.acTokenChallenge.Value.cleared |= Camouflager.acTokenChallenge.Value.kills >= 3;
             }
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Tracker) && Tracker.local.tracked == target)
+                Tracker.local.numShots++;
 
             if (PlayerControl.LocalPlayer.isRole(RoleId.Teleporter))
             {

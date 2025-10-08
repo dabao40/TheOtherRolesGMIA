@@ -21,7 +21,7 @@ public static class CustomHatManager
         get
         {
             var (owner, repository) = Repository;
-            return (Helpers.isChinese() ? "https://ghproxy.fangkuai.fun/" : "") + $"https://raw.githubusercontent.com/{owner}/{repository}/master";
+            return (Helpers.isChinese() ? "https://ghproxy.amongusclub.cn/" : "") + $"https://raw.githubusercontent.com/{owner}/{repository}/master";
         }
     }
 

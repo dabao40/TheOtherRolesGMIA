@@ -221,7 +221,7 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
     public static class MapBehaviourShowPatch {
         public static void Prefix(MapBehaviour __instance, ref MapOptions opts) {
-            bool blockSabotageJanitor = PlayerControl.LocalPlayer.isRole(RoleId.Janitor);
+            bool blockSabotageJanitor = PlayerControl.LocalPlayer.isRole(RoleId.Janitor) && !Janitor.canSabotage;
             bool blockSabotageMafioso = PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead);
             if (blockSabotageJanitor || blockSabotageMafioso) {
                 if (opts.Mode == MapOptions.Modes.Sabotage) opts.Mode = MapOptions.Modes.Normal;
@@ -687,9 +687,14 @@ namespace TheOtherRoles.Patches {
         class CounterAreaUpdateCountPatch {
             private static Material defaultMat;
             private static Material newMat;
+            static bool Prefix(CounterArea __instance)
+            {
+                return !Hacker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.hackerTimer > 0);
+            }
+
             static void Postfix(CounterArea __instance) {
                 // Hacker display saved colors on the admin panel
-                bool showHackerInfo = Hacker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.hackerTimer > 0);
+                bool showHackerInfo = PlayerControl.LocalPlayer.isRole(RoleId.Hacker);
                 if (players.ContainsKey(__instance.RoomType)) {
                     List<Color> colors = players[__instance.RoomType];
 

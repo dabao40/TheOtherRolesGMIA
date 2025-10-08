@@ -471,10 +471,6 @@ namespace TheOtherRoles.Patches {
             bool enabled = true;
             if (PlayerControl.LocalPlayer.isRole(RoleId.Vampire))
                 enabled = false;
-            else if (PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && Godfather.exists && Godfather.allPlayers.Any(x => !x.Data.IsDead))
-                enabled = false;
-            else if (PlayerControl.LocalPlayer.isRole(RoleId.Janitor))
-                enabled = false;
             else if (PlayerControl.LocalPlayer.isRole(RoleId.MimicA) && MimicK.isAlive())
                 enabled = false;
             else if (PlayerControl.LocalPlayer.isRole(RoleId.BomberA) && BomberB.isAlive())
@@ -530,6 +526,18 @@ namespace TheOtherRoles.Patches {
             //__instance.MapButton.HeldButtonSprite.color = Trapper.playersOnMap.Any() ? Trapper.color : Color.white;
         }
 
+        static void updateVisibility()
+        {
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Medium) && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                foreach (var player in Medium.local.questioned)
+                {
+                    if (player != null)
+                        player.Visible = true;
+                }
+            }
+        }
+
         static void Postfix(HudManager __instance)
         {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return;
@@ -555,6 +563,7 @@ namespace TheOtherRoles.Patches {
             updateSabotageButton(__instance);
             updateUseButton(__instance);
             updateMapButton(__instance);
+            updateVisibility();
             if (!MeetingHud.Instance) __instance.AbilityButton?.Update();
             TORGameManager.Instance?.OnUpdate();
             foreach (var arrow in new List<Sherlock.SherlockDetectArrow>(Sherlock.SherlockDetectArrow.allArrows))

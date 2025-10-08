@@ -232,5 +232,6 @@ public class Collator : RoleBase<Collator>
         cooldown = CustomOptionHolder.collatorCooldown.getFloat();
         madmateAsCrew = CustomOptionHolder.collatorMadmateSpecifiedAsCrewmate.getBool();
         strictNeutral = CustomOptionHolder.collatorStrictNeutralRoles.getBool();
+        players = [];
     }
 }

@@ -10,8 +10,7 @@ namespace TheOtherRoles.Roles
     public class Snitch : RoleBase<Snitch> {
         public static Color color = new Color32(184, 251, 79, byte.MaxValue);
 
-        public static List<Arrow> localArrows = [];
-        public List<Arrow> snitchArrows = [];
+        public List<Arrow> localArrows = [];
         public static int taskCountForReveal = 1;
         public static bool includeTeamEvil = false;
         public static bool teamEvilUseDifferentArrowColor = true;
@@ -19,16 +18,16 @@ namespace TheOtherRoles.Roles
         public Snitch()
         {
             RoleId = roleId = RoleId.Snitch;
-            snitchArrows = [];
+            localArrows = [];
         }
 
         public override void ResetRole(bool isShifted)
         {
-            if (snitchArrows != null)
-                foreach (Arrow arrow in snitchArrows)
+            if (localArrows != null)
+                foreach (Arrow arrow in localArrows)
                     if (arrow?.arrow != null)
                         UnityEngine.Object.Destroy(arrow.arrow);
-            snitchArrows = [];
+            localArrows = [];
         }
 
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason)
@@ -54,9 +53,8 @@ namespace TheOtherRoles.Roles
 
         public override void FixedUpdate()
         {
-            if (localArrows == null || snitchArrows == null) return;
+            if (localArrows == null) return;
             foreach (Arrow arrow in localArrows) arrow.arrow.SetActive(false);
-            foreach (Arrow arrow in snitchArrows) arrow.arrow.SetActive(false);
 
             if (!hasAlivePlayers) return;
             var local = PlayerControl.LocalPlayer;
@@ -68,19 +66,12 @@ namespace TheOtherRoles.Roles
                 || local.isRole(RoleId.Moriarty) || local.isRole(RoleId.JekyllAndHyde) || local.isRole(RoleId.Fox)) || local.isRole(RoleId.Immoralist)
                 || (local.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate))))
             {
-                int arrowIndex = 0;
-                foreach (var snitch in allPlayers) {
-                    var (complete, total) = TasksHandler.taskInfo(snitch.Data);
-                    int remaining = total - complete;
-                    if (remaining > taskCountForReveal || snitch.Data.IsDead) continue;
-                    if (arrowIndex >= localArrows.Count)
-                        localArrows.Add(new Arrow(Color.blue));
-                    if (arrowIndex < localArrows.Count && localArrows[arrowIndex] != null)
-                    {
-                        localArrows[arrowIndex].arrow.SetActive(true);
-                        localArrows[arrowIndex].Update(snitch.transform.position, Color.blue);
-                    }
-                    arrowIndex++;
+                if (localArrows.Count == 0) localArrows.Add(new Arrow(Color.blue));
+                if (localArrows.Count != 0 && localArrows[0] != null)
+                {
+                    localArrows[0].arrow.SetActive(true);
+                    localArrows[0].image.color = Color.blue;
+                    localArrows[0].Update(player.transform.position);
                 }
             }
             else if (local == player && numberOfTasks == 0)
@@ -104,12 +95,12 @@ namespace TheOtherRoles.Roles
 
                     if (!p.Data.IsDead && (arrowForImp || arrowForTeamJackal || arrowForFox || arrowForJekyll || arrowForMoriarty))
                     {
-                        if (arrowIndex >= snitchArrows.Count)
-                            snitchArrows.Add(new Arrow(color));
-                        if (arrowIndex < snitchArrows.Count && snitchArrows[arrowIndex] != null)
+                        if (arrowIndex >= localArrows.Count)
+                            localArrows.Add(new Arrow(color));
+                        if (arrowIndex < localArrows.Count && localArrows[arrowIndex] != null)
                         {
-                            snitchArrows[arrowIndex].arrow.SetActive(true);
-                            snitchArrows[arrowIndex].Update(p.transform.position, color);
+                            localArrows[arrowIndex].arrow.SetActive(true);
+                            localArrows[arrowIndex].Update(p.transform.position, color);
                         }
                         arrowIndex++;
                     }
@@ -118,7 +109,6 @@ namespace TheOtherRoles.Roles
         }
 
         public static void clearAndReload() {
-            localArrows = [];
             taskCountForReveal = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForReveal.getFloat());
             includeTeamEvil = CustomOptionHolder.snitchIncludeTeamEvil.getBool();
             teamEvilUseDifferentArrowColor = CustomOptionHolder.snitchTeamEvilUseDifferentArrowColor.getBool();

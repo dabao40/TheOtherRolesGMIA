@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Hazel;
-using MonoMod.Cil;
 using Reactor.Utilities.Extensions;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -15,6 +14,7 @@ namespace TheOtherRoles.Roles
     public class Tracker : RoleBase<Tracker> {
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
         public List<Arrow> localArrows = [];
+        public int numShots = 0;
 
         public Tracker()
         {
@@ -22,6 +22,7 @@ namespace TheOtherRoles.Roles
             timeUntilUpdate = 0f;
             corpsesTrackingTimer = 0f;
             acTokenChallenge = null;
+            numShots = 0;
             resetTracked();
         }
 
@@ -34,6 +35,14 @@ namespace TheOtherRoles.Roles
                 if (player.PlayerId == message.targetId)
                     tracker.tracked = player;
         });
+
+        private static Sprite killSprite;
+        public static Sprite getKillButtonSprite()
+        {
+            if (killSprite) return killSprite;
+            killSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrackerKillButton.png", 100f);
+            return killSprite;
+        }
 
         public static RemoteProcess<(float moveTime, byte trackerId)> GainAchievement = new("Tracker", (message, _) =>
         {
@@ -128,7 +137,7 @@ namespace TheOtherRoles.Roles
             }
 
             currentTarget = setTarget();
-            if (!usedTracker) setPlayerOutline(currentTarget, color);
+            if (!usedTracker || numShots > 0) setPlayerOutline(currentTarget, color);
         }
 
         public static float updateIntervall = 5f;
@@ -139,6 +148,7 @@ namespace TheOtherRoles.Roles
         public float corpsesTrackingTimer = 0f;
         public static int trackingMode = 0;
         public static List<Vector3> deadBodyPositions = [];
+        public static float killCooldown = 30f;
 
         public PlayerControl currentTarget;
         public PlayerControl tracked;
@@ -206,6 +216,7 @@ namespace TheOtherRoles.Roles
             corpsesTrackingDuration = CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat();
             canTrackCorpses = CustomOptionHolder.trackerCanTrackCorpses.getBool();
             trackingMode = CustomOptionHolder.trackerTrackingMethod.getSelection();
+            killCooldown = CustomOptionHolder.trackerKillCooldown.getFloat();
             players = [];
         }
     }
