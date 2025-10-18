@@ -15,13 +15,11 @@ using System;
 using UnityEngine;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
-using Reactor;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
 using Reactor.Networking.Attributes;
 using AmongUs.Data;
 using TheOtherRoles.Modules.CustomHats;
-using TheOtherRoles.Objects;
 using UnityEngine.SceneManagement;
 using AmongUs.Data.Player;
 using TheOtherRoles.MetaContext;
@@ -36,7 +34,7 @@ namespace TheOtherRoles
     {
         public const string Id = "me.eisbison.theotherroles";
         public const string VersionString = "1.3.4";
-        public const string SubVersionString = "-Gale";
+        public const string SubVersionString = "-Haze";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -72,7 +70,8 @@ namespace TheOtherRoles
         public static void UpdateRegions() {
             ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
             var regions = new IRegionInfo[] {
-                new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Custom", Ip.Value, Port.Value, false)])).CastFast<IRegionInfo>()
+                //new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Custom", Ip.Value, Port.Value, false)])).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
             };
             
             IRegionInfo currentRegion = serverManager.CurrentRegion;
@@ -124,7 +123,6 @@ namespace TheOtherRoles
             ServerManager.DefaultRegions = new Il2CppReferenceArray<IRegionInfo>([]);
             UpdateRegions();
 
-            DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             Harmony.PatchAll();
             RemoteProcessBase.Load();
 

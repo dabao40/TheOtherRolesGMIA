@@ -174,7 +174,7 @@ namespace TheOtherRoles.Roles
 
             private static ShapeshifterMinigame GetShapeshifterMenu()
             {
-                var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
+                var rolePrefab = RoleManager.Instance.AllRoles.ToArray().First(r => r.Role == RoleTypes.Shapeshifter);
                 return UnityEngine.Object.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
             }
 

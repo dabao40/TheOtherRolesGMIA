@@ -13,6 +13,8 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetGameMode))]
         public static bool Prefix(CreateOptionsPicker __instance, ref GameModes mode) {
+            if (SubmergedCompatibility.Loaded) return true;
+
             if (mode <= GameModes.HideNSeek) {
                 TORMapOptions.gameMode = CustomGamemodes.Classic;
                 return true;
@@ -38,6 +40,8 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.Refresh))]
         public static void Postfix(CreateOptionsPicker __instance) {
+            if (SubmergedCompatibility.Loaded) return;
+
             if (TORMapOptions.gameMode == CustomGamemodes.Guesser) {
                 __instance.GameModeText.text = ModTranslation.getString("torGuesser");
             }
@@ -55,6 +59,8 @@ namespace TheOtherRoles.Patches {
     class GameModeMenuPatch {
         [HarmonyPatch(typeof(GameModeMenu), nameof(GameModeMenu.OnEnable))]
         public static bool Prefix(GameModeMenu __instance) {
+            if (SubmergedCompatibility.Loaded) return true;
+
             uint gameMode = (uint)__instance.Parent.GetTargetOptions().GameMode;
             float num = ((float)Mathf.CeilToInt(4f / 10f) / 2f - 0.5f) * -2.5f;   // 4 for 4 buttons!
             __instance.controllerSelectable.Clear();

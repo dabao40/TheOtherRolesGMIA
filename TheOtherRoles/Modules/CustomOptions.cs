@@ -8,7 +8,6 @@ using HarmonyLib;
 using Hazel;
 using System.Text;
 using TheOtherRoles.Utilities;
-using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.CustomOption;
 using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
@@ -914,6 +913,7 @@ namespace TheOtherRoles {
             // Set MaxImpostors values
             int[] maxImpostors = Helpers.MaxImpostors;
             LegacyGameOptions.MaxImpostors = maxImpostors;
+            NormalGameOptionsV10.MaxImpostors = maxImpostors;
             NormalGameOptionsV09.MaxImpostors = maxImpostors;
             NormalGameOptionsV08.MaxImpostors = maxImpostors;
             NormalGameOptionsV07.MaxImpostors = maxImpostors;
@@ -921,6 +921,7 @@ namespace TheOtherRoles {
             // Set RecommendedImpostors values
             int[] recommendedImpostors = Helpers.RecommendedImpostors;
             LegacyGameOptions.RecommendedImpostors = recommendedImpostors;
+            NormalGameOptionsV10.RecommendedImpostors = recommendedImpostors;
             NormalGameOptionsV09.RecommendedImpostors = recommendedImpostors;
             NormalGameOptionsV08.RecommendedImpostors = recommendedImpostors;
             NormalGameOptionsV07.RecommendedImpostors = recommendedImpostors;
@@ -928,6 +929,7 @@ namespace TheOtherRoles {
             // Set RecommendedKillCooldown values
             int[] recommendedKillCooldown = Helpers.RecommendedKillCooldown;
             LegacyGameOptions.RecommendedKillCooldown = recommendedKillCooldown;
+            NormalGameOptionsV10.RecommendedKillCooldown = recommendedKillCooldown;
             NormalGameOptionsV09.RecommendedKillCooldown = recommendedKillCooldown;
             NormalGameOptionsV08.RecommendedKillCooldown = recommendedKillCooldown;
             NormalGameOptionsV07.RecommendedKillCooldown = recommendedKillCooldown;
@@ -935,6 +937,7 @@ namespace TheOtherRoles {
             // Set MinPlayers values
             int[] minPlayers = Helpers.MinPlayers;
             LegacyGameOptions.MinPlayers = minPlayers;
+            NormalGameOptionsV10.MinPlayers = minPlayers;
             NormalGameOptionsV09.MinPlayers = minPlayers;
             NormalGameOptionsV08.MinPlayers = minPlayers;
             NormalGameOptionsV07.MinPlayers = minPlayers;
@@ -1471,7 +1474,7 @@ namespace TheOtherRoles {
         }
     }
 
-    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoSpawnPlayer))]
+    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
     public class AmongUsClientOnPlayerJoinedPatch {
         public static void Postfix() {
             if (PlayerControl.LocalPlayer != null && AmongUsClient.Instance.AmHost) {

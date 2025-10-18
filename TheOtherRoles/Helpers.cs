@@ -24,6 +24,7 @@ using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles
@@ -2220,6 +2221,14 @@ namespace TheOtherRoles
                 ? Undertaker.DraggedBody.transform.position
                 : Vector3.zero;
             Undertaker.DropBody.LocalInvoke(position);
+        }
+
+        public static byte[] GetUnstrippedData(this DownloadHandler dh)
+        {
+            var nativeData = dh.GetNativeData();
+            if (nativeData.IsCreated)
+                return nativeData.ToArray();
+            return null;
         }
     }
 }

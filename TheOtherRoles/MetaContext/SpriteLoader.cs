@@ -151,12 +151,12 @@ namespace TheOtherRoles.MetaContext
 
         public static Sprite ToExpandableSprite(this Texture2D texture, float pixelsPerUnit, int x, int y)
         {
-            return Sprite.CreateSprite(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit, 0, SpriteMeshType.FullRect, new Vector4(x, y, x, y), false);
+            return Sprite.CreateSprite(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit, 0, SpriteMeshType.FullRect, new Vector4(x, y, x, y), false, new(0L));
         }
 
         public static Sprite ToExpandableSprite(this Texture2D texture, Rect rect, float pixelsPerUnit, int x, int y)
         {
-            return Sprite.CreateSprite(texture, rect, new Vector2(0.5f, 0.5f), pixelsPerUnit, 0, SpriteMeshType.FullRect, new Vector4(x, y, x, y), false);
+            return Sprite.CreateSprite(texture, rect, new Vector2(0.5f, 0.5f), pixelsPerUnit, 0, SpriteMeshType.FullRect, new Vector4(x, y, x, y), false, new(0L));
         }
 
         internal delegate bool d_LoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
