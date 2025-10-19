@@ -31,6 +31,8 @@ namespace TheOtherRoles.Modules
         public static List<(byte, bool)> alreadyPicked = new();
         public static IEnumerator CoSelectRoles(IntroCutscene __instance)
         {
+            if (!isEnabled) yield break;
+
             isRunning = true;
             SoundEffectsManager.play("GMIATheme", volume: 1f, true, true);
             alreadyPicked.Clear();
@@ -362,10 +364,7 @@ namespace TheOtherRoles.Modules
                                 textHolder.layer = actionButton.gameObject.layer;
                                 text.color = color;
                                 textHolder.transform.SetParent(actionButton.transform, false);
-                                textHolder.transform.localPosition = new Vector3(0, text.text.Contains("\n") ? -1.975f : -2.2f, -1);
-                                GameObject actionButtonGameObject = actionButton.gameObject;
-                                SpriteRenderer actionButtonRenderer = actionButton.graphic;
-                                Material actionButtonMat = actionButtonRenderer.material;
+                                textHolder.transform.localPosition = new Vector3(0, text.text.Contains("\n") ? -1.975f : -3f, -1);
 
                                 HudManager.Instance.StartCoroutine(Effects.Lerp(0.5f, new Action<float>((p) => {
                                     actionButton.OverrideText("");
@@ -380,6 +379,18 @@ namespace TheOtherRoles.Modules
                                 float col = i % buttonsPerRow;
 
                                 var actionButton = createButton(roleInfo.name.Replace(" ", "\n"), roleInfo.color, row, col);
+
+                                GameObject buttonSprite = new GameObject("buttonSprite");
+                                var sprite = buttonSprite.AddComponent<SpriteRenderer>();
+                                sprite.sprite =
+                                    roleInfo.isImpostor ?
+                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardImpostor.png", 250f) :
+                                    roleInfo.isNeutral ?
+                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardNeutral.png", 250f) :
+                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardCrew.png", 250f);
+                                buttonSprite.layer = actionButton.gameObject.layer;
+                                buttonSprite.transform.SetParent(actionButton.transform, false);
+                                buttonSprite.transform.localPosition = new Vector3(0, 0.025f, -1);
 
                                 PassiveButton button = actionButton.GetComponent<PassiveButton>();
                                 button.OnClick = new Button.ButtonClickedEvent();
@@ -401,6 +412,12 @@ namespace TheOtherRoles.Modules
                                 float col = i % buttonsPerRow;
 
                                 var actionButton = createButton(ModTranslation.getString("roleDraftRandom"), Color.green, row, col);
+                                GameObject buttonSprite = new GameObject("buttonSprite");
+                                var sprite = buttonSprite.AddComponent<SpriteRenderer>();
+                                sprite.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardRandom.png", 250f);
+                                buttonSprite.layer = actionButton.gameObject.layer;
+                                buttonSprite.transform.SetParent(actionButton.transform, false);
+                                buttonSprite.transform.localPosition = new Vector3(0, 0.025f, -1);
                                 PassiveButton button = actionButton.GetComponent<PassiveButton>();
                                 button.OnClick = new Button.ButtonClickedEvent();
                                 button.OnClick.AddListener((Action)(() => {
@@ -547,40 +564,6 @@ namespace TheOtherRoles.Modules
             {
                 pickOrder.Add(reader.ReadByte());
             }
-        }
-
-        class PatchedEnumerator() : IEnumerable
-        {
-            public IEnumerator enumerator;
-            public IEnumerator Postfix;
-            public IEnumerator GetEnumerator()
-            {
-                while (enumerator.MoveNext())
-                {
-                    yield return enumerator.Current;
-                }
-                while (Postfix.MoveNext())
-                    yield return Postfix.Current;
-            }
-        }
-
-
-        [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.ShowTeam))]
-
-        class ShowRolePatch
-        {
-            [HarmonyPostfix]
-            public static void Postfix(IntroCutscene __instance, ref Il2CppSystem.Collections.IEnumerator __result)
-            {
-                if (!isEnabled) return;
-                var newEnumerator = new PatchedEnumerator()
-                {
-                    enumerator = __result.WrapToManaged(),
-                    Postfix = CoSelectRoles(__instance)
-                };
-                __result = newEnumerator.GetEnumerator().WrapToIl2Cpp();
-            }
-
         }
     }
 }

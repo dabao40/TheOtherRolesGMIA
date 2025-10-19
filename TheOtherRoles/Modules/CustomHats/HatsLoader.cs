@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.IO;
 using System.Text.Json;
 using BepInEx.Unity.IL2CPP.Utils;
@@ -87,7 +87,7 @@ public class HatsLoader : MonoBehaviour
 
         var filePath = Path.Combine(HatsDirectory, fileName);
         filePath = filePath.Replace("%20", " ");
-        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.GetUnstrippedData());
         while (!persistTask.IsCompleted)
         {
             if (persistTask.Exception != null)

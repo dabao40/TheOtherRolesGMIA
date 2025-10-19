@@ -117,7 +117,7 @@ namespace TheOtherRoles.CustomGameModes
         public static void FastSetRole(this PlayerControl targetPlayer, RoleTypes roleType)
         {
             NetworkedPlayerInfo data = targetPlayer.Data;
-            RoleBehaviour roleBehaviour = UnityEngine.Object.Instantiate(RoleManager.Instance.AllRoles.First(r => r.Role == roleType), data.gameObject.transform);
+            RoleBehaviour roleBehaviour = UnityEngine.Object.Instantiate(RoleManager.Instance.AllRoles.ToArray().First(r => r.Role == roleType), data.gameObject.transform);
             roleBehaviour.Initialize(targetPlayer);
             targetPlayer.Data.Role = roleBehaviour;
             targetPlayer.Data.RoleType = roleType;
