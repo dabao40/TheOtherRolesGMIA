@@ -2,17 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities.Extensions;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
-using TheOtherRoles.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
-using static Il2CppSystem.Globalization.CultureInfo;
-using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Modules
 {
@@ -289,7 +285,7 @@ namespace TheOtherRoles.Modules
                             if (alreadyPicked.Any(x => x.Item1 == (byte)RoleId.Godfather) || alreadyPicked.Any(x => x.Item1 == (byte)RoleId.Mafioso)
                                 || alreadyPicked.Any(x => x.Item1 == (byte)RoleId.Janitor))
                             {
-                                fixedRoleList = new List<RoleInfo>() { RoleInfo.godfather, RoleInfo.mafioso, RoleInfo.mafioso };
+                                fixedRoleList = new List<RoleInfo>() { RoleInfo.godfather, RoleInfo.mafioso, RoleInfo.janitor };
                                 fixedRoleList.RemoveAll(x => alreadyPicked.Any(y => y.Item1 == (byte)x.roleId));
                             }
                             if (alreadyPicked.Any(x => x.Item1 == (byte)RoleId.BomberA) && !alreadyPicked.Any(x => x.Item1 == (byte)RoleId.BomberB)) {
@@ -364,7 +360,7 @@ namespace TheOtherRoles.Modules
                                 textHolder.layer = actionButton.gameObject.layer;
                                 text.color = color;
                                 textHolder.transform.SetParent(actionButton.transform, false);
-                                textHolder.transform.localPosition = new Vector3(0, text.text.Contains("\n") ? -1.975f : -3f, -1);
+                                textHolder.transform.localPosition = new Vector3(0, text.text.Contains("\n") ? -1.975f : -2.2f, -1);
 
                                 HudManager.Instance.StartCoroutine(Effects.Lerp(0.5f, new Action<float>((p) => {
                                     actionButton.OverrideText("");
@@ -379,18 +375,6 @@ namespace TheOtherRoles.Modules
                                 float col = i % buttonsPerRow;
 
                                 var actionButton = createButton(roleInfo.name.Replace(" ", "\n"), roleInfo.color, row, col);
-
-                                GameObject buttonSprite = new GameObject("buttonSprite");
-                                var sprite = buttonSprite.AddComponent<SpriteRenderer>();
-                                sprite.sprite =
-                                    roleInfo.isImpostor ?
-                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardImpostor.png", 250f) :
-                                    roleInfo.isNeutral ?
-                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardNeutral.png", 250f) :
-                                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardCrew.png", 250f);
-                                buttonSprite.layer = actionButton.gameObject.layer;
-                                buttonSprite.transform.SetParent(actionButton.transform, false);
-                                buttonSprite.transform.localPosition = new Vector3(0, 0.025f, -1);
 
                                 PassiveButton button = actionButton.GetComponent<PassiveButton>();
                                 button.OnClick = new Button.ButtonClickedEvent();
@@ -412,12 +396,6 @@ namespace TheOtherRoles.Modules
                                 float col = i % buttonsPerRow;
 
                                 var actionButton = createButton(ModTranslation.getString("roleDraftRandom"), Color.green, row, col);
-                                GameObject buttonSprite = new GameObject("buttonSprite");
-                                var sprite = buttonSprite.AddComponent<SpriteRenderer>();
-                                sprite.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DraftRoleCardRandom.png", 250f);
-                                buttonSprite.layer = actionButton.gameObject.layer;
-                                buttonSprite.transform.SetParent(actionButton.transform, false);
-                                buttonSprite.transform.localPosition = new Vector3(0, 0.025f, -1);
                                 PassiveButton button = actionButton.GetComponent<PassiveButton>();
                                 button.OnClick = new Button.ButtonClickedEvent();
                                 button.OnClick.AddListener((Action)(() => {

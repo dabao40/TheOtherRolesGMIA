@@ -655,6 +655,25 @@ namespace TheOtherRoles.Patches
                 else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.jackalCanCreateSidekick.getBool() || CustomOptionHolder.jackalSpawnRate.getSelection() == 0)) continue;
                 else if (new List<RoleId>() { RoleId.MimicA, RoleId.MimicK }.Contains(roleInfo.roleId) && (CustomOptionHolder.mimicSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 2)) continue;
                 else if (roleInfo.roleId == RoleId.BomberA && (CustomOptionHolder.bomberSpawnRate.getSelection() == 0 || GameOptionsManager.Instance.currentGameOptions.NumImpostors < 2)) continue;
+                else if (roleInfo.roleId == RoleId.Swapper)
+                {
+                    if (CustomOptionHolder.swapperSpawnRate.getSelection() == 0) continue;
+                    if (roleInfo.isOrgImpostor && CustomOptionHolder.swapperIsImpRate.getSelection() == 0) continue;
+                    if (!roleInfo.isOrgImpostor && CustomOptionHolder.swapperIsImpRate.getSelection() == 10) continue;
+                }
+                else if ((roleInfo.roleId == RoleId.NiceWatcher || roleInfo.roleId == RoleId.EvilWatcher) && CustomOptionHolder.watcherSpawnRate.getSelection() == 0) continue;
+                else if (roleInfo.roleId == RoleId.Shifter)
+                {
+                    if (CustomOptionHolder.shifterSpawnRate.getSelection() == 0) continue;
+                    if (roleInfo.isOrgNeutral && CustomOptionHolder.shifterIsNeutralRate.getSelection() == 0) continue;
+                    if (!roleInfo.isOrgNeutral && CustomOptionHolder.shifterIsNeutralRate.getSelection() == 10) continue;
+                }
+                else if (roleInfo.roleId is RoleId.Yasuna or RoleId.EvilYasuna)
+                {
+                    if (CustomOptionHolder.yasunaSpawnRate.getSelection() == 0) continue;
+                    if (roleInfo.roleId == RoleId.EvilYasuna && CustomOptionHolder.yasunaIsImpYasunaRate.getSelection() == 0) continue;
+                    if (roleInfo.roleId == RoleId.Yasuna && CustomOptionHolder.yasunaIsImpYasunaRate.getSelection() == 10) continue;
+                }
                 if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.deputySpawnRate.getSelection() == 0 || CustomOptionHolder.sheriffSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
                 if (roleInfo.roleId == RoleId.Immoralist && (!CustomOptionHolder.foxCanCreateImmoralist.getBool() || CustomOptionHolder.foxSpawnRate.getSelection() == 0)) continue;

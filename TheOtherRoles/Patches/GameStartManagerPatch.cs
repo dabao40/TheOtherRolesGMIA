@@ -18,7 +18,7 @@ namespace TheOtherRoles.Patches {
         private static bool versionSent = false;
         private static string lobbyCodeText = "";
 
-        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
+        [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
         public class AmongUsClientOnPlayerJoinedPatch {
             public static void Postfix(AmongUsClient __instance) {
                 if (PlayerControl.LocalPlayer != null) {
