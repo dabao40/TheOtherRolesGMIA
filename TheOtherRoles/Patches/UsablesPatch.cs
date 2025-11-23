@@ -32,6 +32,12 @@ namespace TheOtherRoles.Patches {
                 __result = num;
                 return false;
             }
+            if (__instance.name.StartsWith("BloodVent_"))
+            {
+                canUse = couldUse = false;
+                __result = num;
+                return false;
+            }
 
             // Submerged Compatability if needed:
             if (SubmergedCompatibility.IsSubmerged) {

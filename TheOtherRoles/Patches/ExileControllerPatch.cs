@@ -143,6 +143,14 @@ namespace TheOtherRoles.Patches {
             }
             TORMapOptions.ventsToSeal = new List<Vent>();
 
+            if (GameObject.Find("UndertakerBlood").gameObject != null)
+            {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ResetBloodVent, Hazel.SendOption.Reliable);
+                writer.WritePacked(Undertaker.ventTarget.Id);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.resetBloodVent(Undertaker.ventTarget.Id);
+                UndertakerBlood.clearUndertakerBloods();
+            }
             EventUtility.meetingEndsUpdate();
         }        
     }

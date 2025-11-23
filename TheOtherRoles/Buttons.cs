@@ -72,6 +72,7 @@ namespace TheOtherRoles
         public static CustomButton fortuneTellerRightButton;
         public static CustomButton veteranAlertButton;
         public static CustomButton undertakerDragButton;
+        public static CustomButton undertakerThrowButton;
         public static CustomButton mimicAAdminButton;
         public static CustomButton mimicAMorphButton;
         public static CustomButton sherlockInvestigateButton;
@@ -252,6 +253,7 @@ namespace TheOtherRoles
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
             teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             undertakerDragButton.MaxTimer = 0f;
+            undertakerThrowButton.MaxTimer = Undertaker.throwCooldown;
             mimicAAdminButton.MaxTimer = 0f;
             mimicAMorphButton.MaxTimer = 0f;
             sherlockInvestigateButton.MaxTimer = Sherlock.cooldown;
@@ -594,6 +596,49 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("CleanText")
             );
+            //Undertaker Throw Body
+            undertakerThrowButton = new CustomButton(
+               () => {
+                   if(Undertaker.ventTarget != null && Undertaker.DraggedBody != null)
+                   {
+                       foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask))
+                       {
+                           if (collider2D.tag == "DeadBody")
+                           {
+                               DeadBody component = collider2D.GetComponent<DeadBody>();
+                               if (component && !component.Reported)
+                               {
+                                   Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                                   Vector2 truePosition2 = component.TruePosition;
+                                   if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
+                                   {
+                                       NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
+                                       RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
+                                       var pos = PlayerControl.LocalPlayer.transform.position;
+                                       RPCProcedure.SetUndertakerBlood.Invoke(pos);
+                                       MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BloodVent, Hazel.SendOption.Reliable);
+                                       writer.WritePacked(Undertaker.ventTarget.Id);
+                                       AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                       RPCProcedure.bloodVent(Undertaker.ventTarget.Id);
+                                       Undertaker.ventTarget = null;
+                                       undertakerDragButton.Timer = 35f;
+                                       undertakerThrowButton.Timer = undertakerThrowButton.MaxTimer;
+                                       break;
+                                   }
+                               }
+                           }
+                       }
+                   }
+               },
+               () => { return PlayerControl.LocalPlayer.isRole(RoleId.Undertaker) && !PlayerControl.LocalPlayer.Data.IsDead; },
+               () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
+               () => { undertakerThrowButton.Timer = undertakerThrowButton.MaxTimer; },
+               Undertaker.getThrowButtonSprite(),
+               CustomButton.ButtonPositions.upperRowFarLeft,
+               __instance,
+               KeyCode.G,
+               buttonText: ModTranslation.getString("undertakerThrow")
+           );
 
             // Sheriff Kill
             sheriffKillButton = new CustomButton(

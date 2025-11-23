@@ -5375,6 +5375,10 @@
         "13": "\u6811\u53f6\u6240\u663e\u793a\u7684\u523a\u5ba2\u989c\u8272\u6df1\u6d45\u7684\u6301\u7eed\u65f6\u95f4",
         "14": "\u75d5\u8de1\u6d88\u5931\u6642\u9593"
     },
+    "assassinInvisibleDuration": {
+        "0": "Be Invisible Duration After Killing",
+        "13": "\u51fb\u6740\u540e\u9690\u8eab\u6301\u7eed\u65f6\u95f4"
+    },
     "sprinter": {
         "0": "Sprinter",
         "11": "\u30b9\u30d7\u30ea\u30f3\u30bf\u30fc",
@@ -5445,6 +5449,10 @@
         "11": "\u6b7b\u4f53\u904b\u3073\u4e2d\u306b\u30d9\u30f3\u30c8\u3092\u4f7f\u3048\u306a\u304f\u3059\u308b",
         "13": "\u9001\u846c\u8005\u62d6\u5c38\u4f53\u65f6\u4e0d\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053",
         "14": "\u9001\u846c\u8005\u62d6\u5c4d\u9ad4\u6642\u4e0d\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053"
+    },
+    "undertakerThrowVent": {
+        "0": "Throw Body into Vent Cooldown",
+        "13": "\u629b\u5c38\u51b7\u5374\u65f6\u95f4"
     },
     "veteran": {
         "0": "Veteran",
@@ -7712,6 +7720,10 @@
     "timeMasterRewindText": {
         "0": "Rewind",
         "13": "\u56de\u6eaf"
+    },
+    "undertakerThrow": {
+        "0": "Throw",
+        "13": "\u629b\u5c38"
     },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",

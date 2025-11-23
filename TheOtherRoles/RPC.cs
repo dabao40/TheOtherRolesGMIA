@@ -194,7 +194,9 @@ namespace TheOtherRoles
         DraftModePick,
         SetLovers,
         ZephyrBlowCannon,
-        ZephyrCheckCannon
+        ZephyrCheckCannon,
+        BloodVent,
+        ResetBloodVent
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -657,6 +659,7 @@ namespace TheOtherRoles
 
         public static void resetVariables() {
             Garlic.clearGarlics();
+            UndertakerBlood.clearUndertakerBloods();
             JackInTheBox.clearJackInTheBoxes();
             AssassinTrace.clearTraces();
             Portal.clearPortals();
@@ -1158,6 +1161,8 @@ namespace TheOtherRoles
         }
 
         public static RemoteProcess<Vector2> PlaceGarlic = RemotePrimitiveProcess.OfVector2("PlaceGarlic", (message, _) => new Garlic(message));
+
+        public static RemoteProcess<Vector2> SetUndertakerBlood = RemotePrimitiveProcess.OfVector2("SetUndertakerBlood", (message, _) => new UndertakerBlood(message));
 
         public static RemoteProcess<(byte playerId, string achievement)> ShareAchievement = new("ShareAchievement", (message, _) =>
         {
@@ -1739,6 +1744,29 @@ namespace TheOtherRoles
 
             ventsToSeal.Add(vent);
         }
+        public static void bloodVent(int ventId)
+        {
+            Vent vent = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault((x) => x != null && x.Id == ventId);
+            if (vent == null) return;
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Undertaker))
+            {
+                PowerTools.SpriteAnim animator = vent.GetComponent<PowerTools.SpriteAnim>();
+                vent.EnterVentAnim = vent.ExitVentAnim = null;
+                animator?.Stop();
+                vent.name = "BloodVent_" + vent.name;
+            }
+        }
+        public static void resetBloodVent(int ventId)
+        {
+            Vent vent = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault((x) => x != null && x.Id == ventId);
+            if (vent == null) return;
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Undertaker))
+            {
+                vent.name = vent.name.Replace("BloodVent_","");
+            }
+        }
 
         /// <summary>
         /// Shoots the dying target during the meeting
@@ -2181,6 +2209,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.SealVent:
                     RPCProcedure.sealVent(reader.ReadPackedInt32());
+                    break;
+                case (byte)CustomRPC.BloodVent:
+                    RPCProcedure.bloodVent(reader.ReadPackedInt32());
+                    break;
+                case (byte)CustomRPC.ResetBloodVent:
+                    RPCProcedure.resetBloodVent(reader.ReadPackedInt32());
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     byte killerId = reader.ReadByte();
