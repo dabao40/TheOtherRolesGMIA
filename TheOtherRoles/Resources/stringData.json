@@ -1931,7 +1931,7 @@
     "timeMasterShortDesc": {
         "0": "Use your time shield",
         "11": "\u30bf\u30a4\u30e0\u30b7\u30fc\u30eb\u30c9\u3092\u4f7f\u304a\u3046",
-        "13": "\u7528\u65f6\u95f4\u4e4b\u76fe",
+        "13": "\u5408\u7406\u8fd0\u7528\u56de\u6eaf\u4fdd\u62a4\u81ea\u5df1",
         "14": "\u7528\u4f60\u7684\u6642\u9593\u4e4b\u76fe\u4fdd\u8b77\u81ea\u5df1"
     },
     "timeMasterCooldown": {
@@ -1943,7 +1943,7 @@
     "timeMasterRewindTime": {
         "0": "Rewind Time",
         "11": "\u5dfb\u304d\u623b\u3059\u6642\u9593",
-        "13": "\u65f6\u5149\u4e4b\u76fe\u56de\u6eaf\u65f6\u957f",
+        "13": "\u65f6\u5149\u4e4b\u76fe\u548c\u56de\u6eaf\u65f6\u957f",
         "14": "\u6642\u9593\u4e4b\u76fe\u56de\u6eaf\u6642\u9593"
     },
     "timeMasterShieldDuration": {

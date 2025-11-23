@@ -187,7 +187,7 @@ namespace TheOtherRoles
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
             deputyHandcuffButton.MaxTimer = Deputy.handcuffCooldown;
             timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
-            timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
+            timeMasterRewindButton.MaxTimer = TimeMaster.cooldown;
             medicShieldButton.MaxTimer = 0f;
             shifterShiftButton.MaxTimer = 0f;
             morphlingButton.MaxTimer = Morphling.cooldown;
@@ -345,6 +345,7 @@ namespace TheOtherRoles
 
         public static void resetTimeMasterButton() {
             timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+            timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
             timeMasterShieldButton.isEffectActive = false;
             timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
             SoundEffectsManager.stop("timemasterShield");
@@ -352,8 +353,7 @@ namespace TheOtherRoles
         public static void resetTimeMasterRewindButton()
         {
             timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
-            timeMasterRewindButton.isEffectActive = false;
-            timeMasterRewindButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+            timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
             SoundEffectsManager.stop("timemasterShield");
         }
 
@@ -711,6 +711,7 @@ namespace TheOtherRoles
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return PlayerControl.LocalPlayer.CanMove; },
                 () => {
+                    timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
                     timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
                     timeMasterShieldButton.isEffectActive = false;
                     timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
@@ -736,6 +737,10 @@ namespace TheOtherRoles
                 () => {
                     TimeMaster.UseShield.Invoke(PlayerControl.LocalPlayer.PlayerId);
                     SoundEffectsManager.play("timemasterShield");
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TimeMasterSelfRewindTime, Hazel.SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.timeMasterSelfRewindTime(PlayerControl.LocalPlayer.PlayerId);
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return PlayerControl.LocalPlayer.CanMove; },
@@ -745,17 +750,9 @@ namespace TheOtherRoles
                     timeMasterRewindButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
                 },
                 TimeMaster.getButtonSprite2(),
-                CustomButton.ButtonPositions.highRowRight,
+                CustomButton.ButtonPositions.upperRowRight,
                 __instance,
                 KeyCode.G,
-                true,
-                TimeMaster.shieldDuration,
-                () => {
-                    timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
-                    timeMasterShieldButton.Timer = timeMasterRewindButton.MaxTimer;
-                    SoundEffectsManager.stop("timemasterShield");
-
-                },
                 buttonText: ModTranslation.getString("timeMasterRewindText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );

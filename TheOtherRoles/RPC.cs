@@ -151,6 +151,7 @@ namespace TheOtherRoles
 
         ShieldedMurderAttempt = 130,
         TimeMasterRewindTime,
+        TimeMasterSelfRewindTime,
         ErasePlayerRoles,
         PlaceCamera,
         SealVent,
@@ -956,6 +957,34 @@ namespace TheOtherRoles
             })));
 
             if (!TimeMaster.exists || PlayerControl.LocalPlayer == player) return; // Time Master himself does not rewind
+
+            TimeMaster.isRewinding = true;
+
+            if (MapBehaviour.Instance)
+                MapBehaviour.Instance.Close();
+            if (Minigame.Instance)
+                Minigame.Instance.ForceClose();
+            PlayerControl.LocalPlayer.moveable = false;
+        }
+        public static void timeMasterSelfRewindTime(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            var timeMaster = TimeMaster.getRole(player);
+            timeMaster.shieldActive = false; // Shield is no longer active when rewinding
+            SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
+            if (PlayerControl.LocalPlayer == player)
+            {
+                resetTimeMasterRewindButton();//Rewind
+                //_ = new StaticAchievementToken("timeMaster.challenge");
+            }
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.gameObject.SetActive(true);
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(TimeMaster.rewindTime / 2, new Action<float>((p) => {
+                if (p == 1f) FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = false;
+            })));
+
+            if (!TimeMaster.exists) return; // Time Master himself does not rewind
 
             TimeMaster.isRewinding = true;
 
@@ -2062,6 +2091,9 @@ namespace TheOtherRoles
                 // Role functionality
                 case (byte)CustomRPC.TimeMasterRewindTime:
                     RPCProcedure.timeMasterRewindTime(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.TimeMasterSelfRewindTime:
+                    RPCProcedure.timeMasterSelfRewindTime(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.ShieldedMurderAttempt:
                     RPCProcedure.shieldedMurderAttempt(reader.ReadByte());
