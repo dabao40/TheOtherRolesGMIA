@@ -945,7 +945,7 @@ namespace TheOtherRoles
             timeMaster.shieldActive = false; // Shield is no longer active when rewinding
             SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
             if(PlayerControl.LocalPlayer == player) {
-                resetTimeMasterButton();
+                resetTimeMasterButton();//Rewind
                 _ = new StaticAchievementToken("timeMaster.challenge");
             }
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);

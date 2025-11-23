@@ -16,10 +16,17 @@ namespace TheOtherRoles.Roles
         public static bool isRewinding = false;
 
         private static Sprite buttonSprite;
+        private static Sprite buttonSprite2;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TimeShieldButton.png", 115f);
             return buttonSprite;
+        }
+        public static Sprite getButtonSprite2()
+        {
+            if (buttonSprite2) return buttonSprite2;
+            buttonSprite2 = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TimeMasterRewindButton.png", 115f);
+            return buttonSprite2;
         }
 
         public TimeMaster()
