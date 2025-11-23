@@ -27,6 +27,7 @@ namespace TheOtherRoles.Roles
 
         public static float delay = 10f;
         public static float cooldown = 30f;
+        public static float cooldownDecrease = 2.5f;
         public static bool canKillNearGarlics = true;
         public static bool localPlacedGarlic = false;
         public static bool garlicsActive = true;
@@ -128,6 +129,7 @@ namespace TheOtherRoles.Roles
             garlicsActive = CustomOptionHolder.vampireSpawnRate.getSelection() > 0;
             delay = CustomOptionHolder.vampireKillDelay.getFloat();
             cooldown = CustomOptionHolder.vampireCooldown.getFloat();
+            cooldownDecrease = Mathf.Min(cooldown, CustomOptionHolder.vampireCooldownDecrease.getFloat());
             canKillNearGarlics = CustomOptionHolder.vampireCanKillNearGarlics.getBool();
             players = [];
         }

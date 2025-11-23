@@ -54,6 +54,7 @@ namespace TheOtherRoles {
         public static CustomRoleOption vampireSpawnRate;
         public static CustomOption vampireKillDelay;
         public static CustomOption vampireCooldown;
+        public static CustomOption vampireCooldownDecrease;
         public static CustomOption vampireCanKillNearGarlics;
 
         public static CustomRoleOption eraserSpawnRate;
@@ -717,7 +718,8 @@ namespace TheOtherRoles {
             vampireSpawnRate = new CustomRoleOption(40, Types.Impostor, "vampire", Vampire.color);
             vampireKillDelay = CustomOption.Create(41, Types.Impostor, "vampireKillDelay", 10f, 1f, 20f, 1f, vampireSpawnRate, false, "unitSeconds");
             vampireCooldown = CustomOption.Create(42, Types.Impostor, "vampireCooldown", 30f, 10f, 60f, 2.5f, vampireSpawnRate, false, "unitSeconds");
-            vampireCanKillNearGarlics = CustomOption.Create(43, Types.Impostor, "vampireCanKillNearGarlics", true, vampireSpawnRate);
+            vampireCooldownDecrease = CustomOption.Create(43, Types.Impostor, "vampireCooldownDecrease", 10f, 0f, 120f, 2.5f, vampireSpawnRate, false, "unitSeconds");
+            vampireCanKillNearGarlics = CustomOption.Create(44, Types.Impostor, "vampireCanKillNearGarlics", true, vampireSpawnRate);
 
             eraserSpawnRate = new CustomRoleOption(230, Types.Impostor, "eraser", Eraser.color);
             eraserCooldown = CustomOption.Create(231, Types.Impostor, "eraserCooldown", 30f, 10f, 120f, 5f, eraserSpawnRate, false, "unitSeconds");

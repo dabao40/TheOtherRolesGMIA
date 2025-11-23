@@ -832,19 +832,11 @@ namespace TheOtherRoles
         public static void uncheckedMurderPlayer(byte sourceId, byte targetId, byte showAnimation) {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             PlayerControl source = Helpers.playerById(sourceId);
-            Vector3 sourcePos = source.NetTransform.transform.position;
             PlayerControl target = Helpers.playerById(targetId);
             if (source != null && target != null)
             {
-                if (showAnimation == 0)
-                    KillAnimationCoPerformKillPatch.hideNextAnimation = true;
-                source.MurderPlayer(target, MurderResultFlags.Succeeded | MurderResultFlags.DecisionByHost);
-                HudManager.Instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) => { // Delayed action
-                    if (p == 1f)
-                    {
-                        source.NetTransform.SnapTo(sourcePos);
-                    }
-                })));
+                if (showAnimation == 0) KillAnimationCoPerformKillPatch.hideNextAnimation = true;
+                source.MurderPlayer(target, MurderResultFlags.Succeeded);
             }
         }
 

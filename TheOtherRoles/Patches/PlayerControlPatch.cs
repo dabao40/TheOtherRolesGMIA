@@ -958,12 +958,12 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
+    [HarmonyPatch(typeof(KillAnimation._CoPerformKill_d__2), nameof(KillAnimation._CoPerformKill_d__2.MoveNext))]
     class KillAnimationCoPerformKillPatch {
         public static bool hideNextAnimation = false;
-        public static void Prefix(KillAnimation __instance, [HarmonyArgument(0)]ref PlayerControl source, [HarmonyArgument(1)]ref PlayerControl target) {
+        public static void Prefix(KillAnimation._CoPerformKill_d__2 __instance) {
             if (hideNextAnimation)
-                source = target;
+                __instance.source = __instance.target;
             hideNextAnimation = false;
         }
     }

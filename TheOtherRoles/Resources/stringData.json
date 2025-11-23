@@ -872,6 +872,10 @@
         "13": "\u5438\u8840\u9b3c\u5438\u8840\u51b7\u5374",
         "14": "\u5438\u8840\u51b7\u537b"
     },
+    "vampireCooldownDecrease": {
+        "0": "Vampire Cooldown Decrease",
+        "13": "\u5438\u8840\u9b3c\u6bcf\u6b21\u5438\u8840\u6210\u529f\u51cf\u5c11\u51b7\u5374"
+    },
     "vampireCanKillNearGarlics": {
         "0": "Vampire Can Kill Near Garlics",
         "11": "\u30cb\u30f3\u30cb\u30af\u306e\u8fd1\u304f\u3067\u3082\u30ad\u30eb\u304c\u3067\u304d\u308b\u304b",

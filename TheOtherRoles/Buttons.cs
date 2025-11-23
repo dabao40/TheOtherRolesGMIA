@@ -1286,7 +1286,7 @@ namespace TheOtherRoles
                 false,
                 0f,
                 () => {
-                    vampireKillButton.Timer = vampireKillButton.MaxTimer;
+                    vampireKillButton.Timer = vampireKillButton.MaxTimer = Mathf.Max(1f, vampireKillButton.MaxTimer - Vampire.cooldownDecrease);
                 },
                 buttonText: ModTranslation.getString("VampireText")
             );
