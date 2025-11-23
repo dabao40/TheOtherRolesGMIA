@@ -1398,7 +1398,7 @@ namespace TheOtherRoles
                 target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
 
                 if (Camouflager.camouflageTimer <= 0) target.setDefaultLook();
-                //Assassin.isInvisble = false;
+                Assassin.isInvisble = false;
                 return;
             }
 
@@ -1409,8 +1409,8 @@ namespace TheOtherRoles
             target.cosmetics.currentBodySprite.BodySprite.color = color;
             target.cosmetics.colorBlindText.gameObject.SetActive(false);
             target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
-            //Assassin.invisibleTimer = Assassin.invisibleDuration;
-            //Assassin.isInvisble = true;
+            Assassin.invisibleTimer = Assassin.invisibleDuration;
+            Assassin.isInvisble = true;
         }
 
         public static void serialKillerSuicide(byte serialKillerId)

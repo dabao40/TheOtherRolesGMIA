@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Hazel;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -36,11 +37,20 @@ namespace TheOtherRoles.Roles
         public PlayerControl currentTarget;
         public static float cooldown = 30f;
         public static float traceTime = 1f;
+        public static float stalkingTime = 3f;
         public static bool knowsTargetLocation = false;
 
         private static Sprite markButtonSprite;
         private static Sprite killButtonSprite;
         public Arrow arrow = new(Color.black);
+
+        #region 隐身有关的
+
+        public static float invisibleDuration = 5f;
+        public static float invisibleTimer = 0f;
+        public static bool isInvisble = false;
+
+        #endregion
 
         public AchievementToken<(bool markKill, bool cleared)> acTokenChallenge = null;
 
@@ -49,7 +59,6 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer != player) return;
             acTokenChallenge ??= new("assassin.challenge", (false, false), (val, _) => val.cleared);
         }
-
         public static Sprite getMarkButtonSprite() {
             if (markButtonSprite) return markButtonSprite;
             markButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.AssassinMarkButton.png", 115f);
@@ -142,6 +151,15 @@ namespace TheOtherRoles.Roles
                 else
                     arrow.arrow.SetActive(false);
             }
+            if (Assassin.isInvisble && Assassin.invisibleTimer <= 0 && PlayerControl.LocalPlayer.isRole(RoleId.Assassin))
+            {
+                var assassin = PlayerControl.AllPlayerControls.Find((Il2CppSystem.Predicate<PlayerControl>)((x) => x.isRole(RoleId.Assassin)));
+                MessageWriter invisibleWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetInvisible, Hazel.SendOption.Reliable, -1);
+                invisibleWriter.Write(assassin);
+                invisibleWriter.Write(byte.MaxValue);
+                AmongUsClient.Instance.FinishRpcImmediately(invisibleWriter);
+                RPCProcedure.setInvisible(assassin.PlayerId, byte.MaxValue);
+            }
         }
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
@@ -159,6 +177,9 @@ namespace TheOtherRoles.Roles
             cooldown = CustomOptionHolder.assassinCooldown.getFloat();
             knowsTargetLocation = CustomOptionHolder.assassinKnowsTargetLocation.getBool();
             traceTime = CustomOptionHolder.assassinTraceTime.getFloat();
+            invisibleDuration = CustomOptionHolder.assassinInvisibleDuration.getFloat();
+            invisibleTimer = 0f;
+            isInvisble = false;
             players = [];
         }
     }

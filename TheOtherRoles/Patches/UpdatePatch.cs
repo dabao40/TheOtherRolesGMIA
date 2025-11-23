@@ -428,6 +428,8 @@ namespace TheOtherRoles.Patches {
             foreach (var tracker in Tracker.players)
                 tracker.corpsesTrackingTimer -= dt;
             HideNSeek.timer -= dt;
+            foreach (var assassin in Assassin.players)
+                Assassin.invisibleTimer -= dt;
             foreach (byte key in Deputy.handcuffedKnows.Keys)
                 Deputy.handcuffedKnows[key] -= dt;
         }
@@ -436,7 +438,7 @@ namespace TheOtherRoles.Patches {
             //  || Mini.mini == MimicK.mimicK && MimicK.victim != null
             // the above line deleted in 2024.3.9, specified the MimicK instead
             if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || (Mini.mini.isRole(RoleId.MimicA) && MimicA.isMorph) || Morphling.players.Any(x => x.player == Mini.mini && x.morphTimer > 0f) || Ninja.isStealthed(Mini.mini)
-                || (Mini.mini.isRole(RoleId.Fox) && Fox.stealthed) || Sprinter.isSprinting(Mini.mini) || (Mini.mini.isRole(RoleId.Kataomoi) && Kataomoi.isStalking()) || SurveillanceMinigamePatch.nightVisionIsActive) return;
+                || (Mini.mini.isRole(RoleId.Fox) && Fox.stealthed) || Sprinter.isSprinting(Mini.mini) || (Mini.mini.isRole(RoleId.Kataomoi) && Kataomoi.isStalking()) || Assassin.players.Any(x => x.player == Mini.mini) && Assassin.isInvisble || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
