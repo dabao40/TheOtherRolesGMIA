@@ -29,6 +29,7 @@ namespace TheOtherRoles
         public static CustomButton sheriffKillButton;
         private static CustomButton deputyHandcuffButton;
         private static CustomButton timeMasterShieldButton;
+        private static CustomButton timeMasterRewindButton;
         private static CustomButton medicShieldButton;
         private static CustomButton shifterShiftButton;
         private static CustomButton morphlingButton;
@@ -71,6 +72,7 @@ namespace TheOtherRoles
         public static CustomButton fortuneTellerRightButton;
         public static CustomButton veteranAlertButton;
         public static CustomButton undertakerDragButton;
+        public static CustomButton undertakerThrowButton;
         public static CustomButton mimicAAdminButton;
         public static CustomButton mimicAMorphButton;
         public static CustomButton sherlockInvestigateButton;
@@ -186,6 +188,7 @@ namespace TheOtherRoles
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
             deputyHandcuffButton.MaxTimer = Deputy.handcuffCooldown;
             timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
+            timeMasterRewindButton.MaxTimer = TimeMaster.cooldown;
             medicShieldButton.MaxTimer = 0f;
             shifterShiftButton.MaxTimer = 0f;
             morphlingButton.MaxTimer = Morphling.cooldown;
@@ -250,6 +253,7 @@ namespace TheOtherRoles
             plagueDoctorButton.MaxTimer = PlagueDoctor.infectCooldown;
             teleporterTeleportButton.MaxTimer = Teleporter.teleportCooldown;
             undertakerDragButton.MaxTimer = 0f;
+            undertakerThrowButton.MaxTimer = Undertaker.throwCooldown;
             mimicAAdminButton.MaxTimer = 0f;
             mimicAMorphButton.MaxTimer = 0f;
             sherlockInvestigateButton.MaxTimer = Sherlock.cooldown;
@@ -303,6 +307,7 @@ namespace TheOtherRoles
             //defuseButton.Timer = 0f;
 
             timeMasterShieldButton.EffectDuration = TimeMaster.shieldDuration;
+            timeMasterRewindButton.EffectDuration = TimeMaster.shieldDuration;
             hackerButton.EffectDuration = Hacker.duration;
             hackerVitalsButton.EffectDuration = Hacker.duration;
             hackerAdminTableButton.EffectDuration = Hacker.duration;
@@ -342,8 +347,15 @@ namespace TheOtherRoles
 
         public static void resetTimeMasterButton() {
             timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+            timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
             timeMasterShieldButton.isEffectActive = false;
             timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+            SoundEffectsManager.stop("timemasterShield");
+        }
+        public static void resetTimeMasterRewindButton()
+        {
+            timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
+            timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
             SoundEffectsManager.stop("timemasterShield");
         }
 
@@ -584,6 +596,49 @@ namespace TheOtherRoles
                 KeyCode.F,
                 buttonText: ModTranslation.getString("CleanText")
             );
+            //Undertaker Throw Body
+            undertakerThrowButton = new CustomButton(
+               () => {
+                   if(Undertaker.ventTarget != null && Undertaker.DraggedBody != null)
+                   {
+                       foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask))
+                       {
+                           if (collider2D.tag == "DeadBody")
+                           {
+                               DeadBody component = collider2D.GetComponent<DeadBody>();
+                               if (component && !component.Reported)
+                               {
+                                   Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                                   Vector2 truePosition2 = component.TruePosition;
+                                   if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
+                                   {
+                                       NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
+                                       RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
+                                       var pos = PlayerControl.LocalPlayer.transform.position;
+                                       RPCProcedure.SetUndertakerBlood.Invoke(pos);
+                                       MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BloodVent, Hazel.SendOption.Reliable);
+                                       writer.WritePacked(Undertaker.ventTarget.Id);
+                                       AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                       RPCProcedure.bloodVent(Undertaker.ventTarget.Id);
+                                       Undertaker.ventTarget = null;
+                                       undertakerDragButton.Timer = 35f;
+                                       undertakerThrowButton.Timer = undertakerThrowButton.MaxTimer;
+                                       break;
+                                   }
+                               }
+                           }
+                       }
+                   }
+               },
+               () => { return PlayerControl.LocalPlayer.isRole(RoleId.Undertaker) && !PlayerControl.LocalPlayer.Data.IsDead; },
+               () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
+               () => { undertakerThrowButton.Timer = undertakerThrowButton.MaxTimer; },
+               Undertaker.getThrowButtonSprite(),
+               CustomButton.ButtonPositions.upperRowFarLeft,
+               __instance,
+               KeyCode.G,
+               buttonText: ModTranslation.getString("undertakerThrow")
+           );
 
             // Sheriff Kill
             sheriffKillButton = new CustomButton(
@@ -701,6 +756,7 @@ namespace TheOtherRoles
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return PlayerControl.LocalPlayer.CanMove; },
                 () => {
+                    timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
                     timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
                     timeMasterShieldButton.isEffectActive = false;
                     timeMasterShieldButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
@@ -713,10 +769,36 @@ namespace TheOtherRoles
                 TimeMaster.shieldDuration,
                 () => {
                     timeMasterShieldButton.Timer = timeMasterShieldButton.MaxTimer;
+                    timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
                     SoundEffectsManager.stop("timemasterShield");
 
                 },
                 buttonText: ModTranslation.getString("TimeShieldText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+
+            // Time Master 主动 Rewind Time
+            timeMasterRewindButton = new CustomButton(
+                () => {
+                    TimeMaster.UseShield.Invoke(PlayerControl.LocalPlayer.PlayerId);
+                    SoundEffectsManager.play("timemasterShield");
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TimeMasterSelfRewindTime, Hazel.SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.timeMasterSelfRewindTime(PlayerControl.LocalPlayer.PlayerId);
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.TimeMaster) && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => {
+                    timeMasterRewindButton.Timer = timeMasterRewindButton.MaxTimer;
+                    timeMasterRewindButton.isEffectActive = false;
+                    timeMasterRewindButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                },
+                TimeMaster.getButtonSprite2(),
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.G,
+                buttonText: ModTranslation.getString("timeMasterRewindText"),
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
 

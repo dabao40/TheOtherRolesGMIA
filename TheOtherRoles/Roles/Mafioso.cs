@@ -29,10 +29,10 @@ namespace TheOtherRoles.Roles
         public static void UpdateButton(MeetingHud __instance)
         {
             var skip = __instance.SkipVoteButton;
-            skipMeeting?.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !skip.voteComplete && numUses > 0);
-            skipMeeting?.voteComplete = skip.voteComplete;
-            skipMeeting?.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
-            skipMeeting?.GetComponentsInChildren<TextMeshPro>()[0].text = ModTranslation.getString("mafiosoForceSkip");
+            skipMeeting.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !skip.voteComplete && numUses > 0);
+            skipMeeting.voteComplete = skip.voteComplete;
+            skipMeeting.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
+            skipMeeting.GetComponentsInChildren<TextMeshPro>()[0].text = ModTranslation.getString("mafiosoForceSkip");
         }
 
         public static void GenButton(MeetingHud __instance)

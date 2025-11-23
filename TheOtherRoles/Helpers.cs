@@ -1389,6 +1389,7 @@ namespace TheOtherRoles
 
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f || MushroomSabotageActive()) return true; // No names are visible
+            if (Assassin.isInvisble && target.isRole(RoleId.Assassin)) return true;
             if (!source.Data.Role.IsImpostor && Ninja.isStealthed(target)) return true; // Hide Ninja nametags from non-impostors
             if (Sprinter.isSprinting(target) && source != target) return true; // Hide Sprinter nametags
             if (Fox.stealthed && target.isRole(RoleId.Fox) && source != target) return true; // Hide Fox nametags

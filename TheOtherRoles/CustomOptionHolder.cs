@@ -153,6 +153,7 @@ namespace TheOtherRoles {
         public static CustomOption assassinKnowsTargetLocation;
         public static CustomOption assassinTraceTime;
         public static CustomOption assassinTraceColorTime;
+        public static CustomOption assassinInvisibleDuration;
 
         public static CustomRoleOption ninjaSpawnRate;
         public static CustomOption ninjaStealthCooldown;
@@ -404,6 +405,7 @@ namespace TheOtherRoles {
         public static CustomRoleOption undertakerSpawnRate;
         public static CustomOption undertakerSpeedDecrease;
         public static CustomOption undertakerDisableVent;
+        public static CustomOption undertakerThrowVent;
 
         public static CustomRoleOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
@@ -759,6 +761,7 @@ namespace TheOtherRoles {
             assassinKnowsTargetLocation = CustomOption.Create(382, Types.Impostor, "assassinKnowsTargetLocation", true, assassinSpawnRate);
             assassinTraceTime = CustomOption.Create(383, Types.Impostor, "assassinTraceDuration", 5f, 1f, 20f, 0.5f, assassinSpawnRate, false, "unitSeconds");
             assassinTraceColorTime = CustomOption.Create(384, Types.Impostor, "assassinTraceColorTime", 2f, 0f, 20f, 0.5f, assassinSpawnRate, false, "unitSeconds");
+            assassinInvisibleDuration = CustomOption.Create(385, Types.Impostor, "assassinInvisibleDuration", 3f, 1f, 20f, 1f, assassinSpawnRate, false, "unitSeconds");
 
             ninjaSpawnRate = new CustomRoleOption(5050, Types.Impostor, "ninja", Ninja.color);
             ninjaStealthCooldown = CustomOption.Create(5051, Types.Impostor, "ninjaStealthCooldown", 30f, 2.5f, 60f, 2.5f, ninjaSpawnRate, false, "unitSeconds");
@@ -791,6 +794,7 @@ namespace TheOtherRoles {
             undertakerSpawnRate = new CustomRoleOption(4056, Types.Impostor, "undertaker", Undertaker.color, 1);
             undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, "undertakerSpeedDecrease", -50f, -80f, 0f, 10f, undertakerSpawnRate, false, "unitPercent");
             undertakerDisableVent = CustomOption.Create(4058, Types.Impostor, "undertakerDisableVent", true, undertakerSpawnRate);
+            undertakerThrowVent = CustomOption.Create(4059, Types.Impostor, "undertakerThrowVent", 25f,5f,60f,2.5f, undertakerSpawnRate);
 
             yoyoSpawnRate = new CustomRoleOption(470, Types.Impostor, "yoyo", Yoyo.color);
             yoyoBlinkDuration = CustomOption.Create(471, Types.Impostor, "yoyoBlinkDuration", 20f, 2.5f, 120f, 2.5f, yoyoSpawnRate, format: "unitSeconds");

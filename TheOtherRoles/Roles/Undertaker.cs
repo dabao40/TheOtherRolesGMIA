@@ -1,6 +1,7 @@
 using System.Linq;
 using Hazel;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -20,13 +21,15 @@ namespace TheOtherRoles.Roles
 
         public static DeadBody DraggedBody;
         public static DeadBody TargetBody;
+        public static Vent ventTarget = null;
         public static bool CanDropBody;
-
+        public static float throwCooldown;
         public static float speedDecrease = -50f;
         public static bool disableVent = true;
 
         public static Sprite dragButtonSprite;
         public static Sprite dropButtonSprite;
+        public static Sprite throwButtonSprite;
 
         public static RemoteProcess<Vector3> DropBody = RemotePrimitiveProcess.OfVector3("UndertakerDropBody", (message, _) =>
         {
@@ -41,6 +44,7 @@ namespace TheOtherRoles.Roles
             undertakerSetTarget();
             undertakerUpdate();
             undertakerCanDropTarget();
+            setVentTarget();
         }
 
         public override void OnDeath(PlayerControl killer = null)
@@ -60,6 +64,27 @@ namespace TheOtherRoles.Roles
             if (DraggedBody.enabled && Vector2.Distance(player.GetTruePosition(), DraggedBody.TruePosition) <= player.MaxReportDistance && !PhysicsHelpers.AnythingBetween(PlayerControl.LocalPlayer.GetTruePosition(), DraggedBody.TruePosition, Constants.ShipAndObjectsMask, false))                 CanDropBody = true;
         }
 
+        private void setVentTarget()
+        {
+            if (player != PlayerControl.LocalPlayer || MapUtilities.CachedShipStatus == null || MapUtilities.CachedShipStatus.AllVents == null) return;
+
+            Vent target = null;
+            Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+            float closestDistance = float.MaxValue;
+            for (int i = 0; i < MapUtilities.CachedShipStatus.AllVents.Length; i++)
+            {
+                Vent vent = MapUtilities.CachedShipStatus.AllVents[i];
+                if (vent.gameObject.name.StartsWith("JackInTheBoxVent_") || vent.gameObject.name.StartsWith("SealedVent_") || vent.gameObject.name.StartsWith("FutureSealedVent_")) continue;
+                if (SubmergedCompatibility.IsSubmerged && vent.Id == 9) continue; // cannot seal submergeds exit only vent!
+                float distance = Vector2.Distance(vent.transform.position, truePosition);
+                if (distance <= vent.UsableDistance && distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    target = vent;
+                }
+            }
+            ventTarget = target;
+        }
         void undertakerSetTarget()
         {
             if (player != PlayerControl.LocalPlayer) return;
@@ -141,14 +166,21 @@ namespace TheOtherRoles.Roles
             dropButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DropButton.png", 115f);
             return dropButtonSprite;
         }
-
+        public static Sprite getThrowButtonSprite()
+        {
+            if (throwButtonSprite) return throwButtonSprite;
+            throwButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ThrowButton.png", 115f);
+            return throwButtonSprite;
+        }
+        
         public static void clearAndReload()
         {
             DraggedBody = null;
             TargetBody = null;
-
+            ventTarget = null;
             speedDecrease = CustomOptionHolder.undertakerSpeedDecrease.getFloat();
             disableVent = CustomOptionHolder.undertakerDisableVent.getBool();
+            throwCooldown = CustomOptionHolder.undertakerThrowVent.getFloat();
             players = [];
         }
     }

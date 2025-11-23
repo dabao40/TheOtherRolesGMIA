@@ -56,8 +56,12 @@ namespace TheOtherRoles.Roles
 
         public static void resetCamouflage() {
             camouflageTimer = 0f;
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls.ToArray())
+            {
+                if (p.isRole(RoleId.Assassin) && Assassin.isInvisble)
+                    continue;
                 p.setDefaultLook();
+            }
             if (isRole(PlayerControl.LocalPlayer))
                 acTokenChallenge.Value.kills = 0;
         }

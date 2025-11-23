@@ -151,6 +151,7 @@ namespace TheOtherRoles
 
         ShieldedMurderAttempt = 130,
         TimeMasterRewindTime,
+        TimeMasterSelfRewindTime,
         ErasePlayerRoles,
         PlaceCamera,
         SealVent,
@@ -193,7 +194,9 @@ namespace TheOtherRoles
         DraftModePick,
         SetLovers,
         ZephyrBlowCannon,
-        ZephyrCheckCannon
+        ZephyrCheckCannon,
+        BloodVent,
+        ResetBloodVent
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -656,6 +659,7 @@ namespace TheOtherRoles
 
         public static void resetVariables() {
             Garlic.clearGarlics();
+            UndertakerBlood.clearUndertakerBloods();
             JackInTheBox.clearJackInTheBoxes();
             AssassinTrace.clearTraces();
             Portal.clearPortals();
@@ -945,7 +949,7 @@ namespace TheOtherRoles
             timeMaster.shieldActive = false; // Shield is no longer active when rewinding
             SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
             if(PlayerControl.LocalPlayer == player) {
-                resetTimeMasterButton();
+                resetTimeMasterButton();//Rewind
                 _ = new StaticAchievementToken("timeMaster.challenge");
             }
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
@@ -956,6 +960,34 @@ namespace TheOtherRoles
             })));
 
             if (!TimeMaster.exists || PlayerControl.LocalPlayer == player) return; // Time Master himself does not rewind
+
+            TimeMaster.isRewinding = true;
+
+            if (MapBehaviour.Instance)
+                MapBehaviour.Instance.Close();
+            if (Minigame.Instance)
+                Minigame.Instance.ForceClose();
+            PlayerControl.LocalPlayer.moveable = false;
+        }
+        public static void timeMasterSelfRewindTime(byte playerId)
+        {
+            PlayerControl player = Helpers.playerById(playerId);
+            var timeMaster = TimeMaster.getRole(player);
+            timeMaster.shieldActive = false; // Shield is no longer active when rewinding
+            SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
+            if (PlayerControl.LocalPlayer == player)
+            {
+                resetTimeMasterRewindButton();//Rewind
+                //_ = new StaticAchievementToken("timeMaster.challenge");
+            }
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
+            FastDestroyableSingleton<HudManager>.Instance.FullScreen.gameObject.SetActive(true);
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(TimeMaster.rewindTime / 2, new Action<float>((p) => {
+                if (p == 1f) FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = false;
+            })));
+
+            if (!TimeMaster.exists) return; // Time Master himself does not rewind
 
             TimeMaster.isRewinding = true;
 
@@ -1129,6 +1161,8 @@ namespace TheOtherRoles
         }
 
         public static RemoteProcess<Vector2> PlaceGarlic = RemotePrimitiveProcess.OfVector2("PlaceGarlic", (message, _) => new Garlic(message));
+
+        public static RemoteProcess<Vector2> SetUndertakerBlood = RemotePrimitiveProcess.OfVector2("SetUndertakerBlood", (message, _) => new UndertakerBlood(message));
 
         public static RemoteProcess<(byte playerId, string achievement)> ShareAchievement = new("ShareAchievement", (message, _) =>
         {
@@ -1369,7 +1403,7 @@ namespace TheOtherRoles
                 target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
 
                 if (Camouflager.camouflageTimer <= 0) target.setDefaultLook();
-                //Assassin.isInvisble = false;
+                Assassin.isInvisble = false;
                 return;
             }
 
@@ -1380,8 +1414,8 @@ namespace TheOtherRoles
             target.cosmetics.currentBodySprite.BodySprite.color = color;
             target.cosmetics.colorBlindText.gameObject.SetActive(false);
             target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
-            //Assassin.invisibleTimer = Assassin.invisibleDuration;
-            //Assassin.isInvisble = true;
+            Assassin.invisibleTimer = Assassin.invisibleDuration;
+            Assassin.isInvisble = true;
         }
 
         public static void serialKillerSuicide(byte serialKillerId)
@@ -1709,6 +1743,29 @@ namespace TheOtherRoles
             }
 
             ventsToSeal.Add(vent);
+        }
+        public static void bloodVent(int ventId)
+        {
+            Vent vent = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault((x) => x != null && x.Id == ventId);
+            if (vent == null) return;
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Undertaker))
+            {
+                PowerTools.SpriteAnim animator = vent.GetComponent<PowerTools.SpriteAnim>();
+                vent.EnterVentAnim = vent.ExitVentAnim = null;
+                animator?.Stop();
+                vent.name = "BloodVent_" + vent.name;
+            }
+        }
+        public static void resetBloodVent(int ventId)
+        {
+            Vent vent = MapUtilities.CachedShipStatus.AllVents.FirstOrDefault((x) => x != null && x.Id == ventId);
+            if (vent == null) return;
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Undertaker))
+            {
+                vent.name = vent.name.Replace("BloodVent_","");
+            }
         }
 
         /// <summary>
@@ -2063,6 +2120,9 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.TimeMasterRewindTime:
                     RPCProcedure.timeMasterRewindTime(reader.ReadByte());
                     break;
+                case (byte)CustomRPC.TimeMasterSelfRewindTime:
+                    RPCProcedure.timeMasterSelfRewindTime(reader.ReadByte());
+                    break;
                 case (byte)CustomRPC.ShieldedMurderAttempt:
                     RPCProcedure.shieldedMurderAttempt(reader.ReadByte());
                     break;
@@ -2149,6 +2209,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.SealVent:
                     RPCProcedure.sealVent(reader.ReadPackedInt32());
+                    break;
+                case (byte)CustomRPC.BloodVent:
+                    RPCProcedure.bloodVent(reader.ReadPackedInt32());
+                    break;
+                case (byte)CustomRPC.ResetBloodVent:
+                    RPCProcedure.resetBloodVent(reader.ReadPackedInt32());
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     byte killerId = reader.ReadByte();

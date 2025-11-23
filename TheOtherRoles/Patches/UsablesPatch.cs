@@ -32,6 +32,12 @@ namespace TheOtherRoles.Patches {
                 __result = num;
                 return false;
             }
+            if (__instance.name.StartsWith("BloodVent_"))
+            {
+                canUse = couldUse = false;
+                __result = num;
+                return false;
+            }
 
             // Submerged Compatability if needed:
             if (SubmergedCompatibility.IsSubmerged) {
@@ -1018,12 +1024,19 @@ namespace TheOtherRoles.Patches {
             if (nightVisionIsActive) {
                 nightVisionIsActive = false;
                 foreach (PlayerControl pc in PlayerControl.AllPlayerControls) {
-                    if (Camouflager.camouflageTimer > 0) {
+                    if (Camouflager.camouflageTimer > 0)
+                    {
                         pc.setLook("", 6, "", "", "", "", false);
-                    } else if (Morphling.players.Any(x => x.player == pc && x.morphTimer > 0f)) {
+                    }
+                    else if (Morphling.players.Any(x => x.player == pc && x.morphTimer > 0f))
+                    {
                         var morphling = Morphling.getRole(pc);
                         PlayerControl target = morphling.morphTarget;
                         pc.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
+                    }
+                    else if (pc.isRole(RoleId.Assassin) && Assassin.invisibleTimer > 0f)
+                    {
+                        continue;
                     }
                     else if (pc.isRole(RoleId.MimicK) && MimicK.victim != null)
                     {
@@ -1036,7 +1049,8 @@ namespace TheOtherRoles.Patches {
                         foreach (var mimicA in MimicA.allPlayers)
                             mimicA.setLook(victim.Data.PlayerName, victim.Data.DefaultOutfit.ColorId, victim.Data.DefaultOutfit.HatId, victim.Data.DefaultOutfit.VisorId, victim.Data.DefaultOutfit.SkinId, victim.Data.DefaultOutfit.PetId, false);
                     }
-                    else {
+                    else
+                    {
                         Helpers.setDefaultLook(pc, false);
                     }
                     // Dead Bodies
