@@ -17,7 +17,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
-| 16.0.0s            | v1.3.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.4) |
+| 17.1s            | v1.3.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.4) |
 | 16.0.0s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
 | 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
 | 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
@@ -52,22 +52,41 @@ We are only a team of teenagers, and we may not be able to make this mod like an
   <summary>Click to show the Changelog</summary>
 
   **Version v1.3.4**
+ - Updated compatibility to the latest Among Us version (v17.1), thanks to @FangkuaiYa
  - Added support for multiple same roles in one game
  - Added new option to allow multiple pairs of Lovers
  - Added new option to allow the Medic to see portable vitals
  - Added new option for the Moriarty to gain extra points upon killing Sherlock
  - Added new option to allow the Fortune Teller be unguessable after divination
+ - Added new option to allow the Tracker be able to kill after tracking target dies
+ - Added new optoin to allow the Assassin to become invisible after assassination, thanks to @HayashiUme
+ - Added new option for the Blackmailer to block target's abilities and votes during meetings, idea by HuiWang_HW
+ - Added new option for the Medium to see the ghosts of the dead upon questioning, idea by Error_404
+ - Added new option "Guesser Cant Guess Fortune Teller after divination"
+ - Added new option to allow the Trickster to kill players from inside the Jack-in-the-boxes
  - Added a whole new UI system
  - Added a fallback on fonts which then supports Eastern characters
  - Added new role Zephyr
- - Added a new sub version system. The sub version will go from A to Z
+ - Added new role Collator
+ - Added a new sub version system. The first letter of the sub version will go from A to Z
+ - Added a new system to allow the searching of the achievements
  - Changed Lighter to the former one, where using the lighter increases the vision and ignores shadows
  - Changed the images of some buttons, thanks to Windy_bailan
+ - Changed how the Mafia works
+ - Changed the Bomb effect of Bomber, it should work as an animation now
+ - Changed the way the Hacker works, it could now see the movements of other players in hacking mode
  - Significantly changed the logic in-game. Lag problems should be fixed
  - Fixed a bug where the Doomsayer cannot guess the Nice Guesser
  - Fixed a bug where leaving the game will not change the color of the Schrodinger's Cat
+ - Fixed a bug where the Guesser can see which team the Schrodinger's Cat belongs
  - Fixed TChinese translation, thanks to NK & VK
+ - Fixed a bug where the admin image of Mimic(Assistant) might be wrongly displayed
+ - Fixed a bug where the Swapper, Guesser, Watcher, Yasuna cannot be evenly chosen in Role Draft
+ - Akujo and Cupid can now both be selected in one game
  - Reworked some SChinese translation, thanks to Yuhangyuan & QwQ
+ - Reworked the way the Watcher is assigned, it can now be assigned equally
+ - A little rework on the RPC system to make the game more stable
+ - Removed Husk as it is useless now
   
    If you've been playing TheOtherRolesGMIA for a long time, you can draft an issue to make your skin a drawing of a role in GMIA!
    For instance, the illustrations of Fox, Task Master, Fortune Teller etc. (which you can view by pressing H in the lobby) are all created based on the skins of players in China! We welcome you to post your own skin and make yourself known in TheOtherRolesGMIA!

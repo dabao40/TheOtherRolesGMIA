@@ -25,7 +25,6 @@ namespace TheOtherRoles
         private static bool initialized = false;
 
         private static CustomButton engineerRepairButton;
-        private static CustomButton janitorCleanButton;
         public static CustomButton sheriffKillButton;
         private static CustomButton deputyHandcuffButton;
         private static CustomButton timeMasterShieldButton;
@@ -182,7 +181,6 @@ namespace TheOtherRoles
                 }
             }
             engineerRepairButton.MaxTimer = 0f;
-            janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
             deputyHandcuffButton.MaxTimer = Deputy.handcuffCooldown;
             timeMasterShieldButton.MaxTimer = TimeMaster.cooldown;
@@ -548,42 +546,6 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             engineerRepairText = engineerRepairButton.ShowUsesIcon(3);
-
-            // Janitor Clean
-            janitorCleanButton = new CustomButton(
-                () => {
-                    foreach (Collider2D collider2D in Physics2D.OverlapCircleAll(PlayerControl.LocalPlayer.GetTruePosition(), PlayerControl.LocalPlayer.MaxReportDistance, Constants.PlayersOnlyMask)) {
-                        if (collider2D.tag == "DeadBody")
-                        {
-                            DeadBody component = collider2D.GetComponent<DeadBody>();
-                            if (component && !component.Reported)
-                            {
-                                Vector2 truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                                Vector2 truePosition2 = component.TruePosition;
-                                if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
-                                {
-                                    NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
-
-                                    _ = new StaticAchievementToken("janitor.common1");
-                                    RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
-                                    janitorCleanButton.Timer = janitorCleanButton.MaxTimer;
-                                    SoundEffectsManager.play("cleanerClean");
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                },
-                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Janitor) && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => { return __instance.ReportButton.graphic.color == Palette.EnabledColor && PlayerControl.LocalPlayer.CanMove; },
-                () => { janitorCleanButton.Timer = janitorCleanButton.MaxTimer; },
-                Janitor.getButtonSprite(),
-                CustomButton.ButtonPositions.upperRowLeft,
-                __instance,
-                KeyCode.F,
-                buttonText: ModTranslation.getString("CleanText")
-            );
 
             // Sheriff Kill
             sheriffKillButton = new CustomButton(
@@ -4099,6 +4061,7 @@ namespace TheOtherRoles
                             // Create first trace before killing
                             var pos = PlayerControl.LocalPlayer.transform.position;
                             Assassin.PlaceTrace.Invoke((PlayerControl.LocalPlayer.PlayerId, pos));
+                            Assassin.SetInvisible.Invoke((PlayerControl.LocalPlayer.PlayerId, byte.MinValue));
 
                             // Perform Kill
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);

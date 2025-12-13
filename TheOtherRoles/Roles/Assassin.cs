@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AmongUs.Data;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Assassin;
             currentTarget = assassinMarked = null;
+            isInvisble = false;
+            invisibleTimer = 0f;
             acTokenChallenge = null;
             clearArrows();
         }
@@ -32,11 +35,42 @@ namespace TheOtherRoles.Roles
                 assassin.assassinMarked = null;
         });
 
+        public static RemoteProcess<(byte playerId, byte flag)> SetInvisible = new("AssassinInvisible", (message, _) =>
+        {
+            PlayerControl target = Helpers.playerById(message.playerId);
+            var assassin = getRole(target);
+            if (target == null || assassin == null) return;
+            if (message.flag == byte.MaxValue)
+            {
+                target.cosmetics.currentBodySprite.BodySprite.color = Color.white;
+                target.cosmetics.colorBlindText.gameObject.SetActive(DataManager.Settings.Accessibility.ColorBlindMode);
+                target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
+
+                if (Camouflager.camouflageTimer <= 0) target.setDefaultLook();
+                assassin.isInvisble = false;
+                return;
+            }
+
+            target.setLook("", 6, "", "", "", "");
+            Color color = Color.clear;
+            bool canSee = PlayerControl.LocalPlayer.Data.Role.IsImpostor || PlayerControl.LocalPlayer.Data.IsDead;
+            if (canSee) color.a = 0.1f;
+            target.cosmetics.currentBodySprite.BodySprite.color = color;
+            target.cosmetics.colorBlindText.gameObject.SetActive(false);
+            target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
+            assassin.invisibleTimer = invisibleDuration;
+            assassin.isInvisble = true;
+        });
+
         public PlayerControl assassinMarked;
         public PlayerControl currentTarget;
         public static float cooldown = 30f;
         public static float traceTime = 1f;
         public static bool knowsTargetLocation = false;
+        public static float invisibleDuration = 5f;
+
+        public float invisibleTimer = 0f;
+        public bool isInvisble = false;
 
         private static Sprite markButtonSprite;
         private static Sprite killButtonSprite;
@@ -116,6 +150,9 @@ namespace TheOtherRoles.Roles
         public void assassinUpdate()
         {
             if (PlayerControl.LocalPlayer != player) return;
+            if (isInvisble && invisibleTimer <= 0) {
+                SetInvisible.Invoke((player.PlayerId, byte.MaxValue));
+            }
             if (arrow?.arrow != null)
             {
                 if (!knowsTargetLocation)
@@ -159,6 +196,7 @@ namespace TheOtherRoles.Roles
             cooldown = CustomOptionHolder.assassinCooldown.getFloat();
             knowsTargetLocation = CustomOptionHolder.assassinKnowsTargetLocation.getBool();
             traceTime = CustomOptionHolder.assassinTraceTime.getFloat();
+            invisibleDuration = CustomOptionHolder.assassinInvisibleDuration.getFloat();
             players = [];
         }
     }

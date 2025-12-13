@@ -1394,7 +1394,7 @@ namespace TheOtherRoles
             if (Fox.stealthed && target.isRole(RoleId.Fox) && source != target) return true; // Hide Fox nametags
             if (source != target && Kataomoi.isStalking(target)) return true; // Hide Kataomoi nametags
             if (Patches.SurveillanceMinigamePatch.nightVisionIsActive) return true;
-            //else if (Assassin.isInvisble && Assassin.assassin == target) return true;
+            else if (Assassin.players.Any(x => x.player == target && x.isInvisble)) return true;
             else if (!TORMapOptions.hidePlayerNames) return false; // All names are visible
             else if (source == null || target == null) return true;
             else if (source == target) return false; // Player sees his own name

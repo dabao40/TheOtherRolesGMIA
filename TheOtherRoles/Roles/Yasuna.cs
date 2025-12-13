@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -23,6 +24,8 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer == player)
                 yasunaAcTokenChallenge ??= new("niceYasuna.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
         }
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Yasuna.png");
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
@@ -57,6 +60,7 @@ namespace TheOtherRoles.Roles
             }
         }
 
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Yasuna.png");
         public override void PostInit()
         {
             if (PlayerControl.LocalPlayer != player) return;

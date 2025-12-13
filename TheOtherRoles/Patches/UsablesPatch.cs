@@ -992,6 +992,9 @@ namespace TheOtherRoles.Patches {
 
             if (isLightsOut && !nightVisionIsActive && nightVisionEnabled && !ignoreNightVision) {  // only update when something changed!
                 foreach (PlayerControl pc in PlayerControl.AllPlayerControls) {
+                    if (Assassin.players.Any(x => x.player == pc && x.invisibleTimer > 0f)) {
+                        continue;
+                    }
                     pc.setLook("", 11, "", "", "", "", false);
                 }
                 foreach (var overlayObject in nightVisionOverlays) {
@@ -1024,6 +1027,9 @@ namespace TheOtherRoles.Patches {
                         var morphling = Morphling.getRole(pc);
                         PlayerControl target = morphling.morphTarget;
                         pc.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId, false);
+                    }
+                    else if (Assassin.players.Any(x => x.player == pc && x.invisibleTimer > 0f)) {
+                        continue;
                     }
                     else if (pc.isRole(RoleId.MimicK) && MimicK.victim != null)
                     {

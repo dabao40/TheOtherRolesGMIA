@@ -1,3 +1,4 @@
+using System.Linq;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -57,7 +58,11 @@ namespace TheOtherRoles.Roles
         public static void resetCamouflage() {
             camouflageTimer = 0f;
             foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                if (Assassin.players.Any(x => x.player == p && x.isInvisble))
+                    continue;
                 p.setDefaultLook();
+            }
             if (isRole(PlayerControl.LocalPlayer))
                 acTokenChallenge.Value.kills = 0;
         }

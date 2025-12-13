@@ -157,7 +157,6 @@ namespace TheOtherRoles
         GuesserShoot,
         SetBlanked,
         Invert,
-        SetInvisible,
         ThiefStealsRole,
         ShareRoom,
 
@@ -1358,32 +1357,6 @@ namespace TheOtherRoles
             if (PlayerControl.LocalPlayer == player) SoundEffectsManager.play("jekyllAndHydeDrug");
         }
 
-        public static void setInvisible(byte playerId, byte flag)
-        {
-            PlayerControl target = Helpers.playerById(playerId);
-            if (target == null) return;
-            if (flag == byte.MaxValue)
-            {
-                target.cosmetics.currentBodySprite.BodySprite.color = Color.white;
-                target.cosmetics.colorBlindText.gameObject.SetActive(DataManager.Settings.Accessibility.ColorBlindMode);
-                target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(1f);
-
-                if (Camouflager.camouflageTimer <= 0) target.setDefaultLook();
-                //Assassin.isInvisble = false;
-                return;
-            }
-
-            target.setLook("", 6, "", "", "", "");
-            Color color = Color.clear;
-            bool canSee = PlayerControl.LocalPlayer.Data.Role.IsImpostor || PlayerControl.LocalPlayer.Data.IsDead;
-            if (canSee) color.a = 0.1f;
-            target.cosmetics.currentBodySprite.BodySprite.color = color;
-            target.cosmetics.colorBlindText.gameObject.SetActive(false);
-            target.cosmetics.colorBlindText.color = target.cosmetics.colorBlindText.color.SetAlpha(canSee ? 0.1f : 0f);
-            //Assassin.invisibleTimer = Assassin.invisibleDuration;
-            //Assassin.isInvisble = true;
-        }
-
         public static void serialKillerSuicide(byte serialKillerId)
         {
             PlayerControl serialKiller = Helpers.playerById(serialKillerId);
@@ -2162,11 +2135,6 @@ namespace TheOtherRoles
                     var pid = reader.ReadByte();
                     var blankedValue = reader.ReadByte();
                     RPCProcedure.setBlanked(pid, blankedValue);
-                    break;
-                case (byte)CustomRPC.SetInvisible:
-                    byte invisiblePlayer = reader.ReadByte();
-                    byte invisibleFlag = reader.ReadByte();
-                    RPCProcedure.setInvisible(invisiblePlayer, invisibleFlag);
                     break;
                 case (byte)CustomRPC.ThiefStealsRole:
                     byte thiefTargetId = reader.ReadByte();

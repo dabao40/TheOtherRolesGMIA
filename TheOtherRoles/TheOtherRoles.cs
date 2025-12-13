@@ -966,7 +966,7 @@ namespace TheOtherRoles
         public static void update() {
             foreach (var chameleonPlayer in chameleon) {
                 //if (chameleonPlayer == Assassin.assassin && Assassin.isInvisble) continue;  // Dont make Assassin visible...
-                if (Ninja.isStealthed(chameleonPlayer) || Sprinter.isSprinting(chameleonPlayer) || (chameleonPlayer.isRole(RoleId.Fox) && Fox.stealthed) ||
+                if (Assassin.players.Any(x => x.player == chameleonPlayer && x.isInvisble) || Ninja.isStealthed(chameleonPlayer) || Sprinter.isSprinting(chameleonPlayer) || (chameleonPlayer.isRole(RoleId.Fox) && Fox.stealthed) ||
                     (chameleonPlayer.isRole(RoleId.Kataomoi) && Kataomoi.isStalking())) continue;
                 // check movement by animation
                 PlayerPhysics playerPhysics = chameleonPlayer.MyPhysics;

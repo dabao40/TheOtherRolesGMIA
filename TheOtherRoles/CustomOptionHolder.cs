@@ -39,8 +39,8 @@ namespace TheOtherRoles {
 
         public static CustomRoleOption mafiaSpawnRate;
         public static CustomOption godfatherShareInfo;
-        public static CustomOption janitorCooldown;
         public static CustomOption janitorCanSabotage;
+        public static CustomOption janitorImpostorsCanSeeDeadBody;
         public static CustomOption mafiosoNumberOfSkips;
 
         public static CustomRoleOption morphlingSpawnRate;
@@ -153,6 +153,7 @@ namespace TheOtherRoles {
         public static CustomOption assassinKnowsTargetLocation;
         public static CustomOption assassinTraceTime;
         public static CustomOption assassinTraceColorTime;
+        public static CustomOption assassinInvisibleDuration;
 
         public static CustomRoleOption ninjaSpawnRate;
         public static CustomOption ninjaStealthCooldown;
@@ -703,7 +704,7 @@ namespace TheOtherRoles {
 
             mafiaSpawnRate = new CustomRoleOption(18, Types.Impostor, "mafia", Janitor.color, 1);
             godfatherShareInfo = CustomOption.Create(24, Types.Impostor, "godfatherShareInfo", true, mafiaSpawnRate);
-            janitorCooldown = CustomOption.Create(19, Types.Impostor, "janitorCooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate, false, "unitSeconds");
+            janitorImpostorsCanSeeDeadBody = CustomOption.Create(19, Types.Impostor, "janitorImpostorsCanSeeDeadBody", true, mafiaSpawnRate);
             janitorCanSabotage = CustomOption.Create(25, Types.Impostor, "janitorCanSabotage", true, mafiaSpawnRate);
             mafiosoNumberOfSkips = CustomOption.Create(23, Types.Impostor, "mafiosoNumberOfSkips", 2f, 1f, 15f, 1f, mafiaSpawnRate, false, "unitScrews");
 
@@ -759,6 +760,7 @@ namespace TheOtherRoles {
             assassinKnowsTargetLocation = CustomOption.Create(382, Types.Impostor, "assassinKnowsTargetLocation", true, assassinSpawnRate);
             assassinTraceTime = CustomOption.Create(383, Types.Impostor, "assassinTraceDuration", 5f, 1f, 20f, 0.5f, assassinSpawnRate, false, "unitSeconds");
             assassinTraceColorTime = CustomOption.Create(384, Types.Impostor, "assassinTraceColorTime", 2f, 0f, 20f, 0.5f, assassinSpawnRate, false, "unitSeconds");
+            assassinInvisibleDuration = CustomOption.Create(385, Types.Impostor, "assassinInvisibleDuration", 3f, 0f, 20f, 1f, assassinSpawnRate, false, "unitSeconds");
 
             ninjaSpawnRate = new CustomRoleOption(5050, Types.Impostor, "ninja", Ninja.color);
             ninjaStealthCooldown = CustomOption.Create(5051, Types.Impostor, "ninjaStealthCooldown", 30f, 2.5f, 60f, 2.5f, ninjaSpawnRate, false, "unitSeconds");

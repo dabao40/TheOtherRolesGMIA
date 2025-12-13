@@ -1,6 +1,5 @@
 using HarmonyLib;
 using UnityEngine;
-using static TheOtherRoles.TheOtherRoles;
 using TheOtherRoles.Objects;
 using System.Collections.Generic;
 using System.Linq;
@@ -427,6 +426,8 @@ namespace TheOtherRoles.Patches {
             Trickster.lightsOutTimer -= dt;
             foreach (var tracker in Tracker.players)
                 tracker.corpsesTrackingTimer -= dt;
+            foreach (var assassin in Assassin.players)
+                assassin.invisibleTimer -= dt;
             HideNSeek.timer -= dt;
             foreach (byte key in Deputy.handcuffedKnows.Keys)
                 Deputy.handcuffedKnows[key] -= dt;
@@ -436,7 +437,7 @@ namespace TheOtherRoles.Patches {
             //  || Mini.mini == MimicK.mimicK && MimicK.victim != null
             // the above line deleted in 2024.3.9, specified the MimicK instead
             if (Mini.mini == null || Camouflager.camouflageTimer > 0f || Helpers.MushroomSabotageActive() || (Mini.mini.isRole(RoleId.MimicA) && MimicA.isMorph) || Morphling.players.Any(x => x.player == Mini.mini && x.morphTimer > 0f) || Ninja.isStealthed(Mini.mini)
-                || (Mini.mini.isRole(RoleId.Fox) && Fox.stealthed) || Sprinter.isSprinting(Mini.mini) || (Mini.mini.isRole(RoleId.Kataomoi) && Kataomoi.isStalking()) || SurveillanceMinigamePatch.nightVisionIsActive) return;
+                || (Mini.mini.isRole(RoleId.Fox) && Fox.stealthed) || Assassin.players.Any(x => x.player == Mini.mini && x.isInvisble) || Sprinter.isSprinting(Mini.mini) || (Mini.mini.isRole(RoleId.Kataomoi) && Kataomoi.isStalking()) || SurveillanceMinigamePatch.nightVisionIsActive) return;
                 
             float growingProgress = Mini.growingProgress();
             float scale = growingProgress * 0.35f + 0.35f;
@@ -568,6 +569,8 @@ namespace TheOtherRoles.Patches {
             TORGameManager.Instance?.OnUpdate();
             foreach (var arrow in new List<Sherlock.SherlockDetectArrow>(Sherlock.SherlockDetectArrow.allArrows))
                 arrow.HudUpdate();
+            foreach (var reporter in DeadBodyReporter.DeadBodyReporters.ToList())
+                reporter.Update();
 
             // Fix dead player's pets being visible by just always updating whether the pet should be visible at all.
             foreach (PlayerControl target in PlayerControl.AllPlayerControls) {

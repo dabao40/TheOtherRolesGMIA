@@ -12,7 +12,7 @@ namespace TheOtherRoles.Patches {
 
         // Show the role name instead of just Crewmate / Impostor
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
+        [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetHauntTarget))]
         public static void Postfix(HauntMenuMinigame __instance) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.Normal) return;
             var target = __instance.HauntTarget;
