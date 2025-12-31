@@ -109,8 +109,8 @@ namespace TheOtherRoles.Modules {
         public static GameObject modScreen = null;
         public static GameObject aboutScreen = null;
         public static Dictionary<string, string> contributors = new()
-        { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" }, 
-            { "Fangkuai", "mainMenuArtist" }, { "Yuunozikkyou" , "mainMenuTranslator"}, { "TAIK", "mainMenuTranslator"} };
+        { { "Imp11", "mainMenuDeveloper" }, { "Amongus", "mainMenuDeveloper" },  { "Fangkuai", "mainMenuArtist" },
+            { "Elinmei", "mainMenuDeveloper" }, { "Yuunozikkyou" , "mainMenuTranslator"}, { "TAIK", "mainMenuTranslator"} };
 
         public static void Postfix(MainMenuManager __instance)
         {

@@ -331,12 +331,34 @@ namespace TheOtherRoles
                 HudManager.Instance.shhhEmblem.transform.localPosition.x,
                 HudManager.Instance.shhhEmblem.transform.localPosition.y,
                 HudManager.Instance.FullScreen.transform.position.z + 1f);
-            HudManager.Instance.shhhEmblem.TextImage.text = ModTranslation.getString("blackmailerBlackmailText");
+            var jailCell = new GameObject("jailCell");
+            if (Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId))
+            {
+                jailCell.transform.SetParent(HudManager.Instance.shhhEmblem!.transform);
+                jailCell.transform.localPosition =
+                    new Vector3(0, 0, HudManager.Instance.shhhEmblem.Hand.transform.localPosition.z);
+                jailCell.transform.localScale = new Vector3(0.83f, 0.83f, 1f);
+                jailCell.gameObject.layer = HudManager.Instance.shhhEmblem!.gameObject.layer;
+
+                var render = jailCell.AddComponent<SpriteRenderer>();
+                render.sprite = Jailor.JailCell.GetSprite();
+                jailCell.gameObject.SetActive(true);
+                jailCell.GetComponent<SpriteRenderer>().enabled = true;
+                HudManager.Instance.shhhEmblem.TextImage.text = Blackmailer.players.Any(x => x.player && x.blackmailed == PlayerControl.LocalPlayer)
+                ? ModTranslation.getString("jailAndBlackmailText")
+                : ModTranslation.getString("jailorJailText");
+                HudManager.Instance.shhhEmblem.Hand.gameObject.SetActive(false);
+            }
+            else
+            {
+                HudManager.Instance.shhhEmblem.TextImage.text = ModTranslation.getString("blackmailerBlackmailText");
+            }
             HudManager.Instance.shhhEmblem.HoldDuration = 2.5f;
             yield return HudManager.Instance.ShowEmblem(true);
             HudManager.Instance.shhhEmblem.transform.localPosition = TempPosition;
             HudManager.Instance.shhhEmblem.HoldDuration = TempDuration;
             yield return HudManager.Instance.CoFadeFullScreen(new Color(0f, 0f, 0f, 0.98f), Color.clear);
+            jailCell.Destroy();
             yield return null;
         }
 

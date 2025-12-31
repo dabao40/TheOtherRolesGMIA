@@ -91,6 +91,7 @@ namespace TheOtherRoles
             Noisemaker.clearAndReload();
             Archaeologist.clearAndReload();
             Collator.clearAndReload();
+            Jailor.clearAndReload();
             Watcher.clearAndReload();
             Opportunist.clearAndReload();
             Moriarty.clearAndReload();
@@ -106,7 +107,6 @@ namespace TheOtherRoles
             Role.ClearAll();
 
             // Modifier
-            //Bait.clearAndReload();
             Bloody.clearAndReload();
             AntiTeleport.clearAndReload();
             Tiebreaker.clearAndReload();
@@ -159,6 +159,7 @@ namespace TheOtherRoles
                 { RoleId.Bait, typeof(RoleBase<Bait>) },
                 { RoleId.Sprinter, typeof(RoleBase<Sprinter>) },
                 { RoleId.Collator, typeof(RoleBase<Collator>) },
+                { RoleId.Jailor, typeof(RoleBase<Jailor>) },
 
                 // Impostor
                 { RoleId.Godfather, typeof(RoleBase<Godfather>) },

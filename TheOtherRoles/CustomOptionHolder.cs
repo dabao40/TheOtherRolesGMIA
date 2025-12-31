@@ -179,6 +179,7 @@ namespace TheOtherRoles {
         public static CustomOption mayorNumVotes;
         public static CustomOption mayorMeetingButton;
         public static CustomOption mayorMaxRemoteMeetings;
+        public static CustomOption mayorChooseSingleVote;
 
         public static CustomRoleOption portalmakerSpawnRate;
         public static CustomOption portalmakerCooldown;
@@ -252,6 +253,11 @@ namespace TheOtherRoles {
         public static CustomOption veteranCooldown;
         public static CustomOption veteranAlertDuration;
         public static CustomOption veteranAlertNumber;
+
+        public static CustomRoleOption jailorSpawnRate;
+        public static CustomOption jailorCooldown;
+        public static CustomOption jailorNumberOfJails;
+        public static CustomOption jailorSuicidesIfFalseJail;
 
         public static CustomRoleOption noisemakerSpawnRate;
         public static CustomOption noisemakerCooldown;
@@ -583,6 +589,7 @@ namespace TheOtherRoles {
         public static CustomOption finishTasksBeforeHauntingOrZoomingOut;
         public static CustomOption camsNightVision;
         public static CustomOption camsNoNightVisionIfImpVision;
+        public static CustomOption enableImpostorChat;
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
         public static CustomOption airshipLadder;
@@ -997,6 +1004,7 @@ namespace TheOtherRoles {
             mayorNumVotes = CustomOption.Create(81, Types.Crewmate, "mayorNumVotes", 2f, 2f, 24f, 1f, mayorSpawnRate, false, "unitVotes");
             mayorMeetingButton = CustomOption.Create(83, Types.Crewmate, "mayorMeetingButton", true, mayorSpawnRate);
             mayorMaxRemoteMeetings = CustomOption.Create(84, Types.Crewmate, "mayorMaxRemoteMeetings", 1f, 1f, 5f, 1f, mayorMeetingButton, false, "unitShots");
+            mayorChooseSingleVote = CustomOption.Create(85, Types.Crewmate, "mayorChooseSingleVote", ["optionOff", "mayorOnBeforeVoting", "mayorOnUntilMeeting"], mayorSpawnRate);
 
             engineerSpawnRate = new CustomRoleOption(90, Types.Crewmate, "engineer", Engineer.color);
             engineerNumberOfFixes = CustomOption.Create(91, Types.Crewmate, "engineerNumberOfFixes", 1f, 1f, 6f, 1f, engineerSpawnRate, false, "unitShots");
@@ -1093,6 +1101,11 @@ namespace TheOtherRoles {
             veteranCooldown = CustomOption.Create(4051, Types.Crewmate, "veteranCooldown", 30f, 10f, 60f, 2.5f, veteranSpawnRate, false, "unitSeconds");
             veteranAlertDuration = CustomOption.Create(4052, Types.Crewmate, "veteranAlertDuration", 3f, 1f, 20f, 1f, veteranSpawnRate, false, "unitSeconds");
             veteranAlertNumber = CustomOption.Create(4053, Types.Crewmate, "veteranAlertNumber", 5f, 1f, 15f, 1f, veteranSpawnRate, false, "unitScrews");
+
+            jailorSpawnRate = new CustomRoleOption(4054, Types.Crewmate, "jailor", Jailor.color);
+            jailorCooldown = CustomOption.Create(4055, Types.Crewmate, "jailorCooldown", 30f, 1f, 60f, 1f, jailorSpawnRate, false, "unitSeconds");
+            jailorNumberOfJails = CustomOption.Create(4076, Types.Crewmate, "jailorNumberOfJails", 5f, 1f, 15f, 1f, jailorSpawnRate, false, "unitScrews");
+            jailorSuicidesIfFalseJail = CustomOption.Create(4077, Types.Crewmate, "jailorSuicidesIfFalseJail", true, jailorSpawnRate);
 
             buskerSpawnRate = new CustomRoleOption(8040, Types.Crewmate, "busker", Busker.color);
             buskerCooldown = CustomOption.Create(8041, Types.Crewmate, "buskerCooldown", 20f, 5f, 60f, 2.5f, buskerSpawnRate, false, "unitSeconds");
@@ -1313,6 +1326,7 @@ namespace TheOtherRoles {
             allowParallelMedBayScans = CustomOption.Create(7, Types.General, "allowParallelMedBayScans", false);
             shieldFirstKill = CustomOption.Create(8, Types.General, "shieldFirstKill", false);
             finishTasksBeforeHauntingOrZoomingOut = CustomOption.Create(9, Types.General, "finishTasksBeforeHauntingOrZoomingOut", true);
+            enableImpostorChat = CustomOption.Create(6075, Types.General, "enableImpostorChat", true);
             additionalVents = CustomOption.Create(5060, Types.General, "additionalVents", false);
             specimenVital = CustomOption.Create(5061, Types.General, "specimenVital", false);
             airshipLadder = CustomOption.Create(6070, Types.General, "airshipLadder", false);

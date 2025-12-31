@@ -112,6 +112,7 @@ namespace TheOtherRoles
         public static CustomButton archaeologistExcavateButton;
         public static CustomButton medicVitalsButton;
         public static CustomButton zephyrButton;
+        public static CustomButton jailorButton;
         public static CustomButton doomsayerButton;
         public static CustomButton collatorButton;
         public static CustomButton operateButton;
@@ -153,6 +154,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text doomsayerUsesText;
         public static TMPro.TMP_Text zephyrUsesText;
         public static TMPro.TMP_Text collatorUsesText;
+        public static TMPro.TMP_Text jailorUsesText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
@@ -231,6 +233,7 @@ namespace TheOtherRoles
             archaeologistExcavateButton.MaxTimer = Archaeologist.cooldown;
             doomsayerButton.MaxTimer = Doomsayer.cooldown;
             collatorButton.MaxTimer = Collator.cooldown;
+            jailorButton.MaxTimer = Jailor.cooldown;
             foreach (var button in fortuneTellerButtons)
             {
                 button.MaxTimer = 0f;
@@ -1766,6 +1769,34 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             collatorUsesText = collatorButton.ShowUsesIcon(3);
+
+            jailorButton = new CustomButton(
+                () => {
+                    jailorButton.Timer = jailorButton.MaxTimer;
+                    Jailor.Jail.Invoke((PlayerControl.LocalPlayer.PlayerId, Jailor.local.currentTarget.PlayerId));
+                    Jailor.local.currentTarget = null;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Jailor) && Jailor.local.remainingUses > 0 && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () =>
+                {
+                    if (jailorUsesText != null)
+                    {
+                        if (Jailor.local.remainingUses > 0)
+                            jailorUsesText.text = $"{Jailor.local.remainingUses}";
+                        else
+                            jailorUsesText.text = "";
+                    }
+                    return Jailor.local.currentTarget && PlayerControl.LocalPlayer.CanMove;
+                },
+                () => { jailorButton.Timer = jailorButton.MaxTimer; },
+                Jailor.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("JailorText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+            jailorUsesText = jailorButton.ShowUsesIcon(3);
 
             // Eraser erase button
             eraserButton = new CustomButton(

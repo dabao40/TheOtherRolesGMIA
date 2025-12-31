@@ -112,6 +112,7 @@ namespace TheOtherRoles
         public static RoleInfo noisemaker = new("noisemaker", Noisemaker.color, RoleId.Noisemaker);
         public static RoleInfo archaeologist = new("archaeologist", Archaeologist.color, RoleId.Archaeologist);
         public static RoleInfo collator = new("collator", Collator.color, RoleId.Collator);
+        public static RoleInfo jailor = new("jailor", Jailor.color, RoleId.Jailor);
         public static RoleInfo evilYasuna = new("evilYasuna", Palette.ImpostorRed, RoleId.EvilYasuna);
         public static RoleInfo opportunist = new("opportunist", Opportunist.color, RoleId.Opportunist, true);
         public static RoleInfo chainshifter = new("corruptedShifter", Shifter.color, RoleId.Shifter, true);
@@ -147,6 +148,7 @@ namespace TheOtherRoles
 
         public static List<RoleInfo> Killing = [
             sheriff,
+            jailor,
             bountyHunter,
             witch,
             jekyllAndHyde,
@@ -294,7 +296,6 @@ namespace TheOtherRoles
             evilYasuna,
             yoyo,
             zephyr,
-            //bomber,
             goodGuesser,
             badGuesser,
             evilWatcher,
@@ -319,7 +320,6 @@ namespace TheOtherRoles
             schrodingersCat,
             kataomoi,
             doomsayer,
-            //prosecutor,
             crewmate,
             mayor,
             portalmaker,
@@ -352,7 +352,7 @@ namespace TheOtherRoles
             noisemaker,
             archaeologist,
             collator,
-            //trapper,
+            jailor,
             bloody,
             antiTeleport,
             tiebreaker,
@@ -362,7 +362,6 @@ namespace TheOtherRoles
             invert,
             chameleon,
             armored
-            //shifter, 
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true, bool includeHidden = false, RoleId[] excludeRoles = null) {
@@ -443,6 +442,7 @@ namespace TheOtherRoles
             if (p.isRole(RoleId.Doomsayer)) infos.Add(doomsayer);
             if (p.isRole(RoleId.Zephyr)) infos.Add(zephyr);
             if (p.isRole(RoleId.Collator)) infos.Add(collator);
+            if (p.isRole(RoleId.Jailor)) infos.Add(jailor);
             if (p.isRole(RoleId.FortuneTeller))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -630,6 +630,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Disease:
                                     deathReasonString = string.Format(ModTranslation.getString("roleSummaryDisease"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Jailed:
+                                    deathReasonString = string.Format(ModTranslation.getString("roleSummaryJailed"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
                                     break;
                                 case DeadPlayer.CustomDeathReason.Scapegoat:
                                     deathReasonString = $" - {Helpers.cs(Cupid.color, ModTranslation.getString("roleSummaryScapegoat"))}";

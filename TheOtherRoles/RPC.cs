@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Channels;
 using AmongUs.Data;
 using AmongUs.GameOptions;
 using HarmonyLib;
@@ -70,6 +71,7 @@ namespace TheOtherRoles
         Yasuna,
         TaskMaster,
         Teleporter,
+        Jailor,
         EvilYasuna,
         //Trapper,
         Lawyer, 
@@ -1139,6 +1141,43 @@ namespace TheOtherRoles
             }
         });
 
+        public static RemoteProcess<(byte playerId, byte channelType, string message)> SendChatToChannel = new("SendCahtToChanel", (message, _) =>
+        {
+            var player = Helpers.playerById(message.playerId);
+            if (player == null) return;
+            var channel = (ChatCommands.ChannelType)message.channelType;
+            switch (channel)
+            {
+                case ChatCommands.ChannelType.Default:
+                    break;
+                case ChatCommands.ChannelType.Impostor:
+                    if (Helpers.shouldShowGhostInfo() || PlayerControl.LocalPlayer.Data.Role.IsImpostor)
+                    {
+                        ChatCommands.CurrentChatType = ChatCommands.ChatTypes.ImpostorChat;
+                        HudManager.Instance.Chat.AddChat(player, message.message);
+                    }
+                    break;
+                case ChatCommands.ChannelType.Lover:
+                    if (player == PlayerControl.LocalPlayer.getPartner() || Helpers.shouldShowGhostInfo())
+                    {
+                        ChatCommands.CurrentChatType = ChatCommands.ChatTypes.LoverChat;
+                        HudManager.Instance.Chat.AddChat(player, message.message);
+                    }
+                    break;
+                case ChatCommands.ChannelType.Jailor:
+                    if (Jailor.players.Any(x => x.player == PlayerControl.LocalPlayer || x.jailTarget == PlayerControl.LocalPlayer) || Helpers.shouldShowGhostInfo())
+                    {
+                        ChatCommands.CurrentChatType = ChatCommands.ChatTypes.JailorChat;
+                        bool jailed = Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId);
+                        if (jailed) HudManager.Instance.Chat.StartCoroutine(HudManager.Instance.Chat.BounceDot());
+                        HudManager.Instance.Chat.AddChat(jailed ? PlayerControl.LocalPlayer : player, message.message);
+                        SoundManager.Instance.PlaySound(HudManager.Instance?.Chat?.messageSound, false, 1f, null);
+                    }
+                    break;
+            }
+            ChatCommands.CurrentChatType = ChatCommands.ChatTypes.Default;
+        });
+
         public static void shareRealTasks(MessageReader reader)
         {
             byte count = reader.ReadByte();
@@ -1699,9 +1738,6 @@ namespace TheOtherRoles
             PlayerControl dyingTarget = Helpers.playerById(dyingTargetId);
             if (dyingTarget == null) return;
             if (dyingTarget.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(dyingTarget).meetingKiller = killer;
-            bool revengeFlag = (NekoKabocha.revengeCrew && !Helpers.isNeutral(killer) && !killer.Data.Role.IsImpostor) ||
-                    (NekoKabocha.revengeNeutral && Helpers.isNeutral(killer)) ||
-                    (NekoKabocha.revengeImpostor && killer.Data.Role.IsImpostor);
 
             PlayerControl guesser = Helpers.playerById(killerId);
             if (killer.isRole(RoleId.Thief) && Thief.canStealWithGuess) {
@@ -1770,7 +1806,10 @@ namespace TheOtherRoles
                     msg = string.Format(ModTranslation.getString("watcherGuessChat"), guessedRoleInfo?.name ?? "", guessedTarget.Data.PlayerName);
 
                 if (!string.IsNullOrEmpty(msg))
+                {
+                    ChatCommands.CurrentChatType = ChatCommands.ChatTypes.GuesserMessage;
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(sender, msg, false);
+                }
             }
         }
 

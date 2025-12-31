@@ -14,6 +14,8 @@ public class Mayor : RoleBase<Mayor>
     public static Minigame emergency = null;
     public static Sprite emergencySprite = null;
     public int remoteMeetingsLeft = 1;
+    public bool voteMultiple = true;
+    public static int mayorChooseSingleVote;
 
     public static bool meetingButton = true;
     public static int numVotes = 2;
@@ -28,7 +30,15 @@ public class Mayor : RoleBase<Mayor>
         RoleId = roleId = RoleId.Mayor;
         remoteMeetingsLeft = Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat());
         acTokenChallenge = null;
+        voteMultiple = true;
     }
+
+    public static RemoteProcess<byte> MultipleVote = RemotePrimitiveProcess.OfByte("MayorVoteMultiple", (message, _) =>
+    {
+        var mayor = getRole(Helpers.playerById(message));
+        if (mayor == null) return;
+        mayor.voteMultiple = !mayor.voteMultiple;
+    });
 
     public static RemoteProcess<(byte votedFor, byte playerId)> GainAchievement = new("UnlockMayorAch", (message, _) =>
     {
@@ -55,6 +65,7 @@ public class Mayor : RoleBase<Mayor>
         emergencySprite = null;
         meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
         numVotes = (int)CustomOptionHolder.mayorNumVotes.getFloat();
+        mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
         players = [];
     }
 

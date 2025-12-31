@@ -12,7 +12,6 @@ namespace TheOtherRoles {
             Disconnect,
             Guess,
             Shift,
-            //LawyerSuicide,
             LoverSuicide, // not necessary
             KataomoiStare,
             WitchExile,
@@ -26,6 +25,7 @@ namespace TheOtherRoles {
             Disease,
             Pseudocide,
             Blown,
+            Jailed,
             Bomb,
             Arson,
         };

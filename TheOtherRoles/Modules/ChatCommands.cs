@@ -1,13 +1,50 @@
 using System;
-using HarmonyLib;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using TheOtherRoles.Utilities;
+using HarmonyLib;
 using Hazel;
 using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace TheOtherRoles.Modules {
     [HarmonyPatch]
     public static class ChatCommands {
+        public enum ChatTypes
+        {
+            Default = 0,
+            LoverChat,
+            JailorChat,
+            ImpostorChat,
+            GuesserMessage,
+        }
+
+        public enum ChannelType
+        {
+            Default = 0,
+            Impostor,
+            Lover,
+            Jailor,
+        }
+
+        public static ChatTypes CurrentChatType = ChatTypes.Default;
+        public static List<ChannelType> ActiveChannels = new() { ChannelType.Default };
+        public static ChannelType CurrentChannel
+        {
+            get;
+            set
+            {
+                field = value;
+                if (!ActiveChannels.Contains(value))
+                {
+                    field = ChannelType.Default;
+                }
+            }
+        } = ChannelType.Default;
+
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch {
@@ -92,6 +129,30 @@ namespace TheOtherRoles.Modules {
                     }
                 }
 
+                if (!handled && CurrentChannel != ChannelType.Default)
+                {
+                    switch (CurrentChannel)
+                    {
+                        case ChannelType.Impostor:
+                            {
+                                RPCProcedure.SendChatToChannel.Invoke((PlayerControl.LocalPlayer.PlayerId, (byte)ChannelType.Impostor, text));
+                                break;
+                            }
+                        case ChannelType.Jailor:
+                            {
+                                RPCProcedure.SendChatToChannel.Invoke((PlayerControl.LocalPlayer.PlayerId, (byte)ChannelType.Jailor, text));
+                                break;
+                            }
+                        case ChannelType.Lover:
+                            {
+                                RPCProcedure.SendChatToChannel.Invoke((PlayerControl.LocalPlayer.PlayerId, (byte)ChannelType.Lover, text));
+                                break;
+                            }
+                    }
+                    __instance.freeChatField.textArea.Clear();
+                    return false;
+                }
+
                 if (handled) {
                     __instance.freeChatField.Clear();
                     __instance.quickChatMenu.Clear();
@@ -111,7 +172,59 @@ namespace TheOtherRoles.Modules {
         public static class SetBubbleName { 
             public static void Postfix(ChatBubble __instance, [HarmonyArgument(0)] string playerName) {
                 PlayerControl sourcePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data != null && x.Data.PlayerName.Equals(playerName));
-                if (sourcePlayer != null && PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (sourcePlayer.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer) || Jackal.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer)) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
+                if (sourcePlayer == null) return;
+                if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data?.Role?.IsImpostor == true && (sourcePlayer.isRole(RoleId.Spy) || Sidekick.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer) || Jackal.players.Any(x => x.wasTeamRed && x.player != null && x.player == sourcePlayer)) && __instance != null) __instance.NameText.color = Palette.ImpostorRed;
+                if (MeetingHud.Instance)
+                {
+                    if (Jailor.players.Any(x => x.player == PlayerControl.LocalPlayer && x.jailTarget == sourcePlayer) && !sourcePlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead)
+                    {
+                        __instance.NameText.color = Jailor.color;
+                        __instance.NameText.text = playerName + $" ({ModTranslation.getString("jailorJailed")})";
+                    }
+                    if ((PlayerControl.LocalPlayer == sourcePlayer || Helpers.shouldShowGhostInfo()) && Jailor.isJailed(sourcePlayer.PlayerId))
+                    {
+                        __instance.NameText.color = Jailor.color;
+                        __instance.NameText.text = playerName + $" ({ModTranslation.getString("jailorJailed")})";
+                    }
+                }
+
+                var currentType = CurrentChatType;
+                CurrentChatType = ChatTypes.Default;
+
+                switch (currentType)
+                {
+                    case ChatTypes.JailorChat:
+                        if (MeetingHud.Instance)
+                        {
+                            if (Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId) || Helpers.shouldShowGhostInfo())
+                            {
+                                __instance.NameText.color = Jailor.color;
+                                __instance.NameText.text = (Helpers.shouldShowGhostInfo() ? __instance.NameText.text : "") + $" ({ModTranslation.getString("jailor")})";
+                            }
+                            else if (PlayerControl.LocalPlayer.isRole(RoleId.Jailor) || Helpers.shouldShowGhostInfo())
+                            {
+                                __instance.NameText.color = Jailor.color;
+                                __instance.NameText.text = $"({ModTranslation.getString("jailor")})";
+                            }
+                        }
+                        break;
+                    case ChatTypes.Default:
+                        break;
+                    case ChatTypes.LoverChat:
+                        __instance.NameText.color = Lovers.getColor(sourcePlayer);
+                        __instance.NameText.text = $"{__instance.NameText.text} ({ModTranslation.getString("lover")})";
+                        break;
+                    case ChatTypes.GuesserMessage:
+                        __instance.NameText.color = Color.yellow;
+                        __instance.NameText.text = $"{__instance.NameText.text} ({ModTranslation.getString("guesser")})";
+                        break;
+                    case ChatTypes.ImpostorChat:
+                        __instance.NameText.color = Palette.ImpostorRed;
+                        __instance.NameText.text = $"{__instance.NameText.text} ({ModTranslation.getString("impostor")})";
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -121,8 +234,90 @@ namespace TheOtherRoles.Modules {
                 if (__instance != FastDestroyableSingleton<HudManager>.Instance.Chat)
                     return true;
                 PlayerControl localPlayer = PlayerControl.LocalPlayer;
-                return localPlayer == null || MeetingHud.Instance != null || LobbyBehaviour.Instance != null || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag)) || (sourcePlayer == localPlayer.getPartner()) || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
 
+                return localPlayer == null || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag)) || LobbyBehaviour.Instance != null || ((MeetingHud.Instance != null || (sourcePlayer == localPlayer.getPartner()))
+                    && !(Jailor.isJailed(sourcePlayer.PlayerId) && !localPlayer.Data.IsDead && !Jailor.players.Any(x => x.jailTarget == sourcePlayer && x.player == localPlayer) && !Helpers.shouldShowGhostInfo()));
+
+            }
+        }
+
+        public static GameObject ChannelShower;
+        [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake)), HarmonyPostfix]
+        public static void ChatControllerAwake_Postfix(ChatController __instance)
+        {
+            __instance.freeChatField.textArea.SetText("");
+            __instance.timeSinceLastMessage = 0;
+            if (ChannelShower != null) return;
+            ChannelShower = UnityEngine.Object.Instantiate(__instance.freeChatField.charCountText.gameObject, __instance.freeChatField.charCountText.transform.parent);
+            ChannelShower.name = "Channel Shower";
+            ChannelShower.transform.localPosition = new Vector3(1.95f, 0.5f, 0f);
+            ChannelShower.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, 0.1f);
+            var tmp = ChannelShower.GetComponent<TextMeshPro>();
+            tmp.alignment = TextAlignmentOptions.Left;
+            tmp.color = Color.black;
+            tmp.outlineColor = Color.white;
+            tmp.outlineWidth = 0.1f;
+            tmp.fontSize *= 1.2f;
+            tmp.SetText("");
+            CurrentChannel = CurrentChannel; // Check Channel
+        }
+
+        [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update)), HarmonyPostfix]
+        public static void ChatControllerUpdate_Postfix(ChatController __instance)
+        {
+            if (GameStates.IsLobby) return;
+            UpdateChatChannels();
+            KeyboardInput(__instance);
+            if (ChannelShower == null) return;
+            try
+            {
+                var text = ModTranslation.getString($"chatChannel{Enum.GetName(CurrentChannel)}");
+                bool jailed = Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId);
+                if (jailed) text = $"{ModTranslation.getString("chatChannelJailor")}";
+                text +=  ActiveChannels.Count == 1 || jailed ? "" : ModTranslation.getString("channelSwitchNotice");
+                ChannelShower?.GetComponent<TextMeshPro>().SetText(text);
+                ChannelShower?.SetActive(!ChannelShower.transform.parent.parent.FindChild("RateMessage (TMP)").gameObject.activeSelf);
+            }
+            catch { }
+        }
+
+        public static void KeyboardInput(ChatController __instance)
+        {
+            if (Jailor.players.Any(x => x.player != null && !x.player.Data.IsDead && x.jailTarget == PlayerControl.LocalPlayer)) { CurrentChannel = ChannelType.Default; return; }
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                var channels = ActiveChannels.ToList();
+                if (channels.Count == 0) { CurrentChannel = ChannelType.Default; return; }
+                var currentIndex = channels.IndexOf(CurrentChannel);
+                var nextIndex = (currentIndex + 1) % channels.Count;
+                CurrentChannel = channels[nextIndex];
+            }
+        }
+
+        public static void UpdateChatChannels()
+        {
+            var channelConditions = new Dictionary<ChannelType, Func<PlayerControl, bool>>
+            {
+                [ChannelType.Default] = (x) => GameStates.IsLobby || MeetingHud.Instance || Helpers.shouldShowGhostInfo(),
+                [ChannelType.Lover] = (x) => x.isLovers() && !x.Data.IsDead,
+                [ChannelType.Jailor] = (x) => !x.Data.IsDead && Jailor.players.Any(jailor => jailor.jailTarget != null && !jailor.jailTarget.Data.IsDead && jailor.player == x),
+                [ChannelType.Impostor] = (x) => CustomOptionHolder.enableImpostorChat.getBool() && !x.Data.IsDead && x.Data.Role.IsImpostor && !Spy.exists
+            };
+
+            foreach (var (channelType, condition) in channelConditions)
+            {
+                if (condition(PlayerControl.LocalPlayer) && !ActiveChannels.Contains(channelType))
+                {
+                    ActiveChannels.Add(channelType);
+                }
+                else if (!condition(PlayerControl.LocalPlayer) && (ActiveChannels.Contains(channelType) || CurrentChannel == channelType))
+                {
+                    ActiveChannels.Remove(channelType);
+                    if (CurrentChannel == channelType)
+                    {
+                        CurrentChannel = ActiveChannels.FirstOrDefault();
+                    }
+                }
             }
         }
     }

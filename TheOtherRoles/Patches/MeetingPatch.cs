@@ -64,7 +64,7 @@ namespace TheOtherRoles.Patches
 
                         float additionalVotes = 1;
 
-                        if (player.isRole(RoleId.Mayor)) {
+                        if (Mayor.players.Any(x => x.player?.PlayerId == playerVoteArea.TargetPlayerId && x.voteMultiple)) {
                             additionalVotes = Mayor.numVotes;
                             Mayor.GainAchievement.Invoke((playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId));
                         }
@@ -323,7 +323,7 @@ namespace TheOtherRoles.Patches
                         votesApplied[voterState.VoterId]++;
 
                         // Major vote, redo this iteration to place a second vote
-                        if (Mayor.exists && Mayor.allPlayers.Any(x => x.PlayerId == voterState.VoterId) && votesApplied[voterState.VoterId] < Mayor.numVotes) {
+                        if (Mayor.exists && Mayor.players.Any(x => x.player?.PlayerId == voterState.VoterId && x.voteMultiple) && votesApplied[voterState.VoterId] < Mayor.numVotes) {
                             j--;
                         }
                     }
@@ -394,6 +394,34 @@ namespace TheOtherRoles.Patches
                 __instance.StartCoroutine(ordered[i].transform.Smooth(ToVoteAreaPos(i, type), 1.6f / speed).WrapToIl2Cpp());
         }
 
+        static void jailorExecute(MeetingHud __instance)
+        {
+            __instance.playerStates[0].Cancel();
+            if (__instance.state == MeetingHud.VoteStates.Results || PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (!PlayerControl.LocalPlayer.isRole(RoleId.Jailor) || Jailor.local.jailTarget == null) return;
+            if (Jailor.local.jailTarget.Data?.IsDead == true) return;
+            bool correctExecute = Helpers.isEvil(Jailor.local.jailTarget);
+            Jailor.Execute.Invoke((PlayerControl.LocalPlayer.PlayerId, Jailor.local.jailTarget.PlayerId, !correctExecute));
+            meetingExtraButtonLabel.text = Helpers.cs(correctExecute ? Color.green : Color.red, ModTranslation.getString("jailorExecute"));
+            meetingExtraButtonText.text = string.Format(ModTranslation.getString("jailorRemainingJails"), Jailor.local?.remainingUses ?? 0);
+        }
+
+        static void mayorToggleVoteState(MeetingHud __instance)
+        {
+            __instance.playerStates[0].Cancel();  // This will stop the underlying buttons of the template from showing up
+            if (__instance.state == MeetingHud.VoteStates.Results || PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (Mayor.mayorChooseSingleVote == 1)
+            { // Only accept changes until the mayor voted
+                var mayorPVA = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId);
+                if (mayorPVA != null && mayorPVA.DidVote)
+                {
+                    SoundEffectsManager.play("fail");
+                    return;
+                }
+            }
+            Mayor.MultipleVote.Invoke(PlayerControl.LocalPlayer.PlayerId);
+            meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, ModTranslation.getString("mayorMeetingLabel") + (Mayor.local.voteMultiple ? Helpers.cs(Color.green, ModTranslation.getString("optionOn")) : Helpers.cs(Color.red, ModTranslation.getString("optionOff"))));
+        }
 
         static void swapperOnClick(int i, MeetingHud __instance) {
             if (__instance.state == MeetingHud.VoteStates.Results || Swapper.charges <= 0) return;
@@ -819,8 +847,12 @@ namespace TheOtherRoles.Patches
         }
 
         static void populateButtonsPostfix(MeetingHud __instance) {
+            bool addSwapperButton = PlayerControl.LocalPlayer.isRole(RoleId.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead && !IsBlockedBlackmail();
+            bool addMayorButton = PlayerControl.LocalPlayer.isRole(RoleId.Mayor) && !PlayerControl.LocalPlayer.Data.IsDead && Mayor.mayorChooseSingleVote > 0;
+            bool addJailorButton = Jailor.players.Any(x => x.player == PlayerControl.LocalPlayer && x.jailTarget != null) && !PlayerControl.LocalPlayer.Data.IsDead;
+
             // Add Swapper Buttons
-            if (PlayerControl.LocalPlayer.isRole(RoleId.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead && !IsBlockedBlackmail()) {
+            if (addSwapperButton) {
                 selections = new bool[__instance.playerStates.Length];
                 renderers = new SpriteRenderer[__instance.playerStates.Length];
                 swapperButtonList = new PassiveButton[__instance.playerStates.Length];
@@ -853,7 +885,9 @@ namespace TheOtherRoles.Patches
                     selections[i] = false;
                     renderers[i] = renderer;
                 }
+            }
 
+            if (addSwapperButton || addMayorButton || addJailorButton) {
                 Transform meetingUI = UnityEngine.Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
 
                 var buttonTemplate = __instance.playerStates[0].transform.FindChild("votePlayerBase");
@@ -866,7 +900,12 @@ namespace TheOtherRoles.Patches
                 Transform infoTransform = __instance.playerStates[0].NameText.transform.parent.FindChild("Info");
                 TMPro.TextMeshPro meetingInfo = infoTransform != null ? infoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                 meetingExtraButtonText = UnityEngine.Object.Instantiate(__instance.playerStates[0].NameText, meetingExtraButtonParent);
-                meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
+                meetingExtraButtonText.text = "";
+                if (addSwapperButton)
+                    meetingExtraButtonText.text = string.Format(ModTranslation.getString("swapperRemainingSwaps"), Swapper.charges);
+                else if (addJailorButton)
+                    meetingExtraButtonText.text = string.Format(ModTranslation.getString("jailorRemainingJails"), Jailor.local?.remainingUses ?? 0);
+
                 meetingExtraButtonText.enableWordWrapping = false;
                 meetingExtraButtonText.transform.localScale = Vector3.one * 1.7f;
                 meetingExtraButtonText.transform.localPosition = new Vector3(-2.5f, 0f, 0f);
@@ -879,16 +918,33 @@ namespace TheOtherRoles.Patches
                 meetingExtraButtonParent.localScale = new Vector3(0.55f, 0.55f, 1f);
                 meetingExtraButtonLabel.alignment = TMPro.TextAlignmentOptions.Center;
                 meetingExtraButtonLabel.transform.localPosition = new Vector3(0, 0, meetingExtraButtonLabel.transform.localPosition.z);
-                meetingExtraButtonLabel.transform.localScale *= 1.7f;
-                meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
+                if (addSwapperButton) {
+                    meetingExtraButtonLabel.transform.localScale *= 1.7f;
+                    meetingExtraButtonLabel.text = Helpers.cs(Color.red, ModTranslation.getString("swapperConfirmSwap"));
+                }
+                else if (addMayorButton) {
+                    meetingExtraButtonLabel.transform.localScale = new Vector3(meetingExtraButtonLabel.transform.localScale.x * 1.5f, meetingExtraButtonLabel.transform.localScale.x * 1.7f, meetingExtraButtonLabel.transform.localScale.x * 1.7f);
+                    meetingExtraButtonLabel.text = Helpers.cs(Mayor.color, ModTranslation.getString("mayorMeetingLabel") + (Mayor.local.voteMultiple ? Helpers.cs(Color.green, ModTranslation.getString("optionOn")) : Helpers.cs(Color.red, ModTranslation.getString("optionOff"))));
+                }
+                else if (addJailorButton) {
+                    meetingExtraButtonLabel.transform.localScale *= 1.7f;
+                    meetingExtraButtonLabel.text = Helpers.cs(Jailor.color, ModTranslation.getString("jailorExecute"));
+                }
                 PassiveButton passiveButton = meetingExtraButton.GetComponent<PassiveButton>();
                 passiveButton.OnClick.RemoveAllListeners();
-                if (!PlayerControl.LocalPlayer.Data.IsDead) {
-                    passiveButton.OnClick.AddListener((Action)(() => swapperConfirm(__instance)));
+                if (!PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    if (addSwapperButton)
+                        passiveButton.OnClick.AddListener((Action)(() => swapperConfirm(__instance)));
+                    else if (addMayorButton)
+                        passiveButton.OnClick.AddListener((Action)(() => mayorToggleVoteState(__instance)));
+                    else if (addJailorButton)
+                        passiveButton.OnClick.AddListener((Action)(() => jailorExecute(__instance)));
                 }
                 meetingExtraButton.parent.gameObject.SetActive(false);
                 __instance.StartCoroutine(Effects.Lerp(7.27f, new Action<float>((p) => { // Button appears delayed, so that its visible in the voting screen only!
-                    if (p == 1f) {
+                    if (p == 1f)
+                    {
                         meetingExtraButton.parent.gameObject.SetActive(true);
                     }
                 })));
@@ -923,13 +979,29 @@ namespace TheOtherRoles.Patches
                 }
             }
 
+            // Jailed player show overlay
+            if (Jailor.players.Any(x => x.player != null && !x.player.Data.IsDead && x.jailTarget != null))
+            {
+                foreach (var pva in __instance.playerStates) {
+                    if (Jailor.isJailed(pva.TargetPlayerId))
+                    {
+                        SpriteRenderer rend = new GameObject().AddComponent<SpriteRenderer>();
+                        rend.transform.SetParent(pva.transform);
+                        rend.gameObject.layer = pva.Megaphone.gameObject.layer;
+                        rend.transform.localPosition = new Vector3(-0.95f, 0.03f, -1.3f);
+                        rend.sprite = Jailor.InJail.GetSprite();
+                    }
+                }
+            }
+
             // Add Track Button for Evil Tracker
-            if (isTrackerButton && !IsBlockedBlackmail())
+            if (isTrackerButton && !IsBlockedBlackmail() && !Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId))
             {
                 for (int i = 0; i < __instance.playerStates.Length; i++)
                 {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    if (Jailor.isJailed(playerVoteArea.TargetPlayerId)) continue;
                     GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
                     GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
                     targetBox.name = "EvilTrackerButton";
@@ -965,10 +1037,11 @@ namespace TheOtherRoles.Patches
             int remainingShots = HandleGuesser.remainingShots(PlayerControl.LocalPlayer.PlayerId);
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
 
-            if (isGuesser && !PlayerControl.LocalPlayer.Data.IsDead && !IsBlockedBlackmail() && (remainingShots > 0 || PlayerControl.LocalPlayer.isRole(RoleId.Doomsayer))) {
+            if (isGuesser && !PlayerControl.LocalPlayer.Data.IsDead && !IsBlockedBlackmail() && !Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId) && (remainingShots > 0 || PlayerControl.LocalPlayer.isRole(RoleId.Doomsayer))) {
                 for (int i = 0; i < __instance.playerStates.Length; i++) {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    if (Jailor.isJailed(playerVoteArea.TargetPlayerId)) continue;
                     if (PlayerControl.LocalPlayer != null && !Helpers.isEvil(PlayerControl.LocalPlayer) && playerCompleted < HandleGuesser.tasksToUnlock) continue;
                     if (PlayerControl.LocalPlayer != null && LastImpostor.lastImpostor == PlayerControl.LocalPlayer && !LastImpostor.isOriginalGuesser && !LastImpostor.isCounterMax()) continue;
                     GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
@@ -986,12 +1059,13 @@ namespace TheOtherRoles.Patches
             }
 
             // Add Yasuna Special Buttons
-            if (Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId) && !PlayerControl.LocalPlayer.Data.IsDead && Yasuna.remainingSpecialVotes() > 0 && !IsBlockedBlackmail())
+            if (Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId) && !PlayerControl.LocalPlayer.Data.IsDead && Yasuna.remainingSpecialVotes() > 0 && !Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId) && !IsBlockedBlackmail())
             {
                 for (int i = 0; i < __instance.playerStates.Length; i++)
                 {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    if (Jailor.isJailed(playerVoteArea.TargetPlayerId)) continue;
 
                     GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
                     GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
@@ -1274,7 +1348,7 @@ namespace TheOtherRoles.Patches
                 }
 
                 // Blackmail target
-                if (Blackmailer.players.Any(x => x.player && x.blackmailed == PlayerControl.LocalPlayer)) {
+                if (Blackmailer.players.Any(x => x.player && x.blackmailed == PlayerControl.LocalPlayer) || Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId)) {
                     Coroutines.Start(Helpers.BlackmailShhh());
                 }
 
