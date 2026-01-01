@@ -234,9 +234,14 @@ namespace TheOtherRoles.Modules {
                 if (__instance != FastDestroyableSingleton<HudManager>.Instance.Chat)
                     return true;
                 PlayerControl localPlayer = PlayerControl.LocalPlayer;
+                if (sourcePlayer == localPlayer) return true;
+                var flag = MeetingHud.Instance
+                    || LobbyBehaviour.Instance
+                    || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag));
+                if (Jailor.isJailed(sourcePlayer.PlayerId) && !localPlayer.Data.IsDead && MeetingHud.Instance && !Jailor.players.Any(x => x.jailTarget == sourcePlayer && x.player == localPlayer) && !Helpers.shouldShowGhostInfo()) return false;
+                if (sourcePlayer == localPlayer.getPartner() || flag) return true;
 
-                return localPlayer == null || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag)) || LobbyBehaviour.Instance != null || ((MeetingHud.Instance != null || (sourcePlayer == localPlayer.getPartner()))
-                    && !(Jailor.isJailed(sourcePlayer.PlayerId) && !localPlayer.Data.IsDead && !Jailor.players.Any(x => x.jailTarget == sourcePlayer && x.player == localPlayer) && !Helpers.shouldShowGhostInfo()));
+                return flag;
 
             }
         }

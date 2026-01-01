@@ -321,12 +321,6 @@ namespace TheOtherRoles.Patches {
                 allInvokers.Add(RPCProcedure.PlaceAntique.GetInvoker());
             }
 
-            // Additional Vents
-            AdditionalVents.AddAdditionalVents();
-
-            // Specimen Vitals
-            SpecimenVital.moveVital();
-
             // Add Electrical
             FungleAdditionalElectrical.CreateElectrical();
 

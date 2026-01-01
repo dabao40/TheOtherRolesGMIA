@@ -66,6 +66,7 @@ namespace TheOtherRoles.Modules
         static public TranslatableTag Disconnect;
         static public TranslatableTag MisGuess;
         static public TranslatableTag Guessed;
+        static public TranslatableTag Blown;
 
         public static void Load()
         {
@@ -84,6 +85,7 @@ namespace TheOtherRoles.Modules
             Disconnect = new("eventDisconnect");
             MisGuess = new("eventMisGuess");
             Guessed = new("eventGuessed");
+            Blown = new("eventBlown");
         }
     }
 

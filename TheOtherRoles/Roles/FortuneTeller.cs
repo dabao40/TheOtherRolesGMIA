@@ -40,6 +40,7 @@ namespace TheOtherRoles.Roles
         public static DivineResults divineResult;
         public static float duration;
         public static float distance;
+        public static bool revealOnImp;
 
         public static bool meetingFlag = false;
 
@@ -274,6 +275,7 @@ namespace TheOtherRoles.Roles
             numTasks = (int)CustomOptionHolder.fortuneTellerNumTasks.getFloat();
             distance = CustomOptionHolder.fortuneTellerDistance.getFloat();
             divineResult = (DivineResults)CustomOptionHolder.fortuneTellerResults.getSelection();
+            revealOnImp = CustomOptionHolder.fortuneTellerRevealOnImpDivine.getBool();
             players = [];
         }
 

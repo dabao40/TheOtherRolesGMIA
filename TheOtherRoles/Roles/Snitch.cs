@@ -62,7 +62,7 @@ namespace TheOtherRoles.Roles
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(player.Data);
             int numberOfTasks = playerTotal - playerCompleted;
 
-            if (!local.Data.IsDead && (local.Data.Role.IsImpostor || (includeTeamEvil && (local.isRole(RoleId.Jackal) || local.isRole(RoleId.Sidekick)
+            if (!local.Data.IsDead && numberOfTasks <= taskCountForReveal && (local.Data.Role.IsImpostor || (includeTeamEvil && (local.isRole(RoleId.Jackal) || local.isRole(RoleId.Sidekick)
                 || local.isRole(RoleId.Moriarty) || local.isRole(RoleId.JekyllAndHyde) || local.isRole(RoleId.Fox)) || local.isRole(RoleId.Immoralist)
                 || (local.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate))))
             {

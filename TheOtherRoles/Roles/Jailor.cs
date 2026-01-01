@@ -19,6 +19,7 @@ public class Jailor : RoleBase<Jailor>
     public static float cooldown = 30f;
     public int remainingUses = 3;
     public static bool suicidesIfFalseJail = true;
+    public static bool targetDiesAsWell;
     public PlayerControl currentTarget = null;
     public PlayerControl jailTarget = null;
     public AchievementToken<int> acTokenChallenge = null;
@@ -72,6 +73,7 @@ public class Jailor : RoleBase<Jailor>
         var player = Helpers.playerById(message.targetId);
         if (jailorPlayer == null || jailor == null || player == null) return;
         if (jailorPlayer.Data.IsDead || player.Data.IsDead) return;
+
         if (message.suicide)
         {
             if (suicidesIfFalseJail)
@@ -89,9 +91,6 @@ public class Jailor : RoleBase<Jailor>
         }
         else
         {
-            if (PlayerControl.LocalPlayer == player && Helpers.ShowKillAnimation) FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(jailorPlayer.Data, PlayerControl.LocalPlayer.Data);
-            player.Exiled();
-            GameHistory.overrideDeathReasonAndKiller(player, DeadPlayer.CustomDeathReason.Jailed, jailorPlayer);
             if (PlayerControl.LocalPlayer == jailorPlayer)
             {
                 new StaticAchievementToken("jailor.common1");
@@ -99,6 +98,14 @@ public class Jailor : RoleBase<Jailor>
             }
             if (player.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(player).meetingKiller = jailorPlayer;
         }
+
+        if (!message.suicide || targetDiesAsWell)
+        {
+            if (PlayerControl.LocalPlayer == player && Helpers.ShowKillAnimation) FastDestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(jailorPlayer.Data, PlayerControl.LocalPlayer.Data);
+            player.Exiled();
+            GameHistory.overrideDeathReasonAndKiller(player, DeadPlayer.CustomDeathReason.Jailed, jailorPlayer);
+        }
+
         jailor.jailTarget = null;
     });
 
@@ -118,6 +125,7 @@ public class Jailor : RoleBase<Jailor>
     {
         cooldown = CustomOptionHolder.jailorCooldown.getFloat();
         suicidesIfFalseJail = CustomOptionHolder.jailorSuicidesIfFalseJail.getBool();
+        targetDiesAsWell = CustomOptionHolder.jailorTargetDiesIfFalseJail.getBool();
         players = [];
     }
 }

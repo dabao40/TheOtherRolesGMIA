@@ -70,6 +70,8 @@ namespace TheOtherRoles.Roles
         {
             if (player == null) return;
             if (player == Mini.mini && !Mini.isGrownUp()) return;
+            TORGameManager.Instance.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, zephyr.PlayerId, 1 << player.PlayerId) { RelatedTag = EventDetail.Blown });
+
             TORGUIManager.Instance.StartCoroutine(CoPlayJumpAnimation(player, player?.transform.position ?? Vector2.zero, to, onLand : () =>
             {
                 if (player.isRole(RoleId.NekoKabocha)) NekoKabocha.getRole(player).otherKiller = zephyr;

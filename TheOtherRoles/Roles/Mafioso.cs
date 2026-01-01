@@ -112,6 +112,7 @@ namespace TheOtherRoles.Roles
         public static RemoteProcess SkipMeeting = new("MafiosoSkipMeeting", (_) =>
         {
             if (MeetingHud.Instance == null) return;
+            SoundEffectsManager.play("mafiosoMeeting");
             onSkipMeeting(MeetingHud.Instance);
         });
 

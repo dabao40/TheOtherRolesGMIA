@@ -15,6 +15,7 @@ using TheOtherRoles.MetaContext;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TMPro;
 using TheOtherRoles.Roles;
+using System.Collections;
 
 namespace TheOtherRoles.Patches
 {
@@ -1204,20 +1205,28 @@ namespace TheOtherRoles.Patches
             }
         }
 
-        [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.CoRun))]
-        class MeetingIntroStartPatch
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CoIntro))]
+        class MeetingIntroPatch
         {
-            public static void Postfix(MeetingIntroAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+            public static void Postfix(MeetingHud __instance, ref Il2CppSystem.Collections.IEnumerator __result)
             {
-                __result = Effects.Sequence(
-                    Effects.Action((Il2CppSystem.Action)(() =>
+                var orig = __result;
+                IEnumerator CoIntro()
+                {
+                    while (orig.MoveNext())
                     {
-                        MeetingOverlayHolder.OnMeetingStart();
-                    })),
-                    __result
-                    );
+                        var current = orig.Current;
+                        yield return current;
+                        if (current != null && current.TryCast<MeetingIntroAnimation._CoRun_d__17>() != null)
+                        {
+                            MeetingOverlayHolder.OnMeetingStart();
+                        }
+                    }
+                }
+                __result = CoIntro().WrapToIl2Cpp();
             }
         }
+
 
         [HarmonyPatch(typeof(MeetingIntroAnimation), nameof(MeetingIntroAnimation.Init))]
         public static class MeetingIntroAnimationInitPatch
@@ -1252,10 +1261,6 @@ namespace TheOtherRoles.Patches
                         bool isLighter = Helpers.isLighterColor(GameData.Instance.GetPlayerById(player.TargetPlayerId).DefaultOutfit.ColorId);
                         SpriteRenderer renderer = Helpers.CreateObject<SpriteRenderer>("Color", player.transform, new Vector3(1.2f, -0.18f, -1f));
                         renderer.sprite = isLighter ? LightColorSprite.GetSprite() : DarkColorSprite.GetSprite();
-                        addButtonGuide(renderer.gameObject.SetUpButton(), isLighter ? ModTranslation.getString("detectiveLightLabel") : ModTranslation.getString("detectiveDarkLabel"));
-                        var collider = renderer.gameObject.AddComponent<CircleCollider2D>();
-                        collider.isTrigger = true;
-                        collider.radius = 0.1f;
                     }
                 }
                 __instance.StartCoroutine(Effects.Sequence(Effects.Wait(2f), Helpers.Action(() => SortVotingArea(__instance, p => p.IsDead || p.Disconnected ? 2 : 1)).WrapToIl2Cpp()));

@@ -1848,7 +1848,7 @@ namespace TheOtherRoles
             else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
                 if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
                     roleCouldUse = false;
-                else if (player.isRole(RoleId.Undertaker) && Undertaker.DraggedBody != null && Undertaker.disableVent)
+                else if (player.isRole(RoleId.Undertaker) && Undertaker.DraggedBody != null && !Undertaker.canVentWhileDragging)
                     roleCouldUse = false;
                 else
                     roleCouldUse = true;

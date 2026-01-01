@@ -223,6 +223,7 @@ namespace TheOtherRoles {
         public static CustomRoleOption fortuneTellerSpawnRate;
         public static CustomOption fortuneTellerNumTasks;
         public static CustomOption fortuneTellerResults;
+        public static CustomOption fortuneTellerRevealOnImpDivine;
         public static CustomOption fortuneTellerDistance;
         public static CustomOption fortuneTellerDuration;
 
@@ -258,6 +259,7 @@ namespace TheOtherRoles {
         public static CustomOption jailorCooldown;
         public static CustomOption jailorNumberOfJails;
         public static CustomOption jailorSuicidesIfFalseJail;
+        public static CustomOption jailorTargetDiesIfFalseJail;
 
         public static CustomRoleOption noisemakerSpawnRate;
         public static CustomOption noisemakerCooldown;
@@ -410,7 +412,8 @@ namespace TheOtherRoles {
 
         public static CustomRoleOption undertakerSpawnRate;
         public static CustomOption undertakerSpeedDecrease;
-        public static CustomOption undertakerDisableVent;
+        public static CustomOption undertakerCanVentWhileDragging;
+        public static CustomOption undertakerConnectsVent;
 
         public static CustomRoleOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
@@ -798,8 +801,9 @@ namespace TheOtherRoles {
             evilTrackerCanSetTargetOnMeeting = CustomOption.Create(4032, Types.Impostor, "evilTrackerCanSetTargetOnMeeting", true, evilTrackerSpawnRate);
 
             undertakerSpawnRate = new CustomRoleOption(4056, Types.Impostor, "undertaker", Undertaker.color, 1);
-            undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, "undertakerSpeedDecrease", -50f, -80f, 0f, 10f, undertakerSpawnRate, false, "unitPercent");
-            undertakerDisableVent = CustomOption.Create(4058, Types.Impostor, "undertakerDisableVent", true, undertakerSpawnRate);
+            undertakerSpeedDecrease = CustomOption.Create(4057, Types.Impostor, "undertakerSpeedDecrease", 0f, -80f, 180f, 10f, undertakerSpawnRate, false, "unitPercent");
+            undertakerCanVentWhileDragging = CustomOption.Create(4058, Types.Impostor, "undertakerCanVentWhileDragging", true, undertakerSpawnRate);
+            undertakerConnectsVent = CustomOption.Create(4059, Types.Impostor, "undertakerConnectsVent", true, undertakerSpawnRate);
 
             yoyoSpawnRate = new CustomRoleOption(470, Types.Impostor, "yoyo", Yoyo.color);
             yoyoBlinkDuration = CustomOption.Create(471, Types.Impostor, "yoyoBlinkDuration", 20f, 2.5f, 120f, 2.5f, yoyoSpawnRate, format: "unitSeconds");
@@ -1064,6 +1068,7 @@ namespace TheOtherRoles {
             fortuneTellerNumTasks = CustomOption.Create(942, Types.Crewmate, "fortuneTellerNumTasks", 4f, 0f, 25f, 1f, fortuneTellerSpawnRate, false, "unitScrews");
             fortuneTellerDuration = CustomOption.Create(943, Types.Crewmate, "fortuneTellerDuration", 20f, 1f, 50f, 1f, fortuneTellerSpawnRate, false, "unitSeconds");
             fortuneTellerDistance = CustomOption.Create(944, Types.Crewmate, "fortuneTellerDistance", 2.5f, 1f, 10f, 0.5f, fortuneTellerSpawnRate, false, "unitMeters");
+            fortuneTellerRevealOnImpDivine = CustomOption.Create(955, Types.Crewmate, "fortuneTellerRevealOnImpDivine", true, fortuneTellerSpawnRate, false, "unitMeters");
 
             collatorSpawnRate = new CustomRoleOption(945, Types.Crewmate, "collator", Collator.color);
             collatorCooldown = CustomOption.Create(946, Types.Crewmate, "collatorCooldown", 15f, 1f, 60f, 1f, collatorSpawnRate, false, "unitSeconds");
@@ -1106,6 +1111,7 @@ namespace TheOtherRoles {
             jailorCooldown = CustomOption.Create(4055, Types.Crewmate, "jailorCooldown", 30f, 1f, 60f, 1f, jailorSpawnRate, false, "unitSeconds");
             jailorNumberOfJails = CustomOption.Create(4076, Types.Crewmate, "jailorNumberOfJails", 5f, 1f, 15f, 1f, jailorSpawnRate, false, "unitScrews");
             jailorSuicidesIfFalseJail = CustomOption.Create(4077, Types.Crewmate, "jailorSuicidesIfFalseJail", true, jailorSpawnRate);
+            jailorTargetDiesIfFalseJail = CustomOption.Create(4078, Types.Crewmate, "jailorTargetDiesIfFalseJail", false, jailorSpawnRate);
 
             buskerSpawnRate = new CustomRoleOption(8040, Types.Crewmate, "busker", Busker.color);
             buskerCooldown = CustomOption.Create(8041, Types.Crewmate, "buskerCooldown", 20f, 5f, 60f, 2.5f, buskerSpawnRate, false, "unitSeconds");

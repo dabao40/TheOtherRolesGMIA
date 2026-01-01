@@ -661,8 +661,6 @@ namespace TheOtherRoles
             AssassinTrace.clearTraces();
             Portal.clearPortals();
             Bloodytrail.resetSprites();
-            SpecimenVital.clearAndReload();
-            AdditionalVents.clearAndReload();
             MapBehaviourPatch.reset();
             MapBehaviourPatch.resetRealTasks();
             MapBehaviourPatch2.ResetIcons();
@@ -1158,7 +1156,7 @@ namespace TheOtherRoles
                     }
                     break;
                 case ChatCommands.ChannelType.Lover:
-                    if (player == PlayerControl.LocalPlayer.getPartner() || Helpers.shouldShowGhostInfo())
+                    if (player == PlayerControl.LocalPlayer.getPartner() || player == PlayerControl.LocalPlayer || Helpers.shouldShowGhostInfo())
                     {
                         ChatCommands.CurrentChatType = ChatCommands.ChatTypes.LoverChat;
                         HudManager.Instance.Chat.AddChat(player, message.message);
@@ -1216,7 +1214,7 @@ namespace TheOtherRoles
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedSomeone"), 7f, Color.white);
             }
-            ftRole.setDivinedFlag(true);
+            if (target.Data.Role.IsImpostor && FortuneTeller.revealOnImp) ftRole.setDivinedFlag(true);
             if (target.isRole(RoleId.Immoralist) && PlayerControl.LocalPlayer == target)
             {
                 FortuneTeller.fortuneTellerMessage(ModTranslation.getString("fortuneTellerDivinedYou"), 7f, Color.white);
