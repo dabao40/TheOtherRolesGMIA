@@ -1,19 +1,20 @@
-using HarmonyLib;
-using Hazel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using static TheOtherRoles.TheOtherRoles;
-using static TheOtherRoles.GameHistory;
+using AmongUs.GameOptions;
+using HarmonyLib;
+using Hazel;
+using Sentry.Internal.Extensions;
+using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
-using TheOtherRoles.CustomGameModes;
-using AmongUs.GameOptions;
-using Sentry.Internal.Extensions;
-using TheOtherRoles.Modules;
-using TheOtherRoles.MetaContext;
-using TheOtherRoles.Roles;
+using static TheOtherRoles.GameHistory;
+using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -365,6 +366,25 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        private static void multitaskerUpdate()
+        {
+            if (Multitasker.multitasker.Any(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId))
+            {
+                if (PlayerControl.LocalPlayer.Data.IsDead) return;
+                if (!Minigame.Instance) return;
+
+                var Base = Minigame.Instance as MonoBehaviour;
+                SpriteRenderer[] rends = Base.GetComponentsInChildren<SpriteRenderer>();
+                for (var i = 0; i < rends.Length; i++)
+                {
+                    var oldColor1 = rends[i].color[0];
+                    var oldColor2 = rends[i].color[1];
+                    var oldColor3 = rends[i].color[2];
+                    rends[i].color = new Color(oldColor1, oldColor2, oldColor3, 0.5f);
+                }
+            }
+        }
+
         static void decelTrapUpdate()
         {
             if (!CustomOptionHolder.activateProps.getBool()) return;
@@ -614,6 +634,8 @@ namespace TheOtherRoles.Patches {
                 bloodyUpdate();
                 // Chameleon (invis stuff, timers)
                 Chameleon.update();
+                // Multitasker
+                multitaskerUpdate();
                 // mini (for the cooldowns)
                 miniCooldownUpdate();
                 // Yo-yo
@@ -787,24 +809,28 @@ namespace TheOtherRoles.Patches {
                 Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(deadPlayer, target.transform.position));
             }
 
-            if (PlayerControl.LocalPlayer.isRole(RoleId.Seer) && Seer.canSeeKillTeams) {
-                switch (__instance)
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Seer)) {
+                if (__instance.Data.Role.IsImpostor && __instance != target) Seer.local.acTokenAnother.Value.impKill = true;
+                if (Seer.canSeeKillTeams)
                 {
-                    case var _ when __instance.Data.Role.IsImpostor:
-                        Seer.killTeams.impostor++;
-                        break;
-                    case var _ when __instance.isRole(RoleId.Jackal) || __instance.isRole(RoleId.Sidekick) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Jackal):
-                        Seer.killTeams.jackal++;
-                        break;
-                    case var _ when __instance.isRole(RoleId.JekyllAndHyde) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde):
-                        Seer.killTeams.jekyllAndHyde++;
-                        break;
-                    case var _ when __instance.isRole(RoleId.Moriarty) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Moriarty):
-                        Seer.killTeams.moriarty++;
-                        break;
-                    case var _ when !Helpers.isNeutral(__instance):
-                        Seer.killTeams.crewmate++;
-                        break;
+                    switch (__instance)
+                    {
+                        case var _ when __instance.Data.Role.IsImpostor:
+                            Seer.killTeams.impostor++;
+                            break;
+                        case var _ when __instance.isRole(RoleId.Jackal) || __instance.isRole(RoleId.Sidekick) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Jackal):
+                            Seer.killTeams.jackal++;
+                            break;
+                        case var _ when __instance.isRole(RoleId.JekyllAndHyde) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde):
+                            Seer.killTeams.jekyllAndHyde++;
+                            break;
+                        case var _ when __instance.isRole(RoleId.Moriarty) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Moriarty):
+                            Seer.killTeams.moriarty++;
+                            break;
+                        case var _ when !Helpers.isNeutral(__instance):
+                            Seer.killTeams.crewmate++;
+                            break;
+                    }
                 }
             }
 
@@ -884,6 +910,16 @@ namespace TheOtherRoles.Patches {
                 float multiplier = 1f;
                 if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini) multiplier = Mini.isGrownUp() ? 0.66f : 2f;
                 Mini.mini.SetKillTimer(__instance.killTimer * multiplier);
+            }
+
+            if (PlayerControl.LocalPlayer == __instance && Diseased.diseased.Any(x => x.PlayerId == target.PlayerId))
+            {
+                HudManagerStartPatch.jackalKillButton.Timer = Jackal.cooldown * Diseased.multiplier;
+                HudManagerStartPatch.sheriffKillButton.Timer = Sheriff.cooldown * Diseased.multiplier;
+                HudManagerStartPatch.vampireKillButton.Timer = Vampire.cooldown * Diseased.multiplier;
+                HudManagerStartPatch.sidekickKillButton.Timer = Sidekick.cooldown * Diseased.multiplier;
+                HudManagerStartPatch.schrodingersCatKillButton.Timer = SchrodingersCat.killCooldown * Diseased.multiplier;
+                PlayerControl.LocalPlayer.SetKillTimerUnchecked(__instance.killTimer * Diseased.multiplier);
             }
 
             // Add Bloody Modifier

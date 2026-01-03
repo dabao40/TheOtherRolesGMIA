@@ -157,6 +157,12 @@ namespace TheOtherRoles.CustomGameModes
                 case RoleId.Armored:
                     Armored.armored = null;
                     break;
+                case RoleId.Multitasker:
+                    Multitasker.multitasker.RemoveAll(x => x.PlayerId == playerId);
+                    break;
+                case RoleId.Diseased:
+                    Diseased.diseased.RemoveAll(x => x.PlayerId == playerId);
+                    break;
             }
         }
 

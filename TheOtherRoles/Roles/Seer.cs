@@ -21,34 +21,41 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Seer;
             acTokenChallenge = null;
+            acTokenAnother = null;
         }
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {
-            if (deadBodyPositions != null && PlayerControl.LocalPlayer == player && (mode == 0 || mode == 2))
+            if (PlayerControl.LocalPlayer == player)
             {
-                foreach (Vector3 pos in deadBodyPositions)
-                {
-                    GameObject soul = new();
-                    //soul.transform.position = pos;
-                    soul.transform.position = new Vector3(pos.x, pos.y, pos.y / 1000 - 1f);
-                    soul.layer = 5;
-                    var rend = soul.AddComponent<SpriteRenderer>();
-                    soul.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-                    rend.sprite = getSoulSprite();
+                acTokenAnother.Value.impKill = false;
+                acTokenAnother.Value.lastMeeting = TORGameManager.Instance.CurrentTime;
 
-                    if (limitSoulDuration)
-                        FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(soulDuration, new Action<float>((p) => {
-                            if (rend != null)
-                            {
-                                var tmp = rend.color;
-                                tmp.a = Mathf.Clamp01(1 - p);
-                                rend.color = tmp;
-                            }
-                            if (p == 1f && rend != null && rend.gameObject != null) UnityEngine.Object.Destroy(rend.gameObject);
-                        })));
+                if (deadBodyPositions != null && (mode == 0 || mode == 2))
+                {
+                    foreach (Vector3 pos in deadBodyPositions)
+                    {
+                        GameObject soul = new();
+                        //soul.transform.position = pos;
+                        soul.transform.position = new Vector3(pos.x, pos.y, pos.y / 1000 - 1f);
+                        soul.layer = 5;
+                        var rend = soul.AddComponent<SpriteRenderer>();
+                        soul.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+                        rend.sprite = getSoulSprite();
+
+                        if (limitSoulDuration)
+                            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(soulDuration, new Action<float>((p) => {
+                                if (rend != null)
+                                {
+                                    var tmp = rend.color;
+                                    tmp.a = Mathf.Clamp01(1 - p);
+                                    rend.color = tmp;
+                                }
+                                if (p == 1f && rend != null && rend.gameObject != null) UnityEngine.Object.Destroy(rend.gameObject);
+                            })));
+                    }
+                    deadBodyPositions = [];
                 }
-                deadBodyPositions = [];
             }
         }
 
@@ -57,6 +64,8 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer == player)
             {
                 acTokenChallenge.Value = 0;
+                if (TORGameManager.Instance.CurrentTime - acTokenAnother.Value.lastMeeting <= 20 && acTokenAnother.Value.impKill)
+                    acTokenAnother.Value.cleared = true;
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead && canSeeKillTeams)
                 {
@@ -69,7 +78,13 @@ namespace TheOtherRoles.Roles
                         (kt => kt.jekyllAndHyde, JekyllAndHyde.color, "jekyllAndHyde"),
                         (kt => kt.moriarty, Moriarty.color, "moriarty")
                     };
-                    foreach (var (selector, color, name) in teamInfos)                         if (selector(killTeams) > 0)                             killList.Add(Helpers.cs(color, ModTranslation.getString(name)) + ": " + selector(killTeams).ToString());
+
+                    foreach (var (selector, color, name) in teamInfos)
+                    {
+                        if (selector(killTeams) > 0)
+                            killList.Add(Helpers.cs(color, ModTranslation.getString(name)) + ": " + selector(killTeams).ToString());
+                    }
+
                     if (killList.Count > 0)
                         MeetingOverlayHolder.RegisterOverlay(TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
                         new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.API.GetAttribute(AttributeAsset.OverlayTitle), new TranslateTextComponent("seerMeetingInfo")),
@@ -96,10 +111,12 @@ namespace TheOtherRoles.Roles
         public static KillInfo killTeams = new();
 
         public AchievementToken<int> acTokenChallenge = null;
+        public AchievementToken<(float lastMeeting, bool impKill, bool cleared)> acTokenAnother = null;
 
         public override void PostInit()
         {
             if (PlayerControl.LocalPlayer != player) return;
+            acTokenAnother ??= new("seer.another1", (0, false, false), (val, _) => val.cleared);
             acTokenChallenge ??= new("seer.challenge", 0, (val, _) => val >= 5);
         }
 

@@ -563,7 +563,9 @@ namespace TheOtherRoles.Patches {
                 RoleId.Vip,
                 RoleId.Invert,
                 RoleId.Chameleon,
-                RoleId.Armored
+                RoleId.Armored,
+                RoleId.Multitasker,
+                RoleId.Diseased
                 //RoleId.Shifter
             });
 
@@ -767,6 +769,32 @@ namespace TheOtherRoles.Patches {
                 modifiers.RemoveAll(x => x == RoleId.Sunglasses);
             }
 
+            if (modifiers.Contains(RoleId.Multitasker))
+            {
+                var multitaskerCount = 0;
+                while (multitaskerCount < modifiers.FindAll(x => x == RoleId.Multitasker).Count)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Multitasker, crewPlayer);
+                    crewPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    playerList.RemoveAll(x => x.PlayerId == playerId);
+                    multitaskerCount++;
+                }
+                modifiers.RemoveAll(x => x == RoleId.Multitasker);
+            }
+
+            if (modifiers.Contains(RoleId.Diseased))
+            {
+                var diseasedCount = 0;
+                while (diseasedCount < modifiers.FindAll(x => x == RoleId.Diseased).Count)
+                {
+                    playerId = setModifierToRandomPlayer((byte)RoleId.Diseased, crewPlayer);
+                    crewPlayer.RemoveAll(x => x.PlayerId == playerId);
+                    playerList.RemoveAll(x => x.PlayerId == playerId);
+                    diseasedCount++;
+                }
+                modifiers.RemoveAll(x => x == RoleId.Diseased);
+            }
+
             foreach (RoleId modifier in modifiers) {
                 if (playerList.Count == 0) break;
                 playerId = setModifierToRandomPlayer((byte)modifier, playerList);
@@ -813,6 +841,14 @@ namespace TheOtherRoles.Patches {
                 case RoleId.Vip:
                     selection = CustomOptionHolder.modifierVip.getSelection();
                     if (multiplyQuantity) selection *= CustomOptionHolder.modifierVipQuantity.getQuantity();
+                    break;
+                case RoleId.Multitasker:
+                    selection = CustomOptionHolder.modifierMultitasker.getSelection();
+                    if (multiplyQuantity) selection *= CustomOptionHolder.modifierMultitaskerQuantity.getQuantity();
+                    break;
+                case RoleId.Diseased:
+                    selection = CustomOptionHolder.modifierDiseased.getSelection();
+                    if (multiplyQuantity) selection *= CustomOptionHolder.modifierDiseasedQuantity.getQuantity();
                     break;
                 case RoleId.Invert:
                     selection = CustomOptionHolder.modifierInvert.getSelection();

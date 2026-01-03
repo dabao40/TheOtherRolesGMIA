@@ -143,6 +143,8 @@ namespace TheOtherRoles
         public static RoleInfo vip = new("vip", Color.yellow, RoleId.Vip, false, true);
         public static RoleInfo invert = new("invert", Color.yellow, RoleId.Invert, false, true);
         public static RoleInfo chameleon = new("chameleon", Color.yellow, RoleId.Chameleon, false, true);
+        public static RoleInfo multitasker = new("multitasker", Color.yellow, RoleId.Multitasker, false, true);
+        public static RoleInfo diseased = new("diseased", Color.yellow, RoleId.Diseased, false, true);
         public static RoleInfo armored = new ("armored", Color.yellow, RoleId.Armored, false, true);
         //public static RoleInfo shifter = new RoleInfo("Shifter", Color.yellow, "Shift your role", "Shift your role", RoleId.Shifter, false, true);
 
@@ -361,6 +363,8 @@ namespace TheOtherRoles
             vip,
             invert,
             chameleon,
+            multitasker,
+            diseased,
             armored
         };
 
@@ -384,6 +388,8 @@ namespace TheOtherRoles
                 if (Invert.invert.Any(x => x.PlayerId == p.PlayerId)) infos.Add(invert);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == p.PlayerId)) infos.Add(chameleon);
                 if (p == Armored.armored) infos.Add(armored);
+                if (Multitasker.multitasker.Any(x => x.PlayerId == p.PlayerId)) infos.Add(multitasker);
+                if (Diseased.diseased.Any(x => x.PlayerId == p.PlayerId)) infos.Add(diseased);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
 

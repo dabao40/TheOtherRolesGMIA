@@ -821,6 +821,7 @@ namespace TheOtherRoles
                 {
                     Lighter.local.lightActive = true;
                     Lighter.local.light();
+                    Lighter.local.acTokenChallenge.Value++;
                     SoundEffectsManager.play("lighterLight");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Lighter) && !PlayerControl.LocalPlayer.Data.IsDead; },
@@ -1119,6 +1120,7 @@ namespace TheOtherRoles
                     trackerKillButton.Timer = trackerKillButton.MaxTimer;
                     Tracker.local.currentTarget = null;
                     Tracker.local.numShots--;
+                    _ = new StaticAchievementToken("tracker.challenge2");
                 },
                 () =>
                 {
@@ -1154,7 +1156,10 @@ namespace TheOtherRoles
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
                                     var dp = GameHistory.deadPlayers?.Where(x => x.player?.PlayerId == playerInfo.PlayerId)?.FirstOrDefault();
                                     if (dp != null && dp.killerIfExisting != null && !dp.killerIfExisting.Data.IsDead)
+                                    {
+                                        _ = new StaticAchievementToken("detective.another1");
                                         TORGUIManager.Instance.StartCoroutine(Helpers.CoAnimIcon(dp.killerIfExisting).WrapToIl2Cpp());
+                                    }
                                     Detective.inspectCooldown = detectiveButton.Timer = detectiveButton.MaxTimer;
                                     break;
                                 }

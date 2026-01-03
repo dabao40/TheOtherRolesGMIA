@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -54,7 +55,16 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Lighter;
             lightActive = false;
+            acTokenChallenge = null;
         }
+
+        public override void PostInit()
+        {
+            if (PlayerControl.LocalPlayer != player) return;
+            acTokenChallenge ??= new("lighter.challenge", 0, (val, _) => val >= 10);
+        }
+
+        public AchievementToken<int> acTokenChallenge = null;
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {

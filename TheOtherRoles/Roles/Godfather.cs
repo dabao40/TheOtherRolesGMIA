@@ -24,12 +24,6 @@ public class Godfather : RoleBase<Godfather>
 
     public static bool shouldShowInfo(PlayerControl player) => isRole(player) || ((player.isRole(RoleId.Mafioso) || player.isRole(RoleId.Janitor)) && shareInfo);
 
-    public override void OnDeath(PlayerControl killer = null)
-    {
-        if (PlayerControl.LocalPlayer.isRole(RoleId.Mafioso) && !PlayerControl.LocalPlayer.Data.IsDead)
-            _ = new StaticAchievementToken("mafioso.another1");
-    }
-
     public static void clearAndReload()
     {
         killed = [];

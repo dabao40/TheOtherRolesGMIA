@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -10,10 +11,18 @@ namespace TheOtherRoles.Roles
 
         public static bool impostorsCanSeeBody = true;
         public static bool canSabotage = true;
+        public AchievementToken<int> acTokenChallenge = null;
 
         public Janitor()
         {
             RoleId = roleId = RoleId.Janitor;
+            acTokenChallenge = null;
+        }
+
+        public override void PostInit()
+        {
+            if (PlayerControl.LocalPlayer != player) return;
+            acTokenChallenge ??= new("janitor.challenge", 0, (val, _) => val >= 3);
         }
 
         public override void OnKill(PlayerControl target)
@@ -25,11 +34,13 @@ namespace TheOtherRoles.Roles
                     if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == target.PlayerId)
                         _ = new DeadBodyReporter(player, array[i]);
             }
+            if (PlayerControl.LocalPlayer == player) acTokenChallenge.Value++;
         }
 
         public override void OnMeetingStart()
         {
             DeadBodyReporter.clearAndReload();
+            if (PlayerControl.LocalPlayer == player) acTokenChallenge.Value = 0;
         }
 
         public static void clearAndReload()

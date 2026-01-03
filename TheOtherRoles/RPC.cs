@@ -121,7 +121,9 @@ namespace TheOtherRoles
         Sunglasses,
         Mini,
         Vip,
+        Diseased,
         Invert,
+        Multitasker,
         Chameleon,
         Armored,
         //Shifter
@@ -789,6 +791,12 @@ namespace TheOtherRoles
                     break;
                 case RoleId.Armored:
                     Armored.armored = player;
+                    break;
+                case RoleId.Multitasker:
+                    Multitasker.multitasker.Add(player);
+                    break;
+                case RoleId.Diseased:
+                    Diseased.diseased.Add(player);
                     break;
                 case RoleId.Madmate:
                     Madmate.madmate.Add(player);

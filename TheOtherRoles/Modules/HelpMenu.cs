@@ -702,6 +702,8 @@ public static class HelpMenu
                 { RoleId.Mini, CustomOptionHolder.modifierMini },
                 { RoleId.Lover, CustomOptionHolder.modifierLover },
                 { RoleId.Invert, CustomOptionHolder.modifierInvert },
+                { RoleId.Multitasker, CustomOptionHolder.modifierMultitasker },
+                { RoleId.Diseased, CustomOptionHolder.modifierDiseased },
             };
     }
 

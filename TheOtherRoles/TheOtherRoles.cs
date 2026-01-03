@@ -116,6 +116,8 @@ namespace TheOtherRoles
             Invert.clearAndReload();
             Chameleon.clearAndReload();
             Armored.clearAndReload();
+            Multitasker.clearAndReload();
+            Diseased.clearAndReload();
 
             // Gamemodes
             HandleGuesser.clearAndReload();
@@ -850,6 +852,28 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             invert = [];
             meetings = (int) CustomOptionHolder.modifierInvertDuration.getFloat();
+        }
+    }
+
+    public static class Diseased
+    {
+        public static List<PlayerControl> diseased = [];
+        public static float multiplier;
+
+        public static void clearAndReload()
+        {
+            diseased = [];
+            multiplier = CustomOptionHolder.modifierDiseasedMultiplier.getFloat();
+        }
+    }
+
+    public static class Multitasker
+    {
+        public static List<PlayerControl> multitasker = [];
+
+        public static void clearAndReload()
+        {
+            multitasker = [];
         }
     }
 

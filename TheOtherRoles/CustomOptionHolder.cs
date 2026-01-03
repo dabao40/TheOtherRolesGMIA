@@ -559,11 +559,18 @@ namespace TheOtherRoles {
         public static CustomOption modifierInvertQuantity;
         public static CustomOption modifierInvertDuration;
 
+        public static CustomOption modifierDiseased;
+        public static CustomOption modifierDiseasedQuantity;
+        public static CustomOption modifierDiseasedMultiplier;
+
         public static CustomOption modifierChameleon;
         public static CustomOption modifierChameleonQuantity;
         public static CustomOption modifierChameleonHoldDuration;
         public static CustomOption modifierChameleonFadeDuration;
         public static CustomOption modifierChameleonMinVisibility;
+
+        public static CustomOption modifierMultitasker;
+        public static CustomOption modifierMultitaskerQuantity;
 
         public static CustomOption modifierArmored;
 
@@ -1247,11 +1254,18 @@ namespace TheOtherRoles {
             modifierInvertQuantity = CustomOption.Create(1081, Types.Modifier, cs(Color.yellow, "invertQuantity"), ratesModifier, modifierInvert);
             modifierInvertDuration = CustomOption.Create(1082, Types.Modifier, "invertDuration", 3f, 1f, 15f, 1f, modifierInvert, false, "unitScrews");
 
+            modifierDiseased = CustomOption.Create(4990, Types.Modifier, cs(Color.yellow, "diseased"), rates, null, true, color: Color.yellow);
+            modifierDiseasedQuantity = CustomOption.Create(4991, Types.Modifier, cs(Color.yellow, "diseasedQuantity"), ratesModifier, modifierDiseased);
+            modifierDiseasedMultiplier = CustomOption.Create(4992, Types.Modifier, "diseasedMultiplier", 3f, 1.25f, 5f, 0.25f, modifierDiseased, false, "unitTimes");
+
             modifierChameleon = CustomOption.Create(1090, Types.Modifier, cs(Color.yellow, "chameleon"), rates, null, true, color: Color.yellow);
             modifierChameleonQuantity = CustomOption.Create(1091, Types.Modifier, cs(Color.yellow, "chameleonQuantity"), ratesModifier, modifierChameleon);
             modifierChameleonHoldDuration = CustomOption.Create(1092, Types.Modifier, "chameleonHoldDuration", 3f, 1f, 10f, 0.5f, modifierChameleon, false, "unitSeconds");
             modifierChameleonFadeDuration = CustomOption.Create(1093, Types.Modifier, "chameleonFadeDuration", 1f, 0.25f, 10f, 0.25f, modifierChameleon, false, "unitSeconds");
             modifierChameleonMinVisibility = CustomOption.Create(1094, Types.Modifier, "chameleonMinVisibility", ["0%", "10%", "20%", "30%", "40%", "50%"], modifierChameleon);
+
+            modifierMultitasker = CustomOption.Create(1996, Types.Modifier, cs(Color.yellow, "multitasker"), rates, null, true, color: Color.yellow);
+            modifierMultitaskerQuantity = CustomOption.Create(1997, Types.Modifier, cs(Color.yellow, "multitaskerQuantity"), ratesModifier, modifierMultitasker);
 
             modifierArmored = CustomOption.Create(9101, Types.Modifier, cs(Color.yellow, "armored"), rates, null, true, color: Color.yellow);
 

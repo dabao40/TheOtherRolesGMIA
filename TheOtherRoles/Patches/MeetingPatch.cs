@@ -1,21 +1,21 @@
-using HarmonyLib;
-using Hazel;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AmongUs.QuickChat;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using HarmonyLib;
+using Hazel;
+using Reactor.Utilities;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
+using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using TMPro;
+using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.TORMapOptions;
-using TheOtherRoles.Objects;
-using System;
-using TheOtherRoles.Utilities;
-using UnityEngine;
-using Reactor.Utilities;
-using AmongUs.QuickChat;
-using TheOtherRoles.Modules;
-using TheOtherRoles.MetaContext;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
-using TMPro;
-using TheOtherRoles.Roles;
-using System.Collections;
 
 namespace TheOtherRoles.Patches
 {
@@ -961,6 +961,7 @@ namespace TheOtherRoles.Patches
 
             bool isGuesser = HandleGuesser.isGuesser(PlayerControl.LocalPlayer.PlayerId) || PlayerControl.LocalPlayer.isRole(RoleId.Doomsayer);
             bool isTrackerButton = PlayerControl.LocalPlayer.isRole(RoleId.EvilTracker) && EvilTracker.canSetTargetOnMeeting && (EvilTracker.local.target == null || EvilTracker.resetTargetAfterMeeting) && !PlayerControl.LocalPlayer.Data.IsDead;
+
             // Add overlay for spelled players
             if (Witch.players.Any(x => x.player && x.futureSpelled != null)) {
                 foreach (PlayerVoteArea pva in __instance.playerStates) {
@@ -969,7 +970,8 @@ namespace TheOtherRoles.Patches
                         rend.transform.SetParent(pva.transform);
                         rend.gameObject.layer = pva.Megaphone.gameObject.layer;
                         rend.transform.localPosition = new Vector3(-0.5f, -0.03f, -1f);
-                        if (((PlayerControl.LocalPlayer.isRole(RoleId.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead) || isTrackerButton || (Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId) && !PlayerControl.LocalPlayer.Data.IsDead)) && isGuesser)
+                        if (((PlayerControl.LocalPlayer.isRole(RoleId.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead) || isTrackerButton || (Yasuna.isYasuna(PlayerControl.LocalPlayer.PlayerId) && !PlayerControl.LocalPlayer.Data.IsDead))
+                             && !IsBlockedBlackmail() && !Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId) && isGuesser)
                             rend.transform.localPosition = new Vector3(-0.725f, -0.15f, -1f);
                         rend.sprite = Witch.getSpelledOverlaySprite();
                         addButtonGuide(rend.gameObject.SetUpButton(), ModTranslation.getString("witchMeetingOverlay"));
@@ -1288,6 +1290,7 @@ namespace TheOtherRoles.Patches
                     __instance.Parent.SkipVoteButton.voteComplete = true;
                     __instance.Parent.SkipVoteButton.gameObject.SetActive(false);
                     Mafioso.SkipMeeting.Invoke();
+                    _ = new StaticAchievementToken("mafioso.challenge");
                     return false;
                 }
                 return true;
