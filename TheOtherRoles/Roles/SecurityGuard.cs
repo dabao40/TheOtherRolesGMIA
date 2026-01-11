@@ -1,11 +1,17 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Reactor.Utilities;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class SecurityGuard : RoleBase<SecurityGuard> {
         public static Color color = new Color32(195, 178, 95, byte.MaxValue);
 
@@ -14,7 +20,8 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.SecurityGuard;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getCloseVentButtonSprite(), "securityGuardVentHint"), new(getPlaceCameraButtonSprite(), "securityGuardCamHint")];
+        static public readonly HelpSprite[] HelpSprites = [new(getCloseVentButtonSprite(), "securityGuardVentHint"), new(getPlaceCameraButtonSprite(), "securityGuardCamHint"),
+        new(getFlushSprite(), "securityGuardFlushHint")];
 
         public static float cooldown = 30f;
         public static int remainingScrews = 7;
@@ -27,12 +34,54 @@ namespace TheOtherRoles.Roles
         public static int rechargeTasksNumber = 3;
         public static int rechargedTasks = 3;
         public static int charges = 1;
+        public static float flushCooldown = 30f;
         public static bool cantMove = true;
         public static Vent ventTarget = null;
         public static Minigame minigame = null;
 
+        private static Sprite flushButtonSprite;
+        public static Sprite getFlushSprite()
+        {
+            if (flushButtonSprite) return flushButtonSprite;
+            flushButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.FlushButton.png", 115f);
+            return flushButtonSprite;
+        }
+
         public static AchievementToken<(bool vent, bool camera)> acTokenCommon = null;
         public static AchievementToken<int> acTokenChallenge = null;
+
+        public static RemoteProcess RpcFlush = new("SecurityGuardFlush", (isByMe) =>
+        {
+            if (PlayerControl.LocalPlayer.inVent)
+            {
+                PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
+                PlayerControl.LocalPlayer.MyPhysics.ExitAllVents();
+
+                Helpers.showFlash(color);
+            }
+
+            if (isByMe) Coroutines.Start(SeeVenter());
+        });
+
+        static IEnumerator SeeVenter()
+        {
+            var playersInVent = PlayerControl.AllPlayerControls.ToArray().Where(x => x.inVent);
+            if (!playersInVent.Any()) yield break;
+            var arrows = new List<Arrow>();
+            foreach (var p in playersInVent)
+            {
+                var arrow = new Arrow(color);
+                arrow.Update(p.transform.position);
+                arrows.Add(arrow);
+            }
+            yield return new WaitForSeconds(1f);
+
+            foreach (Arrow arrow in arrows)
+                if (arrow?.arrow != null)
+                    UnityEngine.Object.Destroy(arrow.arrow);
+
+            arrows = [];
+        }
 
         public override void PostInit()
         {
@@ -165,6 +214,7 @@ namespace TheOtherRoles.Roles
             camPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardCamPrice.getFloat());
             ventPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardVentPrice.getFloat());
             cantMove = CustomOptionHolder.securityGuardNoMove.getBool();
+            flushCooldown = CustomOptionHolder.securityGuardFlushCooldown.getFloat();
             acTokenChallenge = null;
             acTokenCommon = null;
             players = [];

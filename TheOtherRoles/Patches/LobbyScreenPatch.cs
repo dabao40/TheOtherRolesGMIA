@@ -1,67 +1,90 @@
+using System.Text.RegularExpressions;
 using AmongUs.Data;
 using HarmonyLib;
 using InnerNet;
-using System.Text.RegularExpressions;
+using Reactor.Utilities.Extensions;
 using TheOtherRoles.Modules;
+using TMPro;
 using UnityEngine;
 namespace TheOtherRoles.Patches
 {
     [HarmonyPatch]
-    public sealed class LobbyJoinBind
+    public static class LobbyJoin
     {
-        static int GameId;
-        static GameObject LobbyText;
+        private static int GameId;
+
+        private static GameObject LobbyText;
+
+        private static TextMeshPro Text;
+        private static bool JoiningAttempted;
+
         [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
         [HarmonyPostfix]
         public static void Postfix(InnerNetClient __instance)
         {
             GameId = __instance.GameId;
         }
-        [HarmonyPatch(typeof(MMOnlineManager), nameof(MMOnlineManager.Start))]
+
+        [HarmonyPatch(typeof(EnterCodeManager), nameof(EnterCodeManager.OnEnable))]
         [HarmonyPostfix]
-        public static void Postfix()
+        public static void OnEnable(EnterCodeManager __instance)
         {
-            if (!LobbyText)
-            {
-                LobbyText = new("lobbycode");
-                var comp = LobbyText.AddComponent<TMPro.TextMeshPro>();
-                comp.fontSize = 2.5f;
-                LobbyText.transform.localPosition = new(10.3f, -3.9f, 0);
-                LobbyText.SetActive(true);
-            }
-        }
-        [HarmonyPatch(typeof(MMOnlineManager), nameof(MMOnlineManager.Update))]
-        [HarmonyPostfix]
-        public static void Postfix(MMOnlineManager __instance)
-        {
-            string code2 = GUIUtility.systemCopyBuffer;
-            if (code2.Length != 6 || !Regex.IsMatch(code2, @"^[a-zA-Z]+$"))
-                code2 = "";
-            string code2Disp = DataManager.Settings.Gameplay.StreamerMode ? "****" : code2.ToUpper();
-            if (GameId != 0 && Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                __instance.StartCoroutine(AmongUsClient.Instance.CoJoinOnlineGameFromCode(GameId));
-            }
-            else if (Input.GetKeyDown(KeyCode.RightShift) && code2 != "")
-            {
-                __instance.StartCoroutine(AmongUsClient.Instance.CoJoinOnlineGameFromCode(GameCode.GameNameToInt(code2)));
-            }
             if (LobbyText)
             {
-                LobbyText.GetComponent<TMPro.TextMeshPro>().text = "";
-                if (GameId != 0 && GameId != 32)
+                LobbyText.SetActive(GameId != 0);
+                return;
+            }
+
+            LobbyText = Object.Instantiate(__instance.transform.FindChild("Header").gameObject, __instance.transform);
+            LobbyText.name = "LobbyText";
+            Text = LobbyText.transform.GetChild(1).GetComponent<TextMeshPro>();
+            Text.fontSizeMin = 3.35f;
+            Text.fontSizeMax = 3.35f;
+            Text.fontSize = 3.35f;
+            Text.text = string.Empty;
+            Text.alignment = TextAlignmentOptions.Center;
+            LobbyText.transform.localPosition = new Vector3(1f, 0f, 0f);
+            LobbyText.transform.GetChild(0).gameObject.Destroy();
+            LobbyText.SetActive(GameId != 0);
+        }
+
+        [HarmonyPatch(typeof(EnterCodeManager), nameof(EnterCodeManager.OnDisable))]
+        [HarmonyPostfix]
+        public static void OnDisable()
+        {
+            if (LobbyText)
+            {
+                LobbyText.SetActive(false);
+                JoiningAttempted = false;
+            }
+        }
+
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
+        [HarmonyPostfix]
+        public static void Update()
+        {
+            if (GameId == 0 || !LobbyText || !LobbyText.active)
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !JoiningAttempted)
+            {
+                AmongUsClient.Instance.StartCoroutine(AmongUsClient.Instance.CoFindGameInfoFromCodeAndJoin(GameId));
+                JoiningAttempted = true;
+            }
+
+            if (LobbyText && Text)
+            {
+                var code = GameCode.IntToGameName(GameId);
+                if (DataManager.Settings.Gameplay.StreamerMode)
                 {
-                    string code = GameCode.IntToGameName(GameId);
-                    if (code != "")
-                    {
-                        code = DataManager.Settings.Gameplay.StreamerMode ? "****" : code;
-                        LobbyText.GetComponent<TMPro.TextMeshPro>().text = ModTranslation.getString("lobbyJoinBindText1") + $" {code}   [LShift]";
-                    }
+                    code = "******";
                 }
-                if (code2 != "")
-                {
-                    LobbyText.GetComponent<TMPro.TextMeshPro>().text += ModTranslation.getString("lobbyJoinBindText2") + $" {code2Disp}  [RShift]";
-                }
+
+                Text.text = $"<size=110%>{ModTranslation.getString("lobbyJoinBindText1")}</size>"
+                            + $"\n<size=4.6f>({code})</size>"
+                            + $"[LShift]";
             }
         }
     }

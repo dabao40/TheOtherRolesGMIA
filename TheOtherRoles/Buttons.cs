@@ -53,6 +53,7 @@ namespace TheOtherRoles
         public static CustomButton warlockCurseButton;
         public static CustomButton securityGuardButton;
         public static CustomButton securityGuardCamButton;
+        public static CustomButton securityGuardFlushButton;
         public static CustomButton arsonistButton;
         public static CustomButton serialKillerButton;
         public static CustomButton vultureEatButton;
@@ -211,6 +212,7 @@ namespace TheOtherRoles
             yoyoButton.MaxTimer = Yoyo.markCooldown;
             securityGuardButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
+            securityGuardFlushButton.MaxTimer = SecurityGuard.flushCooldown;
             medicVitalsButton.MaxTimer = 0f;
             zephyrButton.MaxTimer = Zephyr.cooldown;
             lighterButton.MaxTimer = Lighter.cooldown;
@@ -2227,6 +2229,26 @@ namespace TheOtherRoles
             securityGuardChargesText.enableWordWrapping = false;
             securityGuardChargesText.transform.localScale = Vector3.one * 0.5f;
             securityGuardChargesText.transform.localPosition += new Vector3(-0.05f, 0.7f, 0);
+
+            securityGuardFlushButton = new(
+                () =>
+                {
+                    _ = new StaticAchievementToken("securityGuard.another1");
+                    if (PlayerControl.AllPlayerControls.ToArray().Any(x => x.inVent && Helpers.isVisible(PlayerControl.LocalPlayer, x)))
+                        _ = new StaticAchievementToken("securityGuard.another2");
+
+                    SecurityGuard.RpcFlush.Invoke();
+                    securityGuardFlushButton.Timer = securityGuardFlushButton.MaxTimer;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.SecurityGuard) && SecurityGuard.remainingScrews < Mathf.Min(SecurityGuard.ventPrice, SecurityGuard.camPrice) && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => { securityGuardFlushButton.Timer = securityGuardFlushButton.MaxTimer; },
+                SecurityGuard.getFlushSprite(),
+                CustomButton.ButtonPositions.lowerRowCenter,
+                __instance,
+                KeyCode.K,
+                buttonText: ModTranslation.getString("FlushText")
+            );
 
             // Arsonist button
             arsonistButton = new CustomButton(

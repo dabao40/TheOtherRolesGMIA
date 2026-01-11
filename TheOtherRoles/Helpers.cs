@@ -1174,6 +1174,18 @@ namespace TheOtherRoles
             return (meshRenderer, meshFilter);
         }
 
+        /// <summary>
+        /// Determines whether the source can see the target
+        /// </summary>
+        /// <param name="source">Source player</param>
+        /// <param name="target">Target player</param>
+        /// <returns></returns>
+        public static bool isVisible(PlayerControl source, PlayerControl target)
+        {
+            return !AnyNonTriggersBetween(source.GetTruePosition(), target.GetTruePosition(), out var vec)
+                        && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(source.PlayerId)) * 0.75f;
+        }
+
         public static void setSemiTransparent(this PoolablePlayer player, bool value) {
             float alpha = value ? 0.25f : 1f;
             foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())

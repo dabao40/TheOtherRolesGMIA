@@ -135,8 +135,7 @@ namespace TheOtherRoles.Roles
                 {
                     if (p.Data.IsDead) continue;
                     if (PlayerControl.LocalPlayer == p) continue;
-                    if (!Helpers.AnyNonTriggersBetween(target.GetTruePosition(), p.GetTruePosition(), out var vec)
-                        && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(p.PlayerId)) * 0.75f)
+                    if (Helpers.isVisible(p, target))
                     {
                         clearFlag = true;
                         break;

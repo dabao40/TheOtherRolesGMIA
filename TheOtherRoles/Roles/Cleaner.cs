@@ -15,6 +15,7 @@ namespace TheOtherRoles.Roles
         }
 
         public static float cooldown = 30f;
+        public static bool canSeeBodies = true;
 
         public AchievementToken<int> acTokenChallenge;
 
@@ -41,6 +42,7 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             cooldown = CustomOptionHolder.cleanerCooldown.getFloat();
+            canSeeBodies = CustomOptionHolder.cleanerCanSeeBodies.getBool();
             players = [];
         }
     }

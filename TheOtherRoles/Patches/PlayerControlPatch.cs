@@ -882,8 +882,7 @@ namespace TheOtherRoles.Patches {
                 if (target == PlayerControl.LocalPlayer)  _ = new StaticAchievementToken("spy.another1");
                 else
                 {
-                    if (!Helpers.AnyNonTriggersBetween(PlayerControl.LocalPlayer.GetTruePosition(), target.GetTruePosition(), out var vec)
-                        && vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId)) * 0.75f)
+                    if (Helpers.isVisible(PlayerControl.LocalPlayer, target))
                         _ = new StaticAchievementToken("spy.challenge");
                 }
             }
@@ -893,8 +892,7 @@ namespace TheOtherRoles.Patches {
 
             if (Sprinter.isSprinting(PlayerControl.LocalPlayer) && PlayerControl.LocalPlayer != target)
             {
-                if (!Helpers.AnyNonTriggersBetween(PlayerControl.LocalPlayer.GetTruePosition(), target.GetTruePosition(), out var vec) &&
-                vec.magnitude < ShipStatus.Instance.CalculateLightRadius(GameData.Instance.GetPlayerById(PlayerControl.LocalPlayer.PlayerId)) * 0.75f)
+                if (Helpers.isVisible(PlayerControl.LocalPlayer, target))
                     _ = new StaticAchievementToken("sprinter.challenge");
             }
 

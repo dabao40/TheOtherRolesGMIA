@@ -26,6 +26,7 @@ namespace TheOtherRoles.Patches {
         public static List<List<Vent>> VentNetworks = new();
 
         public static Dictionary<string, GameObject> mapIcons = new();
+        public static Dictionary<byte, SpriteRenderer> corpseIcons = null;
 
         public static Sprite doorClosedSprite;
         public static Dictionary<string, SpriteRenderer> doorMarks;
@@ -90,6 +91,37 @@ namespace TheOtherRoles.Patches {
             {
                 plainDoors = null;
             }
+            if (corpseIcons != null)
+            {
+                foreach (SpriteRenderer r in corpseIcons.Values) {
+                    if (r != null && r.gameObject) {
+                        UnityEngine.Object.Destroy(r?.gameObject);
+                    }
+                }
+                corpseIcons.Clear();
+                corpseIcons = null;
+            }
+        }
+
+        public static Sprite corpseSprite;
+        static Sprite getCorpseSprite()
+        {
+            if (corpseSprite) return corpseSprite;
+            corpseSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.CorpseIcon.png", 115f);
+            return corpseSprite;
+        }
+
+        static void initializeIcons(MapBehaviour __instance)
+        {
+            corpseIcons = [];
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                byte id = p.PlayerId;
+                corpseIcons[id] = UnityEngine.Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent);
+                corpseIcons[id].sprite = getCorpseSprite();
+                corpseIcons[id].transform.localScale = Vector3.one * 0.20f;
+                p.SetPlayerMaterialColors(corpseIcons[id]);
+            }
         }
 
         private static bool evilTrackerShowTask(MapTaskOverlay __instance)
@@ -137,6 +169,27 @@ namespace TheOtherRoles.Patches {
                     return evilTrackerShowTask(__instance);
                 }
                 return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.GenericShow))]
+        class MapBehaviourGenericShowPatch
+        {
+            static void Postfix(MapBehaviour __instance)
+            {
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Cleaner) && Cleaner.canSeeBodies)
+                {
+                    if (corpseIcons == null)
+                        initializeIcons(__instance);
+
+                    foreach (DeadBody b in UnityEngine.Object.FindObjectsOfType<DeadBody>())
+                    {
+                        byte id = b.ParentId;
+                        PlayerControl p = Helpers.getPlayerById(id);
+                        p.SetPlayerMaterialColors(corpseIcons[id]);
+                        corpseIcons[id].enabled = true;
+                    }
+                }
             }
         }
 
@@ -226,7 +279,28 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            // Show location of all players on the map for ghosts!
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Cleaner) && Cleaner.canSeeBodies && corpseIcons != null)
+            {
+                foreach (SpriteRenderer r in corpseIcons.Values) { r.enabled = false; }
+                foreach (DeadBody b in UnityEngine.Object.FindObjectsOfType<DeadBody>())
+                {
+                    byte id = b.ParentId;
+                    Vector3 vector = b.transform.position;
+                    vector /= MapUtilities.CachedShipStatus.MapScale;
+                    vector.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                    vector.z = -1f;
+
+                    if (!corpseIcons.ContainsKey(id))
+                    {
+                        continue;
+                    }
+
+                    corpseIcons[id].transform.localPosition = vector;
+                    corpseIcons[id].enabled = true;
+                }
+            }
+
+            // Show location of all players on the map for hacker!
             if (PlayerControl.LocalPlayer.isRole(RoleId.Hacker))
             {
                 if (Hacker.local.hackerTimer > 0f && !PlayerControl.LocalPlayer.Data.IsDead && __instance.countOverlay != null && __instance.countOverlay.isActiveAndEnabled)

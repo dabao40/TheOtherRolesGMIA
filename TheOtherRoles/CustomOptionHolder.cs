@@ -417,6 +417,7 @@ namespace TheOtherRoles {
 
         public static CustomRoleOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
+        public static CustomOption cleanerCanSeeBodies;
 
         public static CustomRoleOption warlockSpawnRate;
         public static CustomOption warlockCooldown;
@@ -424,6 +425,7 @@ namespace TheOtherRoles {
 
         public static CustomRoleOption securityGuardSpawnRate;
         public static CustomOption securityGuardCooldown;
+        public static CustomOption securityGuardFlushCooldown;
         public static CustomOption securityGuardTotalScrews;
         public static CustomOption securityGuardCamPrice;
         public static CustomOption securityGuardVentPrice;
@@ -752,6 +754,7 @@ namespace TheOtherRoles {
 
             cleanerSpawnRate = new CustomRoleOption(260, Types.Impostor, "cleaner", Cleaner.color);
             cleanerCooldown = CustomOption.Create(261, Types.Impostor, "cleanerCooldown", 30f, 10f, 60f, 2.5f, cleanerSpawnRate, false, "unitSeconds");
+            cleanerCanSeeBodies = CustomOption.Create(262, Types.Impostor, "cleanerCanSeeBodies", true, cleanerSpawnRate);
 
             warlockSpawnRate = new CustomRoleOption(270, Types.Impostor, "warlock", Warlock.color);
             warlockCooldown = CustomOption.Create(271, Types.Impostor, "warlockCooldown", 30f, 10f, 60f, 2.5f, warlockSpawnRate, false, "unitSeconds");
@@ -1075,7 +1078,7 @@ namespace TheOtherRoles {
             fortuneTellerNumTasks = CustomOption.Create(942, Types.Crewmate, "fortuneTellerNumTasks", 4f, 0f, 25f, 1f, fortuneTellerSpawnRate, false, "unitScrews");
             fortuneTellerDuration = CustomOption.Create(943, Types.Crewmate, "fortuneTellerDuration", 20f, 1f, 50f, 1f, fortuneTellerSpawnRate, false, "unitSeconds");
             fortuneTellerDistance = CustomOption.Create(944, Types.Crewmate, "fortuneTellerDistance", 2.5f, 1f, 10f, 0.5f, fortuneTellerSpawnRate, false, "unitMeters");
-            fortuneTellerRevealOnImpDivine = CustomOption.Create(955, Types.Crewmate, "fortuneTellerRevealOnImpDivine", true, fortuneTellerSpawnRate, false, "unitMeters");
+            fortuneTellerRevealOnImpDivine = CustomOption.Create(955, Types.Crewmate, "fortuneTellerRevealOnImpDivine", true, fortuneTellerSpawnRate);
 
             collatorSpawnRate = new CustomRoleOption(945, Types.Crewmate, "collator", Collator.color);
             collatorCooldown = CustomOption.Create(946, Types.Crewmate, "collatorCooldown", 15f, 1f, 60f, 1f, collatorSpawnRate, false, "unitSeconds");
@@ -1179,6 +1182,7 @@ namespace TheOtherRoles {
             securityGuardTotalScrews = CustomOption.Create(282, Types.Crewmate, "securityGuardTotalScrews", 7f, 1f, 15f, 1f, securityGuardSpawnRate, false, "unitScrews");
             securityGuardCamPrice = CustomOption.Create(283, Types.Crewmate, "securityGuardCamPrice", 2f, 1f, 15f, 1f, securityGuardSpawnRate, false, "unitScrews");
             securityGuardVentPrice = CustomOption.Create(284, Types.Crewmate, "securityGuardVentPrice", 1f, 1f, 15f, 1f, securityGuardSpawnRate, false, "unitScrews");
+            securityGuardFlushCooldown = CustomOption.Create(289, Types.Crewmate, "securityGuardFlushCooldown", 30f, 5f, 120f, 1f, securityGuardSpawnRate, false, "unitSeconds");
             securityGuardCamDuration = CustomOption.Create(285, Types.Crewmate, "securityGuardCamDuration", 10f, 2.5f, 60f, 2.5f, securityGuardSpawnRate, false, "unitSeconds");
             securityGuardCamMaxCharges = CustomOption.Create(286, Types.Crewmate, "securityGuardCamMaxCharges", 5f, 1f, 30f, 1f, securityGuardSpawnRate, false, "unitScrews");
             securityGuardCamRechargeTasksNumber = CustomOption.Create(287, Types.Crewmate, "securityGuardCamRechargeTasksNumber", 3f, 1f, 10f, 1f, securityGuardSpawnRate, false, "unitScrews");
