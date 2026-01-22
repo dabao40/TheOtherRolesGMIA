@@ -150,6 +150,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.SchrodingersCat, CustomOptionHolder.schrodingersCatSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Kataomoi, CustomOptionHolder.kataomoiSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Doomsayer, CustomOptionHolder.doomsayerSpawnRate.data);
+            neutralSettings.Add((byte)RoleId.Pelican, CustomOptionHolder.pelicanSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Lawyer, CustomOptionHolder.lawyerSpawnRate.data);
 
             crewSettings.Add((byte)RoleId.Mayor, CustomOptionHolder.mayorSpawnRate.data);

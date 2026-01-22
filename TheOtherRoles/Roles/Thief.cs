@@ -48,7 +48,7 @@ namespace TheOtherRoles.Roles
 
         public static bool isFailedThiefKill(PlayerControl target, PlayerControl killer, RoleInfo targetRole) {
             return isRole(killer) && !target.Data.Role.IsImpostor && !new List<RoleInfo> { RoleInfo.jackal, canKillSheriff ? RoleInfo.sheriff : null, RoleInfo.sidekick, RoleInfo.moriarty, RoleInfo.jekyllAndHyde, SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ? RoleInfo.schrodingersCat : 
-                null}.Contains(targetRole);
+                null, RoleInfo.pelican}.Contains(targetRole);
         }
     }
 }

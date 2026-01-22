@@ -634,7 +634,7 @@ namespace TheOtherRoles
             return player.isRole(RoleId.Jester) || player.isRole(RoleId.Jackal) || player.isRole(RoleId.Sidekick) || player.isRole(RoleId.Arsonist) || player.isRole(RoleId.Vulture) || player.isRole(RoleId.Opportunist) || player.isRole(RoleId.Moriarty)
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
                 (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId) && !CreatedMadmate.hasTasks) || player.isRole(RoleId.Akujo) || player.isRole(RoleId.Kataomoi) || player.isRole(RoleId.PlagueDoctor) || player.isRole(RoleId.Cupid) || (player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hideRole)
-                || player.isRole(RoleId.Immoralist) || player.isRole(RoleId.Doomsayer);
+                || player.isRole(RoleId.Immoralist) || player.isRole(RoleId.Doomsayer) || player.isRole(RoleId.Pelican);
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -642,7 +642,7 @@ namespace TheOtherRoles
         }
 
         public static bool shouldShowGhostInfo() {
-            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)
+            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId))
                 && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
@@ -924,6 +924,13 @@ namespace TheOtherRoles
                 val %= SurPrime;
             }
             return (int)(val % SurPrime);
+        }
+
+        public static void SetTargetWithLight(this FollowerCamera camera, MonoBehaviour target)
+        {
+            camera.Target = target;
+            PlayerControl.LocalPlayer.lightSource?.transform?.SetParent(target.transform, false);
+            if (target != PlayerControl.LocalPlayer) PlayerControl.LocalPlayer.NetTransform.Halt();
         }
 
         static public bool Find<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, [MaybeNullWhen(false)] out T found)
@@ -1555,8 +1562,8 @@ namespace TheOtherRoles
             text.defaultStr = translationKey;
         }
 
-        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && !Busker.players.Any(x => x.player == player && x.pseudocideFlag))
-                        || Lighter.isLightActive(player);
+        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && !Busker.players.Any(x => x.player == player && x.pseudocideFlag)
+            && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == player.PlayerId))) || Lighter.isLightActive(player);
 
         public static PlayerDisplay GetPlayerDisplay()
         {
@@ -1832,7 +1839,7 @@ namespace TheOtherRoles
         }
 
         public static bool roleCanUseVents(this PlayerControl player) {
-            bool roleCouldUse = false;            
+            bool roleCouldUse = false;
             if (player.isRole(RoleId.Engineer))
                 roleCouldUse = true;
             else if (Jackal.canUseVents && player.isRole(RoleId.Jackal))
@@ -1840,7 +1847,7 @@ namespace TheOtherRoles
             else if (Sidekick.canUseVents && player.isRole(RoleId.Sidekick))
                 roleCouldUse = true;
             else if (Spy.canEnterVents && player.isRole(RoleId.Spy))
-                roleCouldUse = true;            
+                roleCouldUse = true;
             else if (Vulture.canUseVents && player.isRole(RoleId.Vulture))
                 roleCouldUse = true;
             else if (Madmate.canVent && Madmate.madmate.Any(x => x.PlayerId == player.PlayerId))
@@ -1857,7 +1864,10 @@ namespace TheOtherRoles
                 roleCouldUse = true;
             else if (player.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)
                 roleCouldUse = true;
-            else if (player.Data?.Role != null && player.Data.Role.CanVent)  {
+            else if (player.isRole(RoleId.Pelican) && Pelican.canUseVents)
+                roleCouldUse = true;
+            else if (player.Data?.Role != null && player.Data.Role.CanVent)
+            {
                 if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
                     roleCouldUse = false;
                 else if (player.isRole(RoleId.Undertaker) && Undertaker.DraggedBody != null && !Undertaker.canVentWhileDragging)
@@ -2179,6 +2189,7 @@ namespace TheOtherRoles
                 || player.Object.isRole(RoleId.Moriarty)
                 || JekyllAndHyde.players.Any(x => x.player && x.player.PlayerId == player.PlayerId && !x.isJekyll())
                 || player.Object.isRole(RoleId.Fox)
+                || (player.Object.isRole(RoleId.Pelican) && Pelican.hasImpVision)
                 || (player.Object.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate);
         }
         

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
@@ -82,6 +83,7 @@ namespace TheOtherRoles
         public static CustomButton jackalAndSidekickSabotageLightsButton;
         public static CustomButton evilHackerButton;
         public static CustomButton evilHackerCreatesMadmateButton;
+        public static CustomButton pelicanKillButton;
         public static CustomButton trapperSetTrapButton;
         public static CustomButton blackmailerButton;
         public static CustomButton moriartyBrainwashButton;
@@ -210,6 +212,7 @@ namespace TheOtherRoles
             cleanerCleanButton.MaxTimer = Cleaner.cooldown;
             warlockCurseButton.MaxTimer = Warlock.cooldown;
             yoyoButton.MaxTimer = Yoyo.markCooldown;
+            pelicanKillButton.MaxTimer = Pelican.cooldown;
             securityGuardButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardCamButton.MaxTimer = SecurityGuard.cooldown;
             securityGuardFlushButton.MaxTimer = SecurityGuard.flushCooldown;
@@ -3630,6 +3633,26 @@ namespace TheOtherRoles
                 buttonText: ModTranslation.getString("VultureText")
             );
             vultureRemainingText = vultureEatButton.ShowUsesIcon(2);
+
+            pelicanKillButton = new CustomButton(
+            () =>
+            {
+                if (Helpers.checkMuderAttempt(PlayerControl.LocalPlayer, Pelican.local.currentTarget) != MurderAttemptResult.PerformKill) return;
+                Pelican.RpcSwallow.Invoke((PlayerControl.LocalPlayer.PlayerId, Pelican.local.currentTarget.PlayerId));
+                Pelican.local.currentTarget = null;
+                pelicanKillButton.Timer = pelicanKillButton.MaxTimer;
+                _ = new StaticAchievementToken("pelican.common1");
+            },
+            () => { return PlayerControl.LocalPlayer.isRole(RoleId.Pelican) && !PlayerControl.LocalPlayer.Data.IsDead; },
+            () => { return Pelican.local.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+            () => { pelicanKillButton.Timer = pelicanKillButton.MaxTimer; },
+            Vulture.getButtonSprite(),
+            CustomButton.ButtonPositions.upperRowRight,
+            __instance,
+            KeyCode.Q,
+            buttonText: ModTranslation.getString("SwallowText"),
+            abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
 
             // EvilHacker button
             evilHackerButton = new CustomButton(

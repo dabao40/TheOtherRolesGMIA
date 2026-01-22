@@ -67,6 +67,7 @@ namespace TheOtherRoles.Modules
         static public TranslatableTag MisGuess;
         static public TranslatableTag Guessed;
         static public TranslatableTag Blown;
+        static public TranslatableTag Swallowed;
 
         public static void Load()
         {
@@ -86,6 +87,7 @@ namespace TheOtherRoles.Modules
             MisGuess = new("eventMisGuess");
             Guessed = new("eventGuessed");
             Blown = new("eventBlown");
+            Swallowed = new("eventSwallowed");
         }
     }
 

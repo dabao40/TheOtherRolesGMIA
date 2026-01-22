@@ -26,6 +26,7 @@ namespace TheOtherRoles {
             Pseudocide,
             Blown,
             Jailed,
+            Swallowed,
             Bomb,
             Arson,
         };

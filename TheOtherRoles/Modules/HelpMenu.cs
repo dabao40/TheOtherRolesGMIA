@@ -599,6 +599,7 @@ public static class HelpMenu
         ("moriartyWin", Moriarty.color, ["moriartyKillWinHint", "moriartyOutnumberWinHint"]),
         ("doomsayerWin", Doomsayer.color, ["doomsayerWinCondHint"]),
         ("kataomoiWin", Kataomoi.color, ["kataomoiWinCondHint"]),
+        ("pelicanWin", Pelican.color, ["pelicanWinCondHint"]),
         ("plagueDoctorWin", PlagueDoctor.color, ["plagueDoctorWinCondHint"]),
         ("akujoWin", Akujo.color, ["akujoWinCondHint"]),
         ("foxWin", Fox.color, ["foxWinCondHint"])
@@ -665,6 +666,7 @@ public static class HelpMenu
                 { RoleId.Zephyr, CustomOptionHolder.zephyrSpawnRate },
                 { RoleId.Collator, CustomOptionHolder.collatorSpawnRate },
                 { RoleId.Jailor, CustomOptionHolder.jailorSpawnRate },
+                { RoleId.Pelican, CustomOptionHolder.pelicanSpawnRate },
                 { RoleId.EvilHacker, CustomOptionHolder.evilHackerSpawnRate },
                 { RoleId.Trapper, CustomOptionHolder.trapperSpawnRate },
                 { RoleId.Blackmailer, CustomOptionHolder.blackmailerSpawnRate },

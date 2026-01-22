@@ -471,6 +471,11 @@ namespace TheOtherRoles {
         public static CustomOption cupidTimeLimit;
         public static CustomOption cupidShield;
 
+        public static CustomRoleOption pelicanSpawnRate;
+        public static CustomOption pelicanCooldown;
+        public static CustomOption pelicanHasImpVision;
+        public static CustomOption pelicanCanUseVents;
+
         public static CustomRoleOption schrodingersCatSpawnRate;
         public static CustomOption schrodingersCatKillCooldown;
         public static CustomOption schrodingersCatBecomesImpostor;
@@ -992,6 +997,11 @@ namespace TheOtherRoles {
             cupidSpawnRate = new CustomRoleOption(9050, Types.Neutral, "cupid", Cupid.color, 3);
             cupidTimeLimit = CustomOption.Create(9051, Types.Neutral, "cupidTimeLimit", 300f, 30f, 1200f, 30f, cupidSpawnRate, false, "unitSeconds");
             cupidShield = CustomOption.Create(9052, Types.Neutral, "cupidShield", true, cupidSpawnRate);
+
+            pelicanSpawnRate = new CustomRoleOption(9060, Types.Neutral, "pelican", Pelican.color);
+            pelicanCooldown = CustomOption.Create(9061, Types.Neutral, "pelicanCooldown", 25f, 2.5f, 60f, 2.5f, pelicanSpawnRate, false, "unitSeconds");
+            pelicanCanUseVents = CustomOption.Create(9063, Types.Neutral, "pelicanCanUseVents", true, pelicanSpawnRate);
+            pelicanHasImpVision = CustomOption.Create(9064, Types.Neutral, "pelicanHasImpVision", true, pelicanSpawnRate);
 
             jekyllAndHydeSpawnRate = new CustomRoleOption(8104, Types.Neutral, "jekyllAndHyde", JekyllAndHyde.color);
             jekyllAndHydeNumberToWin = CustomOption.Create(8105, Types.Neutral, "jekyllAndHydeNumberToWin", 3f, 1f, 10f, 1f, jekyllAndHydeSpawnRate, false, "unitScrews");

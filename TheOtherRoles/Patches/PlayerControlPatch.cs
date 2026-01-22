@@ -286,7 +286,7 @@ namespace TheOtherRoles.Patches {
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
                 if ((Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target) || (Akujo.knowsRoles && Akujo.isPartner(PlayerControl.LocalPlayer, p)) || p == PlayerControl.LocalPlayer || (PlayerControl.LocalPlayer.Data.IsDead
-                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag)) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
+                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId))) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -754,7 +754,7 @@ namespace TheOtherRoles.Patches {
     {
         public static bool Prefix([HarmonyArgument(0)] PlayerControl player, bool specialRolesAllowed)
         {
-            if ((player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || Busker.players.Any(x => x.player == player && x.pseudocideFlag) || FreePlayGM.isFreePlayGM)
+            if ((player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || Busker.players.Any(x => x.player == player && x.pseudocideFlag) || Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == player.PlayerId)) || FreePlayGM.isFreePlayGM)
                 return false;
             return true;
         }

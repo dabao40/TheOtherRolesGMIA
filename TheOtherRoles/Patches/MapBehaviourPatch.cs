@@ -282,21 +282,24 @@ namespace TheOtherRoles.Patches {
             if (PlayerControl.LocalPlayer.isRole(RoleId.Cleaner) && Cleaner.canSeeBodies && corpseIcons != null)
             {
                 foreach (SpriteRenderer r in corpseIcons.Values) { r.enabled = false; }
-                foreach (DeadBody b in UnityEngine.Object.FindObjectsOfType<DeadBody>())
+                if (!MeetingHud.Instance)
                 {
-                    byte id = b.ParentId;
-                    Vector3 vector = b.transform.position;
-                    vector /= MapUtilities.CachedShipStatus.MapScale;
-                    vector.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
-                    vector.z = -1f;
-
-                    if (!corpseIcons.ContainsKey(id))
+                    foreach (DeadBody b in UnityEngine.Object.FindObjectsOfType<DeadBody>())
                     {
-                        continue;
-                    }
+                        byte id = b.ParentId;
+                        Vector3 vector = b.transform.position;
+                        vector /= MapUtilities.CachedShipStatus.MapScale;
+                        vector.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
+                        vector.z = -1f;
 
-                    corpseIcons[id].transform.localPosition = vector;
-                    corpseIcons[id].enabled = true;
+                        if (!corpseIcons.ContainsKey(id))
+                        {
+                            continue;
+                        }
+
+                        corpseIcons[id].transform.localPosition = vector;
+                        corpseIcons[id].enabled = true;
+                    }
                 }
             }
 

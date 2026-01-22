@@ -2131,6 +2131,10 @@
         "13": "\u5439\u6563",
         "14": "\u5439\u6563"
     },
+    "medicSwallowed": {
+        "0": "Swallowed",
+        "13": "\u751f\u541e"
+    },
     "medicKill": {
         "0": "Killed",
         "13": "\u51fb\u6740",
@@ -4252,6 +4256,10 @@
         "13": "\u72c2\u8d4c\u4e4b\u6e0a",
         "14": "\u72c2\u8ced\u4e4b\u6df5"
     },
+    "pelicanWin": {
+        "0": "Pelican Wins",
+        "13": "\u5403\u62b9\u5e72\u51c0\uff01"
+    },
     "everyoneDied": {
         "0": "Everyone Died",
         "11": "\u305d\u3057\u3066\u8ab0\u3082\u3044\u306a\u304f\u306a\u3063\u305f",
@@ -4357,6 +4365,10 @@
         "0": "Doomsayer {0} Win",
         "13": "\u672b\u65e5\u9884\u8a00\u5bb6 {0} \u80dc\u5229",
         "14": "\u672b\u65e5\u9810\u8a00\u5bb6 {0} \u52dd\u5229"
+    },
+    "pelicanWinExtra": {
+        "0": "Pelican {0} Win",
+        "13": "\u9e48\u9e55 {0} \u80dc\u5229"
     },
     "everyoneDiedExtra": {
         "0": "Everyone Died {0}",
@@ -4611,6 +4623,10 @@
         "0": "Blow",
         "13": "\u5439\u6563"
     },
+    "eventSwallow": {
+        "0": "Swallow",
+        "13": "\u751f\u541e"
+    },
     "guesserModifier": {
         "0": " (Guesser)",
         "11": "(\u30b2\u30c3\u30b5\u30fc)",
@@ -4783,6 +4799,10 @@
         "13": "(\u51dd\u89c6\u5bf9\u8c61) ",
         "14": "(\u51dd\u8996\u5c0d\u8c61)"
     },
+    "roleInfoSwallowIndicator": {
+        "0": "(swallowed) ",
+        "13": "(\u88ab\u751f\u541e) "
+    },
     "roleSummaryText": {
         "0": "Players and roles at the end of the game:",
         "11": "\u6700\u7d42\u7d50\u679c:",
@@ -4917,6 +4937,10 @@
         "0": " - blown by {0}",
         "13": " - \u88ab\u5439\u6563\u4e8e {0}",
         "14": " - \u88ab\u5439\u6563\u65bc {0}"
+    },
+    "roleSummarySwallowed": {
+        "0": " - swallowed by {0}",
+        "13": " - \u88ab\u751f\u541e\u4e8e {0}"
     },
     "roleSummaryKillsInfo": {
         "0": " - <color=#FF0000FF>(Kills: {0})</color>",
@@ -7312,6 +7336,30 @@
         "0": "Cooldown Multiplier",
         "13": "\u51f6\u624b\u51b7\u5374\u500d\u7387"
     },
+    "pelican": {
+        "0": "Pelican",
+        "13": "\u9e48\u9e55"
+    },
+    "pelicanIntroDesc": {
+        "0": "Swallow all players to win",
+        "13": "\u541e\u566c\u6240\u6709\u73a9\u5bb6\u83b7\u5f97\u80dc\u5229"
+    },
+    "pelicanShortDesc": {
+        "0": "Swallow all players",
+        "13": "\u541e\u566c\u6240\u6709\u73a9\u5bb6"
+    },
+    "pelicanCooldown": {
+        "0": "Swallow Cooldown",
+        "13": "\u541e\u566c\u51b7\u5374\u65f6\u95f4"
+    },
+    "pelicanCanUseVents": {
+        "0": "Pelican Can Use Vents",
+        "13": "\u9e48\u9e55\u53ef\u4ee5\u4f7f\u7528\u7ba1\u9053"
+    },
+    "pelicanHasImpVision": {
+        "0": "Pelican Has Impostor Vision",
+        "13": "\u9e48\u9e55\u62e5\u6709\u5185\u9b3c\u89c6\u91ce"
+    },
     "colorSalmon": {
         "0": "Salmon",
         "11": "\u30b5\u30fc\u30e2\u30f3",
@@ -7922,6 +7970,10 @@
         "13": "\u76d1\u7981",
         "14": "\u76e3\u7981"
     },
+    "SwallowText": {
+        "0": "Swallow",
+        "13": "\u541e\u566c"
+    },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
         "11": "\u30fb\u4eba\u72fc\u3067\u3044\u3046\u300e\u3066\u308b\u3066\u308b\u300f\n\u30fb\u306a\u306b\u3082\u80fd\u529b\u3092\u6301\u305f\u306a\u3044\n\u30fb\u81ea\u8eab\u304c\u540a\u3089\u308c\u305f\u3068\u304d\u306b\u52dd\u5229\u3059\u308b",
@@ -8417,6 +8469,10 @@
         "0": "The Doomsayer is a Neutral who aims to guess enough players to win.\nTo help them win, the Doomsayer can observe one player per round and details of the roles will be described during the meeting.\nAccording to the options, several wrong guesses will not result in the death of the Doomsayer.\nBut the correct guesses may be revealed to others using the chat within the meeting.",
         "13": "\u672b\u65e5\u9884\u8a00\u5bb6\u662f\u4e00\u4e2a\u9700\u8981\u901a\u8fc7\u8d4c\u6740\u4e00\u5b9a\u6570\u91cf\u7684\u73a9\u5bb6\u6765\u83b7\u80dc\u7684\u4e2d\u7acb\u3002\n\u672b\u65e5\u9884\u8a00\u5bb6\u62e5\u6709\u201c\u6d1e\u5bdf\u201d\u6280\u80fd\u6765\u9009\u5b9a\u4e00\u4e2a\u73a9\u5bb6\u4f5c\u4e3a\u6d1e\u5bdf\u5bf9\u8c61\uff0c\u5e76\u4e14\u4e0e\u6d1e\u5bdf\u5bf9\u8c61\u804c\u4e1a\u76f8\u5173\u7684\u7ebf\u7d22\u4f1a\u5728\u4f1a\u8bae\u4e2d\u5217\u51fa\u3002\n\u672b\u65e5\u9884\u8a00\u5bb6\u6839\u636e\u8bbe\u7f6e\u6709\u8d4c\u9519\u7684\u673a\u4f1a\uff0c\u4f46\u662f\u5176\u4ed6\u73a9\u5bb6\u53ef\u80fd\u4e5f\u4f1a\u6536\u5230\u672b\u65e5\u9884\u8a00\u5bb6\u8d4c\u6740\u73a9\u5bb6\u7684\u63d0\u793a\u3002",
         "14": "\u672b\u65e5\u9810\u8a00\u5bb6\u662f\u4e00\u500b\u9700\u8981\u901a\u904e\u8ced\u6bba\u4e00\u5b9a\u6578\u91cf\u7684\u73a9\u5bb6\u4f86\u7372\u52dd\u7684\u4e2d\u7acb\u3002\n\u672b\u65e5\u9810\u8a00\u5bb6\u64c1\u6709\u201c\u6d1e\u5bdf\u201d\u6280\u80fd\u4f86\u9078\u5b9a\u4e00\u500b\u73a9\u5bb6\u4f5c\u70ba\u6d1e\u5bdf\u5c0d\u8c61\uff0c\u4e26\u4e14\u8207\u6d1e\u5bdf\u5c0d\u8c61\n\u8077\u696d\u76f8\u95dc\u7684\u7dda\u7d22\u6703\u5728\u6703\u8b70\u4e2d\u5217\u51fa\u3002\u672b\u65e5\u9810\u8a00\u5bb6\u6839\u64da\u8a2d\u7f6e\u6709\u8ced\u932f\u7684\u6a5f\u6703\uff0c\u4f46\u662f\n\u5176\u4ed6\u73a9\u5bb6\u53ef\u80fd\u4e5f\u6703\u6536\u5230\u672b\u65e5\u9810\u8a00\u5bb6\u8ced\u6bba\u73a9\u5bb6\u7684\u63d0\u793a\u3002"
+    },
+    "pelicanFullDesc": {
+        "0": "The Pelican is a Neutral role that aims to swallow players alive.\nThe swallowed players will not die immediately, but follow the Pelican's camera and wait for the Pelican to die.\nAll players will be teleported outside of the Pelican if the Pelican is killed.\nHowever, if a meeting is called, the eaten players will die of the Pelican.\nThe Pelican wins if all players are swallowed and no killing roles are left.",
+        "13": "\u9e48\u9e55\u662f\u4e00\u4e2a\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\n\u5982\u679c\u9e48\u9e55\u88ab\u51fb\u6740\uff0c\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c31\u4f1a\u7acb\u5373\u5728\u9e48\u9e55\u6b7b\u4ea1\u5730\u70b9\u88ab\u91ca\u653e\u3002\n\u5982\u679c\u5728\u88ab\u91ca\u653e\u524d\u6709\u4e00\u573a\u4f1a\u8bae\u5f00\u542f\uff0c\u90a3\u4e48\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c06\u6b7b\u4ea1\u3002\n\u9e48\u9e55\u5728\u751f\u541e\u6240\u6709\u4eba\u4e14\u6ca1\u6709\u5176\u4ed6\u72ec\u7acb\u6267\u5203\u8005\u5b58\u6d3b\u65f6\u80dc\u5229\u3002"
     },
     "bloodyFullDesc": {
         "0": "If killed, the Bloody Modifier will leave a trail for x-seconds on their killer.\nThe trail will have the color of the killed person.",
@@ -11632,6 +11688,42 @@
         "13": "\u72c2\u8d4c\u4e4b\u6e0a",
         "14": "\u72c2\u8ced\u4e4b\u6df5"
     },
+    "pelicancommon1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "pelicancommon1AchievementGoal": {
+        "0": "Swallow 1 Player",
+        "13": "\u751f\u541e\u4e00\u540d\u73a9\u5bb6"
+    },
+    "pelicancommon1AchievementTitle": {
+        "0": "Gulp",
+        "13": "\u771f\u597d\u5403..."
+    },
+    "pelicananother1AchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "pelicananother1AchievementGoal": {
+        "0": "Get Killed And Have The Eaten Players Revived",
+        "13": "\u88ab\u51fb\u6740\u5e76\u91ca\u653e\u6240\u6709\u88ab\u541e\u566c\u7684\u73a9\u5bb6"
+    },
+    "pelicananother1AchievementTitle": {
+        "0": "One Dead And Thousands Revived",
+        "13": "\u7f6a\u4e0d\u5bb9\u8bdb"
+    },
+    "pelicanchallengeAchievementCond": {
+        "0": "[BLANK]",
+        "13": "[BLANK]"
+    },
+    "pelicanchallengeAchievementGoal": {
+        "0": "Swallow Everyone And Win The Game",
+        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u83b7\u80dc"
+    },
+    "pelicanchallengeAchievementTitle": {
+        "0": "Swallow Them All!",
+        "13": "\u7ec8\u4e8e\u5403\u9971\u4e86..."
+    },
     "hintHelpInGameTitle": {
         "0": "Role Help",
         "13": "\u89d2\u8272\u89e3\u91ca",
@@ -11992,8 +12084,8 @@
         "14": "\u7dca\u6025\u7834\u58de\u672a\u80fd\u5728\u898f\u5b9a\u6642\u9593\u5167\u4fee\u5fa9\u5247\u7372\u52dd\u3002"
     },
     "impostorKillWinHint": {
-        "0": "Eliminate all killing players such as <color=#00B4EBFF>Jackal</color>,  <color=#00FF00FF>Moriarty</color>, <color=#808080FF>Jekyll and Hyde</color> and outnumber the Crewmates.\n<color=#FF1919FF>Impostors</color> team must not have <color=#e839b9FF>Lovers</color> alive.",
-        "13": "\u6dd8\u6c70\u6240\u6709\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\uff0c\u5982<color=#00B4EBFF>\u8c7a\u72fc</color>,  <color=#00FF00FF>\u83ab\u91cc\u4e9a\u8482</color>, <color=#808080FF>\u5316\u8eab\u535a\u58eb</color>\u5e76\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u63a7\u5236\u98de\u8239\u3002\n<color=#FF1919FF>\u5185\u9b3c\u9635\u8425</color>\u4e2d\u4e0d\u80fd\u6709<color=#e839b9FF>\u604b\u4eba</color>\u5b58\u6d3b\u3002",
+        "0": "Eliminate all killing players such as <color=#00B4EBFF>Jackal</color>,  <color=#00FF00FF>Moriarty</color>, <color=#808080FF>Jekyll and Hyde</color> etc. and outnumber the Crewmates.\n<color=#FF1919FF>Impostors</color> team must not have <color=#e839b9FF>Lovers</color> alive.",
+        "13": "\u6dd8\u6c70\u6240\u6709\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\uff0c\u5982<color=#00B4EBFF>\u8c7a\u72fc</color>,  <color=#00FF00FF>\u83ab\u91cc\u4e9a\u8482</color>, <color=#808080FF>\u5316\u8eab\u535a\u58eb</color>\u7b49\u5e76\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u63a7\u5236\u98de\u8239\u3002\n<color=#FF1919FF>\u5185\u9b3c\u9635\u8425</color>\u4e2d\u4e0d\u80fd\u6709<color=#e839b9FF>\u604b\u4eba</color>\u5b58\u6d3b\u3002",
         "14": "\u6dd8\u6c70\u6240\u6709\u6c92\u6709\u64ca\u6bba\u80fd\u529b\u7684\u73a9\u5bb6\uff0c\u5982<color=#00B4EBFF>\u8c7a\u72fc</color>,  <color=#00FF00FF>\u83ab\u91cc\u4e9e\u8482</color>, <color=#808080FF>\u5316\u8eab\u535a\u58eb</color>\u4e26\u901a\u904e\u4eba\u6578\u512a\u52e2\u4f54\u64da\u98db\u8239\u3002\n<color=#FF1919FF>\u507d\u88dd\u8005\u9663\u71df</color>\u4e2d\u4e0d\u80fd\u6709<color=#e839b10FF>\u6200\u4eba</color>\u5b58\u6d3b\u3002"
     },
     "impostorSaboWinHintEndGameTitle": {
@@ -12205,6 +12297,14 @@
         "0": "Fox Replacement Trigger",
         "13": "\u72d0\u5996\u53d6\u4ee3\u80dc\u5229",
         "14": "\u72d0\u5996\u53d6\u4ee3\u52dd\u5229"
+    },
+    "pelicanWinCondHint": {
+        "0": "Swallow all players and outnumber the Crewmates.",
+        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u4ee5\u6570\u91cf\u5360\u4f18\u53d6\u80dc\u3002"
+    },
+    "pelicanWinCondHintEndGameTitle": {
+        "0": "Kill Win Trigger",
+        "13": "\u51fb\u6740\u80dc\u5229"
     },
     "niceShifterBlurb": {
         "0": "The Shifter can take over the role of another Crewmate.\nThe other player will transform into a Crewmate.",
@@ -12674,6 +12774,10 @@
         "0": "The Jailor jails suspicious Crewmates and executes them during meetings.",
         "13": "\u5178\u72f1\u957f\u53ef\u4ee5\u76d1\u7981\u53ef\u7591\u7684\u8239\u5458\u5e76\u5728\u4f1a\u8bae\u4e2d\u5904\u51b3\u4ed6\u4eec\u3002",
         "14": "\u5178\u7344\u9577\u53ef\u4ee5\u76e3\u7981\u53ef\u7591\u7684\u8239\u54e1\u4e26\u5728\u6703\u8b70\u4e2d\u8655\u6c7a\u4ed6\u5011\u3002"
+    },
+    "pelicanBlurb": {
+        "0": "The Pelican can swallow players alive.",
+        "13": "\u9e48\u9e55\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u3002"
     },
     "bloodyBlurb": {
         "0": "The killer leaves a bloody trace.",

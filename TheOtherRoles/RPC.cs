@@ -73,6 +73,7 @@ namespace TheOtherRoles
         Teleporter,
         Jailor,
         EvilYasuna,
+        Pelican,
         //Trapper,
         Lawyer, 
         //Prosecutor,

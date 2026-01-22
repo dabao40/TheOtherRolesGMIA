@@ -28,7 +28,8 @@ namespace TheOtherRoles.Patches {
         LawyerSoloWin = 20,
         FoxWin = 21,
         KataomoiWin = 22,
-        DoomsayerWin = 23
+        DoomsayerWin = 23,
+        PelicanWin = 24
         //ProsecutorWin = 16
     }
 
@@ -53,6 +54,7 @@ namespace TheOtherRoles.Patches {
         JekyllAndHydeWin,
         KataomoiWin,
         DoomsayerWin,
+        PelicanWin,
         EveryoneDied
         //ProsecutorWin
     }
@@ -176,7 +178,8 @@ namespace TheOtherRoles.Patches {
                 .. Cupid.allPlayers,
                 .. PlagueDoctor.allPlayers,
                 .. Fox.allPlayers,
-                .. Immoralist.allPlayers
+                .. Immoralist.allPlayers,
+                .. Pelican.allPlayers
             ];
             if (Shifter.isNeutral) notWinners.AddRange(Shifter.allPlayers);
 
@@ -205,6 +208,7 @@ namespace TheOtherRoles.Patches {
             bool plagueDoctorWin = PlagueDoctor.exists && gameOverReason == (GameOverReason)CustomGameOverReason.PlagueDoctorWin;
             bool kataomoiWin = Kataomoi.exists && gameOverReason == (GameOverReason)CustomGameOverReason.KataomoiWin;
             bool doomsayerWin = Doomsayer.exists && gameOverReason == (GameOverReason)CustomGameOverReason.DoomsayerWin;
+            bool pelicanWin = Pelican.exists && gameOverReason == (GameOverReason)CustomGameOverReason.PelicanWin;
             bool foxWin = Fox.exists && gameOverReason == (GameOverReason)CustomGameOverReason.FoxWin;
             bool jekyllAndHydeWin = JekyllAndHyde.exists && gameOverReason == (GameOverReason)CustomGameOverReason.JekyllAndHydeWin;
             bool everyoneDead = AdditionalTempData.playerRoles.All(x => !x.IsAlive);
@@ -302,6 +306,17 @@ namespace TheOtherRoles.Patches {
                     if (!doomsayer.triggerWin || doomsayer.player == null) continue;
                     if (PlayerControl.LocalPlayer == doomsayer.player) _ = new StaticAchievementToken("doomsayer.challenge");
                     EndGameResult.CachedWinners.Add(new(doomsayer.player.Data));
+                }
+            }
+
+            else if (pelicanWin)
+            {
+                EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
+                AdditionalTempData.winCondition = WinCondition.PelicanWin;
+                foreach (var pelican in Pelican.allPlayers)
+                {
+                    if (PlayerControl.LocalPlayer == pelican) _ = new StaticAchievementToken("pelican.challenge");
+                    EndGameResult.CachedWinners.Add(new(pelican.Data));
                 }
             }
 
@@ -731,6 +746,12 @@ namespace TheOtherRoles.Patches {
                 textRenderer.color = Doomsayer.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Doomsayer.color);
             }
+            else if (AdditionalTempData.winCondition == WinCondition.PelicanWin)
+            {
+                nonModTranslationText = "pelicanWin";
+                textRenderer.color = Pelican.color;
+                __instance.BackgroundBar.material.SetColor("_Color", Pelican.color);
+            }
             else if (AdditionalTempData.winCondition == WinCondition.JekyllAndHydeWin)
             {
                 nonModTranslationText = "jekyllAndHydeWin";
@@ -933,6 +954,7 @@ namespace TheOtherRoles.Patches {
             //if (CheckAndEndGameForProsecutorWin(__instance)) return false;
             if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
             if (CheckAndEndGameForAkujoWin(__instance, statistics)) return false;
+            if (CheckAndEndGameForPelicanWin(__instance, statistics)) return false;
             if (CheckAndEndGameForJackalWin(__instance, statistics)) return false;
             if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
             if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
@@ -1018,7 +1040,7 @@ namespace TheOtherRoles.Patches {
         private static bool CheckAndEndGameForJekyllAndHydeWin(ShipStatus __instance, PlayerStatistics statistics)
         {
             if (JekyllAndHyde.triggerWin || (statistics.TeamJekyllAndHydeAlive >= statistics.TotalAlive - statistics.TeamJekyllAndHydeAlive &&
-                        statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamSheriffAlive == 0
+                        statistics.TeamImpostorsAlive == 0 && statistics.TeamPelicanAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamSheriffAlive == 0
                          && (statistics.JekyllAndHydeLovers == 0 || statistics.JekyllAndHydeLovers >= statistics.CouplesAlive * 2)))
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.JekyllAndHydeWin, false);
@@ -1072,6 +1094,17 @@ namespace TheOtherRoles.Patches {
             return false;
         }*/
 
+        private static bool CheckAndEndGameForPelicanWin(ShipStatus __instance, PlayerStatistics statistics)
+        {
+            if (statistics.TeamPelicanAlive >= statistics.TotalAlive - statistics.TeamPelicanAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0
+                && statistics.TeamJekyllAndHydeAlive == 0 && statistics.TeamJackalAlive == 0)
+            {
+                GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.PelicanWin, false);
+                return true;
+            }
+            return false;
+        }
+
         private static bool CheckAndEndGameForLoverWin(ShipStatus __instance, PlayerStatistics statistics) {
             if (statistics.CouplesAlive == 1 && statistics.TotalAlive <= 3) {
                 //__instance.enabled = false;
@@ -1092,7 +1125,7 @@ namespace TheOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForJackalWin(ShipStatus __instance, PlayerStatistics statistics) {
-            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
+            if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamPelicanAlive == 0 && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
                 (statistics.TeamJackalLovers == 0 || statistics.TeamJackalLovers >= statistics.CouplesAlive * 2)) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.TeamJackalWin, false);
@@ -1103,7 +1136,7 @@ namespace TheOtherRoles.Patches {
 
         private static bool CheckAndEndGameForMoriartyWin(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if ((statistics.TeamMoriartyAlive >= statistics.TotalAlive - statistics.TeamMoriartyAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
+            if ((statistics.TeamMoriartyAlive >= statistics.TotalAlive - statistics.TeamMoriartyAlive && statistics.TeamPelicanAlive == 0 && statistics.TeamImpostorsAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
                 (statistics.MoriartyLovers == 0 || statistics.MoriartyLovers >= statistics.CouplesAlive * 2)) || Moriarty.triggerMoriartyWin)
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.MoriartyWin, false);
@@ -1116,7 +1149,7 @@ namespace TheOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM) 
                 if ((0 != statistics.TotalAlive - statistics.TeamImpostorsAlive)) return false;
 
-            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
+            if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamPelicanAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamSheriffAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0 &&
                 (statistics.TeamImpostorLovers == 0 || statistics.TeamImpostorLovers >= statistics.CouplesAlive * 2)) {
                 //__instance.enabled = false;
                 GameOverReason endReason;
@@ -1143,7 +1176,7 @@ namespace TheOtherRoles.Patches {
                 GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
                 return true;
             }
-            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0) {
+            if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0 && statistics.TeamPelicanAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamJekyllAndHydeAlive == 0) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame(GameOverReason.CrewmatesByVote, false);
                 return true;
@@ -1165,6 +1198,7 @@ namespace TheOtherRoles.Patches {
         public int TeamSheriffAlive { get; set; }
         public int TeamMoriartyAlive { get; set; }
         public int TeamJekyllAndHydeAlive { get;set; }
+        public int TeamPelicanAlive { get; set; }
         public int TotalAlive {get;set;}
         public int MoriartyLovers { get; set; }
         public int TeamImpostorLovers { get; set; }
@@ -1189,6 +1223,7 @@ namespace TheOtherRoles.Patches {
             int numImpostorsAlive = 0;
             int numMoriartyAlive = Moriarty.livingPlayers.Count;
             int numJekyllAndHydeAlive = JekyllAndHyde.livingPlayers.Count;
+            int numPelicanAlive = Pelican.livingPlayers.Count;
             int numCouplesAlive = 0;
             int impLovers = 0;
             int numTotalAlive = 0;
@@ -1247,6 +1282,7 @@ namespace TheOtherRoles.Patches {
                 (Deputy.stopsGameEnd ? Deputy.livingPlayers.Count : 0);
             TeamMoriartyAlive = numMoriartyAlive;
             TeamJekyllAndHydeAlive = numJekyllAndHydeAlive;
+            TeamPelicanAlive = numPelicanAlive;
             TotalAlive = numTotalAlive;
             TeamImpostorLovers = impLovers;
             TeamJackalLovers = Jackal.countLovers() + Sidekick.countLovers() + SchrodingersCat.countLovers(SchrodingersCat.Team.Jackal);

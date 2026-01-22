@@ -19,6 +19,12 @@ namespace TheOtherRoles.Patches {
         public static bool Prefix(ref float __result, ShipStatus __instance, [HarmonyArgument(0)] NetworkedPlayerInfo player) {
             if ((!__instance.Systems.ContainsKey(SystemTypes.Electrical)) || GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
 
+            if (Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == player.PlayerId)))
+            {
+                __result = __instance.MinLightRadius * 1.25f;
+                return false;
+            }
+
             if (!HideNSeek.isHideNSeekGM || (HideNSeek.isHideNSeekGM && !Hunter.lightActive.Contains(player.PlayerId))) {
                 // If player is a role which has Impostor vision
                 if (Helpers.hasImpVision(player)) {

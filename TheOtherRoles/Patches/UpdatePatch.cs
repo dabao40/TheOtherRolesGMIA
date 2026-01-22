@@ -537,6 +537,9 @@ namespace TheOtherRoles.Patches {
                         player.Visible = true;
                 }
             }
+
+            if (!MeetingHud.Instance && Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId)))
+                HudManager.Instance.ShadowQuad?.gameObject?.SetActive(true);
         }
 
         static void Postfix(HudManager __instance)

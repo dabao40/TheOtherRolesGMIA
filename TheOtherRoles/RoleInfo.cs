@@ -126,11 +126,10 @@ namespace TheOtherRoles
         public static RoleInfo schrodingersCat = new("schrodingersCat", SchrodingersCat.color, RoleId.SchrodingersCat, true);
         public static RoleInfo kataomoi = new("kataomoi", Kataomoi.color, RoleId.Kataomoi, true);
         public static RoleInfo doomsayer = new("doomsayer", Doomsayer.color, RoleId.Doomsayer, true);
+        public static RoleInfo pelican = new("pelican", Pelican.color, RoleId.Pelican, true);
 
         public static RoleInfo hunter = new("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new("hunted", Color.white, RoleId.Crewmate);
-
-
 
         // Modifier
         public static RoleInfo bloody = new("bloody", Color.yellow, RoleId.Bloody, false, true);
@@ -155,7 +154,8 @@ namespace TheOtherRoles
             witch,
             jekyllAndHyde,
             thief,
-            serialKiller
+            serialKiller,
+            pelican
         ];
 
         public static List<RoleInfo> Trick =
@@ -322,6 +322,7 @@ namespace TheOtherRoles
             schrodingersCat,
             kataomoi,
             doomsayer,
+            pelican,
             crewmate,
             mayor,
             portalmaker,
@@ -449,6 +450,7 @@ namespace TheOtherRoles
             if (p.isRole(RoleId.Zephyr)) infos.Add(zephyr);
             if (p.isRole(RoleId.Collator)) infos.Add(collator);
             if (p.isRole(RoleId.Jailor)) infos.Add(jailor);
+            if (p.isRole(RoleId.Pelican)) infos.Add(pelican);
             if (p.isRole(RoleId.FortuneTeller))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -575,6 +577,8 @@ namespace TheOtherRoles
                         roleName = Helpers.cs(Akujo.players.FirstOrDefault(x => x.honmei == p).iconColor, ModTranslation.getString("roleInfoHonmei")) + roleName;
                     if (p == Kataomoi.target)
                         roleName = Helpers.cs(Kataomoi.color, ModTranslation.getString("roleInfoKataomoiTarget")) + roleName;
+                    if (Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == p.PlayerId)))
+                        roleName = Helpers.cs(Pelican.color, ModTranslation.getString("roleInfoSwallowIndicator")) + roleName;
 
                     // Death Reason on Ghosts
                     if (p.Data.IsDead) {
@@ -642,6 +646,9 @@ namespace TheOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Scapegoat:
                                     deathReasonString = $" - {Helpers.cs(Cupid.color, ModTranslation.getString("roleSummaryScapegoat"))}";
+                                    break;
+                                case DeadPlayer.CustomDeathReason.Swallowed:
+                                    deathReasonString = string.Format(ModTranslation.getString("roleSummarySwallowed"), Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName));
                                     break;
                                 //case DeadPlayer.CustomDeathReason.LawyerSuicide:
                                 //deathReasonString = $" - {Helpers.cs(Lawyer.color, "bad Lawyer")}";

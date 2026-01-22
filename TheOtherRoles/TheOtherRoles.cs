@@ -104,6 +104,7 @@ namespace TheOtherRoles
             SchrodingersCat.clearAndReload();
             Kataomoi.clearAndReload();
             Doomsayer.clearAndReload();
+            Pelican.clearAndReload();
             Role.ClearAll();
 
             // Modifier
@@ -215,7 +216,8 @@ namespace TheOtherRoles
                 { RoleId.Cupid, typeof(RoleBase<Cupid>) },
                 { RoleId.PlagueDoctor, typeof(RoleBase<PlagueDoctor>) },
                 { RoleId.Fox, typeof(RoleBase<Fox>) },
-                { RoleId.Immoralist, typeof(RoleBase<Immoralist>) }
+                { RoleId.Immoralist, typeof(RoleBase<Immoralist>) },
+                { RoleId.Pelican, typeof(RoleBase<Pelican>) }
             };
 
             public static HelpSprite[] GetHelp(RoleId roleId)
