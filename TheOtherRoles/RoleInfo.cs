@@ -127,6 +127,7 @@ namespace TheOtherRoles
         public static RoleInfo kataomoi = new("kataomoi", Kataomoi.color, RoleId.Kataomoi, true);
         public static RoleInfo doomsayer = new("doomsayer", Doomsayer.color, RoleId.Doomsayer, true);
         public static RoleInfo pelican = new("pelican", Pelican.color, RoleId.Pelican, true);
+        public static RoleInfo yandere = new("yandere", Yandere.color, RoleId.Yandere, true);
 
         public static RoleInfo hunter = new("hunter", Palette.ImpostorRed, RoleId.Impostor);
         public static RoleInfo hunted = new("hunted", Color.white, RoleId.Crewmate);
@@ -144,6 +145,7 @@ namespace TheOtherRoles
         public static RoleInfo chameleon = new("chameleon", Color.yellow, RoleId.Chameleon, false, true);
         public static RoleInfo multitasker = new("multitasker", Color.yellow, RoleId.Multitasker, false, true);
         public static RoleInfo diseased = new("diseased", Color.yellow, RoleId.Diseased, false, true);
+        public static RoleInfo radar = new("radar", Color.yellow, RoleId.Radar, false, true);
         public static RoleInfo armored = new ("armored", Color.yellow, RoleId.Armored, false, true);
         //public static RoleInfo shifter = new RoleInfo("Shifter", Color.yellow, "Shift your role", "Shift your role", RoleId.Shifter, false, true);
 
@@ -225,6 +227,7 @@ namespace TheOtherRoles
             akujo,
             cupid,
             medic,
+            yandere,
             lawyer,
             engineer,
             camouflager,
@@ -323,6 +326,7 @@ namespace TheOtherRoles
             kataomoi,
             doomsayer,
             pelican,
+            yandere,
             crewmate,
             mayor,
             portalmaker,
@@ -366,6 +370,7 @@ namespace TheOtherRoles
             chameleon,
             multitasker,
             diseased,
+            radar,
             armored
         };
 
@@ -391,6 +396,7 @@ namespace TheOtherRoles
                 if (p == Armored.armored) infos.Add(armored);
                 if (Multitasker.multitasker.Any(x => x.PlayerId == p.PlayerId)) infos.Add(multitasker);
                 if (Diseased.diseased.Any(x => x.PlayerId == p.PlayerId)) infos.Add(diseased);
+                if (p == Radar.radar) infos.Add(radar);
                 //if (p == Shifter.shifter) infos.Add(shifter);
             }
 
@@ -451,6 +457,7 @@ namespace TheOtherRoles
             if (p.isRole(RoleId.Collator)) infos.Add(collator);
             if (p.isRole(RoleId.Jailor)) infos.Add(jailor);
             if (p.isRole(RoleId.Pelican)) infos.Add(pelican);
+            if (p.isRole(RoleId.Yandere)) infos.Add(yandere);
             if (p.isRole(RoleId.FortuneTeller))
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead || includeHidden)
@@ -577,7 +584,9 @@ namespace TheOtherRoles
                         roleName = Helpers.cs(Akujo.players.FirstOrDefault(x => x.honmei == p).iconColor, ModTranslation.getString("roleInfoHonmei")) + roleName;
                     if (p == Kataomoi.target)
                         roleName = Helpers.cs(Kataomoi.color, ModTranslation.getString("roleInfoKataomoiTarget")) + roleName;
-                    if (Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == p.PlayerId)))
+                    if (p == Yandere.target)
+                        roleName = Helpers.cs(Yandere.color, ModTranslation.getString("roleInfoYandereTarget")) + roleName;
+                    if (Pelican.players.Any(x => x.eatenPlayers.Contains(p)))
                         roleName = Helpers.cs(Pelican.color, ModTranslation.getString("roleInfoSwallowIndicator")) + roleName;
 
                     // Death Reason on Ghosts

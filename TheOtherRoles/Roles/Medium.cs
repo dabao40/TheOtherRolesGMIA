@@ -309,7 +309,7 @@ namespace TheOtherRoles.Roles
                         break;
                     case 2:
                         count = alivePlayersList.Where(pc => Helpers.isNeutral(pc) && !pc.isRole(RoleId.Jackal) && !pc.isRole(RoleId.Sidekick) && !pc.isRole(RoleId.Thief) && !pc.isRole(RoleId.JekyllAndHyde) && !pc.isRole(RoleId.Moriarty)
-                        && !(pc.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)).Count();
+                        && !pc.isRole(RoleId.Yandere) && !pc.isRole(RoleId.Pelican) && !(pc.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate)).Count();
                         condition = ModTranslation.getString($"mediumPlayerNeutral{(count == 1 ? "" : "Plural")}");
                         break;
                     case 3:

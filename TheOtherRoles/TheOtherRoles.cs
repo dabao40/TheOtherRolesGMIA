@@ -7,6 +7,7 @@ using HarmonyLib;
 using Hazel;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
@@ -105,6 +106,7 @@ namespace TheOtherRoles
             Kataomoi.clearAndReload();
             Doomsayer.clearAndReload();
             Pelican.clearAndReload();
+            Yandere.clearAndReload();
             Role.ClearAll();
 
             // Modifier
@@ -119,6 +121,7 @@ namespace TheOtherRoles
             Armored.clearAndReload();
             Multitasker.clearAndReload();
             Diseased.clearAndReload();
+            Radar.clearAndReload();
 
             // Gamemodes
             HandleGuesser.clearAndReload();
@@ -217,7 +220,8 @@ namespace TheOtherRoles
                 { RoleId.PlagueDoctor, typeof(RoleBase<PlagueDoctor>) },
                 { RoleId.Fox, typeof(RoleBase<Fox>) },
                 { RoleId.Immoralist, typeof(RoleBase<Immoralist>) },
-                { RoleId.Pelican, typeof(RoleBase<Pelican>) }
+                { RoleId.Pelican, typeof(RoleBase<Pelican>) },
+                { RoleId.Yandere, typeof(RoleBase<Yandere>) }
             };
 
             public static HelpSprite[] GetHelp(RoleId roleId)
@@ -866,6 +870,20 @@ namespace TheOtherRoles
         {
             diseased = [];
             multiplier = CustomOptionHolder.modifierDiseasedMultiplier.getFloat();
+        }
+    }
+
+    public static class Radar
+    {
+        public static PlayerControl radar;
+        public static Arrow localArrow;
+        public static Color color = new Color32(255, 0, 128, byte.MaxValue);
+
+        public static void clearAndReload()
+        {
+            radar = null;
+            if (localArrow?.arrow != null)
+                UnityEngine.Object.Destroy(localArrow.arrow);
         }
     }
 

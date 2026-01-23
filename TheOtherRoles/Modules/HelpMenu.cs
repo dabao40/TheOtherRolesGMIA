@@ -600,6 +600,7 @@ public static class HelpMenu
         ("doomsayerWin", Doomsayer.color, ["doomsayerWinCondHint"]),
         ("kataomoiWin", Kataomoi.color, ["kataomoiWinCondHint"]),
         ("pelicanWin", Pelican.color, ["pelicanWinCondHint"]),
+        ("yandereWin", Yandere.color, ["yandereWinCondHint"]),
         ("plagueDoctorWin", PlagueDoctor.color, ["plagueDoctorWinCondHint"]),
         ("akujoWin", Akujo.color, ["akujoWinCondHint"]),
         ("foxWin", Fox.color, ["foxWinCondHint"])
@@ -672,6 +673,7 @@ public static class HelpMenu
                 { RoleId.Blackmailer, CustomOptionHolder.blackmailerSpawnRate },
                 { RoleId.Yoyo, CustomOptionHolder.yoyoSpawnRate },
                 { RoleId.FortuneTeller, CustomOptionHolder.fortuneTellerSpawnRate },
+                { RoleId.Yandere, CustomOptionHolder.yandereSpawnRate },
                 { RoleId.Veteran, CustomOptionHolder.veteranSpawnRate },
                 { RoleId.Sprinter, CustomOptionHolder.sprinterSpawnRate },
                 { RoleId.Sherlock, CustomOptionHolder.sherlockSpawnRate },

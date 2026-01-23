@@ -151,6 +151,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Kataomoi, CustomOptionHolder.kataomoiSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Doomsayer, CustomOptionHolder.doomsayerSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Pelican, CustomOptionHolder.pelicanSpawnRate.data);
+            neutralSettings.Add((byte)RoleId.Yandere, CustomOptionHolder.yandereSpawnRate.data);
             neutralSettings.Add((byte)RoleId.Lawyer, CustomOptionHolder.lawyerSpawnRate.data);
 
             crewSettings.Add((byte)RoleId.Mayor, CustomOptionHolder.mayorSpawnRate.data);
@@ -495,22 +496,13 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void assignRoleTargets(RoleAssignmentData data) {
-            // Set Lawyer or Prosecutor Target
+            // Set Lawyer Target
             if (Lawyer.exists) {
                 var possibleTargets = new List<PlayerControl>();
-                //if (!Lawyer.isProsecutor) { // Lawyer
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                     if (!p.Data.IsDead && !p.Data.Disconnected && !p.isLovers() && (p.Data.Role.IsImpostor || p.isRole(RoleId.Jackal) || (Lawyer.targetCanBeJester && p.isRole(RoleId.Jester))))
                         possibleTargets.Add(p);
                 }
-            //} 
-                /*else { // Prosecutor
-                    foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                        if (!p.Data.IsDead && !p.Data.Disconnected && p != Lovers.lover1 && p != Lovers.lover2 && p != Mini.mini && !p.Data.Role.IsImpostor && !Helpers.isNeutral(p) && p != Swapper.swapper)
-                            possibleTargets.Add(p);
-                    }
-                }*/
-                
                 if (possibleTargets.Count == 0) {
                     foreach (var lawyer in Lawyer.allPlayers)
                     {
@@ -535,6 +527,21 @@ namespace TheOtherRoles.Patches {
                 {
                     var target = possibleTargets[rnd.Next(0, possibleTargets.Count)];
                     Kataomoi.SetTarget.Invoke(target.PlayerId);
+                }
+            }
+
+            if (Yandere.hasAlivePlayers)
+            {
+                var possibleTargets = new List<PlayerControl>();
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                {
+                    if (!p.Data.IsDead && !p.isRole(RoleId.Yandere))
+                        possibleTargets.Add(p);
+                }
+                if (possibleTargets.Count > 0)
+                {
+                    var target = possibleTargets[rnd.Next(0, possibleTargets.Count)];
+                    Yandere.SetTarget.Invoke(target.PlayerId);
                 }
             }
         }
@@ -566,7 +573,8 @@ namespace TheOtherRoles.Patches {
                 RoleId.Chameleon,
                 RoleId.Armored,
                 RoleId.Multitasker,
-                RoleId.Diseased
+                RoleId.Diseased,
+                RoleId.Radar
                 //RoleId.Shifter
             });
 
@@ -861,6 +869,9 @@ namespace TheOtherRoles.Patches {
                     break;
                 case RoleId.Armored:
                     selection = CustomOptionHolder.modifierArmored.getSelection();
+                    break;
+                case RoleId.Radar:
+                    selection = CustomOptionHolder.modifierRadar.getSelection();
                     break;
                     //case RoleId.Shifter:
                     //selection = CustomOptionHolder.modifierShifter.getSelection();

@@ -218,7 +218,7 @@ namespace TheOtherRoles.Roles
                     Arrow arrow;
                     // float distance = Vector2.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
                     if (p.Data.Role.IsImpostor || p.isRole(RoleId.Jackal) || p.isRole(RoleId.Sheriff) || p.isRole(RoleId.JekyllAndHyde) ||
-                        p.isRole(RoleId.Moriarty) || p.isRole(RoleId.Thief) || p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ||
+                        p.isRole(RoleId.Moriarty) || p.isRole(RoleId.Yandere) || p.isRole(RoleId.Pelican) || p.isRole(RoleId.Thief) || p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate ||
                         p.isRole(RoleId.Sidekick) && Sidekick.canKill)
                     {
                         if (p.Data.Role.IsImpostor)
@@ -233,6 +233,10 @@ namespace TheOtherRoles.Roles
                             arrow = new Arrow(Moriarty.color);
                         else if (p.isRole(RoleId.SchrodingersCat))
                             arrow = new Arrow(RoleInfo.schrodingersCat.color);
+                        else if (p.isRole(RoleId.Pelican))
+                            arrow = new Arrow(Pelican.color);
+                        else if (p.isRole(RoleId.Yandere))
+                            arrow = new Arrow(Yandere.color);
                         else
                             arrow = new Arrow(Thief.color);
                         arrow.arrow.SetActive(true);

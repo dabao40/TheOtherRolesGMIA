@@ -709,6 +709,9 @@ namespace TheOtherRoles.Patches {
                 if (infos.Any(info => info.roleId == RoleId.Kataomoi)) {
                     __instance.RoleBlurbText.text += Helpers.cs(Kataomoi.color, string.Format(ModTranslation.getString("kataomoiIntroLine"), Kataomoi.target?.Data?.PlayerName ?? ""));
                 }
+                if (infos.Any(info => info.roleId == RoleId.Yandere)) {
+                    __instance.RoleBlurbText.text += Helpers.cs(Yandere.color, string.Format(ModTranslation.getString("yandereIntroLine"), Yandere.target?.Data?.PlayerName ?? ""));
+                }
 
                 SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.Data.Role.IntroSound, false, 1f, null);
                 __instance.YouAreText.gameObject.SetActive(true);

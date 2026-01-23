@@ -72,16 +72,24 @@ namespace TheOtherRoles.Roles
                 player.clearAllTasks();
                 if (!hasTeam())
                 {
-                    if (killer.Data.Role.IsImpostor) {
+                    if (killer.Data.Role.IsImpostor)
+                    {
                         setImpostorFlag();
                         if (becomesImpostor) FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Impostor);
                     }
-                    else if (killer.isRole(RoleId.Jackal) || killer.isRole(RoleId.Sidekick))                         setJackalFlag();
+                    else if (killer.isRole(RoleId.Jackal) || killer.isRole(RoleId.Sidekick))
+                        setJackalFlag();
                     else if (killer.isRole(RoleId.JekyllAndHyde))
                         setJekyllAndHydeFlag();
-                    else if (killer.isRole(RoleId.Moriarty))                         setMoriartyFlag();
-                    else                         if (!justDieOnKilledByCrew)
+                    else if (killer.isRole(RoleId.Moriarty))
+                        setMoriartyFlag();
+                    else if (killer.isRole(RoleId.Yandere))
+                        setYandereFlag();
+                    else
+                    {
+                        if (!justDieOnKilledByCrew)
                             setCrewFlag();
+                    }
 
                     player.ModRevive();
                     DeadBody[] array = Object.FindObjectsOfType<DeadBody>();
@@ -93,11 +101,15 @@ namespace TheOtherRoles.Roles
                     TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << player.PlayerId) { RelatedTag = EventDetail.Revive });
                 }
             }
-            else                 // Assign the default ghost role to let the Schrodinger's Cat have the haunt button
-                if (!hasTeam()) {
+            else
+            {
+                // Assign the default ghost role to let the Schrodinger's Cat have the haunt button
+                if (!hasTeam())
+                {
                     isExiled = true;
                     if (AmongUsClient.Instance.AmHost) FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(player, false);
                 }
+            }
         }
 
         public static Color color = Color.grey;
@@ -118,7 +130,8 @@ namespace TheOtherRoles.Roles
             Crewmate,
             Jackal,
             JekyllAndHyde,
-            Moriarty
+            Moriarty,
+            Yandere
         }
 
         public static bool isTeamJackalAlive()
@@ -163,6 +176,12 @@ namespace TheOtherRoles.Roles
             team = Team.Moriarty;
         }
 
+        public static void setYandereFlag()
+        {
+            RoleInfo.schrodingersCat.color = Yandere.color;
+            team = Team.Yandere;
+        }
+
         public static void setCrewFlag()
         {
             RoleInfo.schrodingersCat.color = Color.white;
@@ -174,7 +193,8 @@ namespace TheOtherRoles.Roles
         {
             if (SchrodingersCat.team != team) return 0;
             int counter = 0;
-            foreach (var player in allPlayers)                 if (player.isLovers()) counter += 1;
+            foreach (var player in allPlayers)
+                if (player.isLovers()) counter += 1;
             return counter;
         }
 
@@ -242,6 +262,15 @@ namespace TheOtherRoles.Roles
                         }));
                         teams.Add(jekyllAndHyde);
                     }
+                    if (Yandere.exists)
+                    {
+                        var yandere = createPoolable(parent, "yandere", 12, (UnityAction)(() =>
+                        {
+                            SetTeam.Invoke((byte)Team.Yandere);
+                            showMenu();
+                        }));
+                        teams.Add(yandere);
+                    }
                     var crewmate = createPoolable(parent, "crewmate", 10, (UnityAction)(() =>
                     {
                         SetTeam.Invoke((byte)Team.Crewmate);
@@ -278,6 +307,14 @@ namespace TheOtherRoles.Roles
         {
             if (team == Team.JekyllAndHyde && isRole(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead)
                 if (!JekyllAndHyde.hasAlivePlayers || !cantKillUntilLastOne)
+                    return true;
+            return false;
+        }
+
+        public static bool isYandereButtonEnable()
+        {
+            if (team == Team.Yandere && isRole(PlayerControl.LocalPlayer) && !PlayerControl.LocalPlayer.Data.IsDead)
+                if (!Yandere.hasAlivePlayers || !cantKillUntilLastOne)
                     return true;
             return false;
         }
@@ -323,6 +360,15 @@ namespace TheOtherRoles.Roles
                     untargetables.AddRange(JekyllAndHyde.allPlayers);
                     currentTarget = setTarget(untargetablePlayers: untargetables);
                     setPlayerOutline(currentTarget, JekyllAndHyde.color);
+                }
+            }
+            else if (team == Team.Yandere)
+            {
+                if (!Yandere.hasAlivePlayers || !cantKillUntilLastOne)
+                {
+                    untargetables.AddRange(Yandere.allPlayers);
+                    currentTarget = setTarget(untargetablePlayers: untargetables);
+                    setPlayerOutline(currentTarget, Yandere.color);
                 }
             }
             else if (team == Team.Moriarty)

@@ -159,6 +159,14 @@ namespace TheOtherRoles.Patches {
                 if (Kataomoi.target != null)
                     setPlayerNameColor(Kataomoi.target, Kataomoi.color);
             }
+            else if (localPlayer.isRole(RoleId.Yandere))
+            {
+                if (Yandere.target != null)
+                    setPlayerNameColor(Yandere.target, Yandere.color);
+                if (SchrodingersCat.exists && SchrodingersCat.team == SchrodingersCat.Team.Yandere)
+                    foreach (var p in SchrodingersCat.allPlayers)
+                        setPlayerNameColor(p, Yandere.color);
+            }
             /*else if (Spy.spy != null && Spy.spy == localPlayer) {
                 setPlayerNameColor(Spy.spy, Spy.color);
             } else if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == localPlayer) {
@@ -182,11 +190,13 @@ namespace TheOtherRoles.Patches {
             }*/
 
             // No else if here, as a Lover of team Jackal needs the colors
-            if (localPlayer.isRole(RoleId.Sidekick)) {
+            if (localPlayer.isRole(RoleId.Sidekick))
+            {
                 // Sidekick can see the jackal
                 setPlayerNameColor(localPlayer, Sidekick.color);
                 var jackal = Sidekick.getRole(localPlayer).jackal;
-                if (jackal != null && jackal.player != null) {
+                if (jackal != null && jackal.player != null)
+                {
                     setPlayerNameColor(jackal.player, Jackal.color);
                 }
                 if (SchrodingersCat.exists && SchrodingersCat.team == SchrodingersCat.Team.Jackal)
@@ -214,6 +224,10 @@ namespace TheOtherRoles.Patches {
                 else if (SchrodingersCat.team == SchrodingersCat.Team.Moriarty && Moriarty.exists) {
                     foreach (var moriarty in Moriarty.allPlayers)
                         setPlayerNameColor(moriarty, Moriarty.color);
+                }
+                else if (SchrodingersCat.team == SchrodingersCat.Team.Yandere && Yandere.exists) {
+                    foreach (var yandere in Yandere.allPlayers)
+                        setPlayerNameColor(yandere, Yandere.color);
                 }
             }
 
@@ -344,6 +358,17 @@ namespace TheOtherRoles.Patches {
                 if (MeetingHud.Instance != null)
                     foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                         if (Kataomoi.target.PlayerId == player.TargetPlayerId)
+                            player.NameText.text += suffix;
+            }
+
+            if (PlayerControl.LocalPlayer.isRole(RoleId.Yandere) && Yandere.target != null)
+            {
+                string suffix = Helpers.cs(Yandere.color, " ♥");
+                Yandere.target.cosmetics.nameText.text += suffix;
+
+                if (MeetingHud.Instance != null)
+                    foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                        if (Yandere.target.PlayerId == player.TargetPlayerId)
                             player.NameText.text += suffix;
             }
 
@@ -539,7 +564,12 @@ namespace TheOtherRoles.Patches {
             }
 
             if (!MeetingHud.Instance && Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId)))
+            {
                 HudManager.Instance.ShadowQuad?.gameObject?.SetActive(true);
+                foreach (var p in PlayerControl.AllPlayerControls)
+                    if (p.Data.IsDead && p != PlayerControl.LocalPlayer)
+                        p.Visible = false;
+            }
         }
 
         static void Postfix(HudManager __instance)

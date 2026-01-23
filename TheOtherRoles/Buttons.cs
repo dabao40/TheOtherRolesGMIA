@@ -117,6 +117,7 @@ namespace TheOtherRoles
         public static CustomButton zephyrButton;
         public static CustomButton jailorButton;
         public static CustomButton doomsayerButton;
+        public static CustomButton yandereButton;
         public static CustomButton collatorButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
@@ -232,6 +233,7 @@ namespace TheOtherRoles
             assassinButton.MaxTimer = Assassin.cooldown;
             thiefKillButton.MaxTimer = Thief.cooldown;
             mayorMeetingButton.MaxTimer = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
+            yandereButton.MaxTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
             ninjaButton.MaxTimer = Ninja.stealthCooldown;
             serialKillerButton.MaxTimer = SerialKiller.suicideTimer;
             archaeologistDetectButton.MaxTimer = Archaeologist.cooldown;
@@ -452,40 +454,6 @@ namespace TheOtherRoles
             targetDisplay.setSemiTransparent(false);
             targetDisplay.gameObject.SetActive(true);
         }
-
-        /*public static void createRoleSummaryButton(HudManager __instance)
-        {
-            roleSummaryButton = new CustomButton(
-            () => {
-                if (LobbyRoleInfo.RolesSummaryUI == null)
-                {
-                    LobbyRoleInfo.RoleSummaryOnClick();
-                }
-                else
-                {
-                    UnityEngine.Object.Destroy(LobbyRoleInfo.RolesSummaryUI);
-                    LobbyRoleInfo.RolesSummaryUI = null;
-                }
-            },
-            () => { return PlayerControl.LocalPlayer != null && LobbyBehaviour.Instance; },
-            () => {
-                if (PlayerCustomizationMenu.Instance || GameSettingMenu.Instance)
-                {
-                    if (LobbyRoleInfo.RolesSummaryUI != null)
-                    {
-                        UnityEngine.Object.Destroy(LobbyRoleInfo.RolesSummaryUI);
-                    }
-                }
-                return true;
-            },
-            () => { },
-            Helpers.loadSpriteFromResources("TheOtherRoles.Resources.HelpButton.png", 150f),
-            new Vector3(-1.075f, 0.0f, 0.0f),
-            __instance,
-            null
-            );
-        }*/
-
         public static void Prefix(HudManager __instance)
         {
             TORGameManager.Instance?.Abandon();
@@ -1452,6 +1420,24 @@ namespace TheOtherRoles
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Jackal) && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return Jackal.local.currentTarget && PlayerControl.LocalPlayer.CanMove; },
                 () => { jackalKillButton.Timer = jackalKillButton.MaxTimer;},
+                __instance.KillButton.graphic.sprite,
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.Q
+            );
+
+            yandereButton = new CustomButton(
+                () =>
+                {
+                    if (Helpers.checkMurderAttemptAndKill(PlayerControl.LocalPlayer, Yandere.currentTarget) == MurderAttemptResult.SuppressKill) return;
+                    yandereButton.MaxTimer = Yandere.nuisance.Contains(Yandere.currentTarget) ? Mathf.Max(1f, yandereButton.MaxTimer - Yandere.reducedCooldown) : yandereButton.MaxTimer + Yandere.cooldownPunishment;
+                    if (Yandere.isRunaway) yandereButton.MaxTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                    yandereButton.Timer = yandereButton.MaxTimer;
+                    Yandere.currentTarget = null;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Yandere) && !PlayerControl.LocalPlayer.Data.IsDead && (Yandere.isRunaway || Yandere.nuisance.Count > 0); },
+                () => { return Yandere.currentTarget && PlayerControl.LocalPlayer.CanMove; },
+                () => { yandereButton.Timer = yandereButton.MaxTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown; },
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
@@ -2818,7 +2804,7 @@ namespace TheOtherRoles
                     schrodingersCatKillButton.Timer = schrodingersCatKillButton.MaxTimer;
                     SchrodingersCat.currentTarget = null;
                 },
-                () => { return SchrodingersCat.isJackalButtonEnable() || SchrodingersCat.isJekyllAndHydeButtonEnable() || SchrodingersCat.isMoriartyButtonEnable(); },
+                () => { return SchrodingersCat.isJackalButtonEnable() || SchrodingersCat.isJekyllAndHydeButtonEnable() || SchrodingersCat.isMoriartyButtonEnable() || SchrodingersCat.isYandereButtonEnable(); },
                 () => { return SchrodingersCat.currentTarget && PlayerControl.LocalPlayer.CanMove; },
                 () => { schrodingersCatKillButton.Timer = schrodingersCatKillButton.MaxTimer; },
                 __instance.KillButton.graphic.sprite,

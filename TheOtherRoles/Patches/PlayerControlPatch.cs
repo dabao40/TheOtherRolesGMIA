@@ -286,7 +286,7 @@ namespace TheOtherRoles.Patches {
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
                 if ((Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target) || (Akujo.knowsRoles && Akujo.isPartner(PlayerControl.LocalPlayer, p)) || p == PlayerControl.LocalPlayer || (PlayerControl.LocalPlayer.Data.IsDead
-                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId))) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
+                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Contains(PlayerControl.LocalPlayer))) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -381,6 +381,54 @@ namespace TheOtherRoles.Patches {
                     var oldColor2 = rends[i].color[1];
                     var oldColor3 = rends[i].color[2];
                     rends[i].color = new Color(oldColor1, oldColor2, oldColor3, 0.5f);
+                }
+            }
+        }
+
+        private static void radarUpdate()
+        {
+            if (Radar.radar == null || PlayerControl.LocalPlayer != Radar.radar || MeetingHud.Instance)
+                return;
+
+            if (Radar.radar?.Data.IsDead == true)
+            {
+                if (Radar.localArrow?.arrow != null)
+                    UnityEngine.Object.Destroy(Radar.localArrow?.arrow);
+                Radar.localArrow = null;
+                return;
+            }
+
+            PlayerControl closestPlayer = null;
+            float closestDistance = float.MaxValue;
+            Vector2 refPosition = PlayerControl.LocalPlayer.GetTruePosition();
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Data.IsDead || player.PlayerId == PlayerControl.LocalPlayer.PlayerId || !player.Collider.enabled)
+                    continue;
+
+                float distance = Vector2.Distance(refPosition, player.GetTruePosition());
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPlayer = player;
+                }
+            }
+
+            if (closestPlayer != null)
+            {
+                if (Radar.localArrow == null)
+                {
+                    Radar.localArrow = new Arrow(Radar.color);
+                    Radar.localArrow.arrow.SetActive(true);
+                }
+                Radar.localArrow.Update(closestPlayer.transform.position);
+            }
+            else
+            {
+                if (Radar.localArrow != null && Radar.localArrow.arrow != null)
+                {
+                    Radar.localArrow.arrow.SetActive(false);
                 }
             }
         }
@@ -640,6 +688,8 @@ namespace TheOtherRoles.Patches {
                 miniCooldownUpdate();
                 // Yo-yo
                 Silhouette.UpdateAll();
+                // Radar
+                radarUpdate();
 
                 // Props
                 accelTrapUpdate();
@@ -754,7 +804,7 @@ namespace TheOtherRoles.Patches {
     {
         public static bool Prefix([HarmonyArgument(0)] PlayerControl player, bool specialRolesAllowed)
         {
-            if ((player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || Busker.players.Any(x => x.player == player && x.pseudocideFlag) || Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == player.PlayerId)) || FreePlayGM.isFreePlayGM)
+            if ((player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || Busker.players.Any(x => x.player == player && x.pseudocideFlag) || FreePlayGM.isFreePlayGM)
                 return false;
             return true;
         }
@@ -826,6 +876,12 @@ namespace TheOtherRoles.Patches {
                             break;
                         case var _ when __instance.isRole(RoleId.Moriarty) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Moriarty):
                             Seer.killTeams.moriarty++;
+                            break;
+                        case var _ when __instance.isRole(RoleId.Pelican):
+                            Seer.killTeams.pelican++;
+                            break;
+                        case var _ when __instance.isRole(RoleId.Yandere) || (__instance.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Yandere):
+                            Seer.killTeams.yandere++;
                             break;
                         case var _ when !Helpers.isNeutral(__instance):
                             Seer.killTeams.crewmate++;

@@ -106,6 +106,7 @@ namespace TheOtherRoles
         Doomsayer,
         Kataomoi,
         Collator,
+        Yandere,
         Busker,
         Noisemaker,
         Archaeologist,
@@ -125,6 +126,7 @@ namespace TheOtherRoles
         Diseased,
         Invert,
         Multitasker,
+        Radar,
         Chameleon,
         Armored,
         //Shifter
@@ -799,6 +801,9 @@ namespace TheOtherRoles
                 case RoleId.Diseased:
                     Diseased.diseased.Add(player);
                     break;
+                case RoleId.Radar:
+                    Radar.radar = player;
+                    break;
                 case RoleId.Madmate:
                     Madmate.madmate.Add(player);
                     break;
@@ -1089,7 +1094,18 @@ namespace TheOtherRoles
                     Invert.invert.Add(oldShifter);
                     Invert.invert.Remove(player);
                 }
+                if (Multitasker.multitasker.Any(x => x.PlayerId == player.PlayerId))
+                {
+                    Multitasker.multitasker.Add(oldShifter);
+                    Multitasker.multitasker.Remove(player);
+                }
+                if (Diseased.diseased.Any(x => x.PlayerId == player.PlayerId))
+                {
+                    Diseased.diseased.Add(oldShifter);
+                    Diseased.diseased.Remove(player);
+                }
                 if (Armored.armored == player) Armored.armored = oldShifter;
+                if (Radar.radar == player) Radar.radar = oldShifter;
             }
 
             if ((player.Data.Tasks == null || player.Data.Tasks?.Count == 0 || player.isRole(RoleId.Fox)) && !player.Data.IsDead && PlayerControl.LocalPlayer == player)
@@ -1098,8 +1114,8 @@ namespace TheOtherRoles
             player.swapRoles(oldShifter);
 
             if (Lawyer.target == player) Lawyer.target = oldShifter;
-            if (Kataomoi.target == player)
-                Kataomoi.target = oldShifter;
+            if (Kataomoi.target == player) Kataomoi.target = oldShifter;
+            if (Yandere.target == player) Yandere.target = oldShifter;
 
             if (Shifter.isNeutral)
             {
@@ -1334,6 +1350,9 @@ namespace TheOtherRoles
                 if (Invert.invert.Any(x => x.PlayerId == player.PlayerId)) Invert.invert.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (Chameleon.chameleon.Any(x => x.PlayerId == player.PlayerId)) Chameleon.chameleon.RemoveAll(x => x.PlayerId == player.PlayerId);
                 if (player == Armored.armored) Armored.clearAndReload();
+                if (player == Radar.radar) Radar.clearAndReload();
+                if (Multitasker.multitasker.Any(x => x.PlayerId == player.PlayerId)) Multitasker.multitasker.RemoveAll(x => x.PlayerId == player.PlayerId);
+                if (Diseased.diseased.Any(x => x.PlayerId == player.PlayerId)) Diseased.diseased.RemoveAll(x => x.PlayerId == player.PlayerId);
             }
         }
 

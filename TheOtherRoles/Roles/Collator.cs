@@ -37,6 +37,8 @@ public class Collator : RoleBase<Collator>
         Jackal,
         JekyllAndHyde,
         Moriarty,
+        Yandere,
+        Pelican,
         NeutralStandalone
     }
 
@@ -163,6 +165,8 @@ public class Collator : RoleBase<Collator>
         else if (role.roleId == RoleId.JekyllAndHyde || (role.roleId == RoleId.JekyllAndHyde && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde)) team = TeamCategory.JekyllAndHyde;
         else if (role.roleId == RoleId.Jackal || role.roleId == RoleId.Sidekick ||
             (role.roleId == RoleId.SchrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Jackal)) team = TeamCategory.Jackal;
+        else if (role.roleId == RoleId.Yandere || (role.roleId == RoleId.SchrodingersCat && SchrodingersCat.team == SchrodingersCat.Team.Yandere)) team = TeamCategory.Yandere;
+        else if (role.roleId == RoleId.Pelican) team = TeamCategory.Pelican;
 
         if (!strictNeutral && role.isNeutral)
             team = TeamCategory.Jackal;

@@ -157,6 +157,9 @@ namespace TheOtherRoles.CustomGameModes
                 case RoleId.Armored:
                     Armored.armored = null;
                     break;
+                case RoleId.Radar:
+                    Radar.radar = null;
+                    break;
                 case RoleId.Multitasker:
                     Multitasker.multitasker.RemoveAll(x => x.PlayerId == playerId);
                     break;

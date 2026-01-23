@@ -634,7 +634,7 @@ namespace TheOtherRoles
             return player.isRole(RoleId.Jester) || player.isRole(RoleId.Jackal) || player.isRole(RoleId.Sidekick) || player.isRole(RoleId.Arsonist) || player.isRole(RoleId.Vulture) || player.isRole(RoleId.Opportunist) || player.isRole(RoleId.Moriarty)
                 || (Madmate.madmate.Any(x => x.PlayerId == player.PlayerId) && !Madmate.hasTasks) ||
                 (CreatedMadmate.createdMadmate.Any(x => x.PlayerId == player.PlayerId) && !CreatedMadmate.hasTasks) || player.isRole(RoleId.Akujo) || player.isRole(RoleId.Kataomoi) || player.isRole(RoleId.PlagueDoctor) || player.isRole(RoleId.Cupid) || (player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hideRole)
-                || player.isRole(RoleId.Immoralist) || player.isRole(RoleId.Doomsayer) || player.isRole(RoleId.Pelican);
+                || player.isRole(RoleId.Immoralist) || player.isRole(RoleId.Doomsayer) || player.isRole(RoleId.Pelican) || player.isRole(RoleId.Yandere);
         }
 
         public static bool canBeErased(this PlayerControl player) {
@@ -1866,6 +1866,8 @@ namespace TheOtherRoles
                 roleCouldUse = true;
             else if (player.isRole(RoleId.Pelican) && Pelican.canUseVents)
                 roleCouldUse = true;
+            else if (player.isRole(RoleId.Yandere))
+                roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)
             {
                 if (player.isRole(RoleId.Ninja) && !Ninja.canUseVents)
@@ -2190,6 +2192,7 @@ namespace TheOtherRoles
                 || JekyllAndHyde.players.Any(x => x.player && x.player.PlayerId == player.PlayerId && !x.isJekyll())
                 || player.Object.isRole(RoleId.Fox)
                 || (player.Object.isRole(RoleId.Pelican) && Pelican.hasImpVision)
+                || (player.Object.isRole(RoleId.Yandere) && Yandere.hasImpVision)
                 || (player.Object.isRole(RoleId.SchrodingersCat) && SchrodingersCat.hasTeam() && SchrodingersCat.team != SchrodingersCat.Team.Crewmate);
         }
         

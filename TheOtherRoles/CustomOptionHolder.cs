@@ -456,6 +456,15 @@ namespace TheOtherRoles {
         public static CustomOption doomsayerIndicator;
         public static CustomOption doomsayerMaxMisses;
 
+        public static CustomRoleOption yandereSpawnRate;
+        public static CustomOption yandereReducedCooldown;
+        public static CustomOption yandereCooldownPunishment;
+        public static CustomOption yandereNuisanceRange;
+        public static CustomOption yandereNuisanceRegisterDuration;
+        public static CustomOption yandereMaxNuisance;
+        public static CustomOption yandereRunawayTimeLimit;
+        public static CustomOption yandereHasImpVision;
+
         public static CustomRoleOption lawyerSpawnRate;
         public static CustomOption lawyerTargetKnows;
         //public static CustomOption lawyerIsProsecutorChance;
@@ -549,6 +558,8 @@ namespace TheOtherRoles {
         public static CustomOption modifierAntiTeleportQuantity;
 
         public static CustomOption modifierTieBreaker;
+
+        public static CustomOption modifierRadar;
 
         public static CustomOption modifierSunglasses;
         public static CustomOption modifierSunglassesQuantity;
@@ -1003,6 +1014,15 @@ namespace TheOtherRoles {
             pelicanCanUseVents = CustomOption.Create(9063, Types.Neutral, "pelicanCanUseVents", true, pelicanSpawnRate);
             pelicanHasImpVision = CustomOption.Create(9064, Types.Neutral, "pelicanHasImpVision", true, pelicanSpawnRate);
 
+            yandereSpawnRate = new CustomRoleOption(8500, Types.Neutral, "yandere", Yandere.color, 1);
+            yandereReducedCooldown = CustomOption.Create(8501, Types.Neutral, "yandereReducedCooldown", 5f, 0f, 30f, 1f, yandereSpawnRate, false, "unitSeconds");
+            yandereCooldownPunishment = CustomOption.Create(8502, Types.Neutral, "yandereCooldownPunishment", 10f, 0f, 60f, 1f, yandereSpawnRate, false, "unitSeconds");
+            yandereNuisanceRange = CustomOption.Create(8503, Types.Neutral, "yandereNuisanceRange", 1.8f, 0.5f, 5f, 0.1f, yandereSpawnRate, false, "unitMeters");
+            yandereNuisanceRegisterDuration = CustomOption.Create(8504, Types.Neutral, "yandereNuisanceRegisterDuration", 2f, 0.1f, 7.5f, 0.1f, yandereSpawnRate, false, "unitSeconds");
+            yandereMaxNuisance = CustomOption.Create(8505, Types.Neutral, "yandereMaxNuisance", 4f, 1f, 24f, 1f, yandereSpawnRate, false, "unitScrews");
+            yandereRunawayTimeLimit = CustomOption.Create(8507, Types.Neutral, "yandereRunawayTimeLimit", 60f, 10f, 180f, 10f, yandereSpawnRate, false, "unitSeconds");
+            yandereHasImpVision = CustomOption.Create(8506, Types.Neutral, "yandereHasImpVision", true, yandereSpawnRate);
+
             jekyllAndHydeSpawnRate = new CustomRoleOption(8104, Types.Neutral, "jekyllAndHyde", JekyllAndHyde.color);
             jekyllAndHydeNumberToWin = CustomOption.Create(8105, Types.Neutral, "jekyllAndHydeNumberToWin", 3f, 1f, 10f, 1f, jekyllAndHydeSpawnRate, false, "unitScrews");
             jekyllAndHydeCooldown = CustomOption.Create(8106, Types.Neutral, "jekyllAndHydeCooldown", 18f, 2f, 30f, 1f, jekyllAndHydeSpawnRate, false, "unitSeconds");
@@ -1239,6 +1259,8 @@ namespace TheOtherRoles {
             modifierAntiTeleportQuantity = CustomOption.Create(1011, Types.Modifier, cs(Color.yellow, "antiTeleportQuantity"), ratesModifier, modifierAntiTeleport);
 
             modifierTieBreaker = CustomOption.Create(1020, Types.Modifier, cs(Color.yellow, "tiebreakerLongDesc"), rates, null, true, color: Color.yellow);
+
+            modifierRadar = CustomOption.Create(1800, Types.Modifier, cs(Color.yellow, "radar"), rates, null, true, color: Color.yellow);
 
             modifierLover = CustomOption.Create(1040, Types.Modifier, cs(Color.yellow, "lovers"), rates, null, true, color: Color.yellow);
             modifierLoverImpLoverRate = CustomOption.Create(1041, Types.Modifier, "loversImpLoverRate", rates, modifierLover);

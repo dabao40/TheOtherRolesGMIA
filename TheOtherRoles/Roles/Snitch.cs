@@ -82,6 +82,8 @@ namespace TheOtherRoles.Roles
                     bool arrowForImp = p.Data.Role.IsImpostor;
                     bool arrowForTeamJackal = includeTeamEvil && (p.isRole(RoleId.Jackal) || p.isRole(RoleId.Sidekick) || (p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Jackal));
                     bool arrowForFox = includeTeamEvil && (p.isRole(RoleId.Fox) || p.isRole(RoleId.Immoralist));
+                    bool arrowForPelican = includeTeamEvil && p.isRole(RoleId.Pelican);
+                    bool arrowForYandere = includeTeamEvil && (p.isRole(RoleId.Yandere) || (p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Yandere));
                     bool arrowForJekyll = includeTeamEvil && (p.isRole(RoleId.JekyllAndHyde) || (p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.JekyllAndHyde));
                     bool arrowForMoriarty = includeTeamEvil && (p.isRole(RoleId.Moriarty) || (p.isRole(RoleId.SchrodingersCat) && SchrodingersCat.team == SchrodingersCat.Team.Moriarty));
 
@@ -91,9 +93,11 @@ namespace TheOtherRoles.Roles
                         else if (arrowForFox) color = Fox.color;
                         else if (arrowForJekyll) color = JekyllAndHyde.color;
                         else if (arrowForMoriarty) color = Moriarty.color;
+                        else if (arrowForPelican) color = Pelican.color;
+                        else if (arrowForYandere) color = Yandere.color;
                     }
 
-                    if (!p.Data.IsDead && (arrowForImp || arrowForTeamJackal || arrowForFox || arrowForJekyll || arrowForMoriarty))
+                    if (!p.Data.IsDead && (arrowForImp || arrowForTeamJackal || arrowForFox || arrowForJekyll || arrowForMoriarty || arrowForPelican || arrowForYandere))
                     {
                         if (arrowIndex >= localArrows.Count)
                             localArrows.Add(new Arrow(color));

@@ -16,7 +16,7 @@ namespace TheOtherRoles.Roles;
 
 public class Pelican : RoleBase<Pelican>
 {
-    public static Color color = Color.green;
+    public static Color32 color = new(153, 253, 153, byte.MaxValue);
     public PlayerControl currentTarget;
     public List<PlayerControl> eatenPlayers = [];
     public static float cooldown;
@@ -38,7 +38,7 @@ public class Pelican : RoleBase<Pelican>
         TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, message.playerId, 1 << message.targetId) { RelatedTag = EventDetail.Swallowed });
         var pelican = getRole(player);
         pelican.eatenPlayers.Add(target);
-        target.Exiled();
+        target.Die(DeathReason.Exile, false);
         DeadPlayer deadPlayerEntry = GameHistory.deadPlayers.Where(x => x.player.PlayerId == message.targetId).FirstOrDefault();
         if (deadPlayerEntry != null) GameHistory.deadPlayers.Remove(deadPlayerEntry);
         if (target == PlayerControl.LocalPlayer)
@@ -94,6 +94,8 @@ public class Pelican : RoleBase<Pelican>
         if (player.Data.IsDead) return;
         foreach (var p in eatenPlayers)
         {
+            p.Exiled();
+            GameHistory.overrideDeathReasonAndKiller(p, DeadPlayer.CustomDeathReason.Swallowed, player);
             if (PlayerControl.LocalPlayer == p)
             {
                 HudManager.Instance.ShadowQuad?.gameObject?.SetActive(false);
@@ -101,18 +103,15 @@ public class Pelican : RoleBase<Pelican>
                 HudManager.Instance.PlayerCam.SetTargetWithLight(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.moveable = true;
             }
-
-            if (AmongUsClient.Instance.AmHost)
-                FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(p, false);
         }
         eatenPlayers = [];
     }
 
     public static void clearAndReload()
     {
-        players = [];
         cooldown = CustomOptionHolder.pelicanCooldown.getFloat();
         canUseVents = CustomOptionHolder.pelicanCanUseVents.getBool();
         hasImpVision = CustomOptionHolder.pelicanHasImpVision.getBool();
+        players = [];
     }
 }
