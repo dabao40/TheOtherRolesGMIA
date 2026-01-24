@@ -836,7 +836,8 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if ((target.hasFakeTasks() || target.isRole(RoleId.Thief) || (target.isRole(RoleId.Shifter) && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == target.PlayerId) || target.isRole(RoleId.JekyllAndHyde) || target.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
+            if ((target.hasFakeTasks() || target.isRole(RoleId.Thief) || (target.isRole(RoleId.Shifter) && Shifter.isNeutral) || (__instance.isRole(RoleId.TaskMaster) && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
+                || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == target.PlayerId) || target.isRole(RoleId.JekyllAndHyde) || target.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1075,16 +1076,6 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
-    public static class PlayerControlDiePatch
-    {
-        public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] DeathReason reason)
-        {
-            if (__instance.isRole(RoleId.TaskMaster) && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete && !FreePlayGM.isFreePlayGM)
-                __instance.clearAllTasks();
-        }
-    }
-
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Exiled))]
     public static class ExilePlayerPatch
     {
@@ -1096,7 +1087,8 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if ((__instance.hasFakeTasks() || __instance.isRole(RoleId.Thief) || (__instance.isRole(RoleId.Shifter) && Shifter.isNeutral) || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance.isRole(RoleId.JekyllAndHyde) || __instance.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
+            if ((__instance.hasFakeTasks() || __instance.isRole(RoleId.Thief) || (__instance.isRole(RoleId.Shifter) && Shifter.isNeutral) || (__instance.isRole(RoleId.TaskMaster) && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
+                || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance.isRole(RoleId.JekyllAndHyde) || __instance.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
                 __instance.clearAllTasks();
 
             __instance.OnDeath(killer: null);

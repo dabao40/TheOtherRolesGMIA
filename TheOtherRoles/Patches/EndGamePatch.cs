@@ -1064,8 +1064,9 @@ namespace TheOtherRoles.Patches {
 
         private static bool CheckAndEndGameForYandereWin(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if (statistics.YandereAlive >= statistics.TotalAlive - statistics.YandereAlive && statistics.TeamPelicanAlive == 0 && statistics.TeamJackalAlive == 0
-                && statistics.TeamImpostorsAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamSheriffAlive == 0)
+            if ((statistics.YandereAlive >= statistics.TotalAlive - statistics.YandereAlive && statistics.TeamPelicanAlive == 0 && statistics.TeamJackalAlive == 0
+                && statistics.TeamImpostorsAlive == 0 && statistics.TeamMoriartyAlive == 0 && statistics.TeamSheriffAlive == 0) ||
+                (Yandere.canWinWithTarget && statistics.TotalAlive <= 3))
             {
                 GameManager.Instance.RpcEndGame((GameOverReason)CustomGameOverReason.YandereWin, false);
                 return true;

@@ -12413,8 +12413,8 @@
         "13": "\u51fb\u6740\u80dc\u5229"
     },
     "yandereWinCondHint": {
-        "0": "Outnumber the Crewmates, have all other killers killed and win with the Crush.",
-        "13": "\u6dd8\u6c70\u6240\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\u5e76\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4ee5\u548c\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u80dc\u5229\u3002"
+        "0": "Outnumber the Crewmates or have all other killers killed and win with the Crush.",
+        "13": "\u6dd8\u6c70\u6240\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\u6216\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4ee5\u548c\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u80dc\u5229\u3002"
     },
     "yandereWinCondHintEndGameTitle": {
         "0": "Kill Win Trigger",

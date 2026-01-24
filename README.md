@@ -17,16 +17,17 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 17.1s            | v1.3.5     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.5) |
 | 17.1s            | v1.3.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.4) |
-| 16.0.0s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
-| 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
-| 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
 
 <details>
   <summary>Click to show older versions</summary>
   
 | Among Us - Version | Mod Version | Link                                                                       |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 16.0.0s            | v1.3.3     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.3) |
+| 2024.11.26s        | v1.3.2     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.2) |
+| 2024.11.26s        | v1.3.1     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.1) |
 | 2024.10.29s        | v1.3.0     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.0) |
 | 2024.6.18s         | v1.2.9     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.9) |
 | 2024.6.18s         | v1.2.7     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.2.7) |
@@ -50,6 +51,20 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.3.5**
+ - Added new role Jailor
+ - Added new role Pelican
+ - Added new role Yandere
+ - Added new modifier Multitasker
+ - Added new modifier Diseased
+ - Added new modifier Radar
+ - Added a flush ability for the Security Guard
+ - Added new option "Cleaner Can See Dead Bodies On Map"
+ - Added new option "Fortune Teller Reveal On Impostor Divination"
+ - Added new option "All Vents Are Connected For Undertaker"
+ - Fixed a bug where the Collator, Archaeologist's information will not be shown during the meeting
+ - Deleted some useless achievements and added some new ones
 
   **Version v1.3.4**
  - Updated compatibility to the latest Among Us version (v17.1), thanks to @FangkuaiYa
@@ -2312,6 +2327,7 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 ## Developers
 - [Imp11](https://github.com/dabao40)  
 - [Among us](https://github.com/XiezibanWrite)
+- [ELinmei](https://github.com/HayashiUme)
 
 ## Artists
 - [Fangkuai](https://github.com/FangkuaiYa)
@@ -2319,6 +2335,7 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 ## Translators
 - [LezaiYa](https://github.com/LezaiYa)  
 - [Fangkuai](https://github.com/FangkuaiYa)
+- [NK](github.com/endrmen9487)
 - [yuunozikkyou](https://github.com/yuunozikkyou)
 - [unhappyset](https://github.com/unhappyset)
 - [KS](https://github.com/Ks-777)
@@ -2339,6 +2356,8 @@ Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhaluc
 Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
 Jester - Idea for the Jester role came from Maartii  
 ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.  
+Town-Of-Host-Enhanced - Gradient color (full code)
+The-Other-Us-Edited - Idea and partly code of Pelican comes from mxyx-club
 Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev  
 TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.  
 TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose  
@@ -2346,7 +2365,6 @@ Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottoma
 Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team  
 Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose  
 TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";  
-Town-Of-Host-Enhanced - Gradient color (full code)
 
 # Translation
 

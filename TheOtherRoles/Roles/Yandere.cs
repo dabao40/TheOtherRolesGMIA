@@ -39,6 +39,11 @@ public class Yandere : RoleBase<Yandere>
         roleId = RoleId = RoleId.Yandere;
     }
 
+    public static bool canWinWithTarget { get
+        {
+            return hasAlivePlayers && target != null && !target.Data.IsDead;
+        } }
+
     public override void FixedUpdate()
     {
         yandereSetTarget();
@@ -88,7 +93,7 @@ public class Yandere : RoleBase<Yandere>
         if (targetArrow?.arrow != null)
         {
             targetArrow.arrow.SetActive(false);
-            if (target != null)
+            if (target != null && !target.Data.IsDead)
             {
                 targetArrow.arrow.SetActive(true);
                 targetArrow.Update(target.transform.position);

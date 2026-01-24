@@ -39,8 +39,6 @@ public class Pelican : RoleBase<Pelican>
         var pelican = getRole(player);
         pelican.eatenPlayers.Add(target);
         target.Die(DeathReason.Exile, false);
-        DeadPlayer deadPlayerEntry = GameHistory.deadPlayers.Where(x => x.player.PlayerId == message.targetId).FirstOrDefault();
-        if (deadPlayerEntry != null) GameHistory.deadPlayers.Remove(deadPlayerEntry);
         if (target == PlayerControl.LocalPlayer)
         {
             HudManager.Instance.PlayerCam.SetTargetWithLight(player);
