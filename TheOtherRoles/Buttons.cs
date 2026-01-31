@@ -1245,7 +1245,11 @@ namespace TheOtherRoles
                 () => { return PlayerControl.LocalPlayer.CanMove && !Vampire.localPlacedGarlic; },
                 () => { },
                 Vampire.getGarlicButtonSprite(),
-                new Vector3(0, -0.06f, 0),
+#if WINDOWS
+            new Vector3(0, -0.06f, 0),
+#else
+            new Vector3(1f, -0.06f, 0),
+#endif
                 __instance,
                 null,
                 true,

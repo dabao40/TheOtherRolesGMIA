@@ -31,7 +31,11 @@ namespace TheOtherRoles
                 }
             }*/
 
-            var resourceBundle = assembly.GetManifestResourceStream("TheOtherRoles.Resources.SoundEffects.toraudio");
+#if WINDOWS
+            var resourceBundle = assembly.GetManifestResourceStream("TheOtherRoles.Resources.SoundEffects.toraudio_Win");
+#else
+            var resourceBundle = assembly.GetManifestResourceStream("TheOtherRoles.Resources.SoundEffects.toraudio_Android");
+#endif
             var assetBundle = AssetBundle.LoadFromMemory(resourceBundle.ReadFully());
             foreach (var f in assetBundle.GetAllAssetNames()) {
                 soundEffects.Add(f, assetBundle.LoadAsset<AudioClip>(f).DontUnload());

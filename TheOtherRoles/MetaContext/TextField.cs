@@ -449,11 +449,13 @@ namespace TheOtherRoles.MetaContext
                     RemoveCharacter(true);
                     requireUpdate = true;
                 }
+#if WINDOWS
                 if (Input.GetKeyDown(KeyCode.V))
                 {
                     InputText(Helpers.GetClipboardString());
                     requireUpdate = true;
                 }
+#endif
             }
 
             if (requireUpdate || lastCompoStr != Input.compositionString) UpdateTextMesh();

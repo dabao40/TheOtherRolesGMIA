@@ -18,13 +18,21 @@ namespace TheOtherRoles.Modules
             LoadAudioAssets();
             LoadSpriteAssets();
             LoadShaderAssets();
-            var resourceStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.illustrationassets");
+#if WINDOWS
+            var resourceStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.illustrationassets_Win");
+#else
+            var resourceStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.illustrationasset_Android");
+#endif
             AssetBundle = AssetBundle.LoadFromMemory(resourceStream!.ReadFully());
         }
 
         private static void LoadAudioAssets()
         {
-            var resourceAudioAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.audiobundle");
+#if WINDOWS
+            var resourceAudioAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.audiobundle_Win");
+#else
+            var resourceAudioAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.audiobundle_Android");
+#endif
             var assetBundleBundle = AssetBundle.LoadFromMemory(resourceAudioAssetBundleStream.ReadFully());
             Trap.activate = assetBundleBundle.LoadAsset<AudioClip>("TrapperActivate.mp3").DontUnload();
             Trap.countdown = assetBundleBundle.LoadAsset<AudioClip>("TrapperCountdown.mp3").DontUnload();
@@ -35,7 +43,11 @@ namespace TheOtherRoles.Modules
 
         private static void LoadSpriteAssets()
         {
-            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets");
+#if WINDOWS
+            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets_Win");
+#else
+            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets_Android");
+#endif
             var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
             FoxTask.prefab = assetBundleBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
             Shrine.sprite = assetBundleBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
@@ -43,7 +55,11 @@ namespace TheOtherRoles.Modules
 
         private static void LoadShaderAssets()
         {
-            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets");
+#if WINDOWS
+            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets_Win");
+#else
+            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets_Android");
+#endif
             var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
             Achievement.materialShader = assetBundleBundle.LoadAsset<Shader>("Sprites-White").DontUnload();
         }

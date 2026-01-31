@@ -1,14 +1,17 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Reflection;
-using System.Collections.Generic;
-using Hazel;
 using System;
-using TheOtherRoles.Utilities;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using Reactor.Utilities.Extensions;
+using System.Reflection;
+using BepInEx.Unity.IL2CPP.Utils;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using HarmonyLib;
+using Hazel;
+using Reactor.Utilities.Extensions;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace TheOtherRoles.Patches {
     public class GameStartManagerPatch  {
@@ -17,9 +20,12 @@ namespace TheOtherRoles.Patches {
         private static float kickingTimer = 0f;
         private static bool versionSent = false;
         private static string lobbyCodeText = "";
+        
+        public static GuidGroupManager guidGroupManager = new GuidGroupManager();
+        private static bool guidGroupsLoaded = false;
 
-        [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
-        public class AmongUsClientOnPlayerJoinedPatch {
+        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CreatePlayer))]
+        public class AmongUsClientCreatePlayerPatch {
             public static void Postfix(AmongUsClient __instance) {
                 if (PlayerControl.LocalPlayer != null) {
                     Helpers.shareGameVersion();
@@ -76,6 +82,8 @@ namespace TheOtherRoles.Patches {
                 string code = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 GUIUtility.systemCopyBuffer = code;
                 lobbyCodeText = FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.RoomCode, new Il2CppReferenceArray<Il2CppSystem.Object>(0)) + "\r\n" + code;
+                
+                __instance.StartCoroutine(GameStartManagerPatch.CoLoadGuidGroups());
             }
         }
 
@@ -101,9 +109,10 @@ namespace TheOtherRoles.Patches {
                 }
 
                 // Check version handshake infos
-
                 bool versionMismatch = false;
                 string message = "";
+                string localGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToString();
+                
                 foreach (InnerNet.ClientData client in AmongUsClient.Instance.allClients.ToArray()) {
                     if (client.Character == null) continue;
                     else if (!playerVersions.ContainsKey(client.Id))  {
@@ -119,8 +128,15 @@ namespace TheOtherRoles.Patches {
                             message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorNewerVersion"), $"{client.Character.Data.PlayerName}")} (v{playerVersions[client.Id].version.ToString()})\n</color>";
                             versionMismatch = true;
                         } else if (!PV.GuidMatches()) { // version presumably matches, check if Guid matches
-                            message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorWrongVersion"), $"{client.Character.Data.PlayerName}")} v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
-                            versionMismatch = true;
+                            string remoteGuid = PV.guid.ToString();
+                            bool guidInSameGroup = guidGroupsLoaded && guidGroupManager.AreGuidsInSameGroup(localGuid, remoteGuid);
+                            
+                            if (!guidInSameGroup) {
+                                message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorWrongVersion"), $"{client.Character.Data.PlayerName}")} v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
+                                versionMismatch = true;
+                            } else {
+                                TheOtherRolesPlugin.Logger.LogInfo($"Player {client.Character.Data.PlayerName} guid in same group，allow");
+                            }
                         }
                     }
                 }
@@ -206,13 +222,6 @@ namespace TheOtherRoles.Patches {
                             __instance.GameStartText.text = String.Empty;
                             __instance.GameStartTextParent.SetActive(false);
                         }
-                        /*else {
-                            __instance.GameStartText.text = string.Format(ModTranslation.getString("startingTimer"), (int)startingTimer + 1);
-                            System.Console.WriteLine($"{FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")}");
-                            if (startingTimer <= 0) {
-                                __instance.GameStartText.text = String.Empty;
-                            }
-                        }*/
                     }
 
                     if (!__instance.GameStartText.text.Contains(FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GameStarting).Replace("{0}", "")) || !CustomOptionHolder.anyPlayerCanStopStart.getBool())
@@ -295,9 +304,20 @@ namespace TheOtherRoles.Patches {
                         
                         PlayerVersion PV = playerVersions[client.Id];
                         int diff = TheOtherRolesPlugin.Version.CompareTo(PV.version);
-                        if (diff != 0 || !PV.GuidMatches()) {
+                        if (diff != 0) {
                             continueStart = false;
                             break;
+                        }
+                        
+                        if (!PV.GuidMatches()) {
+                            string localGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToString();
+                            string remoteGuid = PV.guid.ToString();
+                            bool guidInSameGroup = guidGroupsLoaded && guidGroupManager.AreGuidsInSameGroup(localGuid, remoteGuid);
+                            
+                            if (!guidInSameGroup) {
+                                continueStart = false;
+                                break;
+                            }
                         }
                     }
                     if (continueStart && TORMapOptions.gameMode == CustomGamemodes.HideNSeek && GameOptionsManager.Instance.CurrentGameOptions.MapId != 6) {
@@ -376,6 +396,99 @@ namespace TheOtherRoles.Patches {
             public bool GuidMatches() {
                 return Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.Equals(this.guid);
             }
+        }
+        
+        public class GuidGroupManager {
+            private List<HashSet<string>> guidGroups = new List<HashSet<string>>();
+            
+            public void LoadFromJson(string json) {
+                try {
+                    guidGroups.Clear();
+                    
+                    json = json.Trim();
+                    
+                    if (json.StartsWith("{\"groups\":") && json.EndsWith("]}}")) {
+                        int startIndex = json.IndexOf("[[");
+                        int endIndex = json.LastIndexOf("]]") + 2;
+                        
+                        if (startIndex >= 0 && endIndex > startIndex) {
+                            string groupsStr = json.Substring(startIndex, endIndex - startIndex);
+                            groupsStr = groupsStr.Trim('[', ']');
+                            
+                            string[] groupArray = groupsStr.Split(new[] { "],[" }, StringSplitOptions.RemoveEmptyEntries);
+                            
+                            foreach (string groupStr in groupArray) {
+                                HashSet<string> group = new HashSet<string>();
+                                string[] guids = groupStr.Split(',');
+                                
+                                foreach (string guid in guids) {
+                                    string cleanGuid = guid.Trim().Trim('"', '\'');
+                                    if (!string.IsNullOrEmpty(cleanGuid)) {
+                                        group.Add(cleanGuid);
+                                    }
+                                }
+                                
+                                if (group.Count > 0) {
+                                    guidGroups.Add(group);
+                                }
+                            }
+                            
+                            TheOtherRolesPlugin.Logger.LogInfo($"Load {guidGroups.Count} GUID groups");
+                        }
+                    }
+                } catch (Exception e) {
+                    TheOtherRolesPlugin.Logger.LogError($"Error: {e.Message}");
+                }
+            }
+            
+            public bool AreGuidsInSameGroup(string guid1, string guid2) {
+                if (string.IsNullOrEmpty(guid1) || string.IsNullOrEmpty(guid2)) {
+                    return false;
+                }
+                
+                foreach (var group in guidGroups) {
+                    bool hasGuid1 = group.Contains(guid1);
+                    bool hasGuid2 = group.Contains(guid2);
+                    
+                    if (hasGuid1 && hasGuid2) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            public HashSet<string> GetGroupForGuid(string guid) {
+                foreach (var group in guidGroups) {
+                    if (group.Contains(guid)) {
+                        return group;
+                    }
+                }
+                
+                return new HashSet<string>();
+            }
+        }
+        
+        public static IEnumerator CoLoadGuidGroups() {
+            if (guidGroupsLoaded) yield break;
+            
+            string url = "https://43.143.246.66/TheOtherRolesGMIA/VersionMix.json";
+            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+            webRequest.timeout = 10;
+            
+            yield return webRequest.SendWebRequest();
+            
+            if (webRequest.result == UnityWebRequest.Result.Success) {
+                string jsonContent = webRequest.downloadHandler.text;
+                guidGroupManager.LoadFromJson(jsonContent);
+                guidGroupsLoaded = true;
+                TheOtherRolesPlugin.Logger.LogInfo("GUID组信息加载成功");
+            } else {
+                TheOtherRolesPlugin.Logger.LogWarning($"无法加载GUID组信息: {webRequest.error}");
+                guidGroupsLoaded = false;
+            }
+            
+            webRequest.Dispose();
         }
     }
 }

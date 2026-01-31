@@ -14,8 +14,13 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TheOtherRoles.Roles;
 using PowerTools;
 
-namespace TheOtherRoles.Patches {
+namespace TheOtherRoles.Patches
+{
+#if WINDOWS
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
+#else
+    [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CoBegin))]
+#endif
     class IntroCutsceneOnDestroyPatch
     {
         public static PoolablePlayer playerPrefab;

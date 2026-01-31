@@ -23,6 +23,7 @@ using TheOtherRoles.Modules.CustomHats;
 using UnityEngine.SceneManagement;
 using AmongUs.Data.Player;
 using TheOtherRoles.MetaContext;
+using System.Reflection;
 
 namespace TheOtherRoles
 {
@@ -71,7 +72,7 @@ namespace TheOtherRoles
             ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
             var regions = new IRegionInfo[] {
                 //new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Custom", Ip.Value, Port.Value, false)])).CastFast<IRegionInfo>()
-                new StaticHttpRegionInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("<color=#ff44ff>GMIA</color> <color=#00ffff>Beijing</color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
             };
             
             IRegionInfo currentRegion = serverManager.CurrentRegion;
@@ -133,13 +134,14 @@ namespace TheOtherRoles
             Achievement.LoadAchievements();
             EventDetail.Load();
             TranslatableTag.Load();
+#if WINDOWS
             if (ToggleCursor.Value) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();
                 return;
             }
-
+#endif
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
             AddComponent<ModUpdateBehaviour>();
@@ -148,10 +150,8 @@ namespace TheOtherRoles
             {
                 new GameObject("TORManager").AddComponent<TORGUIManager>();
             });
-        }
-        public static Sprite GetModStamp() {
-            if (ModStamp) return ModStamp;
-            return ModStamp = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ModStamp.png", 150f);
+
+            Logger.LogInfo($"TheOtherRoles-GM-IA Load successful! with\n{Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId}");
         }
     }
 

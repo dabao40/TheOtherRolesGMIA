@@ -8,7 +8,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
+		<Configurations>Windows;Android;</Configurations>
+	</PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
       <LangVersion>preview</LangVersion>
     </PropertyGroup>
@@ -18,18 +19,33 @@
 	<PropertyGroup>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>embedded</DebugType>
-	</PropertyGroup>
+    </PropertyGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\**" />
-    </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\**"
+						 Exclude="Resources\SoundEffects\toraudio_Android;
+                            Resources\AssetsBundle\audiobundle_Android;
+                            Resources\AssetsBundle\illustrationasset_Android;
+                            Resources\AssetsBundle\shaderassets_Android;
+                            Resources\AssetsBundle\spriteassets_Android"
+						 Condition="'$(Configuration)' == 'Windows'" />
+
+		<EmbeddedResource Include="Resources\**"
+						 Exclude="Resources\SoundEffects\toraudio_Win;
+                            Resources\AssetsBundle\audiobundle_Win;
+                            Resources\AssetsBundle\illustrationassets_Win;
+                            Resources\AssetsBundle\shaderassets_Win;
+                            Resources\AssetsBundle\spriteassets_Win"
+						 Condition="'$(Configuration)' == 'Android'" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Players\" />
 	</ItemGroup>
 
 	<ItemGroup>
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.11.18" />
+        <PackageReference Include="AmongUs.GameLibs.Android" Version="2025.10.14" Condition="'$(Configuration)' == 'Android'" />
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.11.18" Condition="'$(Configuration)' == 'Windows'" />
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" />
 		<PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
         <PackageReference Include="Reactor" Version="2.5.0-ci.371" />

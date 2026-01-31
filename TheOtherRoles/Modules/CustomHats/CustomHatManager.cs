@@ -21,13 +21,17 @@ public static class CustomHatManager
         get
         {
             var (owner, repository) = Repository;
-            return (Helpers.isChinese() ? "https://ghproxy.amongusclub.cn/" : "") + $"https://raw.githubusercontent.com/{owner}/{repository}/master";
+            return (Helpers.isChinese() ? "https://download.hayashiume.top/" : "") + $"https://raw.githubusercontent.com/{owner}/{repository}/master";
         }
     }
 
     internal static readonly string ManifestFileName = "CustomHats.json";
 
+#if WINDOWS
     internal static string CustomSkinsDirectory => Path.Combine(Path.GetDirectoryName(Application.dataPath)!, ResourcesDirectory);
+#else 
+    internal static string CustomSkinsDirectory => Path.Combine(Application.persistentDataPath, ResourcesDirectory);
+#endif
     internal static string HatsDirectory => CustomSkinsDirectory;
 
     internal static List<CustomHat> UnregisteredHats = new();
