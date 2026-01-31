@@ -451,6 +451,8 @@ namespace TheOtherRoles.Patches {
 
             if (!Yoyo.markStaysOverMeeting)
                 Silhouette.clearSilhouettes();
+
+            AssignRolePatch.blockAssignRole = true;
         }
     }
 

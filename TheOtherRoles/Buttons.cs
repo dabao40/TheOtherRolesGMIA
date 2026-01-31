@@ -2444,8 +2444,6 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, BomberA.currentTarget)) return;
-
                     if (BomberA.currentTarget != null)
                     {
                         BomberA.tmpTarget = BomberA.currentTarget;
@@ -2502,8 +2500,6 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, BomberB.currentTarget)) return;
-
                     if (BomberB.currentTarget != null)
                     {
                         BomberB.tmpTarget = BomberB.currentTarget;
@@ -2560,33 +2556,19 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, BomberA.currentTarget)) return;
-
-                    // Use MurderAttempt to exclude eg.Medic shielded
-                    MurderAttemptResult attempt = Helpers.checkMuderAttempt(PlayerControl.LocalPlayer, BomberA.bombTarget);
-
                     var bomberB = BomberB.allPlayers.FirstOrDefault();
                     float distance = Vector2.Distance(PlayerControl.LocalPlayer.transform.localPosition, bomberB.transform.localPosition);
 
-                    if (attempt == MurderAttemptResult.PerformKill)
+                    if (PlayerControl.LocalPlayer.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberB != null && !bomberB.Data.IsDead && distance < 1)
                     {
-                        if (PlayerControl.LocalPlayer.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberB != null && !bomberB.Data.IsDead && distance < 1)
-                        {
-                            var target = BomberA.bombTarget;
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.Write(target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.releaseBomb(PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
-                        }
-                        _ = new StaticAchievementToken("bomber.challenge");
+                        var target = BomberA.bombTarget;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.releaseBomb(PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
                     }
-                    else if (attempt == MurderAttemptResult.BlankKill)
-                    {
-                        bomberAPlantBombButton.Timer = bomberAPlantBombButton.MaxTimer;
-                        return;
-                    }
-                    else if (attempt == MurderAttemptResult.SuppressKill) return;
+                    _ = new StaticAchievementToken("bomber.challenge");
                 },
                 // HasButton
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberA) && !PlayerControl.LocalPlayer.Data.IsDead && BomberB.isAlive(); },
@@ -2615,31 +2597,19 @@ namespace TheOtherRoles
                 // OnClick
                 () =>
                 {
-                    if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, BomberB.currentTarget)) return;
                     var bomberA = BomberA.allPlayers.FirstOrDefault();
                     float distance = Vector2.Distance(PlayerControl.LocalPlayer.transform.localPosition, bomberA.transform.localPosition);
 
-                    MurderAttemptResult attempt = Helpers.checkMuderAttempt(PlayerControl.LocalPlayer, BomberB.bombTarget);
-
-                    if (attempt == MurderAttemptResult.PerformKill)
+                    if (PlayerControl.LocalPlayer.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberA != null && !bomberA.Data.IsDead && distance < 1)
                     {
-                        if (PlayerControl.LocalPlayer.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberA != null && !bomberA.Data.IsDead && distance < 1)
-                        {
-                            var target = BomberB.bombTarget;
-                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            writer.Write(target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.releaseBomb(PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
-                        }
-                        _ = new StaticAchievementToken("bomber.challenge");
+                        var target = BomberB.bombTarget;
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.releaseBomb(PlayerControl.LocalPlayer.PlayerId, target.PlayerId);
                     }
-                    else if (attempt == MurderAttemptResult.BlankKill)
-                    {
-                        bomberBPlantBombButton.Timer = bomberBPlantBombButton.MaxTimer;
-                        return;
-                    }
-                    else if (attempt == MurderAttemptResult.SuppressKill) return;
+                    _ = new StaticAchievementToken("bomber.challenge");
                 },
                 // HasButton
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberB) && !PlayerControl.LocalPlayer.Data.IsDead && BomberA.isAlive(); },

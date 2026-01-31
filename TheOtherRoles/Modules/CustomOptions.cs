@@ -1712,7 +1712,7 @@ namespace TheOtherRoles {
             {
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;
-                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) || Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId)) || MeetingHud.Instance || ExileController.Instance);
+                bool zoomButtonActive = !(PlayerControl.LocalPlayer == null || !PlayerControl.LocalPlayer.Data.IsDead || !RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType) || MeetingHud.Instance || ExileController.Instance);
                 zoomButtonActive &= numberOfLeftTasks <= 0 || !CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool();
                 toggleZoomButtonObject.SetActive(zoomButtonActive);
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);

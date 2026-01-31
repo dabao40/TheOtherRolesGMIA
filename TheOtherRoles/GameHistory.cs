@@ -48,12 +48,12 @@ namespace TheOtherRoles {
     }
 
     static class GameHistory {
-        public static List<Tuple<Vector3, bool>> localPlayerPositions = new();
+        public static List<Tuple<Vector3, bool, DateTime>> localPlayerPositions = new();
         public static List<DeadPlayer> deadPlayers = new();
 
         public static void clearGameHistory() {
-            localPlayerPositions = new List<Tuple<Vector3, bool>>();
-            deadPlayers = new List<DeadPlayer>();
+            localPlayerPositions = [];
+            deadPlayers = [];
         }
 
         public static void overrideDeathReasonAndKiller(PlayerControl player, DeadPlayer.CustomDeathReason deathReason, PlayerControl killer = null) {

@@ -642,12 +642,16 @@ namespace TheOtherRoles
         }
 
         public static bool shouldShowGhostInfo() {
-            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == PlayerControl.LocalPlayer.PlayerId))
+            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType)
                 && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
+        public static bool shouldClearTask(this PlayerControl target) => (target.hasFakeTasks() || target.isRole(RoleId.Thief) || (target.isRole(RoleId.Shifter) && Shifter.isNeutral) || (target.isRole(RoleId.TaskMaster) && target.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
+                || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == target.PlayerId) || target.isRole(RoleId.JekyllAndHyde) || target.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM;
+
         public static void clearAllTasks(this PlayerControl player) {
             if (player == null) return;
+            if (TimeMaster.hasAlivePlayers && TimeMaster.reviveDuringReweind && AssignRolePatch.blockAssignRole) return;
             foreach (var playerTask in player.myTasks.GetFastEnumerator())
             {
                 playerTask.OnRemove();
@@ -1562,8 +1566,7 @@ namespace TheOtherRoles
             text.defaultStr = translationKey;
         }
 
-        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && !Busker.players.Any(x => x.player == player && x.pseudocideFlag)
-            && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == player.PlayerId))) || Lighter.isLightActive(player);
+        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && RoleManager.IsGhostRole(player.Data.RoleType)) || Lighter.isLightActive(player);
 
         public static PlayerDisplay GetPlayerDisplay()
         {

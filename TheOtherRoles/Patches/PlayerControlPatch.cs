@@ -154,6 +154,14 @@ namespace TheOtherRoles.Patches {
                     localPlayerPositions.RemoveAt(0);
 
                     if (localPlayerPositions.Count > 1) localPlayerPositions.RemoveAt(0); // Skip every second position to rewinde twice as fast, but never skip the last position
+
+                    // Revive local player
+                    if (TimeMaster.exists && TimeMaster.reviveDuringReweind && PlayerControl.LocalPlayer.Data.IsDead)
+                    {
+                        DeadPlayer deadPlayer = deadPlayers.Where(x => x.player == PlayerControl.LocalPlayer).FirstOrDefault();
+                        if (deadPlayer != null && next.Item3 < deadPlayer.timeOfDeath)
+                            RPCProcedure.RpcRevive.Invoke(PlayerControl.LocalPlayer.PlayerId);
+                    }
                 }
                 else {
                     TimeMaster.isRewinding = false;
@@ -162,7 +170,7 @@ namespace TheOtherRoles.Patches {
             }
             else {
                 while (localPlayerPositions.Count >= Mathf.Round(TimeMaster.rewindTime / Time.fixedDeltaTime)) localPlayerPositions.RemoveAt(localPlayerPositions.Count - 1);
-                localPlayerPositions.Insert(0, new Tuple<Vector3, bool>(PlayerControl.LocalPlayer.transform.position, PlayerControl.LocalPlayer.CanMove)); // CanMove = CanMove
+                localPlayerPositions.Insert(0, new(PlayerControl.LocalPlayer.transform.position, PlayerControl.LocalPlayer.CanMove, DateTime.UtcNow)); // CanMove = CanMove
             }
         }
 
@@ -286,7 +294,7 @@ namespace TheOtherRoles.Patches {
                 p.cosmetics.nameText.transform.parent.SetLocalZ(-0.0001f);  // This moves both the name AND the colorblindtext behind objects (if the player is behind the object), like the rock on polus
 
                 if ((Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target) || (Akujo.knowsRoles && Akujo.isPartner(PlayerControl.LocalPlayer, p)) || p == PlayerControl.LocalPlayer || (PlayerControl.LocalPlayer.Data.IsDead
-                    && !Busker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Contains(PlayerControl.LocalPlayer))) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
+                    && RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType)) || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p)) || FreePlayGM.isFreePlayGM) {
                     Transform playerInfoTransform = p.cosmetics.nameText.transform.parent.FindChild("Info");
                     TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                     if (playerInfo == null) {
@@ -802,10 +810,14 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.AssignRoleOnDeath))]
     public static class AssignRolePatch
     {
+        static public bool blockAssignRole = true;
         public static bool Prefix([HarmonyArgument(0)] PlayerControl player, bool specialRolesAllowed)
         {
             if ((player.isRole(RoleId.SchrodingersCat) && !SchrodingersCat.hasTeam() && !SchrodingersCat.isExiled) || Busker.players.Any(x => x.player == player && x.pseudocideFlag) || FreePlayGM.isFreePlayGM)
                 return false;
+            if (TimeMaster.hasAlivePlayers && blockAssignRole && TimeMaster.reviveDuringReweind)
+                return false;
+
             return true;
         }
     }
@@ -836,8 +848,7 @@ namespace TheOtherRoles.Patches {
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if ((target.hasFakeTasks() || target.isRole(RoleId.Thief) || (target.isRole(RoleId.Shifter) && Shifter.isNeutral) || (__instance.isRole(RoleId.TaskMaster) && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
-                || Madmate.madmate.Any(x => x.PlayerId == target.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == target.PlayerId) || target.isRole(RoleId.JekyllAndHyde) || target.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
+            if (target.shouldClearTask())
                 target.clearAllTasks();
 
             // First kill (set before lover suicide)
@@ -1020,6 +1031,7 @@ namespace TheOtherRoles.Patches {
             }
             DeadPlayer deadPlayerEntry = deadPlayers.Where(x => x.player.PlayerId == __instance.PlayerId).FirstOrDefault();
             if (deadPlayerEntry != null) deadPlayers.Remove(deadPlayerEntry);
+            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << __instance.PlayerId) { RelatedTag = EventDetail.Revive });
             return false;
         }
     }
@@ -1087,8 +1099,7 @@ namespace TheOtherRoles.Patches {
 
 
             // Remove fake tasks when player dies
-            if ((__instance.hasFakeTasks() || __instance.isRole(RoleId.Thief) || (__instance.isRole(RoleId.Shifter) && Shifter.isNeutral) || (__instance.isRole(RoleId.TaskMaster) && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
-                || Madmate.madmate.Any(x => x.PlayerId == __instance.PlayerId) || CreatedMadmate.createdMadmate.Any(x => x.PlayerId == __instance.PlayerId) || __instance.isRole(RoleId.JekyllAndHyde) || __instance.isRole(RoleId.Fox)) && !FreePlayGM.isFreePlayGM)
+            if (__instance.shouldClearTask())
                 __instance.clearAllTasks();
 
             __instance.OnDeath(killer: null);

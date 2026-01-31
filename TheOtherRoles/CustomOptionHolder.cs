@@ -240,6 +240,7 @@ namespace TheOtherRoles {
         public static CustomOption timeMasterCooldown;
         public static CustomOption timeMasterRewindTime;
         public static CustomOption timeMasterShieldDuration;
+        public static CustomOption timeMasterReviveDuringRewind;
 
         public static CustomRoleOption medicSpawnRate;
         public static CustomOption medicShowShielded;
@@ -1094,6 +1095,7 @@ namespace TheOtherRoles {
             timeMasterCooldown = CustomOption.Create(131, Types.Crewmate, "timeMasterCooldown", 30f, 10f, 120f, 2.5f, timeMasterSpawnRate, false, "unitSeconds");
             timeMasterRewindTime = CustomOption.Create(132, Types.Crewmate, "timeMasterRewindTime", 3f, 1f, 10f, 1f, timeMasterSpawnRate, false, "unitSeconds");
             timeMasterShieldDuration = CustomOption.Create(133, Types.Crewmate, "timeMasterShieldDuration", 3f, 1f, 20f, 1f, timeMasterSpawnRate, false, "unitSeconds");
+            timeMasterReviveDuringRewind = CustomOption.Create(135, Types.Crewmate, "timeMasterRewindDuringRewind", false, timeMasterSpawnRate);
 
             medicSpawnRate = new CustomRoleOption(140, Types.Crewmate, "medic", Medic.color);
             medicShowShielded = CustomOption.Create(143, Types.Crewmate, "medicShowShielded", ["medicShowShieldedAll", "medicShowShieldedBoth", "medicShowShieldedMedic"], medicSpawnRate);

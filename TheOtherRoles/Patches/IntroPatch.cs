@@ -316,6 +316,8 @@ namespace TheOtherRoles.Patches {
             SchrodingersCat.playerTemplate.cosmetics.nameText.text = "";
             SchrodingersCat.playerTemplate.gameObject.SetActive(false);
 
+            AssignRolePatch.blockAssignRole = true;
+
             if (AmongUsClient.Instance.AmHost && (Archaeologist.exists || FreePlayGM.isFreePlayGM))
             {
                 allInvokers.Add(RPCProcedure.PlaceAntique.GetInvoker());

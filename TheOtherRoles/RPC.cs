@@ -952,6 +952,21 @@ namespace TheOtherRoles
                 }
             });
 
+        public static RemoteProcess<byte> RpcRevive = RemotePrimitiveProcess.OfByte("ModRpcRevive", (message, _) =>
+        {
+            var player = Helpers.playerById(message);
+            if (player == null) return;
+            player.Revive();
+            DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == message)
+                {
+                    UnityEngine.Object.Destroy(array[i].gameObject);
+                }
+            }
+        });
+
         public static void timeMasterRewindTime(byte playerId) {
             PlayerControl player = Helpers.playerById(playerId);
             var timeMaster = TimeMaster.getRole(player);

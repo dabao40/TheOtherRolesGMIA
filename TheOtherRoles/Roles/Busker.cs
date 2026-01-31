@@ -68,7 +68,6 @@ namespace TheOtherRoles.Roles
             player.Revive();
             player.Data.IsDead = false;
             player.StartCoroutine(player.CoGush());
-            TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Revive, null, 1 << message) { RelatedTag = EventDetail.Revive });
         });
 
         public bool checkPseudocide()

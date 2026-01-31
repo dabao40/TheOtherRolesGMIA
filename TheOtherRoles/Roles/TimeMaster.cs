@@ -14,6 +14,7 @@ namespace TheOtherRoles.Roles
 
         public bool shieldActive = false;
         public static bool isRewinding = false;
+        public static bool reviveDuringReweind = false;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -42,6 +43,7 @@ namespace TheOtherRoles.Roles
             rewindTime = CustomOptionHolder.timeMasterRewindTime.getFloat();
             shieldDuration = CustomOptionHolder.timeMasterShieldDuration.getFloat();
             cooldown = CustomOptionHolder.timeMasterCooldown.getFloat();
+            reviveDuringReweind = CustomOptionHolder.timeMasterReviveDuringRewind.getBool();
             players = [];
         }
     }

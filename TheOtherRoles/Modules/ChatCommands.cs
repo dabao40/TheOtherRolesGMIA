@@ -237,7 +237,7 @@ namespace TheOtherRoles.Modules {
                 if (sourcePlayer == localPlayer) return true;
                 var flag = MeetingHud.Instance
                     || LobbyBehaviour.Instance
-                    || (localPlayer.Data.IsDead && !Busker.players.Any(x => x.player == localPlayer && x.pseudocideFlag) && !Pelican.players.Any(x => x.eatenPlayers.Any(p => p.PlayerId == localPlayer.PlayerId)));
+                    || (localPlayer.Data.IsDead && RoleManager.IsGhostRole(localPlayer.Data.RoleType));
                 if (Jailor.isJailed(sourcePlayer.PlayerId) && !localPlayer.Data.IsDead && MeetingHud.Instance && !Jailor.players.Any(x => x.jailTarget == sourcePlayer && x.player == localPlayer) && !Helpers.shouldShowGhostInfo()) return false;
                 if (sourcePlayer == localPlayer.getPartner() || flag) return true;
 

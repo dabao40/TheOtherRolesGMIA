@@ -1313,6 +1313,18 @@ namespace TheOtherRoles.Patches
                         AntiTeleport.position = PlayerControl.LocalPlayer.transform.position;
                 }
 
+                AssignRolePatch.blockAssignRole = false;
+                foreach (var p in PlayerControl.AllPlayerControls)
+                {
+                    if (p.Data.IsDead && !RoleManager.IsGhostRole(p.Data.RoleType))
+                    {
+                        if (AmongUsClient.Instance.AmHost)
+                            FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(p, false);
+                        if (p.shouldClearTask())
+                            p.clearAllTasks();
+                    }
+                }
+
                 foreach (var role in new List<Role>(Role.allRoles)) role.OnMeetingStart();
 
                 // Save real tasks
