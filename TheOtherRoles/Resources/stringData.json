@@ -2678,6 +2678,14 @@
         "13": "\u8bf1\u9975\u53ef\u4ee5\u88ab\u8d4c\u602a\u731c\u6d4b",
         "14": "\u8a98\u990c\u53ef\u4ee5\u88ab\u8ced\u6bba"
     },
+    "baitEmitCooldown": {
+        "0": "Emit Cooldown",
+        "13": "\u5e72\u6270\u51b7\u5374\u65f6\u95f4"
+    },
+    "baitNumberOfEmits": {
+        "0": "Number Of Emits",
+        "13": "\u8bf1\u9975\u5e72\u6270\u6b21\u6570"
+    },
     "madmate": {
         "0": "Madmate",
         "11": "\u30de\u30c3\u30c9\u30e1\u30a4\u30c8",
@@ -5139,12 +5147,6 @@
         "13": "\u5360\u535c\u5e08\u4e0d\u53ef\u4ee5\u53d1\u8d77\u7d27\u6025\u4f1a\u8bae",
         "14": "\u5360\u535c\u5e2b\u4e0d\u53ef\u4ee5\u767c\u8d77\u7dca\u6025\u6703\u8b70"
     },
-    "prophetMeetingButton": {
-        "0": "The Prophet can't start an emergency meeting",
-        "11": "\u9810\u8a00\u8005\u304c\u7dca\u6025\u4f1a\u8b70\u3092\u958b\u3051\u306a\u3044",
-        "13": "\u9884\u8a00\u5bb6\u4e0d\u53ef\u4ee5\u53d1\u8d77\u7d27\u6025\u4f1a\u8bae",
-        "14": "\u9810\u8a00\u5bb6\u4e0d\u53ef\u4ee5\u767c\u8d77\u7dca\u6025\u6703\u8b70"
-    },
     "meetingStatus": {
         "0": "CREWMEMBER {0} HAS\n\n\nEMERGENCY MEETINGS LEFT",
         "11": "\u30af\u30eb\u30fc\u30e1\u30a4\u30c8 {0} \u304c\n\n\n\u7dca\u6025\u4f1a\u8b70\u3092\u6b8b\u3057\u3066\u3044\u308b"
@@ -7318,39 +7320,48 @@
     },
     "multitasker": {
         "0": "Multitasker",
-        "13": "\u591a\u7ebf\u7a0b"
+        "13": "\u591a\u7ebf\u7a0b",
+        "14": "\u591a\u7dda\u7a0b"
     },
     "multitaskerIntroDesc": {
         "0": "Your task windows are transparent",
-        "13": "\u4f60\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684"
+        "13": "\u4f60\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684",
+        "14": "\u4f60\u7684\u4efb\u52d9\u4ecb\u9762\u662f\u900f\u660e\u7684"
     },
     "multitaskerShortDesc": {
         "0": "Your task windows are transparent",
-        "13": "\u4f60\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684"
+        "13": "\u4f60\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684",
+        "14": "\u5077\u7aba\u53ef\u662f\u72af\u6cd5\u7684"
     },
     "multitaskerQuantity": {
         "0": "Multitasker Quantity",
-        "13": "\u591a\u7ebf\u7a0b\u526f\u804c\u4e1a\u6570\u91cf"
+        "13": "\u591a\u7ebf\u7a0b\u526f\u804c\u4e1a\u6570\u91cf",
+        "14": "\u591a\u7dda\u7a0b\u9644\u52a0\u8077\u696d\u6578\u91cf"
     },
     "diseased": {
         "0": "Diseased",
-        "13": "\u75c5\u4eba"
+        "13": "\u75c5\u4eba",
+        "14": "\u75c5\u4eba"
     },
     "diseasedIntroDesc": {
         "0": "Your killer gets a high cooldown",
-        "13": "\u4f60\u7684\u51f6\u624b\u4f1a\u83b7\u5f97\u66f4\u957f\u7684\u51fb\u6740\u51b7\u5374"
+        "13": "\u4f60\u7684\u51f6\u624b\u4f1a\u83b7\u5f97\u66f4\u957f\u7684\u51fb\u6740\u51b7\u5374",
+        "14": "\u4f60\u7684\u5147\u624b\u51b7\u537b\u6642\u9593\u6703\u66f4\u9577"
     },
     "diseasedShortDesc": {
         "0": "Your killer gets a high cooldown",
-        "13": "\u4f60\u7684\u51f6\u624b\u4f1a\u83b7\u5f97\u66f4\u957f\u7684\u51fb\u6740\u51b7\u5374"
+        "13": "\u4f60\u7684\u51f6\u624b\u4f1a\u83b7\u5f97\u66f4\u957f\u7684\u51fb\u6740\u51b7\u5374",
+        "14": "\u6709\u672c\u4e8b\u78b0\u6211\u4e00\u4e0b"
     },
     "diseasedQuantity": {
         "0": "Diseased Quantity",
-        "13": "\u75c5\u4eba\u526f\u804c\u4e1a\u6570\u91cf"
+        "13": "\u75c5\u4eba\u526f\u804c\u4e1a\u6570\u91cf",
+        "14": "\u75c5\u4eba\u9644\u52a0\u8077\u696d\u6578\u91cf"
     },
     "diseasedMultiplier": {
         "0": "Cooldown Multiplier",
-        "13": "\u51f6\u624b\u51b7\u5374\u500d\u7387"
+        "13": "\u51f6\u624b\u51b7\u5374\u500d\u7387",
+        "14": "\u5147\u624b\u51b7\u537b\u500d\u7387"
     },
     "pelican": {
         "0": "Pelican",
@@ -7384,59 +7395,73 @@
     },
     "radar": {
         "0": "Radar",
-        "13": "\u96f7\u8fbe"
+        "13": "\u96f7\u8fbe",
+        "14": "\u96f7\u9054"
     },
     "radarIntroDesc": {
         "0": "Be on high alert",
-        "13": "\u65f6\u523b\u4fdd\u6301\u8b66\u60d5"
+        "13": "\u65f6\u523b\u4fdd\u6301\u8b66\u60d5",
+        "14": "\u4fdd\u6301\u8b66\u60d5"
     },
     "radarShortDesc": {
         "0": "Be on high alert",
-        "13": "\u65f6\u523b\u4fdd\u6301\u8b66\u60d5"
+        "13": "\u65f6\u523b\u4fdd\u6301\u8b66\u60d5",
+        "14": "\u4fdd\u6301\u8b66\u60d5"
     },
     "yandere": {
         "0": "Yandere",
-        "13": "\u75c5\u5a07"
+        "13": "\u75c5\u5a07",
+        "14": "\u75c5\u5b0c"
     },
     "yandereIntroDesc": {
         "0": "Kill those that get near your crush",
-        "13": "\u51fb\u6740\u4efb\u4f55\u63a5\u8fd1\u6697\u604b\u5bf9\u8c61\u7684\u73a9\u5bb6"
+        "13": "\u51fb\u6740\u4efb\u4f55\u63a5\u8fd1\u6697\u604b\u5bf9\u8c61\u7684\u73a9\u5bb6",
+        "14": "\u6bba\u6b7b\u4efb\u4f55\u63a5\u8fd1\u6697\u6200\u5c0d\u8c61\u7684\u73a9\u5bb6"
     },
     "yandereShortDesc": {
         "0": "Kill those that get near your crush",
-        "13": "\u51fb\u6740\u4efb\u4f55\u63a5\u8fd1\u6697\u604b\u5bf9\u8c61\u7684\u73a9\u5bb6"
+        "13": "\u51fb\u6740\u4efb\u4f55\u63a5\u8fd1\u6697\u604b\u5bf9\u8c61\u7684\u73a9\u5bb6",
+        "14": "\u9019\u6a23\u5c31\u80fd\u6c38\u9060\u5728\u4e00\u8d77\u4e86"
     },
     "yandereIntroLine": {
         "0": "\nNo one gets near {0}",
-        "13": "\n{0} \u53ea\u80fd\u662f\u6211\u7684"
+        "13": "\n{0} \u53ea\u80fd\u662f\u6211\u7684",
+        "14": "\n{0} \u53ea\u80fd\u662f\u6211\u7684"
     },
     "yandereReducedCooldown": {
         "0": "Cooldown Reduce After Killing Rival",
-        "13": "\u51fb\u6740\u60c5\u654c\u540e\u51b7\u5374\u65f6\u95f4\u51cf\u5c11"
+        "13": "\u51fb\u6740\u60c5\u654c\u540e\u51b7\u5374\u65f6\u95f4\u51cf\u5c11",
+        "14": "\u64ca\u6bba\u60c5\u6575\u5f8c\u51b7\u537b\u6e1b\u5c11"
     },
     "yandereCooldownPunishment": {
         "0": "Cooldown Punishment",
-        "13": "\u51fb\u6740\u975e\u60c5\u654c\u540e\u51b7\u5374\u65f6\u95f4\u589e\u52a0"
+        "13": "\u51fb\u6740\u975e\u60c5\u654c\u540e\u51b7\u5374\u65f6\u95f4\u589e\u52a0",
+        "14": "\u64ca\u6bba\u975e\u60c5\u6575\u5f8c\u51b7\u537b\u6e1b\u5c11"
     },
     "yandereNuisanceRange": {
         "0": "Create Rival Range",
-        "13": "\u521b\u5efa\u60c5\u654c\u8303\u56f4"
+        "13": "\u521b\u5efa\u60c5\u654c\u8303\u56f4",
+        "14": "\u7522\u751f\u60c5\u6575\u7bc4\u570d"
     },
     "yandereNuisanceRegisterDuration": {
         "0": "Create Rival Duration",
-        "13": "\u521b\u5efa\u60c5\u654c\u6240\u9700\u65f6\u95f4"
+        "13": "\u521b\u5efa\u60c5\u654c\u6240\u9700\u65f6\u95f4",
+        "14": "\u7522\u751f\u60c5\u6575\u6240\u9700\u6642\u9593"
     },
     "yandereMaxNuisance": {
         "0": "Max Number Of Rivals",
-        "13": "\u6700\u5927\u60c5\u654c\u6570\u91cf"
+        "13": "\u6700\u5927\u60c5\u654c\u6570\u91cf",
+        "14": "\u6700\u5927\u60c5\u6575\u6578\u91cf"
     },
     "yandereRunawayTimeLimit": {
         "0": "Time With No Rivals Before Rampage",
-        "13": "\u65e0\u60c5\u654c\u540e\u66b4\u8d70\u6240\u9700\u65f6\u95f4"
+        "13": "\u65e0\u60c5\u654c\u540e\u66b4\u8d70\u6240\u9700\u65f6\u95f4",
+        "14": "\u7121\u60c5\u6575\u5f8c\u62b1\u8d70\u6240\u9700\u6642\u9593"
     },
     "yandereHasImpVision": {
         "0": "Yandere Has Impostor Vision",
-        "13": "\u75c5\u5a07\u62e5\u6709\u5185\u9b3c\u89c6\u91ce"
+        "13": "\u75c5\u5a07\u62e5\u6709\u5185\u9b3c\u89c6\u91ce",
+        "14": "\u75c5\u5b0c\u64c1\u6709\u507d\u88dd\u8005\u8996\u91ce"
     },
     "colorSalmon": {
         "0": "Salmon",
@@ -7777,6 +7802,10 @@
         "13": "\u4e0b\u5492",
         "14": "\u4e0b\u5492"
     },
+    "BaitEmitText": {
+        "0": "Emit",
+        "13": "\u5e72\u6270"
+    },
     "NinjaText": {
         "0": "Stealth",
         "11": "\u5fcd\u8853",
@@ -8050,7 +8079,8 @@
     },
     "SwallowText": {
         "0": "Swallow",
-        "13": "\u541e\u566c"
+        "13": "\u541e\u566c",
+        "14": "\u541e\u566c"
     },
     "jesterFullDesc": {
         "0": "The Jester does not have any tasks.\nThey win the game if they get ejected during a meeting.",
@@ -8239,9 +8269,9 @@
         "14": "\u6839\u64da\u623f\u9593\u8a2d\u7f6e\uff0c\u8ced\u602a\u53ef\u80fd\u5c6c\u65bc\u8239\u54e1\u9663\u71df\u6216\u8005\u507d\u88dd\u8005\u9663\u71df\u3002\n\u8ced\u602a\u53ef\u4ee5\u901a\u904e\u5728\u6703\u8b70\u4e2d\u731c\u6e2c\u4e00\u540d\u73a9\u5bb6\u7684\u8eab\u4efd\u4f86\u72d9\u6bba\u90a3\u540d\u73a9\u5bb6\u3002\n\u5982\u679c\u8ced\u602a\u731c\u6e2c\u932f\u8aa4\uff0c\u8ced\u602a\u81ea\u5df1\u6b7b\u4ea1\u3002\n\u623f\u4e3b\u53ef\u4ee5\u8a2d\u7f6e\u6bcf\u6b21\u6703\u8b70\u8ced\u602a\u53ef\u4ee5\u4f7f\u7528\u6280\u80fd\u64ca\u6bba\u7684\u73a9\u5bb6\u6578\u4ee5\u53ca\u6bcf\u5c40\u904a\u6232\u8ced\u602a\n\u53ef\u4ee5\u4f7f\u7528\u6280\u80fd\u64ca\u6bba\u7684\u6700\u5927\u73a9\u5bb6\u6578\u3002\u8ced\u602a\u5982\u679c\u731c\u6e2c\u4e00\u540d\u73a9\u5bb6\u8eab\u4efd\u70ba\u201c\u507d\u88dd\u8005\u201d\n\u6216\u201c\u8239\u54e1\u201d\uff0c\u5247\u50c5\u7576\u88ab\u731c\u6e2c\u73a9\u5bb6\u6240\u5c6c\u9663\u71df\u6b63\u78ba\uff0c\u4e14\u9019\u540d\u73a9\u5bb6\u7121\u7279\u6b8a\u8eab\u4efd\n\u6642\uff0c\u731c\u6e2c\u624d\u7b97\u6b63\u78ba\u3002\u8ced\u602a\u53ea\u80fd\u5728\u6295\u7968\u968e\u6bb5\u767c\u52d5\u6280\u80fd\u3002"
     },
     "baitFullDesc": {
-        "0": "The Bait is a Crewmate that if killed, forces the killer to self report the body.\nAdditionally, the Bait can see if someone is inside a vent (depending on the options the exact vent gets an outline or all vents do).",
+        "0": "The Bait is a Crewmate that if killed, forces the killer to self report the body.\nAdditionally, the Bait can see if someone is inside a vent (depending on the options the exact vent gets an outline or all vents do).\nThe Bait can also resets everyone's cooldown using the Emit ability.",
         "11": "\u30fb\u8ab0\u304b\u304c\u30d9\u30f3\u30c8\u3092\u4f7f\u3046\u3068\u3001\u305d\u306e\u30d9\u30f3\u30c8\u304c\u9ec4\u8272\u304f\u5149\u308b\n\u30fb<color=#ff1919ff>\u4eba\u5916</color>\u304c\u30d9\u30a4\u30c8\u3092\u30ad\u30eb\u3059\u308b\u3068\u30ad\u30eb\u3057\u305f\u4eba\u304c\u4e00\u5b9a\u6642\u9593\u5f8c\u306b\u81ea\u52d5\u7684\u306b\u30ec\u30dd\u30fc\u30c8\u3059\u308b",
-        "13": "\u8bf1\u9975\u5c5e\u4e8e\u8239\u5458\u9635\u8425\u3002\u5982\u679c\u8bf1\u9975\u88ab\u6740\u5bb3\uff0c\u51f6\u624b\u5c06\u5728\u4e00\u5b9a\u65f6\u95f4\u4e4b\u540e\u81ea\u52a8\u62a5\u544a\u8bf1\u9975\u7684\u5c38\u4f53\u3002\n\u6b64\u5916\uff0c\u8bf1\u9975\u8fd8\u53ef\u4ee5\u770b\u5230\u662f\u5426\u6709\u4eba\u5728\u7ba1\u9053\u5185\u3002\n\u6839\u636e\u623f\u95f4\u8bbe\u7f6e\uff0c\u8bf1\u9975\u53ef\u80fd\u53ea\u770b\u5230\u6709\u4eba\u5728\u5185\u7684\u90a3\u4e2a\u7ba1\u9053\u88ab\u4e00\u5708\u8f6e\u5ed3\u7ebf\u6807\u6ce8\uff0c\u6291\u6216\u5168\u90e8\u7ba1\u9053\u90fd\u88ab\u6807\u6ce8\u3002",
+        "13": "\u8bf1\u9975\u5c5e\u4e8e\u8239\u5458\u9635\u8425\u3002\u5982\u679c\u8bf1\u9975\u88ab\u6740\u5bb3\uff0c\u51f6\u624b\u5c06\u5728\u4e00\u5b9a\u65f6\u95f4\u4e4b\u540e\u81ea\u52a8\u62a5\u544a\u8bf1\u9975\u7684\u5c38\u4f53\u3002\n\u6b64\u5916\uff0c\u8bf1\u9975\u8fd8\u53ef\u4ee5\u770b\u5230\u662f\u5426\u6709\u4eba\u5728\u7ba1\u9053\u5185\u3002\n\u6839\u636e\u623f\u95f4\u8bbe\u7f6e\uff0c\u8bf1\u9975\u53ef\u80fd\u53ea\u770b\u5230\u6709\u4eba\u5728\u5185\u7684\u90a3\u4e2a\u7ba1\u9053\u88ab\u4e00\u5708\u8f6e\u5ed3\u7ebf\u6807\u6ce8\uff0c\u6291\u6216\u5168\u90e8\u7ba1\u9053\u90fd\u88ab\u6807\u6ce8\u3002\n\u8bf1\u9975\u4e5f\u53ef\u4ee5\u4f7f\u7528\u5e72\u6270\u6280\u80fd\u4f7f\u5f97\u9664\u81ea\u5df1\u4ee5\u5916\u6240\u6709\u73a9\u5bb6\u7684\u6280\u80fd\u91cd\u65b0\u8fdb\u5165\u51b7\u5374\u3002",
         "14": "\u8a98\u990c\u5c6c\u65bc\u8239\u54e1\u9663\u71df\u3002\u5982\u679c\u8a98\u990c\u88ab\u6bba\u5bb3\uff0c\u5147\u624b\u5c07\u5728\u4e00\u5b9a\u6642\u9593\u4e4b\u5f8c\u81ea\u52d5\u5831\u544a\n\u8a98\u990c\u7684\u5c4d\u9ad4\u3002\u6b64\u5916\uff0c\u8a98\u990c\u9084\u53ef\u4ee5\u770b\u5230\u662f\u5426\u6709\u4eba\u5728\u7ba1\u9053\u5167\u3002\n\u6839\u64da\u623f\u9593\u8a2d\u7f6e\uff0c\u8a98\u990c\u53ef\u80fd\u53ea\u770b\u5230\u6709\u4eba\u5728\u5167\u7684\u90a3\u500b\u7ba1\u9053\u88ab\u4e00\u5708\u8f2a\u5ed3\u7dda\u6a19\u8a3b\uff0c\n\u6291\u6216\u5168\u90e8\u7ba1\u9053\u90fd\u88ab\u6a19\u8a3b\u3002"
     },
     "loverFullDesc": {
@@ -8550,11 +8580,13 @@
     },
     "pelicanFullDesc": {
         "0": "The Pelican is a Neutral role that aims to swallow players alive.\nThe swallowed players will not die immediately, but follow the Pelican's camera and wait for the Pelican to die.\nAll players will be teleported outside of the Pelican if the Pelican is killed.\nHowever, if a meeting is called, the eaten players will die of the Pelican.\nThe Pelican wins if all players are swallowed and no killing roles are left.",
-        "13": "\u9e48\u9e55\u662f\u4e00\u4e2a\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\n\u5982\u679c\u9e48\u9e55\u88ab\u51fb\u6740\uff0c\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c31\u4f1a\u7acb\u5373\u5728\u9e48\u9e55\u6b7b\u4ea1\u5730\u70b9\u88ab\u91ca\u653e\u3002\n\u5982\u679c\u5728\u88ab\u91ca\u653e\u524d\u6709\u4e00\u573a\u4f1a\u8bae\u5f00\u542f\uff0c\u90a3\u4e48\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c06\u6b7b\u4ea1\u3002\n\u9e48\u9e55\u5728\u751f\u541e\u6240\u6709\u4eba\u4e14\u6ca1\u6709\u5176\u4ed6\u72ec\u7acb\u6267\u5203\u8005\u5b58\u6d3b\u65f6\u80dc\u5229\u3002"
+        "13": "\u9e48\u9e55\u662f\u4e00\u4e2a\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u7684\u4e2d\u7acb\u804c\u4e1a\u3002\n\u5982\u679c\u9e48\u9e55\u88ab\u51fb\u6740\uff0c\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c31\u4f1a\u7acb\u5373\u5728\u9e48\u9e55\u6b7b\u4ea1\u5730\u70b9\u88ab\u91ca\u653e\u3002\n\u5982\u679c\u5728\u88ab\u91ca\u653e\u524d\u6709\u4e00\u573a\u4f1a\u8bae\u5f00\u542f\uff0c\u90a3\u4e48\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c06\u6b7b\u4ea1\u3002\n\u9e48\u9e55\u5728\u751f\u541e\u6240\u6709\u4eba\u4e14\u6ca1\u6709\u5176\u4ed6\u72ec\u7acb\u6267\u5203\u8005\u5b58\u6d3b\u65f6\u80dc\u5229\u3002",
+        "14": "\u9d5c\u9d98\u662f\u4e00\u500b\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u7684\u4e2d\u7acb\u8077\u696d\u3002\n\u5982\u679c\u9d5c\u9d98\u88ab\u64ca\u6bba\uff0c\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c31\u6703\u7acb\u5373\u5728\u9d5c\u9d98\u6b7b\u4ea1\u5730\u9ede\u88ab\u91cb\u653e\u3002\n\u5982\u679c\u5728\u88ab\u91cb\u653e\u524d\u6709\u4e00\u5834\u6703\u8b70\u958b\u555f\uff0c\u90a3\u9ebd\u6240\u6709\u88ab\u751f\u541e\u7684\u73a9\u5bb6\u5c07\u6b7b\u4ea1\u3002\n\u9d5c\u9d98\u5728\u751f\u541e\u6240\u6709\u4eba\u4e14\u6c92\u6709\u5176\u4ed6\u7368\u7acb\u57f7\u5203\u8005\u5b58\u6d3b\u6642\u52dd\u5229\u3002"
     },
     "yandereFullDesc": {
         "0": "The Yandere is a Neutral role that will be assigned with a crush at the beginning.\nAny player who stands near the crush for a configurable amount of time will be marked as a rival.\nThe Yandere gains the ability to kill if there is a rival, but no rivals will be created before the first meeting.\nThe more rivals they kill, the shorter the kill cooldown.\nHowever, killing someone who is not the rival increases the kill cooldown.\nIf there are no rivals in a configurable amount of time or the crush is dead, the Yandere will rampage.\nDuring rampage the Yandere will always have the ability to kill.\nThe Yandere wins with the crush if they outnumber the rest of the Crewmates.",
-        "13": "\u75c5\u5a07\u5728\u6e38\u620f\u5f00\u59cb\u65f6\u4f1a\u88ab\u5206\u914d\u4e00\u4e2a\u6697\u604b\u5bf9\u8c61\u3002\n\u4efb\u4f55\u6301\u7eed\u5728\u6697\u604b\u5bf9\u8c61\u9644\u8fd1\u7684\u73a9\u5bb6\u4f1a\u88ab\u6807\u8bb0\u4e3a\u60c5\u654c\u3002\n\u7b2c\u4e00\u6b21\u4f1a\u8bae\u524d\u75c5\u5a07\u4e0d\u4f1a\u5c06\u4efb\u4f55\u4eba\u6807\u8bb0\u4e3a\u60c5\u654c\u3002\n\u76f4\u5230\u6709\u4e00\u4e2a\u60c5\u654c\u65f6\uff0c\u75c5\u5a07\u624d\u53ef\u4ee5\u51fb\u6740\u3002\n\u51fb\u6740\u60c5\u654c\u4f1a\u51cf\u5c11\u51b7\u5374\u65f6\u95f4\uff0c\u4f46\u51fb\u6740\u4e0d\u662f\u60c5\u654c\u7684\u73a9\u5bb6\u4f1a\u589e\u52a0\u51b7\u5374\u65f6\u95f4\u3002\n\u6709\u4e00\u6bb5\u65f6\u95f4\u4e00\u76f4\u6ca1\u6709\u60c5\u654c\u6216\u6697\u604b\u5bf9\u8c61\u6b7b\u4ea1\u4f1a\u5bfc\u81f4\u75c5\u5a07\u8fdb\u5165\u66b4\u8d70\u72b6\u6001\uff0c\u6b64\u9636\u6bb5\u5c06\u4e00\u76f4\u53ef\u4ee5\u51fb\u6740\u3002\n\u75c5\u5a07\u53ef\u4ee5\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4e0e\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u83b7\u80dc\u3002"
+        "13": "\u75c5\u5a07\u5728\u6e38\u620f\u5f00\u59cb\u65f6\u4f1a\u88ab\u5206\u914d\u4e00\u4e2a\u6697\u604b\u5bf9\u8c61\u3002\n\u4efb\u4f55\u6301\u7eed\u5728\u6697\u604b\u5bf9\u8c61\u9644\u8fd1\u7684\u73a9\u5bb6\u4f1a\u88ab\u6807\u8bb0\u4e3a\u60c5\u654c\u3002\n\u7b2c\u4e00\u6b21\u4f1a\u8bae\u524d\u75c5\u5a07\u4e0d\u4f1a\u5c06\u4efb\u4f55\u4eba\u6807\u8bb0\u4e3a\u60c5\u654c\u3002\n\u76f4\u5230\u6709\u4e00\u4e2a\u60c5\u654c\u65f6\uff0c\u75c5\u5a07\u624d\u53ef\u4ee5\u51fb\u6740\u3002\n\u51fb\u6740\u60c5\u654c\u4f1a\u51cf\u5c11\u51b7\u5374\u65f6\u95f4\uff0c\u4f46\u51fb\u6740\u4e0d\u662f\u60c5\u654c\u7684\u73a9\u5bb6\u4f1a\u589e\u52a0\u51b7\u5374\u65f6\u95f4\u3002\n\u6709\u4e00\u6bb5\u65f6\u95f4\u4e00\u76f4\u6ca1\u6709\u60c5\u654c\u6216\u6697\u604b\u5bf9\u8c61\u6b7b\u4ea1\u4f1a\u5bfc\u81f4\u75c5\u5a07\u8fdb\u5165\u66b4\u8d70\u72b6\u6001\uff0c\u6b64\u9636\u6bb5\u5c06\u4e00\u76f4\u53ef\u4ee5\u51fb\u6740\u3002\n\u75c5\u5a07\u53ef\u4ee5\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4e0e\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u83b7\u80dc\u3002",
+        "14": "\u75c5\u5b0c\u5728\u904a\u6232\u958b\u59cb\u6642\u6703\u88ab\u5206\u914d\u4e00\u500b\u6697\u6200\u5c0d\u8c61\u3002\n\u4efb\u4f55\u6301\u7e8c\u5728\u6697\u6200\u5c0d\u8c61\u9644\u8fd1\u7684\u73a9\u5bb6\u6703\u88ab\u6a19\u8a18\u70ba\u60c5\u6575\u3002\n\u7b2c\u4e00\u6b21\u6703\u8b70\u524d\u75c5\u5b0c\u4e0d\u6703\u5c07\u4efb\u4f55\u4eba\u6a19\u8a18\u70ba\u60c5\u6575\u3002\n\u76f4\u5230\u6709\u4e00\u500b\u60c5\u6575\u6642\uff0c\u75c5\u5b0c\u624d\u53ef\u4ee5\u64ca\u6bba\u3002\n\u64ca\u6bba\u60c5\u6575\u6703\u6e1b\u5c11\u51b7\u537b\u6642\u9593\uff0c\u4f46\u64ca\u6bba\u4e0d\u662f\u60c5\u6575\u7684\u73a9\u5bb6\u6703\u589e\u52a0\u51b7\u537b\u6642\u9593\u3002\n\u6709\u4e00\u6bb5\u6642\u9593\u4e00\u76f4\u6c92\u6709\u60c5\u6575\u6216\u6697\u6200\u5c0d\u8c61\u6b7b\u4ea1\u6703\u5c0e\u81f4\u75c5\u5b0c\u9032\u5165\u66b4\u8d70\u72c0\u614b\uff0c\u6b64\u968e\u6bb5\u5c07\u4e00\u76f4\u53ef\u4ee5\u64ca\u6bba\u3002\n\u75c5\u5b0c\u53ef\u4ee5\u901a\u904e\u4eba\u6578\u5360\u512a\u8207\u6697\u6200\u5c0d\u8c61\u4e00\u8d77\u7372\u52dd\u3002"
     },
     "bloodyFullDesc": {
         "0": "If killed, the Bloody Modifier will leave a trail for x-seconds on their killer.\nThe trail will have the color of the killed person.",
@@ -8611,15 +8643,18 @@
     },
     "multitaskerFullDesc": {
         "0": "The Multitasker's task windows are transparent.\nThis modifier can only be applied to Crewmates.",
-        "13": "\u591a\u7ebf\u7a0b\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684\u3002\n\u8fd9\u4e2a\u526f\u804c\u4e1a\u53ea\u80fd\u88ab\u5206\u914d\u7ed9\u8239\u5458\u3002"
+        "13": "\u591a\u7ebf\u7a0b\u7684\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684\u3002\n\u8fd9\u4e2a\u526f\u804c\u4e1a\u53ea\u80fd\u88ab\u5206\u914d\u7ed9\u8239\u5458\u3002",
+        "14": "\u591a\u7dda\u7a0b\u7684\u4efb\u52d9\u754c\u9762\u662f\u900f\u660e\u7684\u3002\n\u9019\u500b\u9644\u52a0\u8077\u696d\u53ea\u5c6c\u65bc\u8239\u54e1\u3002"
     },
     "diseasedFullDesc": {
         "0": "The Diseased modifier can only be applied to a Crewmate.\nThe killer of the modifier's kill cooldown will be multiplied.\nThis multiplier will be applied last, after the Mini and other roles.",
-        "13": "\u75c5\u4eba\u662f\u4e00\u4e2a\u53ea\u80fd\u88ab\u5206\u914d\u7ed9\u8239\u5458\u7684\u526f\u804c\u4e1a\u3002\n\u5f53\u75c5\u4eba\u88ab\u51fb\u6740\u540e\uff0c\u51f6\u624b\u7684\u51fb\u6740\u51b7\u5374\u4f1a\u7ffb\u500d\u3002\n\u8fd9\u4e2a\u51fb\u6740\u51b7\u5374\u4f1a\u88ab\u6700\u540e\u8ba1\u7b97\uff0c\u5728\u8ff7\u4f60\u8239\u5458\u548c\u5176\u5b83\u7279\u6b8a\u804c\u4e1a\u4e4b\u540e\u3002"
+        "13": "\u75c5\u4eba\u662f\u4e00\u4e2a\u53ea\u80fd\u88ab\u5206\u914d\u7ed9\u8239\u5458\u7684\u526f\u804c\u4e1a\u3002\n\u5f53\u75c5\u4eba\u88ab\u51fb\u6740\u540e\uff0c\u51f6\u624b\u7684\u51fb\u6740\u51b7\u5374\u4f1a\u7ffb\u500d\u3002\n\u8fd9\u4e2a\u51fb\u6740\u51b7\u5374\u4f1a\u88ab\u6700\u540e\u8ba1\u7b97\uff0c\u5728\u8ff7\u4f60\u8239\u5458\u548c\u5176\u5b83\u7279\u6b8a\u804c\u4e1a\u4e4b\u540e\u3002",
+        "14": "\u75c5\u4eba\u662f\u4e00\u500b\u53ea\u5c6c\u65bc\u8239\u54e1\u7684\u9644\u52a0\u8077\u696d\u3002\n\u7576\u75c5\u4eba\u88ab\u64ca\u6bba\u5f8c\uff0c\u5147\u624b\u7684\u51b7\u537b\u6703\u7ffb\u6578\u500d\u3002\n\u9019\u500b\u51b7\u537b\u6703\u88ab\u6700\u5f8c\u8a08\u7b97\uff0c\u5728\u8ff7\u4f60\u8239\u54e1\u8207\u5176\u4ed6\u9644\u52a0\u8077\u696d\u4e4b\u5f8c\u3002"
     },
     "radarFullDesc": {
         "0": "The Radar has an arrow pointing at the closest player to them.\nThere can only be one Radar in the game.",
-        "13": "\u96f7\u8fbe\u6709\u4e00\u4e2a\u6307\u5411\u79bb\u81ea\u5df1\u6700\u8fd1\u7684\u73a9\u5bb6\u7684\u7bad\u5934\u3002\n\u6bcf\u5c40\u6e38\u620f\u4e2d\u53ea\u80fd\u6709\u4e00\u4e2a\u96f7\u8fbe\u3002"
+        "13": "\u96f7\u8fbe\u6709\u4e00\u4e2a\u6307\u5411\u79bb\u81ea\u5df1\u6700\u8fd1\u7684\u73a9\u5bb6\u7684\u7bad\u5934\u3002\n\u6bcf\u5c40\u6e38\u620f\u4e2d\u53ea\u80fd\u6709\u4e00\u4e2a\u96f7\u8fbe\u3002",
+        "14": "\u96f7\u9054\u6709\u4e00\u500b\u80fd\u5920\u6307\u5411\u8ddd\u96e2\u81ea\u5df1\u6700\u8fd1\u7684\u73a9\u5bb6\u7684\u7bad\u982d\u3002\n\u6bcf\u5c40\u904a\u6232\u4e2d\u53ea\u6709\u4e00\u500b\u96f7\u9054\u3002"
     },
     "hunterFullDesc": {
         "0": "When the game starts, the Hunter's movement is disabled for x-seconds.\nThe Hunter can enable arrows, use the mobile admin, or use the lighter ability to hunt down the Hunted.\nEach Hunter action will lower the timer by a configurable amount of time.",
@@ -9042,6 +9077,18 @@
         "13": "\u60ca\u559c\uff01",
         "14": "\u9a5a\u559c\uff01"
     },
+    "baitcommon2AchievementGoal": {
+        "0": "Use The Emit Ability",
+        "14": "\u4f7f\u7528\u4e00\u6b21\u5e72\u6270\u6280\u80fd"
+    },
+    "baitcommon2AchievementCond": {
+        "0": "[BLANK]",
+        "14": "[BLANK]"
+    },
+    "baitcommon2AchievementTitle": {
+        "0": "What's Wrong With My Cooldown",
+        "14": "\u91cd\u7f6e\u51b7\u5374"
+    },
     "baitchallengeAchievementCond": {
         "0": "[BLANK]",
         "11": "[BLANK]",
@@ -9059,6 +9106,18 @@
         "11": "\u5fc5\u8981\u306a\u72a0\u7272",
         "13": "\u8d70\u4f60\uff01",
         "14": "\u8d70\u4f60\uff01"
+    },
+    "baitchallenge2AchievementCond": {
+        "0": "[BLANK]",
+        "14": "[BLANK]"
+    },
+    "baitchallenge2AchievementGoal": {
+        "0": "Use The Ability For At Least 3 Times",
+        "14": "\u81f3\u5c11\u4f7f\u75283\u6b21\u5e72\u6270\u6280\u80fd"
+    },
+    "baitchallenge2AchievementTitle": {
+        "0": "Too Annoying",
+        "14": "\u592a\u70e6\u4eba\u4e86\u5427!"
     },
     "lightercommon1AchievementCond": {
         "0": "[BLANK]",
@@ -11776,63 +11835,78 @@
     },
     "pelicancommon1AchievementCond": {
         "0": "[BLANK]",
-        "13": "[BLANK]"
+        "13": "[BLANK]",
+        "14": "[BLANK]"
     },
     "pelicancommon1AchievementGoal": {
         "0": "Swallow 1 Player",
-        "13": "\u751f\u541e\u4e00\u540d\u73a9\u5bb6"
+        "13": "\u751f\u541e\u4e00\u540d\u73a9\u5bb6",
+        "14": "\u751f\u541e\u4e00\u540d\u73a9\u5bb6"
     },
     "pelicancommon1AchievementTitle": {
         "0": "Gulp",
-        "13": "\u771f\u597d\u5403..."
+        "13": "\u771f\u597d\u5403...",
+        "14": "\u9084\u633a\u597d\u5403\u7684"
     },
     "pelicananother1AchievementCond": {
         "0": "[BLANK]",
-        "13": "[BLANK]"
+        "13": "[BLANK]",
+        "14": "[BLANK]"
     },
     "pelicananother1AchievementGoal": {
         "0": "Get Killed And Have The Eaten Players Revived",
-        "13": "\u88ab\u51fb\u6740\u5e76\u91ca\u653e\u6240\u6709\u88ab\u541e\u566c\u7684\u73a9\u5bb6"
+        "13": "\u88ab\u51fb\u6740\u5e76\u91ca\u653e\u6240\u6709\u88ab\u541e\u566c\u7684\u73a9\u5bb6",
+        "14": "\u88ab\u64ca\u6bba\u4e26\u91cb\u653e\u6240\u6709\u73a9\u5bb6"
     },
     "pelicananother1AchievementTitle": {
         "0": "One Dead And Thousands Revived",
-        "13": "\u7f6a\u4e0d\u5bb9\u8bdb"
+        "13": "\u7f6a\u4e0d\u5bb9\u8bdb",
+        "14": "\u5c0f\u7d05\u5e3d\u88ab\u7375\u4eba\u6551\u51fa\u4e86~"
     },
     "pelicanchallengeAchievementCond": {
         "0": "[BLANK]",
-        "13": "[BLANK]"
+        "13": "[BLANK]",
+        "14": "[BLANK]"
     },
     "pelicanchallengeAchievementGoal": {
         "0": "Swallow Everyone And Win The Game",
-        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u83b7\u80dc"
+        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u83b7\u80dc",
+        "14": "\u751f\u541e\u6240\u6709\u4eba\u4e26\u7372\u52dd"
     },
     "pelicanchallengeAchievementTitle": {
         "0": "Swallow Them All!",
-        "13": "\u7ec8\u4e8e\u5403\u9971\u4e86..."
+        "13": "\u7ec8\u4e8e\u5403\u9971\u4e86...",
+        "14": "\u5403\u98fd\u4e86!"
     },
     "yandereanother1AchievementCond": {
         "0": "[BLANK]",
-        "13": "[BLANK]"
+        "13": "[BLANK]",
+        "14": "[BLANK]"
     },
     "yandereanother1AchievementGoal": {
         "0": "Rampage While Your Crush Is Still Alive",
-        "13": "\u5728\u6697\u604b\u5bf9\u8c61\u5b58\u6d3b\u4e0b\u66b4\u8d70"
+        "13": "\u5728\u6697\u604b\u5bf9\u8c61\u5b58\u6d3b\u4e0b\u66b4\u8d70",
+        "14": "\u5728\u6697\u6200\u5c0d\u8c61\u5b58\u6d3b\u7684\u72c0\u6cc1\u4e0b\u66b4\u8d70"
     },
     "yandereanother1AchievementTitle": {
         "0": "So I Can Protect You Better",
-        "13": "\u53ea\u4e3a\u66f4\u597d\u4fdd\u62a4\u4f60"
+        "13": "\u53ea\u4e3a\u66f4\u597d\u4fdd\u62a4\u4f60",
+        "14": "\u53ea\u70ba\u4fdd\u8b77\u4f60"
     },
     "yanderechallengeAchievementCond": {
         "0": "[BLANK]",
-        "13": "[BLANK]"
+        "13": "[BLANK]",
+        "14": "[BLANK]"
     },
     "yanderechallengeAchievementGoal": {
         "0": "Kill The Rivals And Win The Game",
-        "13": "\u51fb\u6740\u5168\u90e8\u60c5\u654c\u5e76\u83b7\u80dc"
+        "13": "\u51fb\u6740\u5168\u90e8\u60c5\u654c\u5e76\u83b7\u80dc",
+        "14": "\u6bba\u6b7b\u6240\u6709\u60c5\u6575\u4e26\u7372\u52dd"
     },
     "yanderechallengeAchievementTitle": {
         "0": "I Love You So Dearly...",
-        "13": "\u6211\u7231\u4f60\u7231\u7684\u6df1\u6c89..."
+        "13": "\u6211\u7231\u4f60\u7231\u7684\u6df1\u6c89...",
+        "14": "\u9019\u6a23 \u5c31\u53ea\u5269\u4e0b\u6211\u5011\u5169\u500b\u4e86\u2026"
     },
     "hintHelpInGameTitle": {
         "0": "Role Help",
@@ -12410,19 +12484,23 @@
     },
     "pelicanWinCondHint": {
         "0": "Swallow all players and outnumber the Crewmates.",
-        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u4ee5\u6570\u91cf\u5360\u4f18\u53d6\u80dc\u3002"
+        "13": "\u751f\u541e\u6240\u6709\u4eba\u5e76\u4ee5\u6570\u91cf\u5360\u4f18\u53d6\u80dc\u3002",
+        "14": "\u751f\u541e\u6240\u6709\u4eba\u4e26\u4ee5\u4eba\u6578\u53d6\u52dd"
     },
     "pelicanWinCondHintEndGameTitle": {
         "0": "Kill Win Trigger",
-        "13": "\u51fb\u6740\u80dc\u5229"
+        "13": "\u51fb\u6740\u80dc\u5229",
+        "14": "\u64ca\u6bba\u52dd\u5229"
     },
     "yandereWinCondHint": {
         "0": "Outnumber the Crewmates or have all other killers killed and win with the Crush.",
-        "13": "\u6dd8\u6c70\u6240\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\u6216\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4ee5\u548c\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u80dc\u5229\u3002"
+        "13": "\u6dd8\u6c70\u6240\u6709\u51fb\u6740\u80fd\u529b\u7684\u73a9\u5bb6\u6216\u901a\u8fc7\u4eba\u6570\u5360\u4f18\u4ee5\u548c\u6697\u604b\u5bf9\u8c61\u4e00\u8d77\u80dc\u5229\u3002",
+        "14": "\u6dd8\u6c70\u6240\u6709\u5e36\u5200\u73a9\u5bb6\u7372\u901a\u904e\u8207\u6697\u6200\u5c0d\u8c61\u4eba\u6578\u5360\u512a\u7372\u52dd"
     },
     "yandereWinCondHintEndGameTitle": {
         "0": "Kill Win Trigger",
-        "13": "\u51fb\u6740\u80dc\u5229"
+        "13": "\u51fb\u6740\u80dc\u5229",
+        "14": "\u64ca\u6bba\u52dd\u5229"
     },
     "niceShifterBlurb": {
         "0": "The Shifter can take over the role of another Crewmate.\nThe other player will transform into a Crewmate.",
@@ -12895,11 +12973,13 @@
     },
     "pelicanBlurb": {
         "0": "The Pelican can swallow players alive.",
-        "13": "\u9e48\u9e55\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u3002"
+        "13": "\u9e48\u9e55\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6\u3002",
+        "14": "\u9d5c\u9d98\u53ef\u4ee5\u751f\u541e\u5176\u4ed6\u73a9\u5bb6"
     },
     "yandereBlurb": {
         "0": "The Yandere is a player with a crush.\nThey can kill the rivals and win with the crush.",
-        "13": "\u75c5\u5a07\u6709\u4e00\u4e2a\u6697\u604b\u5bf9\u8c61\u3002\n\u4ed6\u4eec\u53ef\u4ee5\u51fb\u6740\u60c5\u654c\u5e76\u4e0e\u6697\u604b\u5bf9\u8c61\u80dc\u5229\u3002"
+        "13": "\u75c5\u5a07\u6709\u4e00\u4e2a\u6697\u604b\u5bf9\u8c61\u3002\n\u4ed6\u4eec\u53ef\u4ee5\u51fb\u6740\u60c5\u654c\u5e76\u4e0e\u6697\u604b\u5bf9\u8c61\u80dc\u5229\u3002",
+        "14": "\u75c5\u5b0c\u6709\u4e00\u500b\u6697\u6200\u5c0d\u8c61\u3002\n\u4ed6\u53ef\u4ee5\u64ca\u6bba\u60c5\u6575\u4e26\u8207\u6697\u6200\u5c0d\u8c61\u7372\u52dd\u3002"
     },
     "bloodyBlurb": {
         "0": "The killer leaves a bloody trace.",
@@ -12943,14 +13023,17 @@
     },
     "multitaskerBlurb": {
         "0": "The Multitasker has a transparent task window.",
-        "13": "\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684\u3002"
+        "13": "\u4efb\u52a1\u754c\u9762\u662f\u900f\u660e\u7684\u3002",
+        "14": "\u4efb\u52d9\u4ecb\u9762\u662f\u900f\u660e\u7684"
     },
     "diseasedBlurb": {
         "0": "The killer gets a higher kill cooldown.",
-        "13": "\u51f6\u624b\u7684\u51fb\u6740\u51b7\u5374\u4f1a\u7ffb\u500d\u3002"
+        "13": "\u51f6\u624b\u7684\u51fb\u6740\u51b7\u5374\u4f1a\u7ffb\u500d\u3002",
+        "14": "\u64ca\u6bba\u51b7\u537b\u6703\u7ffb\u500d"
     },
     "radarBlurb": {
         "0": "Has an arrow pointing at the closest player.",
-        "13": "\u6709\u6307\u5411\u6700\u8fd1\u73a9\u5bb6\u7684\u7bad\u5934\u3002"
+        "13": "\u6709\u6307\u5411\u6700\u8fd1\u73a9\u5bb6\u7684\u7bad\u5934\u3002",
+        "14": "\u6709\u7bad\u982d\u6307\u5411\u6700\u8fd1\u7684\u73a9\u5bb6"
     }
 }

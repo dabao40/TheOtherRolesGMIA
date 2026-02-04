@@ -118,6 +118,7 @@ namespace TheOtherRoles
         public static CustomButton jailorButton;
         public static CustomButton doomsayerButton;
         public static CustomButton yandereButton;
+        public static CustomButton baitButton;
         public static CustomButton collatorButton;
         public static CustomButton operateButton;
         public static CustomButton freePlaySuicideButton;
@@ -159,6 +160,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text zephyrUsesText;
         public static TMPro.TMP_Text collatorUsesText;
         public static TMPro.TMP_Text jailorUsesText;
+        public static TMPro.TMP_Text baitUsesText;
         public static TMPro.TMP_Text akujoTimeRemainingText;
         public static TMPro.TMP_Text akujoHonmeiText;
         public static TMPro.TMP_Text akujoBackupLeftText;
@@ -229,6 +231,7 @@ namespace TheOtherRoles
             mediumButton.MaxTimer = Medium.cooldown;
             pursuerButton.MaxTimer = Pursuer.cooldown;
             trackerTrackCorpsesButton.MaxTimer = Tracker.corpsesTrackingCooldown;
+            baitButton.MaxTimer = Bait.cooldown;
             witchSpellButton.MaxTimer = Witch.cooldown;
             assassinButton.MaxTimer = Assassin.cooldown;
             thiefKillButton.MaxTimer = Thief.cooldown;
@@ -770,6 +773,34 @@ namespace TheOtherRoles
                 abilityTexture: CustomButton.ButtonLabelType.UseButton
             );
             zephyrUsesText = zephyrButton.ShowUsesIcon(0);
+
+            baitButton = new CustomButton(
+                () =>
+                {
+                    Bait.Emit.Invoke(PlayerControl.LocalPlayer.PlayerId); ;
+                    baitButton.Timer = baitButton.MaxTimer;
+                    Bait.local.numUses--;
+                    _ = new StaticAchievementToken("bait.common2");
+                    Bait.local.acTokenChallenge2.Value++;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Bait) && !PlayerControl.LocalPlayer.Data.IsDead && Bait.local.numUses > 0; },
+                () =>
+                {
+                    if (baitUsesText != null) baitUsesText.text = Bait.local.numUses.ToString();
+                    return PlayerControl.LocalPlayer.CanMove;
+                },
+                () =>
+                {
+                    baitButton.Timer = baitButton.MaxTimer = Bait.cooldown;
+                },
+                Bait.getButtonSprite(),
+                CustomButton.ButtonPositions.lowerRowRight,
+                __instance,
+                KeyCode.F,
+                buttonText: ModTranslation.getString("BaitEmitText"),
+                abilityTexture: CustomButton.ButtonLabelType.UseButton
+            );
+            baitUsesText = baitButton.ShowUsesIcon(3);
 
             // Shifter shift
             shifterShiftButton = new CustomButton(

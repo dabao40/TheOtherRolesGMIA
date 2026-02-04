@@ -246,6 +246,7 @@ namespace TheOtherRoles
                 Cupid.killCupid(player, killer);
             Kataomoi.killKataomoi(player, killer);
             Akujo.killAkujo(player, killer);
+            Yandere.handleYandere(player);
             if (Helpers.ShowKillAnimation) {
                 RPCProcedure.updateMeeting(player.PlayerId);
                 if (FastDestroyableSingleton<HudManager>.Instance != null && PlayerControl.LocalPlayer == player)

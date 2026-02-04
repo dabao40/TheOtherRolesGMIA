@@ -305,6 +305,8 @@ namespace TheOtherRoles {
         public static CustomOption baitReportDelay;
         public static CustomOption baitShowKillFlash;
         public static CustomOption baitCanBeGuessed;
+        public static CustomOption baitEmitCooldown;
+        public static CustomOption baitNumberOfEmits;
 
         public static CustomRoleOption trackerSpawnRate;
         public static CustomOption trackerUpdateIntervall;
@@ -1143,6 +1145,8 @@ namespace TheOtherRoles {
             baitReportDelay = CustomOption.Create(1032, Types.Crewmate, "baitReportDelay", 0f, 0f, 10f, 1f, baitSpawnRate, false, "unitSeconds");
             baitShowKillFlash = CustomOption.Create(1033, Types.Crewmate, "baitShowKillFlash", true, baitSpawnRate);
             baitCanBeGuessed = CustomOption.Create(1034, Types.Crewmate, "baitCanBeGuessed", true, baitSpawnRate);
+            baitEmitCooldown = CustomOption.Create(9035, Types.Crewmate, "baitEmitCooldown", 30f, 1f, 60f, 1f, baitSpawnRate, false, "unitSeconds");
+            baitNumberOfEmits = CustomOption.Create(9036, Types.Crewmate, "baitNumberOfEmits", 5f, 1f, 10f, 1f, baitSpawnRate, false, "unitScrews");
 
             veteranSpawnRate = new CustomRoleOption(4050, Types.Crewmate, "veteran", Veteran.color);
             veteranCooldown = CustomOption.Create(4051, Types.Crewmate, "veteranCooldown", 30f, 10f, 60f, 2.5f, veteranSpawnRate, false, "unitSeconds");

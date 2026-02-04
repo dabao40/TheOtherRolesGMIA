@@ -1503,8 +1503,7 @@ namespace TheOtherRoles
                 busker.pseudocideComplete = true;
                 TORGameManager.Instance?.GameStatistics.RecordEvent(new(GameStatistics.EventVariation.Kill, targetId, 1 << targetId) { RelatedTag = isLoverSuicide ? EventDetail.Kill : EventDetail.Pseudocide });
 
-                Lovers.killLovers(player, player);
-                Kataomoi.killKataomoi(player);
+                player.OnDeath(player);
 
                 if (AmongUsClient.Instance.AmHost) FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(player, false);
             }

@@ -123,11 +123,6 @@ public class Yandere : RoleBase<Yandere>
     {
         if (PlayerControl.LocalPlayer != player || PlayerControl.LocalPlayer.Data.IsDead) return;
         if (isRunaway || isRunawayNextMeeting) return;
-        if (target == null || target.Data?.IsDead == true || target.Data?.Disconnected == true)
-        {
-            isRunaway = true;
-            return;
-        }
         if (nuisance.Count == 0 && !meetingFlag)
         {
             timer += Time.deltaTime;
@@ -141,6 +136,18 @@ public class Yandere : RoleBase<Yandere>
         {
             timer = 0f;
         }
+    }
+
+    public static void handleYandere(PlayerControl player)
+    {
+        if (player == target)
+            isRunaway = true;
+    }
+
+    public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason)
+    {
+        if (player == target)
+            isRunaway = true;
     }
 
     public void updateProgress()

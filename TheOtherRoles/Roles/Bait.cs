@@ -2,12 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
+using static TheOtherRoles.Objects.CustomButton;
 
 namespace TheOtherRoles.Roles
 {
+    [TORRPCHolder]
     public class Bait : RoleBase<Bait>
     {
         public Bait()
@@ -16,11 +19,40 @@ namespace TheOtherRoles.Roles
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
             reported = true;
             acTokenChallenge = null;
+            numUses = Mathf.RoundToInt(CustomOptionHolder.baitNumberOfEmits.getFloat());
         }
 
         public override void OnMeetingStart()
         {
             reported = true;
+        }
+
+        public static RemoteProcess<byte> Emit = RemotePrimitiveProcess.OfByte("BaitEmit", (message, _) =>
+        {
+            if (PlayerControl.LocalPlayer.PlayerId == message || Deputy.handcuffedKnows.ContainsKey(message)) return;
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                try
+                {
+                    if (!buttons[i].HasButton() || buttons[i].isSuicide || buttons[i].isEffectActive) continue;
+                    buttons[i].Timer = buttons[i].MaxTimer;
+                    buttons[i].Update();
+                }
+                catch (System.NullReferenceException)
+                {
+                    System.Console.WriteLine("[WARNING] NullReferenceException from HudUpdate().HasButton(), if theres only one warning its fine");
+                }
+            }
+            if (PlayerControl.LocalPlayer.Data.Role.IsImpostor)
+                PlayerControl.LocalPlayer.SetKillTimerUnchecked(Mathf.Max(PlayerControl.LocalPlayer.GetKillCooldown(), PlayerControl.LocalPlayer.killTimer));
+        });
+
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite()
+        {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BaitButton.png", 115f);
+            return buttonSprite;
         }
 
         public override void FixedUpdate()
@@ -101,15 +133,19 @@ namespace TheOtherRoles.Roles
         public float reportDelay = 0f;
         public static bool showKillFlash = true;
         public static bool canBeGuessed = true;
+        public static float cooldown = 30f;
+        public int numUses = 5;
 
         public bool reported = true;
 
         public AchievementToken<(byte killerId, bool cleared)> acTokenChallenge = null;
+        public AchievementToken<int> acTokenChallenge2 = null;
 
         public override void PostInit()
         {
             if (PlayerControl.LocalPlayer != player) return;
             acTokenChallenge ??= new("bait.challenge", (byte.MaxValue, false), (val, _) => val.cleared);
+            acTokenChallenge2 ??= new("bait.challenge2", 0, (val, _) => val >= 3);
         }
 
         public override void OnDeath(PlayerControl killer = null)
