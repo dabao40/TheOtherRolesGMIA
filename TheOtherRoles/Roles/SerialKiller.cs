@@ -32,6 +32,12 @@ namespace TheOtherRoles.Roles
             return buttonSprite;
         }
 
+        public override void OnMeetingEnd(PlayerControl exiled = null)
+        {
+            if (PlayerControl.LocalPlayer == player)
+                PlayerControl.LocalPlayer.SetKillTimerUnchecked(killCooldown);
+        }
+
         public override void OnKill(PlayerControl target)
         {
             if (PlayerControl.LocalPlayer == player && target != player)

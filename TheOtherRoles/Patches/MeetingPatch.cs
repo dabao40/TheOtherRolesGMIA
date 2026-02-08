@@ -1314,14 +1314,17 @@ namespace TheOtherRoles.Patches
                 }
 
                 AssignRolePatch.blockAssignRole = false;
-                foreach (var p in PlayerControl.AllPlayerControls)
+                if (!CustomGameModes.FreePlayGM.isFreePlayGM)
                 {
-                    if (p.Data.IsDead && !RoleManager.IsGhostRole(p.Data.RoleType))
+                    foreach (var p in PlayerControl.AllPlayerControls)
                     {
-                        if (AmongUsClient.Instance.AmHost)
-                            FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(p, false);
-                        if (p.shouldClearTask())
-                            p.clearAllTasks();
+                        if (p.Data.IsDead && !RoleManager.IsGhostRole(p.Data.RoleType))
+                        {
+                            if (AmongUsClient.Instance.AmHost)
+                                FastDestroyableSingleton<RoleManager>.Instance.AssignRoleOnDeath(p, false);
+                            if (p.shouldClearTask())
+                                p.clearAllTasks();
+                        }
                     }
                 }
 

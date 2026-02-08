@@ -27,6 +27,8 @@ namespace TheOtherRoles.Roles
             reported = true;
         }
 
+        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "baitEmitHint")];
+
         public static RemoteProcess<byte> Emit = RemotePrimitiveProcess.OfByte("BaitEmit", (message, _) =>
         {
             if (PlayerControl.LocalPlayer.PlayerId == message || Deputy.handcuffedKnows.ContainsKey(message)) return;

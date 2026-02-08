@@ -121,6 +121,7 @@ namespace TheOtherRoles
         public static CustomButton baitButton;
         public static CustomButton collatorButton;
         public static CustomButton operateButton;
+        public static CustomButton watcherKillButton;
         public static CustomButton freePlaySuicideButton;
         public static CustomButton freePlayReviveButton;
         public static CustomButton eventKickButton;
@@ -227,6 +228,7 @@ namespace TheOtherRoles
             kataomoiStalkingButton.MaxTimer = Kataomoi.stalkingCooldown;
             kataomoiSearchButton.MaxTimer = Kataomoi.searchCooldown;
             vultureEatButton.MaxTimer = Vulture.cooldown;
+            watcherKillButton.MaxTimer = 5f;
             detectiveButton.MaxTimer = Detective.inspectCooldown;
             mediumButton.MaxTimer = Medium.cooldown;
             pursuerButton.MaxTimer = Pursuer.cooldown;
@@ -498,8 +500,8 @@ namespace TheOtherRoles
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 0);
                             MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Comms, 16 | 1);
                         } else if (task.TaskType == TaskTypes.StopCharles) {
-                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 0 | 16);
-                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 1 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.HeliSabotage, 0 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.HeliSabotage, 1 | 16);
                         } else if (SubmergedCompatibility.IsSubmerged && task.TaskType == SubmergedCompatibility.RetrieveOxygenMask) {
                             Engineer.FixSubmergedOxygen.Invoke();
                         }
@@ -1147,6 +1149,25 @@ namespace TheOtherRoles
             );
             trackerText = trackerKillButton.ShowUsesIcon(3);
 
+            watcherKillButton = new(
+                () =>
+                {
+                    if (Helpers.checkMurderAttemptAndKill(PlayerControl.LocalPlayer, Tracker.local.currentTarget) == MurderAttemptResult.SuppressKill) return;
+                    NiceWatcher.local.canKill = false;
+                    NiceWatcher.local.currentTarget = null;
+                },
+                () =>
+                {
+                    return PlayerControl.LocalPlayer.isRole(RoleId.NiceWatcher) && NiceWatcher.local.canKill && !PlayerControl.LocalPlayer.Data.IsDead;
+                },
+                () => { return PlayerControl.LocalPlayer.CanMove; },
+                () => { },
+                __instance.KillButton.graphic.sprite,
+                CustomButton.ButtonPositions.upperRowRight,
+                __instance,
+                KeyCode.Q
+            );
+
             detectiveButton = new CustomButton(
                 () =>
                 {
@@ -1238,12 +1259,10 @@ namespace TheOtherRoles
                 () => {
                     if (Vampire.local.targetNearGarlic && Vampire.canKillNearGarlics) {
                         vampireKillButton.actionButton.graphic.sprite = __instance.KillButton.graphic.sprite;
-                        vampireKillButton.showButtonText = true;
                         vampireKillButton.buttonText = TranslationController.Instance.GetString(StringNames.KillLabel);
                     }
                     else {
                         vampireKillButton.actionButton.graphic.sprite = Vampire.getButtonSprite();
-                        vampireKillButton.showButtonText = ModTranslation.getString("VampireText") != "";
                         vampireKillButton.buttonText = ModTranslation.getString("VampireText");
                     }
                     return Vampire.local.currentTarget != null && PlayerControl.LocalPlayer.CanMove && (!Vampire.local.targetNearGarlic || Vampire.canKillNearGarlics);
@@ -2447,7 +2466,10 @@ namespace TheOtherRoles
                 null,
                 true,
                 isSuicide: true
-            );
+            )
+            {
+                showButtonText = false
+            };
 
             accelAttributePropTip = accelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
 
@@ -2467,7 +2489,10 @@ namespace TheOtherRoles
                 null,
                 true,
                 isSuicide: true
-            );
+            )
+            {
+                showButtonText = false
+            };
 
             decelAttributePropTip = decelAttributeButton.actionButtonGameObject.AddComponent<Props.Proptip>();
 
@@ -2705,11 +2730,9 @@ namespace TheOtherRoles
                 Undertaker.getDragButtonSprite(), // Sprite sprite,
                 CustomButton.ButtonPositions.upperRowLeft, // Vector3 PositionOffset
                 __instance, // HudManager hudManager
-                KeyCode.F
-            )
-            {
-                showButtonText = ModTranslation.getString("DropBodyText") != ""
-            };
+                KeyCode.F,
+                buttonText: ModTranslation.getString("DropBodyText")
+            );
 
             buskerButton = new CustomButton(
                 () =>
@@ -3368,8 +3391,8 @@ namespace TheOtherRoles
                         }
                         else if (task.TaskType == TaskTypes.StopCharles)
                         {
-                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 0 | 16);
-                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.Reactor, 1 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.HeliSabotage, 0 | 16);
+                            MapUtilities.CachedShipStatus.RpcUpdateSystem(SystemTypes.HeliSabotage, 1 | 16);
                         }
                     }
                     Fox.numRepair -= 1;
@@ -3532,12 +3555,8 @@ namespace TheOtherRoles
                 () => { return true; },
                 () =>
                 {
-                    if (PlayerControl.LocalPlayer.isRole(RoleId.SerialKiller))
-                    {
-                        PlayerControl.LocalPlayer.SetKillTimerUnchecked(SerialKiller.killCooldown);
-                        if (SerialKiller.resetTimer) {
-                            serialKillerButton.Timer = SerialKiller.suicideTimer;
-                        }
+                    if (SerialKiller.resetTimer) {
+                        serialKillerButton.Timer = SerialKiller.suicideTimer;
                     }
                 },
                 SerialKiller.getButtonSprite(),
@@ -3868,7 +3887,6 @@ namespace TheOtherRoles
                         status = FortuneTeller.local.playerStatus[index];
                     }
 
-                    fortuneTellerButtons[index].showButtonText = true;
                     if (status)
                     {
                         var progress = FortuneTeller.local.progress.ContainsKey(index) ? FortuneTeller.local.progress[index] : 0f;
@@ -3942,14 +3960,18 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.None,
                 true
-            );
+            )
+            {
+                showButtonText = false
+            };
 
             fortuneTellerRightButton = new CustomButton(
                 () =>
                 {
                     FortuneTeller.local.pageIndex = 2;
                 },
-                () => {
+                () =>
+                {
                     return PlayerControl.LocalPlayer.isRole(RoleId.FortuneTeller) && !PlayerControl.LocalPlayer.Data.IsDead &&
                     FortuneTeller.local.pageIndex == 1 && FortuneTeller.isCompletedNumTasks(PlayerControl.LocalPlayer) && FortuneTeller.local.numUsed < 1 &&
                     TORMapOptions.playerIcons.Count >= 16;
@@ -3964,7 +3986,10 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.None,
                 true
-            );
+            )
+            {
+                showButtonText = false
+            };
 
             // Pursuer button
             pursuerButton = new CustomButton(
@@ -4370,7 +4395,8 @@ namespace TheOtherRoles
                 KeyCode.KeypadPlus
                 )
             {
-                Timer = 0f
+                Timer = 0f,
+                showButtonText = false
             };
 
 
@@ -4439,7 +4465,8 @@ namespace TheOtherRoles
                    if (MapBehaviour.Instance && MapBehaviour.Instance.isActiveAndEnabled) MapBehaviour.Instance.Close();
                },
                false,
-               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin)
+               FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.Admin),
+               abilityTexture: CustomButton.ButtonLabelType.AdminButton
             );
 
             hunterArrowButton = new CustomButton(

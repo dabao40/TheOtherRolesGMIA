@@ -1,4 +1,5 @@
 using System;
+using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -14,6 +15,9 @@ namespace TheOtherRoles.Roles
         public static byte allExTasks = 0;
         public static byte oldTaskMasterPlayerId = byte.MaxValue;
         public static bool triggerTaskMasterWin = false;
+        public static bool canVent = true;
+
+        public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/TaskMaster.png");
 
         public TaskMaster()
         {
@@ -33,6 +37,7 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             becomeATaskMasterWhenCompleteAllTasks = CustomOptionHolder.taskMasterBecomeATaskMasterWhenCompleteAllTasks.getBool();
+            canVent = CustomOptionHolder.taskMasterCanVent.getBool();
             clearExTasks = 0;
             allExTasks = 0;
             oldTaskMasterPlayerId = byte.MaxValue;

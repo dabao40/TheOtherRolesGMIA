@@ -346,6 +346,7 @@ namespace TheOtherRoles {
         public static CustomOption taskMasterExtraCommonTasks;
         public static CustomOption taskMasterExtraShortTasks;
         public static CustomOption taskMasterExtraLongTasks;
+        public static CustomOption taskMasterCanVent;
 
         public static CustomRoleOption buskerSpawnRate;
         public static CustomOption buskerCooldown;
@@ -534,6 +535,7 @@ namespace TheOtherRoles {
         public static CustomOption mimicCountAsOne;
         public static CustomOption mimicIfOneDiesBothDie;
         public static CustomOption mimicHasOneVote;
+        public static CustomOption mimicSpecialCooldown;
 
         public static CustomRoleOption bomberSpawnRate;
         public static CustomOption bomberCooldown;
@@ -881,6 +883,7 @@ namespace TheOtherRoles {
             mimicCountAsOne = CustomOption.Create(5001, Types.Impostor, "mimicCountAsOne", true, mimicSpawnRate);
             mimicIfOneDiesBothDie = CustomOption.Create(5002, Types.Impostor, "mimicIfOneDiesBothDies", true, mimicSpawnRate);
             mimicHasOneVote = CustomOption.Create(5003, Types.Impostor, "mimicHasOneVote", true, mimicSpawnRate);
+            mimicSpecialCooldown = CustomOption.Create(5004, Types.Impostor, "mimicSpecialCooldown", 20f, 2f, 60f, 1f, mimicSpawnRate, false, "unitSeconds");
 
             bomberSpawnRate = new CustomRoleOption(6076, Types.Impostor, "bomber", BomberA.color, 1);
             bomberCooldown = CustomOption.Create(6077, Types.Impostor, "bomberCooldown", 20f, 2f, 30f, 2f, bomberSpawnRate, false, "unitSeconds");
@@ -1205,6 +1208,7 @@ namespace TheOtherRoles {
             taskMasterExtraCommonTasks = CustomOption.Create(7022, Types.Crewmate, "taskMasterExtraCommonTasks", 2f, 0f, 3f, 1f, taskMasterSpawnRate, false, "unitScrews");
             taskMasterExtraShortTasks = CustomOption.Create(7023, Types.Crewmate, "taskMasterExtraShortTasks", 2f, 1f, 23f, 1f, taskMasterSpawnRate, false, "unitScrews");
             taskMasterExtraLongTasks = CustomOption.Create(7024, Types.Crewmate, "taskMasterExtraLongTasks", 2f, 0f, 15f, 1f, taskMasterSpawnRate, false, "unitScrews");
+            taskMasterCanVent = CustomOption.Create(7025, Types.Crewmate, "taskMasterCanVent", true);
 
             portalmakerSpawnRate = new CustomRoleOption(390, Types.Crewmate, "portalmaker", Portalmaker.color, 1);
             portalmakerCooldown = CustomOption.Create(391, Types.Crewmate, "portalmakerCooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate, false, "unitSeconds");

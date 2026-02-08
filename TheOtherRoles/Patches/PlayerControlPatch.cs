@@ -395,10 +395,10 @@ namespace TheOtherRoles.Patches {
 
         private static void radarUpdate()
         {
-            if (Radar.radar == null || PlayerControl.LocalPlayer != Radar.radar || MeetingHud.Instance)
+            if (MeetingHud.Instance)
                 return;
 
-            if (Radar.radar?.Data.IsDead == true)
+            if (PlayerControl.LocalPlayer != Radar.radar || PlayerControl.LocalPlayer.Data.IsDead)
             {
                 if (Radar.localArrow?.arrow != null)
                     UnityEngine.Object.Destroy(Radar.localArrow?.arrow);
@@ -962,6 +962,23 @@ namespace TheOtherRoles.Patches {
             {
                 if (Helpers.isVisible(PlayerControl.LocalPlayer, target))
                     _ = new StaticAchievementToken("sprinter.challenge");
+            }
+
+            if (Helpers.isVisible(PlayerControl.LocalPlayer, target))
+            {
+                if (PlayerControl.LocalPlayer.isRole(RoleId.NiceWatcher))
+                {
+                    NiceWatcher.local.canKill = true;
+                    HudManagerStartPatch.watcherKillButton.Timer = 5f;
+                }
+                else if (PlayerControl.LocalPlayer.isRole(RoleId.EvilWatcher) && __instance != PlayerControl.LocalPlayer)
+                {
+                    if (PlayerControl.LocalPlayer.killTimer > 1f)
+                        PlayerControl.LocalPlayer.SetKillTimerUnchecked(1f);
+                    else {
+                        EvilWatcher.local.extraKill = true;
+                    }
+                }
             }
 
             __instance.OnKill(target);

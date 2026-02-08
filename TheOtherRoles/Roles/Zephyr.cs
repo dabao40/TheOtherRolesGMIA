@@ -49,6 +49,12 @@ namespace TheOtherRoles.Roles
             return dir.normalized * mag;
         }
 
+        public override void OnKill(PlayerControl target)
+        {
+            if (PlayerControl.LocalPlayer == player && HudManagerStartPatch.zephyrButton != null && triggerBothCooldown)
+                HudManagerStartPatch.zephyrButton.Timer = HudManagerStartPatch.zephyrButton.MaxTimer;
+        }
+
         public static Vector2 SuggestMoveToPos(Vector2 playerPos, Vector2 maxVector)
         {
             var currentData = MapData.GetCurrentMapData();

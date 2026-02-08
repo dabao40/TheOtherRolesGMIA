@@ -36,14 +36,14 @@ namespace TheOtherRoles.Objects {
         public bool HasEffect;
         public bool effectCancellable = false;
         public bool isEffectActive = false;
-        public bool showButtonText = false;
+        public bool showButtonText = true;
         public float EffectDuration;
         public Sprite Sprite;
         public HudManager hudManager;
         public bool mirror;
         public KeyCode? hotkey;
         public KeyCode? originalHotkey;
-        public string buttonText = "";
+        public string buttonText = null;
         public string actionName = null;
         public bool shakeOnEnd = true;
         public bool isSuicide = false;
@@ -69,7 +69,7 @@ namespace TheOtherRoles.Objects {
             HauntButton
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true,
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = null, ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true,
             bool isSuicide = false)
         {
             this.hudManager = hudManager;
@@ -99,14 +99,13 @@ namespace TheOtherRoles.Objects {
             setLabelType(abilityTexture);
             actionButtonLabelText = actionButton.buttonLabelText;
             PassiveButton button = actionButton.GetComponent<PassiveButton>();
-            showButtonText = actionButtonRenderer.sprite == Sprite || buttonText != "";
             button.OnClick = new Button.ButtonClickedEvent();
             button.OnClick.AddListener((UnityEngine.Events.UnityAction)onClickEvent);
             setKeyBind();
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "", ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true, bool isSuicide = false)
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = null, ButtonLabelType abilityTexture = ButtonLabelType.KillButton, string actionName = null, bool shakeOnEnd = true, bool isSuicide = false)
         : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText, abilityTexture, actionName, shakeOnEnd, isSuicide) { }
 
         public void onClickEvent()
@@ -255,10 +254,10 @@ namespace TheOtherRoles.Objects {
             }
 
             actionButtonRenderer.sprite = Sprite;
-            if (showButtonText && buttonText != ""){
+            if (showButtonText && buttonText != null){
                 actionButton.OverrideText(buttonText);
             }
-            actionButtonLabelText.enabled = showButtonText; // Only show the text if it's a kill button
+            actionButton.buttonLabelText.enabled = showButtonText; // Only show the text if it's a kill button
             if (hudManager.UseButton != null) {
                 Vector3 pos = hudManager.UseButton.transform.localPosition;
                 if (mirror) {

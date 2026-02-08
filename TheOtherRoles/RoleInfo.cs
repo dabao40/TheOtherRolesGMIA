@@ -151,6 +151,7 @@ namespace TheOtherRoles
 
         public static List<RoleInfo> Killing = [
             sheriff,
+            deputy,
             jailor,
             bountyHunter,
             witch,
@@ -189,7 +190,9 @@ namespace TheOtherRoles
             vulture,
             cleaner,
             undertaker,
-            vampire
+            vampire,
+            niceWatcher,
+            evilWatcher
         ];
 
         public static List<RoleInfo> Panic =
@@ -197,7 +200,6 @@ namespace TheOtherRoles
             teleporter,
             yasuna,
             evilYasuna,
-            fortuneTeller,
             trapper,
             zephyr,
             plagueDoctor,

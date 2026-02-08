@@ -642,7 +642,7 @@ namespace TheOtherRoles
         }
 
         public static bool shouldShowGhostInfo() {
-            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType)
+            return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && (RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType) || FreePlayGM.isFreePlayGM)
                 && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
@@ -1566,7 +1566,7 @@ namespace TheOtherRoles
             text.defaultStr = translationKey;
         }
 
-        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && RoleManager.IsGhostRole(player.Data.RoleType)) || Lighter.isLightActive(player);
+        public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && (RoleManager.IsGhostRole(player.Data.RoleType) || FreePlayGM.isFreePlayGM)) || Lighter.isLightActive(player);
 
         public static PlayerDisplay GetPlayerDisplay()
         {
@@ -1870,6 +1870,8 @@ namespace TheOtherRoles
             else if (player.isRole(RoleId.Pelican) && Pelican.canUseVents)
                 roleCouldUse = true;
             else if (player.isRole(RoleId.Yandere))
+                roleCouldUse = true;
+            else if (player.isRole(RoleId.TaskMaster) && TaskMaster.canVent)
                 roleCouldUse = true;
             else if (player.Data?.Role != null && player.Data.Role.CanVent)
             {

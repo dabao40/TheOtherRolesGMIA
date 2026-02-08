@@ -185,7 +185,7 @@ namespace TheOtherRoles.Modules
                             if (roleInfo.roleId == RoleId.Yasuna && alreadyPicked.Any(x => x.Item1 == (byte)RoleId.EvilYasuna)) continue;
                             if (roleInfo.roleId == RoleId.EvilYasuna && alreadyPicked.Any(x => x.Item1 == (byte)RoleId.Yasuna)) continue;
                             if (TORMapOptions.gameMode == CustomGamemodes.Guesser && (roleInfo.roleId == RoleId.EvilGuesser || roleInfo.roleId == RoleId.NiceGuesser)) continue;
-                            if ((roleInfo.roleId == RoleId.NiceWatcher || roleInfo.roleId == RoleId.EvilWatcher) && alreadyPicked.Select(x => x.Item1 is ((byte)RoleId.NiceWatcher) or ((byte)RoleId.EvilWatcher)).ToList().Count
+                            if ((roleInfo.roleId == RoleId.NiceWatcher || roleInfo.roleId == RoleId.EvilWatcher) && alreadyPicked.Where(x => x.Item1 is ((byte)RoleId.NiceWatcher) or ((byte)RoleId.EvilWatcher)).ToList().Count
                                 >= CustomOptionHolder.watcherSpawnRate.count) continue;
                             if (alreadyPicked.Any(x => x.Item1 == (byte)roleInfo.roleId) && roleInfo.roleId != RoleId.Crewmate) {
                                 var list = roleData.crewSettings;

@@ -5680,6 +5680,10 @@
         "13": "\u6a21\u4eff\u8005\u56e2\u961f\u5171\u7528\u4e00\u7968\u6295\u7968",
         "14": "\u5169\u500b\u6a21\u4eff\u8005\u5171\u7528\u4e00\u7968"
     },
+    "mimicSpecialCooldown": {
+        "0": "Kill Cooldown When Both Alive",
+        "13": "\u6a21\u4eff\u8005\u56e2\u961f\u5b58\u6d3b\u65f6\u51fb\u6740\u51b7\u5374\u65f6\u95f4"
+    },
     "mimicAInfo": {
         "0": "Mimic(Assistant) Info: The Mimic(Killer) Killed Someone",
         "11": "\u30df\u30df\u30c3\u30af(\u30ad\u30e9\u30fc)\u304c\u8ab0\u304b\u3092\u6bba\u3057\u305f\u3088\u3046\u3060...",
@@ -6120,6 +6124,10 @@
         "11": "\u8ffd\u52a0\u30ed\u30f3\u30b0\u30bf\u30b9\u30af",
         "13": "\u9644\u52a0\u957f\u4efb\u52a1\u6570",
         "14": "\u9644\u52a0\u9577\u4efb\u52d9\u6578"
+    },
+    "taskMasterCanVent": {
+        "0": "Task Master Can Vent",
+        "13": "\u4efb\u52a1\u5927\u5e08\u53ef\u4ee5\u4f7f\u7528\u901a\u98ce\u7ba1\u9053"
     },
     "taskMasterExTasks": {
         "0": "Ex Tasks",
@@ -8394,15 +8402,15 @@
         "14": "\u5fa9\u4ec7\u8005\u5c6c\u65bc\u507d\u88dd\u8005\u9663\u71df\uff0c\u53ef\u4ee5\u9023\u5e36\u6bba\u5bb3\u4ed6\u7684\u5147\u624b\u4e00\u8d77\u6b7b\u4ea1\u3002"
     },
     "niceWatcherFullDesc": {
-        "0": "The Watcher is capable of seeing everyone's vote during meetings.\nDepending on the options they may also see the guesses.",
+        "0": "The Watcher is capable of seeing everyone's vote during meetings.\nDepending on the options they may also see the guesses.\nIf the Nice Watcher witnesses a crime, they gain the ability to kill before the meeting.",
         "11": "\u30fb\u4f1a\u8b70\u4e2d\u306b\u5168\u54e1\u306e\u6295\u7968\u5148\u3092\u78ba\u8a8d\u3067\u304d\u308b\n\u30fb\u8a2d\u5b9a\u306b\u3088\u3063\u3066\u306f\u30b2\u30c3\u30b5\u30fc\u306e\u63a8\u6e2c\u3082\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
-        "13": "\u7aa5\u89c6\u8005\u53ef\u4ee5\u770b\u5230\u4f1a\u8bae\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u51b5\u3002\n\u6839\u636e\u8bbe\u7f6e\u7aa5\u89c6\u8005\u8fd8\u53ef\u4ee5\u770b\u89c1\u8d4c\u602a\u7684\u731c\u6d4b\u60c5\u51b5\u3002",
+        "13": "\u7aa5\u89c6\u8005\u53ef\u4ee5\u770b\u5230\u4f1a\u8bae\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u51b5\u3002\n\u6839\u636e\u8bbe\u7f6e\u7aa5\u89c6\u8005\u8fd8\u53ef\u4ee5\u770b\u89c1\u8d4c\u602a\u7684\u731c\u6d4b\u60c5\u51b5\u3002\n\u6b63\u4e49\u7684\u7aa5\u89c6\u8005\u5728\u76ee\u7779\u51f6\u6740\u73b0\u573a\u540e\u5728\u4f1a\u8bae\u524d\u83b7\u5f97\u51fb\u6740\u80fd\u529b\u3002",
         "14": "\u7aba\u8996\u8005\u53ef\u4ee5\u770b\u5230\u6703\u8b70\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u6cc1\u3002\n\u6839\u64da\u8a2d\u7f6e\u7aba\u8996\u8005\u9084\u53ef\u4ee5\u770b\u898b\u8ced\u602a\u7684\u731c\u6e2c\u60c5\u6cc1\u3002"
     },
     "evilWatcherFullDesc": {
-        "0": "The Watcher is capable of seeing everyone's vote during meetings.\nDepending on the options they may also see the guesses.",
+        "0": "The Watcher is capable of seeing everyone's vote during meetings.\nDepending on the options they may also see the guesses.\nIf the Evil Watcher witnesses a kill, they either resets their kill cooldown or gains an extra kill ability before the meeting.",
         "11": "\u30fb\u4f1a\u8b70\u4e2d\u306b\u5168\u54e1\u306e\u6295\u7968\u5148\u3092\u78ba\u8a8d\u3067\u304d\u308b\n\u30fb\u8a2d\u5b9a\u306b\u3088\u3063\u3066\u306f\u30b2\u30c3\u30b5\u30fc\u306e\u63a8\u6e2c\u3082\u898b\u308b\u3053\u3068\u304c\u3067\u304d\u308b",
-        "13": "\u7aa5\u89c6\u8005\u53ef\u4ee5\u770b\u5230\u4f1a\u8bae\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u51b5\u3002\n\u6839\u636e\u8bbe\u7f6e\u7aa5\u89c6\u8005\u8fd8\u53ef\u4ee5\u770b\u89c1\u8d4c\u602a\u7684\u731c\u6d4b\u60c5\u51b5\u3002",
+        "13": "\u7aa5\u89c6\u8005\u53ef\u4ee5\u770b\u5230\u4f1a\u8bae\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u51b5\u3002\n\u6839\u636e\u8bbe\u7f6e\u7aa5\u89c6\u8005\u8fd8\u53ef\u4ee5\u770b\u89c1\u8d4c\u602a\u7684\u731c\u6d4b\u60c5\u51b5\u3002\n\u90aa\u6076\u7684\u7aa5\u89c6\u8005\u5728\u76ee\u7779\u51f6\u6740\u73b0\u573a\u540e\u51fb\u6740\u51b7\u5374\u4e3a0\u6216\u83b7\u5f97\u7b2c\u4e8c\u6b21\u51fb\u6740\u80fd\u529b\u3002",
         "14": "\u7aba\u8996\u8005\u53ef\u4ee5\u770b\u5230\u6703\u8b70\u4e2d\u6240\u6709\u4eba\u7684\u6295\u7968\u60c5\u6cc1\u3002\n\u6839\u64da\u8a2d\u7f6e\u7aba\u8996\u8005\u9084\u53ef\u4ee5\u770b\u898b\u8ced\u602a\u7684\u731c\u6e2c\u60c5\u6cc1\u3002"
     },
     "trapperFullDesc": {
@@ -9079,15 +9087,15 @@
     },
     "baitcommon2AchievementGoal": {
         "0": "Use The Emit Ability",
-        "14": "\u4f7f\u7528\u4e00\u6b21\u5e72\u6270\u6280\u80fd"
+        "13": "\u4f7f\u7528\u4e00\u6b21\u5e72\u6270\u6280\u80fd"
     },
     "baitcommon2AchievementCond": {
         "0": "[BLANK]",
-        "14": "[BLANK]"
+        "13": "[BLANK]"
     },
     "baitcommon2AchievementTitle": {
         "0": "What's Wrong With My Cooldown",
-        "14": "\u91cd\u7f6e\u51b7\u5374"
+        "13": "\u91cd\u7f6e\u51b7\u5374"
     },
     "baitchallengeAchievementCond": {
         "0": "[BLANK]",
@@ -9109,15 +9117,15 @@
     },
     "baitchallenge2AchievementCond": {
         "0": "[BLANK]",
-        "14": "[BLANK]"
+        "13": "[BLANK]"
     },
     "baitchallenge2AchievementGoal": {
         "0": "Use The Ability For At Least 3 Times",
-        "14": "\u81f3\u5c11\u4f7f\u75283\u6b21\u5e72\u6270\u6280\u80fd"
+        "13": "\u81f3\u5c11\u4f7f\u75283\u6b21\u5e72\u6270\u6280\u80fd"
     },
     "baitchallenge2AchievementTitle": {
         "0": "Too Annoying",
-        "14": "\u592a\u70e6\u4eba\u4e86\u5427!"
+        "13": "\u592a\u70e6\u4eba\u4e86\u5427!"
     },
     "lightercommon1AchievementCond": {
         "0": "[BLANK]",
@@ -12101,6 +12109,10 @@
         "0": "Assassinates the player, will leave traces behind.",
         "13": "\u4f20\u9001\u81f3\u88ab\u6807\u8bb0\u73a9\u5bb6\u5730\u70b9\u5e76\u51fb\u6740\uff0c\u4f1a\u5728\u8eab\u540e\u7559\u4e0b\u75d5\u8ff9\u3002",
         "14": "\u50b3\u9001\u81f3\u88ab\u6a19\u8a18\u73a9\u5bb6\u7684\u5730\u9ede\u4e26\u64ca\u6bba\uff0c\u6703\u7559\u4e0b\u75d5\u8de1"
+    },
+    "baitEmitHint": {
+        "0": "Resets everyone's ability cooldown and kill cooldown. Suicide timers will not be reset.",
+        "13": "\u91cd\u7f6e\u6240\u6709\u4eba\u7684\u6280\u80fd\u51b7\u5374\u4e0e\u51fb\u6740\u51b7\u5374\u3002\u81ea\u6740\u5012\u8ba1\u65f6\u4e0d\u4f1a\u88ab\u91cd\u7f6e\u3002"
     },
     "ninjaStealthHint": {
         "0": "Click to stealth or unstealth, and will get a kill penalty after unstealthing.",

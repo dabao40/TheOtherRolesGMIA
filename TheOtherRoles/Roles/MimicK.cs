@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -18,6 +19,7 @@ namespace TheOtherRoles.Roles
         public static List<Arrow> arrows = [];
         public static float updateTimer = 0f;
         public static float arrowUpdateInterval = 0.5f;
+        public static float specialCooldown = 20f;
 
         public static AchievementToken<int> acTokenChallenge;
 
@@ -40,6 +42,12 @@ namespace TheOtherRoles.Roles
         {
             if (this.player == player)
                 MimicA.resetMorph();
+        }
+
+        public override void OnMeetingEnd(PlayerControl exiled = null)
+        {
+            if (PlayerControl.LocalPlayer == player && MimicA.isAlive())
+                PlayerControl.LocalPlayer.SetKillTimerUnchecked(specialCooldown);
         }
 
         public override void OnDeath(PlayerControl killer = null)
@@ -83,7 +91,11 @@ namespace TheOtherRoles.Roles
                     player.setLook(target.Data.PlayerName, target.Data.DefaultOutfit.ColorId, target.Data.DefaultOutfit.HatId, target.Data.DefaultOutfit.VisorId, target.Data.DefaultOutfit.SkinId, target.Data.DefaultOutfit.PetId);
                 victim = target;
 
-                if (PlayerControl.LocalPlayer == player) acTokenChallenge.Value++;
+                if (PlayerControl.LocalPlayer == player)
+                {
+                    acTokenChallenge.Value++;
+                    if (MimicA.isAlive()) PlayerControl.LocalPlayer.SetKillTimerUnchecked(specialCooldown);
+                }
 
                 if (PlayerControl.LocalPlayer.isRole(RoleId.MimicA) && !PlayerControl.LocalPlayer.Data.IsDead)
                     Helpers.showFlash(new Color(42f / 255f, 187f / 255f, 245f / 255f), message: ModTranslation.getString("mimicAInfo"));
@@ -178,6 +190,7 @@ namespace TheOtherRoles.Roles
             ifOneDiesBothDie = CustomOptionHolder.mimicIfOneDiesBothDie.getBool();
             hasOneVote = CustomOptionHolder.mimicHasOneVote.getBool();
             countAsOne = CustomOptionHolder.mimicCountAsOne.getBool();
+            specialCooldown = CustomOptionHolder.mimicSpecialCooldown.getFloat();
             acTokenChallenge = null;
             players = [];
         }

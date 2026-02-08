@@ -110,7 +110,8 @@ namespace TheOtherRoles.Patches {
             bool canUse;
             bool couldUse;
             __instance.CanUse(PlayerControl.LocalPlayer.Data, out canUse, out couldUse);
-            bool canMoveInVents = !PlayerControl.LocalPlayer.isRole(RoleId.Spy) && !PlayerControl.LocalPlayer.isRole(RoleId.Jester) && !Madmate.madmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId) && !CreatedMadmate.createdMadmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId); //&& !Trapper.playersOnMap.Contains(PlayerControl.LocalPlayer)
+            bool canMoveInVents = !PlayerControl.LocalPlayer.isRole(RoleId.Spy) && !PlayerControl.LocalPlayer.isRole(RoleId.Jester) && !(PlayerControl.LocalPlayer.isRole(RoleId.TaskMaster) && !TaskMaster.isTaskComplete) &&
+                !Madmate.madmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId) && !CreatedMadmate.createdMadmate.Any(x => x?.PlayerId == PlayerControl.LocalPlayer.PlayerId); //&& !Trapper.playersOnMap.Contains(PlayerControl.LocalPlayer)
             if (PlayerControl.LocalPlayer.isRole(RoleId.Engineer)) canMoveInVents = true;
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
