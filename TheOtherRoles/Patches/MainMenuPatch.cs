@@ -160,11 +160,11 @@ namespace TheOtherRoles.Modules {
                 modScreen.SetActive(true);
                 __instance.screenTint.enabled = true;
             }));
-            modButton.transform.FindChild("FontPlacer").GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("GMIA");
+            modButton.transform.FindChild("FontPlacer").GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("mainMenuGMIATitle");
 
             modScreen = Object.Instantiate(__instance.accountButtons, __instance.accountButtons.transform.parent);
             modScreen.name = "modScreen";
-            modScreen.transform.GetChild(0).GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("The Other Roles GMIA");
+            modScreen.transform.GetChild(0).GetChild(0).GetComponent<TextTranslatorTMP>().SetModText("GMIA");
             __instance.mainButtons.Add(modButton);
 
             Object.Destroy(modScreen.transform.GetChild(4).gameObject);
@@ -187,17 +187,17 @@ namespace TheOtherRoles.Modules {
 
                 index++;
             }
-            SetUpButton(ModTranslation.getString("modAbout"), () => {
+            SetUpButton("modAbout", () => {
                 __instance.ResetScreen();
                 if (!aboutScreen) createAboutScreen();
                 aboutScreen?.SetActive(true);
                 __instance.screenTint.enabled = true;
             });
-            SetUpButton(ModTranslation.getString("modHowToPlay"), () =>
+            SetUpButton("modHowToPlay", () =>
             {
                 PlayManager.Open(__instance);
             });
-            SetUpButton(ModTranslation.getString("modAchievements"), () => {
+            SetUpButton("modAchievements", () => {
                 AchievementViewer.Open(__instance);
             });
 

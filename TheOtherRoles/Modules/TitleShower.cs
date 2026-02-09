@@ -44,7 +44,7 @@ namespace TheOtherRoles.Modules
             var button = collider.gameObject.SetUpButton(false);
             button.OnMouseOver.AddListener((Action)(() =>
             {
-                if (achievement != null) TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(false, true, false, true));
+                if (achievement != null) TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(false, true, false, true, true));
                 else if (AmOwner) TORGUIManager.Instance.SetHelpContext(button, TORGUIContextEngine.API.LocalizedText(GUIAlignment.Left,
                     new TextAttributes(TORGUIContextEngine.API.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) }, "achievementUnselectedDetail"));
                 else return;

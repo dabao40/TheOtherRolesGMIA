@@ -359,8 +359,12 @@ namespace TheOtherRoles.Modules
         {
             if (Category != null) yield return Category?.role?.name ?? "";
             yield return ModTranslation.getString(GoalTranslationKey);
-            yield return ModTranslation.getString(CondTranslationKey);
-            if (IsCleared) yield return ModTranslation.getString(TranslationKey);
+            yield return ModTranslation.getString(CondTranslationKey, tryFind: true) ?? "";
+            if (IsCleared)
+            {
+                yield return ModTranslation.getString(TranslationKey);
+                yield return ModTranslation.getString(FlavorTranslationKey, tryFind: true) ?? "";
+            }
         }
 
         public enum ClearState
@@ -396,6 +400,7 @@ namespace TheOtherRoles.Modules
         public string TranslationKey => TranslateKeyInfo + "AchievementTitle";
         public string GoalTranslationKey => TranslateKeyInfo + "AchievementGoal";
         public string CondTranslationKey => TranslateKeyInfo + "AchievementCond";
+        public string FlavorTranslationKey => TranslateKeyInfo + "AchievementFlavor";
 
         public TextComponent GetHeaderComponent()
         {
@@ -418,7 +423,7 @@ namespace TheOtherRoles.Modules
                 return null;
         }
 
-        public GUIContext GetOverlayContext(bool hiddenNotClearedAchievement = true, bool showCleared = false, bool showTitleInfo = false, bool showTorophy = false)
+        public GUIContext GetOverlayContext(bool hiddenNotClearedAchievement = true, bool showCleared = false, bool showTitleInfo = false, bool showTorophy = false, bool showFlavor = false)
         {
             var gui = TORGUIContextEngine.API;
 
@@ -447,6 +452,16 @@ namespace TheOtherRoles.Modules
 
             list.Add(new HorizontalContextsHolder(GUIAlignment.Left, titleList));
             list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetDetailComponent()));
+
+            if (showFlavor)
+            {
+                var flavor = GetFlavorComponent();
+                if (flavor != null)
+                {
+                    list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.12f)));
+                    list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, flavor) { PostBuilder = text => text.outlineColor = Color.clear });
+                }
+            }
 
             if (showTitleInfo && IsCleared)
             {
@@ -477,8 +492,8 @@ namespace TheOtherRoles.Modules
             list.Add(new LazyTextComponent(() =>
             {
                 StringBuilder builder = new();
-                var cond = ModTranslation.getString(CondTranslationKey);
-                if (cond.Length > 0)
+                var cond = ModTranslation.getString(CondTranslationKey, tryFind: true);
+                if (cond != null && cond.Length > 0)
                 {
                     builder.Append("<size=75%><br><br>");
                     builder.Append(ModTranslation.getString("achievementCond"));
@@ -493,6 +508,13 @@ namespace TheOtherRoles.Modules
             }));
 
             return new CombinedTextComponent(list.ToArray());
+        }
+
+        TextComponent GetFlavorComponent()
+        {
+            var text = ModTranslation.getString(FlavorTranslationKey, tryFind: true);
+            if (text == null) return null;
+            return new RawTextComponent($"<color=#e7e5ca><size=78%><i>{text}</i></size></color>");
         }
 
         static public void RegisterAchievement(Achievement achievement, string id)
@@ -553,7 +575,7 @@ namespace TheOtherRoles.Modules
                 collider.isTrigger = true;
                 collider.size = new Vector2(2.6f, 0.55f);
                 var button = billboard.SetUpButton();
-                button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(showTitleInfo: true))));
+                button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(true, false, true, false, true))));
                 button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                 button.OnClick.AddListener((Action)(() => {
                     SetOrToggleTitle(achievement);

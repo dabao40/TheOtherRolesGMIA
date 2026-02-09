@@ -663,6 +663,10 @@
         "13": "\u5728Discord\u4e0a\u52a0\u5165\u6211\u4eec",
         "14": "\u5728Discord\u4e0a\u52a0\u5165\u6211\u5011"
     },
+    "mainMenuGMIATitle": {
+        "0": "GMIA",
+        "13": "GMIA"
+    },
     "howToPlayCrewmate": {
         "0": "<color=#8CFFFFFF>Crewmate</color>\nAs a Crewmate, your objective goal is to complete all tasks and exile the <color=#FF1919FF>Impostors</color>.\nYou might also use your special abilities to discover all hidden <color=#4C544EFF>Neutrals</color>.\nFor some individuals, your power is hidden until a certain amount of tasks have been completed.\nUse your abilities wisely and uncover the evil powers that are among you.",
         "11": "<color=#8CFFFFFF>\u30af\u30eb\u30fc\u30e1\u30a4\u30c8</color>\n<color=#FFD700>\u52dd\u5229\u6761\u4ef6:</color>\u3059\u3079\u3066\u306e\u30bf\u30b9\u30af\u3092\u7d42\u308f\u3089\u305b\u308b\u304b<color=#FF1919FF>\u4eba\u5916</color>\u3092\u5168\u54e1\u3053\u306e\u8239\u304b\u3089\u8ffd\u653e\u3059\u308b\u3053\u3068\n\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u3067\u3042\u308b\u3042\u306a\u305f\u306e\u76ee\u7684\u306f\u3059\u3079\u3066\u306e<color=#FF1919FF>\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc</color>\u3092\u8ffd\u653e\u3059\u308b\u3053\u3068\u3002\n\u307e\u305f\u3001\u80fd\u529b\u3092\u4f7f\u3044\u6f5c\u3093\u3067\u3044\u308b<color=#4C544EFF>\u30cb\u30e5\u30fc\u30c8\u30e9\u30eb</color>\u3092\u5168\u54e1\u898b\u3064\u3051\u51fa\u3059\u3053\u3068\u3082\u3067\u304d\u308b\n\u30ed\u30fc\u30eb\u306b\u3088\u3063\u3066\u306f\u30bf\u30b9\u30af\u3092\u4e00\u5b9a\u6570\u5b8c\u4e86\u3055\u305b\u308b\u307e\u3067\u80fd\u529b\u304c\u4f7f\u3048\u306a\u3044\u3002\n\u3055\u3042\u3001\u541b\u306e\u529b\u3092\u4f7f\u3063\u3066\u3053\u306e\u8239\u306b\u6f5c\u3093\u3067\u3044\u308b<color=#FF1919FF>\u4eba\u5916</color>\u3092\u5168\u54e1\u8ffd\u653e\u3057\u3088\u3046",
@@ -8833,6 +8837,10 @@
         "13": "\u4f1a\u8bae\u6a21\u62df\u5668",
         "14": "\u6703\u8b70\u6a21\u64ec\u5668"
     },
+    "mayorchallengeAchievementFlavor": {
+        "0": "\"The city awaited the Mayor's decree\"",
+        "13": "\"\u5e02\u957f\u62e5\u6709\u81f3\u9ad8\u65e0\u4e0a\u7684\u6743\u5229\""
+    },
     "mayorchallengeAchievementCond": {
         "0": "The Opponent Must Be An Evil Player Who Is Not The Jester",
         "11": "\u8ffd\u653e\u3059\u308b\u306e\u306f\u30b8\u30a7\u30b9\u30bf\u30fc\u4ee5\u5916\u306e\u4eba\u5916\u3067\u3042\u308b\u3053\u3068",
@@ -8850,12 +8858,6 @@
         "11": "\u6700\u6050\u6307\u5c0e\u8005",
         "13": "\u5f3a\u5927\u7684\u9886\u5bfc\u8005",
         "14": "\u5f3a\u5927\u7684\u9818\u5c0e\u8005"
-    },
-    "portalmakercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "portalmakercommon1AchievementGoal": {
         "0": "Activate A Portal",
@@ -8887,12 +8889,6 @@
         "13": "\u98ce\u4e00\u6837\u7684\u7537\u4eba",
         "14": "\u98a8\u4e00\u6a23\u7684\u7537\u4eba"
     },
-    "portalmakerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "portalmakerchallengeAchievementGoal": {
         "0": "Have 3 Players Use The Portal Before The Meeting",
         "11": "\u4f1a\u8b70\u3092\u631f\u307e\u305a3\u4eba\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u306b\u30dd\u30fc\u30bf\u30eb\u3092\u4f7f\u3063\u3066\u3082\u3089\u3046\u3002",
@@ -8904,12 +8900,6 @@
         "11": "\u904b\u9001\u696d\u8005",
         "13": "\u771f\u6b63\u7684\u4ea4\u901a\u5de5\u5177",
         "14": "\u771f\u6b63\u7684\u4ea4\u901a\u5de5\u5177"
-    },
-    "engineercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "engineercommon1AchievementGoal": {
         "0": "Fix A Sabotage From Anywhere On The Map",
@@ -8923,11 +8913,9 @@
         "13": "\u7ef4\u4fee\u6210\u529f",
         "14": "\u5b8c\u6210\u4fee\u5fa9\u7834\u58de"
     },
-    "engineeranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "engineeranother1AchievementFlavor": {
+        "0": "\"Even the most harmless...\"",
+        "13": "\"\u53ef\u662f\u6211\u771f\u7684\u662f\u65e0\u8f9c\u7684...\"\u2014\u2014\u5728\u7ba1\u9053\u4e2d\u7684\u5de5\u7a0b\u5e08"
     },
     "engineeranother1AchievementGoal": {
         "0": "Get Killed While In The Vent",
@@ -8941,12 +8929,6 @@
         "13": "\u6211\u6ca1\u5728\u5077\u542c\uff01",
         "14": "\u6211\u6c92\u5728\u5077\u807d\uff01"
     },
-    "sheriffcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sheriffcommon1AchievementGoal": {
         "0": "Kill An Evil Player",
         "11": "\u4eba\u5916\u3092\u30ad\u30eb\u3059\u308b\u3002",
@@ -8959,12 +8941,6 @@
         "13": "\u6b63\u4e49\u7ec8\u5c06\u6218\u80dc\u90aa\u6076\uff01",
         "14": "\u6b63\u7fa9\u7d42\u5c07\u6253\u6557\u90aa\u60e1\uff01"
     },
-    "sheriffanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sheriffanother1AchievementGoal": {
         "0": "Kill A Crewmate And Suicide",
         "11": "\u30af\u30eb\u30fc\u3092\u30ad\u30eb\u3057\u3001\u81ea\u7206\u3059\u308b\u3002",
@@ -8976,6 +8952,10 @@
         "11": "\u3084\u3089\u304b\u3057",
         "13": "\u54ce\u5440\uff01\u4f60\u8fd9\u8b66\u957f\u600e\u4e48\u5f53\u7684\uff1f",
         "14": "\u8b66\u9577\u6574\u4e86\u500b\u597d\u6d3b\uff01"
+    },
+    "sheriffchallengeAchievementFlavor": {
+        "0": "\"To kill all evil is what makes the town peaceful\"",
+        "13": "\"\u9a6c\u4e0d\u505c\u8e44, \u4e0b\u4e00\u573a\u6218\u6597\u7acb\u523b\u5f00\u59cb\"\u2014\u2014\u4e3a\u4eba\u6c11\u670d\u52a1\u7684\u8b66\u957f"
     },
     "sheriffchallengeAchievementCond": {
         "0": "Madmate Excluded",
@@ -8995,12 +8975,6 @@
         "13": "\u6b63\u4e49\u6267\u884c\uff01",
         "14": "\u53ef\u771f\u662f\u500b\u6b63\u7fa9\u7684\u4eba\uff01"
     },
-    "deputycommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "deputycommon1AchievementGoal": {
         "0": "Handcuff An Evil Player",
         "11": "\u4eba\u5916\u306b\u624b\u9320\u3092\u304b\u3051\u308b\u3002",
@@ -9012,12 +8986,6 @@
         "11": "\u902e\u6355",
         "13": "\u4ec0\u4e48\u6280\u80fd\uff1f\u901a\u901a\u6ca1\u6709\uff01",
         "14": "\u8d85\u80fd\u529b\uff1f\u7d55\u5c0d\u6c92\u6709\uff01"
-    },
-    "deputyanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "deputyanother1AchievementGoal": {
         "0": "Get Promoted To Sheriff",
@@ -9049,12 +9017,6 @@
         "13": "\u4f60\u7684\u804c\u4e1a\u662f\u6211\u7684\u4e86\uff01",
         "14": "\u4f60\u7684\u8077\u696d\u662f\u6211\u7684\u4e86\uff01"
     },
-    "niceShifterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "niceShifterchallengeAchievementGoal": {
         "0": "Fail To Shift And Let Your Shift Target Be Exiled",
         "11": "\u4ea4\u63db\u306b\u5931\u6557\u3057\u3001\u4ea4\u63db\u5148\u304c\u8ffd\u653e\u3055\u308c\u308b\u3002",
@@ -9066,12 +9028,6 @@
         "11": "\u79c1\u306e\u304a\u304b\u3052",
         "13": "\u6211\u505a\u51fa\u4e86\u5de8\u5927\u8d21\u732e",
         "14": "\u6211\u505a\u51fa\u4e86\u5de8\u5927\u8ca2\u737b"
-    },
-    "baitcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "baitcommon1AchievementGoal": {
         "0": "Trigger A Bait Report",
@@ -9089,19 +9045,9 @@
         "0": "Use The Emit Ability",
         "13": "\u4f7f\u7528\u4e00\u6b21\u5e72\u6270\u6280\u80fd"
     },
-    "baitcommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
-    },
     "baitcommon2AchievementTitle": {
         "0": "What's Wrong With My Cooldown",
         "13": "\u91cd\u7f6e\u51b7\u5374"
-    },
-    "baitchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "baitchallengeAchievementGoal": {
         "0": "Exile Your Reporter",
@@ -9115,9 +9061,9 @@
         "13": "\u8d70\u4f60\uff01",
         "14": "\u8d70\u4f60\uff01"
     },
-    "baitchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
+    "baitchallenge2AchievementFlavor": {
+        "0": "\"I can't make a single kill\" - from an Impostor",
+        "13": "\"\u6211\u6839\u672c\u6ca1\u529e\u6cd5\u51fb\u6740\"\u2014\u2014\u4e00\u4e2a\u533f\u540d\u7684\u5185\u9b3c"
     },
     "baitchallenge2AchievementGoal": {
         "0": "Use The Ability For At Least 3 Times",
@@ -9127,10 +9073,9 @@
         "0": "Too Annoying",
         "13": "\u592a\u70e6\u4eba\u4e86\u5427!"
     },
-    "lightercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "lightercommon1AchievementFlavor": {
+        "0": "\"Existence itself implies its own justification\"",
+        "13": "\"\u867d\u4eab\u5929\u547d\u4e4b\u5e74, \u7ec8\u65e0\u5efa\u6811\u3002\""
     },
     "lightercommon1AchievementGoal": {
         "0": "Survive The Game",
@@ -9142,10 +9087,6 @@
         "13": "\u6211\u662f\u6765\u5e72\u4ec0\u4e48\u7684",
         "14": "\u6211\u662f\u4f86\u5e79\u4ec0\u9ebd\u7684"
     },
-    "lighterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
-    },
     "lighterchallengeAchievementGoal": {
         "0": "Use The Ability For At Least 10 Times",
         "13": "\u81f3\u5c11\u4f7f\u752810\u6b21\u70b9\u706f\u6280\u80fd"
@@ -9154,11 +9095,9 @@
         "0": "Lit The Light",
         "13": "\u6240\u8c13\u6267\u706f\u4eba..."
     },
-    "detectivecommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "detectivecommon1AchievementFlavor": {
+        "0": "\"And thus I caught an Impostor\" - from an intelligent Detective",
+        "13": "\"\u534e\u751f\uff0c\u4f60\u53d1\u73b0\u4e86\u76f2\u70b9\uff01\""
     },
     "detectivecommon1AchievementGoal": {
         "0": "Report A Dead Body And Reveal The Killer's Name",
@@ -9171,10 +9110,6 @@
         "11": "\u3057\u3066\u3084\u3063\u305f\u308a",
         "13": "\u6293\u4f4f\u4f60\u4e86\uff01",
         "14": "\u6293\u4f4f\u4f60\u4e86\uff01"
-    },
-    "detectiveanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
     },
     "detectiveanother1AchievementGoal": {
         "0": "Use The Track Ability On A Dead Body",
@@ -9201,12 +9136,6 @@
         "11": "\u540d\u63a2\u5075",
         "13": "\u4e00\u4e2a\u771f\u6b63\u7684\u4fa6\u63a2\uff01",
         "14": "\u4e00\u500b\u771f\u6b63\u7684\u5075\u63a2\uff01"
-    },
-    "timeMasterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "timeMasterchallengeAchievementGoal": {
         "0": "Trigger A Time Rewind",
@@ -9238,12 +9167,6 @@
         "13": "\u4fdd\u62a4\u4ed6\u4eba\uff01",
         "14": "\u4fdd\u8b77\u4ed6\u4eba\uff01"
     },
-    "medicchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "medicchallengeAchievementGoal": {
         "0": "Protect Someone And Exile The Player Attempting To Kill",
         "11": "\u30b7\u30fc\u30eb\u30c9\u3092\u4ed8\u4e0e\u3057\u305f\u30d7\u30ec\u30a4\u30e4\u30fc\u3092\u30ad\u30eb\u3057\u3088\u3046\u3068\u3057\u305f\u4eba\u3092\u8ffd\u653e\u3059\u308b\u3002",
@@ -9256,11 +9179,6 @@
         "13": "\u8fd9\u662f\u6211\u7684\u4e49\u52a1\uff01",
         "14": "\u9019\u662f\u6211\u7684\u7fa9\u52d9\uff01"
     },
-    "mediccommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "mediccommon2AchievementGoal": {
         "0": "View The Portable Vitals",
         "13": "\u67e5\u770b\u79fb\u52a8\u5fc3\u7535\u56fe",
@@ -9271,10 +9189,9 @@
         "13": "\u968f\u65f6\u5e2e\u52a9",
         "14": "\u96a8\u6642\u5e6b\u52a9"
     },
-    "medicanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "medicanother1AchievementFlavor": {
+        "0": "\"Which one has nothing to do\"",
+        "13": "\"\u65e0\u4f7f\u8d2b\u6c11\u4e3a\u5eb8\u533b\u6240\u8bef\uff0c\u592d\u960f\u5176\u751f\""
     },
     "medicanother1AchievementGoal": {
         "0": "Witness A Death On The Vitals",
@@ -9285,12 +9202,6 @@
         "0": "And Thus They Die...",
         "13": "\u51b7\u6f20\u7684\u533b\u62a4\u4eba\u5458",
         "14": "\u51b7\u6f20\u7684\u91ab\u8b77\u4eba\u54e1"
-    },
-    "niceSwappercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "niceSwappercommon1AchievementGoal": {
         "0": "Gain A Swap Charge",
@@ -9304,12 +9215,6 @@
         "13": "\u66f4\u591a\u7684\u6362\u7968\u673a\u4f1a\uff01",
         "14": "\u66f4\u591a\u7684\u63db\u7968\u6a5f\u6703\uff01"
     },
-    "niceSwapperchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "niceSwapperchallengeAchievementGoal": {
         "0": "Swap Votes And Exile An Impostor",
         "11": "\u6295\u7968\u3092\u4ea4\u63db\u3057\u3001\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3092\u8ffd\u653e\u3055\u305b\u308b\u3002",
@@ -9321,12 +9226,6 @@
         "11": "\u771f\u3092\u898b\u6975\u3081\u3057\u8005",
         "13": "\u6b63\u786e\u7684\u6362\u7968\u9009\u62e9\uff01",
         "14": "\u6b63\u78ba\u7684\u63db\u7968\u9078\u64c7\uff01"
-    },
-    "niceGuessercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "niceGuessercommon1AchievementGoal": {
         "0": "Guess A Player",
@@ -9340,12 +9239,6 @@
         "13": "\u731c\u6d4b\u8005\uff01",
         "14": "\u731c\u6e2c\u8005\uff01"
     },
-    "niceGuesserchallenge1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "niceGuesserchallenge1AchievementGoal": {
         "0": "Guess 3 Players",
         "11": "\u30ca\u30a4\u30b9\u30b2\u30c3\u30b5\u30fc\u3067\u8a66\u5408\u4e2d\u306b3\u4eba\u3092\u63a8\u6bba\u3059\u308b\u3002",
@@ -9357,12 +9250,6 @@
         "11": "\u63a8\u6e2c\u306e\u9054\u4eba",
         "13": "\u8d4c\u795e\u9644\u4f53",
         "14": "\u8ced\u795e\u9644\u9ad4"
-    },
-    "niceGuesserchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "niceGuesserchallenge2AchievementGoal": {
         "0": "Guess The Evil Guesser",
@@ -9376,12 +9263,6 @@
         "13": "\u72d9\u51fb\u624b\u7684\u5bf9\u51b3",
         "14": "\u72d9\u64ca\u624b\u7684\u5c0d\u6c7a"
     },
-    "seercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "seercommon1AchievementGoal": {
         "0": "Receive A Death Flash",
         "11": "\u30ad\u30eb\u30d5\u30e9\u30c3\u30b7\u30e5\u3092\u53d7\u3051\u53d6\u308b\u3002",
@@ -9393,6 +9274,10 @@
         "11": "\u6b7b\u306e\u611f\u77e5",
         "13": "\u6b7b\u4ea1\u7684\u73a9\u5bb6",
         "14": "\u6b7b\u4ea1\u7684\u73a9\u5bb6"
+    },
+    "seeranother1AchievementFlavor": {
+        "0": "\"It seems that an Impostor is near\" - from a confused Seer",
+        "13": "\" \u7a81\u906d\u6a2a\u6b7b\u5374\u65e0\u6728\u6536\u5c38\u3002\""
     },
     "seeranother1AchievementCond": {
         "0": "This Meeting Must Be Called Within 20 Seconds Of The Last Meeting",
@@ -9406,12 +9291,6 @@
         "0": "That Doesn't Seem Right",
         "13": "\u8fd9\u4e0d\u5bf9\u5427"
     },
-    "seerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "seerchallengeAchievementGoal": {
         "0": "Receive 5 Death Flashes Before The Meeting",
         "11": "\u4f1a\u8b70\u3092\u631f\u307e\u305a\u306b5\u56de\u306e\u30ad\u30eb\u30d5\u30e9\u30c3\u30b7\u30e5\u3092\u53d7\u3051\u53d6\u308b\u3002",
@@ -9423,12 +9302,6 @@
         "11": "\u5927\u60e8\u4e8b",
         "13": "\u8fd9\u4e5f\u592a\u591a\u4e86",
         "14": "\u9019\u4e5f\u592a\u591a\u4e86"
-    },
-    "hackercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "hackercommon1AchievementGoal": {
         "0": "Access Your Portable Admin Table",
@@ -9442,12 +9315,6 @@
         "13": "\u8ba9\u6211\u770b\u770b\uff01",
         "14": "\u8b93\u6211\u770b\u770b\uff01"
     },
-    "hackercommon2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "hackercommon2AchievementGoal": {
         "0": "Access Your Portable Vitals",
         "11": "\u30dd\u30fc\u30bf\u30d6\u30eb\u30d0\u30a4\u30bf\u30eb\u3092\u898b\u308b\u3002",
@@ -9459,12 +9326,6 @@
         "11": "\u8cb4\u65b9\u3092\u898b\u5b88\u3063\u3066\u3044\u308b",
         "13": "\u751f\u547d\u7684\u6c14\u606f",
         "14": "\u751f\u547d\u7684\u6c23\u606f"
-    },
-    "trackercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "trackercommon1AchievementGoal": {
         "0": "Track An Impostor",
@@ -9478,9 +9339,9 @@
         "13": "\u7cbe\u51c6\u8ffd\u8e2a\u6253\u51fb",
         "14": "\u7cbe\u6e96\u8ffd\u8e64\u6253\u64ca"
     },
-    "trackerchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
+    "trackerchallenge2AchievementFlavor": {
+        "0": "\"Kill evil with a unregretting bravery\"",
+        "13": "\"\u773c\u524d\u591a\u5c11\u4e0d\u5e73\u4e8b\uff0c\u613f\u4e0e\u5c06\u519b\u501f\u5b9d\u5200\""
     },
     "trackerchallenge2AchievementGoal": {
         "0": "Kill A Player With Your Special Kill",
@@ -9489,12 +9350,6 @@
     "trackerchallenge2AchievementTitle": {
         "0": "Do For Justice!",
         "13": "\u4e3a\u4e86\u6b63\u4e49!"
-    },
-    "trackerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "trackerchallengeAchievementGoal": {
         "0": "Sense The Tracked Player Venting",
@@ -9526,11 +9381,9 @@
         "13": "\u6211\u5f00\u5929\u773c\u4e86",
         "14": "\u6211\u958b\u5929\u773c\u4e86"
     },
-    "spychallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "spychallengeAchievementFlavor": {
+        "0": "\"He listened and overheard everything...\" - from an Impostor afterwards",
+        "13": "\"\u6211\u4ee5\u524d\u6ca1\u5f97\u9009\u62e9\uff0c\u73b0\u5728\u6211\u60f3\u505a\u4e00\u4e2a\u597d\u4eba\u3002\""
     },
     "spychallengeAchievementGoal": {
         "0": "Confuse The Impostors And Witness A Murder",
@@ -9544,12 +9397,6 @@
         "13": "\u5bf9\u4e0d\u8d77\uff0c\u4f46\u6211\u662f\u4e00\u4e2a\u597d\u4eba",
         "14": "\u5c0d\u4e0d\u8d77\uff0c\u4f46\u6211\u662f\u4e00\u500b\u597d\u4eba"
     },
-    "spyanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "spyanother1AchievementGoal": {
         "0": "Get Killed By An Impostor",
         "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306b\u30ad\u30eb\u3055\u308c\u308b\u3002",
@@ -9562,12 +9409,6 @@
         "13": "\u6211\u65e9\u5c31\u77e5\u9053\u4f60\u662f\u5367\u5e95\u4e86",
         "14": "\u6211\u65e9\u5c31\u77e5\u9053\u4f60\u662f\u81e5\u5e95\u4e86"
     },
-    "securityGuardcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "securityGuardcommon1AchievementGoal": {
         "0": "Seal A Vent And Place A Camera",
         "11": "\u30d9\u30f3\u30c8\u3092\u5c01\u9396\u3057\u3001\u30ab\u30e1\u30e9\u3092\u8a2d\u7f6e\u3059\u308b\u3002",
@@ -9579,10 +9420,6 @@
         "11": "\u30ea\u30d5\u30a9\u30fc\u30e0\u306f\u304a\u4efb\u305b\u3042\u308c\uff01",
         "13": "\u4f60\u8ba9\u5de5\u7a0b\u5e08\u600e\u4e48\u6d3b\u554a",
         "14": "\u4f60\u8b93\u5de5\u7a0b\u5e2b\u600e\u9ebd\u6d3b\u554a"
-    },
-    "securityGuardanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]"
     },
     "securityGuardanother1AchievementGoal": {
         "0": "Flush All The Players Out Of The Vent",
@@ -9604,11 +9441,9 @@
         "0": "Didn't Mean To Bother You",
         "13": "\u4e0d\u5c0f\u5fc3\u6253\u6270\u4e86"
     },
-    "securityGuardchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "securityGuardchallengeFlavor": {
+        "0": "\"Watch out for the invisible eyes above you\"",
+        "13": "\"\u4e3b\u65e0\u5904\u4e0d\u5728\""
     },
     "securityGuardchallengeAchievementGoal": {
         "0": "Use Your Portable Security Camera For 5 Times",
@@ -9622,12 +9457,6 @@
         "13": "\u4f60\u9003\u4e0d\u6389\u7684\uff01",
         "14": "\u4f60\u9003\u4e0d\u6389\u7684\uff01"
     },
-    "mediumcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "mediumcommon1AchievementGoal": {
         "0": "Question 3 Souls",
         "11": "3\u3064\u306e\u970a\u9b42\u306b\u8cea\u554f\u3059\u308b\u3002",
@@ -9640,11 +9469,9 @@
         "13": "\u9634\u9633\u5927\u5e08",
         "14": "\u9670\u967d\u5927\u5e2b"
     },
-    "mediumchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "mediumchallengeAchievementFlavor": {
+        "0": "\"A chill brushed his neck as a name formed in his mind\"",
+        "13": "\"\u4e34\u909b\u9053\u58eb\u9e3f\u90fd\u5ba2\uff0c\u80fd\u4ee5\u7cbe\u8bda\u81f4\u9b42\u9b44\u3002\""
     },
     "mediumchallengeAchievementGoal": {
         "0": "Gain Extra Information And Vote Out The Soul's Killer",
@@ -9658,12 +9485,6 @@
         "13": "\u7075\u9b42\u7684\u6069\u4eba",
         "14": "\u9748\u9b42\u7684\u6069\u4eba"
     },
-    "fortuneTellerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "fortuneTellerchallengeAchievementGoal": {
         "0": "Divine An Impostor And Vote Your Target Out",
         "11": "\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u3092\u5360\u3044\u3001\u8ffd\u653e\u3059\u308b\u3002",
@@ -9674,12 +9495,6 @@
         "0": "I Know Your Role",
         "13": "\u88e4\u8869\u5b50\u90fd\u7ed9\u4f60\u770b\u900f\u4e86",
         "14": "\u8932\u8869\u5b50\u90fd\u7d66\u4f60\u770b\u900f\u4e86"
-    },
-    "fortuneTelleranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "fortuneTelleranother1AchievementGoal": {
         "0": "Divine And Kill The Fox",
@@ -9693,12 +9508,6 @@
         "13": "\u771f\u6b63\u7684MAN\uff01",
         "14": "\u771f\u6b63\u7684MAN\uff01"
     },
-    "sprintercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sprintercommon1AchievementGoal": {
         "0": "Activate Your Sprinting Skill",
         "11": "\u30b9\u30d7\u30ea\u30f3\u30c8\u3092\u4f7f\u7528\u3059\u308b\u3002",
@@ -9710,6 +9519,10 @@
         "11": "\u8239\u4e0a\u306e\u75be\u8d70",
         "13": "\u4e00\u98de\u51b2\u5929",
         "14": "\u4e00\u98db\u6c96\u5929"
+    },
+    "sprintercommon2AchievementFlavor": {
+        "0": "\"Speeding is prohibited\"",
+        "13": "\"\u671d\u53d1\u767d\u5e1d\uff0c\u66ae\u81f3\u6c5f\u9675\""
     },
     "sprintercommon2AchievementCond": {
         "0": "The Duration Of Your Ability Must Be Less Than 15 Seconds",
@@ -9729,11 +9542,9 @@
         "13": "\u5feb\u901f\u524d\u8fdb\uff01",
         "14": "\u5feb\u901f\u524d\u9032\uff01"
     },
-    "sprinterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "sprinterchallengeAchievementFlavor": {
+        "0": "\"I saw everything but kept it a secret\" - from an invisible Sprinter",
+        "13": "\"\u7f6a\u6848\u552f\u4e00\u7684\u3001\u6d3b\u7740\u7684\u9057\u7269\u3002\""
     },
     "sprinterchallengeAchievementGoal": {
         "0": "Witness A Murder While Invisible",
@@ -9747,12 +9558,6 @@
         "13": "\u65e0\u5f62\u7684\u8bc1\u4eba",
         "14": "\u7121\u5f62\u7684\u8b49\u4eba"
     },
-    "veteranchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "veteranchallengeAchievementGoal": {
         "0": "Kill A Player Using Your Alert",
         "11": "\u30a2\u30e9\u30fc\u30c8\u3067\u30ad\u30eb\u3092\u8df3\u306d\u8fd4\u3059\u3002",
@@ -9764,12 +9569,6 @@
         "11": "\u7121\u6575\u72b6\u614b",
         "13": "\u8c01\u6562\u6740\u6211\uff01",
         "14": "\u8ab0\u6562\u6bba\u6211\uff01"
-    },
-    "sherlockcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "sherlockcommon1AchievementGoal": {
         "0": "Record More Than 3 Kill Logs",
@@ -9783,12 +9582,6 @@
         "13": "\u4e00\u7247\u6df7\u4e71",
         "14": "\u4e00\u7247\u6df7\u4e82"
     },
-    "sherlockchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sherlockchallengeAchievementGoal": {
         "0": "Count More Than 4 Kill Timers",
         "11": "\u30ad\u30eb\u30bf\u30a4\u30de\u30fc\u30924\u3064\u4ee5\u4e0a\u30ab\u30a6\u30f3\u30c8\u3059\u308b\u3002",
@@ -9800,6 +9593,10 @@
         "11": "\u304d\u3087\u3046\u306f \u30b9\u30c6\u30ad\u306a\u65e5\u3060\u3002",
         "13": "\"\u5b81\u9759\"\u7684\u4e00\u5929",
         "14": "\u5be7\u975c\u7684\u4e00\u5929"
+    },
+    "niceYasunachallengeAchievementFlavor": {
+        "0": "\"A wicked match is destined to die\"",
+        "13": "\"\u81f4\u88c1\u51b3\u4e0d\u65ad\u7684\u81f3\u6b7b\u4e0d\u6e1d\u7684\u7231\u60c5\""
     },
     "niceYasunachallengeAchievementCond": {
         "0": "You Must Exile An Evil Lover",
@@ -9819,12 +9616,6 @@
         "13": "\u4e00\u5200\u4e24\u547d",
         "14": "\u4e00\u5200\u5169\u547d"
     },
-    "niceYasunaanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "niceYasunaanother1AchievementGoal": {
         "0": "Force Exile The Jester",
         "11": "\u30b8\u30a7\u30b9\u30bf\u30fc\u3092\u8ffd\u653e\u3059\u308b\u3002",
@@ -9836,12 +9627,6 @@
         "11": "\u60aa\u8db3\u63bb\u304d\u306b\u306f\u60aa\u8db3\u63bb\u304d\u3092",
         "13": "\u597d\u5fc3\u529e\u574f\u4e8b",
         "14": "\u597d\u5fc3\u8fa6\u58de\u4e8b"
-    },
-    "taskMasterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "taskMasterchallengeAchievementGoal": {
         "0": "Complete All Extra Tasks",
@@ -9855,11 +9640,9 @@
         "13": "\u4efb\u52a1\u7ecf\u7406",
         "14": "\u4efb\u52d9\u7d93\u7406"
     },
-    "taskMasteranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "taskMasteranother1AchievementFlavor": {
+        "0": "\"He died before he won\"",
+        "13": "\"\u989c\u56de\u77ed\u547d\u4f2f\u5937\u997f\uff0c\u6211\u4eca\u6240\u5f97\u4ea6\u5df2\u591a\u3002\""
     },
     "taskMasteranother1AchievementGoal": {
         "0": "Get Killed Without Completing Any Tasks",
@@ -9873,12 +9656,6 @@
         "13": "\"\u79f0\u804c\"\u7684\u8239\u5458",
         "14": "\u7a31\u8077\u7684\u8239\u54e1"
     },
-    "teleportercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "teleportercommon1AchievementGoal": {
         "0": "Use The Teleport Ability",
         "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u80fd\u529b\u3092\u4f7f\u7528\u3059\u308b\u3002",
@@ -9890,12 +9667,6 @@
         "11": "\u30c6\u30ec\u30dd\u30fc\u30c8\u30bf\u30a4\u30e0\uff01",
         "13": "\u4f20\u9001\u65f6\u95f4\u5230\uff01",
         "14": "\u50b3\u9001\u6642\u9593\u5230\uff01"
-    },
-    "teleporterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "teleporterchallengeAchievementGoal": {
         "0": "Save An Important Crewmate Using Your Teleport",
@@ -9909,12 +9680,6 @@
         "13": "\u4fdd\u6c11\u5b98",
         "14": "\u4fdd\u6c11\u5b98"
     },
-    "buskercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "buskercommon1AchievementGoal": {
         "0": "Pseudocide And Revive Successfully",
         "11": "\u507d\u88c5\u5730\u306e\u306e\u3061\u3001\u5fa9\u6d3b\u3059\u308b\u3002",
@@ -9927,12 +9692,6 @@
         "13": "\u5c55\u793a\u65f6\u95f4\u5230\uff01",
         "14": "\u5c55\u793a\u6642\u9593\u5230\uff01"
     },
-    "buskeranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "buskeranother1AchievementGoal": {
         "0": "Fail To Revive After Pseudociding",
         "11": "\u507d\u88c5\u6b7b\u306e\u306e\u3061\u3001\u5fa9\u6d3b\u306b\u5931\u6557\u3059\u308b\u3002",
@@ -9944,6 +9703,10 @@
         "11": "\u5371\u967a\u306a\u5927\u9053\u82b8",
         "13": "\u5927\u610f\u4e86\u6ca1\u6709\u95ea",
         "14": "\u5927\u610f\u4e86\u6c92\u6709\u9583"
+    },
+    "buskerchallengeAchievementFlavor": {
+        "0": "\"Only excitement keeps the pulse alive\"",
+        "13": "\"\u6709\u5fc3\u6740\u8d3c\uff0c\u65e0\u529b\u56de\u5929\u3002\""
     },
     "buskerchallengeAchievementCond": {
         "0": "Exclude Meetings Held By Yourself",
@@ -9963,12 +9726,6 @@
         "13": "\u5dee\u4e00\u70b9\u5c31\u53bb\u4e16\u4e86\uff01",
         "14": "\u5dee\u4e00\u9ede\u5c31\u53bb\u4e16\u4e86\uff01"
     },
-    "noisemakercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "noisemakercommon1AchievementGoal": {
         "0": "Make A Successful Alert",
         "11": "\u30a2\u30e9\u30fc\u30c8\u3092\u6210\u529f\u3055\u305b\u308b\u3002",
@@ -9981,11 +9738,9 @@
         "13": "\u5168\u4f53\u6ce8\u610f\uff01",
         "14": "\u5168\u9ad4\u6ce8\u610f\uff01"
     },
-    "noisemakerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "noisemakerchallengeAchievementFlavor": {
+        "0": "\"Warn others of the danger around\" - Rule number 1",
+        "13": "\"\u8001\u9aa5\u4f0f\u67a5\uff0c\u65f6\u523b\u8b66\u60d5\u3002\""
     },
     "noisemakerchallengeAchievementGoal": {
         "0": "Make 3 Successful Alerts",
@@ -9999,11 +9754,6 @@
         "13": "\u8b66\u60d5\u5427\uff0c\u8239\u5458\u4eec",
         "14": "\u8b66\u60d5\u5427\uff0c\u8239\u54e1\u5011"
     },
-    "archaeologistcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "archaeologistcommon1AchievementGoal": {
         "0": "Use The Detect Ability",
         "13": "\u4f7f\u7528\u63a2\u7d22\u6280\u80fd",
@@ -10013,11 +9763,6 @@
         "0": "\"Gold\" Detect!",
         "13": "\"\u9ec4\u91d1\"\u68c0\u6d4b!",
         "14": "\u9ec3\u91d1\u6aa2\u6e2c!"
-    },
-    "archaeologistchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "archaeologistchallengeAchievementGoal": {
         "0": "Find An Antique And Reveal Its Clue",
@@ -10029,11 +9774,6 @@
         "13": "\u8003\u53e4\u6316\u6398",
         "14": "\u8003\u53e4\u6316\u6398"
     },
-    "collatorcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "collatorcommon1AchievementGoal": {
         "0": "Compare The Roles Of 2 Players During The Meeting",
         "13": "\u5728\u4f1a\u8bae\u4e2d\u5bf9\u6bd4\u4e24\u540d\u73a9\u5bb6\u7684\u8eab\u4efd",
@@ -10044,10 +9784,9 @@
         "13": "\u57fa\u56e0\u5b66\u8005",
         "14": "\u57fa\u56e0\u5b78\u8005"
     },
-    "collatorcommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "collatorcommon2AchievementFlavor": {
+        "0": "\"The beaker shattered and the liquid began to scream\"",
+        "13": "\"\u58a8\u5c3d\u7eb8\u6b8b\u56fe\u672a\u7adf\uff0c\u5c71\u503e\u4e00\u6728\u67f1\u96be\u64ce\u3002\""
     },
     "collatorcommon2AchievementGoal": {
         "0": "Compare 2 Impostors During The Meeting",
@@ -10058,6 +9797,9 @@
         "0": "Fake Information",
         "13": "\u865a\u5047\u60c5\u62a5",
         "14": "\u865b\u5047\u60c5\u5831"
+    },
+    "collatoranother1AchievementFlavor": {
+        "0": "\"Now we have an interesting result\" - from a thoughtful Collator"
     },
     "collatoranother1AchievementCond": {
         "0": "The Results Must Be A Mismatch",
@@ -10074,11 +9816,6 @@
         "13": "\u6709\u4e00\u4e2a\u5c06\u88ab\u9a71\u9010",
         "14": "\u6709\u4e00\u500b\u8a72\u88ab\u9a45\u9010"
     },
-    "collatorchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "collatorchallengeAchievementGoal": {
         "0": "Compare At Least 3 Groups Of Players",
         "13": "\u5bf9\u6bd4\u81f3\u5c113\u7ec4\u73a9\u5bb6\u7684\u8eab\u4efd",
@@ -10088,11 +9825,6 @@
         "0": "Figure That Out!",
         "13": "\u901a\u901a\u63ea\u51fa\u6765!",
         "14": "\u901a\u901a\u63ea\u51fa\u4f86!"
-    },
-    "jailorcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "jailorcommon1AchievementGoal": {
         "0": "Jail And Execute An Evil Player",
@@ -10104,11 +9836,6 @@
         "13": "\u8fd9\u662f\u4f60\u5e94\u5f97\u7684",
         "14": "\u4f60\u6d3b\u8a72"
     },
-    "jailoranother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "jailoranother1AchievementGoal": {
         "0": "Fail To Execute The Target And Commit Suicide",
         "13": "\u5904\u51b3\u5931\u8d25\u5e76\u81ea\u6740",
@@ -10119,10 +9846,9 @@
         "13": "\u5224\u65ad\u5931\u8bef...",
         "14": "\u5224\u65b7\u5931\u8aa4.."
     },
-    "jailorchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "jailorchallengeAchievementFlavor": {
+        "0": "\"He raised his gravel, and the verdict was death itself\"",
+        "13": "\"\u529f\u540d\u7957\u5411\u9a6c\u4e0a\u53d6\uff0c\u771f\u662f\u82f1\u96c4\u4e00\u4e08\u592b\""
     },
     "jailorchallengeAchievementGoal": {
         "0": "Successfully Execute 3 Players In One Game",
@@ -10134,10 +9860,9 @@
         "13": "\u628a\u90aa\u6076\u6536\u8d70!",
         "14": "\u90aa\u60e1\u9000\u6563!"
     },
-    "mafiosochallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "\u4f60\u5fc5\u9808\u5728\u6559\u7236\u6b7b\u6642\u5b58\u6d3b"
+    "mafiosochallengeFlavor": {
+        "0": "\"His loyalty was violence and his business was final\"",
+        "13": "\"\u58eb\u8c07\u6d82\u8349\u83bd\uff0c\u5c06\u519b\u7a7a\u5c14\u4e3a\u3002\""
     },
     "mafiosochallengeAchievementGoal": {
         "0": "Skip A Meeting",
@@ -10148,12 +9873,6 @@
         "0": "For Our Own Good",
         "13": "\u4e3a\u4e86\u81ea\u5df1",
         "14": "\u52a0\u5b98\u9032\u7235\uff01"
-    },
-    "janitorchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "janitorchallengeAchievementGoal": {
         "0": "Kill 3 Players Before The Meeting",
@@ -10167,12 +9886,6 @@
         "13": "\u6beb\u65e0\u75d5\u8ff9",
         "14": "\u6beb\u7121\u75d5\u8de1"
     },
-    "morphlingcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "morphlingcommon1AchievementGoal": {
         "0": "Sample And Morph Into A Player",
         "11": "\u30b5\u30f3\u30d7\u30eb\u3092\u53d6\u5f97\u3057\u3001\u5909\u8eab\u3059\u308b\u3002",
@@ -10185,11 +9898,9 @@
         "13": "\u5f7b\u5e95\u6df7\u4e71",
         "14": "\u5fb9\u5e95\u6df7\u4e82"
     },
-    "morphlinganother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "morphlinganotherAchievementFlavor": {
+        "0": "\"No guise can elude the final fate\"",
+        "13": "\"\u9057\u6b7b\u65e0\u5168\u5c38\uff0c\u8fd8\u4e61\u529f\u540d\u5931\""
     },
     "morphlinganother1AchievementGoal": {
         "0": "Get Killed While In The Victim's Outfit",
@@ -10221,12 +9932,6 @@
         "13": "\u6df7\u6c8c\uff01",
         "14": "\u6df7\u6c8c\uff01"
     },
-    "camouflagercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "camouflagercommon1AchievementGoal": {
         "0": "Activate The Camouflage",
         "11": "\u30ab\u30e2\u30d5\u30e9\u30fc\u30b8\u30e5\u3092\u767a\u52d5\u3059\u308b\u3002",
@@ -10238,12 +9943,6 @@
         "11": "\u6f06\u9ed2\u3068\u7d14\u767d",
         "13": "\u9ed1\u4e0e\u767d",
         "14": "\u9ed1\u8207\u767d"
-    },
-    "camouflageranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "camouflageranother1AchievementGoal": {
         "0": "Get Yourself Killed While Camouflage",
@@ -10257,12 +9956,6 @@
         "13": "\u4ee5\u5176\u4eba\u4e4b\u9053\u8fd8\u6cbb\u5176\u4eba\u4e4b\u8eab",
         "14": "\u4ee5\u5176\u4eba\u4e4b\u9053\u9084\u6cbb\u5176\u4eba\u4e4b\u8eab"
     },
-    "camouflagerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "camouflagerchallengeAchievementGoal": {
         "0": "Have At Least 3 Players Killed During Camouflage",
         "11": "\u30ab\u30e2\u30d5\u30e9\u30fc\u30b8\u30e5\u4e2d\u306b3\u4eba\u306e\u30d7\u30ec\u30a4\u30e4\u30fc\u304c\u30ad\u30eb\u3055\u308c\u308b\u3002",
@@ -10274,12 +9967,6 @@
         "11": "\u5927\u6df7\u4e71",
         "13": "\u5927\u5c60\u6740",
         "14": "\u5927\u5c60\u6bba"
-    },
-    "vampirecommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "vampirecommon1AchievementGoal": {
         "0": "Bite A Player",
@@ -10293,11 +9980,9 @@
         "13": "\u6591\u9a73\u8840\u8ff9",
         "14": "\u6591\u99c1\u8840\u8de1"
     },
-    "vampirechallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "vampirechallengeAchievementFlavor": {
+        "0": "\"The only evidence was a pair of puncture wounds and a body drained of hope\"",
+        "13": "\"\u9057\u843d\u4e8e\u6050\u60e7\uff0c\u55dc\u8840\u4ea6\u6df1\u6e0a\""
     },
     "vampirechallengeAchievementGoal": {
         "0": "Report The Bitten Player's Body Within 3 Seconds After His Death",
@@ -10311,12 +9996,6 @@
         "13": "\u5b8c\u7f8e\u7684\u72af\u7f6a",
         "14": "\u5b8c\u7f8e\u7684\u72af\u7f6a"
     },
-    "erasercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "erasercommon1AchievementGoal": {
         "0": "Erase One Player's Role",
         "11": "\u8ab0\u304b\u306e\u5f79\u8077\u3092\u6d88\u53bb\u3059\u308b\u3002",
@@ -10328,12 +10007,6 @@
         "11": "\u30d7\u30ec\u30bc\u30f3\u30c8",
         "13": "\u5bf9\u4f60\u7684\u804c\u4e1a\u8bf4\u518d\u89c1",
         "14": "\u5c0d\u4f60\u7684\u8077\u696d\u8aaa\u518d\u898b"
-    },
-    "eraseranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "eraseranother1AchievementGoal": {
         "0": "Erase An Impostor's Role",
@@ -10347,10 +10020,10 @@
         "13": "\u6211\u4e0d\u662f\u6545\u610f\u7684",
         "14": "\u6211\u4e0d\u662f\u6545\u610f\u7684"
     },
-    "eraserchallengeAchievementCond": {
-        "0": "[BLANK]",
+    "eraserchallengeAchievementFlavor": {
+        "0": "\"As if you had a useful role\" - a laugh from the Eraser",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u4e8b\u4e86\u62c2\u8863\u53bb\uff0c\u6df1\u85cf\u529f\u4e0e\u540d\"",
         "14": "[BLANK]"
     },
     "eraserchallengeAchievementGoal": {
@@ -10365,12 +10038,6 @@
         "13": "\u4ece\u6709\u7528\u5230\u65e0\u7528",
         "14": "\u5f9e\u6709\u7528\u5230\u7121\u7528"
     },
-    "trickstercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "trickstercommon1AchievementGoal": {
         "0": "Have The Trickster Boxes Converted To Vents",
         "11": "\u7bb1\u3092\u6d3b\u6027\u5316\u3055\u305b\u308b\u3002",
@@ -10382,12 +10049,6 @@
         "11": "\u50d5\u3060\u3051\u306e\u7bb1",
         "13": "\u65b0\u7684\u901a\u98ce\u7ba1",
         "14": "\u65b0\u7684\u901a\u98a8\u7ba1"
-    },
-    "trickstercommon2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "trickstercommon2AchievementGoal": {
         "0": "Use Your Lights Out Ability",
@@ -10401,12 +10062,6 @@
         "13": "\u5f3a\u5236\u7184\u706f",
         "14": "\u5f37\u5236\u7184\u71c8"
     },
-    "tricksterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "tricksterchallengeAchievementGoal": {
         "0": "Have At Least 2 Players Killed During Your Lights Out",
         "11": "\u5f37\u5236\u505c\u96fb\u4e2d\u306b2\u4eba\u4ee5\u4e0a\u304c\u30ad\u30eb\u3055\u308c\u308b\u3002",
@@ -10418,12 +10073,6 @@
         "11": "\u6697\u95c7\u306e\u6697\u6bba\u8005",
         "13": "\u8d70\u5f97\u592a\u65e9\u4e86",
         "14": "\u8d70\u5f97\u592a\u65e9\u4e86"
-    },
-    "cleanercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "cleanercommon1AchievementGoal": {
         "0": "Clean A Dead Body",
@@ -10437,12 +10086,6 @@
         "13": "\u6253\u626b\u5e72\u51c0",
         "14": "\u6253\u6383\u5e79\u51c8"
     },
-    "cleanerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "cleanerchallengeAchievementGoal": {
         "0": "Clean 3 Dead Bodies",
         "11": "3\u6b7b\u4f53\u4ee5\u4e0a\u6383\u9664\u3059\u308b\u3002",
@@ -10454,12 +10097,6 @@
         "11": "\u5143\u304b\u3089\u6b7b\u4f53\u306a\u3069\u7121\u3044",
         "13": "\u518d\u65e0\u5c38\u4f53\uff01",
         "14": "\u518d\u7121\u5c4d\u9ad4\uff01"
-    },
-    "warlockcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "warlockcommon1AchievementGoal": {
         "0": "Curse And Kill A Player",
@@ -10473,12 +10110,6 @@
         "13": "\u6211\u8bc5\u5492\u4f60\uff01",
         "14": "\u6211\u8a5b\u5492\u4f60\uff01"
     },
-    "warlockanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "warlockanother1AchievementGoal": {
         "0": "Curse And Kill Yourself",
         "11": "\u81ea\u8eab\u3092\u546a\u6bba\u3059\u308b\u3002",
@@ -10491,10 +10122,10 @@
         "13": "\u5c0f\u5fc3\u70b9\u5427",
         "14": "\u5c0f\u5fc3\u9ede\u5427"
     },
-    "warlockchallengeAchievementCond": {
-        "0": "[BLANK]",
+    "warlockchallengeAchievementFlavor": {
+        "0": "\"Death is not your end, but the first page of my contract\"",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u5492\u8d77\u5e7d\u51a5\u711a\u5951\u9aa8\uff0c\u541b\u540d\u5df2\u523b\u796d\u575b\u7070\u3002\"",
         "14": "[BLANK]"
     },
     "warlockchallengeAchievementGoal": {
@@ -10509,12 +10140,6 @@
         "13": "\u6b7b\u4ea1\u7684\u8bc5\u5492",
         "14": "\u6b7b\u4ea1\u7684\u8a5b\u5492"
     },
-    "bountyHuntercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "bountyHuntercommon1AchievementGoal": {
         "0": "Kill Your Bounty",
         "11": "\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u30ad\u30eb\u3059\u308b\u3002",
@@ -10526,12 +10151,6 @@
         "11": "\u8cde\u91d1\u7372\u5f97",
         "13": "\u72e9\u730e\u65f6\u523b\uff01",
         "14": "\u72e9\u7375\u6642\u523b\uff01"
-    },
-    "bountyHunteranother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "bountyHunteranother1AchievementGoal": {
         "0": "Kill A Non-Bounty Player",
@@ -10545,12 +10164,6 @@
         "13": "\u6293\u9519\u4e86...",
         "14": "\u6293\u932f\u4e86..."
     },
-    "bountyHunterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "bountyHunterchallengeAchievementGoal": {
         "0": "Kill 3 Players Within 30 seconds",
         "11": "30\u79d2\u4ee5\u5185\u306b3\u4eba\u4ee5\u4e0a\u30ad\u30eb\u3059\u308b\u3002",
@@ -10562,12 +10175,6 @@
         "11": "\u6bba\u3057\u304c\u5168\u3066\u3002",
         "13": "\u5feb\u5200\u65a9\u4e71\u9ebb",
         "14": "\u5feb\u5200\u65ac\u4e82\u9ebb"
-    },
-    "witchcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "witchcommon1AchievementGoal": {
         "0": "Spell A Player",
@@ -10581,10 +10188,10 @@
         "13": "\u9634\u6697\u7684\u5973\u5deb",
         "14": "\u9670\u6697\u7684\u5973\u5deb"
     },
-    "witchchallengeAchievementCond": {
-        "0": "[BLANK]",
+    "witchchallengeAchievementFlavor": {
+        "0": "\"Hex is all I enjoyed in my life\" - from a murky Witch",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u5492\u7eb9\u70d9\u9aa8\u5982\u6885\u5370\uff0c\u591c\u534a\u5deb\u8e2a\u6708\u4f5c\u75d5\u3002\"",
         "14": "[BLANK]"
     },
     "witchchallengeAchievementGoal": {
@@ -10598,12 +10205,6 @@
         "11": "\u9b54\u8853\u3092\u6975\u3081\u3057\u8005",
         "13": "\u4e0b\u5492\u5927\u5e08",
         "14": "\u4e0b\u5492\u5927\u5e2b"
-    },
-    "assassincommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "assassincommon1AchievementGoal": {
         "0": "Assassinate A Player",
@@ -10635,12 +10236,6 @@
         "13": "\u52c7\u6562\u9762\u5200\uff01",
         "14": "\u52c7\u6562\u9762\u5200\uff01"
     },
-    "ninjacommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "ninjacommon1AchievementGoal": {
         "0": "Use Your Stealth Ability",
         "11": "\u900f\u660e\u5316\u3059\u308b\u3002",
@@ -10652,12 +10247,6 @@
         "11": "\u96a0\u308c\u8eab\u306e\u8853",
         "13": "\u9690\u8eab\uff01",
         "14": "\u96b1\u8eab\uff01"
-    },
-    "ninjaanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "ninjaanother1AchievementGoal": {
         "0": "Get Killed While Invisible",
@@ -10671,10 +10260,10 @@
         "13": "\u4f60\u600e\u4e48\u770b\u89c1\u6211\u7684\uff1f",
         "14": "\u4f60\u600e\u9ebd\u770b\u898b\u6211\u7684\uff1f"
     },
-    "ninjachallengeAchievementCond": {
-        "0": "[BLANK]",
+    "ninjachallengeAchievementFlavor": {
+        "0": "\"Stealth and strength is all his power\"",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u6f5c\u8c0b\u4e8e\u65e0\u5f62\uff0c\u5e38\u80dc\u4e8e\u4e0d\u4e89\u4e0d\u8d39\u3002\"",
         "14": "[BLANK]"
     },
     "ninjachallengeAchievementGoal": {
@@ -10707,12 +10296,6 @@
         "13": "\u590d\u4ec7\u7684\u6ecb\u5473",
         "14": "\u8986\u4ec7\u7684\u6ecb\u5473"
     },
-    "serialKillercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "serialKillercommon1AchievementGoal": {
         "0": "Have The First Taste Of Blood",
         "11": "\u8840\u306e\u5473\u3092\u77e5\u308b\u3002(\u8a66\u5408\u4e2d\u306b\u521d\u3081\u3066\u30ad\u30eb\u3092\u3059\u308b\u3002)",
@@ -10725,10 +10308,10 @@
         "13": "\u9c9c\u8840\u7684\u6e34\u671b",
         "14": "\u9bae\u8840\u7684\u6e34\u671b"
     },
-    "serialKilleranother1AchievementCond": {
-        "0": "[BLANK]",
+    "serialKilleranother1AchievementFlavor": {
+        "0": "\"Reality was the knife, and every face had become the same canvas\"",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u5341\u6b65\u6740\u4e00\u4eba\uff0c\u5343\u91cc\u4e0d\u7559\u884c\"",
         "14": "[BLANK]"
     },
     "serialKilleranother1AchievementGoal": {
@@ -10743,12 +10326,6 @@
         "13": "\u5f7b\u5e95\u75af\u766b",
         "14": "\u5fb9\u5e95\u760b\u7672"
     },
-    "evilGuessercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "evilGuessercommon1AchievementGoal": {
         "0": "Guess A Player",
         "11": "\u63a8\u6bba\u3059\u308b\u3002",
@@ -10760,12 +10337,6 @@
         "11": "\u5b8c\u74a7\u306a\u63a8\u6e2c",
         "13": "\u72d9\u6740\uff01",
         "14": "\u72d9\u6bba\uff01"
-    },
-    "evilGuesserchallenge1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "evilGuesserchallenge1AchievementGoal": {
         "0": "Guess 3 Players",
@@ -10779,12 +10350,6 @@
         "13": "\u8d4c\u535a",
         "14": "\u8ced\u535a"
     },
-    "evilGuesserchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "evilGuesserchallenge2AchievementGoal": {
         "0": "Guess The Nice Guesser",
         "11": "\u30ca\u30a4\u30b9\u30b2\u30c3\u30b5\u30fc\u3092\u63a8\u6bba\u3059\u308b\u3002",
@@ -10796,12 +10361,6 @@
         "11": "\u79c1\u304c\u6b63\u7fa9",
         "13": "\u4e00\u52b3\u6c38\u9038\uff01",
         "14": "\u4e00\u52de\u6c38\u9038\uff01"
-    },
-    "evilTrackercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "evilTrackercommon1AchievementGoal": {
         "0": "Track A Player",
@@ -10815,12 +10374,6 @@
         "13": "\u8ffd\u8e2a\uff01",
         "14": "\u8ffd\u8e64\uff01"
     },
-    "evilTrackercommon2AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "evilTrackercommon2AchievementGoal": {
         "0": "View The Tracked Target's Tasks",
         "11": "\u8ffd\u8de1\u5bfe\u8c61\u306e\u30bf\u30b9\u30af\u6570\u3092\u78ba\u8a8d\u3059\u308b\u3002",
@@ -10832,12 +10385,6 @@
         "11": "\u30bf\u30b9\u30af\u30c8\u30e9\u30c3\u30ab\u30fc",
         "13": "\u4efb\u52a1\u8ffd\u8e2a\u5668",
         "14": "\u4efb\u52d9\u8ffd\u8e64\u5668"
-    },
-    "evilHackercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "evilHackercommon1AchievementGoal": {
         "0": "Create A Madmate",
@@ -10851,12 +10398,6 @@
         "13": "\"\u5185\u9b3c\"\u4f19\u4f34",
         "14": "\u507d\u88dd\u8005\u5925\u4f34"
     },
-    "evilHackerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "evilHackerchallengeAchievementGoal": {
         "0": "View The Portable Admin And Make A Kill",
         "11": "\u30dd\u30fc\u30bf\u30d6\u30eb\u30a2\u30c9\u30df\u30f3\u3092\u898b\u305f\u5f8c\u306b\u30ad\u30eb\u3092\u3059\u308b\u3002",
@@ -10868,12 +10409,6 @@
         "11": "\u5168\u3066\u898b\u3066\u3044\u308b",
         "13": "\u79fb\u52a8\u7ba1\u7406\u5730\u56fe",
         "14": "\u79fb\u52d5\u7ba1\u7406\u5730\u5716"
-    },
-    "evilSwapperchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "evilSwapperchallengeAchievementGoal": {
         "0": "Swap Votes And Protect An Impostor",
@@ -10887,12 +10422,6 @@
         "13": "\u540c\u76df\u4fdd\u62a4\u8005",
         "14": "\u540c\u76df\u4fdd\u8b77\u8005"
     },
-    "evilSwapperanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "evilSwapperanother1AchievementGoal": {
         "0": "Swap Votes And Exile A Jester",
         "11": "\u30b9\u30ef\u30c3\u30d7\u3092\u884c\u3044\u3001\u30b8\u30a7\u30b9\u30bf\u30fc\u3092\u8ffd\u653e\u3059\u308b\u3002",
@@ -10904,12 +10433,6 @@
         "11": "\u30df\u30b9\u30c6\u30a4\u30af",
         "13": "\u770b\u9519\u4eba\u4e86",
         "14": "\u770b\u932f\u4eba\u4e86"
-    },
-    "trappercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "trappercommon1AchievementGoal": {
         "0": "Kill A Player With Your Trap",
@@ -10923,11 +10446,6 @@
         "13": "\u8bbe\u9677\uff01",
         "14": "\u8a2d\u9677\uff01"
     },
-    "trapperanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "trapperanother1AchievementGoal": {
         "0": "Kill An Impostor With Your Trap",
         "13": "\u7528\u4f60\u7684\u9677\u9631\u51fb\u6740\u4e00\u540d\u5185\u9b3c",
@@ -10938,10 +10456,10 @@
         "13": "\u6211\u5e72\u4e86\u4e9b\u4ec0\u4e48!",
         "14": "\u6211\u5e79\u4e86\u4e9b\u4ec0\u9ebd!"
     },
-    "trapperchallengeAchievementCond": {
-        "0": "[BLANK]",
+    "trapperchallengeAchievementFlavor": {
+        "0": "\"The final countdown is his tomb\"",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u9526\u5e10\u6625\u6df1\u57cb\u94c1\u68d8\uff0c\u7389\u676f\u9152\u6696\u6e17\u51b0\u971c\"",
         "14": "[BLANK]"
     },
     "trapperchallengeAchievementGoal": {
@@ -10956,12 +10474,6 @@
         "13": "\u6b7b\u4ea1\u7684\u9677\u9631",
         "14": "\u6b7b\u4ea1\u7684\u9677\u9631"
     },
-    "undertakercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "undertakercommon1AchievementGoal": {
         "0": "Drag A Dead Body",
         "11": "\u6b7b\u4f53\u3092\u63b4\u3080\u3002",
@@ -10974,10 +10486,10 @@
         "13": "\u4e27\u4e8b\u529e\u7406",
         "14": "\u55aa\u4e8b\u8fa6\u7406"
     },
-    "undertakeranother1AchievementCond": {
-        "0": "[BLANK]",
+    "undertakeranother1AchievementFlavor": {
+        "0": "\"To bear the dead was his destiny in the end\"",
         "11": "[BLANK]",
-        "13": "[BLANK]",
+        "13": "\"\u6bd2\u86c7\u4f2a\u4fe1\u5c1a\u672a\u6536\uff0c\u4fbf\u4f7f\u9e70\u722a\u627c\u7075\u67e9\u3002\"",
         "14": "[BLANK]"
     },
     "undertakeranother1AchievementGoal": {
@@ -10992,12 +10504,6 @@
         "13": "\u4e00\u4e2a\u63a5\u7740\u4e00\u4e2a",
         "14": "\u4e00\u500b\u63a5\u8457\u4e00\u500b"
     },
-    "blackmailercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "blackmailercommon1AchievementGoal": {
         "0": "Blackmail A Player",
         "11": "\u30af\u30eb\u30fc\u3092\u8105\u8feb\u3059\u308b\u3002",
@@ -11010,11 +10516,9 @@
         "13": "\u5618",
         "14": "\u5653"
     },
-    "blackmailerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
+    "blackmailerchallengeAchievementFlavor": {
+        "0": "\"The ultimate silence is all that we got\"",
+        "13": "\"\u6398\u5751\u5f85\u864e\uff0c\u8bbe\u9975\u9493\u9ccc\""
     },
     "blackmailerchallengeAchievementGoal": {
         "0": "Blackmail One Of Those Who Have Seen You Kill",
@@ -11028,11 +10532,6 @@
         "13": "\u95ed\u5634\uff01",
         "14": "\u9589\u5634\uff01"
     },
-    "mimicKchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "mimicKchallengeAchievementGoal": {
         "0": "Kill At Least 3 Players",
         "13": "\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6",
@@ -11042,11 +10541,6 @@
         "0": "Not A Trace",
         "13": "\u4e0d\u7559\u4efb\u4f55\u75d5\u8ff9",
         "14": "\u4e0d\u7559\u4efb\u4f55\u75d5\u8de1"
-    },
-    "mimicAcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "mimicAcommon1AchievementGoal": {
         "0": "View The Portable Admin",
@@ -11058,11 +10552,6 @@
         "13": "\u6765\u770b\u770b\u4f60\u5728\u54ea",
         "14": "\u4f86\u770b\u770b\u4f60\u5728\u54ea"
     },
-    "mimicAchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "mimicAchallengeAchievementGoal": {
         "0": "Morph At Least 4 Times Before The Meeting",
         "13": "\u5728\u4f1a\u8bae\u524d\u81f3\u5c11\u5316\u5f624\u6b21",
@@ -11072,11 +10561,6 @@
         "0": "Fake The Alibi",
         "13": "\u4f2a\u9020\u4e0d\u5728\u573a\u8bc1\u660e",
         "14": "\u507d\u9020\u4e0d\u5728\u5834\u8b49\u660e"
-    },
-    "bombercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "bombercommon1AchievementGoal": {
         "0": "Plant A Bomb On Someone",
@@ -11088,9 +10572,9 @@
         "13": "\u653e\u7f6e...\u5f15\u7206!",
         "14": "\u653e\u7f6e...\u5f15\u7206!"
     },
-    "bomberchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "bomberchallengeAchievementFlavor": {
+        "0": "\"A true believer whose prayers were timed in seconds and answered in fire\"",
+        "13": "\"\u4e00\u58f0\u9707\u88c2\u7e41\u534e\u5730\uff0c\u6563\u4f5c\u5343\u5bb6\u6cea\u96e8\u51c9\u3002\"",
         "14": "[BLANK]"
     },
     "bomberchallengeAchievementGoal": {
@@ -11102,12 +10586,6 @@
         "0": "Boom!",
         "13": "\u827a\u672f\u5c31\u662f\u7206\u70b8!",
         "14": "\u85dd\u8853\u5c31\u662f\u7206\u70b8!"
-    },
-    "evilYasunaanother1AchievementCond": {
-        "0": "[BLANK]",
-        "11": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "evilYasunaanother1AchievementGoal": {
         "0": "Force Exile A Non-Impostor",
@@ -11121,11 +10599,6 @@
         "13": "\u4f60\u4eec\u7684\u7968\u90fd\u4e0d\u7b97\u6570\uff01",
         "14": "\u4f60\u5011\u7684\u7968\u90fd\u4e0d\u7b97\u6578\uff01"
     },
-    "yoyochallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "yoyochallengeAchievementGoal": {
         "0": "Complete A Full Cycle Of The Blink",
         "13": "\u5b8c\u6210\u6807\u8bb0-\u95ea\u73b0-\u8fd4\u56de\u7684\u5faa\u73af",
@@ -11135,11 +10608,6 @@
         "0": "Yoyo Back!",
         "13": "\u8fd9\u624d\u53eb\u60a0\u60a0\u7403!",
         "14": "\u9019\u624d\u53eb\u60a0\u60a0\u7403!"
-    },
-    "zephyrcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "zephyrcommon1AchievementGoal": {
         "0": "Fire A Cannon",
@@ -11151,11 +10619,6 @@
         "13": "\u70b9\u706b...\u53d1\u5c04\uff01",
         "14": "\u9810\u5099...\u767c\u5c04"
     },
-    "zephyranother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "zephyranother1AchievementGoal": {
         "0": "Fire 3 Cannons",
         "13": "\u53d1\u5c043\u6b21\u7a7a\u6c14\u70ae",
@@ -11166,11 +10629,6 @@
         "13": "\u628a\u4f60\u4eec\u90fd\u70b8\u4e0a\u5929\uff01",
         "14": "\u98db\u9ad8\u9ad8!"
     },
-    "zephyrchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "zephyrchallengeAchievementGoal": {
         "0": "Blow Up At Least 5 Players",
         "13": "\u81f3\u5c11\u5439\u65635\u540d\u73a9\u5bb6",
@@ -11180,6 +10638,10 @@
         "0": "Mass Blowing",
         "13": "\u5927\u89c4\u6a21\u7a7a\u6c14\u70ae",
         "14": "\u5927\u898f\u6a21\u7a7a\u6c23\u70ae"
+    },
+    "jestercommon1AchievementFlavor": {
+        "0": "\"Let's dance and have fun!\"",
+        "13": "\"\u6b3a\u4eba\u8005\uff0c\u5fc5\u5148\u81ea\u6b3a\u3002\u4fe1\u5df1\u4e4b\u8c0e\uff0c\u65b9\u80fd\u9970\u4f2a\u4e3a\u771f\u3002\""
     },
     "jestercommon1AchievementCond": {
         "0": "Self Vote Doesn't Count",
@@ -11196,11 +10658,6 @@
         "13": "\u5a31\u8005",
         "14": "\u5a1b\u8005"
     },
-    "jesterchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "jesterchallengeAchievementGoal": {
         "0": "Have Yourself Voted Out",
         "13": "\u628a\u81ea\u5df1\u6295\u51fa\u53bb",
@@ -11210,11 +10667,6 @@
         "0": "True Jester",
         "13": "\u5c0f\u4e11\u7adf\u662f\u6211\u81ea\u5df1",
         "14": "\u5c0f\u4e11\u7adf\u662f\u6211\u81ea\u5df1"
-    },
-    "arsonistcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "arsonistcommon1AchievementGoal": {
         "0": "Douse A Player",
@@ -11226,11 +10678,6 @@
         "13": "\u6d47\u6cb9\uff01",
         "14": "\u6f86\u6cb9\uff01"
     },
-    "arsonistanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "arsonistanother1AchievementGoal": {
         "0": "Have The Last Non-Doused Player Exiled",
         "13": "\u628a\u6700\u540e\u6ca1\u88ab\u6d47\u6cb9\u7684\u73a9\u5bb6\u9a71\u9010",
@@ -11241,9 +10688,9 @@
         "13": "\u6709\u6c7d\u6cb9\u5473\u7684\u4f1a\u8bae",
         "14": "\u6709\u6c7d\u6cb9\u5473\u7684\u6703\u8b70"
     },
-    "arsonistchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "arsonistchallengeAchievementFlavor": {
+        "0": "\"Fire was his only truth, and he preached it with a match\"",
+        "13": "\"\u7eda\u70c2\u7684\u7130\u706b\u7ec8\u5c06\u5f15\u71c3\u8fd9\u5197\u4f59\u7684\u4e16\u754c\"",
         "14": "[BLANK]"
     },
     "arsonistchallengeAchievementGoal": {
@@ -11256,11 +10703,6 @@
         "13": "\u71c3\u70e7\u5427\uff01",
         "14": "\u71c3\u71d2\u5427\uff01"
     },
-    "jackalcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "jackalcommon1AchievementGoal": {
         "0": "Create A Sidekick",
         "13": "\u62db\u52df\u4e00\u540d\u8ddf\u73ed",
@@ -11270,6 +10712,10 @@
         "0": "Apprentice!",
         "13": "\u6536\u5f92\uff01",
         "14": "\u6536\u5f92\uff01"
+    },
+    "jackalchallengeAchievementFlavor": {
+        "0": "\"The last battle ended in a silence that drowned out the screams\"",
+        "13": "\"\u80dc\u8005\u4e3a\u738b\uff0c\u8d25\u8005\u4e3a\u5bc7\u3002\""
     },
     "jackalchallengeAchievementCond": {
         "0": "You Must Kill The Impostor",
@@ -11286,11 +10732,6 @@
         "13": "\u6700\u540e\u4e00\u6218",
         "14": "\u6700\u5f8c\u4e00\u6230"
     },
-    "sidekickcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sidekickcommon1AchievementGoal": {
         "0": "Get Sidekicked",
         "13": "\u88ab\u62db\u52df\u4e3a\u8ddf\u73ed",
@@ -11300,11 +10741,6 @@
         "0": "Recruit",
         "13": "\u62db\u52df\uff01",
         "14": "\u62db\u52df\uff01"
-    },
-    "sidekickcommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "sidekickcommon2AchievementGoal": {
         "0": "Get Sidekicked When Being An Impostor",
@@ -11316,11 +10752,6 @@
         "13": "\u53cc\u6599\u95f4\u8c0d",
         "14": "\u96d9\u6599\u9593\u8adc"
     },
-    "sidekickchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "sidekickchallengeAchievementGoal": {
         "0": "Get Promoted To Jackal",
         "13": "\u664b\u5347\u4e3a\u8c7a\u72fc",
@@ -11330,11 +10761,6 @@
         "0": "Promotion",
         "13": "\u5347\u5b98\uff01",
         "14": "\u5347\u5b98\uff01"
-    },
-    "vulturecommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "vulturecommon1AchievementGoal": {
         "0": "Eat A Dead Body",
@@ -11346,11 +10772,6 @@
         "13": "\u541e\u566c\u8005",
         "14": "\u541e\u566c\u8005"
     },
-    "vulturechallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "vulturechallengeAchievementGoal": {
         "0": "Win The Game As Vulture",
         "13": "\u4ee5\u79c3\u9e6b\u7684\u8eab\u4efd\u83b7\u5f97\u80dc\u5229",
@@ -11360,11 +10781,6 @@
         "0": "Thanks For The Meal!",
         "13": "\u591a\u8c22\u6b3e\u5f85\uff01",
         "14": "\u591a\u8b1d\u6b3e\u5f85\uff01"
-    },
-    "lawyeranother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "lawyeranother1AchievementGoal": {
         "0": "Get Killed By Your Client",
@@ -11376,11 +10792,6 @@
         "13": "\u6211\u8fd8\u56de\u5f97\u5230\u62a5\u916c\u5417",
         "14": "\u6211\u9084\u56de\u5f97\u5230\u5831\u916c\u55ce"
     },
-    "lawyerchallenge1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "lawyerchallenge1AchievementGoal": {
         "0": "Win Alone By Meetings",
         "13": "\u901a\u8fc7\u4f1a\u8bae\u72ec\u81ea\u80dc\u5229",
@@ -11390,11 +10801,6 @@
         "0": "I Am The Lawyer!",
         "13": "\u6253\u8d62\u5b98\u53f8\uff01",
         "14": "\u6253\u8d0f\u5b98\u53f8\uff01"
-    },
-    "lawyerchallenge2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "lawyerchallenge2AchievementGoal": {
         "0": "Steal The Client's Victory",
@@ -11426,20 +10832,10 @@
         "13": "\u6210\u529f\u7a83\u53d6\u6267\u5203\u8005\u7684\u8eab\u4efd",
         "14": "\u6210\u529f\u7aca\u53d6\u57f7\u5203\u8005\u7684\u8eab\u4efd"
     },
-    "thiefchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "thiefchallengeAchievementTitle": {
         "0": "I Have A Role",
         "13": "\u542c\u6211\u8bf4, \u6211\u6709\u804c\u4e1a\u4e86",
         "14": "\u807d\u6211\u8aaa, \u6211\u6709\u8077\u696d\u4e86"
-    },
-    "pursuercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "pursuercommon1AchievementGoal": {
         "0": "Blank An Impostor",
@@ -11451,11 +10847,6 @@
         "13": "\u54d1\u70ae",
         "14": "\u555e\u70ae"
     },
-    "pursuercommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "pursuercommon2AchievementGoal": {
         "0": "Win The Game Additionally",
         "13": "\u4ee5\u8d77\u8bc9\u4eba\u7684\u8eab\u4efd\u83b7\u5f97\u989d\u5916\u80dc\u5229",
@@ -11465,11 +10856,6 @@
         "0": "Survival",
         "13": "\u4e0a\u8bc9\u6210\u529f",
         "14": "\u4e0a\u8a34\u6210\u529f"
-    },
-    "opportunistcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "opportunistcommon1AchievementGoal": {
         "0": "Win The Game In The End",
@@ -11481,11 +10867,6 @@
         "13": "\u82df\u4e14\u5077\u751f",
         "14": "\u830d\u4e14\u5077\u751f"
     },
-    "corruptedShiftercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "corruptedShiftercommon1AchievementGoal": {
         "0": "Steal Someone Else's Role",
         "13": "\u5077\u53d6\u67d0\u4eba\u7684\u804c\u4e1a",
@@ -11496,9 +10877,9 @@
         "13": "\u6405\u5c4e\u68cd",
         "14": "\u652a\u5c4e\u68cd"
     },
-    "corruptedShifteranother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "corruptedShifteranother1AchievementFlavor": {
+        "0": "\"That is destined to be doomed\"",
+        "13": "\"\u6697\u62e8\u98ce\u4e91\u820c\u4f5c\u67aa\uff0c\u6e05\u6f6d\u4e71\u5f71\u58a8\u4e2d\u85cf\u3002\"",
         "14": "[BLANK]"
     },
     "corruptedShifteranother1AchievementGoal": {
@@ -11526,11 +10907,6 @@
         "13": "\u5012\u53cd\u5929\u7f61",
         "14": "\u5012\u53cd\u5929\u7f61"
     },
-    "plagueDoctorcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "plagueDoctorcommon1AchievementGoal": {
         "0": "Infect One Player",
         "13": "\u611f\u67d3\u4e00\u540d\u73a9\u5bb6",
@@ -11540,11 +10916,6 @@
         "0": "Infection!",
         "13": "\u611f\u67d3\u6e90\uff01",
         "14": "\u611f\u67d3\u6e90\uff01"
-    },
-    "plagueDoctorchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "plagueDoctorchallengeAchievementGoal": {
         "0": "Infect All Players And Win The Game",
@@ -11556,11 +10927,6 @@
         "13": "\u9ed1\u6b7b\u75c5",
         "14": "\u9ed1\u6b7b\u75c5"
     },
-    "foxcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "foxcommon1AchievementGoal": {
         "0": "Create An Immoralist",
         "13": "\u8bf1\u60d1\u4e00\u4e2a\u80cc\u5fb7\u8005",
@@ -11570,11 +10936,6 @@
         "0": "Immortal!",
         "13": "\u6c38\u8fdc\u4e0d\u6b7b\uff01",
         "14": "\u6c38\u9060\u4e0d\u6b7b\uff01"
-    },
-    "foxchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "foxchallengeAchievementGoal": {
         "0": "Steal The Impostors' Or The Crewmates' Victory",
@@ -11586,11 +10947,6 @@
         "13": "\u8ba9\u4f60\u4eec\u767d\u6253\u5de5\uff01",
         "14": "\u8b93\u4f60\u5011\u767d\u6253\u5de5\uff01"
     },
-    "immoralistchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "immoralistchallengeAchievementGoal": {
         "0": "Commit Suicide To Protect The Fox",
         "13": "\u81ea\u6740\u4ee5\u4fdd\u62a4\u72d0\u5996",
@@ -11600,11 +10956,6 @@
         "0": "All For The Best",
         "13": "\u4e00\u5207\u90fd\u662f\u6700\u597d\u7684\u5b89\u6392",
         "14": "\u4e00\u5207\u90fd\u662f\u6700\u597d\u7684\u5b89\u6392"
-    },
-    "akujocommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "akujocommon1AchievementGoal": {
         "0": "Make Someone Your Backup",
@@ -11616,9 +10967,9 @@
         "13": "\u968f\u65f6\u629b\u5f03",
         "14": "\u96a8\u6642\u62cb\u68c4"
     },
-    "akujocommon2AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "akujocommon2AchievementFlavor": {
+        "0": "\"A smile that sharpens itself against the whetstone of another's ruin\"",
+        "13": "\"\u5507\u7554\u871c\u8a00\u7686\u9975\u6bd2\uff0c\u6795\u8fb9\u6625\u68a6\u5c3d\u79df\u94b1\u3002\"",
         "14": "[BLANK]"
     },
     "akujocommon2AchievementGoal": {
@@ -11631,11 +10982,6 @@
         "13": "\u6211\u7231\u4f60\uff01",
         "14": "\u6211\u611b\u4f60\uff01"
     },
-    "akujochallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "akujochallengeAchievementGoal": {
         "0": "Win With Your True Love",
         "13": "\u5728\u6e38\u620f\u7ed3\u675f\u65f6\u4e0e\u771f\u7231\u4e00\u8d77\u83b7\u80dc",
@@ -11645,11 +10991,6 @@
         "0": "Manipulate Everyone!",
         "13": "\u6765\u505a\u70b9\"\u5feb\u4e50\"\u7684\u4e8b\u60c5\u5427",
         "14": "\u4f86\u505a\u9ede\"\u5feb\u6a02\"\u7684\u4e8b\u60c5\u5427"
-    },
-    "jekyllAndHydecommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "jekyllAndHydecommon1AchievementGoal": {
         "0": "Use The Drug To Switch Personalities",
@@ -11661,11 +11002,6 @@
         "13": "\u6211\u7a76\u7adf\u662f\u8c01",
         "14": "\u6211\u7a76\u7adf\u662f\u8ab0"
     },
-    "jekyllAndHydechallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "jekyllAndHydechallengeAchievementGoal": {
         "0": "Kill Enough Players And Win The Game",
         "13": "\u6740\u6b7b\u8db3\u591f\u591a\u7684\u73a9\u5bb6\u6765\u83b7\u5f97\u80dc\u5229",
@@ -11675,11 +11011,6 @@
         "0": "Darkness Has Arrived",
         "13": "\u9ed1\u6697\u964d\u4e34",
         "14": "\u9ed1\u6697\u964d\u81e8"
-    },
-    "moriartycommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "moriartycommon1AchievementGoal": {
         "0": "Brainwash A Player",
@@ -11691,9 +11022,9 @@
         "13": "\u5b8c\u7f8e\u7684\u72af\u7f6a",
         "14": "\u5b8c\u7f8e\u7684\u72af\u7f6a"
     },
-    "moriartychallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "moriartychallengeAchievementFlavor": {
+        "0": "\"The power over all of you!\"",
+        "13": "\"\u7b97\u5c3d\u5929\u673a\u4f5c\u5f08\u56fe\uff0c\u6743\u5c06\u7f6a\u6106\u6ce8\u76c8\u4e8f\u3002\"",
         "14": "[BLANK]"
     },
     "moriartychallengeAchievementGoal": {
@@ -11706,11 +11037,6 @@
         "13": "\u7834\u706d\uff01",
         "14": "\u7834\u6ec5\uff01"
     },
-    "cupidcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "cupidcommon1AchievementGoal": {
         "0": "Create A Pair Of Lovers",
         "13": "\u521b\u9020\u4e00\u5bf9\u604b\u4eba",
@@ -11720,11 +11046,6 @@
         "0": "The One Who Shoots The Arrows",
         "13": "\u5c04\u7bad\u7a7f\u5fc3\u4e4b\u4eba",
         "14": "\u5c04\u7bad\u7a7f\u5fc3\u4e4b\u4eba"
-    },
-    "cupidchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "cupidchallengeAchievementGoal": {
         "0": "Win Together With The Lovers",
@@ -11736,11 +11057,6 @@
         "13": "\u771f\u7231\u4e0d\u6b7b",
         "14": "\u771f\u611b\u4e0d\u6b7b"
     },
-    "cupidanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "cupidanother1AchievementGoal": {
         "0": "Scapegoat And Protect The Lovers",
         "13": "\u66ff\u6b7b\u4ee5\u4fdd\u62a4\u604b\u4eba",
@@ -11750,11 +11066,6 @@
         "0": "I Have Done My Duty",
         "13": "\u606a\u5c3d\u804c\u5b88",
         "14": "\u606a\u76e1\u8077\u5b88"
-    },
-    "schrodingersCatcommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "schrodingersCatcommon1AchievementGoal": {
         "0": "Get Killed And Join The Killer's Team",
@@ -11766,11 +11077,6 @@
         "13": "\u732b\u6709\u4e5d\u6761\u547d\uff01",
         "14": "\u8c93\u6709\u4e5d\u689d\u547d\uff01"
     },
-    "schrodingersCatanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "schrodingersCatanother1AchievementGoal": {
         "0": "Switch Teams When All Tasks Completed",
         "13": "\u5b8c\u6210\u4efb\u52a1\u540e\u5207\u6362\u9635\u8425",
@@ -11780,11 +11086,6 @@
         "0": "Choose Whatever I Want",
         "13": "\u5c0f\u5b69\u5b50\u624d\u505a\u9009\u62e9, \u6211\u5168\u90fd\u8981\uff01",
         "14": "\u5c0f\u5b69\u5b50\u624d\u505a\u9078\u64c7, \u6211\u5168\u90fd\u8981\uff01"
-    },
-    "kataomoicommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "kataomoicommon1AchievementGoal": {
         "0": "Stare Your Target",
@@ -11796,11 +11097,6 @@
         "13": "\u770b\u89c1\u4f60\u8ba9\u6211\u9ad8\u5174",
         "14": "\u770b\u898b\u4f60\u8b93\u6211\u9ad8\u8208"
     },
-    "kataomoichallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "kataomoichallengeAchievementGoal": {
         "0": "Kill Your Target And Win The Game",
         "13": "\u6740\u6b7b\u51dd\u89c6\u76ee\u6807\u5e76\u83b7\u5f97\u80dc\u5229",
@@ -11810,11 +11106,6 @@
         "0": "I Hope I Can See Love More...",
         "13": "\u6211\u5e0c\u671b\u6211\u80fd\u61c2\u5f97\u7231\u60c5\u7684\u7f8e\u597d...",
         "14": "\u6211\u5e0c\u671b\u6211\u80fd\u61c2\u5f97\u611b\u60c5\u7684\u7f8e\u597d..."
-    },
-    "doomsayercommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "doomsayercommon1AchievementGoal": {
         "0": "Observe A Player",
@@ -11826,11 +11117,6 @@
         "13": "\u4e56~\u8ba9\u6211\u770b\u770b",
         "14": "\u4e56~\u8b93\u6211\u770b\u770b"
     },
-    "doomsayerchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "doomsayerchallengeAchievementGoal": {
         "0": "Guess Enough Players And Win The Game",
         "13": "\u731c\u6d4b\u8db3\u591f\u6570\u91cf\u7684\u73a9\u5bb6\u5e76\u8d62\u4e0b\u6e38\u620f",
@@ -11840,11 +11126,6 @@
         "0": "Gambler",
         "13": "\u72c2\u8d4c\u4e4b\u6e0a",
         "14": "\u72c2\u8ced\u4e4b\u6df5"
-    },
-    "pelicancommon1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "pelicancommon1AchievementGoal": {
         "0": "Swallow 1 Player",
@@ -11856,11 +11137,6 @@
         "13": "\u771f\u597d\u5403...",
         "14": "\u9084\u633a\u597d\u5403\u7684"
     },
-    "pelicananother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "pelicananother1AchievementGoal": {
         "0": "Get Killed And Have The Eaten Players Revived",
         "13": "\u88ab\u51fb\u6740\u5e76\u91ca\u653e\u6240\u6709\u88ab\u541e\u566c\u7684\u73a9\u5bb6",
@@ -11870,11 +11146,6 @@
         "0": "One Dead And Thousands Revived",
         "13": "\u7f6a\u4e0d\u5bb9\u8bdb",
         "14": "\u5c0f\u7d05\u5e3d\u88ab\u7375\u4eba\u6551\u51fa\u4e86~"
-    },
-    "pelicanchallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
     },
     "pelicanchallengeAchievementGoal": {
         "0": "Swallow Everyone And Win The Game",
@@ -11886,11 +11157,6 @@
         "13": "\u7ec8\u4e8e\u5403\u9971\u4e86...",
         "14": "\u5403\u98fd\u4e86!"
     },
-    "yandereanother1AchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
-        "14": "[BLANK]"
-    },
     "yandereanother1AchievementGoal": {
         "0": "Rampage While Your Crush Is Still Alive",
         "13": "\u5728\u6697\u604b\u5bf9\u8c61\u5b58\u6d3b\u4e0b\u66b4\u8d70",
@@ -11901,9 +11167,9 @@
         "13": "\u53ea\u4e3a\u66f4\u597d\u4fdd\u62a4\u4f60",
         "14": "\u53ea\u70ba\u4fdd\u8b77\u4f60"
     },
-    "yanderechallengeAchievementCond": {
-        "0": "[BLANK]",
-        "13": "[BLANK]",
+    "yanderechallengeAchievementFlavor": {
+        "0": "\"I wish you could always be mine...\"",
+        "13": "\"\u60c5\u6839\u8680\u9aa8\u672a\u6210\u7070\uff0c\u7231\u81f3\u75af\u65f6\u6068\u4f5c\u5a92\u3002\"",
         "14": "[BLANK]"
     },
     "yanderechallengeAchievementGoal": {

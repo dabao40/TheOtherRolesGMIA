@@ -51,7 +51,7 @@ namespace TheOtherRoles.Modules
                     new VerticalContextsHolder(GUIAlignment.Center,
                         new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
                         new TORGUIMargin(GUIAlignment.Left, new(0f, -0.021f)),
-                        new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(Achievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(showTitleInfo: true),
+                        new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(Achievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
                             OnClickText = (() => { if (a.IsCleared) { Achievement.SetOrToggleTitle(a); } }, true)}
                     )
                     );

@@ -56,7 +56,7 @@ namespace TheOtherRoles
             }
         }
 
-        public static string getString(string key, string def = null)
+        public static string getString(string key, string def = null, bool tryFind = false)
         {
             // Strip out color tags.
             string keyClean = Regex.Replace(key, "<.*?>", "");
@@ -66,7 +66,7 @@ namespace TheOtherRoles
             def ??= key;
             if (!stringData.ContainsKey(keyClean))
             {
-                return def;
+                return tryFind ? null : def;
             }
 
             var data = stringData[keyClean];

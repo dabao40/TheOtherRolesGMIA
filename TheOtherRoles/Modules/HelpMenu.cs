@@ -494,6 +494,7 @@ public static class HelpMenu
 
         foreach (var tip in EndGameConditionTips)
         {
+            if (tip.Item4 != null && tip.Item4.getSelection () == 0) continue;
             winConds.Add(gui.VerticalMargin(0.1f));
             winConds.Add(gui.HorizontalHolder(GUIAlignment.Left, gui.HorizontalMargin(0.2f), gui.RawText(GUIAlignment.Left, maskedSubtitleAttr, ModTranslation.getString(tip.Item1).Color(tip.Item2))));
 
@@ -549,7 +550,7 @@ public static class HelpMenu
                 TORGUIContextEngine.API.VerticalMargin(-0.12f),
                 new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(Achievement.HiddenComponent))
                 {
-                    OverlayContext = a.GetOverlayContext(showTitleInfo: true),
+                    OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
                     OnClickText = (() => { if (a.IsCleared) { Achievement.SetOrToggleTitle(a); } }, true)
                 }
                 ));
@@ -585,26 +586,7 @@ public static class HelpMenu
         return screen;
     }
 
-    static public List<(string, Color32, List<string>)> EndGameConditionTips =
-    [
-        ("impostorWin", Palette.ImpostorRed, ["impostorSaboWinHint", "impostorKillWinHint"]),
-        ("crewWin", Color.white, ["crewmateTaskWinHint", "crewmateExileWinHint"]),
-        ("jesterWin", Jester.color, ["jesterWinCondHint"]),
-        ("arsonistWin", Arsonist.color, ["arsonistWinCondHint"]),
-        ("jackalWin", Jackal.color, ["jackalWinCondHint"]),
-        ("jekyllAndHydeWin", JekyllAndHyde.color, ["jekyllAndHydeKillWinHint", "jekyllAndHydeOutnumberWinHint"]),
-        ("vultureWin", Vulture.color, ["vultureWinCondHint"]),
-        ("lawyerWin", Lawyer.color, ["lawyerMeetingWinHint", "lawyerReplacementWinHint", "lawyerWinTogetherWinHint"]),
-        ("loversWin", Lovers.color, ["loversSoloWinCondHint", "loversTeamWinCondHint"]),
-        ("moriartyWin", Moriarty.color, ["moriartyKillWinHint", "moriartyOutnumberWinHint"]),
-        ("doomsayerWin", Doomsayer.color, ["doomsayerWinCondHint"]),
-        ("kataomoiWin", Kataomoi.color, ["kataomoiWinCondHint"]),
-        ("pelicanWin", Pelican.color, ["pelicanWinCondHint"]),
-        ("yandereWin", Yandere.color, ["yandereWinCondHint"]),
-        ("plagueDoctorWin", PlagueDoctor.color, ["plagueDoctorWinCondHint"]),
-        ("akujoWin", Akujo.color, ["akujoWinCondHint"]),
-        ("foxWin", Fox.color, ["foxWinCondHint"])
-    ];
+    static public List<(string, Color32, List<string>, CustomOption)> EndGameConditionTips = [];
 
     public static Dictionary<RoleId, CustomOption> Configurations = [];
 
@@ -709,6 +691,26 @@ public static class HelpMenu
                 { RoleId.Multitasker, CustomOptionHolder.modifierMultitasker },
                 { RoleId.Diseased, CustomOptionHolder.modifierDiseased },
             };
+
+        EndGameConditionTips = [
+            ("impostorWin", Palette.ImpostorRed, ["impostorSaboWinHint", "impostorKillWinHint"], null),
+            ("crewWin", Color.white, ["crewmateTaskWinHint", "crewmateExileWinHint"], null),
+            ("jesterWin", Jester.color, ["jesterWinCondHint"], CustomOptionHolder.jesterSpawnRate),
+            ("arsonistWin", Arsonist.color, ["arsonistWinCondHint"], CustomOptionHolder.arsonistSpawnRate),
+            ("jackalWin", Jackal.color, ["jackalWinCondHint"], CustomOptionHolder.jackalSpawnRate),
+            ("jekyllAndHydeWin", JekyllAndHyde.color, ["jekyllAndHydeKillWinHint", "jekyllAndHydeOutnumberWinHint"], CustomOptionHolder.jekyllAndHydeSpawnRate),
+            ("vultureWin", Vulture.color, ["vultureWinCondHint"], CustomOptionHolder.vultureSpawnRate),
+            ("lawyerWin", Lawyer.color, ["lawyerMeetingWinHint", "lawyerReplacementWinHint", "lawyerWinTogetherWinHint"], CustomOptionHolder.lawyerSpawnRate),
+            ("loversWin", Lovers.color, ["loversSoloWinCondHint", "loversTeamWinCondHint"], CustomOptionHolder.modifierLover),
+            ("moriartyWin", Moriarty.color, ["moriartyKillWinHint", "moriartyOutnumberWinHint"], CustomOptionHolder.moriartySpawnRate),
+            ("doomsayerWin", Doomsayer.color, ["doomsayerWinCondHint"], CustomOptionHolder.doomsayerSpawnRate),
+            ("kataomoiWin", Kataomoi.color, ["kataomoiWinCondHint"], CustomOptionHolder.kataomoiSpawnRate),
+            ("pelicanWin", Pelican.color, ["pelicanWinCondHint"], CustomOptionHolder.pelicanSpawnRate),
+            ("yandereWin", Yandere.color, ["yandereWinCondHint"], CustomOptionHolder.yandereSpawnRate),
+            ("plagueDoctorWin", PlagueDoctor.color, ["plagueDoctorWinCondHint"], CustomOptionHolder.plagueDoctorSpawnRate),
+            ("akujoWin", Akujo.color, ["akujoWinCondHint"], CustomOptionHolder.akujoSpawnRate),
+            ("foxWin", Fox.color, ["foxWinCondHint"], CustomOptionHolder.foxSpawnRate)
+        ];
     }
 
     private static void ShowScreen(MetaScreen screen, HelpTab tab, HelpTab validTabs)
