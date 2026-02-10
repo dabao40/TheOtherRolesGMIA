@@ -449,6 +449,8 @@ namespace TheOtherRoles.Patches {
                         {
                             EndGameResult.CachedWinners.Add(new CachedPlayerData(couple.lover1.Data));
                             EndGameResult.CachedWinners.Add(new CachedPlayerData(couple.lover2.Data));
+                            if ((PlayerControl.LocalPlayer == couple.lover1 || PlayerControl.LocalPlayer == couple.lover2) && Helpers.CurrentMonth == 2)
+                                _ = new StaticAchievementToken("valentines");
                         }
                     }
                 }
@@ -646,6 +648,19 @@ namespace TheOtherRoles.Patches {
                 !EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == PlayerControl.LocalPlayer.Data.PlayerName))
                 _ = new StaticAchievementToken("corruptedShifter.another1");
 
+            if (EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == PlayerControl.LocalPlayer.Data.PlayerName))
+            {
+                if (Helpers.CurrentMonth == 1 && Helpers.isPolus())
+                    _ = new StaticAchievementToken("dancingSnow");
+                else if (Helpers.CurrentMonth == 5 && Helpers.isFungle())
+                    _ = new StaticAchievementToken("blossoms");
+                else if (Helpers.CurrentMonth == 9 && crewmateWin)
+                    _ = new StaticAchievementToken("autumnSky");
+                else if (Helpers.CurrentMonth == 12 && Helpers.isPolus())
+                    _ = new StaticAchievementToken("christmas");
+            }
+                
+
             AdditionalTempData.timer = ((float)(DateTime.UtcNow - HideNSeek.startTime).TotalMilliseconds) / 1000;
 
             // Reset Settings
@@ -708,7 +723,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            TORGUIManager.Instance.StartCoroutine(Achievement.CoShowAchievements(TORGUIManager.Instance, Achievement.UniteAll()).WrapToIl2Cpp());
+            TORGUIManager.Instance.StartCoroutine(TORAchievementManager.CoShowAchievements(TORGUIManager.Instance, TORAchievementManager.UniteAll()).WrapToIl2Cpp());
             IEnumerator CoShowStatistics()
             {
                 yield return new WaitForSeconds(0.4f);

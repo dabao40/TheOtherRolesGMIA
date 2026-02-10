@@ -19,7 +19,7 @@ public class TORGameManager
     public float CurrentTime { get; private set; } = 0f;
     public RuntimeGameAsset RuntimeAsset { get; private init; }
     public List<RoleHistory> RoleHistory = [];
-    public Dictionary<byte, Achievement> TitleMap = [];
+    public Dictionary<byte, ITORAchievement> TitleMap = [];
 
     public TORGameManager()
     {

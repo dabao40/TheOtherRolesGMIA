@@ -71,7 +71,7 @@ public static class HelpMenu
     private static IMetaContextOld ShowAchievementScreen()
     {
         Artifact<GUIScreen> artifact = null!;
-        Predicate<Achievement> achPredicate = null;
+        Predicate<ITORAchievement> achPredicate = null;
         string shownPredicate = null;
         string scrollerTagPrefix = "ingameAchievementViewer";
         string scrollerTagPostfix = "_categorized";
@@ -541,21 +541,21 @@ public static class HelpMenu
         var attr = new TextAttributes(TORGUIContextEngine.API.GetAttribute(AttributeParams.OblongLeft)) { FontSize = new(1.85f) };
         var headerAttr = new TextAttributes(TORGUIContextEngine.API.GetAttribute(AttributeParams.StandardLeft)) { FontSize = new(1.1f) };
 
-        GUIContext AchievementTitleContext(Achievement a) => new HorizontalContextsHolder(GUIAlignment.Left,
-                TORGUIContextEngine.API.Image(GUIAlignment.Left, new WrapSpriteLoader(() => Achievement.TrophySprite.GetSprite(a.Trophy)), new FuzzySize(0.38f, 0.38f)),
+        GUIContext AchievementTitleContext(ITORAchievement a) => new HorizontalContextsHolder(GUIAlignment.Left,
+                TORGUIContextEngine.API.Image(GUIAlignment.Left, new WrapSpriteLoader(() => ITORAchievement.TrophySprite.GetSprite(a.Trophy)), new FuzzySize(0.38f, 0.38f)),
                 TORGUIContextEngine.API.Margin(new(0.15f, 0.1f)),
                 TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left,
                 TORGUIContextEngine.API.VerticalMargin(0.12f),
                 new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
                 TORGUIContextEngine.API.VerticalMargin(-0.12f),
-                new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(Achievement.HiddenComponent))
+                new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(ITORAchievement.HiddenComponent))
                 {
                     OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
-                    OnClickText = (() => { if (a.IsCleared) { Achievement.SetOrToggleTitle(a); } }, true)
+                    OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)
                 }
                 ));
 
-        var achievements = Achievement.allAchievements.Where(a => a.Category.HasValue && a.Category?.role == assignable && !a.IsHidden).ToArray();
+        var achievements = TORAchievementManager.AllAchievements.Where(a => a.RelatedRole.Contains(assignable) && !a.IsHidden).ToArray();
         var context = achievements.Select(AchievementTitleContext);
 
         if (achievements.Length == 0) return TORGUIContextEngine.API.EmptyContext;

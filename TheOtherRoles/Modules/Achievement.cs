@@ -1,7 +1,3 @@
-using BepInEx.Unity.IL2CPP.Utils;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
-using Hazel;
-using Innersloth.IO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,9 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using BepInEx.Unity.IL2CPP.Utils;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using Hazel;
+using Innersloth.IO;
 using TheOtherRoles.MetaContext;
 using UnityEngine;
 using UnityEngine.Rendering;
+using GUI = TheOtherRoles.MetaContext.TORGUIContextEngine;
 
 namespace TheOtherRoles.Modules
 {
@@ -29,10 +30,10 @@ namespace TheOtherRoles.Modules
 
     abstract public class AchievementTokenBase : ILifespan, IReleasable
     {
-        public Achievement Achievement { get; private init; }
-        abstract public Achievement.ClearState UniteTo(bool update = true);
+        public ProgressRecord Achievement { get; private init; }
+        abstract public ClearDisplayState UniteTo(bool update = true);
 
-        public AchievementTokenBase(Achievement achievement)
+        public AchievementTokenBase(ProgressRecord achievement)
         {
             this.Achievement = achievement;
             TORGameManager.Instance?.AllAchievementTokens.Add(this);
@@ -134,39 +135,40 @@ namespace TheOtherRoles.Modules
 
     public class StaticAchievementToken : AchievementTokenBase
     {
+        public StaticAchievementToken(ProgressRecord record) : base(record) { }
         public StaticAchievementToken(string achievement)
-            : base(Achievement.GetAchievement(achievement, out var a) ? a : null!) { }
+            : base(TORAchievementManager.GetRecord(achievement, out var a) ? a : null!) { }
 
 
-        public override Achievement.ClearState UniteTo(bool update)
+        public override ClearDisplayState UniteTo(bool update)
         {
-            if (IsDeadObject) return Achievement.ClearState.NotCleared;
+            if (IsDeadObject) return ClearDisplayState.None;
 
-            return Achievement.Unite(1, update);
+            return Achievement?.Unite(1, update) ?? ClearDisplayState.None;
         }
     }
 
     public class AchievementToken<T> : AchievementTokenBase
     {
         public T Value;
-        public Func<T, Achievement, int> Supplier { get; set; }
+        public Func<T, ProgressRecord, int> Supplier { get; set; }
 
-        public AchievementToken(Achievement achievement, T value, Func<T, Achievement, int> supplier) : base(achievement)
+        public AchievementToken(ProgressRecord achievement, T value, Func<T, ProgressRecord, int> supplier) : base(achievement)
         {
             Value = value;
             Supplier = supplier;
         }
 
-        public AchievementToken(string achievement, T value, Func<T, Achievement, int> supplier)
-            : this(Achievement.GetAchievement(achievement, out var a) ? a : null!, value, supplier) { }
+        public AchievementToken(string achievement, T value, Func<T, ProgressRecord, int> supplier)
+            : this(TORAchievementManager.GetRecord(achievement, out var a) ? a : null!, value, supplier) { }
 
-        public AchievementToken(string achievement, T value, Func<T, Achievement, bool> supplier)
+        public AchievementToken(string achievement, T value, Func<T, ProgressRecord, bool> supplier)
             : this(achievement, value, (t, ac) => supplier.Invoke(t, ac) ? 1 : 0) { }
 
 
-        public override Achievement.ClearState UniteTo(bool update)
+        public override ClearDisplayState UniteTo(bool update)
         {
-            if (IsDeadObject) return Achievement.ClearState.NotCleared;
+            if (IsDeadObject) return ClearDisplayState.None;
 
             return Achievement.Unite(Supplier.Invoke(Value, Achievement), update);
         }
@@ -188,6 +190,7 @@ namespace TheOtherRoles.Modules
     {
         static public AchievementType Challenge = new("challenge");
         static public AchievementType Secret = new("secret");
+        static public AchievementType Seasonal = new("seasonal");
 
         private AchievementType(string key)
         {
@@ -196,136 +199,111 @@ namespace TheOtherRoles.Modules
         public string TranslationKey { get; private set; }
     }
 
-    public class Achievement
+    public enum ClearDisplayState
     {
-        static public IDividedSpriteLoader TrophySprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.Trophy.png", 100f, 3);
-        public static AchievementToken<(bool isCleared, bool triggered)> GenerateSimpleTriggerToken(string achievement) => new(achievement, (false, false), (val, _) => val.isCleared);
+        Clear,
+        FirstClear,
+        None
+    }
 
-        int goal;
-        bool canClearOnce;
-        bool isSecret;
-        bool noHint;
-        string key;
-        string hashedKey;
-        public (RoleInfo role, AchievementType type)? Category { get; private init; }
-        IntegerDataEntry entry;
-        public int Trophy { get; private init; }
+    public class ProgressRecord
+    {
+        private IntegerDataEntry entry;
+        private string key;
+        private string hashedKey;
+        private int goal;
+        private bool canClearOnce;
+
+        public int Progress => entry.Value;
+        public int Goal => goal;
         public bool IsCleared => goal <= entry.Value;
-        Image BackImage { get => SpecifiedBackImage ?? (Category != null ? TheOtherRoles.RoleData.GetIllustration(Category.Value.role.roleId) : null); }
-        Image SpecifiedBackImage { get; }
 
-        static public TextComponent HiddenComponent = new RawTextComponent("???");
-        static public TextComponent HiddenDescriptiveComponent = new ColorTextComponent(new Color(0.4f, 0.4f, 0.4f), new TranslateTextComponent("achievementTitleHidden"));
-        static public TextComponent HiddenDetailComponent = new ColorTextComponent(new Color(0.8f, 0.8f, 0.8f), new TranslateTextComponent("achievementTitleHiddenDetail"));
-
-        public Achievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, (RoleInfo role, AchievementType type)? category, int trophy, Image specifiedImage)
+        public ProgressRecord(string key, int goal, bool canClearOnce)
         {
             this.goal = goal;
-            this.isSecret = isSecret;
             this.canClearOnce = canClearOnce;
-            this.noHint = noHint;
             this.key = key;
             this.hashedKey = key.ComputeConstantHashAsString();
-            this.Category = category;
-            this.Trophy = trophy;
-            this.SpecifiedBackImage = specifiedImage;
-            this.entry = new IntegerDataEntry("a." + hashedKey, AchievementDataSaver, 0);
-            RegisterAchievement(this, key);
+            this.entry = new IntegerDataEntry("a." + hashedKey, TORAchievementManager.AchievementDataSaver, 0);
+            TORAchievementManager.RegisterRecord(this, key);
         }
 
-        public bool IsHidden
+        public virtual string Id => key;
+        public string TranslateKeyInfo
         {
             get
             {
-                return isSecret && !IsCleared;
+                return Id.Replace(".", "");
             }
         }
 
-        public static Shader materialShader;
+        public virtual string TranslationKey => TranslateKeyInfo + "AchievementTitle";
+        public string GoalTranslationKey => TranslateKeyInfo + "AchievementGoal";
+        public string CondTranslationKey => TranslateKeyInfo + "AchievementCond";
+        public string FlavorTranslationKey => TranslateKeyInfo + "AchievementFlavor";
 
-        static public (int num, int max, int hidden)[] Aggregate(Predicate<Achievement> predicate)
+        protected void UpdateProgress(int newProgress) => entry.Value = newProgress;
+
+        //トークンによってクリアする場合はこちらから
+        virtual public ClearDisplayState Unite(int localValue, bool update)
         {
-            (int num, int max, int hidden)[] result = new (int num, int max, int hidden)[3];
-            for (int i = 0; i < result.Length; i++) result[i] = (0, 0, 0);
-            return achievements.Values.Where(a => predicate?.Invoke(a) ?? true).Aggregate(result,
-                (ac, achievement) => {
-                    if (!achievement.IsHidden)
-                    {
-                        ac[achievement.Trophy].max++;
-                        if (achievement.IsCleared) ac[achievement.Trophy].num++;
-                    }
-                    else
-                    {
-                        ac[achievement.Trophy].hidden++;
-                    }
-                    return ac;
-                });
+            if (localValue < 0) return ClearDisplayState.None;
+
+            int lastValue = entry.Value;
+            int newValue = Math.Min(goal, lastValue + localValue);
+            if (update) entry.Value = newValue;
+
+            if (newValue >= goal && lastValue < goal)
+                return ClearDisplayState.FirstClear;
+
+            if (localValue >= goal && !canClearOnce)
+                return ClearDisplayState.Clear;
+
+            return ClearDisplayState.None;
         }
+    }
 
-        static public void LoadAchievements()
-        {
-            using var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("TheOtherRoles.Resources.Achievements.dat")!);
-            while (true)
-            {
-                var line = reader.ReadLine();
-                if (line == null) break;
-
-                var args = line.Split(',');
-
-                if (args.Length < 2) continue;
-
-                bool clearOnce = false;
-                bool noHint = false;
-                bool secret = false;
-                int rarity = int.Parse(args[1]);
-                int goal = 1;
-                for (int i = 2; i < args.Length - 1; i++)
-                {
-                    var arg = args[i];
-
-                    switch (arg)
-                    {
-                        case "once":
-                            clearOnce = true;
-                            break;
-                        case "noHint":
-                            noHint = true;
-                            break;
-                        case "secret":
-                            secret = true;
-                            break;
-                        case string a when a.StartsWith("goal-"):
-                            goal = int.Parse(a.Substring(5));
-                            break;
-                    }
-                }
-
-                RoleInfo relatedRole = null;
-                AchievementType type = null;
-
-                var nameSplitted = args[0].Split('.');
-                if (nameSplitted.Length > 1)
-                {
-                    nameSplitted[0] = nameSplitted[0].Replace('-', '.');
-                    var cand = RoleInfo.allRoleInfos.Where(a => a.nameKey == nameSplitted[0]).ToArray();
-                    if (cand.Length >= 1)
-                    {
-                        relatedRole = cand[0];
-                        if (rarity == 2) type = AchievementType.Challenge;
-                        else if (secret) type = AchievementType.Secret;
-                    }
-                }
-                new Achievement(clearOnce, secret, noHint, args[0], goal, (relatedRole, type), rarity, null);
-            }
-        }
-
-        static private Dictionary<string, Achievement> achievements = new();
-
-        public static IEnumerable<Achievement> allAchievements => achievements.Values;
+    static public class TORAchievementManager
+    {
         static public DataSaver AchievementDataSaver = new("Progress");
         static private StringDataEntry myTitleEntry = new("MyTitle", AchievementDataSaver, "-");
+        static private Dictionary<string, ProgressRecord> allRecords = [];
 
-        static public Achievement MyTitle
+        static private Dictionary<string, ITORAchievement> allNonrecords = [];
+        static private List<ITORAchievement> allAchievements = [];
+        static public IEnumerable<ProgressRecord> AllRecords => allRecords.Values;
+        static public IEnumerable<ITORAchievement> AllAchievements => allAchievements;
+        static private List<ITORAchievement> ClearedAllOrderedArchive = [];
+        static public IEnumerable<ITORAchievement> RecentlyCleared => ClearedAllOrderedArchive;
+        static internal void RegisterRecord(ProgressRecord progressRecord, string id)
+        {
+            allRecords[id] = progressRecord;
+            if (progressRecord is ITORAchievement ach) RegisterAchivement(ach);
+        }
+        static private void RegisterAchivement(ITORAchievement ach)
+        {
+            allAchievements.Add(ach);
+        }
+        static public bool GetAchievement(string id, [MaybeNullWhen(false)] out ITORAchievement achievement)
+        {
+            achievement = (allRecords.TryGetValue(id, out var rec) && rec is AbstractAchievement ach) ? ach : null;
+            if (achievement == null) allNonrecords.TryGetValue(id, out achievement);
+            return achievement != null;
+        }
+        static public bool GetRecord(string id, [MaybeNullWhen(false)] out ProgressRecord record)
+        {
+            return allRecords.TryGetValue(id, out record);
+        }
+
+        static public void SetOrToggleTitle(ITORAchievement achievement)
+        {
+            if (achievement == null || MyTitle == achievement)
+                MyTitle = null;
+            else
+                MyTitle = achievement;
+        }
+
+        static public ITORAchievement MyTitle
         {
             get
             {
@@ -347,207 +325,56 @@ namespace TheOtherRoles.Modules
             }
         }
 
-        static public void SetOrToggleTitle(Achievement achievement)
+        static public (int num, int max, int hidden)[] Aggregate(Predicate<ITORAchievement> predicate)
         {
-            if (achievement == null || MyTitle == achievement)
-                MyTitle = null;
-            else
-                MyTitle = achievement;
-        }
-
-        public IEnumerable<string> GetKeywords()
-        {
-            if (Category != null) yield return Category?.role?.name ?? "";
-            yield return ModTranslation.getString(GoalTranslationKey);
-            yield return ModTranslation.getString(CondTranslationKey, tryFind: true) ?? "";
-            if (IsCleared)
-            {
-                yield return ModTranslation.getString(TranslationKey);
-                yield return ModTranslation.getString(FlavorTranslationKey, tryFind: true) ?? "";
-            }
-        }
-
-        public enum ClearState
-        {
-            Clear,
-            FirstClear,
-            NotCleared
-        }
-        public ClearState Unite(int localValue, bool update)
-        {
-            if (localValue < 0) return ClearState.NotCleared;
-
-            int lastValue = entry.Value;
-            int newValue = Math.Min(goal, lastValue + localValue);
-            if (update) entry.Value = newValue;
-
-            if (newValue >= goal && lastValue < goal)
-                return ClearState.FirstClear;
-
-            if (localValue >= goal && !canClearOnce)
-                return ClearState.Clear;
-
-            return ClearState.NotCleared;
-        }
-        public string Id => key;
-        public string TranslateKeyInfo
-        {
-            get
-            {
-                return key.Replace(".", "");
-            }
-        }
-        public string TranslationKey => TranslateKeyInfo + "AchievementTitle";
-        public string GoalTranslationKey => TranslateKeyInfo + "AchievementGoal";
-        public string CondTranslationKey => TranslateKeyInfo + "AchievementCond";
-        public string FlavorTranslationKey => TranslateKeyInfo + "AchievementFlavor";
-
-        public TextComponent GetHeaderComponent()
-        {
-            List<TextComponent> list = new();
-
-            if (Category?.role != null)
-            {
-                list.Add(TORGUIContextEngine.Instance.TextComponent((Color)Category?.role.orgColor, Category?.role.name));
-            }
-
-            if (Category?.type != null)
-            {
-                if (list.Count != 0) list.Add(new RawTextComponent(" "));
-                list.Add(new TranslateTextComponent(Category?.type.TranslationKey));
-            }
-
-            if (list.Count > 0)
-                return new CombinedTextComponent(list.ToArray());
-            else
-                return null;
-        }
-
-        public GUIContext GetOverlayContext(bool hiddenNotClearedAchievement = true, bool showCleared = false, bool showTitleInfo = false, bool showTorophy = false, bool showFlavor = false)
-        {
-            var gui = TORGUIContextEngine.API;
-
-            var attr = new TextAttributes(gui.GetAttribute(AttributeParams.OblongLeft)) { FontSize = new(1.6f) };
-            var detailTitleAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
-            var detailDetailAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
-
-            List<GUIContext> list = new()
-            {
-                new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetHeaderComponent())
-            };
-            List<GUIContext> titleList = new();
-            if (showTorophy)
-            {
-                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(-0.04f, 0.2f)));
-                titleList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => TrophySprite.GetSprite(Trophy)), new(0.3f, 0.3f)));
-                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.05f, 0.2f)));
-            }
-            titleList.Add(new TORGUIText(GUIAlignment.Left, detailTitleAttr, GetTitleComponent(hiddenNotClearedAchievement ? HiddenDescriptiveComponent : null)));
-
-            if (showCleared && IsCleared)
-            {
-                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.2f, 0.2f)));
-                titleList.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, gui.TextComponent(new(1f, 1f, 0f), "achievementCleared")));
-            }
-
-            list.Add(new HorizontalContextsHolder(GUIAlignment.Left, titleList));
-            list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, GetDetailComponent()));
-
-            if (showFlavor)
-            {
-                var flavor = GetFlavorComponent();
-                if (flavor != null)
-                {
-                    list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.12f)));
-                    list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, flavor) { PostBuilder = text => text.outlineColor = Color.clear });
-                }
-            }
-
-            if (showTitleInfo && IsCleared)
-            {
-                list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.2f)));
-                list.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, new LazyTextComponent(() =>
-                (MyTitle == this) ?
-                ("<b>" + ModTranslation.getString("achievementEquipped").Color(Color.green) + "</b><br>" + ModTranslation.getString("achievementUnequip")) :
-                ModTranslation.getString("achievementEquip"))));
-            }
-
-            return new VerticalContextsHolder(GUIAlignment.Left, list) { BackImage = BackImage, GrayoutedBackImage = !(IsCleared || !hiddenNotClearedAchievement) };
-        }
-
-        public TextComponent GetTitleComponent(TextComponent hiddenComponent)
-        {
-            if (hiddenComponent != null && !IsCleared)
-                return hiddenComponent;
-            return new TranslateTextComponent(TranslationKey);
-        }
-
-        public TextComponent GetDetailComponent()
-        {
-            List<TextComponent> list = new();
-            if (!noHint || IsCleared)
-                list.Add(new TranslateTextComponent(GoalTranslationKey));
-            else
-                list.Add(HiddenDetailComponent);
-            list.Add(new LazyTextComponent(() =>
-            {
-                StringBuilder builder = new();
-                var cond = ModTranslation.getString(CondTranslationKey, tryFind: true);
-                if (cond != null && cond.Length > 0)
-                {
-                    builder.Append("<size=75%><br><br>");
-                    builder.Append(ModTranslation.getString("achievementCond"));
-                    foreach (var c in cond.Split('+'))
+            (int num, int max, int hidden)[] result = new (int num, int max, int hidden)[3];
+            for (int i = 0; i < result.Length; i++) result[i] = (0, 0, 0);
+            return AllAchievements.Where(a => predicate?.Invoke(a) ?? true).Aggregate(result,
+                (ac, achievement) => {
+                    if (!achievement.IsHidden)
                     {
-                        builder.Append("<br>   ");
-                        builder.Append(c);
+                        ac[achievement.Trophy].max++;
+                        if (achievement.IsCleared) ac[achievement.Trophy].num++;
                     }
-                    builder.Append("</size>");
-                }
-                return builder.ToString();
-            }));
-
-            return new CombinedTextComponent(list.ToArray());
+                    else
+                    {
+                        ac[achievement.Trophy].hidden++;
+                    }
+                    return ac;
+                });
         }
 
-        TextComponent GetFlavorComponent()
+        static public (ITORAchievement achievement, ClearDisplayState clearState)[] UniteAll()
         {
-            var text = ModTranslation.getString(FlavorTranslationKey, tryFind: true);
-            if (text == null) return null;
-            return new RawTextComponent($"<color=#e7e5ca><size=78%><i>{text}</i></size></color>");
-        }
-
-        static public void RegisterAchievement(Achievement achievement, string id)
-        {
-            achievements[id] = achievement;
-        }
-
-        static public bool GetAchievement(string id, [MaybeNullWhen(false)] out Achievement achievement)
-        {
-            return achievements.TryGetValue(id, out achievement);
-        }
-
-        static public (Achievement achievement, ClearState clearState)[] UniteAll()
-        {
-            List<(Achievement achievement, ClearState clearState)> result = new();
+            List<(ITORAchievement achievement, ClearDisplayState clearState)> result = new();
 
             foreach (var token in TORGameManager.Instance?.AllAchievementTokens)
             {
                 var state = token.UniteTo();
-                if (state == ClearState.NotCleared) continue;
-                result.Add(new(token.Achievement, state));
+                if (state == ClearDisplayState.None) continue;
+                if (token.Achievement is AbstractAchievement ach && result.All(a => a.achievement != ach)) result.Add(new(ach, state));
+            }
+            foreach (var achievement in AllAchievements)
+            {
+                var state = achievement.CheckClear();
+                if (state == ClearDisplayState.None) continue;
+                result.Add(new(achievement, state));
             }
 
             result.OrderBy(val => val.clearState);
+
+            ClearedAllOrderedArchive.RemoveAll(a => result.Any(r => r.achievement == a));
+            ClearedAllOrderedArchive.InsertRange(0, result.Select(r => r.achievement));
+            if (ClearedAllOrderedArchive.Count > 10) ClearedAllOrderedArchive.RemoveRange(10, ClearedAllOrderedArchive.Count - 10);
 
             return result.DistinctBy(a => a.achievement).ToArray();
         }
 
         static XOnlyDividedSpriteLoader trophySprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.Trophy.png", 220f, 3);
-        static public IEnumerator CoShowAchievements(MonoBehaviour coroutineHolder, params (Achievement achievement, ClearState clearState)[] achievements)
+        static public IEnumerator CoShowAchievements(MonoBehaviour coroutineHolder, params (ITORAchievement achievement, ClearDisplayState clearState)[] achievements)
         {
             int num = 0;
-            (GameObject holder, GameObject animator, GameObject body, SpriteRenderer white) CreateBillboard(Achievement achievement, ClearState clearState)
+            (GameObject holder, GameObject animator, GameObject body, SpriteRenderer white) CreateBillboard(ITORAchievement achievement, ClearDisplayState clearState)
             {
                 var billboard = Helpers.CreateObject("Billboard", null, new Vector3(3.85f, 1.75f - (float)num * 0.6f, -100f));
                 var animator = Helpers.CreateObject("Animator", billboard.transform, new Vector3(0f, 0f, 0f));
@@ -556,7 +383,7 @@ namespace TheOtherRoles.Modules
                 var white = Helpers.CreateObject<SpriteRenderer>("White", animator.transform, new Vector3(0f, 0f, -2f));
                 var icon = Helpers.CreateObject<SpriteRenderer>("Icon", body.transform, new Vector3(-0.95f, 0f, 0f));
 
-                background.color = clearState == ClearState.FirstClear ? Color.yellow : new Color(0.7f, 0.7f, 0.7f);
+                background.color = clearState == ClearDisplayState.FirstClear ? Color.yellow : new Color(0.7f, 0.7f, 0.7f);
                 billboard.AddComponent<SortingGroup>();
 
                 new MetaContextOld.Text(new(TextAttribute.BoldAttr) { Font = VanillaAsset.BrookFont, Size = new(2f, 0.4f), FontSize = 1.16f, FontMaxSize = 1.16f, FontMinSize = 1.16f }) { MyText = achievement.GetHeaderComponent() }.Generate(body, new Vector2(0.25f, 0.13f), out _);
@@ -583,7 +410,7 @@ namespace TheOtherRoles.Modules
                     button.OnMouseOver.Invoke();
                 }));
 
-                white.material.shader = materialShader;
+                white.material.shader = Helpers.achievementMaterialShader;
                 icon.sprite = trophySprite.GetSprite(achievement.Trophy);
 
                 return (billboard, animator, body, white);
@@ -661,7 +488,7 @@ namespace TheOtherRoles.Modules
             foreach (var ach in achievements)
             {
                 var billboard = CreateBillboard(ach.achievement, ach.clearState);
-                if (ach.clearState == ClearState.FirstClear)
+                if (ach.clearState == ClearDisplayState.FirstClear)
                 {
                     coroutineHolder.StartCoroutine(CoShowFirstClear(billboard).WrapToIl2Cpp());
                     yield return new WaitForSeconds(1.05f);
@@ -676,6 +503,292 @@ namespace TheOtherRoles.Modules
             }
 
             yield break;
+        }
+
+        static public void LoadAchievements()
+        {
+            using var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("TheOtherRoles.Resources.Achievements.dat")!);
+
+            List<AchievementType> types = new();
+
+            while (true)
+            {
+                types.Clear();
+                var line = reader.ReadLine();
+                if (line == null) break;
+                if (line.StartsWith("#")) continue;
+
+                var args = line.Split(',');
+
+                if (args.Length < 2) continue;
+
+                bool clearOnce = false;
+                bool noHint = false;
+                bool secret = false;
+                bool seasonal = false;
+                bool isNotChallenge = false;
+
+                IEnumerable<RoleInfo> relatedRoles = [];
+
+                int rarity = int.Parse(args[1]);
+                int goal = 1;
+                for (int i = 2; i < args.Length - 1; i++)
+                {
+                    var arg = args[i];
+
+                    switch (arg)
+                    {
+                        case "once":
+                            clearOnce = true;
+                            break;
+                        case "noHint":
+                            noHint = true;
+                            break;
+                        case "secret":
+                            secret = true;
+                            break;
+                        case "seasonal":
+                            seasonal = true;
+                            break;
+                        case "nonChallenge":
+                            isNotChallenge = true;
+                            break;
+                        case string a when a.StartsWith("goal-"):
+                            goal = int.Parse(a.Substring(5));
+                            break;
+                    }
+                }
+
+                if (seasonal) types.Add(AchievementType.Seasonal);
+                if (secret) types.Add(AchievementType.Secret);
+
+                var nameSplitted = args[0].Split('.');
+                if (nameSplitted.Length > 1)
+                {
+                    if (nameSplitted[0] == "combination" && nameSplitted.Length > 2 && int.TryParse(nameSplitted[1], out var num) && nameSplitted.Length >= 2 + num)
+                    {
+                        relatedRoles = Helpers.Sequential(num).Select(i =>
+                        {
+                            var roleName = nameSplitted[2 + i].Replace('-', '.');
+                            return RoleInfo.allRoleInfos.FirstOrDefault(a => a.nameKey == roleName);
+                        }).Where(r => r != null).ToArray()!;
+                        if (rarity == 2 && !isNotChallenge) types.Add(AchievementType.Challenge);
+                    }
+                    else
+                    {
+                        nameSplitted[0] = nameSplitted[0].Replace('-', '.');
+                        var cand = RoleInfo.allRoleInfos.FirstOrDefault(a => a.nameKey == nameSplitted[0]);
+                        if (cand != null)
+                        {
+                            relatedRoles = [cand];
+                            if (rarity == 2 && !isNotChallenge)
+                            {
+                                types.Add(AchievementType.Challenge);
+                            }
+                        }
+                    }
+                }
+
+                new StandardAchievement(clearOnce, secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
+            }
+
+            foreach (var achievement in AllAchievements) achievement.CheckClear();
+        }
+    }
+
+    public interface ITORAchievement
+    {
+        static public TextComponent HiddenComponent = new RawTextComponent("???");
+        static public TextComponent HiddenDescriptiveComponent = new ColorTextComponent(new Color(0.4f, 0.4f, 0.4f), new TranslateTextComponent("achievementTitleHidden"));
+        static public TextComponent HiddenDetailComponent = new ColorTextComponent(new Color(0.8f, 0.8f, 0.8f), new TranslateTextComponent("achievementTitleHiddenDetail"));
+        static public TextAttributes DetailTitleAttribute { get; private set; } = new TextAttributes(GUI.API.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
+        static private TextAttributes DetailContentAttribute = new(GUI.API.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
+
+        string Id { get; }
+        public string TranslateKeyInfo
+        {
+            get
+            {
+                return Id.Replace(".", "");
+            }
+        }
+        string TranslationKey => TranslateKeyInfo + "AchievementTitle";
+        string GoalTranslationKey => TranslateKeyInfo + "AchievementGoal";
+        string CondTranslationKey => TranslateKeyInfo + "AchievementCond";
+        string FlavorTranslationKey => TranslateKeyInfo + "AchievementFlavor";
+
+        int Trophy { get; }
+        bool IsHidden { get; }
+        bool IsCleared { get; }
+        bool NoHint { get; }
+        IEnumerable<RoleInfo> RelatedRole { get; }
+        IEnumerable<AchievementType> AchievementType();
+        static public IDividedSpriteLoader TrophySprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.Trophy.png", 100f, 3);
+
+        public IEnumerable<string> GetKeywords()
+        {
+            foreach (var r in RelatedRole) yield return r.name;
+            yield return ModTranslation.getString(GoalTranslationKey);
+            yield return ModTranslation.getString(CondTranslationKey, tryFind: true) ?? "";
+            if (IsCleared)
+            {
+                yield return ModTranslation.getString(TranslationKey);
+                yield return ModTranslation.getString(FlavorTranslationKey, tryFind: true) ?? "";
+            }
+        }
+
+        public TextComponent GetHeaderComponent()
+        {
+            List<TextComponent> list = new();
+
+            foreach (var r in RelatedRole)
+            {
+                if (list.Count != 0) list.Add(new RawTextComponent(" & "));
+                list.Add(GUI.Instance.TextComponent(r.orgColor, r.nameKey));
+            }
+
+            foreach (var type in AchievementType())
+            {
+                if (list.Count != 0) list.Add(new RawTextComponent(" "));
+                list.Add(new TranslateTextComponent(type.TranslationKey));
+            }
+
+            if (list.Count > 0)
+                return new CombinedTextComponent(list.ToArray());
+            else
+                return null;
+        }
+
+        public GUIContext GetOverlayContext(bool hiddenNotClearedAchievement = true, bool showCleared = false, bool showTitleInfo = false, bool showTorophy = false, bool showFlavor = false)
+        {
+            var detailTitleAttr = new TextAttributes(GUI.API.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
+            var detailDetailAttr = new TextAttributes(GUI.API.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
+
+            List<GUIContext> list = new()
+            {
+                new TORGUIText(GUIAlignment.Left, DetailContentAttribute, GetHeaderComponent())
+            };
+            List<GUIContext> titleList = new();
+            if (showTorophy)
+            {
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(-0.04f, 0.2f)));
+                titleList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => TrophySprite.GetSprite(Trophy)), new(0.3f, 0.3f)));
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.05f, 0.2f)));
+            }
+            titleList.Add(new TORGUIText(GUIAlignment.Left, DetailTitleAttribute, GetTitleComponent(hiddenNotClearedAchievement ? HiddenDescriptiveComponent : null)));
+
+            if (showCleared && IsCleared)
+            {
+                titleList.Add(new TORGUIMargin(GUIAlignment.Left, new(0.2f, 0.2f)));
+                titleList.Add(new TORGUIText(GUIAlignment.Left, DetailContentAttribute, GUI.API.TextComponent(new(1f, 1f, 0f), "achievementCleared")));
+            }
+
+            list.Add(new HorizontalContextsHolder(GUIAlignment.Left, titleList));
+            list.Add(new TORGUIText(GUIAlignment.Left, DetailContentAttribute, GetDetailComponent()));
+
+            if (showFlavor)
+            {
+                var flavor = GetFlavorComponent();
+                if (flavor != null)
+                {
+                    list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.12f)));
+                    list.Add(new TORGUIText(GUIAlignment.Left, DetailContentAttribute, flavor) { PostBuilder = text => text.outlineColor = Color.clear });
+                }
+            }
+
+            if (showTitleInfo && IsCleared)
+            {
+                list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.2f)));
+                list.Add(new TORGUIText(GUIAlignment.Left, DetailContentAttribute, new LazyTextComponent(() =>
+                (TORAchievementManager.MyTitle == this) ?
+                ("<b>" + ModTranslation.getString("achievementEquipped").Color(Color.green) + "</b><br>" + ModTranslation.getString("achievementUnequip")) :
+                ModTranslation.getString("achievementEquip"))));
+            }
+
+            return new VerticalContextsHolder(GUIAlignment.Left, list) { BackImage = RelatedRole.Any() ? TheOtherRoles.RoleData.GetIllustration(RelatedRole.FirstOrDefault().roleId) : null, GrayoutedBackImage = !(IsCleared || !hiddenNotClearedAchievement) };
+        }
+
+        public TextComponent GetTitleComponent(TextComponent hiddenComponent)
+        {
+            if (hiddenComponent != null && !IsCleared)
+                return hiddenComponent;
+            return new TranslateTextComponent(TranslationKey);
+        }
+
+        public TextComponent GetDetailComponent()
+        {
+            List<TextComponent> list = new();
+            if (!NoHint || IsCleared)
+                list.Add(new TranslateTextComponent(GoalTranslationKey));
+            else
+                list.Add(HiddenDetailComponent);
+            list.Add(new LazyTextComponent(() =>
+            {
+                StringBuilder builder = new();
+                var cond = ModTranslation.getString(CondTranslationKey, tryFind: true);
+                if (cond != null && cond.Length > 0)
+                {
+                    builder.Append("<size=75%><br><br>");
+                    builder.Append(ModTranslation.getString("achievementCond"));
+                    foreach (var c in cond.Split('+'))
+                    {
+                        builder.Append("<br>   ");
+                        builder.Append(c);
+                    }
+                    builder.Append("</size>");
+                }
+                return builder.ToString();
+            }));
+
+            return new CombinedTextComponent(list.ToArray());
+        }
+
+        TextComponent GetFlavorComponent()
+        {
+            var text = ModTranslation.getString(FlavorTranslationKey, tryFind: true);
+            if (text == null) return null;
+            return new RawTextComponent($"<color=#e7e5ca><size=78%><i>{text}</i></size></color>");
+        }
+
+        GUIContext GetDetailContext() => null;
+        ClearDisplayState CheckClear() { return ClearDisplayState.None; }
+    }
+
+    public class AbstractAchievement : ProgressRecord, ITORAchievement
+    {
+        public static AchievementToken<(bool isCleared, bool triggered)> GenerateSimpleTriggerToken(string achievement) => new(achievement, (false, false), (val, _) => val.isCleared);
+        bool isSecret;
+        bool noHint;
+
+        public IEnumerable<RoleInfo> role;
+        public IEnumerable<AchievementType> type;
+        public int Trophy { get; private init; }
+        public bool NoHint => noHint;
+        public IEnumerable<RoleInfo> RelatedRole => role;
+        public IEnumerable<AchievementType> AchievementType() => type;
+        public bool IsHidden
+        {
+            get
+            {
+                return isSecret && !IsCleared;
+            }
+        }
+
+        public AbstractAchievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, IEnumerable<RoleInfo> role, IEnumerable<AchievementType> type, int trophy) : base(key, goal, canClearOnce)
+        {
+            this.isSecret = isSecret;
+            this.noHint = noHint;
+            this.type = type;
+            this.role = role;
+            this.Trophy = trophy;
+        }
+    }
+
+    public class StandardAchievement : AbstractAchievement
+    {
+        public StandardAchievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, IEnumerable<RoleInfo> role, IEnumerable<AchievementType> type, int trophy)
+            : base(canClearOnce, isSecret, noHint, key, goal, role, type, trophy)
+        {
         }
     }
 }

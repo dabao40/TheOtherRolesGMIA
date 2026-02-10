@@ -241,6 +241,9 @@ namespace TheOtherRoles.Patches {
                 UnityEngine.Object.Destroy(array[i].gameObject);
             }
 
+            if (exiled != null && !PlayerControl.LocalPlayer.Data.IsDead && Helpers.CurrentMonth == 3)
+                _ = new StaticAchievementToken("graduation");
+
             MapBehaviourPatch.resetRealTasks();
 
             if (CustomOptionHolder.randomGameStartPosition.getBool() && (AntiTeleport.antiTeleport.FindAll(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId).Count == 0))

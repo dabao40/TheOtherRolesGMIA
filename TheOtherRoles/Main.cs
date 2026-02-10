@@ -130,7 +130,7 @@ namespace TheOtherRoles
             CustomColors.Load();
             CustomHatManager.LoadHats();
             AssetLoader.LoadAssets();
-            Achievement.LoadAchievements();
+            TORAchievementManager.LoadAchievements();
             EventDetail.Load();
             TranslatableTag.Load();
             if (ToggleCursor.Value) Helpers.enableCursor(true);

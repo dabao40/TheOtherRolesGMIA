@@ -20,7 +20,7 @@ namespace TheOtherRoles.Modules
         static TitleShower() => ClassInjector.RegisterTypeInIl2Cpp<TitleShower>();
 
         private TMPro.TextMeshPro text = null!;
-        private Achievement achievement = null;
+        private ITORAchievement achievement = null;
         private BoxCollider2D collider = null!;
 
         private PlayerControl player = null!;
@@ -56,9 +56,9 @@ namespace TheOtherRoles.Modules
             }));
         }
 
-        public Achievement SetAchievement(string achievement)
+        public ITORAchievement SetAchievement(string achievement)
         {
-            if (Achievement.GetAchievement(achievement, out var ach))
+            if (TORAchievementManager.GetAchievement(achievement, out var ach))
             {
                 text.text = ModTranslation.getString(ach.TranslationKey);
                 text.ForceMeshUpdate();
@@ -118,7 +118,7 @@ namespace TheOtherRoles.Modules
                 yield return new WaitForSeconds(0.5f);
                 if (PlayerControl.LocalPlayer?.AmOwner == true)
                 {
-                    var ach = Achievement.MyTitle?.Id ?? "-";
+                    var ach = TORAchievementManager.MyTitle?.Id ?? "-";
                     RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, ach));
                 }
             }

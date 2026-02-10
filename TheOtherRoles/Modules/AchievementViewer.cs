@@ -28,7 +28,7 @@ namespace TheOtherRoles.Modules
             TransitionFade.Instance.DoTransitionFade(null!, obj.gameObject, () => { mainMenu.mainMenuUI.SetActive(false); }, () => { obj.OnShown(); });
         }
 
-        static public GUIContext GenerateContext(float scrollerHeight, float width, string scrollerTag = null, Predicate<Achievement> predicate = null, string shownText = null)
+        static public GUIContext GenerateContext(float scrollerHeight, float width, string scrollerTag = null, Predicate<ITORAchievement> predicate = null, string shownText = null)
         {
             scrollerTag ??= "Achievements";
 
@@ -40,33 +40,57 @@ namespace TheOtherRoles.Modules
             var headerAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardLeft)) { FontSize = new(1.1f) };
             var detailTitleAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
             var detailDetailAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
+            var groupAttr = new TextAttributes(gui.GetAttribute(AttributeParams.OblongLeft)) { FontSize = new(1.6f) };
 
-            foreach (var a in Achievement.allAchievements.Where(a => (predicate?.Invoke(a) ?? true) && !a.IsHidden))
+            void AddGroup(string group, IEnumerable<ITORAchievement> achievements)
             {
-                if (inner.Count != 0) inner.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.08f)));
+                bool first = true;
+                foreach (var a in achievements.Where(a => (predicate?.Invoke(a) ?? true) && !a.IsHidden))
+                {
+                    if (first)
+                    {
+                        inner.Add(new TORGUIText(GUIAlignment.Left, groupAttr, new TranslateTextComponent("achievementGroup" + group)));
+                        first = false;
+                    }
 
-                var aContenxt = new HorizontalContextsHolder(GUIAlignment.Left,
-                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Achievement.TrophySprite.GetSprite(a.Trophy)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true },
-                    new TORGUIMargin(GUIAlignment.Left, new(0.15f, 0.1f)),
-                    new VerticalContextsHolder(GUIAlignment.Center,
+                    if (inner.Count != 0) inner.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.08f)));
+
+                    List<GUIContext> context = [
                         new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
                         new TORGUIMargin(GUIAlignment.Left, new(0f, -0.021f)),
-                        new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(Achievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
-                            OnClickText = (() => { if (a.IsCleared) { Achievement.SetOrToggleTitle(a); } }, true)}
-                    )
+                        new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(ITORAchievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
+                            OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)}
+                    ];
+                    var progress = a.GetDetailContext();
+                    if (progress != null)
+                        context.Add(progress);
+
+                    var achievementContent = new VerticalContextsHolder(GUIAlignment.Center, context);
+
+                    var aContenxt = new HorizontalContextsHolder(GUIAlignment.Left,
+                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => ITORAchievement.TrophySprite.GetSprite(a.Trophy)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true },
+                    new TORGUIMargin(GUIAlignment.Left, new(0.15f, 0.1f)),
+                    achievementContent
                     );
-                inner.Add(aContenxt);
+
+                    inner.Add(aContenxt);
+                }
             }
+
+            AddGroup("Recently", TORAchievementManager.RecentlyCleared);
+            AddGroup("Roles", TORAchievementManager.AllAchievements.Where(a => !a.RelatedRole.IsEmpty()));
+            AddGroup("Seasonal", TORAchievementManager.AllAchievements.Where(a => a.RelatedRole.IsEmpty() && !a.AchievementType().IsEmpty() && a.AchievementType().First() == AchievementType.Seasonal));
+
             var scroller = new GUIScrollView(GUIAlignment.Center, new(4.7f, scrollerHeight), holder);
 
-            var cul = Achievement.Aggregate(predicate);
+            var cul = TORAchievementManager.Aggregate(predicate);
             List<GUIContext> footerList = new();
             for (int i = 0; i < cul.Length; i++)
             {
                 int copiedIndex = i;
                 if (footerList.Count != 0) footerList.Add(new TORGUIMargin(GUIAlignment.Center, new(0.2f, 0f)));
 
-                footerList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => Achievement.TrophySprite.GetSprite(copiedIndex)), new(0.5f, 0.5f)));
+                footerList.Add(new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => ITORAchievement.TrophySprite.GetSprite(copiedIndex)), new(0.5f, 0.5f)));
                 footerList.Add(new TORGUIMargin(GUIAlignment.Center, new(0.05f, 0f)));
                 footerList.Add(new TORGUIText(GUIAlignment.Left, detailDetailAttr, new RawTextComponent(cul[i].num + "/" + cul[i].max)));
             }

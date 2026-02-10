@@ -55,7 +55,12 @@ namespace TheOtherRoles.Roles
             float penalty = penalized ? killPenalty : 0f;
             if (PlayerControl.LocalPlayer == player) {
                 player.SetKillTimerUnchecked(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + penalty);
-                if (stealthed) acTokenChallenge.Value++;
+                if (stealthed)
+                {
+                    acTokenChallenge.Value++;
+                    if (Helpers.CurrentMonth == 11 && Helpers.isSkeld())
+                        _ = new StaticAchievementToken("halloween");
+                }
             }
         }
 

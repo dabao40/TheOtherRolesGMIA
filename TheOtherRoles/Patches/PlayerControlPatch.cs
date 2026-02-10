@@ -871,6 +871,12 @@ namespace TheOtherRoles.Patches {
                 Medium.futureDeadBodies.Add(new Tuple<DeadPlayer, Vector3>(deadPlayer, target.transform.position));
             }
 
+            if (PlayerControl.LocalPlayer == target && Helpers.CurrentMonth == 4 && Helpers.isSkeld())
+                _ = new StaticAchievementToken("rainyStep");
+
+            if (PlayerControl.LocalPlayer == __instance && Helpers.CurrentMonth == 8 && Helpers.isFungle() && Bloody.bloody.Any(x => x.PlayerId == target.PlayerId))
+                _ = new StaticAchievementToken("watermelon");
+
             if (PlayerControl.LocalPlayer.isRole(RoleId.Seer)) {
                 if (__instance.Data.Role.IsImpostor && __instance != target) Seer.local.acTokenAnother.Value.impKill = true;
                 if (Seer.canSeeKillTeams)

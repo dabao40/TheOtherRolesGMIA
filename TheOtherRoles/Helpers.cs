@@ -1071,6 +1071,12 @@ namespace TheOtherRoles
             return false;
         }
 
+        public static Shader achievementMaterialShader;
+
+        static public bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any(_ => true);
+
+        public static int CurrentMonth => DateTime.Now.Month;
+
         public class DestroyInfo
         {
             public DestroyInfo(string searchName, bool isFindChild = true)

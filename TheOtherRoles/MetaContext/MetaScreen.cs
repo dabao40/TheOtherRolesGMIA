@@ -322,7 +322,7 @@ namespace TheOtherRoles.MetaContext
             renderer.transform.localScale = new(imageScale, imageScale);
             renderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             renderer.color = new(brightness, brightness, brightness, alpha);
-            if (grayout) renderer.material.shader = Modules.Achievement.materialShader;
+            if (grayout) renderer.material.shader = Helpers.achievementMaterialShader;
         }
     }
 

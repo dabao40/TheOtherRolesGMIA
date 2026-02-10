@@ -45,7 +45,7 @@ namespace TheOtherRoles.Modules
         {
             var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets");
             var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
-            Achievement.materialShader = assetBundleBundle.LoadAsset<Shader>("Sprites-White").DontUnload();
+            Helpers.achievementMaterialShader = assetBundleBundle.LoadAsset<Shader>("Sprites-White").DontUnload();
         }
     }
 }
