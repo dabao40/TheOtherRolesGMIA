@@ -284,8 +284,12 @@ namespace TheOtherRoles.Roles
                 if (otherLover != null)
                 {
                     Lovers.eraseCouple(lover);
-                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoveStolen);
+                    if (!otherLover.Data.IsDead)
+                    {
+                        otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
+                        GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoveStolen);
+                        if (PlayerControl.LocalPlayer == otherLover) _ = new StaticAchievementToken("combination.2.akujo.lover.another1");
+                    }
                 }
             }
             if (isKeep(lover) || isHonmei(lover))

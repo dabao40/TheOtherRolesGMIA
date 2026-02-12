@@ -15,8 +15,6 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Zephyr;
             numUses = Mathf.RoundToInt(CustomOptionHolder.zephyrNumberOfCannons.getFloat());
-            acTokenAnother = null;
-            acTokenChallenge = null;
         }
 
         public static readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "zephyrCannonHint")];
@@ -30,15 +28,6 @@ namespace TheOtherRoles.Roles
         public static float cannonAttenuation;
         public static bool leaveEvidence;
         public static bool triggerBothCooldown;
-        public AchievementToken<int> acTokenAnother = null;
-        public AchievementToken<int> acTokenChallenge = null;
-
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenAnother ??= new("zephyr.another1", 0, (val, _) => val >= 3);
-            acTokenChallenge ??= new("zephyr.challenge", 0, (val, _) => val >= 5);
-        }
 
         public static Color color = Palette.ImpostorRed;
 
@@ -93,12 +82,7 @@ namespace TheOtherRoles.Roles
                 if (player.isRole(RoleId.Bait)) Bait.getRole(player).OnDeath(zephyr);
             }).WrapToIl2Cpp());
 
-            if (PlayerControl.LocalPlayer == zephyr)
-            {
-                var zephyrRole = getRole(zephyr);
-                if (zephyrRole != null && zephyrRole.acTokenChallenge != null)
-                    zephyrRole.acTokenChallenge.Value++;
-            }
+            if (PlayerControl.LocalPlayer == zephyr) _ = new StaticAchievementToken("zephyr.challenge");
         }
 
         public static void RpcFireCannon(PlayerControl player, PlayerControl zephyr, Vector2 to)

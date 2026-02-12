@@ -28,12 +28,6 @@ namespace TheOtherRoles.Roles
             })));
         });
 
-        public static RemoteProcess<byte> GainAchievement = RemotePrimitiveProcess.OfByte("UnlockVeteranAch", (message, _) =>
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == message)
-                new StaticAchievementToken("veteran.challenge");
-        });
-
         public static float alertDuration = 3f;
         public static float cooldown = 30f;
 

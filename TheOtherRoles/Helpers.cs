@@ -788,7 +788,7 @@ namespace TheOtherRoles
                 if (Noisemaker.players.Any(x => x.player == PlayerControl.LocalPlayer && x.target == target))
                 {
                     _ = new StaticAchievementToken("noisemaker.common1");
-                    Noisemaker.local.acTokenChallenge.Value++;
+                    _ = new StaticAchievementToken("noisemaker.challenge");
                     Noisemaker.local.target = null;
                 }
             }
@@ -1072,6 +1072,7 @@ namespace TheOtherRoles
         }
 
         public static Shader achievementMaterialShader;
+        public static Shader achievementProgressShader;
 
         static public bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any(_ => true);
 
@@ -1970,7 +1971,8 @@ namespace TheOtherRoles
             // Kill the killer if Veteran is on alert
             else if (Veteran.players.Any(x => x.player == target && x.alertActive))
             {
-                Veteran.GainAchievement.Invoke(target.PlayerId);
+                RPCProcedure.RpcClearAchievement.Invoke(("veteran.challenge", target.PlayerId));
+                RPCProcedure.RpcClearAchievement.Invoke(("veteran.challenge2", target.PlayerId));
                 return MurderAttemptResult.ReverseKill;
             }
 

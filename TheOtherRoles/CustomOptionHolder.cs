@@ -1208,7 +1208,7 @@ namespace TheOtherRoles {
             taskMasterExtraCommonTasks = CustomOption.Create(7022, Types.Crewmate, "taskMasterExtraCommonTasks", 2f, 0f, 3f, 1f, taskMasterSpawnRate, false, "unitScrews");
             taskMasterExtraShortTasks = CustomOption.Create(7023, Types.Crewmate, "taskMasterExtraShortTasks", 2f, 1f, 23f, 1f, taskMasterSpawnRate, false, "unitScrews");
             taskMasterExtraLongTasks = CustomOption.Create(7024, Types.Crewmate, "taskMasterExtraLongTasks", 2f, 0f, 15f, 1f, taskMasterSpawnRate, false, "unitScrews");
-            taskMasterCanVent = CustomOption.Create(7025, Types.Crewmate, "taskMasterCanVent", true);
+            taskMasterCanVent = CustomOption.Create(7025, Types.Crewmate, "taskMasterCanVent", true, taskMasterSpawnRate);
 
             portalmakerSpawnRate = new CustomRoleOption(390, Types.Crewmate, "portalmaker", Portalmaker.color, 1);
             portalmakerCooldown = CustomOption.Create(391, Types.Crewmate, "portalmakerCooldown", 30f, 10f, 60f, 2.5f, portalmakerSpawnRate, false, "unitSeconds");

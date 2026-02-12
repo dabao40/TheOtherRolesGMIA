@@ -8882,7 +8882,8 @@
         "13": "\u82b1\u5f00\u5bcc\u8d35"
     },
     "watermelonAchievementCond": {
-        "0": "August Title"
+        "0": "August Title",
+        "13": "\u516b\u6708\u9650\u5b9a"
     },
     "watermelonAchievementGoal": {
         "0": "Kill A Player With Bloody On The Fungle",
@@ -9276,6 +9277,18 @@
         "13": "\u65f6\u95f4\u5012\u6d41\uff01",
         "14": "\u6642\u9593\u5012\u6d41\uff01"
     },
+    "timeMasterchallenge2AchievementFlavor": {
+        "0": "\"The one that controls the time...\"",
+        "13": "\"\u95e8\u524d\u6d41\u6c34\u5c1a\u80fd\u897f!\""
+    },
+    "timeMasterchallenge2AchievementGoal": {
+        "0": "Have The Time Rewind 10 Times",
+        "13": "\u81f3\u5c11\u56de\u6eaf\u65f6\u95f410\u6b21"
+    },
+    "timeMasterchallenge2AchievementTitle": {
+        "0": "Time Controller",
+        "13": "\u65f6\u95f4\u7ba1\u7406\u5458"
+    },
     "mediccommon1AchievementCond": {
         "0": "The Shield Must Be Given To A Crewmate",
         "11": "\u30af\u30eb\u30fc\u306b\u30b7\u30fc\u30eb\u30c9\u3092\u4ed8\u4e0e\u3059\u308b\u3053\u3068",
@@ -9585,9 +9598,9 @@
         "14": "\u4f60\u9003\u4e0d\u6389\u7684\uff01"
     },
     "mediumcommon1AchievementGoal": {
-        "0": "Question 3 Souls",
+        "0": "Question 3 Souls In One Game",
         "11": "3\u3064\u306e\u970a\u9b42\u306b\u8cea\u554f\u3059\u308b\u3002",
-        "13": "\u8be2\u95ee\u4e09\u4e2a\u7075\u9b42",
+        "13": "\u5728\u4e00\u5c40\u6e38\u620f\u4e2d\u8be2\u95ee\u4e09\u4e2a\u7075\u9b42",
         "14": "\u8a62\u554f\u4e09\u500b\u9748\u9b42"
     },
     "mediumcommon1AchievementTitle": {
@@ -9595,6 +9608,14 @@
         "11": "\u9b42\u306e\u4f1d\u9054\u8005",
         "13": "\u9634\u9633\u5927\u5e08",
         "14": "\u9670\u967d\u5927\u5e2b"
+    },
+    "mediumcommon2AchievementGoal": {
+        "0": "Question 15 Souls",
+        "13": "\u8be2\u95ee\u81f3\u5c1115\u4e2a\u7075\u9b42"
+    },
+    "mediumcommon2AchievementTitle": {
+        "0": "Speak Of The Dead",
+        "13": "\u53ea\u6709\u7075\u9b42\u624d\u4f1a\u8bf4\u771f\u8bdd"
     },
     "mediumchallengeAchievementFlavor": {
         "0": "\"A chill brushed his neck as a name formed in his mind\"",
@@ -9696,6 +9717,18 @@
         "11": "\u7121\u6575\u72b6\u614b",
         "13": "\u8c01\u6562\u6740\u6211\uff01",
         "14": "\u8ab0\u6562\u6bba\u6211\uff01"
+    },
+    "veteranchallenge2AchievementFlavor": {
+        "0": "\"Old soldiers never die; they just fade away\"",
+        "13": "\"\u5c04\u6740\u5c71\u4e2d\u767d\u989d\u864e\uff0c\u80af\u6570\u90ba\u4e0b\u9ec4\u987b\u513f!\""
+    },
+    "veteranchallenge2AchievementGoal": {
+        "0": "Kill 10 Players With The Alert",
+        "13": "\u4f7f\u7528\u8b66\u6212\u81f3\u5c11\u51fb\u674010\u540d\u73a9\u5bb6"
+    },
+    "veteranchallenge2AchievementTitle": {
+        "0": "You Shouldn't Have Tried",
+        "13": "\u8ba9\u4f60\u770b\u770b\u8001\u5175\u7684\u5b9e\u529b"
     },
     "sherlockcommon1AchievementGoal": {
         "0": "Record More Than 3 Kill Logs",
@@ -9870,9 +9903,9 @@
         "13": "\"\u8001\u9aa5\u4f0f\u67a5\uff0c\u65f6\u523b\u8b66\u60d5\u3002\""
     },
     "noisemakerchallengeAchievementGoal": {
-        "0": "Make 3 Successful Alerts",
+        "0": "Make 10 Successful Alerts",
         "11": "\u30a2\u30e9\u30fc\u30c8\u30923\u56de\u6210\u529f\u3055\u305b\u308b\u3002",
-        "13": "\u5e7f\u64ad\u81f3\u5c113\u6b21\u6210\u529f\u7684\u6b7b\u4ea1\u8b66\u544a",
+        "13": "\u5e7f\u64ad\u81f3\u5c1110\u6b21\u6210\u529f\u7684\u6b7b\u4ea1\u8b66\u544a",
         "14": "\u5ee3\u64ad\u81f3\u5c113\u6b21\u6210\u529f\u7684\u6b7b\u4ea1\u8b66\u544a"
     },
     "noisemakerchallengeAchievementTitle": {
@@ -10214,9 +10247,9 @@
         "14": "\u6253\u6383\u5e79\u51c8"
     },
     "cleanerchallengeAchievementGoal": {
-        "0": "Clean 3 Dead Bodies",
+        "0": "Clean 20 Dead Bodies",
         "11": "3\u6b7b\u4f53\u4ee5\u4e0a\u6383\u9664\u3059\u308b\u3002",
-        "13": "\u6e05\u7406\u81f3\u5c113\u540d\u73a9\u5bb6\u7684\u5c38\u4f53",
+        "13": "\u6e05\u7406\u81f3\u5c1120\u540d\u73a9\u5bb6\u7684\u5c38\u4f53",
         "14": "\u6e05\u7406\u81f3\u5c113\u540d\u73a9\u5bb6\u7684\u5c4d\u9ad4"
     },
     "cleanerchallengeAchievementTitle": {
@@ -10256,9 +10289,9 @@
         "14": "[BLANK]"
     },
     "warlockchallengeAchievementGoal": {
-        "0": "Kill At Least 3 Players With Your Curse",
+        "0": "Kill 20 Players With Your Curse",
         "11": "\u30af\u30eb\u30fc\u30923\u4eba\u4ee5\u4e0a\u546a\u6bba\u3059\u308b\u3002",
-        "13": "\u7528\u4f60\u7684\u5492\u6740\u81f3\u5c11\u51fb\u67403\u540d\u73a9\u5bb6",
+        "13": "\u7528\u4f60\u7684\u5492\u6740\u81f3\u5c11\u51fb\u674020\u540d\u73a9\u5bb6",
         "14": "\u7528\u4f60\u7684\u5492\u6bba\u81f3\u5c11\u64ca\u6bba3\u540d\u73a9\u5bb6"
     },
     "warlockchallengeAchievementTitle": {
@@ -10590,9 +10623,9 @@
         "14": "[BLANK]"
     },
     "trapperchallengeAchievementGoal": {
-        "0": "Kill 3 Players With Your Trap",
+        "0": "Kill 10 Players With Your Trap",
         "11": "3\u4eba\u4ee5\u4e0a\u3092\u30c8\u30e9\u30c3\u30d7\u3067\u30ad\u30eb\u3059\u308b\u3002",
-        "13": "\u7528\u9677\u9631\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6",
+        "13": "\u7528\u9677\u9631\u51fb\u6740\u81f3\u5c1110\u540d\u73a9\u5bb6",
         "14": "\u7528\u9677\u9631\u64ca\u6bba\u81f3\u5c113\u540d\u73a9\u5bb6"
     },
     "trapperchallengeAchievementTitle": {
@@ -10660,8 +10693,8 @@
         "14": "\u9589\u5634\uff01"
     },
     "mimicKchallengeAchievementGoal": {
-        "0": "Kill At Least 3 Players",
-        "13": "\u51fb\u6740\u81f3\u5c113\u540d\u73a9\u5bb6",
+        "0": "Kill At Least 20 Players",
+        "13": "\u51fb\u6740\u81f3\u5c1120\u540d\u73a9\u5bb6",
         "14": "\u64ca\u6bba\u81f3\u5c113\u540d\u73a9\u5bb6"
     },
     "mimicKchallengeAchievementTitle": {
@@ -10747,8 +10780,8 @@
         "14": "\u9810\u5099...\u767c\u5c04"
     },
     "zephyranother1AchievementGoal": {
-        "0": "Fire 3 Cannons",
-        "13": "\u53d1\u5c043\u6b21\u7a7a\u6c14\u70ae",
+        "0": "Fire 10 Cannons",
+        "13": "\u53d1\u5c0410\u6b21\u7a7a\u6c14\u70ae",
         "14": "\u767c\u5c043\u6b21\u7a7a\u6c23\u7832"
     },
     "zephyranother1AchievementTitle": {
@@ -10757,8 +10790,8 @@
         "14": "\u98db\u9ad8\u9ad8!"
     },
     "zephyrchallengeAchievementGoal": {
-        "0": "Blow Up At Least 5 Players",
-        "13": "\u81f3\u5c11\u5439\u65635\u540d\u73a9\u5bb6",
+        "0": "Blow Up At Least 15 Players",
+        "13": "\u81f3\u5c11\u5439\u656315\u540d\u73a9\u5bb6",
         "14": "\u81f3\u5c11\u5439\u65635\u540d\u73a9\u5bb6"
     },
     "zephyrchallengeAchievementTitle": {
@@ -10839,6 +10872,14 @@
         "0": "Apprentice!",
         "13": "\u6536\u5f92\uff01",
         "14": "\u6536\u5f92\uff01"
+    },
+    "jackalanother1AchievementGoal": {
+        "0": "Win Without Creating A Sidekick",
+        "13": "\u5728\u4e0d\u62db\u52df\u8ddf\u73ed\u7684\u60c5\u51b5\u4e0b\u83b7\u80dc"
+    },
+    "jackalanother1AchievementTitle": {
+        "0": "A Single Man",
+        "13": "\u5355\u67aa\u5339\u9a6c"
     },
     "jackalchallengeAchievementFlavor": {
         "0": "\"The last battle ended in a silence that drowned out the screams\"",
@@ -11050,6 +11091,14 @@
         "13": "\u5012\u53cd\u5929\u7f61",
         "14": "\u5012\u53cd\u5929\u7f61"
     },
+    "combination2corruptedShiftersidekickchallengeAchievementGoal": {
+        "0": "Get Shifted When Being The Sidekick",
+        "13": "\u4ee5\u8ddf\u73ed\u7684\u8eab\u4efd\u88ab\u8fde\u73af\u4ea4\u6362\u5e08\u6362\u8d70"
+    },
+    "combination2corruptedShiftersidekickchallengeAchievementTitle": {
+        "0": "A Condemned Man",
+        "13": "\u88ab\u629b\u5f03\u7684\u4eba"
+    },
     "plagueDoctorcommon1AchievementGoal": {
         "0": "Infect One Player",
         "13": "\u611f\u67d3\u4e00\u540d\u73a9\u5bb6",
@@ -11104,6 +11153,18 @@
         "13": "\u4e00\u5207\u90fd\u662f\u6700\u597d\u7684\u5b89\u6392",
         "14": "\u4e00\u5207\u90fd\u662f\u6700\u597d\u7684\u5b89\u6392"
     },
+    "combination2immoralistsidekickchallengeAchievementFlavor": {
+        "0": "\"I'm always ready to leave the Fox and join the Jackals\"",
+        "13": "\"\u6211\u65e9\u5c31\u51c6\u5907\u79bb\u5f00\u72d0\u5996\u5e76\u52a0\u5165\u8c7a\u72fc\u4e86\""
+    },
+    "combination2immoralistsidekickchallengeAchievementGoal": {
+        "0": "Get Sidekicked When Being The Immoralist",
+        "13": "\u4ee5\u80cc\u5fb7\u8005\u7684\u8eab\u4efd\u88ab\u62db\u52df\u4e3a\u8ddf\u73ed"
+    },
+    "combination2immoralistsidekickchallengeAchievementTitle": {
+        "0": "Closest Betrayal",
+        "13": "\u6700\u4eb2\u8fd1\u7684\u80cc\u53db"
+    },
     "akujocommon1AchievementGoal": {
         "0": "Make Someone Your Backup",
         "13": "\u9009\u62e9\u4e00\u540d\u73a9\u5bb6\u5f53\u505a\u5907\u80ce",
@@ -11128,6 +11189,18 @@
         "0": "Love You~",
         "13": "\u6211\u7231\u4f60\uff01",
         "14": "\u6211\u611b\u4f60\uff01"
+    },
+    "combination2akujoloveranother1AchievementFlavor": {
+        "0": "\"Such feeling cannot be recalled again;\nIt seemed lost even when it was felt then\"",
+        "13": "\"\u6b64\u60c5\u53ef\u5f85\u6210\u8ffd\u5fc6, \u53ea\u662f\u5f53\u65f6\u5df2\u60d8\u7136\u3002\""
+    },
+    "combination2akujoloveranother1AchievementGoal": {
+        "0": "Die Of Your Lover Stolen By The Akujo",
+        "13": "\u56e0\u88ab\u9b45\u9b54\u593a\u8d70\u7231\u4eba\u800c\u6b7b"
+    },
+    "combination2akujoloveranother1AchievementTitle": {
+        "0": "A Broken Heart",
+        "13": "\u652f\u79bb\u7834\u788e\u7684\u5fc3"
     },
     "akujochallengeAchievementGoal": {
         "0": "Win With Your True Love",
@@ -11284,6 +11357,14 @@
         "13": "\u771f\u597d\u5403...",
         "14": "\u9084\u633a\u597d\u5403\u7684"
     },
+    "pelicancommon2AchievementGoal": {
+        "0": "Swallow 20 Players",
+        "13": "\u751f\u541e\u81f3\u5c1120\u540d\u73a9\u5bb6"
+    },
+    "pelicancommon2AchievementTitle": {
+        "0": "What A Lovely Meal",
+        "13": "\u5403\u9971\u4e86..."
+    },
     "pelicananother1AchievementGoal": {
         "0": "Get Killed And Have The Eaten Players Revived",
         "13": "\u88ab\u51fb\u6740\u5e76\u91ca\u653e\u6240\u6709\u88ab\u541e\u566c\u7684\u73a9\u5bb6",
@@ -11305,7 +11386,7 @@
     },
     "pelicanchallengeAchievementTitle": {
         "0": "Swallow Them All!",
-        "13": "\u7ec8\u4e8e\u5403\u9971\u4e86...",
+        "13": "\u8bf7\u53eb\u6211\u5927\u80c3\u888b",
         "14": "\u5403\u98fd\u4e86!"
     },
     "yandereanother1AchievementGoal": {

@@ -975,6 +975,7 @@ namespace TheOtherRoles
             if(PlayerControl.LocalPlayer == player) {
                 resetTimeMasterButton();
                 _ = new StaticAchievementToken("timeMaster.challenge");
+                _ = new StaticAchievementToken("timeMaster.challenge2");
             }
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
             FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
@@ -1035,10 +1036,17 @@ namespace TheOtherRoles
                 return;
             }
 
-            if (!Shifter.isNeutral) {
+            if (!Shifter.isNeutral)
+            {
                 if (PlayerControl.LocalPlayer == oldShifter)
                     _ = new StaticAchievementToken("niceShifter.common1");
             }
+            else
+            {
+                if (PlayerControl.LocalPlayer == player && player.isRole(RoleId.Sidekick))
+                    _ = new StaticAchievementToken("combination.2.corruptedShifter.sidekick.challenge");
+            }
+
             Shifter.eraseRole(oldShifter);
 
             // Switch shield
@@ -1313,6 +1321,7 @@ namespace TheOtherRoles
             if (!Jackal.canCreateSidekickFromImpostor && player.Data.Role.IsImpostor) {
                 jackal.fakeSidekick = player;
             } else {
+                if (player.isRole(RoleId.Immoralist) && PlayerControl.LocalPlayer == player) _ = new StaticAchievementToken("combination.2.immoralist.sidekick.challenge");
                 bool wasSpy = player.isRole(RoleId.Spy);
                 bool wasImpostor = player.Data.Role.IsImpostor;  // This can only be reached if impostors can be sidekicked.
                 FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
@@ -1384,6 +1393,12 @@ namespace TheOtherRoles
             player.clearAllTasks();
             Fox.canCreateImmoralist = false;
         }
+
+        static public readonly RemoteProcess<(string achievement, byte playerId)> RpcClearAchievement = new("ClearAchievement", (message, _) =>
+        {
+            var player = Helpers.playerById(message.playerId);
+            if (player.AmOwner) new StaticAchievementToken(message.achievement);
+        });
 
         public static void placeAccel(byte id)
         {

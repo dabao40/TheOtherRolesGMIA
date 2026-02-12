@@ -48,7 +48,7 @@ namespace TheOtherRoles.Roles
             if (PlayerControl.LocalPlayer == trapper)
             {
                 new StaticAchievementToken("trapper.common1");
-                acTokenChallenge.Value++;
+                new StaticAchievementToken("trapper.challenge");
             }
             Trap.trapKill(message.trapId, trapper, target);
         });
@@ -84,8 +84,6 @@ namespace TheOtherRoles.Roles
 
         public static Sprite trapButtonSprite;
         public static DateTime placedTime;
-
-        public static AchievementToken<int> acTokenChallenge;
 
         public override void FixedUpdate()
         {
@@ -171,12 +169,6 @@ namespace TheOtherRoles.Roles
             }
         }
 
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenChallenge ??= new("trapper.challenge", 0, (val, _) => val >= 3);
-        }
-
         public static Sprite getTrapButtonSprite()
         {
             if (trapButtonSprite) return trapButtonSprite;
@@ -203,7 +195,6 @@ namespace TheOtherRoles.Roles
             maxDistance = CustomOptionHolder.trapperMaxDistance.getFloat();
             meetingFlag = false;
             Trap.clearAllTraps();
-            acTokenChallenge = null;
             players = [];
         }
     }

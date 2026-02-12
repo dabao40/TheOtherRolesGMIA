@@ -755,7 +755,7 @@ namespace TheOtherRoles
                         PlayerControl.LocalPlayer.killTimer = PlayerControl.LocalPlayer.GetKillCooldown();
 
                     _ = new StaticAchievementToken("zephyr.common1");
-                    Zephyr.local.acTokenAnother.Value++;
+                    _ = new StaticAchievementToken("zephyr.another1");
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Zephyr) && !PlayerControl.LocalPlayer.Data.IsDead && Zephyr.local.numUses > 0; },
                 () =>
@@ -2029,7 +2029,7 @@ namespace TheOtherRoles
                                 if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false))
                                 {
                                     _ = new StaticAchievementToken("cleaner.common1");
-                                    Cleaner.local.acTokenChallenge.Value++;
+                                    _ = new StaticAchievementToken("cleaner.challenge");
 
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
 
@@ -2078,7 +2078,7 @@ namespace TheOtherRoles
                         if (murder == MurderAttemptResult.SuppressKill) return;
                         if (murder == MurderAttemptResult.PerformKill) {
                             _ = new StaticAchievementToken("warlock.common1");
-                            Warlock.local.acTokenChallenge.Value++;
+                            _ = new StaticAchievementToken("warlock.challenge");
                             if (Warlock.local.curseVictimTarget == PlayerControl.LocalPlayer)
                                 _ = new StaticAchievementToken("warlock.another1");
                         }
@@ -3648,6 +3648,7 @@ namespace TheOtherRoles
                 Pelican.local.currentTarget = null;
                 pelicanKillButton.Timer = pelicanKillButton.MaxTimer;
                 _ = new StaticAchievementToken("pelican.common1");
+                _ = new StaticAchievementToken("pelican.common2");
             },
             () => { return PlayerControl.LocalPlayer.isRole(RoleId.Pelican) && !PlayerControl.LocalPlayer.Data.IsDead; },
             () => { return Pelican.local.currentTarget && PlayerControl.LocalPlayer.CanMove; },
@@ -3724,6 +3725,7 @@ namespace TheOtherRoles
                 Medium.duration,
                 () => {
                     Medium.local.acTokenCommon.Value++;
+                    _ = new StaticAchievementToken("medium.common2");
                     mediumButton.Timer = mediumButton.MaxTimer;
                     if (Medium.local.target == null || Medium.local.target.player == null) return;
                     if (Medium.showQuestionTarget) Medium.Question.Invoke((Medium.local.target.player.PlayerId, PlayerControl.LocalPlayer.PlayerId));

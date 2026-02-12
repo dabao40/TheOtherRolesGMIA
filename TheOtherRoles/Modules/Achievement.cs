@@ -589,7 +589,10 @@ namespace TheOtherRoles.Modules
                     }
                 }
 
-                new StandardAchievement(clearOnce, secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
+                if (goal > 1)
+                    new SumUpAchievement(secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
+                else
+                    new StandardAchievement(clearOnce, secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
             }
 
             foreach (var achievement in AllAchievements) achievement.CheckClear();
@@ -601,8 +604,8 @@ namespace TheOtherRoles.Modules
         static public TextComponent HiddenComponent = new RawTextComponent("???");
         static public TextComponent HiddenDescriptiveComponent = new ColorTextComponent(new Color(0.4f, 0.4f, 0.4f), new TranslateTextComponent("achievementTitleHidden"));
         static public TextComponent HiddenDetailComponent = new ColorTextComponent(new Color(0.8f, 0.8f, 0.8f), new TranslateTextComponent("achievementTitleHiddenDetail"));
-        static public TextAttributes DetailTitleAttribute { get; private set; } = new TextAttributes(GUI.API.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
-        static private TextAttributes DetailContentAttribute = new(GUI.API.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.5f), Size = new(5f, 6f) };
+        static public TextAttributes DetailTitleAttribute = GUI.API.GetAttribute(AttributeAsset.OverlayTitle);
+        static private TextAttributes DetailContentAttribute = GUI.API.GetAttribute(AttributeAsset.OverlayContent);
 
         string Id { get; }
         public string TranslateKeyInfo
@@ -789,6 +792,50 @@ namespace TheOtherRoles.Modules
         public StandardAchievement(bool canClearOnce, bool isSecret, bool noHint, string key, int goal, IEnumerable<RoleInfo> role, IEnumerable<AchievementType> type, int trophy)
             : base(canClearOnce, isSecret, noHint, key, goal, role, type, trophy)
         {
+        }
+    }
+
+    public class SumUpAchievement : AbstractAchievement, ITORAchievement
+    {
+        public SumUpAchievement(bool isSecret, bool noHint, string key, int goal, IEnumerable<RoleInfo> role, IEnumerable<AchievementType> type, int trophy)
+            : base(true, isSecret, noHint, key, goal, role, type, trophy)
+        {
+        }
+
+        SpriteLoader guageSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.ProgressGuage.png", 100f);
+
+        static private TextAttributes OblongAttribute = new(GUI.Instance.GetAttribute(AttributeParams.Oblong)) { FontSize = new(1.6f), Size = new(0.6f, 0.2f), Color = new(163, 204, 220) };
+        protected virtual void OnContextGenerated(GameObject obj) { }
+        GUIContext ITORAchievement.GetDetailContext()
+        {
+            //クリア済みなら何も出さない
+            if (IsCleared) return null;
+
+            return new TORGameObjectGUIWrapper(GUIAlignment.Left, () =>
+            {
+                var obj = Helpers.CreateObject("Progress", null, Vector3.zero, LayerMask.NameToLayer("UI"));
+                var backGround = Helpers.CreateObject<SpriteRenderer>("Background", obj.transform, new Vector3(0f, 0f, 0f));
+                var colored = Helpers.CreateObject<SpriteRenderer>("Colored", obj.transform, new Vector3(0f, 0f, -0.1f));
+
+                backGround.sprite = guageSprite.GetSprite();
+                backGround.color = new(0.21f, 0.21f, 0.21f);
+                backGround.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                backGround.sortingOrder = 1;
+
+                colored.sprite = guageSprite.GetSprite();
+                colored.material.shader = Helpers.achievementProgressShader;
+                colored.sharedMaterial.SetFloat("_Guage", Mathf.Min(1f, (float)Progress / (float)Goal));
+                colored.sharedMaterial.color = new(56f / 255f, 110f / 255f, 191f / 255f);
+                colored.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                colored.sortingOrder = 2;
+
+                var text = new TORGUIText(GUIAlignment.Center, OblongAttribute, new RawTextComponent(Progress + "  /  " + Goal)).Instantiate(new(1f, 0.2f), out _);
+                text!.transform.SetParent(obj.transform);
+
+                OnContextGenerated(obj);
+
+                return (obj, new(2f, 0.17f));
+            });
         }
     }
 }

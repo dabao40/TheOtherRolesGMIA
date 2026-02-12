@@ -556,7 +556,7 @@ public static class HelpMenu
                 ));
 
         var achievements = TORAchievementManager.AllAchievements.Where(a => a.RelatedRole.Contains(assignable) && !a.IsHidden).ToArray();
-        var context = achievements.Select(AchievementTitleContext);
+        var context = achievements.Where(a => a.RelatedRole.Count() <= 1).Concat(achievements.Where(a => a.RelatedRole.Count() > 1)).Select(AchievementTitleContext);
 
         if (achievements.Length == 0) return TORGUIContextEngine.API.EmptyContext;
 

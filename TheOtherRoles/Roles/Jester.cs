@@ -25,14 +25,6 @@ namespace TheOtherRoles.Roles
 
         public static RemoteProcess<byte> TriggerWin = RemotePrimitiveProcess.OfByte("JesterWin", (message, _) => players.FirstOrDefault(x => x.player?.PlayerId == message).triggerJesterWin = true);
 
-        public static RemoteProcess<byte> UnlockAch = RemotePrimitiveProcess.OfByte("UnlockJesterAch", (message, _) =>
-        {
-            if (PlayerControl.LocalPlayer.PlayerId == message)
-            {
-                new StaticAchievementToken("jester.common1");
-            }
-        });
-
         public static void clearAndReload()
         {
             if (players != null) players.Do(x => x.triggerJesterWin = false);

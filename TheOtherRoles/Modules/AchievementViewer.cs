@@ -34,8 +34,7 @@ namespace TheOtherRoles.Modules
 
             var gui = TORGUIContextEngine.API;
 
-            List<GUIContext> inner = new();
-            var holder = new VerticalContextsHolder(GUIAlignment.Left, inner);
+            List<GUIScrollDynamicInnerContent> inner = new();
             var attr = new TextAttributes(gui.GetAttribute(AttributeParams.OblongLeft)) { FontSize = new(1.85f) };
             var headerAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardLeft)) { FontSize = new(1.1f) };
             var detailTitleAttr = new TextAttributes(gui.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1.8f) };
@@ -49,31 +48,36 @@ namespace TheOtherRoles.Modules
                 {
                     if (first)
                     {
-                        inner.Add(new TORGUIText(GUIAlignment.Left, groupAttr, new TranslateTextComponent("achievementGroup" + group)));
+                        inner.Add(new(GUIAlignment.Left, new TORGUIText(GUIAlignment.Left, groupAttr, new TranslateTextComponent("achievementGroup" + group)), 0.5f));
                         first = false;
                     }
 
-                    if (inner.Count != 0) inner.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.08f)));
-
                     List<GUIContext> context = [
+                        new TORGUIMargin(GUIAlignment.Left, new(0f, 0.13f)),
                         new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
-                        new TORGUIMargin(GUIAlignment.Left, new(0f, -0.021f)),
+                        new TORGUIMargin(GUIAlignment.Left, new(0f, -0.12f)),
                         new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(ITORAchievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
-                            OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)}
+                            OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)},
                     ];
+
+                    float height = 0.75f;
                     var progress = a.GetDetailContext();
                     if (progress != null)
+                    {
                         context.Add(progress);
+                        height += 0.35f;
+                    }
 
                     var achievementContent = new VerticalContextsHolder(GUIAlignment.Center, context);
 
                     var aContenxt = new HorizontalContextsHolder(GUIAlignment.Left,
-                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => ITORAchievement.TrophySprite.GetSprite(a.Trophy)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true },
+                        new VerticalContextsHolder(GUIAlignment.Center, gui.VerticalMargin(0.05f),
+                    new TORGUIImage(GUIAlignment.Left, new WrapSpriteLoader(() => ITORAchievement.TrophySprite.GetSprite(a.Trophy)), new(0.38f, 0.38f), a.IsCleared ? Color.white : new UnityEngine.Color(0.2f, 0.2f, 0.2f)) { IsMasked = true }),
                     new TORGUIMargin(GUIAlignment.Left, new(0.15f, 0.1f)),
                     achievementContent
                     );
 
-                    inner.Add(aContenxt);
+                    inner.Add(new(GUIAlignment.Left, aContenxt, height));
                 }
             }
 
@@ -81,7 +85,7 @@ namespace TheOtherRoles.Modules
             AddGroup("Roles", TORAchievementManager.AllAchievements.Where(a => !a.RelatedRole.IsEmpty()));
             AddGroup("Seasonal", TORAchievementManager.AllAchievements.Where(a => a.RelatedRole.IsEmpty() && !a.AchievementType().IsEmpty() && a.AchievementType().First() == AchievementType.Seasonal));
 
-            var scroller = new GUIScrollView(GUIAlignment.Center, new(4.7f, scrollerHeight), holder);
+            var scroller = new GUIScrollDynamicView(GUIAlignment.Center, new(4.7f, scrollerHeight), inner) { ScrollerTag = scrollerTag, WithMask = true };
 
             var cul = TORAchievementManager.Aggregate(predicate);
             List<GUIContext> footerList = new();

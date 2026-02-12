@@ -505,10 +505,14 @@ namespace TheOtherRoles.Patches {
                         };
                         EndGameResult.CachedWinners.Add(wpd);
                     }
-                    if (PlayerControl.LocalPlayer.isRole(RoleId.Jackal) && GameHistory.deadPlayers != null && GameHistory.deadPlayers.Count > 0)
+                    if (PlayerControl.LocalPlayer.isRole(RoleId.Jackal))
                     {
-                        var lastDead = GameHistory.deadPlayers?.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
-                        if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == PlayerControl.LocalPlayer) _ = new StaticAchievementToken("jackal.challenge");
+                        if (GameHistory.deadPlayers != null && GameHistory.deadPlayers.Count > 0)
+                        {
+                            var lastDead = GameHistory.deadPlayers?.MinBy(p => DateTime.UtcNow.Subtract(p.timeOfDeath).TotalSeconds);
+                            if (lastDead.player?.Data.Role.IsImpostor == true && lastDead.killerIfExisting == PlayerControl.LocalPlayer) _ = new StaticAchievementToken("jackal.challenge");
+                        }
+                        if (Jackal.local.canCreateSidekick) _ = new StaticAchievementToken("jackal.another1");
                     }
                 }
                 // If there is a sidekick. The sidekick also wins

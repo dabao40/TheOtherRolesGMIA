@@ -11,7 +11,6 @@ namespace TheOtherRoles.Roles
         public PlayerControl currentTarget;
         public PlayerControl curseVictim;
         public PlayerControl curseVictimTarget;
-        public AchievementToken<int> acTokenChallenge;
 
         static public readonly HelpSprite[] HelpSprites = [new(getCurseButtonSprite(), "warlockCurseHint"), new(getCurseKillButtonSprite(), "warlockCurseKillHint")];
 
@@ -24,7 +23,6 @@ namespace TheOtherRoles.Roles
         public Warlock()
         {
             RoleId = roleId = RoleId.Warlock;
-            acTokenChallenge = null;
             currentTarget = null;
             curseVictim = null;
             curseVictimTarget = null;
@@ -34,12 +32,6 @@ namespace TheOtherRoles.Roles
         {
             curseVictim = null;
             curseVictimTarget = null;
-        }
-
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenChallenge ??= new("warlock.challenge", 0, (val, _) => val >= 3);
         }
 
         public static Sprite getCurseButtonSprite() {

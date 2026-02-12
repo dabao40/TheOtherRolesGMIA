@@ -21,8 +21,6 @@ namespace TheOtherRoles.Roles
         public static float arrowUpdateInterval = 0.5f;
         public static float specialCooldown = 20f;
 
-        public static AchievementToken<int> acTokenChallenge;
-
         public MimicK()
         {
             RoleId = roleId = RoleId.MimicK;
@@ -93,7 +91,7 @@ namespace TheOtherRoles.Roles
 
                 if (PlayerControl.LocalPlayer == player)
                 {
-                    acTokenChallenge.Value++;
+                    _ = new StaticAchievementToken("mimicK.challenge");
                     if (MimicA.isAlive()) PlayerControl.LocalPlayer.SetKillTimerUnchecked(specialCooldown);
                 }
 
@@ -167,12 +165,6 @@ namespace TheOtherRoles.Roles
             }
         }
 
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenChallenge ??= new("mimicK.challenge", 0, (val, _) => val >= 3);
-        }
-
         public override void ResetRole(bool isShifted)
         {
             MimicA.resetMorph();
@@ -191,7 +183,6 @@ namespace TheOtherRoles.Roles
             hasOneVote = CustomOptionHolder.mimicHasOneVote.getBool();
             countAsOne = CustomOptionHolder.mimicCountAsOne.getBool();
             specialCooldown = CustomOptionHolder.mimicSpecialCooldown.getFloat();
-            acTokenChallenge = null;
             players = [];
         }
     }

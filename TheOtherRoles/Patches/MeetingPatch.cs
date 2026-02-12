@@ -78,7 +78,7 @@ namespace TheOtherRoles.Patches
                             Detective.GainAchievement.Invoke((playerVoteArea.VotedFor, playerVoteArea.TargetPlayerId));
                         foreach (var jester in Jester.allPlayers) {
                             if (jester.PlayerId != playerVoteArea.TargetPlayerId && playerVoteArea.VotedFor == jester.PlayerId)
-                                Jester.UnlockAch.Invoke(jester.PlayerId);
+                                RPCProcedure.RpcClearAchievement.Invoke(("jester.common1", jester.PlayerId));
                         }
                         if (dictionary.TryGetValue(playerVoteArea.VotedFor, out float currentVotes))
                             dictionary[playerVoteArea.VotedFor] = currentVotes + additionalVotes;

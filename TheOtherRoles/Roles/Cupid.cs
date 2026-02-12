@@ -156,11 +156,14 @@ namespace TheOtherRoles.Roles
             if (p1.isLovers())
             {
                 PlayerControl otherLover = p1.getPartner();
-                if (otherLover != null && otherLover != p2 && !otherLover.Data.IsDead)
+                if (otherLover != null && otherLover != p2)
                 {
                     Lovers.eraseCouple(p1);
-                    otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
-                    GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoveStolen);
+                    if (!otherLover.Data.IsDead)
+                    {
+                        otherLover.MurderPlayer(otherLover, MurderResultFlags.Succeeded);
+                        GameHistory.overrideDeathReasonAndKiller(otherLover, DeadPlayer.CustomDeathReason.LoveStolen);
+                    }
                 }
                 else if (otherLover == p2)
                     Lovers.eraseCouple(p1);

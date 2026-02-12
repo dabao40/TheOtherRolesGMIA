@@ -13,14 +13,11 @@ namespace TheOtherRoles.Roles
         public PlayerControl currentTarget = null;
         public PlayerControl target = null;
 
-        public AchievementToken<int> acTokenChallenge = null;
-
         public Noisemaker()
         {
             RoleId = roleId = RoleId.Noisemaker;
             currentTarget = null;
             target = null;
-            acTokenChallenge = null;
             numSound = Mathf.RoundToInt(CustomOptionHolder.noisemakerSoundNumber.getFloat());
         }
 
@@ -39,12 +36,6 @@ namespace TheOtherRoles.Roles
             currentTarget = setTarget();
             if (target == null && numSound > 0)
                 setPlayerOutline(currentTarget, color);
-        }
-
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenChallenge ??= new("noisemaker.challenge", 0, (val, _) => val >= 3);
         }
 
         public enum SoundTarget

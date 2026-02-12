@@ -11,19 +11,10 @@ namespace TheOtherRoles.Roles
         public Cleaner()
         {
             RoleId = roleId = RoleId.Cleaner;
-            acTokenChallenge = null;
         }
 
         public static float cooldown = 30f;
         public static bool canSeeBodies = true;
-
-        public AchievementToken<int> acTokenChallenge;
-
-        public override void PostInit()
-        {
-            if (PlayerControl.LocalPlayer != player) return;
-            acTokenChallenge ??= new("cleaner.challenge", 0, (val, _) => val >= 3);
-        }
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Cleaner.png");
 
