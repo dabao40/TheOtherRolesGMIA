@@ -318,11 +318,18 @@ namespace TheOtherRoles.Modules
                 else
                     myTitleEntry.Value = "-";
 
-                if (PlayerControl.LocalPlayer && !ShipStatus.Instance && PlayerControl.LocalPlayer.AmOwner)
-                {
-                    RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, myTitleEntry.Value));
-                }
+                if (PlayerControl.LocalPlayer && !ShipStatus.Instance) RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, myTitleEntry.Value));
             }
+        }
+
+        public static void RequireShare()
+        {
+            static IEnumerator CoShareAchievement()
+            {
+                yield return new WaitForSeconds(0.5f);
+                RPCProcedure.RpcRequireHandShake.Invoke();
+            }
+            AmongUsClient.Instance.StartCoroutine(CoShareAchievement().WrapToIl2Cpp());
         }
 
         static public (int num, int max, int hidden)[] Aggregate(Predicate<ITORAchievement> predicate)

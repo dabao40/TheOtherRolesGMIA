@@ -17,6 +17,7 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
+using static Il2CppMono.Security.X509.X520;
 using static TheOtherRoles.GameHistory;
 using static TheOtherRoles.HudManagerStartPatch;
 using static TheOtherRoles.TheOtherRoles;
@@ -250,7 +251,7 @@ namespace TheOtherRoles
             if (IsDummy)
                 localBodyProcess.Invoke();
             else
-                RPCRouter.SendRpc("Invoker", hash, (writer) => sender.Invoke(writer), () => localBodyProcess.Invoke());
+                RPCRouter.SendRpc("Invoker", hash, (writer) => sender.Invoke(writer), () => localBodyProcess.Invoke(), true);
         }
 
         public void InvokeLocal()
@@ -290,11 +291,11 @@ namespace TheOtherRoles
 
         static RPCSection currentSection = null;
         static List<RPCInvoker> evacuateds = [];
-        public static void SendRpc(string name, int hash, Action<MessageWriter> sender, Action localBodyProcess)
+        public static void SendRpc(string name, int hash, Action<MessageWriter> sender, Action localBodyProcess, bool shouldBeReliable)
         {
             if (currentSection == null)
             {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, 128, SendOption.Reliable, -1);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, 128, shouldBeReliable ? SendOption.Reliable : SendOption.None, -1);
                 writer.Write(hash);
                 sender.Invoke(writer);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -323,8 +324,10 @@ namespace TheOtherRoles
         public int Hash { get; private set; } = -1;
         public string Name { get; private set; }
 
+        public bool ShouldBeReliable { get; private init; } = true;
 
-        public RemoteProcessBase(string name)
+
+        public RemoteProcessBase(string name, bool shouldBeReliable)
         {
             Hash = name.ComputeConstantHash();
             Name = name;
@@ -332,6 +335,7 @@ namespace TheOtherRoles
             if (AllTORProcess.ContainsKey(Hash)) TheOtherRolesPlugin.Logger.LogWarning(name + " is duplicated. (" + Hash + ")");
 
             AllTORProcess[Hash] = this;
+            ShouldBeReliable = shouldBeReliable;
         }
 
         static private void SwapMethodPointer(MethodInfo method0, MethodInfo method1)
@@ -480,15 +484,15 @@ namespace TheOtherRoles
         private Func<MessageReader, Parameter> Receiver { get; set; }
         private Process Body { get; set; }
 
-        public RemoteProcess(string name, Action<MessageWriter, Parameter> sender, Func<MessageReader, Parameter> receiver, Process process)
-        : base(name)
+        public RemoteProcess(string name, Action<MessageWriter, Parameter> sender, Func<MessageReader, Parameter> receiver, Process process, bool shouldBeReliable = true)
+        : base(name, shouldBeReliable)
         {
             Sender = sender;
             Receiver = receiver;
             Body = process;
         }
 
-        public RemoteProcess(string name, Process process) : base(name)
+        public RemoteProcess(string name, Process process, bool shouldBeReliable = true) : base(name, shouldBeReliable)
         {
             Body = process;
             RemoteProcessAsset.GetMessageTreater<Parameter>(out var sender, out var receiver);
@@ -499,7 +503,7 @@ namespace TheOtherRoles
 
         public void Invoke(Parameter parameter)
         {
-            RPCRouter.SendRpc(Name, Hash, (writer) => Sender(writer, parameter), () => Body.Invoke(parameter, true));
+            RPCRouter.SendRpc(Name, Hash, (writer) => Sender(writer, parameter), () => Body.Invoke(parameter, true), ShouldBeReliable);
         }
 
         public RPCInvoker GetInvoker(Parameter parameter)
@@ -540,7 +544,7 @@ namespace TheOtherRoles
     public class CombinedRemoteProcess : RemoteProcessBase
     {
         public static CombinedRemoteProcess CombinedRPC = new();
-        CombinedRemoteProcess() : base("CombinedRPC") { }
+        CombinedRemoteProcess() : base("CombinedRPC", true) { }
 
         public override void Receive(MessageReader reader)
         {
@@ -561,7 +565,7 @@ namespace TheOtherRoles
                         invoker.InvokeLocal();
                 }
             },
-            () => { });
+            () => { }, ShouldBeReliable);
         }
     }
 
@@ -569,15 +573,15 @@ namespace TheOtherRoles
     {
         public delegate void Process(bool isCalledByMe);
         private Process Body { get; set; }
-        public RemoteProcess(string name, Process process)
-        : base(name)
+        public RemoteProcess(string name, Process process, bool shouldBeReliable = true)
+        : base(name, shouldBeReliable)
         {
             Body = process;
         }
 
         public void Invoke()
         {
-            RPCRouter.SendRpc(Name, Hash, (writer) => { }, () => Body.Invoke(true));
+            RPCRouter.SendRpc(Name, Hash, (writer) => { }, () => Body.Invoke(true), ShouldBeReliable);
         }
 
         public RPCInvoker GetInvoker()
@@ -608,7 +612,7 @@ namespace TheOtherRoles
         private Process Body { get; set; }
 
         public DivisibleRemoteProcess(string name, Func<Parameter, IEnumerator<DividedParameter>> divider, Action<MessageWriter, DividedParameter> dividedSender, Func<MessageReader, DividedParameter> receiver, DivisibleRemoteProcess<Parameter, DividedParameter>.Process process)
-        : base(name)
+        : base(name, true)
         {
             Divider = divider;
             DividedSender = dividedSender;
@@ -617,7 +621,7 @@ namespace TheOtherRoles
         }
 
         public DivisibleRemoteProcess(string name, Func<Parameter, IEnumerator<DividedParameter>> divider, DivisibleRemoteProcess<Parameter, DividedParameter>.Process process)
-        : base(name)
+        : base(name, true)
         {
             Divider = divider;
             RemoteProcessAsset.GetMessageTreater<DividedParameter>(out var sender, out var receiver);
@@ -630,7 +634,7 @@ namespace TheOtherRoles
         {
             void dividedSend(DividedParameter param)
             {
-                RPCRouter.SendRpc(Name, Hash, (writer) => DividedSender(writer, param), () => Body.Invoke(param, true));
+                RPCRouter.SendRpc(Name, Hash, (writer) => DividedSender(writer, param), () => Body.Invoke(param, true), false);
             }
             var enumerator = Divider.Invoke(parameter);
             while (enumerator.MoveNext()) dividedSend(enumerator.Current);
@@ -1185,7 +1189,13 @@ namespace TheOtherRoles
                 var titleShower = Helpers.playerById(message.playerId).GetTitleShower();
                 TORGameManager.Instance.TitleMap[message.playerId] = titleShower.SetAchievement(message.achievement);
             }
-        });
+        }, false);
+
+        public static RemoteProcess RpcRequireHandShake = new("RequireHandShake", (isCalledByMe) =>
+        {
+            var ach = TORAchievementManager.MyTitle?.Id ?? "-";
+            ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, ach));
+        }, false);
 
         public static RemoteProcess<(byte playerId, byte channelType, string message)> SendChatToChannel = new("SendCahtToChanel", (message, _) =>
         {

@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
+using TheOtherRoles.MetaContext;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -25,6 +28,7 @@ public class TORGameManager
     {
         instance = this;
         RuntimeAsset = new();
+        SendHandshakeRequest();
     }
 
     public void RecordRoleHistory(PlayerControl player)
@@ -49,6 +53,23 @@ public class TORGameManager
         RuntimeAsset.MinimapPrefab = ShipStatus.Instance.MapPrefab;
         RuntimeAsset.MinimapPrefab.gameObject.MarkDontUnload();
         RuntimeAsset.MapScale = ShipStatus.Instance.MapScale;
+    }
+
+    void SendHandshakeRequest()
+    {
+        IEnumerator CoHandshake()
+        {
+            while (!PlayerControl.LocalPlayer) yield return Effects.Wait(0.2f);
+            var localPlayer = PlayerControl.LocalPlayer;
+            PlayerControl hostPlayer = null!;
+            do
+            {
+                hostPlayer = PlayerControl.AllPlayerControls.Find((Il2CppSystem.Predicate<PlayerControl>)(p => AmongUsClient.Instance.HostId == p.OwnerId));
+            } while (!hostPlayer);
+
+            TORAchievementManager.RequireShare();
+        }
+        TORGUIManager.Instance.StartCoroutine(CoHandshake().WrapToIl2Cpp());
     }
 }
 

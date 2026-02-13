@@ -1,17 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
-using Hazel;
 using InnerNet;
 using TheOtherRoles.MetaContext;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using static Il2CppMono.Security.X509.X520;
 
 namespace TheOtherRoles.Modules
 {
@@ -104,45 +97,6 @@ namespace TheOtherRoles.Modules
                 TORGUIManager.Instance?.CloseAllUI();
                 if (this) Destroy(this);
             }
-        }
-    }
-
-    public class TitleShowPlayer : MonoBehaviour
-    {
-        static TitleShowPlayer() => ClassInjector.RegisterTypeInIl2Cpp<TitleShowPlayer>();
-
-        public static void RequireShare()
-        {
-            static IEnumerator CoShareAchievement()
-            {
-                yield return new WaitForSeconds(0.5f);
-                if (PlayerControl.LocalPlayer?.AmOwner == true)
-                {
-                    var ach = TORAchievementManager.MyTitle?.Id ?? "-";
-                    RPCProcedure.ShareAchievement.Invoke((PlayerControl.LocalPlayer.PlayerId, ach));
-                }
-            }
-            AmongUsClient.Instance.StartCoroutine(CoShareAchievement().WrapToIl2Cpp());
-        }
-
-        public void Start()
-        {
-            static IEnumerator CoWaitAndUpdate()
-            {
-                RequireShare();
-                yield return new WaitForSeconds(0.5f);
-            }
-            StartCoroutine(CoWaitAndUpdate().WrapToIl2Cpp());
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
-    public class EnableTitleShowerPatch
-    {
-        public static void Postfix(PlayerControl __instance)
-        {
-            if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started) return;
-            __instance.gameObject.AddComponent<TitleShowPlayer>();
         }
     }
 }
