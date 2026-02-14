@@ -16,7 +16,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 namespace TheOtherRoles.Modules;
-
+#if WINDOWS
 public class BepInExUpdater : MonoBehaviour
 {
     public const string RequiredBepInExVersion = "6.0.0-be.735+5fef3570f212b2fb5fbe9c1d20487c13c2fa90cb";
@@ -83,3 +83,4 @@ public static class StopLoadingMainMenu
         return !BepInExUpdater.UpdateRequired;
     }
 }
+#endif

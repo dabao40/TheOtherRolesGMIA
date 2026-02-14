@@ -2189,7 +2189,9 @@ namespace TheOtherRoles
                 }
                 if ((now - compileTime)?.TotalDays > TheOtherRolesPlugin.betaDays) {
                     TheOtherRolesPlugin.Logger.LogMessage($"Beta expired!");
+#if WINDOWS
                     BepInExUpdater.MessageBoxTimeout(BepInExUpdater.GetForegroundWindow(), "BETA is expired. You cannot play this version anymore.", "The Other Roles Beta", 0,0, 10000);
+#endif
                     Application.Quit();
 
                 } else TheOtherRolesPlugin.Logger.LogMessage($"Beta will remain runnable for {TheOtherRolesPlugin.betaDays - (now - compileTime)?.TotalDays} days!");

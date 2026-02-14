@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-
+    strategy:
+      matrix:
+        config: [Windows, Android]
     steps:
       - uses: actions/cache@v4
         with:
@@ -28,11 +30,11 @@ jobs:
         with:
           dotnet-version: 6.x
 
-      - name: Build
-        run: dotnet build TheOtherRoles/TheOtherRoles.csproj --configuration Release
+      - name: Build ${{ matrix.config }}
+        run: dotnet build TheOtherRoles/TheOtherRoles.csproj --configuration ${{ matrix.config }}
 
-      - name: Upload TheOtherRoles
+      - name: Upload artifact for ${{ matrix.config }}
         uses: actions/upload-artifact@v4
         with:
-          name: TheOtherRoles.dll
-          path: TheOtherRoles/bin/Release/net6.0/TheOtherRoles.dll
+          name: TheOtherRoles-${{ matrix.config }}
+          path: TheOtherRoles/bin/${{ matrix.config }}/net6.0/TheOtherRoles.dll
