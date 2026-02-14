@@ -209,7 +209,11 @@ namespace TheOtherRoles.Roles
             players = [];
         }
 
+#if WINDOWS
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
+#else
+        [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CoBegin))]
+#endif
         class IntroCutsceneOnDestroyPatchForBomber
         {
             public static void Prefix(IntroCutscene __instance)

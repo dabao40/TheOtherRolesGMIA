@@ -1084,7 +1084,7 @@ namespace TheOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(KillAnimation._CoPerformKill_d__2), nameof(KillAnimation._CoPerformKill_d__2.MoveNext))]
+    [HarmonyPatch(typeof(KillAnimation._CoPerformKill_d__2), "MoveNext")]
     class KillAnimationCoPerformKillPatch {
         public static bool hideNextAnimation = false;
         public static void Prefix(KillAnimation._CoPerformKill_d__2 __instance) {

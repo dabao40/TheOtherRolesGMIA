@@ -27,7 +27,11 @@ namespace TheOtherRoles.Modules
 
             try
             {
-                var AssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.assetsbundle");
+#if WINDOWS
+                var AssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.assetsbundle-Windows");
+#else
+                var AssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.assetsbundle-Android");
+#endif
 
                 if (AssetBundleStream == null)
                 {

@@ -1473,12 +1473,14 @@ namespace TheOtherRoles {
         }
     }
 
-    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
-    public class AmongUsClientOnPlayerJoinedPatch {
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CreatePlayer))]
+    public class AmongUsClientCreatePlayerPatch {
         public static void Postfix() {
             if (PlayerControl.LocalPlayer != null && AmongUsClient.Instance.AmHost) {
                     GameManager.Instance.LogicOptions.SyncOptions();
                     CustomOption.ShareOptionSelections();
+
+                TheOtherRolesPlugin.Logger.LogError("Snap Settings!");
             }
         }
     }
