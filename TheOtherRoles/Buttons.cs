@@ -3615,6 +3615,7 @@ namespace TheOtherRoles
                                 if (Vector2.Distance(truePosition2, truePosition) <= PlayerControl.LocalPlayer.MaxReportDistance && PlayerControl.LocalPlayer.CanMove && !PhysicsHelpers.AnythingBetween(truePosition, truePosition2, Constants.ShipAndObjectsMask, false)) {
                                     NetworkedPlayerInfo playerInfo = GameData.Instance.GetPlayerById(component.ParentId);
                                     _ = new StaticAchievementToken("vulture.common1");
+                                    _ = new StaticAchievementToken("vulture.common2");
                                     RPCProcedure.CleanBody.Invoke((playerInfo.PlayerId, PlayerControl.LocalPlayer.PlayerId));
 
                                     Vulture.cooldown = vultureEatButton.Timer = vultureEatButton.MaxTimer;

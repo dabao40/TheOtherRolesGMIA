@@ -9617,6 +9617,38 @@
         "0": "Speak Of The Dead",
         "13": "\u53ea\u6709\u7075\u9b42\u624d\u4f1a\u8bf4\u771f\u8bdd"
     },
+    "mediumanother1myRoleRecord": {
+        "0": "The Dead Player's Role",
+        "13": "\u6b7b\u8005\u7684\u804c\u4e1a"
+    },
+    "mediumanother1killersColorRecord": {
+        "0": "The Killer's Color",
+        "13": "\u51f6\u624b\u7684\u989c\u8272"
+    },
+    "mediumanother1deathStampRecord": {
+        "0": "Time Of Death",
+        "13": "\u6b7b\u4ea1\u65f6\u95f4"
+    },
+    "mediumanother1killersRoleRecord": {
+        "0": "The Killer's Role",
+        "13": "\u51f6\u624b\u7684\u804c\u4e1a"
+    },
+    "mediumanother1specialInfoRecord": {
+        "0": "Special Info",
+        "13": "\u7279\u6b8a\u4fe1\u606f"
+    },
+    "mediumanother1AchievementFlavor": {
+        "0": "\"Talented and skillful\"",
+        "13": "\"\u563b\uff0c\u6280\u4ea6\u7075\u602a\u77e3\u54c9\""
+    },
+    "mediumanother1AchievementGoal": {
+        "0": "Collect All The Medium Infos",
+        "13": "\u6536\u96c6\u6240\u6709\u901a\u7075\u5e08\u7684\u4fe1\u606f"
+    },
+    "mediumanother1AchievementTitle": {
+        "0": "A Talented Medium",
+        "13": "\u8d44\u6df1\u901a\u7075\u5e08"
+    },
     "mediumchallengeAchievementFlavor": {
         "0": "\"A chill brushed his neck as a name formed in his mind\"",
         "13": "\"\u4e34\u909b\u9053\u58eb\u9e3f\u90fd\u5ba2\uff0c\u80fd\u4ee5\u7cbe\u8bda\u81f4\u9b42\u9b44\u3002\""
@@ -10944,6 +10976,14 @@
         "13": "\u541e\u566c\u8005",
         "14": "\u541e\u566c\u8005"
     },
+    "vulturecommon2AchievementGoal": {
+        "0": "Eat 20 Dead Bodies",
+        "13": "\u5403\u638920\u4e2a\u5c38\u4f53"
+    },
+    "vulturecommon2AchievementTitle": {
+        "0": "Yummy",
+        "13": "\u8fd9\u53ef\u771f\u662f\u592a\u597d\u5403\u4e86"
+    },
     "vulturechallengeAchievementGoal": {
         "0": "Win The Game As Vulture",
         "13": "\u4ee5\u79c3\u9e6b\u7684\u8eab\u4efd\u83b7\u5f97\u80dc\u5229",
@@ -11050,6 +11090,14 @@
         "0": "Do Whatever It Takes",
         "13": "\u82df\u4e14\u5077\u751f",
         "14": "\u830d\u4e14\u5077\u751f"
+    },
+    "opportunistchallengeAchievementGoal": {
+        "0": "Win 20 Times As The Opportunist",
+        "13": "\u4ee5\u6295\u673a\u8005\u7684\u8eab\u4efd\u80dc\u522920\u6b21"
+    },
+    "opportunistchallengeAchievementTitle": {
+        "0": "Outsider",
+        "13": "\u5c40\u5916\u4eba"
     },
     "corruptedShiftercommon1AchievementGoal": {
         "0": "Steal Someone Else's Role",
@@ -11328,14 +11376,58 @@
         "14": "\u6211\u5e0c\u671b\u6211\u80fd\u61c2\u5f97\u611b\u60c5\u7684\u7f8e\u597d..."
     },
     "doomsayercommon1AchievementGoal": {
-        "0": "Observe A Player",
-        "13": "\u6d1e\u5bdf\u4e00\u540d\u73a9\u5bb6",
+        "0": "Observe 10 Player",
+        "13": "\u6d1e\u5bdf10\u540d\u73a9\u5bb6",
         "14": "\u6d1e\u5bdf\u4e00\u540d\u73a9\u5bb6"
     },
     "doomsayercommon1AchievementTitle": {
         "0": "Let Me See...",
         "13": "\u4e56~\u8ba9\u6211\u770b\u770b",
         "14": "\u4e56~\u8b93\u6211\u770b\u770b"
+    },
+    "doomsayercommon2killingRecord": {
+        "0": "Relentless Attacks",
+        "13": "\u55dc\u8840\u7684\u672c\u6027"
+    },
+    "doomsayercommon2trickRecord": {
+        "0": "Special Tricks",
+        "13": "\u7279\u6b8a\u7edd\u6280"
+    },
+    "doomsayercommon2detectRecord": {
+        "0": "Private Information",
+        "13": "\u79c1\u5bb6\u4fe1\u606f"
+    },
+    "doomsayercommon2bodyRecord": {
+        "0": "Obsession With Bodies",
+        "13": "\u5bf9\u5c38\u4f53\u6709\u5174\u8da3"
+    },
+    "doomsayercommon2panicRecord": {
+        "0": "Creates Fear",
+        "13": "\u5236\u9020\u6050\u614c"
+    },
+    "doomsayercommon2teamRecord": {
+        "0": "Has Team",
+        "13": "\u62e5\u6709\u56e2\u961f"
+    },
+    "doomsayercommon2protectionRecord": {
+        "0": "Guard Players",
+        "13": "\u4fdd\u62a4\u4ed6\u4eba"
+    },
+    "doomsayercommon2outlookRecord": {
+        "0": "Altered Perception",
+        "13": "\u7279\u6b8a\u7684\u4e16\u754c\u89c2"
+    },
+    "doomsayercommon2huntingRecord": {
+        "0": "Hunt Down Preys",
+        "13": "\u72e9\u730e\u7684\u5929\u8d4b"
+    },
+    "doomsayercommon2AchievementGoal": {
+        "0": "Collect All The Doomsayer Infos",
+        "13": "\u96c6\u9f50\u5168\u90e8\u672b\u65e5\u9884\u8a00\u5bb6\u4fe1\u606f"
+    },
+    "doomsayercommon2AchievementTitle": {
+        "0": "The Widespread Of Doom",
+        "13": "\u672b\u65e5\u7684\u6050\u614c"
     },
     "doomsayerchallengeAchievementGoal": {
         "0": "Guess Enough Players And Win The Game",

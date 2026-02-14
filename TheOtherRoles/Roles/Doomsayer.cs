@@ -65,31 +65,40 @@ namespace TheOtherRoles.Roles
                 if (RoleInfo.Killing.Contains(info)) {
                     msg = "doomsayerKillingInfo";
                     list = RoleInfo.Killing;
+                    _ = new StaticAchievementToken("doomsayer.common2.killing");
                 } else if (RoleInfo.Trick.Contains(info)) {
                     msg = "doomsayerTrickInfo";
                     list = RoleInfo.Trick;
+                    _ = new StaticAchievementToken("doomsayer.common2.trick");
                 } else if (RoleInfo.Detect.Contains(info)) {
                     msg = "doomsayerDetectInfo";
                     list = RoleInfo.Detect;
+                    _ = new StaticAchievementToken("doomsayer.common2.detect");
                 } else if (RoleInfo.Panic.Contains(info)) {
                     msg = "doomsayerPanicInfo";
                     list = RoleInfo.Panic;
+                    _ = new StaticAchievementToken("doomsayer.common2.panic");
                 } else if (RoleInfo.Body.Contains(info)) {
                     msg = "doomsayerBodyInfo";
                     list = RoleInfo.Body;
+                    _ = new StaticAchievementToken("doomsayer.common2.body");
                 } else if (RoleInfo.Team.Contains(info)) {
                     msg = "doomsayerTeamInfo";
                     list = new(RoleInfo.Team);
                     list.RemoveAll(x => x.roleId == RoleId.BomberB);
+                    _ = new StaticAchievementToken("doomsayer.common2.team");
                 } else if (RoleInfo.Protection.Contains(info)) {
                     msg = "doomsayerProtectionInfo";
                     list = RoleInfo.Protection;
+                    _ = new StaticAchievementToken("doomsayer.common2.protection");
                 } else if (RoleInfo.Outlook.Contains(info)) {
                     msg = "doomsayerOutlookInfo";
                     list = RoleInfo.Outlook;
+                    _ = new StaticAchievementToken("doomsayer.common2.outlook");
                 } else if (RoleInfo.Hunting.Contains(info)) {
                     msg = "doomsayerHuntingInfo";
                     list = RoleInfo.Hunting;
+                    _ = new StaticAchievementToken("doomsayer.common2.hunting");
                 } else if (info.roleId is RoleId.Crewmate or RoleId.Impostor) {
                     msg = "doomsayerRolelessInfo";
                     list = [RoleInfo.crewmate, RoleInfo.impostor];

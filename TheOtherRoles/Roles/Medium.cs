@@ -246,6 +246,7 @@ namespace TheOtherRoles.Roles
             
             if (infos.Count > 0) {
                 var selectedInfo = infos[rnd.Next(infos.Count)];
+                _ = new StaticAchievementToken("medium.another1.specialInfo");
                 switch (selectedInfo) {
                     case SpecialMediumInfo.SheriffSuicide:
                         msg = ModTranslation.getString("mediumSheriffSuicide");
@@ -286,11 +287,30 @@ namespace TheOtherRoles.Roles
                 var roleInfo = RoleInfo.getRoleInfoForPlayer(this.target.player);
 
                 if (randomNumber == 0)
-                    if (!roleInfo.Contains(RoleInfo.impostor) && !roleInfo.Contains(RoleInfo.crewmate)) msg = string.Format(ModTranslation.getString("mediumQuestion1"), RoleInfo.GetRolesString(this.target.player, false, includeHidden: true));
-                    else msg = string.Format(ModTranslation.getString("mediumQuestion5"), roleString);
-                else if (randomNumber == 1) msg = string.Format(ModTranslation.getString("mediumQuestion2"), typeOfColor);
-                else if (randomNumber == 2) msg = string.Format(ModTranslation.getString("mediumQuestion3"), Math.Round(timeSinceDeath / 1000));
-                else msg = string.Format(ModTranslation.getString("mediumQuestion4"), RoleInfo.GetRolesString(this.target.killerIfExisting, false, false, true, includeHidden: true));
+                {
+                    if (!roleInfo.Contains(RoleInfo.impostor) && !roleInfo.Contains(RoleInfo.crewmate)) {
+                        msg = string.Format(ModTranslation.getString("mediumQuestion1"), RoleInfo.GetRolesString(this.target.player, false, includeHidden: true));
+                    } else {
+                        msg = string.Format(ModTranslation.getString("mediumQuestion5"), roleString);
+                    }
+
+                    _ = new StaticAchievementToken("medium.another1.myRole");
+                }
+                else if (randomNumber == 1)
+                {
+                    msg = string.Format(ModTranslation.getString("mediumQuestion2"), typeOfColor);
+                    _ = new StaticAchievementToken("medium.another1.killersColor");
+                }
+                else if (randomNumber == 2)
+                {
+                    msg = string.Format(ModTranslation.getString("mediumQuestion3"), Math.Round(timeSinceDeath / 1000));
+                    _ = new StaticAchievementToken("medium.another1.deathStamp");
+                }
+                else
+                {
+                    msg = string.Format(ModTranslation.getString("mediumQuestion4"), RoleInfo.GetRolesString(this.target.killerIfExisting, false, false, true, includeHidden: true));
+                    _ = new StaticAchievementToken("medium.another1.killersRole");
+                }
             }
 
             if (rnd.NextDouble() < chanceAdditionalInfo) {

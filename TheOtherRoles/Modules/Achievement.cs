@@ -516,6 +516,7 @@ namespace TheOtherRoles.Modules
         {
             using var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("TheOtherRoles.Resources.Achievements.dat")!);
 
+            List<ProgressRecord> recordsList = new();
             List<AchievementType> types = new();
 
             while (true)
@@ -534,6 +535,8 @@ namespace TheOtherRoles.Modules
                 bool secret = false;
                 bool seasonal = false;
                 bool isNotChallenge = false;
+                bool isRecord = false;
+                IEnumerable<ProgressRecord> records = recordsList;
 
                 IEnumerable<RoleInfo> relatedRoles = [];
 
@@ -562,6 +565,15 @@ namespace TheOtherRoles.Modules
                             break;
                         case string a when a.StartsWith("goal-"):
                             goal = int.Parse(a.Substring(5));
+                            break;
+                        case "isRecord":
+                            isRecord = true;
+                            break;
+                        case string a when a.StartsWith("record-"):
+                            if (allRecords.TryGetValue(a.Substring(7), out var r))
+                                recordsList.Add(r);
+                            else
+                                TheOtherRolesPlugin.Logger.LogError("The record \"" + a.Substring(7) + "\" was not found.");
                             break;
                     }
                 }
@@ -596,10 +608,16 @@ namespace TheOtherRoles.Modules
                     }
                 }
 
-                if (goal > 1)
+                if (isRecord)
+                    new DisplayProgressRecord(args[0], goal, args[0] + "Record");
+                else if (!records.IsEmpty())
+                    new CompleteAchievement(records.ToArray(), secret, noHint, args[0], relatedRoles, types.ToArray(), rarity);
+                else if (goal > 1)
                     new SumUpAchievement(secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
                 else
                     new StandardAchievement(clearOnce, secret, noHint, args[0], goal, relatedRoles, types.ToArray(), rarity);
+
+                if (recordsList.Count > 0) recordsList.Clear();
             }
 
             foreach (var achievement in AllAchievements) achievement.CheckClear();
@@ -763,6 +781,53 @@ namespace TheOtherRoles.Modules
         GUIContext GetDetailContext() => null;
         ClearDisplayState CheckClear() { return ClearDisplayState.None; }
     }
+
+    public class DisplayProgressRecord : ProgressRecord
+    {
+        string translationKey;
+        public DisplayProgressRecord(string key, int goal, string translationKey) : base(key, goal, true)
+        {
+            this.translationKey = translationKey;
+        }
+
+        public override string TranslationKey => translationKey.Replace(".", "");
+    }
+
+    public class CompleteAchievement : SumUpAchievement, ITORAchievement
+    {
+        ProgressRecord[] records;
+        public CompleteAchievement(ProgressRecord[] allRecords, bool isSecret, bool noHint, string key, IEnumerable<RoleInfo> role, IEnumerable<AchievementType> type, int trophy)
+            : base(isSecret, noHint, key, allRecords.Length, role, type, trophy)
+        {
+            this.records = allRecords;
+        }
+
+        ClearDisplayState ITORAchievement.CheckClear()
+        {
+            bool wasCleared = IsCleared;
+            UpdateProgress(records.Count(r => r.IsCleared));
+
+            if (!wasCleared) return IsCleared ? ClearDisplayState.FirstClear : ClearDisplayState.None;
+            return ClearDisplayState.None;
+        }
+
+        static private TextAttributes TextAttr = new(GUI.Instance.GetAttribute(AttributeParams.StandardBaredLeft)) { FontSize = new(1.25f) };
+        protected override void OnContextGenerated(GameObject obj)
+        {
+            var collider = Helpers.CreateObject<BoxCollider2D>("Overlay", obj.transform, Vector3.zero);
+            collider.size = new(2f, 0.17f);
+            collider.isTrigger = true;
+
+            var button = collider.gameObject.SetUpButton();
+            button.OnMouseOver.AddListener((Action)(() =>
+            {
+                string text = string.Join("\n", records.Select(r => "- " + ModTranslation.getString(r.TranslationKey).Color(r.IsCleared ? Color.green : Color.white)));
+                TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TextAttr, new RawTextComponent(text)));
+            }));
+            button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+        }
+    }
+
 
     public class AbstractAchievement : ProgressRecord, ITORAchievement
     {

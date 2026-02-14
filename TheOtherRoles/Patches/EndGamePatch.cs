@@ -636,7 +636,11 @@ namespace TheOtherRoles.Patches {
                 {
                     if (p.player == null || p.player.Data.IsDead || p.notAckedExile) continue;
                     if (!EndGameResult.CachedWinners.ToArray().Any(x => x.PlayerName == p.player.Data.PlayerName)) {
-                        if (PlayerControl.LocalPlayer == p.player) _ = new StaticAchievementToken("opportunist.common1");
+                        if (PlayerControl.LocalPlayer == p.player)
+                        {
+                            _ = new StaticAchievementToken("opportunist.common1");
+                            _ = new StaticAchievementToken("opportunist.challenge");
+                        }
                         EndGameResult.CachedWinners.Add(new CachedPlayerData(p.player.Data));
                     }
                     oppWin = true;
