@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Reactor.Utilities.Extensions;
 using TheOtherRoles.Objects;
@@ -11,42 +12,149 @@ namespace TheOtherRoles.Modules
         private static bool flag = false;
         static internal AssetBundle AssetBundle { get; private set; } = null!;
 
+        public static Dictionary<string, AudioClip> AudioClips { get; private set; } = new();
+        public static Dictionary<string, Sprite> Sprites { get; private set; } = new();
+        public static Dictionary<string, Shader> Shaders { get; private set; } = new();
+
         public static void LoadAssets()
         {
-            if (flag) return;
+            if (flag)
+            {
+                return;
+            }
+
             flag = true;
-            LoadAudioAssets();
-            LoadSpriteAssets();
-            LoadShaderAssets();
-            var resourceStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.illustrationassets");
-            AssetBundle = AssetBundle.LoadFromMemory(resourceStream!.ReadFully());
+
+            try
+            {
+                var AssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.assetsbundle");
+
+                if (AssetBundleStream == null)
+                {
+                    return;
+                }
+
+                AssetBundle = AssetBundle.LoadFromMemory(AssetBundleStream.ReadFully());
+
+                if (AssetBundle == null)
+                {
+                    return;
+                }
+
+                var allAssetNames = AssetBundle.GetAllAssetNames();
+
+                foreach (var assetName in allAssetNames)
+                {
+                    var asset = AssetBundle.LoadAsset(assetName);
+
+                    if (asset == null)
+                    {
+                        continue;
+                    }
+
+                    var lowerName = assetName.ToLower();
+
+                    if (asset.TryCast<AudioClip>() is AudioClip audioClip)
+                    {
+                        AudioClips[lowerName] = audioClip.DontUnload();
+                    }
+                    else if (asset.TryCast<Texture2D>() is Texture2D texture)
+                    {
+                        var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                        sprite.DontUnload();
+                        Sprites[lowerName] = sprite;
+                    }
+                    else if (asset.TryCast<Shader>() is Shader shader)
+                    {
+                        Shaders[lowerName] = shader.DontUnload();
+                    }
+                    else
+                    {
+                    }
+                }
+
+                Trap.activate = GetAudioClip("trapperactivate.ogg");
+                Trap.countdown = GetAudioClip("trappercountdown.ogg");
+                Trap.disable = GetAudioClip("trapperdisable.ogg");
+                Trap.kill = GetAudioClip("trapperkill.ogg");
+                Trap.place = GetAudioClip("trapperplace.ogg");
+
+                FoxTask.prefab = AssetBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
+
+                Shrine.sprite = AssetBundle.LoadAsset<Sprite>("assets/sprites/shrine2.png").DontUnload();
+
+                Helpers.achievementMaterialShader = GetShader("sprites-white.shader");
+                Helpers.achievementProgressShader = GetShader("sprites-progress.shader");
+            }
+            catch
+            {
+            }
         }
 
-        private static void LoadAudioAssets()
+        public static AudioClip GetAudioClip(string path)
         {
-            var resourceAudioAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.audiobundle");
-            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceAudioAssetBundleStream.ReadFully());
-            Trap.activate = assetBundleBundle.LoadAsset<AudioClip>("TrapperActivate.mp3").DontUnload();
-            Trap.countdown = assetBundleBundle.LoadAsset<AudioClip>("TrapperCountdown.mp3").DontUnload();
-            Trap.disable = assetBundleBundle.LoadAsset<AudioClip>("TrapperDisable.mp3").DontUnload();
-            Trap.kill = assetBundleBundle.LoadAsset<AudioClip>("TrapperKill.mp3").DontUnload();
-            Trap.place = assetBundleBundle.LoadAsset<AudioClip>("TrapperPlace.mp3").DontUnload();
+            var key = path.StartsWith("assets/") ? path.ToLower() : $"assets/audio/{path.ToLower()}";
+
+            if (AudioClips.TryGetValue(key, out var clip))
+            {
+                return clip;
+            }
+
+            foreach (var existingKey in AudioClips.Keys)
+            {
+                if (existingKey.EndsWith(path.ToLower()) || existingKey.Contains(path.ToLower()))
+                {
+                    return AudioClips[existingKey];
+                }
+            }
+
+            return null;
         }
 
-        private static void LoadSpriteAssets()
+        public static Sprite GetSprite(string path)
         {
-            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.spriteassets");
-            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
-            FoxTask.prefab = assetBundleBundle.LoadAsset<GameObject>("FoxTask.prefab").DontUnload();
-            Shrine.sprite = assetBundleBundle.LoadAsset<Sprite>("shrine2.png").DontUnload();
+            var key = path.StartsWith("assets/") ? path.ToLower() : $"assets/sprites/{path.ToLower()}";
+
+            if (Sprites.TryGetValue(key, out var sprite))
+            {
+                return sprite;
+            }
+
+            var altKey = path.StartsWith("assets/") ? path.ToLower() : $"assets/prefab/{path.ToLower()}";
+            if (Sprites.TryGetValue(altKey, out sprite))
+            {
+                return sprite;
+            }
+
+            foreach (var existingKey in Sprites.Keys)
+            {
+                if (existingKey.EndsWith(path.ToLower()) || existingKey.Contains(path.ToLower()))
+                {
+                    return Sprites[existingKey];
+                }
+            }
+
+            return null;
         }
 
-        private static void LoadShaderAssets()
+        public static Shader GetShader(string path)
         {
-            var resourceTestAssetBundleStream = dll.GetManifestResourceStream("TheOtherRoles.Resources.AssetsBundle.shaderassets");
-            var assetBundleBundle = AssetBundle.LoadFromMemory(resourceTestAssetBundleStream.ReadFully());
-            Helpers.achievementMaterialShader = assetBundleBundle.LoadAsset<Shader>("Sprites-White").DontUnload();
-            Helpers.achievementProgressShader = assetBundleBundle.LoadAsset<Shader>("Sprites-Progress").DontUnload();
+            var key = path.StartsWith("assets/") ? path.ToLower() : $"assets/shaders/{path.ToLower()}";
+
+            if (Shaders.TryGetValue(key, out var shader))
+            {
+                return shader;
+            }
+
+            foreach (var existingKey in Shaders.Keys)
+            {
+                if (existingKey.EndsWith(path.ToLower()) || existingKey.Contains(path.ToLower()))
+                {
+                    return Shaders[existingKey];
+                }
+            }
+
+            return null;
         }
     }
 }

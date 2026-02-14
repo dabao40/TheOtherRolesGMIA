@@ -6,6 +6,7 @@ using System.Linq;
 using TheOtherRoles.Patches;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
+using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -31,11 +32,14 @@ namespace TheOtherRoles.Objects
 
         public static void loadSprite()
         {
+            // 从AssetLoader加载精灵
             if (trapSprite == null)
-                trapSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Trap.png", 300f);
-            if (trapActiveSprite == null)
-                trapActiveSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapActive.png", 300f);
+                trapSprite = AssetLoader.GetSprite("Trap.png") ??
+                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Trap.png", 300f);
 
+            if (trapActiveSprite == null)
+                trapActiveSprite = AssetLoader.GetSprite("TrapActive.png") ??
+                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapActive.png", 300f);
         }
 
         private static byte getAvailableId()
@@ -47,10 +51,18 @@ namespace TheOtherRoles.Objects
 
         public Trap(Vector3 pos)
         {
+            if (place == null)
+            {
+                place = AssetLoader.GetAudioClip("TrapperPlace.ogg");
+                activate = AssetLoader.GetAudioClip("TrapperActivate.ogg");
+                disable = AssetLoader.GetAudioClip("TrapperDisable.ogg");
+                countdown = AssetLoader.GetAudioClip("TrapperCountdown.ogg");
+                kill = AssetLoader.GetAudioClip("TrapperKill.ogg");
+            }
+
             // 最初の罠を消す
             if (traps.Count == Trapper.numTrap)
             {
-
                 foreach (var key in traps.Keys)
                 {
                     var firstTrap = traps[key];
@@ -68,7 +80,6 @@ namespace TheOtherRoles.Objects
             trapRenderer.sprite = trapSprite;
             Vector3 position = new(pos.x, pos.y, pos.y / 1000 + 0.001f);
             this.trap.transform.position = position;
-            // this.trap.transform.localPosition = pos;
             this.trap.SetActive(true);
 
             // 音を鳴らす
@@ -87,7 +98,6 @@ namespace TheOtherRoles.Objects
             this.placedTime = DateTime.UtcNow;
 
             traps.Add(getAvailableId(), this);
-
         }
 
         public static void activateTrap(byte trapId, PlayerControl trapper, PlayerControl target)
@@ -112,7 +122,6 @@ namespace TheOtherRoles.Objects
                 UnityEngine.Object.Destroy(t.trap);
             }
             traps = newTraps;
-
 
             // 音を鳴らす
             trap.audioSource.Stop();
@@ -200,7 +209,6 @@ namespace TheOtherRoles.Objects
                     {
                         Trapper.TrapKill.Invoke((trap.Key, PlayerControl.LocalPlayer.PlayerId, trap.Value.target.PlayerId));
                     }
-
                 }
             }
         }
@@ -251,7 +259,8 @@ namespace TheOtherRoles.Objects
                     }
                 })));
             }
-            else {
+            else
+            {
                 clearAllTraps();
                 return;
             }
@@ -282,7 +291,7 @@ namespace TheOtherRoles.Objects
                     bool canSee =
                         trap.isActive ||
                         PlayerControl.LocalPlayer.Data.Role.IsImpostor ||
-                        PlayerControl.LocalPlayer.Data.IsDead || 
+                        PlayerControl.LocalPlayer.Data.IsDead ||
                         Lighter.isLightActive(PlayerControl.LocalPlayer) ||
                         PlayerControl.LocalPlayer.isRole(RoleId.Fox);
                     var opacity = canSee ? 1.0f : 0.0f;

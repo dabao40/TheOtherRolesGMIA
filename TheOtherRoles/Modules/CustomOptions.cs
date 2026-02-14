@@ -390,7 +390,6 @@ namespace TheOtherRoles {
                 TheOtherRolesPlugin.Logger.LogWarning($"{e}: tried to paste invalid settings!\n{allSettings}");
                 string errorStr = allSettings.Length > 2 ? allSettings.Substring(0, 3) : "(empty clipboard) ";
                 FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"Host Info: You tried to paste invalid settings: \"{errorStr}...\"");
-                SoundEffectsManager.Load();
                 SoundEffectsManager.play("fail");
             }
             return Convert.ToInt32(vanillaOptionsFine) + torOptionsFine;

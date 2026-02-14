@@ -19,7 +19,6 @@ namespace TheOtherRoles.Modules {
 
         private static void Prefix(MainMenuManager __instance) {
             // Force Reload of SoundEffectHolder
-            SoundEffectsManager.Load();
             CheckAndUnpatch();
         }
 
