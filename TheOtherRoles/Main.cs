@@ -128,7 +128,9 @@ namespace TheOtherRoles
 
             CustomOptionHolder.Load();
             CustomColors.Load();
-            //CustomHatManager.LoadHats();
+#if WINDOWS
+            CustomHatManager.LoadHats();
+#endif
             AssetLoader.LoadAssets();
             TORAchievementManager.LoadAchievements();
             EventDetail.Load();

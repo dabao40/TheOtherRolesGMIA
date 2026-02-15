@@ -281,6 +281,7 @@ namespace TheOtherRoles.Modules {
         }
     }
 
+#if WINDOWS
     [HarmonyPatch]
     public class MainMenuButtonHoverAnimation
     {
@@ -326,4 +327,5 @@ namespace TheOtherRoles.Modules {
             }
         }
     }
+#endif
 }

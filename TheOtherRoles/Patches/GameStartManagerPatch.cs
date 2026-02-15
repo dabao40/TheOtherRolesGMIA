@@ -18,9 +18,9 @@ namespace TheOtherRoles.Patches {
         private static bool versionSent = false;
         private static string lobbyCodeText = "";
 
-        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CreatePlayer))]
-        public class AmongUsClientCreatePlayerPatch {
-            public static void Postfix(AmongUsClient __instance) {
+        [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), "MoveNext")]
+        public class PlayerPhysics_CoSpawnPlayer_d_Patch {
+            public static void Postfix() {
                 if (PlayerControl.LocalPlayer != null) {
                     Helpers.shareGameVersion();
                 }
