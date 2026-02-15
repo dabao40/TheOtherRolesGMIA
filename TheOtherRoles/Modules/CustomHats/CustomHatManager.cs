@@ -27,7 +27,11 @@ public static class CustomHatManager
 
     internal static readonly string ManifestFileName = "CustomHats.json";
 
+#if WINDOWS
     internal static string CustomSkinsDirectory => Path.Combine(Path.GetDirectoryName(Application.dataPath)!, ResourcesDirectory);
+#else 
+    internal static string CustomSkinsDirectory => Path.Combine(Application.persistentDataPath, ResourcesDirectory);
+#endif
     internal static string HatsDirectory => CustomSkinsDirectory;
 
     internal static List<CustomHat> UnregisteredHats = new();

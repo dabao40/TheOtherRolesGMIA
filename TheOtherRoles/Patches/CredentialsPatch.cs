@@ -1,14 +1,15 @@
-using AmongUs.GameOptions;
-using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AmongUs.GameOptions;
+using HarmonyLib;
 using TheOtherRoles;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch]
@@ -166,15 +167,25 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            public static async Task loadMOTDs()
+            public static void loadMOTDs()
             {
-                HttpClient client = new();
-                HttpResponseMessage response = await client.GetAsync(Helpers.isChinese() ? "https://gitee.com/dabaoimp11/GMIAMOTDs/raw/master/MOTDs.txt" : "https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt");
-                response.EnsureSuccessStatusCode();
-                string motds = await response.Content.ReadAsStringAsync();
-                foreach (string line in motds.Split("\n", StringSplitOptions.RemoveEmptyEntries))
+                string url = Helpers.isChinese() ? "https://gitee.com/dabaoimp11/GMIAMOTDs/raw/master/MOTDs.txt" : "https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt";
+                var request = UnityWebRequest.Get(url);
+                request.SendWebRequest();
+
+                // Wait for the request to complete
+                while (!request.isDone) { }
+
+                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    MOTD.motds.Add(line);
+                    TheOtherRolesPlugin.Logger.LogError($"Couldn't fetch mod news from Server: {request.error}");
+                    return;
+                }
+
+                string motdsText = request.downloadHandler.text;
+                foreach (string line in motdsText.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    MOTD.motds.Add(line.Trim());
                 }
             }
         }

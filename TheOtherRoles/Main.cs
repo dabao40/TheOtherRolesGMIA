@@ -71,7 +71,7 @@ namespace TheOtherRoles
             ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
             var regions = new IRegionInfo[] {
                 //new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Custom", Ip.Value, Port.Value, false)])).CastFast<IRegionInfo>()
-                new StaticHttpRegionInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Community Server\n<color=#ff44ff>GMIA SQ</color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
             };
             
             IRegionInfo currentRegion = serverManager.CurrentRegion;
@@ -98,7 +98,7 @@ namespace TheOtherRoles
             Instance = this;
   
             _ = Helpers.checkBeta(); // Exit if running an expired beta
-            _ = Patches.CredentialsPatch.MOTD.loadMOTDs();
+            Patches.CredentialsPatch.MOTD.loadMOTDs();
             ModTranslation.Load();
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
@@ -128,21 +128,25 @@ namespace TheOtherRoles
 
             CustomOptionHolder.Load();
             CustomColors.Load();
+#if WINDOWS
             CustomHatManager.LoadHats();
+#endif
             AssetLoader.LoadAssets();
             TORAchievementManager.LoadAchievements();
             EventDetail.Load();
             TranslatableTag.Load();
+#if WINDOWS
             if (ToggleCursor.Value) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();
                 return;
             }
+            AddComponent<ModUpdateBehaviour>();
+#endif
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            AddComponent<ModUpdateBehaviour>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
             SceneManager.sceneLoaded += (UnityEngine.Events.UnityAction<Scene, LoadSceneMode>)((scene, loadMode) =>
             {

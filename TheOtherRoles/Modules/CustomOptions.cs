@@ -375,6 +375,25 @@ namespace TheOtherRoles {
                 string torSettings = settingsSplit[1];
                 string vanillaSettingsSub = settingsSplit[2];
                 torOptionsFine = deserializeOptions(Convert.FromBase64String(torSettings));
+
+                try
+                {
+                    if (AmongUsClient.Instance?.AmHost == true)
+                    {
+                        foreach (var entry in GameOptionsMenuStartPatch.currentGOMs)
+                        {
+                            CustomOptionType optionType = (CustomOptionType)entry.Key;
+                            GameOptionsMenu gom = entry.Value;
+                            if (gom != null)
+                            {
+                                GameOptionsMenuStartPatch.updateGameOptionsMenu(optionType, gom);
+                            }
+                        }
+                    }
+                }
+                catch
+                { }
+
                 ShareOptionSelections();
                 if (TheOtherRolesPlugin.Version > versionInfo && versionInfo < Version.Parse("1.2.7"))
                 {
@@ -390,7 +409,6 @@ namespace TheOtherRoles {
                 TheOtherRolesPlugin.Logger.LogWarning($"{e}: tried to paste invalid settings!\n{allSettings}");
                 string errorStr = allSettings.Length > 2 ? allSettings.Substring(0, 3) : "(empty clipboard) ";
                 FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"Host Info: You tried to paste invalid settings: \"{errorStr}...\"");
-                SoundEffectsManager.Load();
                 SoundEffectsManager.play("fail");
             }
             return Convert.ToInt32(vanillaOptionsFine) + torOptionsFine;
@@ -1474,7 +1492,7 @@ namespace TheOtherRoles {
         }
     }
 
-    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
+    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), "MoveNext")]
     public class AmongUsClientOnPlayerJoinedPatch {
         public static void Postfix() {
             if (PlayerControl.LocalPlayer != null && AmongUsClient.Instance.AmHost) {

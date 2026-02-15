@@ -362,6 +362,7 @@ namespace TheOtherRoles
             yield return null;
         }
 
+#if WINDOWS
         public static void enableCursor(bool initalSetCursor)
         {
             if (initalSetCursor)
@@ -380,6 +381,7 @@ namespace TheOtherRoles
                 Cursor.SetCursor(sprite.texture, Vector2.zero, CursorMode.Auto);
             }
         }
+#endif
 
         public static void refreshRoleDescription(PlayerControl player) {
             List<RoleInfo> infos = RoleInfo.getRoleInfoForPlayer(player);
@@ -836,6 +838,7 @@ namespace TheOtherRoles
             return FindCamera(cameraLayer)?.ScreenToWorldPoint(screenPos) ?? Vector3.zero;
         }
 
+#if WINDOWS
         public static string GetClipboardString()
         {
             uint type = 0;
@@ -884,6 +887,7 @@ namespace TheOtherRoles
             }
             return result;
         }
+#endif
 
         static public SpriteRenderer CreateSharpBackground(Vector2 size, Color color, Transform transform)
         {
@@ -2185,7 +2189,9 @@ namespace TheOtherRoles
                 }
                 if ((now - compileTime)?.TotalDays > TheOtherRolesPlugin.betaDays) {
                     TheOtherRolesPlugin.Logger.LogMessage($"Beta expired!");
+#if WINDOWS
                     BepInExUpdater.MessageBoxTimeout(BepInExUpdater.GetForegroundWindow(), "BETA is expired. You cannot play this version anymore.", "The Other Roles Beta", 0,0, 10000);
+#endif
                     Application.Quit();
 
                 } else TheOtherRolesPlugin.Logger.LogMessage($"Beta will remain runnable for {TheOtherRolesPlugin.betaDays - (now - compileTime)?.TotalDays} days!");

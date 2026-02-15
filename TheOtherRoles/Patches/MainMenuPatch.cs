@@ -19,7 +19,6 @@ namespace TheOtherRoles.Modules {
 
         private static void Prefix(MainMenuManager __instance) {
             // Force Reload of SoundEffectHolder
-            SoundEffectsManager.Load();
             CheckAndUnpatch();
         }
 
@@ -282,6 +281,7 @@ namespace TheOtherRoles.Modules {
         }
     }
 
+#if WINDOWS
     [HarmonyPatch]
     public class MainMenuButtonHoverAnimation
     {
@@ -327,4 +327,5 @@ namespace TheOtherRoles.Modules {
             }
         }
     }
+#endif
 }

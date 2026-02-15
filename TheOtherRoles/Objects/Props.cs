@@ -8,7 +8,6 @@ using static TheOtherRoles.TheOtherRoles;
 using HarmonyLib;
 using Reactor.Utilities.Attributes;
 using Reactor.Utilities.Extensions;
-using Rewired.Utils.Platforms.Windows;
 using TMPro;
 using TheOtherRoles.CustomGameModes;
 
