@@ -191,6 +191,38 @@ namespace TheOtherRoles {
             return enabled;
         }
 
+        public static void updateAffectedOptions(CustomOption changedOption)
+        {
+            List<CustomOption> affectedOptions = new List<CustomOption>();
+            affectedOptions.Add(changedOption);
+            collectAllChildren(changedOption, affectedOptions);
+            
+            foreach (var option in affectedOptions)
+            {
+                if (option.optionBehaviour != null && option.optionBehaviour.gameObject != null)
+                {
+                    bool shouldBeEnabled = ShouldBeEnabled(option);
+                    bool currentlyActive = option.optionBehaviour.gameObject.activeSelf;
+                    
+                    if (currentlyActive != shouldBeEnabled)
+                    {
+                        option.optionBehaviour.gameObject.SetActive(shouldBeEnabled);
+                    }
+                }
+            }
+        }
+
+        private static void collectAllChildren(CustomOption parent, List<CustomOption> result)
+        {
+            if (parent.children == null || parent.children.Count == 0) return;
+            
+            foreach (var child in parent.children)
+            {
+                result.Add(child);
+                collectAllChildren(child, result);
+            }
+        }
+
         // Getter
 
         public int getSelection() {
@@ -255,10 +287,6 @@ namespace TheOtherRoles {
                 try
                 {
                     selection = newSelection;
-                    if (GameStartManager.Instance != null && GameStartManager.Instance.LobbyInfoPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
-                    {
-                        LobbyViewSettingsPaneChangeTabPatch.Postfix(GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane, GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
-                    }
                     HelpMenu.OnUpdateOptions();
                 }
                 catch { }
@@ -296,13 +324,7 @@ namespace TheOtherRoles {
 
             if (AmongUsClient.Instance?.AmHost == true)
             {
-                var currentTab = GameOptionsMenuStartPatch.currentTabs.FirstOrDefault(x => x.active).GetComponent<GameOptionsMenu>();
-                if (currentTab != null)
-                {
-                    var optionType = options.First(x => x.optionBehaviour == currentTab.Children[0]).type;
-                    GameOptionsMenuStartPatch.updateGameOptionsMenu(optionType, currentTab);
-                }
-
+                updateAffectedOptions(this);
             }
         }
 
@@ -346,6 +368,9 @@ namespace TheOtherRoles {
                     CustomOption option = options.First(option => option.id == id);
                     option.entry = TheOtherRolesPlugin.Instance.Config.Bind($"Preset{preset}", option.id.ToString(), option.defaultSelection);
                     option.selection = selection;
+                    if (option.entry != null) {
+                        option.entry.Value = selection;
+                    }
                     if (option.optionBehaviour != null && option.optionBehaviour is StringOption stringOption)
                     {
                         stringOption.oldValue = stringOption.Value = option.selection;
@@ -385,6 +410,27 @@ namespace TheOtherRoles {
                 {
                     vanillaSettings.Value = vanillaSettingsSub;
                     vanillaOptionsFine = loadVanillaOptions();
+                }
+                
+                if (AmongUsClient.Instance?.AmHost == true)
+                {
+                    foreach (var entry in GameOptionsMenuStartPatch.currentGOMs)
+                    {
+                        CustomOptionType optionType = (CustomOptionType)entry.Key;
+                        GameOptionsMenu gom = entry.Value;
+                        if (gom != null)
+                        {
+                            GameOptionsMenuStartPatch.updateGameOptionsMenu(optionType, gom);
+                        }
+                    }
+                    
+                    if (GameStartManager.Instance != null && GameStartManager.Instance.LobbyInfoPane != null && 
+                        GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null && 
+                        GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.activeSelf)
+                    {
+                        LobbyViewSettingsPaneChangeTabPatch.Postfix(GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane, 
+                            GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.currentTab);
+                    }
                 }
             } catch (Exception e) {
                 TheOtherRolesPlugin.Logger.LogWarning($"{e}: tried to paste invalid settings!\n{allSettings}");
