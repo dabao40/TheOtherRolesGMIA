@@ -113,7 +113,7 @@ namespace TheOtherRoles.Modules
             var title = new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OblongHeader), new TranslateTextComponent("achievementTitle"));
 
             gameObject.SetActive(true);
-            myScreen.SetContext(new VerticalContextsHolder(GUIAlignment.Left, title, GenerateContext(4f, 9f)), out _);
+            myScreen.SetContext(new VerticalContextsHolder(GUIAlignment.Left, title, GenerateContext(3.85f, 9f)), out _);
 
         }
 
@@ -134,7 +134,7 @@ namespace TheOtherRoles.Modules
                 button.gameObject.SetActive(true);
                 button.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
                 button.OnClick.AddListener((Action)(() => Close()));
-                button.transform.localPosition = new Vector3(-4.9733f, 2.6708f, -50f);
+                button.gameObject.SetAsUIAspectContent(AspectPosition.EdgeAlignments.LeftTop, new(0.4f, 0.4f, -50f));
             }
 
             myScreen = Helpers.CreateObject<MetaScreen>("Screen", transform, new Vector3(0, -0.1f, -10f));

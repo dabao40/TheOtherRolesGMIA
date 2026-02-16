@@ -19,7 +19,6 @@ namespace TheOtherRoles
             {
                 AudioSource source = SoundManager.Instance.PlaySound(clipToPlay, false, volume,
                     audioMixer: musicChannel ? SoundManager.Instance.MusicChannel : null);
-                TheOtherRolesPlugin.Logger.LogWarning($"Play sound {path}");
                 source.loop = loop;
                 return source;
             }

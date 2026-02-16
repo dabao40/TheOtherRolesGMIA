@@ -95,7 +95,7 @@ namespace TheOtherRoles.Modules
                 button.gameObject.SetActive(true);
                 button.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
                 button.OnClick.AddListener((System.Action)(() => Close()));
-                button.transform.localPosition = new Vector3(-4.9733f, 2.6708f, -50f);
+                button.gameObject.SetAsUIAspectContent(AspectPosition.EdgeAlignments.LeftTop, new(0.4f, 0.4f, -50f));
             }
         }
     }

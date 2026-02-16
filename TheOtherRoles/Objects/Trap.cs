@@ -32,14 +32,11 @@ namespace TheOtherRoles.Objects
 
         public static void loadSprite()
         {
-            // 从AssetLoader加载精灵
             if (trapSprite == null)
-                trapSprite = AssetLoader.GetSprite("Trap.png") ??
-                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Trap.png", 300f);
+                trapSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Trap.png", 300f);
 
             if (trapActiveSprite == null)
-                trapActiveSprite = AssetLoader.GetSprite("TrapActive.png") ??
-                    Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapActive.png", 300f);
+                trapActiveSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapActive.png", 300f);
         }
 
         private static byte getAvailableId()
@@ -51,15 +48,6 @@ namespace TheOtherRoles.Objects
 
         public Trap(Vector3 pos)
         {
-            if (place == null)
-            {
-                place = AssetLoader.GetAudioClip("TrapperPlace.ogg");
-                activate = AssetLoader.GetAudioClip("TrapperActivate.ogg");
-                disable = AssetLoader.GetAudioClip("TrapperDisable.ogg");
-                countdown = AssetLoader.GetAudioClip("TrapperCountdown.ogg");
-                kill = AssetLoader.GetAudioClip("TrapperKill.ogg");
-            }
-
             // 最初の罠を消す
             if (traps.Count == Trapper.numTrap)
             {

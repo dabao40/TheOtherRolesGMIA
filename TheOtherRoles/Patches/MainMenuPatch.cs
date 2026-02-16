@@ -114,8 +114,9 @@ namespace TheOtherRoles.Modules {
         public static void Postfix(MainMenuManager __instance)
         {
             VanillaAsset.LoadAssetAtInitialize();
+            var scalerList = __instance.mainMenuUI.GetComponent<SlicedAspectScaler>();
+
             var leftPanel = __instance.mainMenuUI.transform.FindChild("AspectScaler").FindChild("LeftPanel");
-            leftPanel.GetComponent<SpriteRenderer>().size += new Vector2(0f, 0.5f);
             var auLogo = leftPanel.FindChild("Sizer").GetComponent<AspectSize>();
             auLogo.PercentWidth = 0.14f;
             auLogo.DoSetUp();
@@ -129,7 +130,8 @@ namespace TheOtherRoles.Modules {
             reworkedPanel.sprite = oldPanel.sprite;
             reworkedPanel.tileMode = oldPanel.tileMode;
             reworkedPanel.drawMode = oldPanel.drawMode;
-            reworkedPanel.size = oldPanel.size;
+            reworkedPanel.size = oldPanel.size + new Vector2(0f, 0.5f);
+            leftPanel.gameObject.GetComponent<AspectScaledAsset>().AddScaledSprite(reworkedPanel);
             oldPanel.enabled = false;
 
             loadSprite();
@@ -150,6 +152,7 @@ namespace TheOtherRoles.Modules {
                     icon.GetComponent<SpriteRenderer>().sprite = sprite;
                 }
             }));
+            scalerList.objectsToScale.Add(modButton.GetComponent<AspectScaledAsset>());
 
             var modPassiveButton = modButton.GetComponent<PassiveButton>();
             modPassiveButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
@@ -167,6 +170,37 @@ namespace TheOtherRoles.Modules {
             __instance.mainButtons.Add(modButton);
 
             Object.Destroy(modScreen.transform.GetChild(4).gameObject);
+
+            foreach (var button in __instance.mainButtons.GetFastEnumerator())
+            {
+                if (button.activeSprites)
+                {
+                    var name = button.name;
+                    bool shouldRotate = name != "TORButton" && name != "Inventory Button";
+                    bool shouldMove = name != "TORButton";
+                    var rendererTransform = button.activeSprites.transform.FindChild("Icon");
+                    if (rendererTransform)
+                    {
+
+                        if (shouldRotate) rendererTransform.localEulerAngles -= new Vector3(0f, 0f, 10f);
+                        rendererTransform.localScale += new Vector3(0.12f, 0.12f, 0f);
+
+                        if (shouldMove)
+                        {
+                            var aspectPos = rendererTransform.GetComponent<AspectPosition>();
+                            if (aspectPos)
+                            {
+                                aspectPos.DistanceFromEdge += new Vector3(-0.02f, 0.1f, 0f);
+                                aspectPos.AdjustPosition();
+                            }
+                            else
+                            {
+                                rendererTransform.localPosition += new Vector3(-0.02f, 0.1f, 0f);
+                            }
+                        }
+                    }
+                }
+            }
 
             var temp = modScreen.transform.GetChild(3);
             int index = 0;
@@ -200,7 +234,10 @@ namespace TheOtherRoles.Modules {
                 AchievementViewer.Open(__instance);
             });
 
-            var discordRenderer = Helpers.CreateObject<SpriteRenderer>("DiscordButton", modScreen.transform, new Vector3(2.8f, -1.4f));
+            foreach (var asset in modScreen.GetComponentsInChildren<AspectScaledAsset>()) scalerList.objectsToScale.Add(asset);
+
+            var discordRenderer = Helpers.CreateObject<SpriteRenderer>("DiscordButton", __instance.transform, Vector3.zero);
+            discordRenderer.gameObject.SetAsUIAspectContent(AspectPosition.EdgeAlignments.RightBottom, new(0.34f, 1f, -6f));
             discordRenderer.sprite = discordSprite;
             var discordButton = discordRenderer.gameObject.SetUpButton(true, discordRenderer);
             discordButton.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(discordButton, ModTranslation.getString("mainMenuDiscordText"))));
@@ -280,52 +317,4 @@ namespace TheOtherRoles.Modules {
             if (MainMenuSetUpPatch.aboutScreen) MainMenuSetUpPatch.aboutScreen?.SetActive(false);
         }
     }
-
-#if WINDOWS
-    [HarmonyPatch]
-    public class MainMenuButtonHoverAnimation
-    {
-
-        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix]
-        [HarmonyPriority(Priority.Last)]
-        private static void Start_Postfix(MainMenuManager __instance)
-        {
-            var mainButtons = GameObject.Find("Main Buttons");
-            mainButtons.ForEachChild((Il2CppSystem.Action<GameObject>)Init);
-            static void Init(GameObject obj)
-            {
-                if (obj.name is "BottomButtonBounds" or "Divider") return;
-                if (AllButtons.ContainsKey(obj)) return;
-                SetButtonStatus(obj, false);
-                var pb = obj.GetComponent<PassiveButton>();
-                pb.OnMouseOver.AddListener((Action)(() => SetButtonStatus(obj, true)));
-                pb.OnMouseOut.AddListener((Action)(() => SetButtonStatus(obj, false)));
-            }
-        }
-
-        private static Dictionary<GameObject, (Vector3, bool)> AllButtons = new();
-        private static void SetButtonStatus(GameObject obj, bool active)
-        {
-            AllButtons.TryAdd(obj, (obj.transform.position, active));
-            AllButtons[obj] = (AllButtons[obj].Item1, active);
-        }
-
-        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate)), HarmonyPostfix]
-        private static void Update_Postfix(MainMenuManager __instance)
-        {
-            if (GameObject.Find("MainUI") == null) return;
-
-            foreach (var kvp in AllButtons.Where(x => x.Key != null && x.Key.active))
-            {
-                var button = kvp.Key;
-                var pos = button.transform.position;
-                var targetPos = kvp.Value.Item1 + new Vector3(kvp.Value.Item2 ? 0.35f : 0f, 0f, 0f);
-                if (kvp.Value.Item2 && pos.x > (kvp.Value.Item1.x + 0.2f)) continue;
-                button.transform.position = kvp.Value.Item2
-                    ? Vector3.Lerp(pos, targetPos, Time.deltaTime * 2f)
-                    : Vector3.MoveTowards(pos, targetPos, Time.deltaTime * 2f);
-            }
-        }
-    }
-#endif
 }

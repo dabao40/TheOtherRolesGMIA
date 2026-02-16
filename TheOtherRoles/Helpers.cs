@@ -1601,6 +1601,24 @@ namespace TheOtherRoles
             return display.AddComponent<PlayerDisplay>();
         }
 
+        public static void SetAsUIAspectContent(this GameObject obj, AspectPosition.EdgeAlignments alignment, Vector3 distanceFromEdge)
+        {
+            var aspectPos = obj.AddComponent<AspectPosition>();
+            aspectPos.Alignment = alignment;
+            aspectPos.parentCam = HudManager.InstanceExists ? HudManager.Instance.UICamera : Camera.main;
+            aspectPos.DistanceFromEdge = distanceFromEdge;
+            aspectPos.AdjustPosition();
+        }
+
+        public static void AddScaledSprite(this AspectScaledAsset scaledAsset, SpriteRenderer renderer)
+        {
+            if (scaledAsset.initialized)
+                scaledAsset.allSprites.Add(new(renderer.size.x, renderer));
+            else
+                scaledAsset.spritesToScale.Add(renderer);
+        }
+
+
         public static void ForEachAllChildren(this GameObject gameObject, Action<GameObject> todo)
         {
             gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)((obj) => {
