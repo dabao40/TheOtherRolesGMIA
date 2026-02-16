@@ -8,15 +8,15 @@ using HarmonyLib;
 using Hazel;
 using System.Text;
 using TheOtherRoles.Utilities;
-using static TheOtherRoles.CustomOption;
+using static TheOtherRoles.Modules.CustomOption;
 using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
 using TMPro;
-using TheOtherRoles.Modules;
 using AmongUs.Data;
 using TheOtherRoles.Roles;
 
-namespace TheOtherRoles {
+namespace TheOtherRoles.Modules
+{
     public class CustomOption {
         public enum CustomOptionType {
             General,

@@ -23,6 +23,7 @@ using TheOtherRoles.Modules.CustomHats;
 using UnityEngine.SceneManagement;
 using AmongUs.Data.Player;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Patches;
 
 namespace TheOtherRoles
 {
@@ -147,7 +148,7 @@ namespace TheOtherRoles
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            Modules.MainMenuPatch.addSceneChangeCallbacks();
+            MainMenuPatch.addSceneChangeCallbacks();
             SceneManager.sceneLoaded += (UnityEngine.Events.UnityAction<Scene, LoadSceneMode>)((scene, loadMode) =>
             {
                 new GameObject("TORManager").AddComponent<TORGUIManager>();
