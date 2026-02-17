@@ -7,99 +7,114 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static TheOtherRoles.Modules.CustomHats.CustomHatManager;
 
-namespace TheOtherRoles.Modules.CustomHats;
-
-public class HatsLoader : MonoBehaviour
+namespace TheOtherRoles.Modules.CustomHats
 {
-    private bool isRunning;
-
-    public void FetchHats()
+    public class HatsLoader : MonoBehaviour
     {
-        if (isRunning) return;
-        this.StartCoroutine(CoFetchHats());
-    }
+        private bool isRunning;
 
-    [HideFromIl2Cpp]
-    private IEnumerator CoFetchHats()
-    {
-        isRunning = true;
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-        TheOtherRolesPlugin.Logger.LogMessage($"Download manifest at: {RepositoryUrl}/{ManifestFileName}");
-        www.SetUrl($"{RepositoryUrl}/{ManifestFileName}");
-        www.downloadHandler = new DownloadHandlerBuffer();
-        var operation = www.SendWebRequest();
-
-        while (!operation.isDone)
+        public void FetchHats()
         {
-            yield return new WaitForEndOfFrame();
+            if (isRunning) return;
+            this.StartCoroutine(CoFetchHats());
         }
 
-        if (www.isNetworkError || www.isHttpError)
+        [HideFromIl2Cpp]
+        private IEnumerator CoFetchHats()
         {
-            TheOtherRolesPlugin.Logger.LogError(www.error);
-            yield break;
-        }
+            isRunning = true;
+            var www = new UnityWebRequest();
+            www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
+            TheOtherRolesPlugin.Logger.LogMessage($"Download manifest at: {RepositoryUrl}/{ManifestFileName}");
+            www.SetUrl($"{RepositoryUrl}/{ManifestFileName}");
+            www.downloadHandler = new DownloadHandlerBuffer();
+            var operation = www.SendWebRequest();
 
-        var response = JsonSerializer.Deserialize<SkinsConfigFile>(www.downloadHandler.text, new JsonSerializerOptions
-        {
-            AllowTrailingCommas = true
-        });
-        www.downloadHandler.Dispose();
-        www.Dispose();
-
-        if (!Directory.Exists(HatsDirectory)) Directory.CreateDirectory(HatsDirectory);
-
-        UnregisteredHats.AddRange(SanitizeHats(response));
-        var toDownload = GenerateDownloadList(UnregisteredHats);
-        if (EventUtility.isEnabled) UnregisteredHats.AddRange(CustomHatManager.loadHorseHats());
-
-        TheOtherRolesPlugin.Logger.LogMessage($"I'll download {toDownload.Count} hat files");
-
-        foreach (var fileName in toDownload)
-        {
-            yield return CoDownloadHatAsset(fileName);
-        }
-
-        isRunning = false;
-    }
-
-    private static IEnumerator CoDownloadHatAsset(string fileName)
-    {
-        var www = new UnityWebRequest();
-        www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
-        fileName = fileName.Replace(" ", "%20");
-        TheOtherRolesPlugin.Logger.LogMessage($"downloading hat: {fileName}");
-        www.SetUrl($"{RepositoryUrl}/hats/{fileName}");
-        www.downloadHandler = new DownloadHandlerBuffer();
-        var operation = www.SendWebRequest();
-
-        while (!operation.isDone)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        if (www.isNetworkError || www.isHttpError)
-        {
-            TheOtherRolesPlugin.Logger.LogError(www.error);
-            yield break;
-        }
-
-        var filePath = Path.Combine(HatsDirectory, fileName);
-        filePath = filePath.Replace("%20", " ");
-        var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.GetUnstrippedData());
-        while (!persistTask.IsCompleted)
-        {
-            if (persistTask.Exception != null)
+            while (!operation.isDone)
             {
-                TheOtherRolesPlugin.Logger.LogError(persistTask.Exception.Message);
-                break;
+                yield return new WaitForEndOfFrame();
             }
 
-            yield return new WaitForEndOfFrame();
+            if (www.isNetworkError || www.isHttpError)
+            {
+                TheOtherRolesPlugin.Logger.LogError(www.error);
+                yield break;
+            }
+
+            var response = JsonSerializer.Deserialize<SkinsConfigFile>(www.downloadHandler.text, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true
+            });
+            www.downloadHandler.Dispose();
+            www.Dispose();
+
+            if (!Directory.Exists(HatsDirectory)) Directory.CreateDirectory(HatsDirectory);
+
+            UnregisteredHats.AddRange(SanitizeHats(response));
+            var toDownload = GenerateDownloadList(UnregisteredHats);
+            if (EventUtility.isEnabled) UnregisteredHats.AddRange(CustomHatManager.loadHorseHats());
+
+            TheOtherRolesPlugin.Logger.LogMessage($"I'll download {toDownload.Count} hat files");
+
+            foreach (var fileName in toDownload)
+            {
+                yield return CoDownloadHatAsset(fileName);
+            }
+
+            yield return CoRegisterHatsWhenReady();
+
+            isRunning = false;
         }
 
-        www.downloadHandler.Dispose();
-        www.Dispose();
+        private static IEnumerator CoDownloadHatAsset(string fileName)
+        {
+            var www = new UnityWebRequest();
+            www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
+            fileName = fileName.Replace(" ", "%20");
+            TheOtherRolesPlugin.Logger.LogMessage($"Downloading {fileName} hat");
+            www.SetUrl($"{RepositoryUrl}/hats/{fileName}");
+            www.downloadHandler = new DownloadHandlerBuffer();
+            var operation = www.SendWebRequest();
+
+            while (!operation.isDone)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                TheOtherRolesPlugin.Logger.LogError(www.error);
+                yield break;
+            }
+
+            var filePath = Path.Combine(HatsDirectory, fileName);
+            filePath = filePath.Replace("%20", " ");
+            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.GetUnstrippedData());
+            while (!persistTask.IsCompleted)
+            {
+                if (persistTask.Exception != null)
+                {
+                    TheOtherRolesPlugin.Logger.LogError(persistTask.Exception.Message);
+                    break;
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            www.downloadHandler.Dispose();
+            www.Dispose();
+        }
+
+        private IEnumerator CoRegisterHatsWhenReady()
+        {
+            while (DestroyableSingleton<HatManager>.Instance == null || DestroyableSingleton<HatManager>.Instance.allHats == null)
+            {
+                TheOtherRolesPlugin.Logger.LogMessage("Waiting for HatManager to be ready...");
+                yield return new WaitForEndOfFrame();
+            }
+
+            TheOtherRolesPlugin.Logger.LogMessage("HatManager ready, registering hats...");
+            RegisterAllHats();
+        }
     }
 }

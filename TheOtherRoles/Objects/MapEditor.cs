@@ -328,6 +328,7 @@ namespace TheOtherRoles.Objects
                 return;
             Loaded = true;
 
+            Modules.CustomHats.CustomHatManager.LoadHats();
             VanillaAsset.LoadAssetsOnTitle();
             HelpMenu.Load();
 
