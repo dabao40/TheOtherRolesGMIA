@@ -153,6 +153,13 @@ public enum AttributeAsset
     /// SerializableDocumentのTextStyle"Bold"で提供されているテキスト属性です。
     /// </summary>
     DocumentBold,
+
+
+    /// <summary>
+    /// 配役タブの人数設定で使用している小さな矢印のためのテキスト属性です。
+    /// </summary>
+    SmallArrowButton,
+    SmallArrowButtonMasked,
 }
 
 [Flags]

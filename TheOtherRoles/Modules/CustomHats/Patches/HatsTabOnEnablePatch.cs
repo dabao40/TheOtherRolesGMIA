@@ -43,11 +43,11 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
             if (_hatGroups == null || _hatGroups.Count == 0)
             {
                 _hatGroups = new SortedList<string, List<HatData>>(
-                    new PaddedComparer<string>("Vanilla", ""));
+                    new PaddedComparer<string>("Innersloth", ""));
 
                 foreach (var hat in HatManager.Instance.GetUnlockedHats())
                 {
-                    var group = string.IsNullOrEmpty(hat.StoreName) ? "Vanilla" : hat.StoreName;
+                    var group = string.IsNullOrEmpty(hat.StoreName) ? "Innersloth" : hat.StoreName;
                     if (!_hatGroups.ContainsKey(group))
                         _hatGroups[group] = new List<HatData>();
                     _hatGroups[group].Add(hat);
@@ -168,6 +168,8 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
             UpdatePageLabel();
         }
 
+        static public MetaContext.IDividedSpriteLoader leftIcon = MetaContext.XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.HatsNextButton.png", 220f, 2);
+
         private static void CreateNavButtons(HatsTab tab)
         {
             // Destroy previous instances so re-opening the tab is clean
@@ -183,20 +185,17 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
                 titleTransform.localPosition = new Vector3(pos.x + 0.6f, pos.y, pos.z);
             }
 
-            var arrowSprite = BuildArrowSprite(false); // ►
-            var arrowSpriteL = BuildArrowSprite(true);  // ◄
-
             _leftButtonObj = BuildNavButton(
                 tab.transform,
                 new Vector3(-1.05f, -0.18f, -55f),
-                arrowSpriteL,
-                () => GoToPreviousPage(tab));
+                () => GoToPreviousPage(tab),
+                true);
 
             _rightButtonObj = BuildNavButton(
                 tab.transform,
                 new Vector3(2.75f, -0.18f, -55f),
-                arrowSprite,
-                () => GoToNextPage(tab));
+                () => GoToNextPage(tab),
+                false);
 
             // We borrow the first TMP we can find on the tab as a template
             var templateTmp = tab.GetComponentInChildren<TextMeshPro>(true);
@@ -231,17 +230,21 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
         private static GameObject BuildNavButton(
             Transform parent,
             Vector3 localPos,
-            Sprite icon,
-            Action onClick)
+            Action onClick,
+            bool flip)
         {
             var go = new GameObject("HatPageNavBtn");
             go.transform.SetParent(parent, false);
             go.transform.localPosition = localPos;
             go.layer = parent.gameObject.layer;
 
+            var arrowSprite = leftIcon.GetSprite(0);
+            var arrowSpriteActive = leftIcon.GetSprite(1);
+
             // SpriteRenderer (visible icon)
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = icon;
+            if (flip) sr.flipX = true;
+            sr.sprite = arrowSprite;
 
             // Collider so the PassiveButton can detect clicks
             var col = go.AddComponent<CircleCollider2D>();
@@ -249,70 +252,16 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
 
             // PassiveButton — same component TOR uses everywhere
             var btn = go.AddComponent<PassiveButton>();
+            btn.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            btn.OnMouseOut = new UnityEngine.Events.UnityEvent();
+            btn.OnMouseOver = new UnityEngine.Events.UnityEvent();
             btn.Colliders = new Collider2D[] { col };
 
-            btn.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
             btn.OnClick.AddListener((Action)onClick);
-
-            // Hover colour feedback (white ↔ yellow), matching TOR button style
-            btn.OnMouseOver = new UnityEvent();
-            btn.OnMouseOver.AddListener((Action)(() => sr.color = new Color(1f, 0.85f, 0.2f)));
-            btn.OnMouseOut = new UnityEvent();
-            btn.OnMouseOut.AddListener((Action)(() => sr.color = Color.white));
+            btn.OnMouseOver.AddListener((Action)(() => sr.sprite = arrowSpriteActive));
+            btn.OnMouseOut.AddListener((Action)(() => sr.sprite = arrowSprite));
 
             return go;
-        }
-
-        //  Draws a filled triangle (◄ or ►) into a 32×32 texture.
-        //  This removes any dependency on external asset files.
-        //
-        private static Sprite BuildArrowSprite(bool pointLeft)
-        {
-            const int size = 32;
-            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            tex.hideFlags = HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
-
-            // Fill transparent
-            var pixels = new Color32[size * size];
-            for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = new Color32(0, 0, 0, 0);
-
-            // Draw a filled triangle
-            // Triangle vertices (in pixel coords, Y-up):
-            //   pointLeft  ◄:  tip=(4,16), top-right=(27,4), bottom-right=(27,27)
-            //   pointRight ►:  tip=(27,16),top-left=(4,4),   bottom-left=(4,27)
-            int tipX = pointLeft ? 4 : 27;
-            int baseX = pointLeft ? 27 : 4;
-            int topY = 4;
-            int bottomY = 27;
-            int midY = 16; // tip Y
-
-            for (int y = topY; y <= bottomY; y++)
-            {
-                // Lerp the x-extent of the triangle at this scanline
-                float t = (y - topY) / (float)(bottomY - topY);
-                float xEdge = Mathf.Lerp(tipX, baseX, t <= 0.5f ? t * 2f : (1f - t) * 2f);
-
-                int xStart = pointLeft ? (int)xEdge : tipX;
-                int xEnd = pointLeft ? tipX : (int)xEdge;
-
-                if (xStart > xEnd) { int tmp = xStart; xStart = xEnd; xEnd = tmp; }
-
-                for (int x = xStart; x <= xEnd; x++)
-                    pixels[y * size + x] = new Color32(255, 255, 255, 255);
-            }
-
-            tex.SetPixels32(pixels);
-            tex.Apply();
-
-            var sprite = Sprite.Create(
-                tex,
-                new Rect(0, 0, size, size),
-                new Vector2(0.5f, 0.5f),
-                size * 1.0f);
-
-            sprite.hideFlags = HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
-            return sprite;
         }
     }
 }
