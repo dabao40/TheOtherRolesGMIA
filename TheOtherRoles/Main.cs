@@ -70,8 +70,7 @@ namespace TheOtherRoles
         public static void UpdateRegions() {
             ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
             var regions = new IRegionInfo[] {
-                //new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>([new ServerInfo("Custom", Ip.Value, Port.Value, false)])).CastFast<IRegionInfo>()
-                new StaticHttpRegionInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", StringNames.NoTranslation, "player.amongusclub.cn", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", "https://player.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", StringNames.NoTranslation, "fk.mxyx.club", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", "https://fk.mxyx.club", 443, false)])).CastFast<IRegionInfo>()
             };
             
             IRegionInfo currentRegion = serverManager.CurrentRegion;

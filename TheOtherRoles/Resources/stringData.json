@@ -11561,6 +11561,14 @@
         "13": "\u89d2\u8272\u603b\u89c8",
         "14": "\u89d2\u8272\u7e3d\u89bd"
     },
+    "helpLastGameResultKey": {
+        "0": "Previous Results",
+        "13": "\u6e38\u620f\u7ed3\u679c"
+    },
+    "lastGameResultEmpty": {
+        "0": "Last Game Result Is Empty",
+        "13": "\u4e0a\u8f6e\u6e38\u620f\u7ed3\u679c\u4e3a\u7a7a"
+    },
     "hintHelpInGameDetail": {
         "0": "You can press key H to view the descriptions of your role in the game.\nYou may also use your scroller if your description is too long.",
         "13": "\u4f60\u53ef\u4ee5\u901a\u8fc7\u5728\u6e38\u620f\u4e2d\u6309H\u952e\u6765\u67e5\u770b\u81ea\u5df1\u89d2\u8272\u7684\u529f\u80fd\n\u5982\u679c\u4f60\u7684\u804c\u4e1a\u4ecb\u7ecd\u592a\u957f\uff0c\u4f60\u8fd8\u53ef\u4ee5\u4f7f\u7528\u6eda\u8f6e\u6765\u7ffb\u9875",

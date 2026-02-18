@@ -1639,50 +1639,8 @@ namespace TheOtherRoles {
         }
     }
 
-    // This class is taken and adapted from Town of Us Reactivated, https://github.com/eDonnes124/Town-Of-Us-R/blob/master/source/Patches/CustomOption/Patches.cs, Licensed under GPLv3
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HudManagerUpdate {
-        [HarmonyPrefix]
-        public static void Prefix3(HudManager __instance)
-        {
-            if (!summaryTMP) return;
-            summaryTMP.text = Helpers.previousEndGameSummary;
-
-            summaryTMP.transform.localPosition = new Vector3(-3 * 1.2f, 2.2f, -500f);
-        }
-
-        private static TMPro.TextMeshPro summaryTMP = null;
-        private static GameObject summaryBackground;
-        public static void OpenSummary(HudManager __instance)
-        {
-            if (__instance.FullScreen == null || MapBehaviour.Instance && MapBehaviour.Instance.IsOpen || Helpers.previousEndGameSummary.IsNullOrWhiteSpace()) return;
-            summaryBackground = GameObject.Instantiate(__instance.FullScreen.gameObject, __instance.transform);
-            summaryBackground.SetActive(true);
-            var renderer = summaryBackground.GetComponent<SpriteRenderer>();
-            renderer.color = new Color(0.2f, 0.2f, 0.2f, 0.9f);
-            renderer.enabled = true;
-
-
-            summaryTMP = GameObject.Instantiate(__instance.KillButton.cooldownTimerText, __instance.transform);
-            summaryTMP.alignment = TMPro.TextAlignmentOptions.TopLeft;
-            summaryTMP.enableWordWrapping = false;
-            summaryTMP.transform.localScale = Vector3.one * 0.3f;
-            summaryTMP.gameObject.SetActive(true);
-
-        }
-
-        public static void CloseSummary()
-        {
-            summaryTMP?.gameObject.Destroy();
-            summaryTMP = null;
-            if (summaryBackground) summaryBackground.Destroy();
-        }
-
-        public static void ToggleSummary(HudManager __instance)
-        {
-            if (summaryTMP) CloseSummary();
-            else OpenSummary(__instance);
-        }
 
         static PassiveButton toggleSettingsButton;
         static GameObject toggleSettingsButtonObject;
@@ -1692,7 +1650,6 @@ namespace TheOtherRoles {
         static PassiveButton toggleZoomButton;
         [HarmonyPostfix]
         public static void Postfix(HudManager __instance) {
-            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             if (!toggleSettingsButton || !toggleSettingsButtonObject) {
                 // add a special button for settings viewing:
                 toggleSettingsButtonObject = GameObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
@@ -1707,10 +1664,10 @@ namespace TheOtherRoles {
                 toggleSettingsButton.OnClick.RemoveAllListeners();
                 toggleSettingsButton.OnClick.AddListener((Action)(() => HelpMenu.TryOpenHelpScreen(HelpMenu.HelpTab.Options)));
             }
-            toggleSettingsButtonObject.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.HideNSeek);
-            toggleSettingsButtonObject.transform.localPosition = __instance.MapButton.transform.localPosition + new Vector3(0, -0.8f, -500f);
+            toggleSettingsButtonObject.SetActive((GameStates.IsLobby ? __instance.SettingsButton.gameObject.active : __instance.MapButton.gameObject.active) && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.HideNSeek);
+            toggleSettingsButtonObject.transform.localPosition = GameStates.IsLobby ? __instance.SettingsButton.transform.localPosition + new Vector3(-1.45f, 0.03f, -200f) : __instance.MapButton.transform.localPosition + new Vector3(0, -0.8f, -500f);
 
-
+            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             if (!toggleZoomButton || !toggleZoomButtonObject)
             {
                 // add a special button for settings viewing:
@@ -1736,39 +1693,6 @@ namespace TheOtherRoles {
                 var posOffset = Helpers.zoomOutStatus ? new Vector3(-1.27f, -7.92f, -52f) : new Vector3(0, -1.6f, -52f);
                 toggleZoomButtonObject.transform.localPosition = HudManager.Instance.MapButton.transform.localPosition + posOffset;
             }
-        }
-
-        [HarmonyPostfix]
-        public static void Postfix2(HudManager __instance)
-        {
-            if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
-            {
-                if (toggleSummaryButtonObject != null)
-                {
-                    toggleSummaryButtonObject.SetActive(false);
-                    toggleSummaryButtonObject.Destroy();
-                    toggleSummaryButton.Destroy();
-                }
-                return;
-            }
-            if (!toggleSummaryButton || !toggleSummaryButtonObject)
-            {
-                // add a special button for settings viewing:
-                toggleSummaryButtonObject = GameObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                toggleSummaryButtonObject.transform.localPosition = __instance.MapButton.transform.localPosition + new Vector3(0, -1.25f, -500f);
-                toggleSummaryButtonObject.name = "TOGGLESUMMARYSBUTTON";
-                SpriteRenderer renderer = toggleSummaryButtonObject.transform.Find("Inactive").GetComponent<SpriteRenderer>();
-                SpriteRenderer rendererActive = toggleSummaryButtonObject.transform.Find("Active").GetComponent<SpriteRenderer>();
-                toggleSummaryButtonObject.transform.Find("Background").localPosition = Vector3.zero;
-                renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Endscreen.png", 100f);
-                rendererActive.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.EndscreenActive.png", 100f);
-                toggleSummaryButton = toggleSummaryButtonObject.GetComponent<PassiveButton>();
-                toggleSummaryButton.OnClick.RemoveAllListeners();
-                toggleSummaryButton.OnClick.AddListener((Action)(() => ToggleSummary(__instance)));
-            }
-            toggleSummaryButtonObject.SetActive(__instance.SettingsButton.gameObject.active && LobbyBehaviour.Instance && !Helpers.previousEndGameSummary.IsNullOrWhiteSpace() && GameOptionsManager.Instance.currentGameOptions.GameMode != GameModes.HideNSeek
-                && AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started);
-            toggleSummaryButtonObject.transform.localPosition = __instance.SettingsButton.transform.localPosition + new Vector3(-1.45f, 0.03f, -500f);
         }
     }
 }

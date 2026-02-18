@@ -247,6 +247,8 @@ namespace TheOtherRoles.Modules {
         }
 
         public static GameObject ChannelShower;
+        static private GameObject TeamChatButton;
+        private static MetaContext.Image TeamChatSwitch = MetaContext.SpriteLoader.FromResource("TheOtherRoles.Resources.TeamChatSwitch.png", 105f);
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake)), HarmonyPostfix]
         public static void ChatControllerAwake_Postfix(ChatController __instance)
         {
@@ -267,36 +269,66 @@ namespace TheOtherRoles.Modules {
             CurrentChannel = CurrentChannel; // Check Channel
         }
 
+        public static void CreateTeamChatButton()
+        {
+            if (GameStates.IsLobby || TeamChatButton) return;
+
+            var ChatScreenContainer = GameObject.Find("ChatScreenContainer");
+            var BanMenu = ChatScreenContainer.transform.FindChild("BanMenuButton");
+
+            TeamChatButton = UnityEngine.Object.Instantiate(BanMenu.gameObject, BanMenu.transform.parent);
+            TeamChatButton.GetComponent<PassiveButton>().OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            TeamChatButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => { SwitchNextChannel(); }));
+            TeamChatButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = TeamChatSwitch.GetSprite();
+            TeamChatButton.name = "FactionChat";
+            var pos = BanMenu.transform.localPosition;
+            TeamChatButton.transform.localPosition = new Vector3(pos.x, pos.y + 0.7f, pos.z);
+        }
+
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update)), HarmonyPostfix]
         public static void ChatControllerUpdate_Postfix(ChatController __instance)
         {
             if (GameStates.IsLobby) return;
             UpdateChatChannels();
             KeyboardInput(__instance);
-            if (ChannelShower == null) return;
-            try
+            bool jailed = Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId);
+            if (TeamChatButton != null) TeamChatButton.SetActive(ActiveChannels.Count > 1 && !jailed);
+            if (ChannelShower != null)
             {
-                var text = ModTranslation.getString($"chatChannel{Enum.GetName(CurrentChannel)}");
-                bool jailed = Jailor.isJailed(PlayerControl.LocalPlayer.PlayerId);
-                if (jailed) text = $"{ModTranslation.getString("chatChannelJailor")}";
-                text +=  ActiveChannels.Count == 1 || jailed ? "" : ModTranslation.getString("channelSwitchNotice");
-                ChannelShower?.GetComponent<TextMeshPro>().SetText(text);
-                ChannelShower?.SetActive(!ChannelShower.transform.parent.parent.FindChild("RateMessage (TMP)").gameObject.activeSelf);
+                try
+                {
+                    var text = ModTranslation.getString($"chatChannel{Enum.GetName(CurrentChannel)}");
+                    if (jailed) text = $"{ModTranslation.getString("chatChannelJailor")}";
+                    ChannelShower?.GetComponent<TextMeshPro>().SetText(text);
+                    ChannelShower?.SetActive(!ChannelShower.transform.parent.parent.FindChild("RateMessage (TMP)").gameObject.activeSelf);
+                }
+                catch { }
             }
-            catch { }
+        }
+
+        [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
+        public static class TogglePatch
+        {
+            public static void Postfix(ChatController __instance)
+            {
+                if (!__instance.IsOpenOrOpening) return;
+                CreateTeamChatButton();
+            }
+        }
+
+        static void SwitchNextChannel()
+        {
+            var channels = ActiveChannels.ToList();
+            if (channels.Count == 0) { CurrentChannel = ChannelType.Default; return; }
+            var currentIndex = channels.IndexOf(CurrentChannel);
+            var nextIndex = (currentIndex + 1) % channels.Count;
+            CurrentChannel = channels[nextIndex];
         }
 
         public static void KeyboardInput(ChatController __instance)
         {
             if (Jailor.players.Any(x => x.player != null && !x.player.Data.IsDead && x.jailTarget == PlayerControl.LocalPlayer)) { CurrentChannel = ChannelType.Default; return; }
-            if (Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                var channels = ActiveChannels.ToList();
-                if (channels.Count == 0) { CurrentChannel = ChannelType.Default; return; }
-                var currentIndex = channels.IndexOf(CurrentChannel);
-                var nextIndex = (currentIndex + 1) % channels.Count;
-                CurrentChannel = channels[nextIndex];
-            }
+            if (Input.GetKeyDown(KeyCode.Mouse1)) SwitchNextChannel();
         }
 
         public static void UpdateChatChannels()

@@ -713,6 +713,8 @@ namespace TheOtherRoles
             }
         }
 
+        static public IDividedSpriteLoader NextButtonSprite = XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.HatsNextButton.png", 220f, 2);
+
         public static List<string> removeLineFeed(string line)
         {
             var lines = line.Split("\n", StringSplitOptions.None);
@@ -1579,28 +1581,6 @@ namespace TheOtherRoles
 
         public static bool CanSeeInvisible(this PlayerControl player) => (player.Data.IsDead && (RoleManager.IsGhostRole(player.Data.RoleType) || FreePlayGM.isFreePlayGM)) || Lighter.isLightActive(player);
 
-        public static PlayerDisplay GetPlayerDisplay()
-        {
-            AmongUsClient.Instance.PlayerPrefab.gameObject.SetActive(false);
-            var display = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab.gameObject);
-            AmongUsClient.Instance.PlayerPrefab.gameObject.SetActive(true);
-
-            UnityEngine.Object.Destroy(display.GetComponent<PlayerControl>());
-            UnityEngine.Object.Destroy(display.GetComponent<PlayerPhysics>());
-            UnityEngine.Object.Destroy(display.GetComponent<Rigidbody2D>());
-            UnityEngine.Object.Destroy(display.GetComponent<CircleCollider2D>());
-            UnityEngine.Object.Destroy(display.GetComponent<CustomNetworkTransform>());
-            UnityEngine.Object.Destroy(display.GetComponent<BoxCollider2D>());
-            UnityEngine.Object.Destroy(display.GetComponent<DummyBehaviour>());
-            UnityEngine.Object.Destroy(display.GetComponent<AudioSource>());
-            UnityEngine.Object.Destroy(display.GetComponent<PassiveButton>());
-            UnityEngine.Object.Destroy(display.GetComponent<HnSImpostorScreamSfx>());
-
-            display.gameObject.SetActive(true);
-
-            return display.AddComponent<PlayerDisplay>();
-        }
-
         public static void SetAsUIAspectContent(this GameObject obj, AspectPosition.EdgeAlignments alignment, Vector3 distanceFromEdge)
         {
             var aspectPos = obj.AddComponent<AspectPosition>();
@@ -1631,7 +1611,7 @@ namespace TheOtherRoles
         {
             var holder = CreateObject("AnimHolder", HudManager.Instance.transform, new(0f, -1.85f, -10f));
 
-            var display = GetPlayerDisplay();
+            var display = VanillaAsset.GetPlayerDisplay();
             display.transform.SetParent(holder.transform);
             display.transform.localPosition = new(0.4f, -0.2f, -1f);
             display.transform.localScale = new(0.45f, 0.45f, 1f);

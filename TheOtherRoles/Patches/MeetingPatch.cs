@@ -31,6 +31,7 @@ namespace TheOtherRoles.Patches
         private static PlayerVoteArea swapped1 = null;
         private static PlayerVoteArea swapped2 = null;
         static TMPro.TextMeshPro[] meetingInfoText = new TMPro.TextMeshPro[4];
+        static PassiveButton meetingInfoButton;
         static int meetingTextIndex = 0;
 
         static private float[] VotingAreaScale = [1f, 0.95f, 0.76f];
@@ -345,6 +346,9 @@ namespace TheOtherRoles.Patches
                 if (meetingInfoText != null)
                     foreach (var text in meetingInfoText)
                         text.gameObject.SetActive(false);
+
+                if (meetingInfoButton)
+                    UnityEngine.Object.Destroy(meetingInfoButton);
 
                 // Lovers, Lawyer & Pursuer save next to be exiled, because RPC of ending game comes before RPC of exiled
                 foreach (var couple in Lovers.couples)
@@ -1113,6 +1117,23 @@ namespace TheOtherRoles.Patches
                 }
             }
 
+            if (meetingInfoButton == null)
+            {
+                var renderer = Helpers.CreateObject<SpriteRenderer>("MeetingInfoButtonRenderer", __instance.transform, new(-4.5f, 2.1f, -20f));
+                renderer.sprite = Helpers.NextButtonSprite.GetSprite(0);
+                meetingInfoButton = renderer.gameObject.SetUpButton();
+                var collider = renderer.gameObject.AddComponent<BoxCollider2D>();
+                collider.isTrigger = true;
+                collider.size = new(0.4f, 0.4f);
+                meetingInfoButton.OnMouseOver.AddListener((Action)(() => { renderer.sprite = Helpers.NextButtonSprite.GetSprite(1); VanillaAsset.PlayHoverSE(); }));
+                meetingInfoButton.OnMouseOut.AddListener((Action)(() => { renderer.sprite = Helpers.NextButtonSprite.GetSprite(0); }));
+                meetingInfoButton.OnClick.AddListener((Action)(() => {
+                    meetingTextIndex = (meetingTextIndex + 1) % meetingInfoText.totalCounts();
+                    VanillaAsset.PlaySelectSE();
+                }));
+                meetingInfoButton.gameObject.SetActive(false);
+            }
+
             for (int i = 0; i < meetingInfoText.Length; i++)
             {
                 meetingInfoText[i].text = "";
@@ -1147,6 +1168,8 @@ namespace TheOtherRoles.Patches
             } if (!PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.isRole(RoleId.Mafioso)) {
                 meetingInfoText.getFirst().text = string.Format(ModTranslation.getString("mafiosoNumSkipsLeft"), Mafioso.numUses);
             }
+
+            meetingInfoButton.gameObject.SetActive(meetingInfoText.totalCounts() > 1);
 
             meetingInfoText[meetingTextIndex].gameObject.SetActive(true);
             if (meetingInfoText.totalCounts() == 0) return;

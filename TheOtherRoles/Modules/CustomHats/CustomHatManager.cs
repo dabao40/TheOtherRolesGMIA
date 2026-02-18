@@ -71,8 +71,6 @@ namespace TheOtherRoles.Modules.CustomHats
             var allHats = currentHats.ToList();
             var toRegister = new List<HatData>();
 
-            TheOtherRolesPlugin.Logger.LogMessage($"UnregisteredHats count: {UnregisteredHats.Count}");
-
             foreach (var hat in UnregisteredHats)
             {
                 try
@@ -81,7 +79,6 @@ namespace TheOtherRoles.Modules.CustomHats
                     if (hatData != null)
                     {
                         toRegister.Add(hatData);
-                        TheOtherRolesPlugin.Logger.LogMessage($"Successfully created hat: {hat.Name}");
                     }
                 }
                 catch (Exception ex)
@@ -94,8 +91,6 @@ namespace TheOtherRoles.Modules.CustomHats
             DestroyableSingleton<HatManager>.Instance.allHats = allHats.ToArray();
             UnregisteredHats.Clear();
             HatsLoaded = true;
-
-            TheOtherRolesPlugin.Logger.LogMessage($"Registered {toRegister.Count} custom hats.");
         }
 
         internal static HatData CreateHatBehaviour(CustomHat ch, bool testOnly = false)
@@ -104,7 +99,6 @@ namespace TheOtherRoles.Modules.CustomHats
             var hat = ScriptableObject.CreateInstance<HatData>();
 
             var resourcePath = ch.Resource;
-            TheOtherRolesPlugin.Logger.LogMessage($"Creating hat {ch.Name} from resource: {resourcePath}");
 
             var sprite = CreateHatSprite(resourcePath);
             if (sprite == null)

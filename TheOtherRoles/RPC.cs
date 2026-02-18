@@ -693,7 +693,6 @@ namespace TheOtherRoles
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
             SurveillanceMinigamePatch.nightVisionOverlays = null;
             EventUtility.clearAndReload();
-            HudManagerUpdate.CloseSummary();
             RoleDraft.isRunning = false;
         }
 

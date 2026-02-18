@@ -168,8 +168,6 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
             UpdatePageLabel();
         }
 
-        static public MetaContext.IDividedSpriteLoader leftIcon = MetaContext.XOnlyDividedSpriteLoader.FromResource("TheOtherRoles.Resources.HatsNextButton.png", 220f, 2);
-
         private static void CreateNavButtons(HatsTab tab)
         {
             // Destroy previous instances so re-opening the tab is clean
@@ -238,8 +236,8 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
             go.transform.localPosition = localPos;
             go.layer = parent.gameObject.layer;
 
-            var arrowSprite = leftIcon.GetSprite(0);
-            var arrowSpriteActive = leftIcon.GetSprite(1);
+            var arrowSprite = Helpers.NextButtonSprite.GetSprite(0);
+            var arrowSpriteActive = Helpers.NextButtonSprite.GetSprite(1);
 
             // SpriteRenderer (visible icon)
             var sr = go.AddComponent<SpriteRenderer>();
@@ -257,8 +255,8 @@ namespace TheOtherRoles.Modules.CustomHats.Patches
             btn.OnMouseOver = new UnityEngine.Events.UnityEvent();
             btn.Colliders = new Collider2D[] { col };
 
-            btn.OnClick.AddListener((Action)onClick);
-            btn.OnMouseOver.AddListener((Action)(() => sr.sprite = arrowSpriteActive));
+            btn.OnClick.AddListener((Action)(() => { onClick.Invoke(); MetaContext.VanillaAsset.PlaySelectSE(); }));
+            btn.OnMouseOver.AddListener((Action)(() => { sr.sprite = arrowSpriteActive; MetaContext.VanillaAsset.PlayHoverSE(); }));
             btn.OnMouseOut.AddListener((Action)(() => sr.sprite = arrowSprite));
 
             return go;

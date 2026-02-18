@@ -35,6 +35,7 @@ public static class HelpMenu
         Achievements = 0x01,
         Roles = 0x02,
         Options = 0x04,
+        LastGameResult = 0x08,
         MyInfo = 0x10,
         Overview = 0x20,
     }
@@ -57,6 +58,7 @@ public static class HelpMenu
         new(HelpTab.Achievements, "helpAchievementsKey"),
         new(HelpTab.Overview, "helpOverviewKey"),
         new(HelpTab.Options, "helpOptionsKey"),
+        new(HelpTab.LastGameResult, "helpLastGameResultKey")
     ];
 
     private static IMetaContextOld GetTabsContext(MetaScreen screen, HelpTab tab, HelpTab validTabs)
@@ -198,6 +200,12 @@ public static class HelpMenu
         if (!(optionsInner?.Value?.IsValid ?? false)) return;
 
         optionsInner.Value.SetContext(GetOptionsContext());
+    }
+
+    static private IMetaContextOld GetLastGameContext()
+    {
+        var context = new MetaContextOld.VariableText(OptionsAttr) { RawText = Helpers.previousEndGameSummary == "" ? ModTranslation.getString("lastGameResultEmpty") : Helpers.previousEndGameSummary, Alignment = IMetaContextOld.AlignmentOption.Left };
+        return new MetaContextOld.ScrollView(new(7.4f, HelpHeight), context) { Alignment = IMetaContextOld.AlignmentOption.Left, ScrollerTag = "HelpLastGameResult" };
     }
 
     private static void OpenAssignableHelp(RoleInfo roleInfo)
@@ -580,6 +588,7 @@ public static class HelpMenu
         if (!(MapUtilities.CachedShipStatus == null || PlayerControl.LocalPlayer == null || HudManager.Instance == null || FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed)) {
             validTabs |= HelpTab.MyInfo;
         }
+        if (LobbyBehaviour.Instance && Helpers.previousEndGameSummary != "") validTabs |= HelpTab.LastGameResult;
 
         ShowScreen(screen, tab, validTabs);
 
@@ -736,6 +745,9 @@ public static class HelpMenu
                 break;
             case HelpTab.Overview:
                 context.Append(ShowPreviewScreen());
+                break;
+            case HelpTab.LastGameResult:
+                context.Append(GetLastGameContext());
                 break;
         }
 
