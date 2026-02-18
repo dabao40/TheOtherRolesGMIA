@@ -411,11 +411,13 @@ namespace TheOtherRoles.Modules
                 var button = billboard.SetUpButton();
                 button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, achievement.GetOverlayContext(true, false, true, false, true))));
                 button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+#if WINDOWS
                 button.OnClick.AddListener((Action)(() => {
                     SetOrToggleTitle(achievement);
                     button.OnMouseOut.Invoke();
                     button.OnMouseOver.Invoke();
                 }));
+#endif
 
                 white.material.shader = Helpers.achievementMaterialShader;
                 icon.sprite = trophySprite.GetSprite(achievement.Trophy);
@@ -727,10 +729,21 @@ namespace TheOtherRoles.Modules
             if (showTitleInfo && IsCleared)
             {
                 list.Add(new TORGUIMargin(GUIAlignment.Left, new(0f, 0.2f)));
+#if WINDOWS
                 list.Add(new TORGUIText(GUIAlignment.Left, DetailContentAttribute, new LazyTextComponent(() =>
                 (TORAchievementManager.MyTitle == this) ?
                 ("<b>" + ModTranslation.getString("achievementEquipped").Color(Color.green) + "</b><br>" + ModTranslation.getString("achievementUnequip")) :
                 ModTranslation.getString("achievementEquip"))));
+#else
+                list.Add(GUI.API.Button(GUIAlignment.Left, GUI.API.GetAttribute(AttributeAsset.SmallWideButtonMasked), 
+                                new LazyTextComponent(() => ModTranslation.getString(TORAchievementManager.MyTitle == this ? "achievementUnequip" : "achievementEquip")),
+                                (Action)(() =>
+                                {
+                                    TORAchievementManager.SetOrToggleTitle(this);
+                                    TORGUIManager.Instance.HideHelpContext();
+                                })
+                                ));
+#endif
             }
 
             return new VerticalContextsHolder(GUIAlignment.Left, list) { BackImage = RelatedRole.Any() ? TheOtherRoles.RoleData.GetIllustration(RelatedRole.FirstOrDefault().roleId) : null, GrayoutedBackImage = !(IsCleared || !hiddenNotClearedAchievement) };

@@ -709,6 +709,8 @@ namespace TheOtherRoles.MetaContext
                     AttributeAsset.DocumentBold => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.2f, 0.6f, 1.2f), Size = new(5f, 6f) },
                     AttributeAsset.DocumentSubtitle1 => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.9f, 0.6f, 1.9f), Size = new(5f, 6f) },
                     AttributeAsset.DocumentSubtitle2 => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1.6f, 0.6f, 1.6f), Size = new(5f, 6f) },
+                    AttributeAsset.SmallWideButton => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1f, 0.4f, 1f), Size = new(0.85f, 0.18f) },
+                    AttributeAsset.SmallWideButtonMasked => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1f, 0.4f, 1f), Size = new(0.85f, 0.18f) },
                     AttributeAsset.SmallArrowButton => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBaredBoldLeft)) { FontSize = new(1f, 0.4f, 1f), Size = new(0.22f, 0.18f) },
                     AttributeAsset.SmallArrowButtonMasked => new TextAttributes(Instance.GetAttribute(AttributeParams.StandardBoldLeft)) { FontSize = new(1f, 0.4f, 1f), Size = new(0.22f, 0.18f) },
                     _ => null!
@@ -1056,8 +1058,14 @@ namespace TheOtherRoles.MetaContext
 
                 if (OverlayContext != null)
                 {
+#if WINDOWS
                     button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, OverlayContext())));
                     button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
+#else
+                    if (OnClickText == null) {
+                        button.OnClick.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, OverlayContext())));
+                    }
+#endif
                 }
                 if (OnClickText != null)
                     button.OnClick.AddListener((Action)(() =>

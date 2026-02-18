@@ -1644,8 +1644,6 @@ namespace TheOtherRoles {
 
         static PassiveButton toggleSettingsButton;
         static GameObject toggleSettingsButtonObject;
-        static PassiveButton toggleSummaryButton;
-        static GameObject toggleSummaryButtonObject;
         static GameObject toggleZoomButtonObject;
         static PassiveButton toggleZoomButton;
         [HarmonyPostfix]

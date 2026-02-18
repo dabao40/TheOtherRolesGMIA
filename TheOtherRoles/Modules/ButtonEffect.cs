@@ -79,6 +79,7 @@ namespace TheOtherRoles.Modules
 
         static public GameObject AddKeyGuide(GameObject button, KeyCode key, UnityEngine.Vector2 pos, bool removeExistingGuide, string action = null)
         {
+#if WINDOWS
             if (removeExistingGuide) button.gameObject.ForEachChild((Il2CppSystem.Action<GameObject>)(obj => { if (obj.name == "HotKeyGuide") UnityEngine.Object.Destroy(obj); }));
 
             Sprite numSprite = null;
@@ -108,6 +109,9 @@ namespace TheOtherRoles.Modules
             SetHintOverlay(obj, key, action);
 
             return obj;
+#else
+            return null;
+#endif
         }
 
         static public GameObject SetKeyGuide(GameObject button, KeyCode key, bool removeExistingGuide = true, string action = null)
@@ -182,6 +186,7 @@ namespace TheOtherRoles.Modules
 
         static public void ShowVanillaKeyGuide(this HudManager manager)
         {
+#if WINDOWS
             if (manager == null) return;
 
             //ボタンのガイドを表示
@@ -229,6 +234,7 @@ namespace TheOtherRoles.Modules
                 actionMap = actionArray[0];
                 SetKeyGuide(manager.ImpostorVentButton.gameObject, actionMap.keyCode);
             }
+#endif
         }
     }
 }

@@ -57,7 +57,10 @@ namespace TheOtherRoles.Modules
                         new TORGUIText(GUIAlignment.Left, headerAttr, a.GetHeaderComponent()),
                         new TORGUIMargin(GUIAlignment.Left, new(0f, -0.12f)),
                         new TORGUIText(GUIAlignment.Left, attr, a.GetTitleComponent(ITORAchievement.HiddenComponent)) { OverlayContext = a.GetOverlayContext(true, false, true, false, a.IsCleared),
-                            OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)},
+#if WINDOWS
+                            OnClickText = (() => { if (a.IsCleared) { TORAchievementManager.SetOrToggleTitle(a); } }, true)
+#endif
+                        },
                     ];
 
                     float height = 0.75f;
