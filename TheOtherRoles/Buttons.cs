@@ -4146,16 +4146,20 @@ namespace TheOtherRoles
 
             // Assassin mark and assassinate button 
             assassinButton = new CustomButton(
-                () => {
+                () =>
+                {
                     MessageWriter writer;
-                    if (Assassin.local.assassinMarked != null) {
+                    if (Assassin.local.assassinMarked != null)
+                    {
                         // Murder attempt with teleport
                         MurderAttemptResult attempt = Helpers.checkMuderAttempt(PlayerControl.LocalPlayer, Assassin.local.assassinMarked);
-                        if (attempt == MurderAttemptResult.ReverseKill) {
+                        if (attempt == MurderAttemptResult.ReverseKill)
+                        {
                             Helpers.checkMurderAttemptAndKill(Assassin.local.assassinMarked, PlayerControl.LocalPlayer);
                             return;
                         }
-                        if (attempt == MurderAttemptResult.PerformKill) {
+                        if (attempt == MurderAttemptResult.PerformKill)
+                        {
                             _ = new StaticAchievementToken("assassin.common1");
                             Assassin.local.acTokenChallenge.Value.markKill = true;
                             // Create first trace before killing
@@ -4176,16 +4180,20 @@ namespace TheOtherRoles
                             Assassin.PlaceTrace.Invoke((PlayerControl.LocalPlayer.PlayerId, pos));
                         }
 
-                        if (attempt is MurderAttemptResult.BlankKill or MurderAttemptResult.PerformKill) {
+                        if (attempt is MurderAttemptResult.BlankKill or MurderAttemptResult.PerformKill)
+                        {
                             assassinButton.Timer = assassinButton.MaxTimer;
                             PlayerControl.LocalPlayer.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-                        } else if (attempt == MurderAttemptResult.SuppressKill) {
+                        }
+                        else if (attempt == MurderAttemptResult.SuppressKill)
+                        {
                             assassinButton.Timer = 0f;
                         }
                         Assassin.local.assassinMarked = null;
                         return;
-                    } 
-                    if (Assassin.local.currentTarget != null) {
+                    }
+                    if (Assassin.local.currentTarget != null)
+                    {
                         if (Helpers.checkSuspendAction(PlayerControl.LocalPlayer, Assassin.local.currentTarget)) return;
                         Assassin.local.assassinMarked = Assassin.local.currentTarget;
                         assassinButton.Timer = 5f;
@@ -4200,18 +4208,21 @@ namespace TheOtherRoles
                     }
                 },
                 () => { return PlayerControl.LocalPlayer.isRole(RoleId.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead; },
-                () => {  // CouldUse
-                    assassinButton.Sprite = Assassin.local.assassinMarked != null ? Assassin.getKillButtonSprite() : Assassin.getMarkButtonSprite(); 
+                () =>
+                {  // CouldUse
+                    assassinButton.Sprite = Assassin.local.assassinMarked != null ? Assassin.getKillButtonSprite() : Assassin.getMarkButtonSprite();
                     return (Assassin.local.currentTarget != null || (Assassin.local.assassinMarked != null && !TransportationToolPatches.isUsingTransportation(Assassin.local.assassinMarked))) && PlayerControl.LocalPlayer.CanMove;
                 },
-                () => {  // on meeting ends
+                () =>
+                {  // on meeting ends
                     assassinButton.Timer = assassinButton.MaxTimer;
                 },
                 Assassin.getMarkButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                KeyCode.F                   
-            );
+                KeyCode.F
+            )
+            { buttonText = ""};
 
             mayorMeetingButton = new CustomButton(
                () => {

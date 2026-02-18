@@ -268,7 +268,7 @@ internal class GUIModernButton : TORGUIText
             passiveButton.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(passiveButton)));
 #else
             if (OnClickText == null) {
-                button.OnClick.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, OverlayContext())));
+                passiveButton.OnClick.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(passiveButton, OverlayContext())));
             }
 #endif
         }
