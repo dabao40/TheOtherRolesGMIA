@@ -118,7 +118,7 @@ namespace TheOtherRoles.Patches {
                         } else if (diff < 0) {
                             message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorNewerVersion"), $"{client.Character.Data.PlayerName}")} (v{playerVersions[client.Id].version.ToString()})\n</color>";
                             versionMismatch = true;
-                        } else if (!PV.GuidMatches()) { // version presumably matches, check if Guid matches
+                        } else if (!PV.GuidMatches(client)) { // version presumably matches, check if Guid matches
                             message += $"<color=#FF0000FF>{string.Format(ModTranslation.getString("errorWrongVersion"), $"{client.Character.Data.PlayerName}")} v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
                             versionMismatch = true;
                         }
@@ -295,7 +295,7 @@ namespace TheOtherRoles.Patches {
                         
                         PlayerVersion PV = playerVersions[client.Id];
                         int diff = TheOtherRolesPlugin.Version.CompareTo(PV.version);
-                        if (diff != 0 || !PV.GuidMatches()) {
+                        if (diff != 0 || !PV.GuidMatches(client)) {
                             continueStart = false;
                             break;
                         }
@@ -367,14 +367,21 @@ namespace TheOtherRoles.Patches {
         public class PlayerVersion {
             public readonly Version version;
             public readonly Guid guid;
+            public readonly string subVersion;
 
-            public PlayerVersion(Version version, Guid guid) {
+            public PlayerVersion(Version version, string subVersion, Guid guid) {
                 this.version = version;
                 this.guid = guid;
+                this.subVersion = subVersion;
             }
 
-            public bool GuidMatches() {
-                return Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.Equals(this.guid);
+            public bool GuidMatches(InnerNet.ClientData client)
+            {
+                if (client.PlatformData.Platform == Platforms.Android) {
+                    // Android clients can't reliably send their guid, so we just check if the version matches
+                    return TheOtherRolesPlugin.SubVersionString == subVersion;
+                }
+                return Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.Equals(guid);
             }
         }
     }
