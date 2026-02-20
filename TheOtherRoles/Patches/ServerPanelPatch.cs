@@ -8,6 +8,7 @@ using Object = Il2CppSystem.Object;
 
 namespace TheOtherRoles.Patches
 {
+#if WINDOWS
     //From Fractured Turth && Final Suspect
     [HarmonyPatch]
     public static class ServerDropDownPatch
@@ -129,4 +130,5 @@ namespace TheOtherRoles.Patches
             __instance.background.transform.localPosition += new Vector3(4f, 0, 0);
         }
     }
+#endif
 }

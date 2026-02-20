@@ -821,13 +821,13 @@ namespace TheOtherRoles
             Lovers.addCouple(Helpers.playerById(playerId1), Helpers.playerById(playerId2));
         }
 
-        public static void versionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId, string subVer) {
+        public static void versionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId, string subVer, bool isAndroid) {
             System.Version ver;
             if (revision < 0) 
                 ver = new System.Version(major, minor, build);
             else 
                 ver = new System.Version(major, minor, build, revision);
-            GameStartManagerPatch.playerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, subVer, guid);
+            GameStartManagerPatch.playerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, subVer, isAndroid, guid);
         }
 
         public static void useUncheckedVent(int ventId, byte playerId, byte isEnter) {
@@ -2095,7 +2095,7 @@ namespace TheOtherRoles
                     } else {
                         guid = new Guid(new byte[16]);
                     }
-                    RPCProcedure.versionHandshake(major, minor, patch, revision == 0xFF ? -1 : revision, guid, versionOwnerId, reader.ReadString());
+                    RPCProcedure.versionHandshake(major, minor, patch, revision == 0xFF ? -1 : revision, guid, versionOwnerId, reader.ReadString(), reader.ReadBoolean());
                     break;
                 case (byte)CustomRPC.UseUncheckedVent:
                     int ventId = reader.ReadPackedInt32();

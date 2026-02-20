@@ -1539,7 +1539,7 @@ namespace TheOtherRoles {
             else if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek)
                 options = options.Where(x => (x.type == CustomOption.CustomOptionType.HideNSeekMain || x.type == CustomOption.CustomOptionType.HideNSeekRoles));
             if (TORMapOptions.gameMode != CustomGamemodes.FreePlay)
-                options = options.Where(x => x.id != 10424);
+                options = options.Where(x => x.id != 10429);
             foreach (var option in options) {
                 if (option.parent == null) {
                     string line = $"{option.getName().Replace("\n", " ")}: {option.getString()}";
