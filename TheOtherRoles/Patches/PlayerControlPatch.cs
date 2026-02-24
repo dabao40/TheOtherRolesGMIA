@@ -560,22 +560,6 @@ namespace TheOtherRoles.Patches {
             mushroomSaboWasActive = false;
         }
 
-        static void bloodyUpdate() {
-            if (!Bloody.active.Any()) return;
-            foreach (KeyValuePair<byte, float> entry in new Dictionary<byte, float>(Bloody.active)) {
-                PlayerControl player = Helpers.playerById(entry.Key);
-                PlayerControl bloodyPlayer = Helpers.playerById(Bloody.bloodyKillerMap[player.PlayerId]);      
-
-                Bloody.active[entry.Key] = entry.Value - Time.fixedDeltaTime;
-                if (entry.Value <= 0 || player.Data.IsDead) {
-                    Bloody.bloodyKillerMap.Remove(player.PlayerId);
-                    Bloody.active.Remove(entry.Key);
-                    continue;  // Skip the creation of the next blood drop, if the killer is dead or the time is up
-                }
-                new Bloodytrail(player, bloodyPlayer);
-            }
-        }
-
         // Mini set adapted button cooldown for Vampire, Sheriff, Jackal, Sidekick, Warlock, Cleaner
         public static void miniCooldownUpdate() {
             if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini) {
@@ -686,8 +670,6 @@ namespace TheOtherRoles.Patches {
                 AssassinTrace.UpdateAll();
 
                 // -- MODIFIER--
-                // Bloody
-                bloodyUpdate();
                 // Chameleon (invis stuff, timers)
                 Chameleon.update();
                 // Multitasker
@@ -874,9 +856,6 @@ namespace TheOtherRoles.Patches {
             if (PlayerControl.LocalPlayer == target && Helpers.CurrentMonth == 4 && Helpers.isSkeld())
                 _ = new StaticAchievementToken("rainyStep");
 
-            if (PlayerControl.LocalPlayer == __instance && Helpers.CurrentMonth == 8 && Helpers.isFungle() && Bloody.bloody.Any(x => x.PlayerId == target.PlayerId))
-                _ = new StaticAchievementToken("watermelon");
-
             if (PlayerControl.LocalPlayer.isRole(RoleId.Seer)) {
                 if (__instance.Data.Role.IsImpostor && __instance != target) Seer.local.acTokenAnother.Value.impKill = true;
                 if (Seer.canSeeKillTeams)
@@ -1012,8 +991,11 @@ namespace TheOtherRoles.Patches {
             }
 
             // Add Bloody Modifier
-            if (Bloody.bloody.FindAll(x => x.PlayerId == target.PlayerId).Count > 0) {
-                RPCProcedure.ActivateBloody.Invoke((__instance.PlayerId, target.PlayerId));
+            if (Bloody.bloody.Any(x => x.PlayerId == target.PlayerId)) {
+                Bloodytrail.StartBloodTrail(__instance, target);
+                if (PlayerControl.LocalPlayer == __instance && Helpers.CurrentMonth == 8 && Helpers.isFungle()) {
+                    _ = new StaticAchievementToken("watermelon");
+                }
             }
 
             // HideNSeek

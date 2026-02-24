@@ -1884,13 +1884,6 @@ namespace TheOtherRoles
             if (value > 0) Pursuer.blankedList.Add(target);            
         }
 
-        public static RemoteProcess<(byte killerPlayerId, byte bloodyPlayerId)> ActivateBloody = new("Bloody", (message, _) =>
-        {
-            if (Bloody.active.ContainsKey(message.killerPlayerId)) return;
-            Bloody.active.Add(message.killerPlayerId, Bloody.duration);
-            Bloody.bloodyKillerMap.Add(message.killerPlayerId, message.bloodyPlayerId);
-        });
-
         public static RemoteProcess<byte> SetFirstKill = RemotePrimitiveProcess.OfByte("SetFirstKill", (message, _) =>
         {
             PlayerControl target = Helpers.playerById(message);

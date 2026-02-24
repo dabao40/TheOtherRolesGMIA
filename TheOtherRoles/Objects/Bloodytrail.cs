@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Reactor.Utilities;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
@@ -55,6 +57,23 @@ namespace TheOtherRoles.Objects {
                 bloodytrail.Remove(this);
             }
             })));
+        }
+
+        public static void StartBloodTrail(PlayerControl killer, PlayerControl blood)
+        {
+            Coroutines.Start(CreateBlood(killer, blood));
+        }
+
+        private static IEnumerator CreateBlood(PlayerControl killer, PlayerControl blood)
+        {
+            float endTime = Bloody.duration;
+            while (endTime > 0)
+            {
+                endTime -= Time.deltaTime;
+                if (killer.Data.IsDead || MeetingHud.Instance) yield break;
+                _ = new Bloodytrail(killer, blood);
+                yield return new WaitForSeconds(0.1f);
+            }
         }
 
         public static void resetSprites()
