@@ -7,14 +7,12 @@ using System.Text;
 using BepInEx;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
-using Rewired.Utils.Platforms.Windows;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
-using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Patches {
     enum CustomGameOverReason {
