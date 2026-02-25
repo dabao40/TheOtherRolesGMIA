@@ -142,7 +142,6 @@ namespace TheOtherRoles
     {
         static void Postfix()
         {
-            ClientOptionsPatch.updateTranslations();
             EastAsianFontChanger.ReflectFallBackFont();
         }
     }

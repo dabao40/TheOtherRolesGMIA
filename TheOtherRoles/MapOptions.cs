@@ -8,20 +8,9 @@ namespace TheOtherRoles{
         public static bool blockSkippingInEmergencyMeetings = false;
         public static bool noVoteIsSelfVote = false;
         public static bool hidePlayerNames = false;
-        public static bool ghostsSeeRoles = true;
-        public static bool ghostsSeeModifier = true;
-        public static bool ghostsSeeInformation = true;
-        public static bool ghostsSeeVotes = true;
-        public static bool showRoleSummary = true;
         public static bool allowParallelMedBayScans = false;
-        public static bool showLighterDarker = true;
-        public static bool toggleCursor = true;
-        public static bool enableSoundEffects = true;
         public static bool enableHorseMode = false;
         public static bool shieldFirstKill = false;
-        public static bool ShowChatNotifications = true;
-        public static bool ShowVentsOnMap = true;
-        public static bool showExtraInfo = true;
         public static CustomGamemodes gameMode = CustomGamemodes.Classic;
 
         // Updating values
@@ -45,22 +34,6 @@ namespace TheOtherRoles{
             allowParallelMedBayScans = CustomOptionHolder.allowParallelMedBayScans.getBool();
             shieldFirstKill = CustomOptionHolder.shieldFirstKill.getBool();
             firstKillPlayer = null;
-        }
-
-        public static void reloadPluginOptions() {
-            ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value;
-            ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value;
-            ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value;
-            ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value;
-            showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value;
-            showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value;
-            toggleCursor = TheOtherRolesPlugin.ToggleCursor.Value;
-            enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value;
-            enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
-            ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
-            ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value;
-            showExtraInfo = TheOtherRolesPlugin.ShowExtraInfo.Value;
-            //Patches.ShouldAlwaysHorseAround.isHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         }
 
         public static void resetPoolables() {

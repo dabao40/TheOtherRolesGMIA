@@ -1,28 +1,28 @@
 global using Il2CppInterop.Runtime;
 global using Il2CppInterop.Runtime.Attributes;
+global using Il2CppInterop.Runtime.Injection;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
-global using Il2CppInterop.Runtime.Injection;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using AmongUs.Data;
+using AmongUs.Data.Player;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Hazel;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using UnityEngine;
-using TheOtherRoles.Modules;
-using TheOtherRoles.Utilities;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
 using Reactor.Networking.Attributes;
-using AmongUs.Data;
-using TheOtherRoles.Modules.CustomHats;
-using UnityEngine.SceneManagement;
-using AmongUs.Data.Player;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
+using TheOtherRoles.Modules.CustomHats;
+using TheOtherRoles.Patches;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TheOtherRoles
 {
@@ -34,7 +34,7 @@ namespace TheOtherRoles
     {
         public const string Id = "me.eisbison.theotherroles";
         public const string VersionString = "1.3.5";
-        public const string SubVersionString = "-Kelp";
+        public const string SubVersionString = "-Lagoon";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -44,21 +44,10 @@ namespace TheOtherRoles
         public static TheOtherRolesPlugin Instance;
 
         public static ConfigEntry<string> DebugMode { get; private set; }
-        public static ConfigEntry<bool> GhostsSeeInformation { get; set; }
-        public static ConfigEntry<bool> GhostsSeeRoles { get; set; }
-        public static ConfigEntry<bool> GhostsSeeModifier { get; set; }
-        public static ConfigEntry<bool> GhostsSeeVotes{ get; set; }
-        public static ConfigEntry<bool> ShowRoleSummary { get; set; }
-        public static ConfigEntry<bool> ShowLighterDarker { get; set; }
-        public static ConfigEntry<bool> EnableSoundEffects { get; set; }
         public static ConfigEntry<bool> EnableHorseMode { get; set; }
         public static ConfigEntry<string> Ip { get; set; }
         public static ConfigEntry<ushort> Port { get; set; }
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
-        public static ConfigEntry<bool> ToggleCursor { get; set; }
-        public static ConfigEntry<bool> ShowChatNotifications { get; set; }
-        public static ConfigEntry<bool> ShowVentsOnMap { get; set; }
-        public static ConfigEntry<bool> ShowExtraInfo { get; set; }
 
         public static Sprite ModStamp;
 
@@ -101,19 +90,8 @@ namespace TheOtherRoles
             ModTranslation.Load();
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
-            GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
-            GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);
-            GhostsSeeModifier = Config.Bind("Custom", "Ghosts See Modifier", true);
-            GhostsSeeVotes = Config.Bind("Custom", "Ghosts See Votes", true);
-            ShowRoleSummary = Config.Bind("Custom", "Show Role Summary", true);
-            ShowLighterDarker = Config.Bind("Custom", "Show Lighter / Darker", true);
-            ToggleCursor = Config.Bind("Custom", "Better Cursor", true);
-            EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
-            ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
-            ShowVentsOnMap = Config.Bind("Custom", "Show Vent Positions On Minimap", false);
-            ShowExtraInfo = Config.Bind("Custom", "Show Info On Mouse Hover", true);
 
             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
@@ -131,8 +109,9 @@ namespace TheOtherRoles
             TORAchievementManager.LoadAchievements();
             EventDetail.Load();
             TranslatableTag.Load();
+            Patches.ClientOption.Load();
 #if WINDOWS
-            if (ToggleCursor.Value) Helpers.enableCursor(true);
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.ToggleCursor) == 1) Helpers.enableCursor(true);
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();

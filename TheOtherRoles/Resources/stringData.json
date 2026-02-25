@@ -4038,29 +4038,15 @@
         "0": "No Settings For Role",
         "11": "\u8a2d\u5b9a\u3067\u304d\u308b\u9805\u76ee\u304c\n\u3042\u308a\u307e\u305b\u3093"
     },
-    "ghostsSeeInfoButton": {
-        "0": "Ghosts See Tasks & Other Info",
+    "spoilerAfterDeath": {
+        "0": "Show Information On Death",
         "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u30bf\u30b9\u30af\u6b8b\u91cf\u3092\u898b\u308c\u308b",
-        "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u4efb\u52a1\u8fdb\u5ea6\u53ca\u5176\u4ed6\u4fe1\u606f",
+        "13": "\u6b7b\u4ea1\u540e\u53ef\u4ee5\u770b\u5230\u6e38\u620f\u4fe1\u606f",
         "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u4efb\u52d9\u9032\u5ea6\u53ca\u5176\u4ed6\u8a0a\u606f"
     },
-    "ghostsSeeRolesButton": {
-        "0": "Ghosts Can See Roles",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5f79\u8077\u3092\u898b\u308c\u308b",
-        "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u804c\u4e1a",
-        "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u8077\u696d"
-    },
-    "ghostsSeeModifiersButton": {
-        "0": "Ghosts Can Additionally See Modifier",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u4ed6\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u5c5e\u6027\u3092\u898b\u308c\u308b",
-        "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u526f\u804c\u4e1a",
-        "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u526f\u8077\u696d"
-    },
-    "ghostsSeeVotesButton": {
-        "0": "Ghosts Can See Votes",
-        "11": "\u30b4\u30fc\u30b9\u30c8\u304c\u6295\u7968\u3092\u898b\u308c\u308b",
-        "13": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u89c1\u6295\u7968",
-        "14": "\u9b3c\u9b42\u53ef\u4ee5\u770b\u898b\u6295\u7968"
+    "spoilerAfterDeathDetail": {
+        "0": "When disabled, you may not see the roles of the others even upon death",
+        "13": "\u82e5\u5173\u95ed\u8be5\u9009\u9879, \u6b7b\u4ea1\u65f6\u65e0\u6cd5\u770b\u5230\u5176\u4ed6\u73a9\u5bb6\u7684\u804c\u4e1a\u4fe1\u606f"
     },
     "showRoleSummaryButton": {
         "0": "Show Role Summary",
@@ -4074,11 +4060,23 @@
         "13": "\u663e\u793a\u6df1\u8272/\u6d45\u8272",
         "14": "\u986f\u793a\u6df1\u8272/\u6dfa\u8272"
     },
+    "showLighterDarkerDetail": {
+        "0": "Uses a black or white dot to indicate the player's colors<br>This information is used for some roles",
+        "13": "\u4f7f\u7528\u9ed1\u8272\u6216\u767d\u8272\u7684\u6807\u8bb0\u8868\u660e\u989c\u8272\u6df1\u6d45<br>\u6709\u4e9b\u804c\u4e1a\u4f1a\u5e94\u7528\u8fd9\u4e2a\u4fe1\u606f"
+    },
     "toggleCursor": {
         "0": "Better Cursor",
         "11": "\u30ab\u30fc\u30bd\u30eb\u3092\u5909\u66f4",
         "13": "\u4f7f\u7528\u6a21\u7ec4\u5149\u6807",
         "14": "\u4f7f\u7528\u6a21\u7d44\u6e38\u6a19"
+    },
+    "playLobbyMusic": {
+        "0": "Play Lobby Music",
+        "13": "\u64ad\u653e\u5927\u5385\u97f3\u4e50"
+    },
+    "playLobbyMusicDetail": {
+        "0": "When turned off, the BGM playing in the lobby stops",
+        "13": "\u82e5\u5173\u95ed\u8be5\u9009\u9879, \u5728\u51c6\u5907\u5927\u5385\u65f6\u7684\u97f3\u4e50\u5c06\u505c\u6b62\u64ad\u653e"
     },
     "enableSoundEffects": {
         "0": "Enable Sound Effects",
@@ -4092,15 +4090,35 @@
         "13": "\u542f\u7528\u804a\u5929\u63d0\u793a",
         "14": "\u555f\u7528\u804a\u5929\u63d0\u793a"
     },
+    "showChatNotificationDetail": {
+        "0": "If disabled, you will not see the notification popups",
+        "13": "\u82e5\u5173\u95ed\u8be5\u9009\u9879, \u4f60\u5c06\u4e0d\u4f1a\u770b\u5230\u804a\u5929\u53d1\u9001\u65f6\u7684\u5f39\u6846"
+    },
     "showVentsOnMap": {
         "0": "Show Vents On Map",
         "13": "\u5728\u5730\u56fe\u4e0a\u663e\u793a\u7ba1\u9053\u4f4d\u7f6e",
         "14": "\u5728\u5730\u5716\u4e0a\u986f\u793a\u901a\u98a8\u53e3\u4f4d\u7f6e"
     },
+    "showVentsOnMapDetail": {
+        "0": "You can see where the vents are on the map",
+        "13": "\u53ef\u4ee5\u5728\u5730\u56fe\u4e0a\u770b\u5230\u7ba1\u9053\u7684\u5177\u4f53\u4f4d\u7f6e"
+    },
     "showExtraInfo": {
         "0": "Show Info On Mouse Hover",
-        "13": "\u9f20\u6807\u60ac\u505c\u65f6\u663e\u793a\u4fe1\u606f",
+        "13": "\u60ac\u505c\u65f6\u663e\u793a\u4fe1\u606f",
         "14": "\u6e38\u6a19\u61f8\u505c\u6642\u986f\u793a\u8a0a\u606f"
+    },
+    "showExtraInfoDetail": {
+        "0": "An info of what the button is for will show up on clicking/hovering<br>This is useful for new players",
+        "13": "\u5728\u60ac\u505c/\u70b9\u51fb\u65f6\u663e\u793a\u6309\u94ae\u7684\u7528\u9014<br>\u5bf9\u65b0\u73a9\u5bb6\u5f88\u6709\u5e2e\u52a9"
+    },
+    "screenshotOnEnd": {
+        "0": "Take Screenshot On Game End",
+        "13": "\u6e38\u620f\u7ed3\u675f\u65f6\u81ea\u52a8\u622a\u5c4f"
+    },
+    "screenshotOnEndDetail": {
+        "0": "Automatically takes a screenshot in the game directory",
+        "13": "\u5728\u6e38\u620f\u76ee\u5f55\u4e0b\u81ea\u52a8\u4fdd\u5b58\u622a\u56fe"
     },
     "next": {
         "0": "Next",

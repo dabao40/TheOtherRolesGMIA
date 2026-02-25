@@ -688,7 +688,6 @@ namespace TheOtherRoles
             clearGameHistory();
             setCustomButtonCooldowns();
             CustomButton.ReloadHotkeys();
-            reloadPluginOptions();
             Helpers.toggleZoom(reset : true);
             GameStartManagerPatch.GameStartManagerUpdatePatch.startingTimer = 0;
             SurveillanceMinigamePatch.nightVisionOverlays = null;
@@ -1911,7 +1910,7 @@ namespace TheOtherRoles
             }
             var role = Role.allRoles.FirstOrDefault(x => x.player == target);
             target.swapRoles(thief);
-            if (role != null && role.roleId is RoleId.Jackal or RoleId.JekyllAndHyde or RoleId.Moriarty) target.setRole(role.roleId);  // Keep teamed roles to the target
+            if (role != null && role.roleId is RoleId.Jackal or RoleId.JekyllAndHyde or RoleId.Moriarty or RoleId.Yandere or RoleId.Pelican or RoleId.SchrodingersCat) target.setRole(role.roleId);  // Keep teamed roles to the target
             if (target.Data.Role.IsImpostor) {
                 RoleManager.Instance.SetRole(thief, RoleTypes.Impostor);
                 FastDestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(thief.killTimer, PlayerControl.LocalPlayer.GetKillCooldown());

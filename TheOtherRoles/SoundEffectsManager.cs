@@ -1,6 +1,7 @@
 using System;
-using UnityEngine;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Patches;
+using UnityEngine;
 
 namespace TheOtherRoles
 {
@@ -10,7 +11,7 @@ namespace TheOtherRoles
     {
         public static AudioSource play(string path, float volume = 0.8f, bool loop = false, bool musicChannel = false)
         {
-            if (!TORMapOptions.enableSoundEffects) return null;
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.EnableSoundEffects) == 0) return null;
 
             AudioClip clipToPlay = AssetLoader.GetAudioClip(path);
             stop(path);
@@ -27,7 +28,7 @@ namespace TheOtherRoles
 
         public static void playAtPosition(string path, Vector2 position, float maxDuration = 15f, float range = 5f, bool loop = false)
         {
-            if (!TORMapOptions.enableSoundEffects || !Constants.ShouldPlaySfx()) return;
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.EnableSoundEffects) == 0 || !Constants.ShouldPlaySfx()) return;
 
             AudioClip clipToPlay = AssetLoader.GetAudioClip(path);
             if (clipToPlay == null) return;

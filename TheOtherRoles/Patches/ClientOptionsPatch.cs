@@ -1,319 +1,186 @@
-using HarmonyLib;
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using BepInEx.Configuration;
+using HarmonyLib;
+using Rewired.UI.ControlMapper;
+using Rewired.Utils.Classes.Data;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using static UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
-using System.Linq;
 
 namespace TheOtherRoles.Patches 
 {
-    [HarmonyPatch]
-    public static class ClientOptionsPatch
+    public class ClientOption
     {
-        private static SelectionBehaviour[] AllOptions = [
-            new SelectionBehaviour("ghostsSeeInfoButton", () => TORMapOptions.ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value = !TheOtherRolesPlugin.GhostsSeeInformation.Value, TheOtherRolesPlugin.GhostsSeeInformation.Value),
-            new SelectionBehaviour("ghostsSeeVotesButton", () => TORMapOptions.ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value = !TheOtherRolesPlugin.GhostsSeeVotes.Value, TheOtherRolesPlugin.GhostsSeeVotes.Value),
-            new SelectionBehaviour("ghostsSeeRolesButton", () => TORMapOptions.ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value = !TheOtherRolesPlugin.GhostsSeeRoles.Value, TheOtherRolesPlugin.GhostsSeeRoles.Value),
-            new SelectionBehaviour("ghostsSeeModifiersButton", () => TORMapOptions.ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value = !TheOtherRolesPlugin.GhostsSeeModifier.Value, TheOtherRolesPlugin.GhostsSeeModifier.Value),
-            new SelectionBehaviour("showRoleSummaryButton", () => TORMapOptions.showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value = !TheOtherRolesPlugin.ShowRoleSummary.Value, TheOtherRolesPlugin.ShowRoleSummary.Value),
-            new SelectionBehaviour("showLighterDarker", () => TORMapOptions.showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value = !TheOtherRolesPlugin.ShowLighterDarker.Value, TheOtherRolesPlugin.ShowLighterDarker.Value),
+        public enum ClientOptionType
+        {
+            SpoilerAfterDeath,
+            ShowRoleSummary,
+            PlayLobbyMusic,
+            ShowLighterDarker,
+            EnableSoundEffects,
+            ShowChatNotification,
+            ToggleCursor,
+            ShowVentsOnMap,
+            ShowExtraInfo,
+            ScreenshotOnEnd
+        }
+        static private readonly DataSaver ClientOptionSaver = new("ClientOption");
+
+        static internal readonly Dictionary<ClientOptionType, ClientOption> AllOptions = [];
+        static public int GetValue(ClientOptionType option) => AllOptions.TryGetValue(option, out var entry) ? entry.Value : 0;
+        DataEntry<int> configEntry;
+        string id;
+        string[] selections;
+        ClientOptionType type;
+
+        public ClientOption(ClientOptionType type, string name, string[] selections, int defaultValue)
+        {
+            id = name;
+            configEntry = new IntegerDataEntry(name, ClientOptionSaver, defaultValue);
+            this.selections = selections;
+            this.type = type;
+            AllOptions[type] = this;
+        }
+
+        public string RawKey => id;
+        public string DisplayName => ModTranslation.getString(id);
+        public string DisplayDetail => ModTranslation.getString(id + "Detail", tryFind: true);
+        public string DisplayValue => ModTranslation.getString(selections[configEntry.Value]);
+        public int Value => configEntry.Value;
+        public Action OnValueChanged;
+
+        public void Increment()
+        {
+            configEntry.Value = (configEntry.Value + 1) % selections.Length;
+            OnValueChanged?.Invoke();
+        }
+
+        public static void Load()
+        {
+            string[] simpleSwitch = ["optionOff", "optionOn"];
 #if WINDOWS
-            new SelectionBehaviour("toggleCursor", () => TORMapOptions.toggleCursor = TheOtherRolesPlugin.ToggleCursor.Value = !TheOtherRolesPlugin.ToggleCursor.Value, TheOtherRolesPlugin.ToggleCursor.Value),
+            _ = new ClientOption(ClientOptionType.ToggleCursor, "toggleCursor", simpleSwitch, 0) {
+                OnValueChanged = () => Helpers.enableCursor(GetValue(ClientOptionType.ToggleCursor) == 1)
+            };
 #endif
-            new SelectionBehaviour("enableSoundEffects", () =>  {
-                TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value = !TheOtherRolesPlugin.EnableSoundEffects.Value;
-                if (!TORMapOptions.enableSoundEffects) SoundEffectsManager.stopAll();
-                 return TORMapOptions.enableSoundEffects;
-                }, TheOtherRolesPlugin.EnableSoundEffects.Value),
-            new("showChatNotification", () => TORMapOptions.ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value = !TheOtherRolesPlugin.ShowChatNotifications.Value, TheOtherRolesPlugin.ShowChatNotifications.Value),
-            new("showVentsOnMap", () => TORMapOptions.ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value = !TheOtherRolesPlugin.ShowVentsOnMap.Value, TheOtherRolesPlugin.ShowVentsOnMap.Value),
-            new("showExtraInfo", () => TORMapOptions.showExtraInfo = TheOtherRolesPlugin.ShowExtraInfo.Value = !TheOtherRolesPlugin.ShowExtraInfo.Value, TheOtherRolesPlugin.ShowExtraInfo.Value)
-        ];
-        
-        private static GameObject popUp;
-        private static TextMeshPro titleText;
-
-        private static ToggleButtonBehaviour moreOptions;
-        private static TextMeshPro titleTextTitle;
-        private static List<ToggleButtonBehaviour> modButtons = new();
-        private static int page = 1;
-
-        private static ToggleButtonBehaviour buttonPrefab;
-        private static Vector3? _origin;
-        
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-        public static void MainMenuManager_StartPostfix(MainMenuManager __instance)
-        {
-            // Prefab for the title
-            var go = new GameObject("TitleTextTOR");
-            var tmp = go.AddComponent<TextMeshPro>();
-            tmp.fontSize = 4;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.transform.localPosition += Vector3.left * 0.2f;
-            titleText = Object.Instantiate(tmp);
-            titleText.gameObject.SetActive(false);
-            Object.DontDestroyOnLoad(titleText);
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Start))]
-        public static void OptionsMenuBehaviour_StartPostfix(OptionsMenuBehaviour __instance)
-        {
-            if (!__instance.CensorChatButton) return;
-
-            if (!popUp)
+            _ = new ClientOption(ClientOptionType.SpoilerAfterDeath, "spoilerAfterDeath", simpleSwitch, 1);
+            _ = new ClientOption(ClientOptionType.ShowRoleSummary, "showRoleSummaryButton", simpleSwitch, 1);
+            _ = new ClientOption(ClientOptionType.PlayLobbyMusic, "playLobbyMusic", simpleSwitch, 1)
             {
-                CreateCustom(__instance);
-            }
-
-            if (!buttonPrefab)
-            {
-                buttonPrefab = Object.Instantiate(__instance.CensorChatButton);
-                Object.DontDestroyOnLoad(buttonPrefab);
-                buttonPrefab.name = "CensorChatPrefab";
-                buttonPrefab.gameObject.SetActive(false);
-            }
-            SetUpOptions();
-            InitializeMoreButton(__instance);
-        }
-
-        private static void CreateCustom(OptionsMenuBehaviour prefab)
-        {
-            popUp = Object.Instantiate(prefab.gameObject);
-            Object.DontDestroyOnLoad(popUp);
-            var transform = popUp.transform;
-            var pos = transform.localPosition;
-            pos.z = -810f; 
-            transform.localPosition = pos;
-
-            Object.Destroy(popUp.GetComponent<OptionsMenuBehaviour>());
-            foreach (var gObj in popUp.gameObject.GetAllChilds())
-            {
-                if (gObj.name != "Background" && gObj.name != "CloseButton")
-                    Object.Destroy(gObj);
-            }
-            
-            popUp.SetActive(false);
-        }
-
-        private static void InitializeMoreButton(OptionsMenuBehaviour __instance)
-        {
-            moreOptions = Object.Instantiate(buttonPrefab, __instance.CensorChatButton.transform.parent);
-            var transform = __instance.CensorChatButton.transform;
-            __instance.CensorChatButton.Text.transform.localScale = new Vector3(1 / 0.66f, 1, 1);
-            _origin ??= transform.localPosition;
-
-            transform.localPosition = _origin.Value + Vector3.left * 0.45f;
-            transform.localScale = new Vector3(0.66f, 1, 1);
-            __instance.EnableFriendInvitesButton.transform.localScale = new Vector3(0.66f, 1, 1);
-            __instance.EnableFriendInvitesButton.transform.localPosition += Vector3.right * 0.5f;
-            __instance.EnableFriendInvitesButton.Text.transform.localScale = new Vector3(1.2f, 1, 1);
-
-            moreOptions.transform.localPosition = _origin.Value + Vector3.right * 4f / 3f;
-            moreOptions.transform.localScale = new Vector3(0.66f, 1, 1);
-
-            moreOptions.gameObject.SetActive(true);
-            moreOptions.Text.text = ModTranslation.getString("modOptionsText");
-            moreOptions.Text.transform.localScale = new Vector3(1 / 0.66f, 1, 1);
-            var moreOptionsButton = moreOptions.GetComponent<PassiveButton>();
-            moreOptionsButton.OnClick = new ButtonClickedEvent();
-            moreOptionsButton.OnClick.AddListener((Action) (() =>
-            {
-                bool closeUnderlying = false;
-                if (!popUp) return;
-
-                if (__instance.transform.parent && __instance.transform.parent == FastDestroyableSingleton<HudManager>.Instance.transform)
+                OnValueChanged = () =>
                 {
-                    popUp.transform.SetParent(FastDestroyableSingleton<HudManager>.Instance.transform);
-                    popUp.transform.localPosition = new Vector3(0, 0, -800f);
-                    closeUnderlying = true;
-                }
-                else
-                {
-                    popUp.transform.SetParent(null);
-                    Object.DontDestroyOnLoad(popUp);
-                }
-                
-                CheckSetTitle();
-                RefreshOpen();
-                if (closeUnderlying)
-                    __instance.Close();
-            }));
-        }
+                    if (!LobbyBehaviour.Instance) return;
+                    bool playMusic = AllOptions[ClientOptionType.PlayLobbyMusic].Value == 1;
 
-        private static void RefreshOpen()
-        {
-            popUp.gameObject.SetActive(false);
-            popUp.gameObject.SetActive(true);
-            SetUpOptions();
-        }
-        
-        private static void CheckSetTitle()
-        {
-            if (!popUp || popUp.GetComponentInChildren<TextMeshPro>() || !titleText) return;
-            
-            var title = titleTextTitle = Object.Instantiate(titleText, popUp.transform);
-            title.GetComponent<RectTransform>().localPosition = Vector3.up * 2.3f;
-            title.gameObject.SetActive(true);
-            title.text = ModTranslation.getString("moreOptionsText");
-            title.name = "TitleText";
-        }
-
-        private static void SetUpOptions()
-        {
-            //if (popUp.transform.GetComponentInChildren<ToggleButtonBehaviour>()) return;
-            foreach (var button in modButtons)
-            {
-                if (button != null) GameObject.Destroy(button.gameObject);
-            }
-
-            modButtons = new List<ToggleButtonBehaviour>();
-            int length = (page * 10) < AllOptions.Length ? page * 10 : AllOptions.Length;
-            for (var i = 0; i + ((page - 1) * 10) < length; i++)
-            {
-                var info = AllOptions[i + ((page - 1) * 10)];
-                
-                var button = Object.Instantiate(buttonPrefab, popUp.transform);
-                var pos = new Vector3(i % 2 == 0 ? -1.17f : 1.17f, 1.3f - i / 2 * 0.8f, -.5f);
-
-                var transform = button.transform;
-                transform.localPosition = pos;
-
-                button.onState = info.DefaultValue;
-                button.Background.color = button.onState ? Color.green : Palette.ImpostorRed;
-                
-                button.Text.text = ModTranslation.getString(info.Title);
-                button.Text.fontSizeMin = button.Text.fontSizeMax = 1.8f;
-                button.Text.font = Object.Instantiate(titleText.font);
-                button.Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 2);
-
-                button.name = info.Title.Replace(" ", "") + "Toggle";
-                button.gameObject.SetActive(true);
-                
-                var passiveButton = button.GetComponent<PassiveButton>();
-                var colliderButton = button.GetComponent<BoxCollider2D>();
-                
-                colliderButton.size = new Vector2(2.2f, .7f);
-                
-                passiveButton.OnClick = new ButtonClickedEvent();
-                passiveButton.OnMouseOut = new UnityEvent();
-                passiveButton.OnMouseOver = new UnityEvent();
-
-                passiveButton.OnClick.AddListener((Action) (() =>
-                {
-#if WINDOWS
-                    if (info.Title == "toggleCursor")
+                    if (playMusic)
                     {
-                        Helpers.enableCursor(false);
+                        SoundManager.Instance.CrossFadeSound("MapTheme", LobbyBehaviour.Instance.MapTheme, 0.5f, 1.5f);
                     }
+                    else
+                    {
+                        SoundManager.Instance.CrossFadeSound("MapTheme", null, 0.5f, 1.5f);
+                    }
+                }
+            };
+            _ = new ClientOption(ClientOptionType.ShowLighterDarker, "showLighterDarker", simpleSwitch, 0);
+            _ = new ClientOption(ClientOptionType.EnableSoundEffects, "enableSoundEffects", simpleSwitch, 1);
+            _ = new ClientOption(ClientOptionType.ShowChatNotification, "showChatNotification", simpleSwitch, 1);
+            _ = new ClientOption(ClientOptionType.ShowVentsOnMap, "showVentsOnMap", simpleSwitch, 0);
+            _ = new ClientOption(ClientOptionType.ShowExtraInfo, "showExtraInfo", simpleSwitch, 1);
+#if WINDOWS
+            _ = new ClientOption(ClientOptionType.ScreenshotOnEnd, "screenshotOnEnd", simpleSwitch, 0);
 #endif
-                    button.onState = info.OnClick();
-                    button.Background.color = button.onState ? Color.green : Palette.ImpostorRed;
+        }
+    }
+
+    [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Start))]
+    public static class StartOptionMenuPatch
+    {
+        public static void Postfix(OptionsMenuBehaviour __instance)
+        {
+            __instance.transform.localPosition = new(0, 0, -700f);
+
+            foreach (var button in __instance.GetComponentsInChildren<CustomButton>(true))
+            {
+                if (button.name != "DoneButton") continue;
+
+                button.onClick.AddListener((Action)(() => {
+                    if (AmongUsClient.Instance && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
+                        HudManager.Instance.ShowVanillaKeyGuide();
                 }));
-                
-                passiveButton.OnMouseOver.AddListener((Action) (() => button.Background.color = button.onState ? new Color32(34, 139, 34, byte.MaxValue) : new Color32(139, 34, 34, byte.MaxValue)));
-                passiveButton.OnMouseOut.AddListener((Action) (() => button.Background.color = button.onState ? Color.green : Palette.ImpostorRed));
-
-                foreach (var spr in button.gameObject.GetComponentsInChildren<SpriteRenderer>())
-                    spr.size = new Vector2(2.2f, .7f);
-
-                modButtons.Add(button);
             }
 
-            if (page * 10 < AllOptions.Length)
+            var tabs = new List<TabGroup>(__instance.Tabs.ToArray());
+
+            PassiveButton passiveButton;
+
+            GameObject torTab = new("TORTab");
+            torTab.transform.SetParent(__instance.transform);
+            torTab.transform.localScale = new Vector3(1f, 1f, 1f);
+            torTab.SetActive(false);
+
+            var torScreen = MetaScreen.GenerateScreen(new(5.6f, 4.5f), torTab.transform, new(0f, -0.28f, -10f), false, false, false);
+
+            void SetTORContext()
             {
-                var button = Object.Instantiate(buttonPrefab, popUp.transform);
-                var pos = new Vector3(1.2f, -2.5f, -0.5f);
-                var transform = button.transform;
-                transform.localPosition = pos;
-                button.Text.text = ModTranslation.getString("next");
-                button.Text.fontSizeMin = button.Text.fontSizeMax = 2.2f;
-                button.Text.font = Object.Instantiate(titleText.font);
-                button.Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 2);
-                button.gameObject.SetActive(true);
-                var passiveButton = button.GetComponent<PassiveButton>();
-                var colliderButton = button.GetComponent<BoxCollider2D>();
-                colliderButton.size = new Vector2(2.2f, .7f);
-                passiveButton.OnClick = new ButtonClickedEvent();
-                passiveButton.OnMouseOut = new UnityEvent();
-                passiveButton.OnMouseOver = new UnityEvent();
-                passiveButton.OnClick.AddListener((Action)(() =>
+                var buttonAttr = new TextAttribute(TextAttribute.BoldAttr) { Size = new Vector2(2.11f, 0.22f) };
+                MetaContextOld torContext = new();
+                torContext.Append(ClientOption.AllOptions.Values, (option) => new MetaContextOld.Button(() => {
+                    option.Increment();
+                    SetTORContext();
+                }, buttonAttr)
                 {
-                    page += 1;
-                    SetUpOptions();
-                }));
-                passiveButton.OnMouseOver.AddListener((Action)(() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
-                passiveButton.OnMouseOut.AddListener((Action)(() => button.Background.color = Color.white));
-                modButtons.Add(button);
+                    TextMargin = 0.19f,
+                    RawText = option.DisplayName + " : " + option.DisplayValue,
+                    PostBuilder = (button, _, _) =>
+                    {
+                        var detail = option.DisplayDetail;
+                        if (detail != null)
+                        {
+                            button.SetRawOverlay(detail);
+                        }
+                    }
+                }, 2, -1, 0, 0.51f);
+                torContext.Append(new MetaContextOld.VerticalMargin(0.2f));
+
+                torScreen.SetContext(torContext);
             }
-            if (page > 1)
+
+            SetTORContext();
+
+            tabs[^1] = Object.Instantiate(tabs[1], null);
+            var torButton = tabs[^1];
+            torButton.gameObject.name = "TORButton";
+            torButton.transform.SetParent(tabs[0].transform.parent);
+            torButton.transform.localScale = new Vector3(1f, 1f, 1f);
+            torButton.Content = torTab;
+            var textObj = torButton.transform.FindChild("Text_TMP").gameObject;
+            textObj.GetComponent<TextTranslatorTMP>().enabled = false;
+            textObj.GetComponent<TMPro.TMP_Text>().text = "GMIA";
+
+            passiveButton = torButton.gameObject.GetComponent<PassiveButton>();
+            passiveButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            passiveButton.OnClick.AddListener((UnityEngine.Events.UnityAction)(() =>
             {
-                var button = Object.Instantiate(buttonPrefab, popUp.transform);
-                var pos = new Vector3(-1.2f, -2.5f, -0.5f);
-                var transform = button.transform;
-                transform.localPosition = pos;
-                button.Text.text = ModTranslation.getString("previous");
-                button.Text.fontSizeMin = button.Text.fontSizeMax = 2.2f;
-                button.Text.font = Object.Instantiate(titleText.font);
-                button.Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 2);
-                button.gameObject.SetActive(true);
-                var passiveButton = button.GetComponent<PassiveButton>();
-                var colliderButton = button.GetComponent<BoxCollider2D>();
-                colliderButton.size = new Vector2(2.2f, .7f);
-                passiveButton.OnClick = new ButtonClickedEvent();
-                passiveButton.OnMouseOut = new UnityEvent();
-                passiveButton.OnMouseOver = new UnityEvent();
-                passiveButton.OnClick.AddListener((Action)(() =>
-                {
-                    page -= 1;
-                    SetUpOptions();
-                }));
-                passiveButton.OnMouseOver.AddListener((Action)(() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
-                passiveButton.OnMouseOut.AddListener((Action)(() => button.Background.color = Color.white));
-                modButtons.Add(button);
+                __instance.OpenTabGroup(tabs.Count - 1);
+                SetTORContext();
             }
-        }
-        
-        private static IEnumerable<GameObject> GetAllChilds(this GameObject Go)
-        {
-            for (var i = 0; i< Go.transform.childCount; i++)
-            {
-                yield return Go.transform.GetChild(i).gameObject;
-            }
-        }
+            ));
 
-        public static void updateTranslations()
-        {
-            if (titleTextTitle)
-                titleTextTitle.text = ModTranslation.getString("moreOptionsText");
+            float y = tabs[0].transform.localPosition.y, z = tabs[0].transform.localPosition.z;
+            if (tabs.Count == 3)
+                for (int i = 0; i < 3; i++) tabs[i].transform.localPosition = new Vector3(1.7f * (float)(i - 1), y, z);
+            else if (tabs.Count == 4)
+                for (int i = 0; i < 4; i++) tabs[i].transform.localPosition = new Vector3(1.62f * ((float)i - 1.5f), y, z);
 
-            if (moreOptions)
-                moreOptions.Text.text = ModTranslation.getString("modOptionsText");
-
-            for (int i = 0; i < AllOptions.Length; i++)
-            {
-                if (i >= modButtons.Count) break;
-                modButtons[i].Text.text = ModTranslation.getString(AllOptions[i].Title);
-            }
-        }
-
-        public class SelectionBehaviour
-        {
-            public string Title;
-            public Func<bool> OnClick;
-            public bool DefaultValue;
-
-            public SelectionBehaviour(string title, Func<bool> onClick, bool defaultValue)
-            {
-                Title = title;
-                OnClick = onClick;
-                DefaultValue = defaultValue;
-            }
+            __instance.Tabs = new Il2CppReferenceArray<TabGroup>(tabs.ToArray());
         }
     }
 }

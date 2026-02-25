@@ -865,6 +865,7 @@ namespace TheOtherRoles.MetaContext
         protected FuzzySize Size;
         public Color? Color = null;
         public bool IsMasked { get; init; }
+        public Action<SpriteRenderer> PostBuilder = null;
 
         public TORGUIImage(GUIAlignment alignment, Image image, FuzzySize size, Color? color = null) : base(alignment)
         {
@@ -890,6 +891,8 @@ namespace TheOtherRoles.MetaContext
             if (Color != null) renderer.color = Color.Value;
 
             actualSize = new(spriteSize.x * scale, spriteSize.y * scale);
+
+            PostBuilder?.Invoke(renderer);
 
             return renderer.gameObject;
         }

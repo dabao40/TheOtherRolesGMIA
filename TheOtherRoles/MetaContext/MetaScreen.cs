@@ -873,7 +873,7 @@ namespace TheOtherRoles.MetaContext
                 return this;
             }
 
-            private const float TextMargin = 0.26f;
+            public float TextMargin = 0.26f;
 
             private void Generate(SpriteRenderer button, out PassiveButton passiveButton, out TMPro.TextMeshPro text)
             {

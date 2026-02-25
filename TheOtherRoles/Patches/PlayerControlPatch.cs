@@ -324,7 +324,7 @@ namespace TheOtherRoles.Patches {
                     var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
                     var (exTasksCompleted, exTasksTotal) = TasksHandler.taskInfo(p.Data, true);
                     string roleNames = RoleInfo.GetRolesString(p, true, false);
-                    string roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeModifier, false, true, [RoleId.Lover]);
+                    string roleText = RoleInfo.GetRolesString(p, true, ClientOption.GetValue(ClientOption.ClientOptionType.SpoilerAfterDeath) == 1, false, true, [RoleId.Lover]);
                     string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({(commsActive ? "?" : tasksCompleted)}/{tasksTotal})</color>" : "";
                     string exTaskInfo = exTasksTotal > 0 ? $"<color=#E1564BFF>({exTasksCompleted}/{exTasksTotal})</color>" : "";
 
@@ -336,7 +336,6 @@ namespace TheOtherRoles.Patches {
                         if (p.isRole(RoleId.Swapper)) playerInfoText = $"{roleNames}" + Helpers.cs((p.Data.Role.IsImpostor || Madmate.madmate.Any(x => x.PlayerId == p.PlayerId)) ? Palette.ImpostorRed : Swapper.color, $" ({Swapper.charges})");
                         if (HudManager.Instance.TaskPanel != null) {
                             TMPro.TextMeshPro tabText = HudManager.Instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TMPro.TextMeshPro>();
-                            //tabText.SetText($"Tasks {taskInfo}");
                             tabText.SetText(String.Format("{0} {1}", isTaskMasterExTask ? ModTranslation.getString("taskMasterExTasks") : TranslationController.Instance.GetString(StringNames.Tasks), isTaskMasterExTask ? exTaskInfo : taskInfo));
                         }
                         //meetingInfoText = $"{roleNames} {taskInfo}".Trim();
@@ -349,19 +348,14 @@ namespace TheOtherRoles.Patches {
                         playerInfoText = roleText;
                         meetingInfoText = roleText;
                     }
-                    else if (TORMapOptions.ghostsSeeRoles && TORMapOptions.ghostsSeeInformation) {
+                    else if (ClientOption.GetValue(ClientOption.ClientOptionType.SpoilerAfterDeath) == 1) {
                         if (!isTaskMasterExTask)
                             playerInfoText = $"{roleText} {taskInfo}".Trim();
                         else
                             playerInfoText = $"{roleText} {exTaskInfo}".Trim();
-                        //playerInfoText = $"{roleText} {taskInfo}".Trim();
                         meetingInfoText = playerInfoText;
                     }
-                    else if (TORMapOptions.ghostsSeeInformation) {
-                        playerInfoText = $"{taskInfo}".Trim();
-                        meetingInfoText = playerInfoText;
-                    }
-                    else if (TORMapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target)
+                    else if ((Lawyer.lawyerKnowsRole && PlayerControl.LocalPlayer.isRole(RoleId.Lawyer) && p == Lawyer.target)
                         || (Godfather.shouldShowInfo(PlayerControl.LocalPlayer) && Godfather.killed.Contains(p))) {
                         playerInfoText = $"{roleText}";
                         meetingInfoText = playerInfoText;

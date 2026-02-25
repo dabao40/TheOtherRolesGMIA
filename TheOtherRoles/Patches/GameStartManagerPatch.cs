@@ -1,14 +1,14 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Reflection;
-using System.Collections.Generic;
-using Hazel;
 using System;
-using TheOtherRoles.Utilities;
+using System.Collections.Generic;
 using System.Linq;
-using Reactor.Utilities.Extensions;
+using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using HarmonyLib;
+using Hazel;
+using Reactor.Utilities.Extensions;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Utilities;
+using UnityEngine;
 
 namespace TheOtherRoles.Patches {
     public class GameStartManagerPatch  {
@@ -60,6 +60,28 @@ namespace TheOtherRoles.Patches {
             public static void Postfix(CreateGameOptions __instance)
             {
                 TORGUIManager.Instance.StartCoroutine(HintManager.CoShowHint(0.6f + 0.2f).WrapToIl2Cpp());
+            }
+        }
+
+        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
+        public class DelayPlayDropshipAmbiencePatch
+        {
+            static private System.Collections.IEnumerator CoDelayPlayWithoutMusic(LobbyBehaviour __instance)
+            {
+                SoundManager.Instance.StopAllSound();
+                yield return new WaitForSeconds(0.5f);
+                AudioSource audioSource = SoundManager.Instance.PlayNamedSound("DropShipAmb", __instance.DropShipSound, true, SoundManager.Instance.AmbienceChannel);
+                audioSource.loop = true;
+                audioSource.pitch = 1.2f;
+            }
+
+            public static void Postfix(LobbyBehaviour __instance)
+            {
+                if (ClientOption.AllOptions[ClientOption.ClientOptionType.PlayLobbyMusic].Value == 0)
+                {
+                    __instance.StopAllCoroutines();
+                    __instance.StartCoroutine(CoDelayPlayWithoutMusic(__instance).WrapToIl2Cpp());
+                }
             }
         }
 

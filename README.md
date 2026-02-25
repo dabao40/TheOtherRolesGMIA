@@ -2327,6 +2327,7 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 ## Developers
 - [Imp11](https://github.com/dabao40)  
 - [Among us](https://github.com/XiezibanWrite)
+- [Fangkuai](https://github.com/FangkuaiYa)
 - [ELinmei](https://github.com/HayashiUme)
 
 ## Artists
@@ -2335,7 +2336,7 @@ For the functionality of the roles in TheOtherRoles GM IA, please take a look at
 ## Translators
 - [LezaiYa](https://github.com/LezaiYa)  
 - [Fangkuai](https://github.com/FangkuaiYa)
-- [NK](github.com/endrmen9487)
+- [NK](https://github.com/endrmen9487)
 - [yuunozikkyou](https://github.com/yuunozikkyou)
 - [unhappyset](https://github.com/unhappyset)
 - [KS](https://github.com/Ks-777)
@@ -2356,8 +2357,8 @@ Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhaluc
 Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev  
 Jester - Idea for the Jester role came from Maartii  
 ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.  
-Town-Of-Host-Enhanced - Gradient color (full code)
-The-Other-Us-Edited - Idea and partly code of Pelican comes from mxyx-club
+Town-Of-Host-Enhanced - Gradient color (full code)  
+The-Other-Us-Edited - Idea and partly code of Pelican comes from mxyx-club  
 Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev  
 TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.  
 TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose  

@@ -359,9 +359,9 @@ namespace TheOtherRoles.Patches {
 
             foreach (var vent in MapUtilities.CachedShipStatus.AllVents)
             {
-                if (vent.name.StartsWith("JackInThe") && !(PlayerControl.LocalPlayer.isRole(RoleId.Trickster) || PlayerControl.LocalPlayer.Data.IsDead)) continue; //for trickster vents
+                if (vent.name.StartsWith("JackInThe") && !(PlayerControl.LocalPlayer.isRole(RoleId.Trickster) || RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType))) continue; //for trickster vents
 
-                if (!TheOtherRolesPlugin.ShowVentsOnMap.Value)
+                if (ClientOption.GetValue(ClientOption.ClientOptionType.ShowVentsOnMap) == 0)
                 {
                     if (mapIcons.Count > 0)
                     {

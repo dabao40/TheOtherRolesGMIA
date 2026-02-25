@@ -371,14 +371,9 @@ namespace TheOtherRoles
                 Cursor.SetCursor(sprite.texture, Vector2.zero, CursorMode.Auto);
                 return;
             }
-            if (TheOtherRolesPlugin.ToggleCursor.Value)
-            {
-                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            }
             else
             {
-                Sprite sprite = loadSpriteFromResources("TheOtherRoles.Resources.Cursor.png", 115f);
-                Cursor.SetCursor(sprite.texture, Vector2.zero, CursorMode.Auto);
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
         }
 #endif
@@ -645,7 +640,7 @@ namespace TheOtherRoles
 
         public static bool shouldShowGhostInfo() {
             return (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data.IsDead && (RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType) || FreePlayGM.isFreePlayGM)
-                && TORMapOptions.ghostsSeeInformation) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
+                && ClientOption.GetValue(ClientOption.ClientOptionType.SpoilerAfterDeath) == 1) || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         }
 
         public static bool shouldClearTask(this PlayerControl target) => (target.hasFakeTasks() || target.isRole(RoleId.Thief) || (target.isRole(RoleId.Shifter) && Shifter.isNeutral) || (target.isRole(RoleId.TaskMaster) && target.PlayerId == PlayerControl.LocalPlayer.PlayerId && TaskMaster.isTaskComplete)
@@ -750,6 +745,12 @@ namespace TheOtherRoles
             player.moveable = true;
             player.currentRoleAnimations.ForEach((Action<RoleEffectAnimation>)((an) => an.ToggleRenderer(true)));
             if (player.AmOwner) player.MyPhysics.inputHandler.enabled = false;
+        }
+
+        public static void SetRawOverlay(this PassiveButton button, string rawText)
+        {
+            button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, rawText)));
+            button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
         }
 
         public static void generateNormalTasks(this PlayerControl player)

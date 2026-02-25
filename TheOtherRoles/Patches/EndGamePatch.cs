@@ -1,17 +1,20 @@
-using HarmonyLib;
-using static TheOtherRoles.TheOtherRoles;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 using System;
-using System.Text;
-using TheOtherRoles.Utilities;
-using TheOtherRoles.CustomGameModes;
-using TheOtherRoles.Modules;
-using TheOtherRoles.MetaContext;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using BepInEx;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using HarmonyLib;
+using Rewired.Utils.Platforms.Windows;
+using TheOtherRoles.CustomGameModes;
+using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Roles;
+using TheOtherRoles.Utilities;
+using UnityEngine;
+using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Patches {
     enum CustomGameOverReason {
@@ -936,7 +939,7 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (TORMapOptions.showRoleSummary || HideNSeek.isHideNSeekGM) {
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.ShowRoleSummary) == 1 || HideNSeek.isHideNSeekGM) {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                 GameObject roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
                 roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -214f); 
@@ -984,6 +987,24 @@ namespace TheOtherRoles.Patches {
                 roleSummaryTextMesh.text = roleSummaryText.ToString();
                 Helpers.previousEndGameSummary = $"<size=110%>{roleSummaryText.ToString()}</size>";
             }
+
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.ScreenshotOnEnd) == 1)
+            {
+                IEnumerator CaptureAndSave()
+                {
+                    var screenshotDirectory = Path.Combine(Paths.GameRootPath, "ScreenShots");
+                    Directory.CreateDirectory(screenshotDirectory);
+                    var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    var winCondition = AdditionalTempData.winCondition.ToString();
+                    var filename = $"GameEnd_{timestamp}_{winCondition}.png";
+                    var filePath = Path.Combine(screenshotDirectory, filename);
+
+                    yield return new WaitForSeconds(2.5f);
+                    ScreenCapture.CaptureScreenshot(filePath);
+                }
+                __instance.StartCoroutine(CaptureAndSave().WrapToIl2Cpp());
+            }
+
             AdditionalTempData.clear();
         }
     }

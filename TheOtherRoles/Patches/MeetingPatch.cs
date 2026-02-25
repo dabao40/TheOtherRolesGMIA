@@ -232,7 +232,7 @@ namespace TheOtherRoles.Patches
                 var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
                 bool localIsWatcher = PlayerControl.LocalPlayer.isRole(RoleId.NiceWatcher) || PlayerControl.LocalPlayer.isRole(RoleId.EvilWatcher);
                 var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
-                                     (PlayerControl.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) || localIsWatcher;
+                                     PlayerControl.LocalPlayer.Data.IsDead || localIsWatcher;
                 if (showVoteColors)
                 {
                     PlayerMaterial.SetColors(localIsWatcher && Watcher.canSeeYasunaVotes && Yasuna.YasunaPlayer != null && Yasuna.specialVoteTargetPlayerId != byte.MaxValue ?
@@ -1092,7 +1092,7 @@ namespace TheOtherRoles.Patches
 
         public static void addButtonGuide(PassiveButton button, string guide)
         {
-            if (!showExtraInfo) return;
+            if (ClientOption.GetValue(ClientOption.ClientOptionType.ShowExtraInfo) == 0) return;
             button.OnMouseOver.AddListener((Action)(() => TORGUIManager.Instance.SetHelpContext(button, new TORGUIText(GUIAlignment.Left, TORGUIContextEngine.Instance.GetAttribute(AttributeAsset.OverlayContent),
                         new RawTextComponent(guide)))));
             button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
@@ -1281,7 +1281,7 @@ namespace TheOtherRoles.Patches
             {
                 foreach (var player in __instance.playerStates)
                 {
-                    if (showLighterDarker)
+                    if (ClientOption.GetValue(ClientOption.ClientOptionType.ShowLighterDarker) == 1)
                     {
                         bool isLighter = Helpers.isLighterColor(GameData.Instance.GetPlayerById(player.TargetPlayerId).DefaultOutfit.ColorId);
                         SpriteRenderer renderer = Helpers.CreateObject<SpriteRenderer>("Color", player.transform, new Vector3(1.2f, -0.18f, -1f));

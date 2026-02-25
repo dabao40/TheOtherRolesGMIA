@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using HarmonyLib;
 using AmongUs.Data.Legacy;
+using HarmonyLib;
+using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
+using UnityEngine;
 
 namespace TheOtherRoles.Modules {
     public class CustomColors {
@@ -246,7 +247,7 @@ namespace TheOtherRoles.Modules {
             {
                 public static bool Prefix(ChatNotification __instance, PlayerControl sender, string text)
                 {
-                    if (ShipStatus.Instance && !TORMapOptions.ShowChatNotifications)
+                    if (ShipStatus.Instance && ClientOption.GetValue(ClientOption.ClientOptionType.ShowChatNotification) == 0)
                     {
                         return false;
                     }

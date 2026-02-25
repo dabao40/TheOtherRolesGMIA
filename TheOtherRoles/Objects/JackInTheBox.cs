@@ -77,7 +77,7 @@ namespace TheOtherRoles.Objects
             vent.name = "JackInTheBoxVent_" + vent.Id;
 
             // Only render the box for the Trickster and for Ghosts
-            var showBoxToLocalPlayer = PlayerControl.LocalPlayer.isRole(RoleId.Trickster) || PlayerControl.LocalPlayer.Data.IsDead;
+            var showBoxToLocalPlayer = PlayerControl.LocalPlayer.isRole(RoleId.Trickster) || RoleManager.IsGhostRole(PlayerControl.LocalPlayer.Data.RoleType);
             gameObject.SetActive(showBoxToLocalPlayer);
 
             AllJackInTheBoxes.Add(this);
