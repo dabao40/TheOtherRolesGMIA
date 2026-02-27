@@ -169,7 +169,7 @@ namespace TheOtherRoles.Patches {
 
             public static void loadMOTDs()
             {
-                string url = Helpers.isChinese() ? "https://gitee.com/dabaoimp11/GMIAMOTDs/raw/master/MOTDs.txt" : "https://raw.githubusercontent.com/dabao40/GMIAMOTDs/main/MOTDs.txt";
+                string url = Helpers.isChinese() ? "https://gitee.com/dabaoimp11/GMIAMOTDs/raw/master/MOTDs.txt" : "https://raw.githubusercontent.com/GMIA-Nexus/GMIAMOTDs/main/MOTDs.txt";
                 var request = UnityWebRequest.Get(url);
                 request.SendWebRequest();
 

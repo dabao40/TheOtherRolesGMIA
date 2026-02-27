@@ -15,7 +15,7 @@ namespace TheOtherRoles.Modules.CustomHats
         public const string InnerslothPackageName = "Innersloth Hats";
         public const string DeveloperPackageName = "Developer Hats";
 
-        internal static readonly Tuple<string, string> Repository = new("dabao40", "TheOtherHats");
+        internal static readonly Tuple<string, string> Repository = new("GMIA-Nexus", "TheOtherHats");
         internal static string RepositoryUrl
         {
             get

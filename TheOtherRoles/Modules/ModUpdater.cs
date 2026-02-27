@@ -232,7 +232,7 @@ namespace TheOtherRoles.Modules
         [HideFromIl2Cpp]
         public static IEnumerator CoCheckUpdates()
         {
-            var torUpdateCheck = Task.Run(() => Instance.GetGithubUpdate("dabao40", "TheOtherRolesGMIA"));
+            var torUpdateCheck = Task.Run(() => Instance.GetGithubUpdate("GMIA-Nexus", "TheOtherRolesGMIA"));
             while (!torUpdateCheck.IsCompleted) yield return null;
             if (torUpdateCheck.Result != null && torUpdateCheck.Result.IsNewer(Version.Parse(TheOtherRolesPlugin.VersionString)))
             {
