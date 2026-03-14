@@ -34,7 +34,7 @@ namespace TheOtherRoles
     {
         public const string Id = "me.eisbison.theotherroles";
         public const string VersionString = "1.3.5";
-        public const string SubVersionString = "-Lagoon";
+        public const string SubVersionString = "-Mist";
         public static uint betaDays = 0;  // amount of days for the build to be usable (0 for infinite!)
 
         public static Version Version = Version.Parse(VersionString);
@@ -59,7 +59,7 @@ namespace TheOtherRoles
         public static void UpdateRegions() {
             ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
             var regions = new IRegionInfo[] {
-                new StaticHttpRegionInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", StringNames.NoTranslation, "fk.mxyx.club", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", "https://fk.mxyx.club", 443, false)])).CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", StringNames.NoTranslation, "fk.mxyx.club", new Il2CppReferenceArray<ServerInfo>([new ServerInfo("<color=#ff44ff>GMIA <color=#00ffff>BEIJING</color></color>", "https://gmiaimp.amongusclub.cn", 443, false)])).CastFast<IRegionInfo>()
             };
             
             IRegionInfo currentRegion = serverManager.CurrentRegion;

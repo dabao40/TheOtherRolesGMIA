@@ -27,7 +27,11 @@ namespace TheOtherRoles.Roles
             reported = true;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "baitEmitHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() {
+            yield return new(getButtonSprite(), "baitEmitHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%OPT%", ModTranslation.getString($"baitOPT{(highlightAllVents ? 2 : 1)}Hint"))];
 
         public static RemoteProcess<byte> Emit = RemotePrimitiveProcess.OfByte("BaitEmit", (message, _) =>
         {
@@ -131,7 +135,7 @@ namespace TheOtherRoles.Roles
 
         public static Color color = new Color32(0, 247, 255, byte.MaxValue);
 
-        public static bool highlightAllVents = false;
+        public static bool highlightAllVents { get { return CustomOptionHolder.baitHighlightAllVents.getBool(); } }
         public float reportDelay = 0f;
         public static bool showKillFlash = true;
         public static bool canBeGuessed = true;
@@ -162,7 +166,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload()
         {
-            highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             showKillFlash = CustomOptionHolder.baitShowKillFlash.getBool();
             canBeGuessed = CustomOptionHolder.baitCanBeGuessed.getBool();
             players = [];

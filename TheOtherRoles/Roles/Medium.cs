@@ -25,6 +25,11 @@ namespace TheOtherRoles.Roles
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Medium.png");
 
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%OPT%", oneTimeUse ? ModTranslation.getString("mediumOPTHint") : "");
+        }
+
         public Medium()
         {
             RoleId = roleId = RoleId.Medium;
@@ -82,7 +87,7 @@ namespace TheOtherRoles.Roles
 
         public static float cooldown = 30f;
         public static float duration = 3f;
-        public static bool oneTimeUse = false;
+        public static bool oneTimeUse { get { return CustomOptionHolder.mediumOneTimeUse.getBool(); } }
         public static float chanceAdditionalInfo = 0f;
         public static bool showQuestionTarget = true;
 
@@ -217,7 +222,6 @@ namespace TheOtherRoles.Roles
             meetingStartTime = DateTime.UtcNow;
             cooldown = CustomOptionHolder.mediumCooldown.getFloat();
             duration = CustomOptionHolder.mediumDuration.getFloat();
-            oneTimeUse = CustomOptionHolder.mediumOneTimeUse.getBool();
             chanceAdditionalInfo = CustomOptionHolder.mediumChanceAdditionalInfo.getSelection() / 10f;
             showQuestionTarget = CustomOptionHolder.mediumRevealTarget.getBool();
             players = [];

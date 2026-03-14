@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TheOtherRoles.MetaContext;
+using TheOtherRoles.Modules;
 using TMPro;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -25,6 +26,8 @@ namespace TheOtherRoles.Roles
         {
             RoleId = roleId = RoleId.Mafioso;
         }
+
+        public static IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%NUM%", CustomOptionHolder.mafiosoNumberOfSkips.getFloat().ToString())];
 
         public static void UpdateButton(MeetingHud __instance)
         {

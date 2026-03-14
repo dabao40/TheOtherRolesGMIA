@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
@@ -18,10 +19,15 @@ namespace TheOtherRoles.Roles
             markedLocation = null;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getMarkButtonSprite(), "yoyoMarkHint"), new(getBlinkButtonSprite(), "yoyoBlinkHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getMarkButtonSprite(), "yoyoMarkHint");
+            yield return new(getBlinkButtonSprite(), "yoyoBlinkHint");
+        }
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/YoYo.png");
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%SEC%", blinkDuration.ToString())];
 
-        public static float blinkDuration = 0;
+        public static float blinkDuration { get { return CustomOptionHolder.yoyoBlinkDuration.getFloat(); } }
         public static float markCooldown = 0;
         public static bool markStaysOverMeeting = false;
         public float SilhouetteVisibility => silhouetteVisibility == 0 && (PlayerControl.LocalPlayer == player || PlayerControl.LocalPlayer.Data.IsDead) ? 0.1f : silhouetteVisibility;
@@ -96,7 +102,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload()
         {
-            blinkDuration = CustomOptionHolder.yoyoBlinkDuration.getFloat();
             markCooldown = CustomOptionHolder.yoyoMarkCooldown.getFloat();
             markStaysOverMeeting = CustomOptionHolder.yoyoMarkStaysOverMeeting.getBool();
             silhouetteVisibility = CustomOptionHolder.yoyoSilhouetteVisibility.getSelection() / 10f;

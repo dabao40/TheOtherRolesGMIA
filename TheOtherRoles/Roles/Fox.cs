@@ -23,7 +23,16 @@ namespace TheOtherRoles.Roles
             Parallel
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getHideButtonSprite(), "foxHideHint"), new(getImmoralistButtonSprite(), "foxImmoralistHint"), new(getRepairButtonSprite(), "foxRepairHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getHideButtonSprite(), "foxHideHint");
+            if (CustomOptionHolder.foxCanCreateImmoralist.getBool()) {
+                yield return new(getImmoralistButtonSprite(), "foxImmoralistHint");
+            }
+            if (CustomOptionHolder.foxNumRepairs.getFloat() > 0) {
+                yield return new(getRepairButtonSprite(), "foxRepairHint");
+            }
+        }
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Fox.png");
 

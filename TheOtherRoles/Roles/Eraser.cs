@@ -23,7 +23,7 @@ namespace TheOtherRoles.Roles
         public PlayerControl currentTarget;
         public static float cooldown = 30f;
         public static bool canEraseAnyone = false;
-        public static float cooldownIncrease = 10f;
+        public static float cooldownIncrease { get { return CustomOptionHolder.eraserCooldownIncrease.getFloat(); } }
         public AchievementToken<int> acTokenChallenge;
 
         public static RemoteProcess<byte> SetFutureErased = RemotePrimitiveProcess.OfByte("SetFutureErased", (message, _) =>
@@ -49,6 +49,11 @@ namespace TheOtherRoles.Roles
             setPlayerOutline(currentTarget, color);
         }
 
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%SEC%", cooldownIncrease.ToString());
+        }
+
         public override void PostInit()
         {
             if (PlayerControl.LocalPlayer != player) return;
@@ -66,7 +71,6 @@ namespace TheOtherRoles.Roles
             futureErased = [];
             cooldown = CustomOptionHolder.eraserCooldown.getFloat();
             canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
-            cooldownIncrease = CustomOptionHolder.eraserCooldownIncrease.getFloat();
             alreadyErased = [];
             players = [];
         }

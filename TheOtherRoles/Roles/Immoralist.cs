@@ -16,7 +16,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Immoralist;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "immoralistSuicideHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getButtonSprite(), "immoralistSuicideHint")];
 
         public static List<Arrow> arrows = [];
         public static float updateTimer = 0f;

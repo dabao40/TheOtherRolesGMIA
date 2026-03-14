@@ -31,6 +31,12 @@ namespace TheOtherRoles.Roles
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/BountyHunter.png");
 
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%SEC%", arrowUpdateIntervall.ToString());
+            yield return new("%OPT%", showArrow ? ModTranslation.getString("bountyHunterOPTHint") : "");
+        }
+
         public override void FixedUpdate()
         {
             if (PlayerControl.LocalPlayer != player) return;
@@ -129,10 +135,10 @@ namespace TheOtherRoles.Roles
 
         public Arrow arrow;
         public static float bountyDuration = 30f;
-        public static bool showArrow = true;
+        public static bool showArrow { get { return CustomOptionHolder.bountyHunterShowArrow.getBool(); } }
         public static float bountyKillCooldown = 0f;
         public static float punishmentTime = 15f;
-        public static float arrowUpdateIntervall = 10f;
+        public static float arrowUpdateIntervall { get { return CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat(); } }
 
         public float arrowUpdateTimer = 0f;
         public float bountyUpdateTimer = 0f;
@@ -173,8 +179,6 @@ namespace TheOtherRoles.Roles
             bountyDuration = CustomOptionHolder.bountyHunterBountyDuration.getFloat();
             bountyKillCooldown = CustomOptionHolder.bountyHunterReducedCooldown.getFloat();
             punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
-            showArrow = CustomOptionHolder.bountyHunterShowArrow.getBool();
-            arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
             players = [];
         }
     }

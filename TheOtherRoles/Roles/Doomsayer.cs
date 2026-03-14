@@ -32,7 +32,7 @@ namespace TheOtherRoles.Roles
             doomsayerRole.observed = player;
         });
 
-        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "doomsayerObserveHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getButtonSprite(), "doomsayerObserveHint")];
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Doomsayer.png");
 
         public static Color color = new(0f, 1f, 0.5f, 1f);

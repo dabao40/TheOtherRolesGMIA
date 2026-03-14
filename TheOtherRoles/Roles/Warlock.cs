@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -12,10 +13,19 @@ namespace TheOtherRoles.Roles
         public PlayerControl curseVictim;
         public PlayerControl curseVictimTarget;
 
-        static public readonly HelpSprite[] HelpSprites = [new(getCurseButtonSprite(), "warlockCurseHint"), new(getCurseKillButtonSprite(), "warlockCurseKillHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new HelpSprite(getCurseButtonSprite(), "warlockCurseHint");
+            yield return new HelpSprite(getCurseKillButtonSprite(), "warlockCurseKillHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%SEC%", rootTime.ToString());
+        }
 
         public static float cooldown = 30f;
-        public static float rootTime = 5f;
+        public static float rootTime { get { return CustomOptionHolder.warlockRootTime.getFloat(); } }
 
         private static Sprite curseButtonSprite;
         private static Sprite curseKillButtonSprite;
@@ -48,7 +58,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             cooldown = CustomOptionHolder.warlockCooldown.getFloat();
-            rootTime = CustomOptionHolder.warlockRootTime.getFloat();
             players = [];
         }
 

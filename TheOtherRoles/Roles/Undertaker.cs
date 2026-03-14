@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TheOtherRoles.Modules;
@@ -16,7 +17,11 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Undertaker;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getDragButtonSprite(), "undertakerDragHint"), new(getDropButtonSprite(), "undertakerDropHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new HelpSprite(getDragButtonSprite(), "undertakerDragHint");
+            yield return new HelpSprite(getDropButtonSprite(), "undertakerDropHint");
+        }
 
         public static DeadBody DraggedBody;
         public static DeadBody TargetBody;

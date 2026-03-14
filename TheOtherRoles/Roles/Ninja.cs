@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using TheOtherRoles.Modules;
@@ -14,7 +15,7 @@ namespace TheOtherRoles.Roles
         public static Color color = Palette.ImpostorRed;
         public static float stealthCooldown = 30f;
         public static float stealthDuration = 15f;
-        public static float killPenalty = 10f;
+        public static float killPenalty { get { return CustomOptionHolder.ninjaKillPenalty.getFloat(); } }
         public static float speedBonus = 1.25f;
         public static float fadeTime = 0.5f;
         public static bool canUseVents = false;
@@ -25,7 +26,12 @@ namespace TheOtherRoles.Roles
         public DateTime stealthedAt = DateTime.UtcNow;
         public AchievementToken<int> acTokenChallenge = null;
 
-        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "ninjaStealthHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getButtonSprite(), "ninjaStealthHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%KP%", killPenalty.ToString())];
 
         public static RemoteProcess<(byte playerId, bool stealthed)> Stealth = new("NinjaStealth", (message, _) =>
         {
@@ -152,7 +158,6 @@ namespace TheOtherRoles.Roles
         {
             stealthCooldown = CustomOptionHolder.ninjaStealthCooldown.getFloat();
             stealthDuration = CustomOptionHolder.ninjaStealthDuration.getFloat();
-            killPenalty = CustomOptionHolder.ninjaKillPenalty.getFloat();
             speedBonus = CustomOptionHolder.ninjaSpeedBonus.getFloat();
             fadeTime = CustomOptionHolder.ninjaFadeTime.getFloat();
             canUseVents = CustomOptionHolder.ninjaCanVent.getBool();

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace TheOtherRoles.Roles
         }
 
         public static float cooldown = 30f;
-        public static bool canSeeBodies = true;
+        public static bool canSeeBodies { get { return CustomOptionHolder.cleanerCanSeeBodies.getBool(); } }
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Cleaner.png");
 
@@ -22,6 +23,11 @@ namespace TheOtherRoles.Roles
         {
             if (PlayerControl.LocalPlayer == player && HudManagerStartPatch.cleanerCleanButton != null)
                 HudManagerStartPatch.cleanerCleanButton.Timer = HudManagerStartPatch.cleanerCleanButton.MaxTimer;
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%OPT%", canSeeBodies ? ModTranslation.getString("cleanerOPTHint") : "");
         }
 
         private static Sprite buttonSprite;
@@ -33,7 +39,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             cooldown = CustomOptionHolder.cleanerCooldown.getFloat();
-            canSeeBodies = CustomOptionHolder.cleanerCanSeeBodies.getBool();
             players = [];
         }
     }

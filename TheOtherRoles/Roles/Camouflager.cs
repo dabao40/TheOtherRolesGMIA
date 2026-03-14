@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Modules;
 using UnityEngine;
@@ -14,7 +15,10 @@ namespace TheOtherRoles.Roles
         public static float camouflageTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge = null;
 
-        public static readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "camouflagerCamoHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getButtonSprite(), "camouflagerCamoHint");
+        }
 
         public Camouflager()
         {

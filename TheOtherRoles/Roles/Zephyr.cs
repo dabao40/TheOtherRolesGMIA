@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
@@ -17,7 +18,9 @@ namespace TheOtherRoles.Roles
             numUses = Mathf.RoundToInt(CustomOptionHolder.zephyrNumberOfCannons.getFloat());
         }
 
-        public static readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "zephyrCannonHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getButtonSprite(), "zephyrCannonHint")];
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%OPT%", leaveEvidence ? ModTranslation.getString("zephyrOPTHint") : "")];
 
         private static IDividedSpriteLoader smokeSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.ZephyrSmoke.png", 150f, 4, 1);
         static private Image spriteBloodPuddle = SpriteLoader.FromResource("TheOtherRoles.Resources.BloodPuddle.png", 130f);
@@ -26,7 +29,7 @@ namespace TheOtherRoles.Roles
         public int numUses = 3;
         public static float cannonRange;
         public static float cannonAttenuation;
-        public static bool leaveEvidence;
+        public static bool leaveEvidence { get { return CustomOptionHolder.zephyrLeaveEvidence.getBool(); } }
         public static bool triggerBothCooldown;
 
         public static Color color = Palette.ImpostorRed;
@@ -210,7 +213,6 @@ namespace TheOtherRoles.Roles
             cooldown = CustomOptionHolder.zephyrCooldown.getFloat();
             cannonRange = CustomOptionHolder.zephyrCannonRange.getFloat();
             cannonAttenuation = CustomOptionHolder.zephyrCannonAttenuation.getFloat();
-            leaveEvidence = CustomOptionHolder.zephyrLeaveEvidence.getBool();
             triggerBothCooldown = CustomOptionHolder.zephyrTriggerBothCooldown.getBool();
         }
     }

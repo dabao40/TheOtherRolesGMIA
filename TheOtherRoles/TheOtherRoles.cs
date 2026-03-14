@@ -224,9 +224,14 @@ namespace TheOtherRoles
                 { RoleId.Yandere, typeof(RoleBase<Yandere>) }
             };
 
-            public static HelpSprite[] GetHelp(RoleId roleId)
+            public static IEnumerable<HelpSprite> GetHelp(RoleId roleId)
             {
-                return allRoleIds.TryGetValue(roleId, out var type) ? type.GetGenericArguments()[0].GetField("HelpSprites", BindingFlags.Public | BindingFlags.Static)?.GetValue(null) as HelpSprite[] ?? [] : [];
+                return allRoleIds.TryGetValue(roleId, out var type) ? type.GetGenericArguments()[0].GetMethod("GetHelpSprites", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, null) as IEnumerable<HelpSprite> ?? [] : [];
+            }
+
+            public static IEnumerable<DocumentReplacement> GetReplacementPart(RoleId roleId)
+            {
+                return allRoleIds.TryGetValue(roleId, out var type) ? type.GetGenericArguments()[0].GetMethod("GetReplacementPart", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, null) as IEnumerable<DocumentReplacement> ?? [] : [];
             }
 
             public static MetaContext.Image GetIllustration(RoleId roleId)

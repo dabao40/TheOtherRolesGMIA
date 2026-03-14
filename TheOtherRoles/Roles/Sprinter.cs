@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using TheOtherRoles.Modules;
@@ -21,9 +22,11 @@ namespace TheOtherRoles.Roles
         }
 
         public static float sprintCooldown = 30f;
-        public static float sprintDuration = 15f;
+        public static float sprintDuration { get { return CustomOptionHolder.sprinterDuration.getFloat(); } }
         public static float fadeTime = 0.5f;
         public static float speedBonus = 0.25f;
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%SEC%", sprintDuration.ToString())];
 
         public bool sprinting = false;
         public DateTime sprintAt = DateTime.UtcNow;
@@ -110,7 +113,6 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             sprintCooldown = CustomOptionHolder.sprinterCooldown.getFloat();
-            sprintDuration = CustomOptionHolder.sprinterDuration.getFloat();
             fadeTime = CustomOptionHolder.sprinterFadeTime.getFloat();
             speedBonus = CustomOptionHolder.sprinterSpeedBonus.getFloat();
             players = [];

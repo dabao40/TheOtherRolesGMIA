@@ -7,6 +7,7 @@ using TheOtherRoles.MetaContext;
 using TheOtherRoles.Roles;
 using TheOtherRoles.Utilities;
 using UnityEngine;
+using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Modules;
 public class HelpSprite
@@ -26,6 +27,8 @@ public class HelpSprite
         this.localizedName = localizedName;
     }
 }
+
+public record DocumentReplacement(string Key, string Replacement);
 
 public static class HelpMenu
 {
@@ -156,13 +159,36 @@ public static class HelpMenu
             routine?.Invoke();
         }
 
+        List<RoleInfo> listedAssignables = [];
+
         foreach (var content in assignables)
         {
             AddContent(content.label, (Action)(() =>
             {
-                inner.Append(content.roleInfo, (role) => new MetaContextOld.Button(() =>
+                inner.Append(content.roleInfo, (role) =>
                 {
-                    OpenAssignableHelp(role);
+                    int myIndex = listedAssignables.Count;
+                    listedAssignables.Add(role);
+
+                return new CombinedContextOld(new MetaContextOld.HorizonalMargin(0.12f), new MetaContextOld.Button(() =>
+                {
+                    int currentIndex = myIndex;
+                    var window = OpenAssignableHelp(listedAssignables[myIndex]);
+
+                    void ReopenWindow()
+                    {
+                        if (window != null) window.CloseScreen();
+                        window = OpenAssignableHelp(listedAssignables[currentIndex]);
+                        if (window != null)
+                        {
+                            MetaScreen.SetUpNavButton(window, increment =>
+                            {
+                                currentIndex = (listedAssignables.Count + currentIndex + (increment ? 1 : -1)) % listedAssignables.Count;
+                                ReopenWindow();
+                            });
+                        }
+                    }
+                    ReopenWindow();
                 }, RoleTitleAttr)
                 {
                     RawText = Helpers.cs(role.orgColor, role.name),
@@ -176,6 +202,7 @@ public static class HelpMenu
                         button.OnMouseOut.AddListener((Action)(() => TORGUIManager.Instance.HideHelpContextIf(button)));
                     },
                     Alignment = IMetaContextOld.AlignmentOption.Center
+                });
                 }, 4, -1, 0, 0.6f);
             }));
         }
@@ -208,7 +235,7 @@ public static class HelpMenu
         return new MetaContextOld.ScrollView(new(7.4f, HelpHeight), context) { Alignment = IMetaContextOld.AlignmentOption.Left, ScrollerTag = "HelpLastGameResult" };
     }
 
-    private static void OpenAssignableHelp(RoleInfo roleInfo)
+    private static MetaScreen OpenAssignableHelp(RoleInfo roleInfo)
     {
         var screen = MetaScreen.GenerateWindow(new(7f, 4.5f), HudManager.Instance.transform, Vector3.zero, true, true, background: BackgroundSetting.Modern);
         Artifact<GUIScreen> inner = null;
@@ -216,14 +243,17 @@ public static class HelpMenu
         inner = scrollView.Artifact;
         Reference<MetaContextOld.ScrollView.InnerScreen> innerRef = new();
 
-        screen.SetContext(scrollView, TheOtherRoles.RoleData.GetIllustration(roleInfo.roleId), out _);
+        screen.SetContext(scrollView, RoleData.GetIllustration(roleInfo.roleId), out _);
+        return screen;
     }
 
     public static GUIContext GetRoleContext(RoleInfo roleInfo, params GUIContext[] inner)
     {
         var notNullContext = inner.Where(x => x != null);
-        return TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left, [GetRoleNameContext(roleInfo), GetConfigurationsChapter(roleInfo), GetRoleHelpSprite(roleInfo), .. notNullContext, GetAchievementContext(roleInfo)]);
+        return TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left, [GetRoleNameContext(roleInfo), GetConfigurationsChapter(roleInfo), GetRoleHelpSprite(roleInfo), GetConfigurationCaption(), .. notNullContext, GetAchievementContext(roleInfo)]);
     }
+
+    static public GUIContext GetConfigurationCaption() => TORGUIContextEngine.API.VerticalHolder(GUIAlignment.Left, GetDocumentText(ModTranslation.getString("documentConfigurationCaption")));
 
     static private TextAttributes RoleBlurbAttribute = new(TORGUIContextEngine.API.GetAttribute(AttributeAsset.DocumentBold)) { FontSize = new(1.3f) };
     static private TextAttributes RoleNameAttribute = new(TORGUIContextEngine.API.GetAttribute(AttributeAsset.DocumentBold)) { FontSize = new(2.8f) };
@@ -236,8 +266,11 @@ public static class HelpMenu
         var blurb = gui.Text(GUIAlignment.Left, RoleBlurbAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.orgColor, roleInfo.introDescription) ?? "ERROR"));
         var title = gui.Text(GUIAlignment.Left, RoleNameAttribute, gui.RawTextComponent(Helpers.cs(roleInfo.orgColor, roleInfo.name) ?? "ERROR"));
 
+        var rawText = roleInfo.fullDescription;
+        foreach (var r in RoleData.GetReplacementPart(roleInfo.roleId)) rawText = rawText.Replace(r.Key, r.Replacement);
+
         return gui.VerticalHolder(GUIAlignment.TopLeft, gui.HorizontalHolder(GUIAlignment.Left, gui.VerticalHolder(GUIAlignment.Left, blurb, gui.VerticalMargin(-0.06f), title, gui.VerticalMargin(-0.05f)), gui.HorizontalMargin(0.25f)), gui.VerticalMargin(0.15f),
-            gui.RawText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.DocumentStandard), roleInfo.fullDescription), gui.VerticalMargin(0.15f));
+            GetDocumentText(rawText), gui.VerticalMargin(0.15f));
     }
 
     private static GUIContext GetRoleHelpSprite(RoleInfo roleInfo)
@@ -245,17 +278,33 @@ public static class HelpMenu
         var gui = TORGUIContextEngine.API;
         if (roleInfo == null) return null;
 
-        GUIContext GetHelpSprite(HelpSprite hs) => new HorizontalContextsHolder(GUIAlignment.Left,
-            gui.VerticalMargin(0.15f),
-            gui.Image(GUIAlignment.Left, hs.sprite, new FuzzySize(0.4f, null)),
-            gui.HorizontalMargin(0.15f), gui.LocalizedText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.DocumentStandard), hs.localizedName)
-            );
+        GUIContext GetHelpSprite(HelpSprite hs)
+        {
+            var text = ModTranslation.getString(hs.localizedName);
+            foreach (var r in RoleData.GetReplacementPart(roleInfo.roleId)) text = text.Replace(r.Key, r.Replacement);
+            text = ReplaceVariableText(text);
 
-        var hss = TheOtherRoles.RoleData.GetHelp(roleInfo.roleId);
+            return gui.HorizontalHolder(GUIAlignment.Left, gui.Image(GUIAlignment.Left, hs.sprite, new(0.55f, 0.65f)), gui.HorizontalMargin(0.15f),
+            GetDocumentText(text));
+        }
+
+        var hss = RoleData.GetHelp(roleInfo.roleId);
         var context = hss.Select(GetHelpSprite);
-        if (hss.Length == 0) return gui.EmptyContext;
+        if (!hss.Any()) return gui.EmptyContext;
         return GetChapter("ability", [gui.VerticalHolder(GUIAlignment.Left, context)]);
     }
+
+    static private GUIContext GetDocumentText(string rawText)
+    {
+        var gui = TORGUIContextEngine.API;
+        return gui.RawText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.DocumentStandard), ReplaceVariableText(rawText));
+    }
+
+    static private string ReplaceVariableText(string orig) => orig
+        .Replace("<var>", "<b><color=#00ffffff>")
+        .Replace("</var>", "</color></b>")
+        .Replace("<title>", "<b><size=110%>")
+        .Replace("</title>", "</size></b><br>");
 
     public static void TryCloseHelpScreen()
     {
@@ -281,7 +330,7 @@ public static class HelpMenu
                 {
                     screen.SetContext(GetRoleContext(role), out _);
                     outsideScreen.ClearBackImage();
-                    outsideScreen.SetBackImage(TheOtherRoles.RoleData.GetIllustration(role.roleId), 0.2f);
+                    outsideScreen.SetBackImage(RoleData.GetIllustration(role.roleId), 0.2f);
                 });
             }, RoleTitleAttrUnmasked)
             {
@@ -298,7 +347,7 @@ public static class HelpMenu
 
         widget.Append(new MetaContextOld.WrappedContext(scrollView));
 
-        backImage = TheOtherRoles.RoleData.GetIllustration(assignable.roleId);
+        backImage = RoleData.GetIllustration(assignable.roleId);
 
         return widget;
     }
@@ -539,7 +588,7 @@ public static class HelpMenu
         context.Add(new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OverlayTitle), new RawTextComponent(Helpers.cs(assignable.orgColor, assignable.name))));
         context.Add(new TORGUIText(GUIAlignment.Left, gui.GetAttribute(AttributeAsset.OverlayContent), new RawTextComponent(assignable.blurb)));
 
-        return new VerticalContextsHolder(GUIAlignment.Left, context) { BackImage = TheOtherRoles.RoleData.GetIllustration(assignable.roleId) };
+        return new VerticalContextsHolder(GUIAlignment.Left, context) { BackImage = RoleData.GetIllustration(assignable.roleId) };
     }
 
     static public GUIContext GetAchievementContext(RoleInfo assignable)

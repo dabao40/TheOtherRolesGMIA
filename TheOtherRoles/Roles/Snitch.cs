@@ -11,7 +11,7 @@ namespace TheOtherRoles.Roles
         public static Color color = new Color32(184, 251, 79, byte.MaxValue);
 
         public List<Arrow> localArrows = [];
-        public static int taskCountForReveal = 1;
+        public static int taskCountForReveal { get { return Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForReveal.getFloat()); } }
         public static bool includeTeamEvil = false;
         public static bool teamEvilUseDifferentArrowColor = true;
 
@@ -50,6 +50,8 @@ namespace TheOtherRoles.Roles
                 if (!PlayerControl.LocalPlayer.Data.IsDead && taskTotal > 0 && taskComplete == taskTotal) _ = new StaticAchievementToken("snitch.challenge");
             }
         }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%NUM%", taskCountForReveal.ToString())];
 
         public override void FixedUpdate()
         {
@@ -113,7 +115,6 @@ namespace TheOtherRoles.Roles
         }
 
         public static void clearAndReload() {
-            taskCountForReveal = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForReveal.getFloat());
             includeTeamEvil = CustomOptionHolder.snitchIncludeTeamEvil.getBool();
             teamEvilUseDifferentArrowColor = CustomOptionHolder.snitchTeamEvilUseDifferentArrowColor.getBool();
             players = [];

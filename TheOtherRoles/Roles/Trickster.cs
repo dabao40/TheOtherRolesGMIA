@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
@@ -9,13 +10,19 @@ namespace TheOtherRoles.Roles
     public class Trickster : RoleBase<Trickster> {
         public static Color color = Palette.ImpostorRed;
         public static float placeBoxCooldown = 30f;
-        public static float boxKillPenalty = 2.5f;
+        public static float boxKillPenalty { get { return CustomOptionHolder.tricksterBoxKillPenalty.getFloat(); } }
         public static float lightsOutCooldown = 30f;
         public static float lightsOutDuration = 10f;
         public static float lightsOutTimer = 0f;
         public static AchievementToken<(int kills, bool cleared)> acTokenChallenge;
 
-        static public readonly HelpSprite[] HelpSprites = [new(getPlaceBoxButtonSprite(), "tricksterBoxHint"), new(getLightsOutButtonSprite(), "tricksterLightsOutHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getPlaceBoxButtonSprite(), "tricksterBoxHint");
+            yield return new(getLightsOutButtonSprite(), "tricksterLightsOutHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%KP%", boxKillPenalty.ToString())];
 
         public static bool isInTricksterVent
         {
@@ -89,7 +96,6 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload() {
             lightsOutTimer = 0f;
             placeBoxCooldown = CustomOptionHolder.tricksterPlaceBoxCooldown.getFloat();
-            boxKillPenalty = CustomOptionHolder.tricksterBoxKillPenalty.getFloat();
             lightsOutCooldown = CustomOptionHolder.tricksterLightsOutCooldown.getFloat();
             lightsOutDuration = CustomOptionHolder.tricksterLightsOutDuration.getFloat();
             acTokenChallenge = null;

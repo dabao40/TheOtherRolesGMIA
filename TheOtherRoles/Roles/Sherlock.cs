@@ -14,9 +14,9 @@ namespace TheOtherRoles.Roles
     {
         public static Color color = new Color32(248, 205, 70, byte.MaxValue);
 
-        public static int numTasks = 2;
+        public static int numTasks { get { return Mathf.RoundToInt(CustomOptionHolder.sherlockRechargeTasksNumber.getFloat()); } }
         public static float cooldown = 10f;
-        public static float investigateDistance = 5f;
+        public static float investigateDistance { get { return CustomOptionHolder.sherlockInvestigateDistance.getFloat(); } }
 
         public int numUsed;
         public static int killTimerCounter;
@@ -31,8 +31,18 @@ namespace TheOtherRoles.Roles
 
         public static HideAndSeekDeathPopup killPopup = null;
 
-        static public readonly HelpSprite[] HelpSprites = [new(getDetectIcon(), "sherlockDetectHint"), new(getInvestigateIcon(), "sherlockInvestigateHint"),
-        new(getWatchIcon(), "sherlockWatchHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getDetectIcon(), "sherlockDetectHint");
+            yield return new(getInvestigateIcon(), "sherlockInvestigateHint");
+            yield return new(getWatchIcon(), "sherlockWatchHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%INV%", investigateDistance.ToString());
+            yield return new("%NUM%", numTasks == 1 ? ModTranslation.getString("sherlockNUMSingle") : string.Format(ModTranslation.getString("sherlockNUMPlural"), numTasks));
+        }
 
         public static RemoteProcess<Vector2> ReceiveDetect = RemotePrimitiveProcess.OfVector2("SherlockReceive", (message, _) =>
         {
@@ -95,15 +105,17 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             killLog = [];
-            numTasks = Mathf.RoundToInt(CustomOptionHolder.sherlockRechargeTasksNumber.getFloat());
             cooldown = CustomOptionHolder.sherlockCooldown.getFloat();
-            investigateDistance = CustomOptionHolder.sherlockInvestigateDistance.getFloat();
             killPopup = null;
             players = [];
-            if (SherlockDetectArrow.allArrows.Count > 0)                 foreach (var arrow in SherlockDetectArrow.allArrows) {
+            if (SherlockDetectArrow.allArrows.Count > 0)
+            {
+                foreach (var arrow in SherlockDetectArrow.allArrows)
+                {
                     arrow.ArrowObject.SetActive(false);
                     UnityEngine.Object.Destroy(arrow.ArrowObject);
                 }
+            }
             SherlockDetectArrow.allArrows = [];
             killTimerCounter = 0;
         }

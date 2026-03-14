@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
@@ -15,8 +16,15 @@ namespace TheOtherRoles.Roles
     {
         public static Color color = Lovers.color;
 
-        static public readonly HelpSprite[] HelpSprites = [new(getStareSprite(), "kataomoiStareHint"), new(getSearchSprite(), "kataomoiSearchHint"),
-        new(getStalkingSprite(), "kataomoiStalkHint"), new(getLoveSprite(), "kataomoiLoveHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getStareSprite(), "kataomoiStareHint");
+            yield return new(getSearchSprite(), "kataomoiSearchHint");
+            yield return new(getStalkingSprite(), "kataomoiStalkHint");
+            yield return new(getLoveSprite(), "kataomoiLoveHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%NUM%", CustomOptionHolder.kataomoiStareCount.getFloat().ToString())];
 
         public static float stareCooldown = 30f;
         public static float stareDuration = 3f;

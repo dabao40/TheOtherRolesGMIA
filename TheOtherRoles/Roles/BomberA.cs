@@ -18,7 +18,11 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.BomberA;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getBomberButtonSprite(), "bomberPlantBombHint"), new(getReleaseButtonSprite(), "bomberReleaseBombHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getBomberButtonSprite(), "bomberPlantBombHint");
+            yield return new(getReleaseButtonSprite(), "bomberReleaseBombHint");
+        }
 
         public static bool isAlive()
         {

@@ -21,7 +21,18 @@ namespace TheOtherRoles.Roles
             clearArrows();
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getMarkButtonSprite(), "assassinMarkHint"), new(getKillButtonSprite(), "assassinKillHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getMarkButtonSprite(), "assassinMarkHint");
+            yield return new(getKillButtonSprite(), "assassinKillHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%OPT%", knowsTargetLocation ? ModTranslation.getString("assassinOPTHint") : "");
+            yield return new("%SEC%", traceTime.ToString());
+            yield return new("%TIME%", invisibleDuration.ToString());
+        }
 
         public static Color color = Palette.ImpostorRed;
 
@@ -65,9 +76,9 @@ namespace TheOtherRoles.Roles
         public PlayerControl assassinMarked;
         public PlayerControl currentTarget;
         public static float cooldown = 30f;
-        public static float traceTime = 1f;
-        public static bool knowsTargetLocation = false;
-        public static float invisibleDuration = 5f;
+        public static float traceTime { get { return CustomOptionHolder.assassinTraceTime.getFloat(); } }
+        public static bool knowsTargetLocation { get { return CustomOptionHolder.assassinKnowsTargetLocation.getBool(); } }
+        public static float invisibleDuration { get { return CustomOptionHolder.assassinInvisibleDuration.getFloat(); } }
 
         public float invisibleTimer = 0f;
         public bool isInvisble = false;
@@ -193,9 +204,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             cooldown = CustomOptionHolder.assassinCooldown.getFloat();
-            knowsTargetLocation = CustomOptionHolder.assassinKnowsTargetLocation.getBool();
-            traceTime = CustomOptionHolder.assassinTraceTime.getFloat();
-            invisibleDuration = CustomOptionHolder.assassinInvisibleDuration.getFloat();
             players = [];
         }
     }

@@ -18,7 +18,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.BomberB;
         }
 
-        static public readonly HelpSprite[] HelpSprites = BomberA.HelpSprites;
+        static public IEnumerable<HelpSprite> GetHelpSprites() => BomberA.GetHelpSprites();
 
         public static Color color = Palette.ImpostorRed;
 

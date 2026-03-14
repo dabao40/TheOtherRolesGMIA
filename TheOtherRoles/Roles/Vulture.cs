@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -19,16 +20,22 @@ namespace TheOtherRoles.Roles
         public static Color color = new Color32(139, 69, 19, byte.MaxValue);
         public List<Arrow> localArrows = [];
         public static float cooldown = 30f;
-        public static int vultureNumberToWin = 4;
+        public static int vultureNumberToWin { get { return Mathf.RoundToInt(CustomOptionHolder.vultureNumberToWin.getFloat()); } }
         public int eatenBodies = 0;
         public bool triggerVultureWin = false;
         public static bool canUseVents = true;
-        public static bool showArrows = true;
+        public static bool showArrows { get { return CustomOptionHolder.vultureShowArrows.getBool(); } }
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.VultureButton.png", 115f);
             return buttonSprite;
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%NUM%", vultureNumberToWin == 1 ? ModTranslation.getString("vultureNUMSingle") : string.Format(ModTranslation.getString("vultureNUMPlural"), vultureNumberToWin));
+            yield return new("%OPT%", showArrows ? ModTranslation.getString("vultureOPTHint") : "");
         }
 
         public override void FixedUpdate()
@@ -69,10 +76,8 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             if (players != null) players.Do(x => x.triggerVultureWin = false);
-            vultureNumberToWin = Mathf.RoundToInt(CustomOptionHolder.vultureNumberToWin.getFloat());
             cooldown = CustomOptionHolder.vultureCooldown.getFloat();
             canUseVents = CustomOptionHolder.vultureCanUseVents.getBool();
-            showArrows = CustomOptionHolder.vultureShowArrows.getBool();
             players = [];
         }
     }

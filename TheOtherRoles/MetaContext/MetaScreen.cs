@@ -113,6 +113,7 @@ namespace TheOtherRoles.MetaContext
         }
 
         static private MultiImage closeButtonSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.CloseButton.png", 100f, 2, 1);
+        static private MultiImage navButtonSprite = DividedSpriteLoader.FromResource("TheOtherRoles.Resources.NavButton.png", 100f, 2, 2);
         static readonly private Image backFrameSprite = new ResourceExpandableSpriteLoader("TheOtherRoles.Resources.Background_Frame.png", 150f, 60, 60);
         static readonly private Image backInnerSprite = new ResourceExpandableSpriteLoader("TheOtherRoles.Resources.Background_Inner.png", 150f, 60, 60);
         static public Image BackFrameImage => backFrameSprite;
@@ -263,6 +264,35 @@ namespace TheOtherRoles.MetaContext
             }
 
             return screen;
+        }
+
+        static public void SetUpNavButton(MetaScreen screen, Action<bool> navFunc)
+        {
+            var obj = screen.transform.parent.gameObject;
+
+            PassiveButton GenerateButton(float x, int img)
+            {
+                var collider = Helpers.CreateObject<BoxCollider2D>("NavButton", obj.transform, new Vector3(screen.Border.x / 2f + 0.3f - x, screen.Border.y / 2f + 0.25f, -1f));
+                collider.transform.localScale = new(0.57f, 0.57f, 1f);
+                collider.isTrigger = true;
+                collider.gameObject.layer = LayerMask.NameToLayer("UI");
+                collider.size = new(0.65f, 0.65f);
+                SpriteRenderer renderer = null;
+                renderer = collider.gameObject.AddComponent<SpriteRenderer>();
+                renderer.sprite = navButtonSprite.GetSprite(img);
+                var button = collider.gameObject.SetUpButton(true);
+                button.OnMouseOver.AddListener((Action)(() => renderer.sprite = navButtonSprite.GetSprite(img + 1)));
+                button.OnMouseOut.AddListener((Action)(() => renderer.sprite = navButtonSprite.GetSprite(img)));
+                return button;
+            }
+
+            GenerateButton(0.7f, 0).OnClick.AddListener((Action)(() => {
+                navFunc.Invoke(false);
+            }));
+            GenerateButton(0.3f, 2).OnClick.AddListener((Action)(() =>
+            {
+                navFunc.Invoke(true);
+            }));
         }
 
         public void SetBorder(Vector2 border)

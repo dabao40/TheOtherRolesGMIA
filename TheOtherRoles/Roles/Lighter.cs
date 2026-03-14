@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using TheOtherRoles.MetaContext;
@@ -14,7 +15,7 @@ namespace TheOtherRoles.Roles
 
         public static float lighterModeLightsOnVision = 2f;
         public static float lighterModeLightsOffVision = 0.75f;
-        public static bool canSeeInvisible = true;
+        public static bool canSeeInvisible { get { return CustomOptionHolder.lighterCanSeeInvisible.getBool(); } }
         public static float cooldown = 30f;
         public static float duration = 15f;
         public bool lightActive = false;
@@ -71,11 +72,15 @@ namespace TheOtherRoles.Roles
             lightActive = false;
         }
 
+        public static IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%OPT%", canSeeInvisible ? ModTranslation.getString("lighterOPTHint") : "");
+        }
+
         public static void clearAndReload()
         {
             lighterModeLightsOnVision = CustomOptionHolder.lighterModeLightsOnVision.getFloat();
             lighterModeLightsOffVision = CustomOptionHolder.lighterModeLightsOffVision.getFloat();
-            canSeeInvisible = CustomOptionHolder.lighterCanSeeInvisible.getBool();
             cooldown = CustomOptionHolder.lighterCooldown.getFloat();
             duration = CustomOptionHolder.lighterDuration.getFloat();
             players = [];

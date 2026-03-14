@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
 using UnityEngine;
@@ -11,12 +12,12 @@ namespace TheOtherRoles.Roles
         public static Color color = new Color32(134, 55, 86, byte.MaxValue);
         private static Sprite spriteCheck;
         public static bool canCallEmergency = false;
-        public static bool canOnlySwapOthers = false;
+        public static bool canOnlySwapOthers { get { return CustomOptionHolder.swapperCanOnlySwapOthers.getBool(); } }
         public static int charges;
         public static float rechargeTasksNumber;
         public static float rechargedTasks;
-
-        public static readonly HelpSprite[] HelpSprites = [new(getCheckSprite(), "swapperCheckHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getCheckSprite(), "swapperCheckHint")];
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%SWAP%", ModTranslation.getString(canOnlySwapOthers ? "swapperCheckCantSwapSelfHint" : "swapperCheckSwapSelfHint"))];
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Swapper.png");
 
         public Swapper()
@@ -99,7 +100,6 @@ namespace TheOtherRoles.Roles
             playerId1 = byte.MaxValue;
             playerId2 = byte.MaxValue;
             canCallEmergency = CustomOptionHolder.swapperCanCallEmergency.getBool();
-            canOnlySwapOthers = CustomOptionHolder.swapperCanOnlySwapOthers.getBool();
             charges = Mathf.RoundToInt(CustomOptionHolder.swapperSwapsNumber.getFloat());
             rechargeTasksNumber = Mathf.RoundToInt(CustomOptionHolder.swapperRechargeTasksNumber.getFloat());
             rechargedTasks = Mathf.RoundToInt(CustomOptionHolder.swapperRechargeTasksNumber.getFloat());

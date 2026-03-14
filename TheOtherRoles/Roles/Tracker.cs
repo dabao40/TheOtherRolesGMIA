@@ -56,6 +56,12 @@ namespace TheOtherRoles.Roles
             }
         });
 
+        public static IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%OPT%", ModTranslation.getString($"trackerOPT{(resetTargetAfterMeeting ? "1" : "2")}Hint"));
+            yield return new("%SEC%", updateIntervall.ToString());
+        }
+
         public override void FixedUpdate()
         {
             if (PlayerControl.LocalPlayer != player) return;
@@ -140,8 +146,8 @@ namespace TheOtherRoles.Roles
             if (!usedTracker || numShots > 0) setPlayerOutline(currentTarget, color);
         }
 
-        public static float updateIntervall = 5f;
-        public static bool resetTargetAfterMeeting = false;
+        public static float updateIntervall { get { return CustomOptionHolder.trackerUpdateIntervall.getFloat(); } }
+        public static bool resetTargetAfterMeeting { get { return CustomOptionHolder.trackerResetTargetAfterMeeting.getBool(); } }
         public static bool canTrackCorpses = false;
         public static float corpsesTrackingCooldown = 30f;
         public static float corpsesTrackingDuration = 5f;
@@ -209,8 +215,6 @@ namespace TheOtherRoles.Roles
         }
 
         public static void clearAndReload() {
-            updateIntervall = CustomOptionHolder.trackerUpdateIntervall.getFloat();
-            resetTargetAfterMeeting = CustomOptionHolder.trackerResetTargetAfterMeeting.getBool();
             deadBodyPositions = [];
             corpsesTrackingCooldown = CustomOptionHolder.trackerCorpsesTrackingCooldown.getFloat();
             corpsesTrackingDuration = CustomOptionHolder.trackerCorpsesTrackingDuration.getFloat();

@@ -21,7 +21,7 @@ namespace TheOtherRoles.Roles
             counter = 0;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getBrainwashIcon(), "moriartyBrainwashHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getBrainwashIcon(), "moriartyBrainwashHint")];
 
         public static RemoteProcess<(byte playerId, byte moriartyId)> Brainwash = new("MoriartyBrainwash", (message, _) =>
         {

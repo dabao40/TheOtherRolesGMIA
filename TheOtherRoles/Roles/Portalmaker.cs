@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Utilities;
@@ -18,7 +19,13 @@ public class Portalmaker : RoleBase<Portalmaker>
         acTokenChallenge = null;
     }
 
-    public static readonly HelpSprite[] HelpSprites = [new(getPlacePortalButtonSprite(), "portalmakerCreateHint")];
+    static public IEnumerable<HelpSprite> GetHelpSprites()
+    {
+        yield return new(getPlacePortalButtonSprite(), "portalmakerCreateHint");
+        if (canPortalFromAnywhere) {
+            yield return new(getUsePortalButtonSprite(), "portalmakerUseAnywhereHint");
+        }
+    }
 
     public static RemoteProcess<Vector2> PlacePortal = RemotePrimitiveProcess.OfVector2("PlacePortal", (message, _) => new Portal(message));
 
@@ -36,7 +43,7 @@ public class Portalmaker : RoleBase<Portalmaker>
     public static float usePortalCooldown;
     public static bool logOnlyHasColors;
     public static bool logShowsTime;
-    public static bool canPortalFromAnywhere;
+    public static bool canPortalFromAnywhere { get { return CustomOptionHolder.portalmakerCanPortalFromAnywhere.getBool(); } }
 
     private static Sprite placePortalButtonSprite;
     private static Sprite usePortalButtonSprite;
@@ -80,7 +87,6 @@ public class Portalmaker : RoleBase<Portalmaker>
         usePortalCooldown = CustomOptionHolder.portalmakerUsePortalCooldown.getFloat();
         logOnlyHasColors = CustomOptionHolder.portalmakerLogOnlyColorType.getBool();
         logShowsTime = CustomOptionHolder.portalmakerLogHasTime.getBool();
-        canPortalFromAnywhere = CustomOptionHolder.portalmakerCanPortalFromAnywhere.getBool();
         players = [];
     }
 

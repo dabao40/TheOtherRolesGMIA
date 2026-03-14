@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Hazel;
 using TheOtherRoles.MetaContext;
 using TheOtherRoles.Modules;
@@ -19,11 +21,21 @@ public class Detective : RoleBase<Detective>
     public static float reportColorDuration = 20f;
     public float timer = 6.2f;
     public static float inspectCooldown = 15f;
-    public static float inspectDuration = 10f;
+    public static float inspectDuration { get { return CustomOptionHolder.detectiveInspectDuration.getFloat(); } }
     public static SpriteLoader detectiveIcon = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrow.png", 100f);
     static public SpriteLoader hintSprite = SpriteLoader.FromResource("TheOtherRoles.Resources.DetectiveArrowHint.png", 100f);
 
-    static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "detectiveTrackHint"), new(hintSprite, "detectiveIconHint")];
+    static public IEnumerable<HelpSprite> GetHelpSprites()
+    {
+        yield return new(getButtonSprite(), "detectiveTrackHint");
+        yield return new(hintSprite, "detectiveIconHint");
+    }
+
+    static public IEnumerable<DocumentReplacement> GetReplacementPart()
+    {
+        yield return new("%DUR%", inspectDuration.ToString());
+    }
+
 
     public Detective()
     {
@@ -97,7 +109,6 @@ public class Detective : RoleBase<Detective>
         reportNameDuration = CustomOptionHolder.detectiveReportNameDuration.getFloat();
         reportColorDuration = CustomOptionHolder.detectiveReportColorDuration.getFloat();
         inspectCooldown = CustomOptionHolder.detectiveInspectCooldown.getFloat();
-        inspectDuration = CustomOptionHolder.detectiveInspectDuration.getFloat();
         players = [];
     }
 }

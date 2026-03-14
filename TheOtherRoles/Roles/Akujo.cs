@@ -173,13 +173,20 @@ namespace TheOtherRoles.Roles
         public Color iconColor;
 
         public static float timeLimit = 1300f;
-        public static bool knowsRoles = true;
+        public static bool knowsRoles { get { return CustomOptionHolder.akujoKnowsRoles.getBool(); } }
         public static int numKeeps;
 
-        public static readonly HelpSprite[] HelpSprites = [
-            new(getHonmeiSprite(), "akujoHonmeiHint"),
-            new(getKeepSprite(), "akujoKeepHint")
-        ];
+        public static IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getHonmeiSprite(), "akujoHonmeiHint");
+            yield return new(getKeepSprite(), "akujoKeepHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%NUM%", CustomOptionHolder.akujoNumKeeps.getFloat().ToString());
+            yield return new("%OPT%", knowsRoles ? ModTranslation.getString("akujoOPTHint") : "");
+        }
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Akujo.png");
 
@@ -313,7 +320,6 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload()
         {
             timeLimit = CustomOptionHolder.akujoTimeLimit.getFloat() + 10f;
-            knowsRoles = CustomOptionHolder.akujoKnowsRoles.getBool();
             numKeeps = Math.Min((int)CustomOptionHolder.akujoNumKeeps.getFloat(), PlayerControl.AllPlayerControls.Count - 2);
             players = [];
         }

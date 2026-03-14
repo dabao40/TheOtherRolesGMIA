@@ -21,10 +21,19 @@ namespace TheOtherRoles.Roles
             dousedPlayers = [];
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getDouseSprite(), "arsonistDouseHint"), new(getIgniteSprite(), "arsonistIgniteHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getDouseSprite(), "arsonistDouseHint");
+            yield return new(getIgniteSprite(), "arsonistIgniteHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%SEC%", duration.ToString());
+        }
 
         public static float cooldown = 30f;
-        public static float duration = 3f;
+        public static float duration { get { return CustomOptionHolder.arsonistDuration.getFloat(); } }
         public bool triggerArsonistWin = false;
 
         public PlayerControl currentTarget;
@@ -124,7 +133,6 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload() {
             if (players != null) players.Do(x => x.triggerArsonistWin = false);
             cooldown = CustomOptionHolder.arsonistCooldown.getFloat();
-            duration = CustomOptionHolder.arsonistDuration.getFloat();
             players = [];
         }
     }

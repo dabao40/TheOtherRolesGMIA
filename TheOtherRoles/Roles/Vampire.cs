@@ -15,6 +15,12 @@ namespace TheOtherRoles.Roles
         public static Color color = Palette.ImpostorRed;
 
         public static readonly Image Illustration = new TORSpriteLoader("Assets/Sprites/Vampire.png");
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%TIME%", delay.ToString());
+            yield return new("%SEC%", CustomOptionHolder.vampireCooldownDecrease.getFloat().ToString());
+            yield return new("%GARLIC%", ModTranslation.getString($"vampireGARLIC{(canKillNearGarlics ? "Kill" : "")}Hint"));
+        }
 
         public Vampire()
         {
@@ -25,10 +31,10 @@ namespace TheOtherRoles.Roles
             targetNearGarlic = false;
         }
 
-        public static float delay = 10f;
+        public static float delay { get { return CustomOptionHolder.vampireKillDelay.getFloat(); } }
         public static float cooldown = 30f;
         public static float cooldownDecrease = 2.5f;
-        public static bool canKillNearGarlics = true;
+        public static bool canKillNearGarlics { get { return CustomOptionHolder.vampireCanKillNearGarlics.getBool(); } }
         public static bool localPlacedGarlic = false;
         public static bool garlicsActive = true;
 
@@ -127,10 +133,8 @@ namespace TheOtherRoles.Roles
         public static void clearAndReload() {
             localPlacedGarlic = false;
             garlicsActive = CustomOptionHolder.vampireSpawnRate.getSelection() > 0;
-            delay = CustomOptionHolder.vampireKillDelay.getFloat();
             cooldown = CustomOptionHolder.vampireCooldown.getFloat();
             cooldownDecrease = Mathf.Min(cooldown, CustomOptionHolder.vampireCooldownDecrease.getFloat());
-            canKillNearGarlics = CustomOptionHolder.vampireCanKillNearGarlics.getBool();
             players = [];
         }
     }

@@ -30,6 +30,12 @@ public class Collator : RoleBase<Collator>
 
     private AchievementToken<int> acTokenChallenge = null;
 
+    static public IEnumerable<DocumentReplacement> GetReplacementPart()
+    {
+        var num = CustomOptionHolder.collatorNumberOfTrials.getFloat();
+        yield return new("%NUM%", num == 1 ? ModTranslation.getString("collatorNUMSingle") : string.Format(ModTranslation.getString("collatorNUMPlural"), num));
+    }
+
     public enum TeamCategory
     {
         Crewmate,

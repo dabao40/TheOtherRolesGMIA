@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TheOtherRoles.MetaContext;
@@ -15,15 +16,21 @@ public class Mayor : RoleBase<Mayor>
     public static Sprite emergencySprite = null;
     public int remoteMeetingsLeft = 1;
     public bool voteMultiple = true;
-    public static int mayorChooseSingleVote;
+    public static int mayorChooseSingleVote { get { return CustomOptionHolder.mayorChooseSingleVote.getSelection(); } }
 
     public static bool meetingButton = true;
-    public static int numVotes = 2;
+    public static int numVotes { get { return (int)CustomOptionHolder.mayorNumVotes.getFloat(); } }
 
-    public static readonly HelpSprite[] HelpSprites =
-    [
+    static public IEnumerable<HelpSprite> GetHelpSprites() => [
         new(getMeetingSprite(), "mayorMeetingButtonHint")
     ];
+
+    static public IEnumerable<DocumentReplacement> GetReplacementPart()
+    {
+        yield return new("%NUM%", Mathf.RoundToInt(CustomOptionHolder.mayorMaxRemoteMeetings.getFloat()).ToString());
+        yield return new("%VOTE%", numVotes.ToString());
+        yield return new("%MVO%", mayorChooseSingleVote > 0 ? ModTranslation.getString("mayorMVOHint") : "");
+    }
 
     public Mayor()
     {
@@ -64,8 +71,6 @@ public class Mayor : RoleBase<Mayor>
         emergency = null;
         emergencySprite = null;
         meetingButton = CustomOptionHolder.mayorMeetingButton.getBool();
-        numVotes = (int)CustomOptionHolder.mayorNumVotes.getFloat();
-        mayorChooseSingleVote = CustomOptionHolder.mayorChooseSingleVote.getSelection();
         players = [];
     }
 

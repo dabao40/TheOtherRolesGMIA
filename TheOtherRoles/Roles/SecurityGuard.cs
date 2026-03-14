@@ -20,14 +20,24 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.SecurityGuard;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getCloseVentButtonSprite(), "securityGuardVentHint"), new(getPlaceCameraButtonSprite(), "securityGuardCamHint"),
-        new(getFlushSprite(), "securityGuardFlushHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getCloseVentButtonSprite(), "securityGuardVentHint");
+            yield return new(getPlaceCameraButtonSprite(), "securityGuardCamHint");
+            yield return new(getFlushSprite(), "securityGuardFlushHint");
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%VENT%", ventPrice.ToString());
+            yield return new("%CAM%", camPrice.ToString());
+        }
 
         public static float cooldown = 30f;
         public static int remainingScrews = 7;
         public static int totalScrews = 7;
-        public static int ventPrice = 1;
-        public static int camPrice = 2;
+        public static int ventPrice { get { return Mathf.RoundToInt(CustomOptionHolder.securityGuardVentPrice.getFloat()); } }
+        public static int camPrice { get { return Mathf.RoundToInt(CustomOptionHolder.securityGuardCamPrice.getFloat()); } }
         public static int placedCameras = 0;
         public static float duration = 10f;
         public static int maxCharges = 5;
@@ -211,8 +221,6 @@ namespace TheOtherRoles.Roles
             placedCameras = 0;
             cooldown = CustomOptionHolder.securityGuardCooldown.getFloat();
             totalScrews = remainingScrews = Mathf.RoundToInt(CustomOptionHolder.securityGuardTotalScrews.getFloat());
-            camPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardCamPrice.getFloat());
-            ventPrice = Mathf.RoundToInt(CustomOptionHolder.securityGuardVentPrice.getFloat());
             cantMove = CustomOptionHolder.securityGuardNoMove.getBool();
             flushCooldown = CustomOptionHolder.securityGuardFlushCooldown.getFloat();
             acTokenChallenge = null;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using UnityEngine;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
@@ -11,7 +12,11 @@ namespace TheOtherRoles.Roles
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
 
-        public static readonly HelpSprite[] HelpSprites = [new(getSampleSprite(), "morphlingSampleHint"), new(getMorphSprite(), "morphlingMorphHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites()
+        {
+            yield return new(getSampleSprite(), "morphlingSampleHint");
+            yield return new(getMorphSprite(), "morphlingMorphHint");
+        }
 
         public Morphling()
         {

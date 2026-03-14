@@ -7,6 +7,7 @@ using TheOtherRoles.Patches;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.Patches.PlayerControlFixedUpdatePatch;
+using TheOtherRoles.Modules;
 
 namespace TheOtherRoles.Roles
 {
@@ -32,6 +33,8 @@ namespace TheOtherRoles.Roles
             currentTarget = setTarget();
             if (canKill) setPlayerOutline(currentTarget, Watcher.color);
         }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => [new("%OPT%", Watcher.canSeeGuesses ? ModTranslation.getString("watcherOPTHint") : "")];
     }
 
     public class EvilWatcher : RoleBase<EvilWatcher>
@@ -56,17 +59,18 @@ namespace TheOtherRoles.Roles
                 PlayerControl.LocalPlayer.SetKillTimerUnchecked(1f);
             }
         }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() => NiceWatcher.GetReplacementPart();
     }
 
     public static class Watcher
     {
         public static Color color = Palette.Purple;
-        public static bool canSeeGuesses = false;
+        public static bool canSeeGuesses { get { return CustomOptionHolder.watcherSeeGuesses.getBool(); } }
         public static bool canSeeYasunaVotes = false;
 
         public static void clearAndReload()
         {
-            canSeeGuesses = CustomOptionHolder.watcherSeeGuesses.getBool();
             canSeeYasunaVotes = CustomOptionHolder.watcherSeeYasunaVotes.getBool();
             NiceWatcher.players = [];
             EvilWatcher.players = [];

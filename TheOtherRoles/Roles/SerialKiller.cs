@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Patches;
 using UnityEngine;
@@ -13,14 +14,18 @@ namespace TheOtherRoles.Roles
             isCountDown = false;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getButtonSprite(), "serialKillerSuicideHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getButtonSprite(), "serialKillerSuicideHint")];
+        static public IEnumerable<DocumentReplacement> GetReplacementPart() {
+            yield return new("%RES%", resetTimer ? ModTranslation.getString("serialKillerSuicideMeetingHint") : "");
+            yield return new("%UST%", CustomOptionHolder.serialKillerSuicideTimer.getFloat().ToString());
+        }
 
         public static PlayerControl serialKiller;
         public static Color color = Palette.ImpostorRed;
 
         public static float killCooldown = 15f;
         public static float suicideTimer = 40f;
-        public static bool resetTimer = true;
+        public static bool resetTimer { get { return CustomOptionHolder.serialKillerResetTimer.getBool(); } }
 
         public bool isCountDown = false;
 
@@ -53,7 +58,6 @@ namespace TheOtherRoles.Roles
         {
             killCooldown = CustomOptionHolder.serialKillerKillCooldown.getFloat();
             suicideTimer = Mathf.Max(CustomOptionHolder.serialKillerSuicideTimer.getFloat(), killCooldown + 2.5f);
-            resetTimer = CustomOptionHolder.serialKillerResetTimer.getBool();
             players = [];
         }
     }

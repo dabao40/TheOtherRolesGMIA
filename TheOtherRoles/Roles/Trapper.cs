@@ -17,7 +17,7 @@ namespace TheOtherRoles.Roles
             RoleId = roleId = RoleId.Trapper;
         }
 
-        static public readonly HelpSprite[] HelpSprites = [new(getTrapButtonSprite(), "trapperTrapHint")];
+        static public IEnumerable<HelpSprite> GetHelpSprites() => [new(getTrapButtonSprite(), "trapperTrapHint")];
 
         public override void OnMeetingEnd(PlayerControl exiled = null)
         {

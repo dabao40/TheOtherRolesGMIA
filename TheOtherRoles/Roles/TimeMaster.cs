@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using TheOtherRoles.Modules;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -8,8 +10,8 @@ namespace TheOtherRoles.Roles
     public class TimeMaster : RoleBase<TimeMaster> {
         public static Color color = new Color32(112, 142, 239, byte.MaxValue);
 
-        public static float rewindTime = 3f;
-        public static float shieldDuration = 3f;
+        public static float rewindTime { get { return CustomOptionHolder.timeMasterRewindTime.getFloat(); } }
+        public static float shieldDuration { get { return CustomOptionHolder.timeMasterShieldDuration.getFloat(); } }
         public static float cooldown = 30f;
 
         public bool shieldActive = false;
@@ -21,6 +23,12 @@ namespace TheOtherRoles.Roles
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TimeShieldButton.png", 115f);
             return buttonSprite;
+        }
+
+        static public IEnumerable<DocumentReplacement> GetReplacementPart()
+        {
+            yield return new("%SEC%", shieldDuration.ToString());
+            yield return new("%TIME%", rewindTime.ToString());
         }
 
         public TimeMaster()
@@ -40,8 +48,6 @@ namespace TheOtherRoles.Roles
 
         public static void clearAndReload() {
             isRewinding = false;
-            rewindTime = CustomOptionHolder.timeMasterRewindTime.getFloat();
-            shieldDuration = CustomOptionHolder.timeMasterShieldDuration.getFloat();
             cooldown = CustomOptionHolder.timeMasterCooldown.getFloat();
             reviveDuringReweind = CustomOptionHolder.timeMasterReviveDuringRewind.getBool();
             players = [];
