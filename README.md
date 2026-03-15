@@ -17,6 +17,7 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 | Among Us - Version | Mod Version | Link                                                         |
 | ------------------ | ----------- | ------------------------------------------------------------ |
+| 17.1.2s            | v1.3.6     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.6) |
 | 17.1s            | v1.3.5     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.5) |
 | 17.1s            | v1.3.4     | [Download](https://github.com/dabao40/TheOtherRolesGMIA/releases/tag/1.3.4) |
 
@@ -51,6 +52,24 @@ We are only a team of teenagers, and we may not be able to make this mod like an
 
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version v1.3.6**
+ - Added compatibility to Starlight. You can now download the mod on Android, thanks to the AOU team
+ - Added new ability to the Bait, "Emit"
+ - Added new ability to the Watcher, who gains the ability to kill after witnessing a murder
+ - Added new option to allow the Time Master to revive dead players on rewind
+ - Added new option to allow the Time Master to vent
+ - Added some new Achievements and created some new groups
+ - Added a new flavor text to the Achievements, you may now view them when the achievement is complete
+ - Added a new switch team button, switch meeting info button
+ - Buffed Bomber and the bomb now ignores all special actions
+ - Adjusted the performance of the Bloody trail
+ - Adjusted the client options to make it simpler
+ - Adjusted the performance of the hat manager to reduce lag
+ - Fixed some issues with the UI positions
+ - Fixed a bug where the Achievements are not shared when entering a lobby
+ - Fixed a bug where the original Yandere, Pelican will become a Crewmate if killed by a Thief
+ - Improved some of the Help Menu UIs
 
   **Version v1.3.5**
  - Added new role Jailor
