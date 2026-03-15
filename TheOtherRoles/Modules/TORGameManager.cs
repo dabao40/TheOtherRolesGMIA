@@ -1,25 +1,26 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
+using Il2CppSystem;
 using TheOtherRoles.MetaContext;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Exception = System.Exception;
+using Object = UnityEngine.Object;
+using OperatingSystem = System.OperatingSystem;
 
 namespace TheOtherRoles.Modules;
 
 public class TORGameManager
 {
-    static private TORGameManager instance = null;
+    static private TORGameManager instance;
     static public TORGameManager Instance { get => instance; }
     public List<AchievementTokenBase> AllAchievementTokens = [];
     public GameStatistics GameStatistics { get; set; } = new();
-    public float CurrentTime { get; private set; } = 0f;
+    public float CurrentTime { get; private set; }
     public RuntimeGameAsset RuntimeAsset { get; private init; }
     public List<RoleHistory> RoleHistory = [];
     public Dictionary<byte, ITORAchievement> TitleMap = [];
@@ -64,7 +65,7 @@ public class TORGameManager
             PlayerControl hostPlayer = null!;
             do
             {
-                hostPlayer = PlayerControl.AllPlayerControls.Find((Il2CppSystem.Predicate<PlayerControl>)(p => AmongUsClient.Instance.HostId == p.OwnerId));
+                hostPlayer = PlayerControl.AllPlayerControls.Find((Predicate<PlayerControl>)(p => AmongUsClient.Instance.HostId == p.OwnerId));
             } while (!hostPlayer);
 
             TORAchievementManager.RequireShare();
@@ -75,7 +76,7 @@ public class TORGameManager
 
 public class RuntimeGameAsset
 {
-    AsyncOperationHandle<GameObject> handle = null;
+    AsyncOperationHandle<GameObject> handle;
     public MapBehaviour MinimapPrefab = null!;
     public float MapScale;
     public GameObject MinimapObjPrefab => MinimapPrefab.transform.GetChild(1).gameObject;
@@ -107,6 +108,12 @@ public class RoleHistory
 [HarmonyPatch(typeof(AssetReference), nameof(AssetReference.InstantiateAsync), typeof(Transform), typeof(bool))]
 public static class LoadShipInstancePatch
 {
+    static bool Prepare()
+    {
+        // Do not apply on android, it is broken there.
+        return !OperatingSystem.IsAndroid();
+    }
+
     static bool Prefix(AssetReference __instance, ref AsyncOperationHandle<GameObject> __result)
     {
         foreach (var reference in AmongUsClient.Instance.ShipPrefabs)
@@ -119,5 +126,149 @@ public static class LoadShipInstancePatch
             return false;
         }
         return true;
+    }
+}
+
+[HarmonyPatch(typeof(AmongUsClient._CoStartGameHost_d__28), "MoveNext")]
+public static class FixLoadShipPatch
+{
+    static bool Prepare()
+    {
+        // workaround for android devices
+        return OperatingSystem.IsAndroid();
+    }
+
+    static bool Prefix(AmongUsClient._CoStartGameHost_d__28 __instance, ref bool __result)
+    {
+        if (__instance.__1__state != 0) return true;
+
+        __instance.__1__state = -1;
+        var amongUsClient = __instance.__4__this;
+        if (LobbyBehaviour.Instance)
+        {
+            LobbyBehaviour.Instance.Despawn();
+        }
+
+        if (ShipStatus.Instance)
+        {
+            __instance.__2__current = null;
+            __instance.__1__state = 2;
+            __result = true;
+            return false;
+        }
+
+        int num2 = Mathf.Clamp(GameOptionsManager.Instance.CurrentGameOptions.MapId, 0, Constants.MapNames.Length - 1);
+        try
+        {
+            if (num2 == 0 && AprilFoolsMode.ShouldFlipSkeld())
+            {
+                num2 = 3;
+            }
+            else if (num2 == 3 && !AprilFoolsMode.ShouldFlipSkeld())
+            {
+                num2 = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            amongUsClient.logger.Error("AmongUsClient::CoStartGame: Exception:");
+            Debug.LogException(new Il2CppSystem.Exception(ex.Message), amongUsClient);
+        }
+        amongUsClient.ShipLoadingAsyncHandle = amongUsClient.ShipPrefabs[num2].InstantiateAsync();
+
+        // -------- TOR --------
+
+        TORGameManager.Instance?.RuntimeAsset.SetHandle(amongUsClient.ShipLoadingAsyncHandle);
+        amongUsClient.ShipLoadingAsyncHandle.Acquire();
+
+        // -------- TOR --------
+
+        __instance.__2__current = amongUsClient.ShipLoadingAsyncHandle;
+        __instance.__1__state = 1;
+        __result = true;
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(AmongUsClient._CoOnPlayerChangedScene_d__42), "MoveNext")]
+public static class FixLoadShipPatch2
+{
+    static bool Prepare()
+    {
+        // workaround for android devices
+        return OperatingSystem.IsAndroid();
+    }
+
+    static bool Prefix(AmongUsClient._CoOnPlayerChangedScene_d__42 __instance, ref bool __result)
+    {
+        if (__instance.__1__state != 0) return true;
+
+        __instance.__1__state = -1;
+        __instance.client.InScene = true;
+        var amongUsClient = __instance.__4__this;
+
+        if (GameData.Instance == null)
+        {
+            GameData.Instance = Object.Instantiate(amongUsClient.GameDataPrefab);
+        }
+
+        GameData.Instance.RemoveDisconnectedPlayers();
+        if (!amongUsClient.AmHost)
+        {
+            __result = false;
+            return false;
+        }
+
+        if (VoteBanSystem.Instance == null)
+        {
+            VoteBanSystem.Instance = Object.Instantiate(amongUsClient.VoteBanPrefab);
+            amongUsClient.Spawn(VoteBanSystem.Instance);
+        }
+        if (__instance.currentScene.Equals("Tutorial"))
+        {
+            GameManager.DestroyInstance();
+            GameManager gameManager = GameManagerCreator.CreateGameManager(GameOptionsManager.Instance.CurrentGameOptions.GameMode);
+            amongUsClient.Spawn(gameManager);
+            int num2 = ((amongUsClient.TutorialMapId == 0 && AprilFoolsMode.ShouldFlipSkeld()) ? 3 : amongUsClient.TutorialMapId);
+            amongUsClient.ShipLoadingAsyncHandle = amongUsClient.ShipPrefabs[num2].InstantiateAsync();
+
+            // -------- TOR --------
+
+            TORGameManager.Instance?.RuntimeAsset.SetHandle(amongUsClient.ShipLoadingAsyncHandle);
+            amongUsClient.ShipLoadingAsyncHandle.Acquire();
+
+            // -------- TOR --------
+
+            __instance.__2__current = amongUsClient.ShipLoadingAsyncHandle;
+            __instance.__1__state = 1;
+            __result = true;
+            return false;
+        }
+        if (__instance.currentScene.Equals("OnlineGame"))
+        {
+            if (__instance.client.Id != amongUsClient.ClientId)
+            {
+                amongUsClient.SendInitialData(__instance.client.Id);
+            }
+            else
+            {
+                if (amongUsClient.NetworkMode == NetworkModes.LocalGame)
+                {
+                    amongUsClient.StartCoroutine(amongUsClient.CoBroadcastManager());
+                }
+                GameManager.DestroyInstance();
+                GameManager gameManager2 = GameManagerCreator.CreateGameManager(GameOptionsManager.Instance.CurrentGameOptions.GameMode);
+                amongUsClient.Spawn(gameManager2);
+            }
+            __instance.__2__current = amongUsClient.CreatePlayer(__instance.client).Cast<Il2CppSystem.Object>();
+            __instance.__1__state = 3;
+            __result = true;
+            return false;
+        }
+
+        __instance.__2__current = null;
+        __instance.__1__state = -1;
+        __result = false;
+        return false;
     }
 }
