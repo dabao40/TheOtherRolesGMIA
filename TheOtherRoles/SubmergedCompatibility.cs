@@ -123,7 +123,7 @@ namespace TheOtherRoles
 
             FloorHandlerType = Types.First(t => t.Name == "FloorHandler");
             GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", [typeof(PlayerControl)]);
-            RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
+            RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor", [typeof(bool)]);
 
             VentPatchDataType = Types.First(t => t.Name == "VentPatchData");
 
